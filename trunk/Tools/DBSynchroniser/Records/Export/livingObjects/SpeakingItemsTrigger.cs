@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:44
+// Generated on 10/28/2013 14:03:24
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,23 +17,19 @@ namespace DBSynchroniser.Records
     [D2OClass("SpeakingItemsTrigger", "com.ankamagames.dofus.datacenter.livingObjects")]
     public class SpeakingItemsTriggerRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "SpeakingItemsTriggers";
         public int triggersId;
         public List<int> textIds;
         public List<int> states;
 
-        [D2OIgnore]
-        [PrimaryKey("Id")]
-        public int Id
+        int ID2ORecord.Id
         {
-            get;
-            set;
+            get { return (int)triggersId; }
         }
+
+
         [D2OIgnore]
+        [PrimaryKey("TriggersId", false)]
         public int TriggersId
         {
             get { return triggersId; }

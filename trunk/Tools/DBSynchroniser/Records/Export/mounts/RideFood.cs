@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:25
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +17,14 @@ namespace DBSynchroniser.Records
     [D2OClass("RideFood", "com.ankamagames.dofus.datacenter.mounts")]
     public class RideFoodRecord : ID2ORecord
     {
+        public uint gid;
+        public uint typeId;
+        public String MODULE = "RideFood";
+
         int ID2ORecord.Id
         {
             get { return (int)Id; }
         }
-        public uint gid;
-        public uint typeId;
-        public String MODULE = "RideFood";
 
         [D2OIgnore]
         [PrimaryKey("Id")]
@@ -32,6 +33,7 @@ namespace DBSynchroniser.Records
             get;
             set;
         }
+
         [D2OIgnore]
         public uint Gid
         {

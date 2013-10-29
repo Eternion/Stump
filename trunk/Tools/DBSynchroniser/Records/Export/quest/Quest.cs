@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:25
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,12 +17,9 @@ namespace DBSynchroniser.Records
     [D2OClass("Quest", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Quests";
         public uint id;
+        [I18NField]
         public uint nameId;
         public List<uint> stepIds;
         public uint categoryId;
@@ -32,6 +29,12 @@ namespace DBSynchroniser.Records
         public Boolean isDungeonQuest;
         public uint levelMin;
         public uint levelMax;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:26
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +17,16 @@ namespace DBSynchroniser.Records
     [D2OClass("ServerGameType", "com.ankamagames.dofus.datacenter.servers")]
     public class ServerGameTypeRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "ServerGameTypes";
         public int id;
+        [I18NField]
         public uint nameId;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

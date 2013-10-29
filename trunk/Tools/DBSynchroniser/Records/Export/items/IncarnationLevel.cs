@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:43
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,15 +17,17 @@ namespace DBSynchroniser.Records
     [D2OClass("IncarnationLevel", "com.ankamagames.dofus.datacenter.items")]
     public class IncarnationLevelRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "IncarnationLevels";
         public int id;
         public int incarnationId;
         public int level;
         public uint requiredXp;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

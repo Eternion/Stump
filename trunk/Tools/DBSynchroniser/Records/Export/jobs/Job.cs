@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:44
+// Generated on 10/28/2013 14:03:24
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,16 +17,19 @@ namespace DBSynchroniser.Records
     [D2OClass("Job", "com.ankamagames.dofus.datacenter.jobs")]
     public class JobRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Jobs";
         public int id;
+        [I18NField]
         public uint nameId;
         public int specializationOfId;
         public int iconId;
         public List<int> toolIds;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

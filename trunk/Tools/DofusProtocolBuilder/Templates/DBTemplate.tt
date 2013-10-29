@@ -37,38 +37,78 @@ else if (Parser.Class.Name == "Weapon") // only exception
 public class <#=Parser.Class.Name #>Record<#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage + "Record, ID2ORecord" : " : ID2ORecord" ) #>
 {
 <# PushIndent("    "); #>
-int ID2ORecord.Id
-{
-    get { return (int)Id; }
-}
-<#
+<# var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
+
+if (idField == null)
+    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type == "int" || x.Type == "uint") && !x.Name.ToLower().Contains("type"));
+
+if (idField == null)
+    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type == "int" || x.Type == "uint"));
+
+if (Parser.Class.Name == "InfoMessage" || Parser.Class.Name == "RideFood")
+    idField = null;
+
 foreach (var field in Parser.Fields)
 {
 	if (field.Modifiers != AccessModifiers.Public && field.Name != "MODULE")
 		continue;
 
+    bool isI18nField = false;
+    foreach(var property in Parser.Properties)
+    {
+        if (property.MethodGet != null)
+        {
+            var i18nAssignation = property.MethodGet.Statements.OfType<AssignationStatement>().
+                FirstOrDefault(x => x.Value.Contains("I18n.getText") && x.Value.Contains(field.Name));
+
+            if (i18nAssignation != null)
+            {
+                isI18nField = true;
+                break;
+            }
+        }
+    }
+    
+    if (isI18nField)
+        WriteLine("[I18NField]");
+
     WriteField(field);
 } 
 WriteLine("");
-var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
 
-/*if (idField == null)
+if (Parser.Class.Heritage == "Object")
 {
-    idField = Parser.Fields.FirstOrDefault(x => x.Name.IndexOf("id", StringComparison.InvariantCultureIgnoreCase) != -1
-                                             && x.Name.IndexOf("ids", StringComparison.InvariantCultureIgnoreCase) == -1);
-}*/
+    WriteLine("int ID2ORecord.Id");
+    WriteLine("{");
+    if (Parser.Class.Name == "InfoMessage")
+        WriteLine("    get { return (int)(typeId * 10000 + messageId); }");
+    else
+        WriteLine("    get { return (int)" + (idField != null ? idField.Name : "Id") + "; }");
+    WriteLine("}");
+}
 
+WriteLine("");
 if (idField == null && Parser.Class.Heritage == "Object")
 {
     WriteLine("[D2OIgnore]");
     WriteLine("[PrimaryKey(\"Id\")]");
     WriteLine("public int Id");
     WriteLine("{");
-    WriteLine("    get;");
-    WriteLine("    set;");
+    
+    if (Parser.Class.Name == "InfoMessage")
+    {
+        WriteLine("    get { return (int)(typeId * 10000 + messageId); }");
+        WriteLine("    set { }");
+    }
+    else
+    {
+        WriteLine("    get;");
+        WriteLine("    set;");
+    }
     WriteLine("}");
 }
 
+WriteLine("");
 foreach (var field in Parser.Fields)
 {
 	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
@@ -119,6 +159,8 @@ foreach (var field in Parser.Fields)
 
 	Write(ToPascalCase(field.Name));
     Write(" = ");
+    if (field.Name == "OpeningDate")
+        Write("(" + field.Type + ")");
     Write("castedObj." + field.Name);
     WriteLine(";");
 }

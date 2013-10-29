@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:22
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,16 +17,18 @@ namespace DBSynchroniser.Records
     [D2OClass("Smiley", "com.ankamagames.dofus.datacenter.communication")]
     public class SmileyRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Smileys";
         public uint id;
         public uint order;
         public String gfxId;
         public Boolean forPlayers;
         public List<String> triggers;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

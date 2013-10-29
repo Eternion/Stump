@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:26
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +17,6 @@ namespace DBSynchroniser.Records
     [D2OClass("SoundAnimation", "com.ankamagames.dofus.datacenter.sounds")]
     public class SoundAnimationRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         public uint id;
         public String name;
         public String label;
@@ -34,6 +30,12 @@ namespace DBSynchroniser.Records
         public Boolean noCutSilence;
         public uint startFrame;
         public String MODULE = "SoundAnimations";
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

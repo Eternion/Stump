@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:43
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,22 +17,26 @@ namespace DBSynchroniser.Records
     [D2OClass("ExternalNotification", "com.ankamagames.dofus.datacenter.externalnotifications")]
     public class ExternalNotificationRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "ExternalNotifications";
         public int id;
         public int categoryId;
         public int iconId;
         public int colorId;
+        [I18NField]
         public uint descriptionId;
         public Boolean defaultEnable;
         public Boolean defaultSound;
         public Boolean defaultNotify;
         public Boolean defaultMultiAccount;
         public String name;
+        [I18NField]
         public uint messageId;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

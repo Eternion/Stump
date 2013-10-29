@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:43
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,16 +17,19 @@ namespace DBSynchroniser.Records
     [D2OClass("ItemSet", "com.ankamagames.dofus.datacenter.items")]
     public class ItemSetRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "ItemSets";
         public uint id;
         public List<uint> items;
+        [I18NField]
         public uint nameId;
         public List<List<EffectInstance>> effects;
         public Boolean bonusIsSecret;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

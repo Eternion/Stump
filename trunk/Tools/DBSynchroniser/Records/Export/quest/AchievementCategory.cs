@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:25
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,18 +17,21 @@ namespace DBSynchroniser.Records
     [D2OClass("AchievementCategory", "com.ankamagames.dofus.datacenter.quest")]
     public class AchievementCategoryRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "AchievementCategories";
         public uint id;
+        [I18NField]
         public uint nameId;
         public uint parentId;
         public String icon;
         public uint order;
         public String color;
         public List<uint> achievementIds;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

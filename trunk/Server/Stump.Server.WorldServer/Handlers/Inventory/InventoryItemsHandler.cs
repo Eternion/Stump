@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
@@ -48,6 +49,48 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Character.Inventory.UseItem(item);
         }
 
+        [WorldHandler(ObjectUseMultipleMessage.Id)]
+        public static void HandleObjectUseMultipleMessage(WorldClient client, ObjectUseMultipleMessage message)
+        {
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
+
+            if (item == null)
+                return;
+
+            client.Character.Inventory.UseItem(item, (uint) message.quantity);
+        }
+
+        [WorldHandler(ObjectUseOnCellMessage.Id)]
+        public static void HandleObjectUseOnCellMessage(WorldClient client, ObjectUseOnCellMessage message)
+        {
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
+
+            if (item == null)
+                return;
+
+            var cell = client.Character.Map.GetCell(message.cells);
+
+            if (cell == null)
+                return;
+
+            client.Character.Inventory.UseItem(item, cell);
+        }
+
+        [WorldHandler(ObjectUseOnCharacterMessage.Id)]
+        public static void HandleObjectUseOnCharacterMessage(WorldClient client, ObjectUseOnCharacterMessage message)
+        {
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
+
+            if (item == null)
+                return;
+
+            var character = client.Character.Map.GetActor<Character>(message.characterId);
+
+            if (character == null)
+                return;
+
+            client.Character.Inventory.UseItem(item, character);
+        }
         public static void SendGameRolePlayPlayerLifeStatusMessage(IPacketReceiver client)
         {
             client.Send(new GameRolePlayPlayerLifeStatusMessage());

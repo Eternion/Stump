@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:55
+// Generated on 10/28/2013 14:03:19
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -10,15 +10,20 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("SpeakingItemText", "com.ankamagames.dofus.datacenter.livingObjects")]
     [Serializable]
-    public class SpeakingItemText : IDataObject
+    public class SpeakingItemText : IDataObject, IIndexedData
     {
         private const String MODULE = "SpeakingItemsText";
         public int textId;
-        public float textProba;
+        public double textProba;
+        [I18NField]
         public uint textStringId;
         public int textLevel;
         public int textSound;
         public String textRestriction;
+        int IIndexedData.Id
+        {
+            get { return (int)textId; }
+        }
         [D2OIgnore]
         public int TextId
         {
@@ -26,7 +31,7 @@ namespace Stump.DofusProtocol.D2oClasses
             set { textId = value; }
         }
         [D2OIgnore]
-        public float TextProba
+        public double TextProba
         {
             get { return textProba; }
             set { textProba = value; }

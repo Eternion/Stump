@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:43
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +17,6 @@ namespace DBSynchroniser.Records
     [D2OClass("Item", "com.ankamagames.dofus.datacenter.items")]
     public class ItemRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Items";
         public const uint EQUIPEMENT_CATEGORY = 0;
         public const uint CONSUMABLES_CATEGORY = 1;
@@ -28,8 +24,10 @@ namespace DBSynchroniser.Records
         public const uint QUEST_CATEGORY = 3;
         public const uint OTHER_CATEGORY = 4;
         public int id;
+        [I18NField]
         public uint nameId;
         public uint typeId;
+        [I18NField]
         public uint descriptionId;
         public int iconId;
         public uint level;
@@ -38,7 +36,7 @@ namespace DBSynchroniser.Records
         public int useAnimationId;
         public Boolean usable;
         public Boolean targetable;
-        public float price;
+        public double price;
         public Boolean twoHanded;
         public Boolean etheral;
         public int itemSetId;
@@ -55,6 +53,12 @@ namespace DBSynchroniser.Records
         public List<uint> favoriteSubAreas;
         public uint favoriteSubAreasBonus;
         public uint weight;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -137,7 +141,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public float Price
+        public double Price
         {
             get { return price; }
             set { price = value; }

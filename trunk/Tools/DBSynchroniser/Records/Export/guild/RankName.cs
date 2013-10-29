@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:43
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,14 +17,17 @@ namespace DBSynchroniser.Records
     [D2OClass("RankName", "com.ankamagames.dofus.datacenter.guild")]
     public class RankNameRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "RankNames";
         public int id;
+        [I18NField]
         public uint nameId;
         public int order;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

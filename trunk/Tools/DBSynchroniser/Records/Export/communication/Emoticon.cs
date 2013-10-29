@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:22
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +17,11 @@ namespace DBSynchroniser.Records
     [D2OClass("Emoticon", "com.ankamagames.dofus.datacenter.communication")]
     public class EmoticonRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Emoticons";
         public uint id;
+        [I18NField]
         public uint nameId;
+        [I18NField]
         public uint shortcutId;
         public uint order;
         public String defaultAnim;
@@ -34,6 +32,12 @@ namespace DBSynchroniser.Records
         public uint cooldown = 1000;
         public uint duration = 0;
         public uint weight;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

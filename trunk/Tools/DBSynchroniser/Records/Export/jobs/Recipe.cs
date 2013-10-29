@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:44
+// Generated on 10/28/2013 14:03:24
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,24 +17,20 @@ namespace DBSynchroniser.Records
     [D2OClass("Recipe", "com.ankamagames.dofus.datacenter.jobs")]
     public class RecipeRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Recipes";
         public int resultId;
         public uint resultLevel;
         public List<int> ingredientIds;
         public List<uint> quantities;
 
-        [D2OIgnore]
-        [PrimaryKey("Id")]
-        public int Id
+        int ID2ORecord.Id
         {
-            get;
-            set;
+            get { return (int)resultId; }
         }
+
+
         [D2OIgnore]
+        [PrimaryKey("ResultId", false)]
         public int ResultId
         {
             get { return resultId; }

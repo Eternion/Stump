@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             Owner = owner;
             Position = Record.Position;
-            m_handler = ItemManager.Instance.GetItemHandler(Template);
+            m_handler = ItemManager.Instance.CreateItemHandler(this);
         }
 
         public PlayerItem(Character owner, int guid, ItemTemplate template, CharacterInventoryPositionEnum position,
@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Items
                              Position = position,
                              Effects = effects,
                          };
-            m_handler = ItemManager.Instance.GetItemHandler(Template);
+            m_handler = ItemManager.Instance.CreateItemHandler(this);
         }
 
         #endregion

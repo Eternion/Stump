@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:53
+// Generated on 10/28/2013 14:03:18
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -19,8 +19,10 @@ namespace Stump.DofusProtocol.D2oClasses
         public const uint QUEST_CATEGORY = 3;
         public const uint OTHER_CATEGORY = 4;
         public int id;
+        [I18NField]
         public uint nameId;
         public uint typeId;
+        [I18NField]
         public uint descriptionId;
         public int iconId;
         public uint level;
@@ -29,7 +31,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int useAnimationId;
         public Boolean usable;
         public Boolean targetable;
-        public float price;
+        public double price;
         public Boolean twoHanded;
         public Boolean etheral;
         public int itemSetId;
@@ -45,7 +47,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<EffectInstance> possibleEffects;
         public List<uint> favoriteSubAreas;
         public uint favoriteSubAreasBonus;
-        public ItemType type;
         public uint weight;
         int IIndexedData.Id
         {
@@ -118,7 +119,7 @@ namespace Stump.DofusProtocol.D2oClasses
             set { targetable = value; }
         }
         [D2OIgnore]
-        public float Price
+        public double Price
         {
             get { return price; }
             set { price = value; }
@@ -212,12 +213,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return favoriteSubAreasBonus; }
             set { favoriteSubAreasBonus = value; }
-        }
-        [D2OIgnore]
-        public ItemType Type
-        {
-            get { return type; }
-            set { type = value; }
         }
         [D2OIgnore]
         public uint Weight

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:53
+// Generated on 10/28/2013 14:03:17
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,11 +12,11 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class EffectInstanceMount : EffectInstance
     {
-        public float date;
+        public double date;
         public uint modelId;
         public uint mountId;
         [D2OIgnore]
-        public float Date
+        public double Date
         {
             get { return date; }
             set { date = value; }

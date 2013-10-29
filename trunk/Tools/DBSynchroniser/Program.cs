@@ -276,7 +276,7 @@ namespace DBSynchroniser
                     record.AssignFields(obj);
 
                     Database.Database.Insert(record);
-
+                    
                     i++;
                     Console.SetCursorPosition(cursorLeft, cursorTop);
                     Console.Write("{0}/{1} ({2}%)", i, d2oReader.IndexCount,
@@ -500,14 +500,19 @@ namespace DBSynchroniser
         {
             if (!Directory.Exists(FilesOutput))
                 Directory.CreateDirectory(FilesOutput);
+            else
+                foreach (var file in Directory.EnumerateFiles(FilesOutput))
+                    File.Delete(file);
 
             foreach (D2OTable table in m_tables.Values)
             {
                 D2OWriter writer;
-                if (table.Type.BaseType != typeof (object) &&
-                    m_tables.ContainsKey(table.Type.BaseType.Name))
+                if (table.Type.BaseType != typeof (object))
+                {
+                    var baseTable = table.Type.BaseType.GetCustomAttribute<D2OClassAttribute>().Name;
                     writer =
-                        new D2OWriter(Path.Combine(FilesOutput, m_tables[table.Type.BaseType.Name].TableName + ".d2o"));
+                        new D2OWriter(Path.Combine(FilesOutput, m_tables[baseTable].TableName + ".d2o"));
+                }
                 else
                     writer = new D2OWriter(Path.Combine(FilesOutput, table.TableName + ".d2o"));
 

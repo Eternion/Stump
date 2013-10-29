@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:43
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,24 +17,21 @@ namespace DBSynchroniser.Records
     [D2OClass("House", "com.ankamagames.dofus.datacenter.houses")]
     public class HouseRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Houses";
         public int typeId;
         public uint defaultPrice;
+        [I18NField]
         public int nameId;
+        [I18NField]
         public int descriptionId;
         public int gfxId;
 
-        [D2OIgnore]
-        [PrimaryKey("Id")]
-        public int Id
+        int ID2ORecord.Id
         {
-            get;
-            set;
+            get { return (int)nameId; }
         }
+
+
         [D2OIgnore]
         public int TypeId
         {
@@ -50,6 +47,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [PrimaryKey("NameId", false)]
         [I18NField]
         public int NameId
         {

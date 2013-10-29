@@ -110,7 +110,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 return new EffectInteger(Id, Template.Operator != "-" ? min : max, this);
 
             if (min == 0)
-                return new EffectInteger(Id, max, this);
+                if (max == 0)
+                    return new EffectInteger(Id, m_value, this);
+                else                    
+                    return new EffectInteger(Id, max, this);
+
 
             return new EffectInteger(Id, (short)rand.Next(min, max + 1), this);
         }

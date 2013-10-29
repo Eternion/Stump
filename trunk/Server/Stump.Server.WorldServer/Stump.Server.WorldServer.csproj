@@ -166,6 +166,7 @@
     <Compile Include="Database\Breeds\Head.cs" />
     <Compile Include="Database\Guilds\GuildMemberRecord.cs" />
     <Compile Include="Database\Guilds\GuildRecord.cs" />
+    <Compile Include="Database\Items\LivingObjectRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
     <Compile Include="Database\Interactives\InteractiveSkillTemplate.cs" />
@@ -328,7 +329,9 @@
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
     <Compile Include="Game\Items\Handlers\BaseItemHandler.cs" />
     <Compile Include="Game\Items\Handlers\CandyHandler.cs" />
+    <Compile Include="Game\Items\Handlers\FoodBoostHandler.cs" />
     <Compile Include="Game\Items\Handlers\ItemTypeAttribute.cs" />
+    <Compile Include="Game\Items\Handlers\LivingObjectHandler.cs" />
     <Compile Include="Game\Items\Item.cs" />
     <Compile Include="Game\Items\MerchantBag.cs" />
     <Compile Include="Game\Items\CharacterMerchantBag.cs" />

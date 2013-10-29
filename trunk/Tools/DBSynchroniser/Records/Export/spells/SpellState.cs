@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:46
+// Generated on 10/28/2013 14:03:26
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,16 +17,19 @@ namespace DBSynchroniser.Records
     [D2OClass("SpellState", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellStateRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "SpellStates";
         public int id;
+        [I18NField]
         public uint nameId;
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
         public Boolean critical;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

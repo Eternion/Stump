@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:46
+// Generated on 10/28/2013 14:03:26
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,21 +17,25 @@ namespace DBSynchroniser.Records
     [D2OClass("Hint", "com.ankamagames.dofus.datacenter.world")]
     public class HintRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Hints";
         public int id;
         public uint categoryId;
         public uint gfx;
+        [I18NField]
         public uint nameId;
         public uint mapId;
         public uint realMapId;
+        [I18NField]
         public int x;
         public int y;
         public Boolean outdoor;
         public int subareaId;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:46
+// Generated on 10/28/2013 14:03:26
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,27 +17,29 @@ namespace DBSynchroniser.Records
     [D2OClass("WorldMap", "com.ankamagames.dofus.datacenter.world")]
     public class WorldMapRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "WorldMaps";
         public int id;
         public int origineX;
         public int origineY;
-        public float mapWidth;
-        public float mapHeight;
+        public double mapWidth;
+        public double mapHeight;
         public uint horizontalChunck;
         public uint verticalChunck;
         public Boolean viewableEverywhere;
-        public float minScale;
-        public float maxScale;
-        public float startScale;
+        public double minScale;
+        public double maxScale;
+        public double startScale;
         public int centerX;
         public int centerY;
         public int totalWidth;
         public int totalHeight;
         public List<String> zoom;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -62,14 +64,14 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public float MapWidth
+        public double MapWidth
         {
             get { return mapWidth; }
             set { mapWidth = value; }
         }
 
         [D2OIgnore]
-        public float MapHeight
+        public double MapHeight
         {
             get { return mapHeight; }
             set { mapHeight = value; }
@@ -97,21 +99,21 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public float MinScale
+        public double MinScale
         {
             get { return minScale; }
             set { minScale = value; }
         }
 
         [D2OIgnore]
-        public float MaxScale
+        public double MaxScale
         {
             get { return maxScale; }
             set { maxScale = value; }
         }
 
         [D2OIgnore]
-        public float StartScale
+        public double StartScale
         {
             get { return startScale; }
             set { startScale = value; }

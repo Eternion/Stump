@@ -56,7 +56,7 @@ namespace Stump.Plugins.DefaultPlugin.Global
                 return string.Empty;
 
             var builder = new StringBuilder();
-            builder.Append("UPDATE `maps` SET ");
+            builder.Append("UPDATE `world_maps` SET ");
             var pos = map.Position;
 
             var top = FindMaps(map, pos.X, pos.Y - 1).OrderByDescending(entry => entry.Cells.Count(cell => cell.Walkable)).FirstOrDefault();

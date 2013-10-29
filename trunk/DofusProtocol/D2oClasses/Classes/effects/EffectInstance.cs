@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:53
+// Generated on 10/28/2013 14:03:17
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -10,7 +10,7 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("EffectInstance", "com.ankamagames.dofus.datacenter.effects")]
     [Serializable]
-    public class EffectInstance : IDataObject
+    public class EffectInstance : IDataObject, IIndexedData
     {
         public uint effectId;
         public int targetId;
@@ -21,11 +21,17 @@ namespace Stump.DofusProtocol.D2oClasses
         public int modificator;
         public Boolean trigger;
         public Boolean hidden;
+        [D2OIgnore]
         public uint zoneSize;
+        [D2OIgnore]
         public uint zoneShape;
+        [D2OIgnore]
         public uint zoneMinSize;
-        public Boolean rawZoneInit;
         public String rawZone;
+        int IIndexedData.Id
+        {
+            get { return (int)effectId; }
+        }
         [D2OIgnore]
         public uint EffectId
         {
@@ -98,12 +104,7 @@ namespace Stump.DofusProtocol.D2oClasses
             get { return zoneMinSize; }
             set { zoneMinSize = value; }
         }
-        [D2OIgnore]
-        public Boolean RawZoneInit
-        {
-            get { return rawZoneInit; }
-            set { rawZoneInit = value; }
-        }
+
         [D2OIgnore]
         public String RawZone
         {

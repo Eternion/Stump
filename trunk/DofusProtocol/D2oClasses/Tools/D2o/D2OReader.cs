@@ -178,6 +178,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private void ReadClassesTable()
         {
+            var tempVectorTypes = new Dictionary<D2OFieldDefinition, List<Tuple<D2OFieldType, string>>>();
             m_classcount = m_reader.ReadInt();
             m_classes = new Dictionary<int, D2OClassDefinition>(m_classcount);
             for (int i = 0; i < m_classcount; i++)
@@ -195,42 +196,84 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 {
                     string fieldname = m_reader.ReadUTF();
                     var fieldtype = (D2OFieldType) m_reader.ReadInt();
+                    var field = classType.GetField(fieldname);
 
-                    var vectorTypes = new List<Tuple<D2OFieldType, string>>();
+                    if (field == null)
+                        throw new Exception(string.Format("Missing field '{0}' ({1}) in class '{2}'", fieldname, fieldtype, classType.Name));
+
+
+                    var fieldDefinition = new D2OFieldDefinition(fieldname, fieldtype, field, m_reader.Position, new Tuple<D2OFieldType, Type>[0]);
+
+                    var vectorTypes = new List<Tuple<D2OFieldType, object>>();
                     if (fieldtype == D2OFieldType.List)
                     {
                         addVectorType:
 
                         string name = m_reader.ReadUTF();
                         var id = (D2OFieldType) m_reader.ReadInt();
-                        vectorTypes.Add(Tuple.Create(id, name));
+
+                        if (!tempVectorTypes.ContainsKey(fieldDefinition))
+                            tempVectorTypes.Add(fieldDefinition, new List<Tuple<D2OFieldType, string>>());
+
+                        tempVectorTypes[fieldDefinition].Add(Tuple.Create(id, name));
 
                         if (id == D2OFieldType.List)
                             goto addVectorType;
                     }   
 
-                    FieldInfo field = classType.GetField(fieldname);
-
-                    if (field == null)
-                        throw new Exception(string.Format("Missing field '{0}' ({1}) in class '{2}'", fieldname, fieldtype, classType.Name));
-
-                    fields.Add(new D2OFieldDefinition(fieldname, fieldtype, field, m_reader.Position,
-                                                      vectorTypes.ToArray()));
+                    fields.Add(fieldDefinition);
                 }
 
                 m_classes.Add(classId,
                               new D2OClassDefinition(classId, classMembername, classPackagename, classType, fields,
                                                      m_reader.Position));
             }
+
+            // find vector types
+            foreach (var keyPair in tempVectorTypes)
+            {
+                keyPair.Key.VectorTypes = keyPair.Value.Select(tuple => Tuple.Create(tuple.Item1, FindNETType(tuple.Item2))).ToArray();
+            }
+        }
+
+        private Type FindNETType(string typeName)
+        {
+            switch (typeName)
+            {
+                case "int":
+                    return typeof (int);
+                case "uint":
+                    return typeof (uint);
+                case "Number":
+                    return typeof (double);
+                case "String":
+                    return typeof (string);
+                default:
+                    if (typeName.StartsWith("Vector.<"))
+                    {
+                        return
+                            typeof (List<>).MakeGenericType(
+                                FindNETType(typeName.Remove(typeName.Length - 1, 1).Remove(0, "Vector.<".Length)));
+                    }
+
+                    var @class = m_classes.Values.FirstOrDefault(x => x.PackageName + "::" + x.Name == typeName);
+
+                    if (@class == null)
+                        throw new Exception(string.Format("Cannot found .NET type associated to {0}", typeName));
+
+                    return @class.ClassType;
+            }
         }
 
         private static Type FindType(string className)
         {
-            var correspondantTypes = from asm in ClassesContainers
-                                                   let types = asm.GetTypes()
-                                                   from type in types
-                                                   where type.Name.Equals(className, StringComparison.InvariantCulture) && type.HasInterface(typeof(IDataObject))
-                                                   select type;
+            IEnumerable<Type> correspondantTypes = from asm in ClassesContainers
+                let types = asm.GetTypes()
+                from type in types
+                where
+                    type.Name.Equals(className, StringComparison.InvariantCulture) &&
+                    type.HasInterface(typeof (IDataObject))
+                select type;
 
             return correspondantTypes.Single();
         }
@@ -380,16 +423,16 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 object fieldValue = ReadField(reader, field, field.TypeId);
 
                 if (fieldValue == null || field.FieldType.IsInstanceOfType(fieldValue))
-                    values.Add(fieldValue);
+                    values.Add((object)fieldValue);
                 else if (fieldValue is IConvertible &&
                          field.FieldType.GetInterface("IConvertible") != null)
                 {
                     try
                     {
                         if (fieldValue is int && ((int)fieldValue) < 0 && field.FieldType == typeof(uint))
-                            values.Add(unchecked ((uint)((int)fieldValue)));
+                            values.Add((object)unchecked ((uint)((int)fieldValue)));
                         else
-                            values.Add(Convert.ChangeType(fieldValue, field.FieldType));
+                            values.Add((object)Convert.ChangeType(fieldValue, field.FieldType));
                     }
                     catch
                     {

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:44
+// Generated on 10/28/2013 14:03:24
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +17,15 @@ namespace DBSynchroniser.Records
     [D2OClass("OptionalFeature", "com.ankamagames.dofus.datacenter.misc")]
     public class OptionalFeatureRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         public const String MODULE = "OptionalFeatures";
         public int id;
         public String keyword;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

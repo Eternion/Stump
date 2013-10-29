@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:22
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,14 +17,18 @@ namespace DBSynchroniser.Records
     [D2OClass("Challenge", "com.ankamagames.dofus.datacenter.challenges")]
     public class ChallengeRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Challenge";
         public int id;
+        [I18NField]
         public uint nameId;
+        [I18NField]
         public uint descriptionId;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

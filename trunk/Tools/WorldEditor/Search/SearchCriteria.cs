@@ -83,11 +83,11 @@ namespace WorldEditor.Search
 
                 if (Operator == CriteriaOperator.CONTAINS)
                 {
-                    builder.AppendFormat("Contain({0}, \"{1}\")", ComparedProperty, ComparedToValueString);
+                    builder.AppendFormat("Contain({0}, {1})", ComparedProperty, GetSQLOperand(ValueType, ComparedToValueString));
                 }
                 else
                 {
-                    builder.AppendFormat("{0} \"{1}\"", GetSQLOperator(Operator), ComparedToValueString);
+                    builder.AppendFormat("{0} {1}", GetSQLOperator(Operator), GetSQLOperand(ValueType, ComparedToValueString));
                 }
             }
             return builder.ToString();
@@ -113,5 +113,23 @@ namespace WorldEditor.Search
                     throw new Exception(string.Format("{0} cannot be converted to string", op));
             }
         }
-     }
+
+        private static string GetSQLOperand(Type type, string value)
+        {
+            if (type == typeof (string))
+                return "\"" + value + "\"";
+            if (type == typeof (int) || type == typeof (uint) ||
+                type == typeof (short) || type == typeof (ushort) ||
+                type == typeof (long) || type == typeof (ulong) ||
+                type == typeof (decimal) ||
+                type == typeof (byte) || type == typeof (sbyte) ||
+                type == typeof (float) || type == typeof (double))
+                return value;
+
+            if (type == typeof (bool))
+                return bool.Parse(value) ? "1" : "0";
+
+            return "\"" + value + "\"";
+        }
+    }
 }

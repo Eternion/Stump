@@ -23,10 +23,6 @@ namespace DofusProtocolBuilder.Profiles
     {
         public DataRecordProfile()
         {
-            IgnoredLines = new string[]
-                {
-                    "^switch.*",
-                };
         }
 
         public override void ExecuteProfile(Parsing.Parser parser)

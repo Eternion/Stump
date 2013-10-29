@@ -1,17 +1,38 @@
-﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using System;
+using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 
 namespace Stump.Server.WorldServer.Game.Items.Handlers
 {
     public class BaseItemHandler
     {
-        public virtual void ItemAdded(Character character, PlayerItem item)
+        public BaseItemHandler(PlayerItem item)
         {
+            Character = item.Owner;
+            Item = item;
         }
 
-        public virtual void ItemRemoved(Character character, PlayerItem item)
+        public PlayerItem Item
         {
+            get;
+            private set;
+        }
 
+        public Character Character
+        {
+            get;
+            private set;
+        }
+
+        public virtual bool AddItem()
+        {
+            return true;
+        }
+
+        public virtual bool RemoveItem()
+        {
+            return true;
         }
 
         /// <summary>
@@ -19,23 +40,29 @@ namespace Stump.Server.WorldServer.Game.Items.Handlers
         /// </summary>
         /// <param name="character"></param>
         /// <param name="item"></param>
-        /// <returns>True whenever the item has been used and must be removed</returns>
-        public virtual bool UseItem(Character character, PlayerItem item)
+        /// <param name="amount"></param>
+        /// <param name="targetCell"></param>
+        /// <param name="target"></param>
+        /// <returns>Returns the amount of items to remove</returns>
+        public virtual uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
         {
-            var remove = false;
-            foreach (var effect in item.Effects)
+            uint removed = 0;
+            foreach (var effect in Item.Effects)
             {
-                var handler = EffectManager.Instance.GetUsableEffectHandler(effect, character, item);
+                var handler = EffectManager.Instance.GetUsableEffectHandler(effect, target ?? Character, Item);
+                handler.NumberOfUses = amount;
+                handler.TargetCell = targetCell;
 
                 if (handler.Apply())
-                    remove = true;
+                    removed = Math.Max(handler.UsedItems, removed);
             }
 
-            return remove;
+            return removed;
         }
 
-        public virtual void EquipItem(Character character, PlayerItem item, bool unequip)
+        public virtual bool EquipItem(bool unequip)
         {
+            return true;
         }
 
         public virtual bool AllowFeeding
@@ -46,8 +73,22 @@ namespace Stump.Server.WorldServer.Game.Items.Handlers
             }
         }
 
-        public virtual void Feed(Character character, PlayerItem item, PlayerItem food)
+        public virtual bool Feed(PlayerItem food)
         {
+            return false;
+        }
+
+        public virtual bool AllowDropping
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public virtual bool Drop(PlayerItem dropOnItem)
+        {
+            return false;
         }
     }
 }

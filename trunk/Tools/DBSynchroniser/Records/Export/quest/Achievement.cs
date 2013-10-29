@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:25
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,24 +17,28 @@ namespace DBSynchroniser.Records
     [D2OClass("Achievement", "com.ankamagames.dofus.datacenter.quest")]
     public class AchievementRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Achievements";
         public uint id;
+        [I18NField]
         public uint nameId;
         public uint categoryId;
+        [I18NField]
         public uint descriptionId;
         public int iconId;
         public uint points;
         public uint level;
         public uint order;
-        public float kamasRatio;
-        public float experienceRatio;
+        public double kamasRatio;
+        public double experienceRatio;
         public Boolean kamasScaleWithPlayerLevel;
         public List<int> objectiveIds;
         public List<int> rewardIds;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -96,14 +100,14 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public float KamasRatio
+        public double KamasRatio
         {
             get { return kamasRatio; }
             set { kamasRatio = value; }
         }
 
         [D2OIgnore]
-        public float ExperienceRatio
+        public double ExperienceRatio
         {
             get { return experienceRatio; }
             set { experienceRatio = value; }

@@ -1,5 +1,6 @@
 ﻿using NLog;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Conditions.Criterions;
 
@@ -9,15 +10,19 @@ namespace Stump.Server.WorldServer.Game.Items.Handlers
     public class CandyHandler : BaseItemHandler
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        public override bool UseItem(Character character, PlayerItem item)
+
+        public CandyHandler(PlayerItem item)
+            : base(item)
         {
-            var criterion = item.Template.CriteriaExpression as HasItemCriterion;
+        }
+
+        public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        {
+            var criterion = Item.Template.CriteriaExpression as HasItemCriterion;
 
             if (criterion == null)
             {
-                logger.Error(string.Format("Candy {0} has no boost item associated, add criteria PO!#id",
-                    item.Template.Id));
-                return false;
+                return base.UseItem(amount, targetCell, target);
             }
 
             var boostItem = ItemManager.Instance.TryGetTemplate(criterion.Item);
@@ -25,13 +30,13 @@ namespace Stump.Server.WorldServer.Game.Items.Handlers
             if (boostItem == null)
             {
                 logger.Error(string.Format("Candy {0} has boostItem {1} but it doesn't exist",
-                    item.Template.Id, criterion.Item));
-                return false;
+                    Item.Template.Id, criterion.Item));
+                return 0;
             }
 
-            character.Inventory.MoveItem(character.Inventory.AddItem(boostItem), CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD);
+            Character.Inventory.MoveItem(Character.Inventory.AddItem(boostItem), CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD);
 
-            return true;
+            return 1;
         }
     }
 }

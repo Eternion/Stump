@@ -196,7 +196,7 @@ namespace WorldEditor.Editors.Items
             set { WrappedItem.targetable = value; }
         }
 
-        public float Price
+        public double Price
         {
             get { return WrappedItem.price; }
             set { WrappedItem.price = value; }

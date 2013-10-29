@@ -1,10 +1,14 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:23
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
@@ -13,12 +17,9 @@ namespace DBSynchroniser.Records
     [D2OClass("Effect", "com.ankamagames.dofus.datacenter.effects")]
     public class EffectRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Effects";
         public int id;
+        [I18NField]
         public uint descriptionId;
         public int iconId;
         public int characteristic;
@@ -33,6 +34,12 @@ namespace DBSynchroniser.Records
         public int bonusType;
         public Boolean useInFight;
         public uint effectPriority;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

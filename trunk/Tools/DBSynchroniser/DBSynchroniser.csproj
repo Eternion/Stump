@@ -64,7 +64,6 @@
   <ItemGroup>
     <Compile Include="BinaryFieldAttribute.cs" />
     <Compile Include="D2OTable.cs" />
-    <Compile Include="I18NFieldAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Records\Export\abuse\AbuseReasons.cs" />

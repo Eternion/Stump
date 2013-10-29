@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     continue;
 
                 // summoning is the priority
-                if (( category & SpellCategory.Summoning ) != 0)
+                if (( category & SpellCategory.Summoning ) != 0 && Fighter.CanSummon())
                 {
                     var adjacentCell = m_environment.GetFreeAdjacentCell();
 
