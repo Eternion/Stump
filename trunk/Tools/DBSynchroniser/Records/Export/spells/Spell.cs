@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:26
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +17,11 @@ namespace DBSynchroniser.Records
     [D2OClass("Spell", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Spells";
         public int id;
+        [I18NField]
         public uint nameId;
+        [I18NField]
         public uint descriptionId;
         public uint typeId;
         public String scriptParams;
@@ -33,6 +31,12 @@ namespace DBSynchroniser.Records
         public int iconId;
         public List<uint> spellLevels;
         public Boolean useParamCache = true;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

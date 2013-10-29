@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (effect == null)
                 return false;
 
-            var bonus = AdjustBonusStat(effect.Value);
+            var bonus = AdjustBonusStat((short) (effect.Value * NumberOfUses));
 
             if (bonus == 0)
             {
@@ -39,6 +39,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             }
 
             Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base += bonus;
+            UsedItems = (uint) Math.Ceiling((double) bonus/effect.Value);
             UpdatePermanentStatField(bonus);
             Target.RefreshStats();
 

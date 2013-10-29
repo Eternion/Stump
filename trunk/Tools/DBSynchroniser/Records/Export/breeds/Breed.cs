@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:22
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,15 +17,15 @@ namespace DBSynchroniser.Records
     [D2OClass("Breed", "com.ankamagames.dofus.datacenter.breeds")]
     public class BreedRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Breeds";
         public int id;
+        [I18NField]
         public uint shortNameId;
+        [I18NField]
         public uint longNameId;
+        [I18NField]
         public uint descriptionId;
+        [I18NField]
         public uint gameplayDescriptionId;
         public String maleLook;
         public String femaleLook;
@@ -41,6 +41,12 @@ namespace DBSynchroniser.Records
         public List<uint> breedSpellsId;
         public List<uint> maleColors;
         public List<uint> femaleColors;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:44
+// Generated on 10/28/2013 14:03:24
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,20 +17,23 @@ namespace DBSynchroniser.Records
     [D2OClass("ActionDescription", "com.ankamagames.dofus.datacenter.misc")]
     public class ActionDescriptionRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         public const String MODULE = "ActionDescriptions";
         public uint id;
         public uint typeId;
         public String name;
+        [I18NField]
         public uint descriptionId;
         public Boolean trusted;
         public Boolean needInteraction;
         public uint maxUsePerFrame;
         public uint minimalUseInterval;
         public Boolean needConfirmation;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

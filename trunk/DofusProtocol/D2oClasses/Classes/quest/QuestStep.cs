@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:55
+// Generated on 10/28/2013 14:03:20
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,14 +15,16 @@ namespace Stump.DofusProtocol.D2oClasses
         private const String MODULE = "QuestSteps";
         public uint id;
         public uint questId;
+        [I18NField]
         public uint nameId;
+        [I18NField]
         public uint descriptionId;
         public int dialogId;
         public uint optimalLevel;
-        public float duration;
+        public double duration;
         public Boolean kamasScaleWithPlayerLevel;
-        public float kamasRatio;
-        public float xpRatio;
+        public double kamasRatio;
+        public double xpRatio;
         public List<uint> objectiveIds;
         public List<uint> rewardsIds;
         int IIndexedData.Id
@@ -66,7 +68,7 @@ namespace Stump.DofusProtocol.D2oClasses
             set { optimalLevel = value; }
         }
         [D2OIgnore]
-        public float Duration
+        public double Duration
         {
             get { return duration; }
             set { duration = value; }
@@ -78,13 +80,13 @@ namespace Stump.DofusProtocol.D2oClasses
             set { kamasScaleWithPlayerLevel = value; }
         }
         [D2OIgnore]
-        public float KamasRatio
+        public double KamasRatio
         {
             get { return kamasRatio; }
             set { kamasRatio = value; }
         }
         [D2OIgnore]
-        public float XpRatio
+        public double XpRatio
         {
             get { return xpRatio; }
             set { xpRatio = value; }

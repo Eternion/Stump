@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,18 +17,24 @@ namespace DBSynchroniser.Records
     [D2OClass("Document", "com.ankamagames.dofus.datacenter.documents")]
     public class DocumentRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Documents";
         public int id;
         public uint typeId;
+        [I18NField]
         public uint titleId;
+        [I18NField]
         public uint authorId;
+        [I18NField]
         public uint subTitleId;
+        [I18NField]
         public uint contentId;
         public String contentCSS;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

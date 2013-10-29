@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:57
+// Generated on 10/28/2013 14:03:21
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,6 +14,7 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         private const String MODULE = "SuperAreas";
         public int id;
+        [I18NField]
         public uint nameId;
         public uint worldmapId;
         int IIndexedData.Id

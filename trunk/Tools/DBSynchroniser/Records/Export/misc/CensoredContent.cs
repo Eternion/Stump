@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:44
+// Generated on 10/28/2013 14:03:24
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,15 +17,16 @@ namespace DBSynchroniser.Records
     [D2OClass("CensoredContent", "com.ankamagames.dofus.datacenter.misc")]
     public class CensoredContentRecord : ID2ORecord
     {
+        public const String MODULE = "CensoredContents";
+        public String lang;
+        public int type;
+        public int oldValue;
+        public int newValue;
+
         int ID2ORecord.Id
         {
             get { return (int)Id; }
         }
-        public const String MODULE = "CensoredContents";
-        public int type;
-        public int oldValue;
-        public int newValue;
-        public String lang;
 
         [D2OIgnore]
         [PrimaryKey("Id")]
@@ -34,6 +35,15 @@ namespace DBSynchroniser.Records
             get;
             set;
         }
+
+        [D2OIgnore]
+        [NullString]
+        public String Lang
+        {
+            get { return lang; }
+            set { lang = value; }
+        }
+
         [D2OIgnore]
         public int Type
         {
@@ -55,32 +65,24 @@ namespace DBSynchroniser.Records
             set { newValue = value; }
         }
 
-        [D2OIgnore]
-        [NullString]
-        public String Lang
-        {
-            get { return lang; }
-            set { lang = value; }
-        }
-
         public virtual void AssignFields(object obj)
         {
             var castedObj = (CensoredContent)obj;
             
+            Lang = castedObj.lang;
             Type = castedObj.type;
             OldValue = castedObj.oldValue;
             NewValue = castedObj.newValue;
-            Lang = castedObj.lang;
         }
         
         public virtual object CreateObject(object parent = null)
         {
             
             var obj = parent != null ? (CensoredContent)parent : new CensoredContent();
+            obj.lang = Lang;
             obj.type = Type;
             obj.oldValue = OldValue;
             obj.newValue = NewValue;
-            obj.lang = Lang;
             return obj;
         
         }

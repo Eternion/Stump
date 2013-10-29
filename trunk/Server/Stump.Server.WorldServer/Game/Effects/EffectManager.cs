@@ -424,7 +424,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             return effect;
         }
 
-        #region Randomable Effects
+        #region Unrandomable Effects
 
         private readonly EffectsEnum[] m_unRandomablesEffects =
             new[]
@@ -442,6 +442,8 @@ namespace Stump.Server.WorldServer.Game.Effects
                     EffectsEnum.Effect_StealHPNeutral,
 
                     EffectsEnum.Effect_RemoveAP, 
+                    
+                    EffectsEnum.Effect_RemainingFights,
                 };
 
         #endregion

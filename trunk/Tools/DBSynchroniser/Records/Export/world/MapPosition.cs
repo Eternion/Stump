@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:46
+// Generated on 10/28/2013 14:03:26
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,21 +17,24 @@ namespace DBSynchroniser.Records
     [D2OClass("MapPosition", "com.ankamagames.dofus.datacenter.world")]
     public class MapPositionRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "MapPositions";
         public int id;
         public int posX;
         public int posY;
         public Boolean outdoor;
         public int capabilities;
+        [I18NField]
         public int nameId;
         public List<AmbientSound> sounds;
         public int subAreaId;
         public int worldMap;
         public Boolean hasPriorityOnWorldmap;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

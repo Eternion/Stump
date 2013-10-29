@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:22
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,16 +17,20 @@ namespace DBSynchroniser.Records
     [D2OClass("AlignmentBalance", "com.ankamagames.dofus.datacenter.alignments")]
     public class AlignmentBalanceRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "AlignmentBalance";
         public int id;
         public int startValue;
         public int endValue;
+        [I18NField]
         public uint nameId;
+        [I18NField]
         public uint descriptionId;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

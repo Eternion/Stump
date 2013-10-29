@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:22
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +17,6 @@ namespace DBSynchroniser.Records
     [D2OClass("AmbientSound", "com.ankamagames.dofus.datacenter.ambientSounds")]
     public class AmbientSoundRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         public const int AMBIENT_TYPE_ROLEPLAY = 1;
         public const int AMBIENT_TYPE_AMBIENT = 2;
         public const int AMBIENT_TYPE_FIGHT = 3;
@@ -33,6 +29,12 @@ namespace DBSynchroniser.Records
         public uint silenceMax;
         public int channel;
         public int type_id;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

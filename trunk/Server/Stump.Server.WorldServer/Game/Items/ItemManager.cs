@@ -28,14 +28,16 @@ namespace Stump.Server.WorldServer.Game.Items
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private Dictionary<int, ItemTemplate> m_itemTemplates = new Dictionary<int, ItemTemplate>();
+        private Dictionary<int, LivingObjectRecord> m_livingObjects = new Dictionary<int, LivingObjectRecord>();
         private Dictionary<uint, ItemSetTemplate> m_itemsSets = new Dictionary<uint, ItemSetTemplate>();
         private Dictionary<int, ItemTypeRecord> m_itemTypes = new Dictionary<int, ItemTypeRecord>();
         private Dictionary<int, NpcItem> m_npcShopItems = new Dictionary<int, NpcItem>();
 
-        private Dictionary<ItemTypeEnum, BaseItemHandler> m_itemTypesHandlers =
-            new Dictionary<ItemTypeEnum, BaseItemHandler>();
+        private Dictionary<ItemTypeEnum, ItemHandlerConstructor> m_itemTypesHandlers =
+            new Dictionary<ItemTypeEnum, ItemHandlerConstructor>();
 
-        private BaseItemHandler m_defautHandler = new BaseItemHandler();
+        private delegate BaseItemHandler ItemHandlerConstructor(PlayerItem item);
+
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             foreach (var effect in template.Effects)
             {
-                if (template.IsWeapon() && EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId))
+                if (EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId))
                     effects.Add(effect);
                 else
                     effects.Add(effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal));
@@ -122,6 +124,8 @@ namespace Stump.Server.WorldServer.Game.Items
             }
             m_itemsSets = Database.Query<ItemSetTemplate>(ItemSetTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_npcShopItems = Database.Query<NpcItem>(NpcItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_livingObjects =
+                Database.Query<LivingObjectRecord>(LivingObjectRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
             InitializeHandlers();
         }
@@ -142,8 +146,7 @@ namespace Stump.Server.WorldServer.Game.Items
                     continue;
                 }
 
-                var handler = (BaseItemHandler)Activator.CreateInstance(type);
-                m_itemTypesHandlers.Add(attr.ItemType, handler);
+                m_itemTypesHandlers.Add(attr.ItemType, type.GetConstructor(new [] {typeof(PlayerItem) }).CreateDelegate<ItemHandlerConstructor>());
             }
         }
 
@@ -314,17 +317,22 @@ namespace Stump.Server.WorldServer.Game.Items
             Database.Insert(template);
         }
 
-        public BaseItemHandler GetItemHandler(ItemTemplate item)
+        public BaseItemHandler CreateItemHandler(PlayerItem item)
         {
-            return GetItemHandler((ItemTypeEnum)item.TypeId);
+            ItemHandlerConstructor handler;
+            if (!m_itemTypesHandlers.TryGetValue((ItemTypeEnum) item.Template.Type.Id, out handler))
+                return new BaseItemHandler(item);
+
+            return handler(item);
         }
         
-        public BaseItemHandler GetItemHandler(ItemTypeEnum type)
+
+        public LivingObjectRecord TryGetLivingObjectRecord(int id)
         {
-            BaseItemHandler handler;
-            if (!m_itemTypesHandlers.TryGetValue(type, out handler))
-                return m_defautHandler;
-            return handler;
+            LivingObjectRecord livingObjectRecord;
+            if (!m_livingObjects.TryGetValue(id, out livingObjectRecord))
+                return null;
+            return livingObjectRecord;        
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿using System;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
@@ -24,6 +25,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             : base(id, effect)
         {
             m_value = value;
+        }
+        public EffectInteger(EffectsEnum id, short value)
+            : this((short) id, value, new EffectBase())
+        {
         }
 
         public EffectInteger(EffectInstanceInteger effect)

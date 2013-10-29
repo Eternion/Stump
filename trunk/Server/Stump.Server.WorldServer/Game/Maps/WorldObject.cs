@@ -113,9 +113,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             protected set;
         }
 
-        public virtual UpdatePriority UpdatePriority
+        public virtual bool BlockSight
         {
-            get { return UpdatePriority.LowPriority; }
+            get
+            {
+                return true;
+            }
         }
 
         public LockFreeQueue<IMessage> MessageQueue

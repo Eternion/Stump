@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:26
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,23 +17,27 @@ namespace DBSynchroniser.Records
     [D2OClass("QuestStep", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestStepRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "QuestSteps";
         public uint id;
         public uint questId;
+        [I18NField]
         public uint nameId;
+        [I18NField]
         public uint descriptionId;
         public int dialogId;
         public uint optimalLevel;
-        public float duration;
+        public double duration;
         public Boolean kamasScaleWithPlayerLevel;
-        public float kamasRatio;
-        public float xpRatio;
+        public double kamasRatio;
+        public double xpRatio;
         public List<uint> objectiveIds;
         public List<uint> rewardsIds;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -81,7 +85,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public float Duration
+        public double Duration
         {
             get { return duration; }
             set { duration = value; }
@@ -95,14 +99,14 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public float KamasRatio
+        public double KamasRatio
         {
             get { return kamasRatio; }
             set { kamasRatio = value; }
         }
 
         [D2OIgnore]
-        public float XpRatio
+        public double XpRatio
         {
             get { return xpRatio; }
             set { xpRatio = value; }

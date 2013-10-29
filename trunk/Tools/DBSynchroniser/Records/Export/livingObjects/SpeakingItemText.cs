@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:44
+// Generated on 10/28/2013 14:03:24
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,26 +17,23 @@ namespace DBSynchroniser.Records
     [D2OClass("SpeakingItemText", "com.ankamagames.dofus.datacenter.livingObjects")]
     public class SpeakingItemTextRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "SpeakingItemsText";
         public int textId;
-        public float textProba;
+        public double textProba;
+        [I18NField]
         public uint textStringId;
         public int textLevel;
         public int textSound;
         public String textRestriction;
 
-        [D2OIgnore]
-        [PrimaryKey("Id")]
-        public int Id
+        int ID2ORecord.Id
         {
-            get;
-            set;
+            get { return (int)textId; }
         }
+
+
         [D2OIgnore]
+        [PrimaryKey("TextId", false)]
         public int TextId
         {
             get { return textId; }
@@ -44,7 +41,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public float TextProba
+        public double TextProba
         {
             get { return textProba; }
             set { textProba = value; }

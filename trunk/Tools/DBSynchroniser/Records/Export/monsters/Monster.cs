@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:44
+// Generated on 10/28/2013 14:03:25
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,12 +17,9 @@ namespace DBSynchroniser.Records
     [D2OClass("Monster", "com.ankamagames.dofus.datacenter.monsters")]
     public class MonsterRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "Monsters";
         public int id;
+        [I18NField]
         public uint nameId;
         public uint gfxId;
         public int race;
@@ -34,6 +31,12 @@ namespace DBSynchroniser.Records
         public Boolean canTackle;
         public List<AnimFunMonsterData> animFunList;
         public Boolean isBoss;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

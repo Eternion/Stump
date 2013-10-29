@@ -27,6 +27,7 @@ using System.Windows.Controls.Primitives;
 using DBSynchroniser;
 using Stump.Core.I18N;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Database;
@@ -44,7 +45,7 @@ namespace WorldEditor.Editors.Tables
         private ObservableCollection<object> m_rows;
         private ReadOnlyObservableCollection<object> m_readOnylRows;
         private readonly List<DataGridColumn> m_columns = new List<DataGridColumn>();
-        private readonly ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
+        private readonly List<string> m_searchProperties = new List<string>();
         private ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
         private readonly Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
         private readonly Dictionary<object, EditedObject> m_editedObjects = new Dictionary<object, EditedObject>(); 
@@ -72,6 +73,14 @@ namespace WorldEditor.Editors.Tables
             get
             {
                 return m_columns.AsReadOnly();
+            }
+        }
+
+        public ReadOnlyCollection<string> SearchProperties
+        {
+            get
+            {
+                return m_searchProperties.AsReadOnly();
             }
         }
 

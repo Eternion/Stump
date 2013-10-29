@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:43
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +17,6 @@ namespace DBSynchroniser.Records
     [D2OClass("Weapon", "com.ankamagames.dofus.datacenter.items")]
     public class WeaponRecord : ItemRecord, ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         public int apCost;
         public int minRange;
         public int range;
@@ -30,6 +26,8 @@ namespace DBSynchroniser.Records
         public int criticalHitProbability;
         public int criticalHitBonus;
         public int criticalFailureProbability;
+
+
 
         [D2OIgnore]
         public int ApCost

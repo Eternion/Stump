@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:43
+// Generated on 10/28/2013 14:03:23
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,18 +17,21 @@ namespace DBSynchroniser.Records
     [D2OClass("ItemType", "com.ankamagames.dofus.datacenter.items")]
     public class ItemTypeRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "ItemTypes";
         public int id;
+        [I18NField]
         public uint nameId;
         public uint superTypeId;
         public Boolean plural;
         public uint gender;
         public String rawZone;
         public Boolean needUseConfirm;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

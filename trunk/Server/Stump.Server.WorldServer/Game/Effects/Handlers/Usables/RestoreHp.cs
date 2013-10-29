@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
@@ -30,10 +31,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
                 return false;
             }
 
-            int heal = integerEffect.Value;
+            int heal = (int) (integerEffect.Value * NumberOfUses);
             if (Target.Stats.Health.DamageTaken < heal)
             {
                 heal = Target.Stats.Health.DamageTaken;
+                UsedItems = (uint)Math.Ceiling((double)heal/integerEffect.Value);
             }
 
             Target.Stats.Health.DamageTaken -= heal;

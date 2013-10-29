@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using DBSynchroniser;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
 using Stump.ORM.SubSonic.Extensions;
 using WorldEditor.Helpers;

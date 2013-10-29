@@ -140,12 +140,6 @@ namespace WorldEditor.Editors.Items
             set { WrappedEffect.zoneMinSize = value; }
         }
 
-        public Boolean RawZoneInit
-        {
-            get { return WrappedEffect.rawZoneInit; }
-            set { WrappedEffect.rawZoneInit = value; }
-        }
-
         public String RawZone
         {
             get { return WrappedEffect.rawZone; }

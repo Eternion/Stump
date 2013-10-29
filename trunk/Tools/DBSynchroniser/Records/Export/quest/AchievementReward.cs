@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:25
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +17,6 @@ namespace DBSynchroniser.Records
     [D2OClass("AchievementReward", "com.ankamagames.dofus.datacenter.quest")]
     public class AchievementRewardRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "AchievementRewards";
         public uint id;
         public uint achievementId;
@@ -31,6 +27,12 @@ namespace DBSynchroniser.Records
         public List<uint> spellsReward;
         public List<uint> titlesReward;
         public List<uint> ornamentsReward;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

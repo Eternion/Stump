@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:42
+// Generated on 10/28/2013 14:03:22
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,23 +17,20 @@ namespace DBSynchroniser.Records
     [D2OClass("AbuseReasons", "com.ankamagames.dofus.datacenter.abuse")]
     public class AbuseReasonsRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "AbuseReasons";
         public uint _abuseReasonId;
         public uint _mask;
+        [I18NField]
         public int _reasonTextId;
 
-        [D2OIgnore]
-        [PrimaryKey("Id")]
-        public int Id
+        int ID2ORecord.Id
         {
-            get;
-            set;
+            get { return (int)_abuseReasonId; }
         }
+
+
         [D2OIgnore]
+        [PrimaryKey("AbuseReasonId", false)]
         public uint AbuseReasonId
         {
             get { return _abuseReasonId; }

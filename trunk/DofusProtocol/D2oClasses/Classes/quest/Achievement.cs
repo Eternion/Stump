@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:55
+// Generated on 10/28/2013 14:03:20
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,15 +14,17 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         private const String MODULE = "Achievements";
         public uint id;
+        [I18NField]
         public uint nameId;
         public uint categoryId;
+        [I18NField]
         public uint descriptionId;
         public int iconId;
         public uint points;
         public uint level;
         public uint order;
-        public float kamasRatio;
-        public float experienceRatio;
+        public double kamasRatio;
+        public double experienceRatio;
         public Boolean kamasScaleWithPlayerLevel;
         public List<int> objectiveIds;
         public List<int> rewardIds;
@@ -79,13 +81,13 @@ namespace Stump.DofusProtocol.D2oClasses
             set { order = value; }
         }
         [D2OIgnore]
-        public float KamasRatio
+        public double KamasRatio
         {
             get { return kamasRatio; }
             set { kamasRatio = value; }
         }
         [D2OIgnore]
-        public float ExperienceRatio
+        public double ExperienceRatio
         {
             get { return experienceRatio; }
             set { experienceRatio = value; }

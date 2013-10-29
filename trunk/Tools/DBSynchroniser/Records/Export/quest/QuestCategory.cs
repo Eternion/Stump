@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/19/2013 17:17:45
+// Generated on 10/28/2013 14:03:25
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,15 +17,18 @@ namespace DBSynchroniser.Records
     [D2OClass("QuestCategory", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestCategoryRecord : ID2ORecord
     {
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
         private const String MODULE = "QuestCategory";
         public uint id;
+        [I18NField]
         public uint nameId;
         public uint order;
         public List<uint> questIds;
+
+        int ID2ORecord.Id
+        {
+            get { return (int)id; }
+        }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]

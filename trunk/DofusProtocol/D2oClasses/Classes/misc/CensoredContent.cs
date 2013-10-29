@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:55
+// Generated on 10/28/2013 14:03:19
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -13,10 +13,16 @@ namespace Stump.DofusProtocol.D2oClasses
     public class CensoredContent : IDataObject
     {
         public const String MODULE = "CensoredContents";
+        public String lang;
         public int type;
         public int oldValue;
         public int newValue;
-        public String lang;
+        [D2OIgnore]
+        public String Lang
+        {
+            get { return lang; }
+            set { lang = value; }
+        }
         [D2OIgnore]
         public int Type
         {
@@ -34,12 +40,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return newValue; }
             set { newValue = value; }
-        }
-        [D2OIgnore]
-        public String Lang
-        {
-            get { return lang; }
-            set { lang = value; }
         }
     }
 }

@@ -8,6 +8,7 @@ using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
@@ -283,16 +284,29 @@ namespace Stump.Server.WorldServer.Game.Items
             var item = TryGetItem(template);
 
             if (item != null && !item.IsEquiped())
-            {
+            {            
+                if (!item.Handler.AddItem())
+                    return null;
+
                 StackItem(item, amount);
             }
             else
             {
                 item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount);
+
+                if (!item.Handler.AddItem())
+                    return null;
+
                 return AddItem(item);
             }
 
             return item;
+        }
+
+        public override void RemoveItem(PlayerItem item, bool delete = true)
+        {
+            if (item.Handler.RemoveItem())
+                base.RemoveItem(item, delete);
         }
 
         public bool CanEquip(PlayerItem item, CharacterInventoryPositionEnum position, bool send = true)
@@ -345,9 +359,6 @@ namespace Stump.Server.WorldServer.Game.Items
             if (!HasItem(item))
                 return;
 
-            if (!CanEquip(item, position))
-                return;
-
             if (position == item.Position)
                 return;
 
@@ -358,9 +369,32 @@ namespace Stump.Server.WorldServer.Game.Items
                 // check if an item is already on the desired position
                 ((equipedItem = TryGetItem(position)) != null))
             {
-                // if there is one we move it to the inventory
-                MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                if (equipedItem.Handler.AllowFeeding)
+                {
+                    if (equipedItem.Handler.Feed(item))
+                    {
+                        RemoveItem(item);
+                        return;
+                    }
+                }
+                else if (item.Handler.AllowDropping)
+                {
+                    if (item.Handler.Drop(equipedItem))
+                    {
+                        RemoveItem(item);
+                        return;
+                    }
+                }
+                else
+                {
+                    // if there is one we move it to the inventory
+                    if (CanEquip(item, position, false))
+                        MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                }
             }
+                
+            if (!CanEquip(item, position))
+                return;
 
             // second check
             if (!HasItem(item))
@@ -506,13 +540,33 @@ namespace Stump.Server.WorldServer.Game.Items
             return true;
         }
 
-        public void UseItem(PlayerItem item)
+        public void UseItem(PlayerItem item, uint amount = 1)
+        {
+            UseItem(item, amount, null, null);
+        }        
+        
+        public void UseItem(PlayerItem item, Cell targetCell, uint amount = 1)
+        {
+            UseItem(item, amount, targetCell, null);
+        }        
+        
+        public void UseItem(PlayerItem item, Character target, uint amount = 1)
+        {
+            UseItem(item, amount, null, target);
+        }        
+        
+        public void UseItem(PlayerItem item, uint amount , Cell targetCell, Character target)
         {
             if (!CanUseItem(item))
                 return;
 
-            if (item.Handler.UseItem(Owner, item))
-                RemoveItem(item, 1);
+            if (amount > item.Stack)
+                amount = item.Stack;
+
+            var removeAmount = item.Handler.UseItem(amount, targetCell, target);
+
+            if (removeAmount > 0)
+                RemoveItem(item, removeAmount);
         }
 
         /// <summary>
@@ -632,7 +686,8 @@ namespace Stump.Server.WorldServer.Game.Items
                 !wasEquiped && isEquiped)
                 ApplyItemEffects(item, false);
 
-            item.Handler.EquipItem(Owner, item, wasEquiped);
+            if (!item.Handler.EquipItem(wasEquiped))
+                return;
 
             if (item.Template.ItemSet != null && !(wasEquiped && isEquiped))
             {
@@ -770,13 +825,13 @@ namespace Stump.Server.WorldServer.Game.Items
             // update boosts
             foreach (var boost in GetItems(CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD))
             {
-                var effect = boost.Effects.OfType<EffectInteger>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
+                var effect = boost.Effects.OfType<EffectMinMax>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
 
                 if (effect != null)
                 {
-                    effect.Value--;
+                    effect.ValueMax--;
 
-                    if (effect.Value <= 0)
+                    if (effect.ValueMax <= 0)
                         RemoveItem(boost);
                     else
                         RefreshItem(boost);
