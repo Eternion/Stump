@@ -2,12 +2,13 @@
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
     public abstract class UsableEffectHandler : EffectHandler
     {
-        protected UsableEffectHandler(EffectBase effect, Character target, PlayerItem item)
+        protected UsableEffectHandler(EffectBase effect, Character target, BasePlayerItem item)
             : base (effect)
         {
             Target = target;
@@ -21,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             protected set;
         }
 
-        public PlayerItem Item
+        public BasePlayerItem Item
         {
             get;
             protected set;

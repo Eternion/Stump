@@ -86,6 +86,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new DateTime(m_year, m_month, m_day, m_hour, m_minute, 0);
         }
 
+        public void SetDate(DateTime date)
+        {
+            m_year = (short) date.Year;
+            m_month = (short) date.Month;
+            m_day = (short) date.Day;
+            m_hour = (short) date.Hour;
+            m_minute = (short) date.Minute;
+        }
+
         public override ObjectEffect GetObjectEffect()
         {
             return new ObjectEffectDate(Id, m_year, m_month, m_day, m_hour, m_minute);

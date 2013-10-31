@@ -17,7 +17,8 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Items.Handlers;
+using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Items.Player.Custom;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -33,17 +34,20 @@ namespace Stump.Server.WorldServer.Game.Items
         private Dictionary<int, ItemTypeRecord> m_itemTypes = new Dictionary<int, ItemTypeRecord>();
         private Dictionary<int, NpcItem> m_npcShopItems = new Dictionary<int, NpcItem>();
 
-        private Dictionary<ItemTypeEnum, ItemHandlerConstructor> m_itemTypesHandlers =
-            new Dictionary<ItemTypeEnum, ItemHandlerConstructor>();
+        private Dictionary<ItemTypeEnum, PlayerItemConstructor> m_itemCtorByTypes =
+            new Dictionary<ItemTypeEnum, PlayerItemConstructor>();
+        
+        private Dictionary<EffectsEnum, PlayerItemConstructor> m_itemCtorByEffects =
+            new Dictionary<EffectsEnum, PlayerItemConstructor>();
 
-        private delegate BaseItemHandler ItemHandlerConstructor(PlayerItem item);
+        private delegate BasePlayerItem PlayerItemConstructor(Character owner, PlayerItemRecord record);
 
 
         #endregion
 
         #region Creators
 
-        public PlayerItem CreatePlayerItem(Character owner, int id, uint amount, bool maxEffects = false)
+        public BasePlayerItem CreatePlayerItem(Character owner, int id, uint amount, bool maxEffects = false)
         {
             if (!m_itemTemplates.ContainsKey(id))
                 throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
@@ -51,40 +55,62 @@ namespace Stump.Server.WorldServer.Game.Items
             return CreatePlayerItem(owner, m_itemTemplates[id], amount, maxEffects);
         }
 
-        public PlayerItem CreatePlayerItem(Character owner, ItemTemplate template, uint amount, bool maxEffects = false)
+        public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, uint amount, bool maxEffects = false)
         {
-            var guid = PlayerItemRecord.PopNextId();
-
-            var newitem =
-                new PlayerItem(owner, guid, template,
-                         CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, amount,
-                         GenerateItemEffects(template, maxEffects));
-
-            return newitem;
+            return CreatePlayerItem(owner, template, amount, GenerateItemEffects(template, maxEffects));
         }
 
-        public PlayerItem CreatePlayerItem(Character owner, ItemTemplate template, uint amount, List<EffectBase> effects)
-        {
-            var guid = PlayerItemRecord.PopNextId();
-
-            var newitem =
-                new PlayerItem(owner, guid, template,
-                         CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, amount, effects);
-
-            return newitem;
-        }
-
-        public PlayerItem CreatePlayerItem(Character owner, IItem item)
+        public BasePlayerItem CreatePlayerItem(Character owner, IItem item)
         {
             return CreatePlayerItem(owner, item.Template, (uint)item.Stack, item.Effects.Clone());
         }
 
-        public PlayerItem CreatePlayerItem(Character owner, IItem item, uint amount)
+        public BasePlayerItem CreatePlayerItem(Character owner, IItem item, uint amount)
         {
             return CreatePlayerItem(owner, item.Template, amount, item.Effects.Clone());
         }
 
-        public MerchantItem CreateMerchantItem(PlayerItem item, uint quantity, uint price)
+        public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, uint amount, List<EffectBase> effects)
+        {
+            var guid = PlayerItemRecord.PopNextId();
+            var record = new PlayerItemRecord // create the associated record
+                        {
+                            Id = guid,
+                            OwnerId = owner.Id,
+                            Template = template,
+                            Stack = amount,
+                            Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
+                            Effects = effects,
+                        };
+
+            return CreateItemInstance(owner, record);
+        }
+
+        public BasePlayerItem RecreateItemInstance(BasePlayerItem item)
+        {
+            return CreateItemInstance(item.Owner, item.Record);
+        }
+
+        public BasePlayerItem LoadPlayerItem(Character owner, PlayerItemRecord record)
+        {
+            return CreateItemInstance(owner, record);
+        }
+
+        private BasePlayerItem CreateItemInstance(Character character, PlayerItemRecord record)
+        {
+            PlayerItemConstructor ctor = null;
+            if (record.Effects.Any(effect => m_itemCtorByEffects.TryGetValue(effect.EffectId, out ctor)))
+            {
+                return ctor(character, record);
+            }
+
+            if (m_itemCtorByTypes.TryGetValue((ItemTypeEnum) record.Template.Type.Id, out ctor))
+                return ctor(character, record);
+
+            return new DefaultItem(character, record);
+        }
+
+        public MerchantItem CreateMerchantItem(BasePlayerItem item, uint quantity, uint price)
         {
             var guid = PlayerItemRecord.PopNextId();
 
@@ -127,27 +153,64 @@ namespace Stump.Server.WorldServer.Game.Items
             m_livingObjects =
                 Database.Query<LivingObjectRecord>(LivingObjectRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
-            InitializeHandlers();
+            InitializeItemCtors();
         }
 
-        private void InitializeHandlers()
+        private void InitializeItemCtors()
         {
             foreach (var type in
-                    Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof (BaseItemHandler))))
+                    Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof (BasePlayerItem).IsAssignableFrom(x)))
             {
-                var attr = type.GetCustomAttribute<ItemTypeAttribute>();
+                var typeAttr = type.GetCustomAttribute<ItemTypeAttribute>();
 
-                if (attr == null)
-                    continue;
-
-                if (m_itemTypesHandlers.ContainsKey(attr.ItemType))
+                if (typeAttr != null)
                 {
-                    logger.Error("ItemHandler with Type {0} defined twice or more !", attr.ItemType);
-                    continue;
+                    if (m_itemCtorByTypes.ContainsKey(typeAttr.ItemType))
+                    {
+                        logger.Error("Item Constructor with Type {0} defined twice or more !", typeAttr.ItemType);
+                        continue;
+                    }
+
+                    m_itemCtorByTypes.Add(typeAttr.ItemType,
+                        type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                            .CreateDelegate<PlayerItemConstructor>());
                 }
 
-                m_itemTypesHandlers.Add(attr.ItemType, type.GetConstructor(new [] {typeof(PlayerItem) }).CreateDelegate<ItemHandlerConstructor>());
+                var effectAttr = type.GetCustomAttribute<ItemHasEffectAttribute>();
+
+                if (effectAttr != null)
+                {
+                    if (m_itemCtorByEffects.ContainsKey(effectAttr.Effect))
+                    {
+                        logger.Error("Item Constructor with Effect {0} defined twice or more !", effectAttr.Effect);
+                        continue;
+                    }
+
+                    m_itemCtorByEffects.Add(effectAttr.Effect,
+                        type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                            .CreateDelegate<PlayerItemConstructor>());
+                }
             }
+        }
+
+        public void AddItemConstructor(Type type)
+        {
+            var attr = type.GetCustomAttribute<ItemTypeAttribute>();
+
+            if (attr == null)
+            {                
+                logger.Error("Item Constructor {0} has no attribute !", type);
+                return;
+            }
+
+            if (m_itemCtorByTypes.ContainsKey(attr.ItemType))
+            {
+                logger.Error("Item Constructor with Type {0} defined twice or more !", attr.ItemType);
+                return;
+            }
+
+            m_itemCtorByTypes.Add(attr.ItemType, type.GetConstructor(new [] {typeof(Character), typeof(PlayerItemRecord) }).CreateDelegate<PlayerItemConstructor>());
+
         }
 
         #endregion
@@ -288,7 +351,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// 
         /// returns : abc and Abd
         /// </example>
-        public IEnumerable<PlayerItem> GetItemsByPattern(string pattern, IEnumerable<PlayerItem> list)
+        public IEnumerable<BasePlayerItem> GetItemsByPattern(string pattern, IEnumerable<BasePlayerItem> list)
         {
             if (pattern == "*")
                 return list;
@@ -317,15 +380,6 @@ namespace Stump.Server.WorldServer.Game.Items
             Database.Insert(template);
         }
 
-        public BaseItemHandler CreateItemHandler(PlayerItem item)
-        {
-            ItemHandlerConstructor handler;
-            if (!m_itemTypesHandlers.TryGetValue((ItemTypeEnum) item.Template.Type.Id, out handler))
-                return new BaseItemHandler(item);
-
-            return handler(item);
-        }
-        
 
         public LivingObjectRecord TryGetLivingObjectRecord(int id)
         {

@@ -532,7 +532,10 @@ namespace DBSynchroniser
         }
 
         public static void SyncDatabases()
-        {
+        { 
+            Console.WriteLine("Enter the tables to build (separated by comma, empty = all)");
+            var tables = Console.ReadLine().Split(',');
+
             var worldDatabase = new DatabaseAccessor(WorldDatabaseConfiguration);
 
             Console.WriteLine("Connecting to {0}@{1}", WorldDatabaseConfiguration.DbName,
@@ -560,8 +563,33 @@ namespace DBSynchroniser
                 Console.WriteLine("Table associated to class MonsterGrade not found !");
             }
 
+            Console.WriteLine("Load patches");
+
+            var patchs = new Dictionary<string, List<string>>();
+            foreach (var filePath in Directory.EnumerateFiles("./Patchs"))
+            {
+                using (var reader = new StreamReader(filePath))
+                {
+                    if (reader.EndOfStream)
+                        continue;
+
+                    var line = reader.ReadLine().Trim().Replace(" ", "");
+
+                    if (line.StartsWith("--EXECUTEON:"))
+                    {
+                        var table = line.Remove(0, "--EXECUTEON:".Length).ToLower();
+                        if (!patchs.ContainsKey(table)) 
+                            patchs.Add(table, new List<string>());
+                        patchs[table].Add(filePath);
+                    }
+                }
+            }
+
             foreach (var table in worldTables)
             {
+                if (tables.All(x => !table.TableName.Contains(x)))
+                    continue;
+
                 // reset the table
                 worldDatabase.Database.Execute("DELETE FROM " + table.TableName);
                 worldDatabase.Database.Execute("ALTER TABLE " + table.TableName + " AUTO_INCREMENT=1");
@@ -616,7 +644,46 @@ namespace DBSynchroniser
                     Console.SetCursorPosition(cursorLeft, cursorTop);
                     transaction.Complete();
                 }
+
+                if (patchs.ContainsKey(table.TableName.ToLower()))
+                {
+                    foreach (var filePath in patchs[table.TableName.ToLower()])
+                    {
+                        ExecutePatch(filePath, worldDatabase.Database);
+                    }
+                }
             }
+        }
+
+        private static void ExecutePatch(string file, Database database)
+        {
+            Console.WriteLine("Execute patch '{0}'", Path.GetFileName(file));
+            int lineIndex = 0;
+            int cursorLeft = Console.CursorLeft;
+            int cursorTop = Console.CursorTop;
+            string[] lines = File.ReadAllLines(file);
+            foreach (string line in lines)
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(line))
+                       database.Execute(line);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error at line {0} : {1}", lineIndex, ex.Message);
+                }
+                finally
+                {
+                    lineIndex++;
+
+
+                    Console.SetCursorPosition(cursorLeft, cursorTop);
+                    Console.Write("{0}/{1} ({2}%)", lineIndex, lines.Length,
+                        (int) ((lineIndex/(double) lines.Length)*100d));
+                }
+            }
+            Console.SetCursorPosition(cursorLeft, cursorTop);
         }
 
         #endregion
