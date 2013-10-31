@@ -16,6 +16,7 @@ using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -148,7 +149,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (message.quantity <= 0 || message.price <= 0)
                 return;
 
-            PlayerItem item = client.Character.Inventory.TryGetItem(message.objectUID);
+            BasePlayerItem item = client.Character.Inventory.TryGetItem(message.objectUID);
 
             if (item == null) 
                 return;

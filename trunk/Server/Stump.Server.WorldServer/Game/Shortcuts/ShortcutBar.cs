@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 using Shortcut = Stump.Server.WorldServer.Database.Shortcuts.Shortcut;
 
@@ -62,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.SPELL_SHORTCUT_BAR, shortcut);
         }
 
-        public void AddItemShortcut(int slot, PlayerItem item)
+        public void AddItemShortcut(int slot, BasePlayerItem item)
         {
             if (!IsSlotFree(slot, ShortcutBarEnum.GENERAL_SHORTCUT_BAR))
                 RemoveShortcut(ShortcutBarEnum.GENERAL_SHORTCUT_BAR, slot);

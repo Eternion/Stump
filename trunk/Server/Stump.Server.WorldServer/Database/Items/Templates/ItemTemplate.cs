@@ -130,7 +130,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        public float Price
+        public double Price
         {
             get;
             set;

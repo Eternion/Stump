@@ -8,6 +8,9 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Items.Player.Custom;
+using Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -91,6 +94,50 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             client.Character.Inventory.UseItem(item, character);
         }
+
+        [WorldHandler(ObjectFeedMessage.Id)]
+        public static void HandleObjectFeedMessage(WorldClient client, ObjectFeedMessage message)
+        {
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
+            var food = client.Character.Inventory.TryGetItem(message.foodUID);
+
+            if (item == null || food == null)
+                return;
+
+            if (food.Stack < message.foodQuantity)
+                message.foodQuantity = (short) food.Stack;
+            uint i = 0;
+            for (; i < message.foodQuantity; i++)
+            {
+                if (!item.Feed(food))
+                    break;
+            }
+
+            client.Character.Inventory.RemoveItem(food, i);
+        }
+
+        [WorldHandler(LivingObjectChangeSkinRequestMessage.Id)]
+        public static void HandleLivingObjectChangeSkinRequestMessage(WorldClient client, LivingObjectChangeSkinRequestMessage message)
+        {
+            var item = client.Character.Inventory.TryGetItem(message.livingUID);
+
+            if (!(item is CommonLivingObject))
+                return;
+
+            ((CommonLivingObject) item).SelectedLevel = (short)message.skinId;
+        }
+
+        [WorldHandler(LivingObjectDissociateMessage.Id)]
+        public static void HandleLivingObjectDissociateMessage(WorldClient client, LivingObjectDissociateMessage message)
+        {
+            var item = client.Character.Inventory.TryGetItem(message.livingUID);
+
+            if (!(item is BoundLivingObjectItem))
+                return;
+
+            ((BoundLivingObjectItem) item).Dissociate();
+        }
+
         public static void SendGameRolePlayPlayerLifeStatusMessage(IPacketReceiver client)
         {
             client.Send(new GameRolePlayPlayerLifeStatusMessage());
@@ -115,12 +162,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeKamaModifiedMessage(remote, kamasAmount));
         }
 
-        public static void SendObjectAddedMessage(IPacketReceiver client, PlayerItem addedItem)
+        public static void SendObjectAddedMessage(IPacketReceiver client, BasePlayerItem addedItem)
         {
             client.Send(new ObjectAddedMessage(addedItem.GetObjectItem()));
         }
 
-        public static void SendObjectsAddedMessage(IPacketReceiver client, IEnumerable<PlayerItem> addeditems)
+        public static void SendObjectsAddedMessage(IPacketReceiver client, IEnumerable<BasePlayerItem> addeditems)
         {
             client.Send(new ObjectsAddedMessage(addeditems.Select(entry => entry.GetObjectItem())));
         }
@@ -135,17 +182,17 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ObjectsDeletedMessage(guids.Select(entry => entry).ToList()));
         }
 
-        public static void SendObjectModifiedMessage(IPacketReceiver client, PlayerItem item)
+        public static void SendObjectModifiedMessage(IPacketReceiver client, BasePlayerItem item)
         {
             client.Send(new ObjectModifiedMessage(item.GetObjectItem()));
         }
 
-        public static void SendObjectMovementMessage(IPacketReceiver client, PlayerItem movedItem)
+        public static void SendObjectMovementMessage(IPacketReceiver client, BasePlayerItem movedItem)
         {
             client.Send(new ObjectMovementMessage(movedItem.Guid, (byte) movedItem.Position));
         }
 
-        public static void SendObjectQuantityMessage(IPacketReceiver client, PlayerItem item)
+        public static void SendObjectQuantityMessage(IPacketReceiver client, BasePlayerItem item)
         {
             client.Send(new ObjectQuantityMessage(item.Guid, (int) item.Stack));
         }

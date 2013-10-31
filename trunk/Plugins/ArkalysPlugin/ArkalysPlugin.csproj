@@ -122,7 +122,7 @@
     <Compile Include="OrbsManager.cs" />
     <Compile Include="Prestige\PrestigeManager.cs" />
     <Compile Include="Prestige\PrestigeNpc.cs" />
-    <Compile Include="SmithMagic\SmithMagicPotionHandler.cs" />
+    <Compile Include="SmithMagic\SmithMagicPotionItem.cs" />
     <Compile Include="WelcomeMessage.cs" />
     <Compile Include="Npcs\NpcShops.cs" />
     <Compile Include="Plugin.cs" />

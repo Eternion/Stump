@@ -28,6 +28,7 @@ using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace ArkalysPlugin.Prestige
 {
@@ -135,7 +136,7 @@ namespace ArkalysPlugin.Prestige
             UnApplyPrestigeBonus(character, item);
         }
 
-        private static void UnApplyPrestigeBonus(Character character, PlayerItem item)
+        private static void UnApplyPrestigeBonus(Character character, BasePlayerItem item)
         {
             if (item == null)
                 return;
@@ -157,7 +158,7 @@ namespace ArkalysPlugin.Prestige
 
         }
 
-        private static void ApplyPrestigeBonus(Character character, PlayerItem item)
+        private static void ApplyPrestigeBonus(Character character, BasePlayerItem item)
         {
             if (item == null)
                 return;

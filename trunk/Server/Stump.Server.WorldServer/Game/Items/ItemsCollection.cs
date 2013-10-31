@@ -216,7 +216,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
             ItemsToDelete.Enqueue(item);
         }
-    
+
         /// <summary>
         /// Increase the stack of an item
         /// </summary>

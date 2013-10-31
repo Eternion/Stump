@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
@@ -12,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
     [EffectHandler(EffectsEnum.Effect_AddHealth)]
     public class RestoreHp : UsableEffectHandler
     {
-        public RestoreHp(EffectBase effect, Character target, PlayerItem item)
+        public RestoreHp(EffectBase effect, Character target, BasePlayerItem item)
             : base(effect, target, item)
         {
         }

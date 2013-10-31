@@ -4,6 +4,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -17,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Items
             private set;
         }
 
-        public PlayerItem Item
+        public BasePlayerItem Item
         {
             get;
             private set;
@@ -40,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Items
             get { return m_effects.AsReadOnly(); }
         }
 
-        public bool TryToFeed(PlayerItem item)
+        public bool TryToFeed(BasePlayerItem item)
         {
             return false;
         }
