@@ -37,7 +37,7 @@ namespace ArkalysPlugin.Prestige
     public class PrestigeManager : Singleton<PrestigeManager>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        [Variable] public static int ItemForBonus = 0;
+        [Variable] public static int ItemForBonus = 20214;
 
         public static ItemTemplate BonusItem;
 

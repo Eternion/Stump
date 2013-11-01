@@ -245,7 +245,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             /* World not exist */
             if (world == null)
             {
-                SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_NO_REASON);
+                SendSelectServerRefusedMessage(client, message.serverId, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_NO_REASON);
                 return;
             }
 
@@ -304,6 +304,11 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendSelectServerRefusedMessage(AuthClient client, WorldServer world, ServerConnectionErrorEnum reason)
         {
             client.Send(new SelectedServerRefusedMessage((short) world.Id, (sbyte) reason, (sbyte) world.Status));
+        }
+
+        public static void SendSelectServerRefusedMessage(AuthClient client, short worldId, ServerConnectionErrorEnum reason)
+        {
+            client.Send(new SelectedServerRefusedMessage(worldId, (sbyte) reason, (sbyte) ServerStatusEnum.STATUS_UNKNOWN));
         }
 
         public static void SendServersListMessage(AuthClient client)
