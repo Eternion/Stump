@@ -66,6 +66,7 @@ namespace Stump.Server.AuthServer.Database
 
         // Primitive properties
        
+        [PrimaryKey("Id")]
         public int Id
         {
             get;

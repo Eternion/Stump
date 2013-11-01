@@ -344,6 +344,8 @@ namespace WorldEditor.Editors.Langs
             {
                 row.Save();
             }
+
+            MessageService.ShowMessage(m_editor, "Saved ! ");
         }
 
         #endregion
