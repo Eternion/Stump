@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // I18NDataManager.cs
 // 
 // Copyright (C) 2012 - BehaviorIsManaged
@@ -12,6 +13,7 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
 using System.Collections.Generic;
@@ -27,39 +29,37 @@ namespace WorldEditor.Loaders.I18N
 {
     public class I18NDataManager : Singleton<I18NDataManager>
     {
-        private Dictionary<uint, LangText> m_langs = new Dictionary<uint, LangText>();
         private readonly Dictionary<string, LangTextUi> m_langsUi = new Dictionary<string, LangTextUi>();
+        private Dictionary<uint, LangText> m_langs = new Dictionary<uint, LangText>();
 
 
-
-        public void Initialize()
-        {
-            m_langs = DatabaseManager.Instance.Database.Query<LangText>("SELECT * FROM langs").ToDictionary(x => x.Id);
-            foreach (var record in DatabaseManager.Instance.Database.Query<LangTextUi>("SELECT * FROM langs_ui").Where(record => !m_langsUi.ContainsKey(record.Name)))
-            {
-                m_langsUi.Add(record.Name, record);
-            }
-        }
         public ReadOnlyDictionary<uint, LangText> Langs
         {
-            get
-            {
-                return new ReadOnlyDictionary<uint, LangText>(m_langs);
-            }
+            get { return new ReadOnlyDictionary<uint, LangText>(m_langs); }
         }
 
         public ReadOnlyDictionary<string, LangTextUi> LangsUi
         {
-            get
-            {
-                return new ReadOnlyDictionary<string, LangTextUi>(m_langsUi);
-            }
+            get { return new ReadOnlyDictionary<string, LangTextUi>(m_langsUi); }
         }
 
         public Languages DefaultLanguage
         {
             get;
             set;
+        }
+
+        public void Initialize()
+        {
+            DatabaseManager.Instance.Database.OneTimeCommandTimeout = 120;
+            m_langs = DatabaseManager.Instance.Database.Query<LangText>("SELECT * FROM langs").ToDictionary(x => x.Id);
+            foreach (
+                LangTextUi record in
+                    DatabaseManager.Instance.Database.Query<LangTextUi>("SELECT * FROM langs_ui")
+                                   .Where(record => !m_langsUi.ContainsKey(record.Name)))
+            {
+                m_langsUi.Add(record.Name, record);
+            }
         }
 
         public LangText GetText(int id)
@@ -81,7 +81,7 @@ namespace WorldEditor.Loaders.I18N
 
         public string ReadText(int id, Languages? lang)
         {
-            return ReadText((uint)id, lang);
+            return ReadText((uint) id, lang);
         }
 
         public string ReadText(uint id, Languages? lang)
@@ -103,7 +103,7 @@ namespace WorldEditor.Loaders.I18N
 
         public string ReadText(uint id)
         {
-            return ReadText((int)id);
+            return ReadText((int) id);
         }
 
         public string ReadText(int id)
@@ -113,37 +113,43 @@ namespace WorldEditor.Loaders.I18N
 
         public void SaveText(LangText text)
         {
+            m_langs[text.Id] = text;
             DatabaseManager.Instance.Database.Update(text);
         }
 
         public void SaveText(LangTextUi text)
         {
+            m_langsUi[text.Name] = text;
             DatabaseManager.Instance.Database.Update(text);
         }
 
         public void CreateText(LangText text)
         {
+            m_langs.Add(text.Id, text);
             DatabaseManager.Instance.Database.Insert(text);
         }
 
         public void CreateText(LangTextUi text)
         {
+            m_langsUi.Add(text.Name, text);
             DatabaseManager.Instance.Database.Insert(text);
         }
 
-       public void DeleteText(LangText text)
+        public void DeleteText(LangText text)
         {
+            m_langs.Remove(text.Id);
             DatabaseManager.Instance.Database.Delete(text);
         }
 
         public void DeleteText(LangTextUi text)
         {
+            m_langsUi.Remove(text.Name);
             DatabaseManager.Instance.Database.Delete(text);
         }
 
         public uint FindFreeId()
         {
-            var id = m_langs.Keys.Max();
+            uint id = m_langs.Keys.Max();
 
             return id < Settings.MinI18NId ? Settings.MinI18NId : id;
         }
