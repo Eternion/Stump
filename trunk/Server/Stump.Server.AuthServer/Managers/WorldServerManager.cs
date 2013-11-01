@@ -215,7 +215,7 @@ namespace Stump.Server.AuthServer.Managers
 
         public IEnumerable<GameServerInformations> GetServersInformationArray(AuthClient client)
         {
-            return m_realmlist.Values.Select(
+            return m_realmlist.Values.Where(x => client.Account.Role >= x.RequiredRole).Select(
                 world => GetServerInformation(client, world));
         }
 
