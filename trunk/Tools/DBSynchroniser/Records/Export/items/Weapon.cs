@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Weapons")]
     [D2OClass("Weapon", "com.ankamagames.dofus.datacenter.items")]
-    public class WeaponRecord : ItemRecord, ID2ORecord
+    public class WeaponRecord : ItemRecord, ID2ORecord, ISaveIntercepter
     {
         public int apCost;
         public int minRange;
@@ -110,7 +110,6 @@ namespace DBSynchroniser.Records
         
         public override object CreateObject(object parent = null)
         {
-            
             var obj = new Weapon();
             base.CreateObject(obj);
             obj.apCost = ApCost;
@@ -123,6 +122,11 @@ namespace DBSynchroniser.Records
             obj.criticalHitBonus = CriticalHitBonus;
             obj.criticalFailureProbability = CriticalFailureProbability;
             return obj;
+        }
+        
+        public override void BeforeSave(bool insert)
+        {
+            base.BeforeSave(insert);
         
         }
     }

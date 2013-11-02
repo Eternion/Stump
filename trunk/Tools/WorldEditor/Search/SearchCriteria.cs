@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
+using WorldEditor.Annotations;
 using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Search
@@ -10,6 +12,7 @@ namespace WorldEditor.Search
         private IComparable m_comparedToValue;
         private string m_comparedToValueString;
         public event PropertyChangedEventHandler PropertyChanged;
+
 
         public CriteriaOperator Operator
         {
@@ -52,6 +55,7 @@ namespace WorldEditor.Search
             {
                 m_comparedToValue = value;
                 m_comparedToValueString = value.ToString();
+                OnPropertyChanged("ComparedToValueString");
             }
         }
 
@@ -130,6 +134,13 @@ namespace WorldEditor.Search
                 return bool.Parse(value) ? "1" : "0";
 
             return "\"" + value + "\"";
+        }
+
+        
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

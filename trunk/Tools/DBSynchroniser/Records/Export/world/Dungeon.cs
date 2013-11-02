@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Dungeons")]
     [D2OClass("Dungeon", "com.ankamagames.dofus.datacenter.world")]
-    public class DungeonRecord : ID2ORecord
+    public class DungeonRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Dungeons";
         public int id;
@@ -63,12 +63,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Dungeon)parent : new Dungeon();
             obj.id = Id;
             obj.nameId = NameId;
             obj.optimalPlayerLevel = OptimalPlayerLevel;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

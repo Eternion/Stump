@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("StealthBones")]
     [D2OClass("StealthBones", "com.ankamagames.dofus.datacenter.interactives")]
-    public class StealthBonesRecord : ID2ORecord
+    public class StealthBonesRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "StealthBones";
         public uint id;
@@ -43,10 +43,13 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (StealthBones)parent : new StealthBones();
             obj.id = Id;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

@@ -63,6 +63,8 @@ namespace ArkalysPlugin.SmithMagic
                     (effect as EffectMinMax).ValueMax = (short)((effect as EffectMinMax).ValueMax * boost);
                 }
 
+                Owner.Inventory.RefreshItem(weapon);
+
                 return 1;
             }
 

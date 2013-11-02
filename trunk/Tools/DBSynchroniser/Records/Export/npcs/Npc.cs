@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Npcs")]
     [D2OClass("Npc", "com.ankamagames.dofus.datacenter.npcs")]
-    public class NpcRecord : ID2ORecord
+    public class NpcRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Npcs";
         public int id;
@@ -194,7 +194,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Npc)parent : new Npc();
             obj.id = Id;
             obj.nameId = NameId;
@@ -206,6 +205,14 @@ namespace DBSynchroniser.Records
             obj.tokenShop = TokenShop;
             obj.animFunList = AnimFunList;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_dialogMessagesBin = dialogMessages == null ? null : dialogMessages.ToBinary();
+            m_dialogRepliesBin = dialogReplies == null ? null : dialogReplies.ToBinary();
+            m_actionsBin = actions == null ? null : actions.ToBinary();
+            m_animFunListBin = animFunList == null ? null : animFunList.ToBinary();
         
         }
     }

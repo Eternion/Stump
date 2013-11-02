@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:22
+// Generated on 11/02/2013 14:55:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("AmbientSounds")]
     [D2OClass("AmbientSound", "com.ankamagames.dofus.datacenter.ambientSounds")]
-    public class AmbientSoundRecord : ID2ORecord
+    public class AmbientSoundRecord : ID2ORecord, ISaveIntercepter
     {
         public const int AMBIENT_TYPE_ROLEPLAY = 1;
         public const int AMBIENT_TYPE_AMBIENT = 2;
@@ -101,7 +101,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (AmbientSound)parent : new AmbientSound();
             obj.id = Id;
             obj.volume = Volume;
@@ -111,6 +110,10 @@ namespace DBSynchroniser.Records
             obj.channel = Channel;
             obj.type_id = Type_id;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

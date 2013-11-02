@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:22
+// Generated on 11/02/2013 14:55:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Heads")]
     [D2OClass("Head", "com.ankamagames.dofus.datacenter.breeds")]
-    public class HeadRecord : ID2ORecord
+    public class HeadRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Heads";
         public int id;
@@ -90,7 +90,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Head)parent : new Head();
             obj.id = Id;
             obj.skins = Skins;
@@ -99,6 +98,10 @@ namespace DBSynchroniser.Records
             obj.gender = Gender;
             obj.order = Order;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

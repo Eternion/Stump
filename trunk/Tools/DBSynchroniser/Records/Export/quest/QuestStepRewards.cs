@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("QuestStepRewards")]
     [D2OClass("QuestStepRewards", "com.ankamagames.dofus.datacenter.quest")]
-    public class QuestStepRewardsRecord : ID2ORecord
+    public class QuestStepRewardsRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "QuestStepRewards";
         public uint id;
@@ -182,7 +182,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (QuestStepRewards)parent : new QuestStepRewards();
             obj.id = Id;
             obj.stepId = StepId;
@@ -193,6 +192,14 @@ namespace DBSynchroniser.Records
             obj.jobsReward = JobsReward;
             obj.spellsReward = SpellsReward;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_itemsRewardBin = itemsReward == null ? null : itemsReward.ToBinary();
+            m_emotesRewardBin = emotesReward == null ? null : emotesReward.ToBinary();
+            m_jobsRewardBin = jobsReward == null ? null : jobsReward.ToBinary();
+            m_spellsRewardBin = spellsReward == null ? null : spellsReward.ToBinary();
         
         }
     }

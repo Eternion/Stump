@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("QuestObjectives")]
     [D2OClass("QuestObjective", "com.ankamagames.dofus.datacenter.quest")]
-    public class QuestObjectiveRecord : ID2ORecord
+    public class QuestObjectiveRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "QuestObjectives";
         public uint id;
@@ -126,7 +126,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (QuestObjective)parent : new QuestObjective();
             obj.id = Id;
             obj.stepId = StepId;
@@ -135,6 +134,12 @@ namespace DBSynchroniser.Records
             obj.parameters = Parameters;
             obj.coords = Coords;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_parametersBin = parameters == null ? null : parameters.ToBinary();
+            m_coordsBin = coords == null ? null : coords.ToBinary();
         
         }
     }

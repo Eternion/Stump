@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("MonsterRaces")]
     [D2OClass("MonsterRace", "com.ankamagames.dofus.datacenter.monsters")]
-    public class MonsterRaceRecord : ID2ORecord
+    public class MonsterRaceRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "MonsterRaces";
         public int id;
@@ -63,12 +63,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (MonsterRace)parent : new MonsterRace();
             obj.id = Id;
             obj.superRaceId = SuperRaceId;
             obj.nameId = NameId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

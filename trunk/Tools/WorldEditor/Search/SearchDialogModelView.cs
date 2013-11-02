@@ -267,7 +267,10 @@ namespace WorldEditor.Search
             searchCriteria.AvailableOperators = operators;
             searchCriteria.Operator = operators[0];
             searchCriteria.ValueType = isI18N ? typeof(string) : m_propertiesType[searchCriteria.ComparedProperty];
-            searchCriteria.ComparedToValue = isI18N || type == typeof(string) ? string.Empty : (IComparable)Activator.CreateInstance(m_propertiesType[searchCriteria.ComparedProperty]);
+            if (searchCriteria.ComparedToValue != null && searchCriteria.ValueType.IsInstanceOfType(searchCriteria.ComparedToValue))
+                searchCriteria.ComparedToValueString = searchCriteria.ComparedToValue.ToString();
+            else
+                searchCriteria.ComparedToValue = isI18N || type == typeof(string) ? string.Empty : (IComparable)Activator.CreateInstance(m_propertiesType[searchCriteria.ComparedProperty]);
         }
 
         private void OnCriteriaPropertyChanged(object sender, PropertyChangedEventArgs e)

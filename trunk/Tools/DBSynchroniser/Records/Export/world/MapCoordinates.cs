@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("MapCoordinates")]
     [D2OClass("MapCoordinates", "com.ankamagames.dofus.datacenter.world")]
-    public class MapCoordinatesRecord : ID2ORecord
+    public class MapCoordinatesRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "MapCoordinates";
         public uint compressedCoords;
@@ -77,11 +77,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (MapCoordinates)parent : new MapCoordinates();
             obj.compressedCoords = CompressedCoords;
             obj.mapIds = MapIds;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_mapIdsBin = mapIds == null ? null : mapIds.ToBinary();
         
         }
     }

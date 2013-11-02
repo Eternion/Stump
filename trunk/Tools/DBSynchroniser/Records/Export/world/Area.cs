@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Areas")]
     [D2OClass("Area", "com.ankamagames.dofus.datacenter.world")]
-    public class AreaRecord : ID2ORecord
+    public class AreaRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Areas";
         public int id;
@@ -109,7 +109,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Area)parent : new Area();
             obj.id = Id;
             obj.nameId = NameId;
@@ -118,6 +117,11 @@ namespace DBSynchroniser.Records
             obj.containPaddocks = ContainPaddocks;
             obj.bounds = Bounds;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_boundsBin = bounds == null ? null : bounds.ToBinary();
         
         }
     }

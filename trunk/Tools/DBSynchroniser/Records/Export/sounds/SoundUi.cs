@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SoundUi")]
     [D2OClass("SoundUi", "com.ankamagames.dofus.datacenter.sounds")]
-    public class SoundUiRecord : ID2ORecord
+    public class SoundUiRecord : ID2ORecord, ISaveIntercepter
     {
         public uint id;
         public String uiName;
@@ -101,7 +101,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SoundUi)parent : new SoundUi();
             obj.id = Id;
             obj.uiName = UiName;
@@ -109,6 +108,11 @@ namespace DBSynchroniser.Records
             obj.closeFile = CloseFile;
             obj.subElements = SubElements;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_subElementsBin = subElements == null ? null : subElements.ToBinary();
         
         }
     }

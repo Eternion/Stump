@@ -29,7 +29,7 @@ namespace ArkalysPlugin.Npcs
          * 3 - Pour les personnes qui ne sont aucunement patient, un achat via des jetons est possible. Bien sur le prix est élevé pour vous obliger à choisir en 1er lieu les 2 premières possibilités.
         */
         [Variable]
-        public static int MessageId = 200505;
+        public static int MessageId = 20009;
 
         //Guildalogemme
         [Variable]
@@ -44,7 +44,7 @@ namespace ArkalysPlugin.Npcs
 
         //Arf, une erreur inattendu t'as poussé à annulé la création de ta guilde. Je suppose que tu n'as pas encore l'étoffe d'un héros... Enfin je veux dire par la que tu préfères te faire diriger que de diriger les autres. C’est un choix et je l'accepte à bientôt si tu changes d'avis.
         [Variable]
-        public static short ReplyGuildFailId = 20010;
+        public static short ReplyGuildFailId = 20007;
 
         //Ohhh non.... toi tu vas devoir perdre 30 secondes de ton temps afin de quitter ton ancienne guilde et venir me reparler afin de pouvoir enfin créer ta propre guilde.
         [Variable]

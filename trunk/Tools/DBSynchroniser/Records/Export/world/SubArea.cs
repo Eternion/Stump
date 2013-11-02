@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SubAreas")]
     [D2OClass("SubArea", "com.ankamagames.dofus.datacenter.world")]
-    public class SubAreaRecord : ID2ORecord
+    public class SubAreaRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "SubAreas";
         public int id;
@@ -212,7 +212,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SubArea)parent : new SubArea();
             obj.id = Id;
             obj.nameId = NameId;
@@ -224,6 +223,15 @@ namespace DBSynchroniser.Records
             obj.customWorldMap = CustomWorldMap;
             obj.packId = PackId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_ambientSoundsBin = ambientSounds == null ? null : ambientSounds.ToBinary();
+            m_mapIdsBin = mapIds == null ? null : mapIds.ToBinary();
+            m_boundsBin = bounds == null ? null : bounds.ToBinary();
+            m_shapeBin = shape == null ? null : shape.ToBinary();
+            m_customWorldMapBin = customWorldMap == null ? null : customWorldMap.ToBinary();
         
         }
     }

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("RankNames")]
     [D2OClass("RankName", "com.ankamagames.dofus.datacenter.guild")]
-    public class RankNameRecord : ID2ORecord
+    public class RankNameRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "RankNames";
         public int id;
@@ -63,12 +63,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (RankName)parent : new RankName();
             obj.id = Id;
             obj.nameId = NameId;
             obj.order = Order;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

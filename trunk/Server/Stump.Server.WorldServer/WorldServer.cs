@@ -20,6 +20,7 @@ using Stump.DofusProtocol.Types;
 using Stump.ORM;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
@@ -97,6 +98,7 @@ namespace Stump.Server.WorldServer
             logger.Info("Initializing Database...");
             DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
             DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+            InitializationManager.Initialize(InitializationPass.Database);
             DBAccessor.Initialize();
 
             logger.Info("Opening Database..."); 

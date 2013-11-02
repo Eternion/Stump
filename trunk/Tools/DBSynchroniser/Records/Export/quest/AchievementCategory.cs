@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("AchievementCategories")]
     [D2OClass("AchievementCategory", "com.ankamagames.dofus.datacenter.quest")]
-    public class AchievementCategoryRecord : ID2ORecord
+    public class AchievementCategoryRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "AchievementCategories";
         public uint id;
@@ -120,7 +120,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (AchievementCategory)parent : new AchievementCategory();
             obj.id = Id;
             obj.nameId = NameId;
@@ -130,6 +129,11 @@ namespace DBSynchroniser.Records
             obj.color = Color;
             obj.achievementIds = AchievementIds;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_achievementIdsBin = achievementIds == null ? null : achievementIds.ToBinary();
         
         }
     }

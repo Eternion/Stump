@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:24
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Pets")]
     [D2OClass("Pet", "com.ankamagames.dofus.datacenter.livingObjects")]
-    public class PetRecord : ID2ORecord
+    public class PetRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Pets";
         public int id;
@@ -99,12 +99,17 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Pet)parent : new Pet();
             obj.id = Id;
             obj.foodItems = FoodItems;
             obj.foodTypes = FoodTypes;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_foodItemsBin = foodItems == null ? null : foodItems.ToBinary();
+            m_foodTypesBin = foodTypes == null ? null : foodTypes.ToBinary();
         
         }
     }

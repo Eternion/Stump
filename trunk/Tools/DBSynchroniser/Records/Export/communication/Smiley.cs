@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:22
+// Generated on 11/02/2013 14:55:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Smileys")]
     [D2OClass("Smiley", "com.ankamagames.dofus.datacenter.communication")]
-    public class SmileyRecord : ID2ORecord
+    public class SmileyRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Smileys";
         public uint id;
@@ -99,7 +99,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Smiley)parent : new Smiley();
             obj.id = Id;
             obj.order = Order;
@@ -107,6 +106,11 @@ namespace DBSynchroniser.Records
             obj.forPlayers = ForPlayers;
             obj.triggers = Triggers;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_triggersBin = triggers == null ? null : triggers.ToBinary();
         
         }
     }

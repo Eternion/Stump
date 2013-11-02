@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F7FB91E8-BEA3-481C-9CD3-FAB8DEF0834C}</ProjectGuid>
+    <ProjectGuid>{4F16509E-77CD-4656-888A-E9FCCE90C92B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GiantKralovePlugin</RootNamespace>
-    <AssemblyName>GiantKralovePlugin</AssemblyName>
+    <RootNamespace>ArkalysAuthPlugin</RootNamespace>
+    <AssemblyName>ArkalysAuthPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Run\Debug\Plugins\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\..\Library\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,9 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GiantKraloveBrain.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VoteRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
@@ -55,40 +52,20 @@
       <Project>{e7406629-e127-4b96-8f29-287947075631}</Project>
       <Name>Stump.ORM</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
-      <Project>{33093793-c4ba-4b89-ac82-6e9d00437452}</Project>
-      <Name>Stump.DofusProtocol.D2oClasses</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
-      <Project>{d7bff8ed-065b-4a53-9805-595dfea75a0a}</Project>
-      <Name>Stump.DofusProtocol.Enums</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DofusProtocol\Messages\Stump.DofusProtocol.Messages.csproj">
-      <Project>{53092d2e-8f37-4889-b6b7-b359e093e3f4}</Project>
-      <Name>Stump.DofusProtocol.Messages</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
-      <Project>{10884165-d492-4895-b3ef-32429f7a7f55}</Project>
-      <Name>Stump.DofusProtocol.Types</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
-      <Project>{a0bff0db-ed9a-4639-ae86-8e709a1efc66}</Project>
-      <Name>NLog.netfx40</Name>
+    <ProjectReference Include="..\..\Server\Stump.Server.AuthServer\Stump.Server.AuthServer.csproj">
+      <Project>{b838009e-be0a-463f-a814-73ebf3663785}</Project>
+      <Name>Stump.Server.AuthServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Server\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011fbafc-7720-4d36-9c59-71bae6163c9e}</Project>
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Server\Stump.Server.WorldServer\Stump.Server.WorldServer.csproj">
-      <Project>{7a1beab5-1a69-48b6-b064-0f6f372ac23b}</Project>
-      <Name>Stump.Server.WorldServer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF NOT EXIST "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\" mkdir "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\"
-copy "$(TargetPath)" "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\$(TargetFileName)"
-copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\$(TargetName).pdb"</PostBuildEvent>
+    <PostBuildEvent>IF NOT EXIST "$(SolutionDir)Run\$(ConfigurationName)\AuthServer\plugins\" mkdir "$(SolutionDir)Run\$(ConfigurationName)\AuthServer\plugins\"
+copy "$(TargetPath)" "$(SolutionDir)Run\$(ConfigurationName)AuthServer\plugins\$(TargetFileName)"
+copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)Run\$(ConfigurationName)\AuthServer\plugins\$(TargetName).pdb"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

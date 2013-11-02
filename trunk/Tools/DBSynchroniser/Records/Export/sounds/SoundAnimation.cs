@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SoundAnimations")]
     [D2OClass("SoundAnimation", "com.ankamagames.dofus.datacenter.sounds")]
-    public class SoundAnimationRecord : ID2ORecord
+    public class SoundAnimationRecord : ID2ORecord, ISaveIntercepter
     {
         public uint id;
         public String name;
@@ -145,7 +145,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SoundAnimation)parent : new SoundAnimation();
             obj.id = Id;
             obj.name = Name;
@@ -160,6 +159,10 @@ namespace DBSynchroniser.Records
             obj.noCutSilence = NoCutSilence;
             obj.startFrame = StartFrame;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

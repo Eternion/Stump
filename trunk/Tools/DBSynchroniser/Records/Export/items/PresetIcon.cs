@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("PresetIcons")]
     [D2OClass("PresetIcon", "com.ankamagames.dofus.datacenter.items")]
-    public class PresetIconRecord : ID2ORecord
+    public class PresetIconRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "PresetIcons";
         public int id;
@@ -52,11 +52,14 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (PresetIcon)parent : new PresetIcon();
             obj.id = Id;
             obj.order = Order;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

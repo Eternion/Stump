@@ -165,6 +165,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             }
         }
 
+        [NullString]
         public String Criteria
         {
             get;
@@ -184,7 +185,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set
             {
                 m_criteriaExpression = value;
-                Criteria = value.ToString();
+                Criteria = value != null ? value.ToString() : null;
             }
         }
 

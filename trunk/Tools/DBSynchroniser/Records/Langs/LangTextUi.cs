@@ -109,6 +109,47 @@ namespace DBSynchroniser.Records.Langs
                 English =
                 Dutsh =
                 Japanish = Spanish = Italian = Russish = Portugese = text;
+        } 
+        
+        public void SetText(Languages language, string text)
+        {
+            switch (language)
+            {
+                case Languages.French:
+                    French = text;
+                    break;
+                case Languages.German:
+                    German = text;
+                    break;
+                case Languages.Dutsh:
+                    French = text;
+                    break;
+                case Languages.Italian:
+                    Italian = text;
+                    break;
+                case Languages.English:
+                    English = text;
+                    break;
+                case Languages.Japanish:
+                    Japanish = text;
+                    break;
+                case Languages.Russish:
+                    Russish = text;
+                    break;
+                case Languages.Spanish:
+                    Spanish = text;
+                    break;
+                case Languages.Portugese:
+                    Portugese = text;
+                    break;
+                case Languages.All:
+                    French =
+                        German =
+                            English =
+                                Dutsh =
+                                    Japanish = Spanish = Italian = Russish = Portugese = text;
+                    break;
+            }
         }
 
         public string GetText(Languages language)

@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using Stump.Server.BaseServer.Plugins;
-using Stump.Server.WorldServer;
-using Stump.Server.WorldServer.AI.Fights.Brain;
 
-namespace GiantKralovePlugin
+namespace ArkalysAuthPlugin
 {
     public class Plugin : PluginBase
     {
-        private bool m_configAutoReload;
-
         public Plugin(PluginContext context)
             : base(context)
         {
@@ -21,33 +13,50 @@ namespace GiantKralovePlugin
 
         public override string Name
         {
-            get { return "GiantKralove Plugin"; }
+            get { return "Arkalys Auth Plugin"; }
         }
 
         public override string Description
         {
-            get { return "This plugin manage the ai and the map of giant kralove."; }
+            get { return "This plugin add some features to the auth server"; }
         }
 
         public override string Author
         {
-            get { return "Novior"; }
+            get { return "bouh2"; }
         }
 
         public override Version Version
         {
-            get { return new Version(0, 0); }
+            get { return new Version(1, 0); }
         }
 
         public override void Initialize()
         {
-            BrainManager.Instance.RegisterBrain(typeof (GiantKraloveBrain));
+            base.Initialize();
             Initialized = true;
+        }
+
+        public override void Shutdown()
+        {
+            base.Shutdown();
+
+            Initialized = false;
+        }
+
+        public override void Dispose()
+        {
+
         }
 
         public override bool UseConfig
         {
-            get { return false; }
+            get { return true; }
+        }
+
+        public override string ConfigFileName
+        {
+            get { return "arkalys_auth_plugin.xml"; }
         }
 
         public static Plugin CurrentPlugin
@@ -60,11 +69,6 @@ namespace GiantKralovePlugin
         {
             get;
             private set;
-        }
-
-        public override void Dispose()
-        {
-
         }
     }
 }

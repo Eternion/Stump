@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("MapPositions")]
     [D2OClass("MapPosition", "com.ankamagames.dofus.datacenter.world")]
-    public class MapPositionRecord : ID2ORecord
+    public class MapPositionRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "MapPositions";
         public int id;
@@ -145,7 +145,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (MapPosition)parent : new MapPosition();
             obj.id = Id;
             obj.posX = PosX;
@@ -158,6 +157,11 @@ namespace DBSynchroniser.Records
             obj.worldMap = WorldMap;
             obj.hasPriorityOnWorldmap = HasPriorityOnWorldmap;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_soundsBin = sounds == null ? null : sounds.ToBinary();
         
         }
     }

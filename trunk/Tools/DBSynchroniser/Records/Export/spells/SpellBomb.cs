@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SpellBombs")]
     [D2OClass("SpellBomb", "com.ankamagames.dofus.datacenter.spells")]
-    public class SpellBombRecord : ID2ORecord
+    public class SpellBombRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "SpellBombs";
         public int id;
@@ -88,7 +88,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SpellBomb)parent : new SpellBomb();
             obj.id = Id;
             obj.chainReactionSpellId = ChainReactionSpellId;
@@ -97,6 +96,10 @@ namespace DBSynchroniser.Records
             obj.instantSpellId = InstantSpellId;
             obj.comboCoeff = ComboCoeff;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

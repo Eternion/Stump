@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Mounts")]
     [D2OClass("Mount", "com.ankamagames.dofus.datacenter.mounts")]
-    public class MountRecord : ID2ORecord
+    public class MountRecord : ID2ORecord, ISaveIntercepter
     {
         public uint id;
         [I18NField]
@@ -64,12 +64,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Mount)parent : new Mount();
             obj.id = Id;
             obj.nameId = NameId;
             obj.look = Look;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

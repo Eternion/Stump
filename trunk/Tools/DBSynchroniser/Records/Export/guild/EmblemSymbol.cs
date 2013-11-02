@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("EmblemSymbols")]
     [D2OClass("EmblemSymbol", "com.ankamagames.dofus.datacenter.guild")]
-    public class EmblemSymbolRecord : ID2ORecord
+    public class EmblemSymbolRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "EmblemSymbols";
         public int id;
@@ -88,7 +88,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (EmblemSymbol)parent : new EmblemSymbol();
             obj.id = Id;
             obj.iconId = IconId;
@@ -97,6 +96,10 @@ namespace DBSynchroniser.Records
             obj.categoryId = CategoryId;
             obj.colorizable = Colorizable;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

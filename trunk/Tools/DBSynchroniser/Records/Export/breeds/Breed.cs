@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:22
+// Generated on 11/02/2013 14:55:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Breeds")]
     [D2OClass("Breed", "com.ankamagames.dofus.datacenter.breeds")]
-    public class BreedRecord : ID2ORecord
+    public class BreedRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Breeds";
         public int id;
@@ -386,7 +386,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Breed)parent : new Breed();
             obj.id = Id;
             obj.shortNameId = ShortNameId;
@@ -408,6 +407,19 @@ namespace DBSynchroniser.Records
             obj.maleColors = MaleColors;
             obj.femaleColors = FemaleColors;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_statsPointsForStrengthBin = statsPointsForStrength == null ? null : statsPointsForStrength.ToBinary();
+            m_statsPointsForIntelligenceBin = statsPointsForIntelligence == null ? null : statsPointsForIntelligence.ToBinary();
+            m_statsPointsForChanceBin = statsPointsForChance == null ? null : statsPointsForChance.ToBinary();
+            m_statsPointsForAgilityBin = statsPointsForAgility == null ? null : statsPointsForAgility.ToBinary();
+            m_statsPointsForVitalityBin = statsPointsForVitality == null ? null : statsPointsForVitality.ToBinary();
+            m_statsPointsForWisdomBin = statsPointsForWisdom == null ? null : statsPointsForWisdom.ToBinary();
+            m_breedSpellsIdBin = breedSpellsId == null ? null : breedSpellsId.ToBinary();
+            m_maleColorsBin = maleColors == null ? null : maleColors.ToBinary();
+            m_femaleColorsBin = femaleColors == null ? null : femaleColors.ToBinary();
         
         }
     }

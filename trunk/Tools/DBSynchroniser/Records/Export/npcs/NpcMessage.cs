@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("NpcMessages")]
     [D2OClass("NpcMessage", "com.ankamagames.dofus.datacenter.npcs")]
-    public class NpcMessageRecord : ID2ORecord
+    public class NpcMessageRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "NpcMessages";
         public int id;
@@ -64,12 +64,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (NpcMessage)parent : new NpcMessage();
             obj.id = Id;
             obj.messageId = MessageId;
             obj.messageParams = MessageParams;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

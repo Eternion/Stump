@@ -34,7 +34,7 @@ else if (Parser.Class.Name == "Weapon") // only exception
     WriteLine(string.Format("[TableName(\"Weapons\")]", Parser.Class.Name));
 #>
 <# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\", \"" + Parser.Class.Namespace + "\")]"); #>
-public class <#=Parser.Class.Name #>Record<#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage + "Record, ID2ORecord" : " : ID2ORecord" ) #>
+public class <#=Parser.Class.Name #>Record<#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage + "Record, ID2ORecord, ISaveIntercepter" : " : ID2ORecord, ISaveIntercepter" ) #>
 {
 <# PushIndent("    "); #>
 <# var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
@@ -171,7 +171,6 @@ foreach (var field in Parser.Fields)
 public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> object CreateObject(object parent = null)
 {
 <# PushIndent("    "); #>
-
 <#
 if (Parser.Class.Heritage != "Object")
 {
@@ -195,6 +194,27 @@ foreach (var field in Parser.Fields)
 }
 #>
 return obj;
+<# PopIndent(); #>
+}
+
+public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> void BeforeSave(bool insert)
+{
+<# PushIndent("    "); #>
+<#
+if (Parser.Class.Heritage != "Object")
+{
+    WriteLine("base.BeforeSave(insert);");
+}
+
+foreach (var field in Parser.Fields)
+{
+	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
+		continue;
+
+    if (!IsPrimitiveType(field.Type))
+        WriteLine(string.Format("m_{0}Bin = {0} == null ? null : {0}.ToBinary();", field.Name));
+}
+#>
 <# PopIndent(); #>
 
 }

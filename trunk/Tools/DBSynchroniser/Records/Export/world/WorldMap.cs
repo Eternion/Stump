@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("WorldMaps")]
     [D2OClass("WorldMap", "com.ankamagames.dofus.datacenter.world")]
-    public class WorldMapRecord : ID2ORecord
+    public class WorldMapRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "WorldMaps";
         public int id;
@@ -197,7 +197,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (WorldMap)parent : new WorldMap();
             obj.id = Id;
             obj.origineX = OrigineX;
@@ -216,6 +215,11 @@ namespace DBSynchroniser.Records
             obj.totalHeight = TotalHeight;
             obj.zoom = Zoom;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_zoomBin = zoom == null ? null : zoom.ToBinary();
         
         }
     }

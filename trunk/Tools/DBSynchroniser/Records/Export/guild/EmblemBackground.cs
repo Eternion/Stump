@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("EmblemBackgrounds")]
     [D2OClass("EmblemBackground", "com.ankamagames.dofus.datacenter.guild")]
-    public class EmblemBackgroundRecord : ID2ORecord
+    public class EmblemBackgroundRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "EmblemBackgrounds";
         public int id;
@@ -52,11 +52,14 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (EmblemBackground)parent : new EmblemBackground();
             obj.id = Id;
             obj.order = Order;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

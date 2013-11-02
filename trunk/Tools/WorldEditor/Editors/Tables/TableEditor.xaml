@@ -63,10 +63,10 @@
                         </TextBlock.RenderTransform>
                     </TextBlock>
                 </Expander.Header>
-                <xctk:PropertyGrid Name="ObjectEditor" SelectedObject="{Binding SelectedItem, ElementName=ObjectsGrid}" Width="250" PropertyValueChanged="ObjectEditor_PropertyValueChanged" />
+                <xctk:PropertyGrid Name="ObjectEditor" SelectedObject="{Binding SelectedItem, ElementName=ObjectsGrid}" Width="250" />
             </Expander>
             <DataGrid Name="ObjectsGrid" ItemsSource="{Binding Rows}" AutoGenerateColumns="false"
-              IsReadOnly="true" AlternatingRowBackground="#FFDCEAF8"
+              IsReadOnly="true" AlternatingRowBackground="#FFDCEAF8" 
               SelectionChanged="ObjectsGrid_SelectionChanged" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#6A004BC1">
                 <DataGrid.InputBindings>
                     <KeyBinding Key="Delete" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedItems, ElementName=ObjectsGrid}" />

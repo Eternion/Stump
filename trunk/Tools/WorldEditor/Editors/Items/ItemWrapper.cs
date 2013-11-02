@@ -51,7 +51,7 @@ namespace WorldEditor.Editors.Items
             m_name = new LangText();
             m_name.SetText(Languages.All, "New item");
             m_description = new LangText();
-            m_name.SetText(Languages.All, "Item description");
+            m_description.SetText(Languages.All, "Item description");
             m_effects = new ObservableCollection<EffectWrapper>();
             WrappedItem.recipeIds = new List<uint>();
             WrappedItem.favoriteSubAreas = new List<uint>();
@@ -94,7 +94,7 @@ namespace WorldEditor.Editors.Items
                 if (m_name == null)
                     m_name = I18NDataManager.Instance.GetText(NameId);
 
-                return m_name.GetText(CurrentLanguage, I18NDataManager.Instance.DefaultLanguage);
+                return m_name != null ? m_name.GetText(CurrentLanguage, I18NDataManager.Instance.DefaultLanguage) : "NO_NAME";
             }
             set
             {
@@ -141,7 +141,7 @@ namespace WorldEditor.Editors.Items
                 if (m_description == null)
                     m_description = I18NDataManager.Instance.GetText(DescriptionId);
 
-                return m_description.GetText(CurrentLanguage, I18NDataManager.Instance.DefaultLanguage);
+                return m_description != null ? m_description.GetText(CurrentLanguage, I18NDataManager.Instance.DefaultLanguage) : "NO_DESCRIPTION";
             }
             set
             {
@@ -330,7 +330,7 @@ namespace WorldEditor.Editors.Items
             if (New)
             {
                 if (Id == 0)
-                    Id = Math.Max(ObjectDataManager.Instance.FindFreeId<Item>(), ObjectDataManager.Instance.FindFreeId<Weapon>());
+                    Id = Math.Max(ObjectDataManager.Instance.FindFreeId<ItemRecord>(), ObjectDataManager.Instance.FindFreeId<WeaponRecord>());
                 NameId = (uint) I18NDataManager.Instance.FindFreeId();
                 DescriptionId = NameId + 1;
             }

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
@@ -1319,6 +1320,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #endregion
 
         #region Dialog
+
+        public void DisplayNotification(string text)
+        {
+            Client.Send(new NotificationByServerMessage((ushort) NotificationEnum.INFORMATION, new []{text}, true));
+        }
 
         public void DisplayNotification(Notification notification)
         {

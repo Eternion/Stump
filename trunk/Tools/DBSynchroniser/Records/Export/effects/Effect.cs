@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Effects")]
     [D2OClass("Effect", "com.ankamagames.dofus.datacenter.effects")]
-    public class EffectRecord : ID2ORecord
+    public class EffectRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Effects";
         public int id;
@@ -172,7 +172,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Effect)parent : new Effect();
             obj.id = Id;
             obj.descriptionId = DescriptionId;
@@ -190,6 +189,10 @@ namespace DBSynchroniser.Records
             obj.useInFight = UseInFight;
             obj.effectPriority = EffectPriority;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

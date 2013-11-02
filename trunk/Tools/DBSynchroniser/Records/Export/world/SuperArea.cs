@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SuperAreas")]
     [D2OClass("SuperArea", "com.ankamagames.dofus.datacenter.world")]
-    public class SuperAreaRecord : ID2ORecord
+    public class SuperAreaRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "SuperAreas";
         public int id;
@@ -63,12 +63,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SuperArea)parent : new SuperArea();
             obj.id = Id;
             obj.nameId = NameId;
             obj.worldmapId = WorldmapId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }
