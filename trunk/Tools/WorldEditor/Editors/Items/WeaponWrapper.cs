@@ -118,7 +118,7 @@ namespace WorldEditor.Editors.Items
         {
             if (New)
             {
-                Id = Math.Max(ObjectDataManager.Instance.FindFreeId<Item>(), ObjectDataManager.Instance.FindFreeId<Weapon>());
+                Id = Math.Max(ObjectDataManager.Instance.FindFreeId<ItemRecord>(), ObjectDataManager.Instance.FindFreeId<WeaponRecord>());
                 NameId = I18NDataManager.Instance.FindFreeId();
                 DescriptionId = NameId + 1;
             }

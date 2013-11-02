@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SoundUiHook")]
     [D2OClass("SoundUiHook", "com.ankamagames.dofus.datacenter.sounds")]
-    public class SoundUiHookRecord : ID2ORecord
+    public class SoundUiHookRecord : ID2ORecord, ISaveIntercepter
     {
         public uint id;
         public String name;
@@ -53,11 +53,14 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SoundUiHook)parent : new SoundUiHook();
             obj.id = Id;
             obj.name = Name;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

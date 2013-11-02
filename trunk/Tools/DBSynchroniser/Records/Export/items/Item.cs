@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Items")]
     [D2OClass("Item", "com.ankamagames.dofus.datacenter.items")]
-    public class ItemRecord : ID2ORecord
+    public class ItemRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Items";
         public const uint EQUIPEMENT_CATEGORY = 0;
@@ -354,7 +354,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Item)parent : new Item();
             obj.id = Id;
             obj.nameId = NameId;
@@ -385,6 +384,13 @@ namespace DBSynchroniser.Records
             obj.favoriteSubAreasBonus = FavoriteSubAreasBonus;
             obj.weight = Weight;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_recipeIdsBin = recipeIds == null ? null : recipeIds.ToBinary();
+            m_possibleEffectsBin = possibleEffects == null ? null : possibleEffects.ToBinary();
+            m_favoriteSubAreasBin = favoriteSubAreas == null ? null : favoriteSubAreas.ToBinary();
         
         }
     }

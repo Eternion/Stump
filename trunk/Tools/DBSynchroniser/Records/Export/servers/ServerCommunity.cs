@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("ServerCommunities")]
     [D2OClass("ServerCommunity", "com.ankamagames.dofus.datacenter.servers")]
-    public class ServerCommunityRecord : ID2ORecord
+    public class ServerCommunityRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "ServerCommunities";
         public int id;
@@ -92,13 +92,17 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (ServerCommunity)parent : new ServerCommunity();
             obj.id = Id;
             obj.nameId = NameId;
             obj.shortId = ShortId;
             obj.defaultCountries = DefaultCountries;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_defaultCountriesBin = defaultCountries == null ? null : defaultCountries.ToBinary();
         
         }
     }

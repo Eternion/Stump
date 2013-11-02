@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:22
+// Generated on 11/02/2013 14:55:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("AlignmentOrder")]
     [D2OClass("AlignmentOrder", "com.ankamagames.dofus.datacenter.alignments")]
-    public class AlignmentOrderRecord : ID2ORecord
+    public class AlignmentOrderRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "AlignmentOrder";
         public int id;
@@ -63,12 +63,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (AlignmentOrder)parent : new AlignmentOrder();
             obj.id = Id;
             obj.nameId = NameId;
             obj.sideId = SideId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

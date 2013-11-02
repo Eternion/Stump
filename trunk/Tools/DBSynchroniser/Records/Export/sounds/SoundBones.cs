@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SoundBones")]
     [D2OClass("SoundBones", "com.ankamagames.dofus.datacenter.sounds")]
-    public class SoundBonesRecord : ID2ORecord
+    public class SoundBonesRecord : ID2ORecord, ISaveIntercepter
     {
         public uint id;
         public List<String> keys;
@@ -99,12 +99,17 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SoundBones)parent : new SoundBones();
             obj.id = Id;
             obj.keys = Keys;
             obj.values = Values;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_keysBin = keys == null ? null : keys.ToBinary();
+            m_valuesBin = values == null ? null : values.ToBinary();
         
         }
     }

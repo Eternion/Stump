@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Spells")]
     [D2OClass("Spell", "com.ankamagames.dofus.datacenter.spells")]
-    public class SpellRecord : ID2ORecord
+    public class SpellRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Spells";
         public int id;
@@ -158,7 +158,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Spell)parent : new Spell();
             obj.id = Id;
             obj.nameId = NameId;
@@ -172,6 +171,11 @@ namespace DBSynchroniser.Records
             obj.spellLevels = SpellLevels;
             obj.useParamCache = UseParamCache;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_spellLevelsBin = spellLevels == null ? null : spellLevels.ToBinary();
         
         }
     }

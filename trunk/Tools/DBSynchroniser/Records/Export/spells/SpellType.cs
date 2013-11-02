@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SpellTypes")]
     [D2OClass("SpellType", "com.ankamagames.dofus.datacenter.spells")]
-    public class SpellTypeRecord : ID2ORecord
+    public class SpellTypeRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "SpellTypes";
         public int id;
@@ -65,12 +65,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SpellType)parent : new SpellType();
             obj.id = Id;
             obj.longNameId = LongNameId;
             obj.shortNameId = ShortNameId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

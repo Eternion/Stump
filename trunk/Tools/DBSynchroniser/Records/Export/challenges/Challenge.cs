@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:22
+// Generated on 11/02/2013 14:55:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Challenge")]
     [D2OClass("Challenge", "com.ankamagames.dofus.datacenter.challenges")]
-    public class ChallengeRecord : ID2ORecord
+    public class ChallengeRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Challenge";
         public int id;
@@ -65,12 +65,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Challenge)parent : new Challenge();
             obj.id = Id;
             obj.nameId = NameId;
             obj.descriptionId = DescriptionId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

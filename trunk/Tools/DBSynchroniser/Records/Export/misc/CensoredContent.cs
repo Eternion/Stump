@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:24
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("CensoredContents")]
     [D2OClass("CensoredContent", "com.ankamagames.dofus.datacenter.misc")]
-    public class CensoredContentRecord : ID2ORecord
+    public class CensoredContentRecord : ID2ORecord, ISaveIntercepter
     {
         public const String MODULE = "CensoredContents";
         public String lang;
@@ -77,13 +77,16 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (CensoredContent)parent : new CensoredContent();
             obj.lang = Lang;
             obj.type = Type;
             obj.oldValue = OldValue;
             obj.newValue = NewValue;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

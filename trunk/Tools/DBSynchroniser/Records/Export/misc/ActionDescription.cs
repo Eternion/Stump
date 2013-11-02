@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:24
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("ActionDescriptions")]
     [D2OClass("ActionDescription", "com.ankamagames.dofus.datacenter.misc")]
-    public class ActionDescriptionRecord : ID2ORecord
+    public class ActionDescriptionRecord : ID2ORecord, ISaveIntercepter
     {
         public const String MODULE = "ActionDescriptions";
         public uint id;
@@ -118,7 +118,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (ActionDescription)parent : new ActionDescription();
             obj.id = Id;
             obj.typeId = TypeId;
@@ -130,6 +129,10 @@ namespace DBSynchroniser.Records
             obj.minimalUseInterval = MinimalUseInterval;
             obj.needConfirmation = NeedConfirmation;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:22
+// Generated on 11/02/2013 14:55:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Emoticons")]
     [D2OClass("Emoticon", "com.ankamagames.dofus.datacenter.communication")]
-    public class EmoticonRecord : ID2ORecord
+    public class EmoticonRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Emoticons";
         public uint id;
@@ -166,7 +166,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Emoticon)parent : new Emoticon();
             obj.id = Id;
             obj.nameId = NameId;
@@ -181,6 +180,11 @@ namespace DBSynchroniser.Records
             obj.duration = Duration;
             obj.weight = Weight;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_animsBin = anims == null ? null : anims.ToBinary();
         
         }
     }

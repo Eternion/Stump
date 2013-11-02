@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Incarnation")]
     [D2OClass("Incarnation", "com.ankamagames.dofus.datacenter.items")]
-    public class IncarnationRecord : ID2ORecord
+    public class IncarnationRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Incarnation";
         public uint id;
@@ -63,12 +63,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Incarnation)parent : new Incarnation();
             obj.id = Id;
             obj.lookMale = LookMale;
             obj.lookFemale = LookFemale;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

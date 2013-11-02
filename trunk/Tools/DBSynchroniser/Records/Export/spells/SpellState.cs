@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SpellStates")]
     [D2OClass("SpellState", "com.ankamagames.dofus.datacenter.spells")]
-    public class SpellStateRecord : ID2ORecord
+    public class SpellStateRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "SpellStates";
         public int id;
@@ -81,7 +81,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SpellState)parent : new SpellState();
             obj.id = Id;
             obj.nameId = NameId;
@@ -89,6 +88,10 @@ namespace DBSynchroniser.Records
             obj.preventsFight = PreventsFight;
             obj.critical = Critical;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

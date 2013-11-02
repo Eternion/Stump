@@ -2,6 +2,7 @@ namespace Stump.Server.BaseServer.Initialization
 {
     public enum InitializationPass : byte
     {
+        Database,
         Any,
         /// <summary>
         /// DiscriminatorManager

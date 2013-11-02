@@ -42,12 +42,15 @@ namespace WorldEditor.Editors.Tables
         }
 
         private void ObjectsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        {            
+            
             ModelView.RemoveCommand.RaiseCanExecuteChanged();
             ObjectEditor.EditorDefinitions.Clear();
 
             if (ObjectsGrid.SelectedItem == null)
                 return;
+
+            ModelView.OnObjectEdited(ObjectsGrid.SelectedItem);
 
             // hack here to handle lists of lists
             var type = ObjectsGrid.SelectedItem.GetType();
@@ -112,10 +115,5 @@ namespace WorldEditor.Editors.Tables
         {
         }
 
-        private void ObjectEditor_PropertyValueChanged(object sender, PropertyValueChangedEventArgs e)
-        {
-            ModelView.OnObjectEdited(ObjectEditor.SelectedObject);
-
-        }
     }
 }

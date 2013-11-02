@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("MapReferences")]
     [D2OClass("MapReference", "com.ankamagames.dofus.datacenter.world")]
-    public class MapReferenceRecord : ID2ORecord
+    public class MapReferenceRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "MapReferences";
         public int id;
@@ -61,12 +61,15 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (MapReference)parent : new MapReference();
             obj.id = Id;
             obj.mapId = MapId;
             obj.cellId = CellId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

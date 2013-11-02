@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:24
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("OptionalFeatures")]
     [D2OClass("OptionalFeature", "com.ankamagames.dofus.datacenter.misc")]
-    public class OptionalFeatureRecord : ID2ORecord
+    public class OptionalFeatureRecord : ID2ORecord, ISaveIntercepter
     {
         public const String MODULE = "OptionalFeatures";
         public int id;
@@ -53,11 +53,14 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (OptionalFeature)parent : new OptionalFeature();
             obj.id = Id;
             obj.keyword = Keyword;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

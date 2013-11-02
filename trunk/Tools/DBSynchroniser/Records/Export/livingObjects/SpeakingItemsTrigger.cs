@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:24
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("SpeakingItemsTriggers")]
     [D2OClass("SpeakingItemsTrigger", "com.ankamagames.dofus.datacenter.livingObjects")]
-    public class SpeakingItemsTriggerRecord : ID2ORecord
+    public class SpeakingItemsTriggerRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "SpeakingItemsTriggers";
         public int triggersId;
@@ -99,12 +99,17 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (SpeakingItemsTrigger)parent : new SpeakingItemsTrigger();
             obj.triggersId = TriggersId;
             obj.textIds = TextIds;
             obj.states = States;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_textIdsBin = textIds == null ? null : textIds.ToBinary();
+            m_statesBin = states == null ? null : states.ToBinary();
         
         }
     }

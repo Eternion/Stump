@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:24
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Skills")]
     [D2OClass("Skill", "com.ankamagames.dofus.datacenter.jobs")]
-    public class SkillRecord : ID2ORecord
+    public class SkillRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Skills";
         public int id;
@@ -173,7 +173,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Skill)parent : new Skill();
             obj.id = Id;
             obj.nameId = NameId;
@@ -189,6 +188,11 @@ namespace DBSynchroniser.Records
             obj.availableInHouse = AvailableInHouse;
             obj.levelMin = LevelMin;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_craftableItemIdsBin = craftableItemIds == null ? null : craftableItemIds.ToBinary();
         
         }
     }

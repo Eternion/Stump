@@ -267,6 +267,8 @@ namespace WorldEditor.Editors.Tables
                 m_editedObjects.Remove(obj.Object);
                 SaveEditedObject(obj);
             }
+
+            MessageService.ShowMessage(m_editor, "Table saved");
         }
 
         private static void SaveEditedObject(EditedObject obj)
@@ -283,6 +285,8 @@ namespace WorldEditor.Editors.Tables
                     DatabaseManager.Instance.Database.Update(obj.Object);
                     break;
             }
+
+            obj.State = ObjectState.None;
         }
 
         #endregion
@@ -531,8 +535,11 @@ namespace WorldEditor.Editors.Tables
             {
                 var nameId = nameProperty.GetValue(row);
                 var id = idProperty.GetValue(row);
-                var name =
-                    I18NDataManager.Instance.GetText(nameId is uint ? (uint) nameId : (uint) (int) nameId).French;
+                var nameRecord = I18NDataManager.Instance.GetText(nameId is uint ? (uint) nameId : (uint) (int) nameId);
+                if (nameRecord == null)
+                    continue;
+
+                var name = !string.IsNullOrEmpty(nameRecord.English) ? nameRecord.English : nameRecord.French;
 
                 var formattedName = name.Trim().ToUpper().Replace(" ", "_").Replace("\"", "").Replace("'", "_");
                 builder.AppendLine(string.Format("\t\t{0} = {1},", formattedName, id));

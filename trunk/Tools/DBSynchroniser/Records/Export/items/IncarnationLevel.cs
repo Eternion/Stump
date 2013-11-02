@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("IncarnationLevels")]
     [D2OClass("IncarnationLevel", "com.ankamagames.dofus.datacenter.items")]
-    public class IncarnationLevelRecord : ID2ORecord
+    public class IncarnationLevelRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "IncarnationLevels";
         public int id;
@@ -70,13 +70,16 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (IncarnationLevel)parent : new IncarnationLevel();
             obj.id = Id;
             obj.incarnationId = IncarnationId;
             obj.level = Level;
             obj.requiredXp = RequiredXp;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

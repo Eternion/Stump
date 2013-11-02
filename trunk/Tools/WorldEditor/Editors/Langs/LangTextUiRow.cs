@@ -124,6 +124,8 @@ namespace WorldEditor.Editors.Langs
                     I18NDataManager.Instance.DeleteText(m_record);
                     break;
             }
+
+            State = RowState.None;
         }
     }
 }

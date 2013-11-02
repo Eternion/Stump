@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("QuestObjectiveTypes")]
     [D2OClass("QuestObjectiveType", "com.ankamagames.dofus.datacenter.quest")]
-    public class QuestObjectiveTypeRecord : ID2ORecord
+    public class QuestObjectiveTypeRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "QuestObjectiveTypes";
         public uint id;
@@ -54,11 +54,14 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (QuestObjectiveType)parent : new QuestObjectiveType();
             obj.id = Id;
             obj.nameId = NameId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

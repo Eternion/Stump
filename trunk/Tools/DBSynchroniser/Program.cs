@@ -9,6 +9,7 @@ using DBSynchroniser.Records;
 using DBSynchroniser.Records.Icons;
 using DBSynchroniser.Records.Langs;
 using Stump.Core.Attributes;
+using Stump.Core.I18N;
 using Stump.Core.Reflection;
 using Stump.Core.Sql;
 using Stump.Core.Xml.Config;
@@ -17,6 +18,7 @@ using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using Stump.ORM;
+using Stump.ORM.SubSonic.Query;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
@@ -53,7 +55,22 @@ namespace DBSynchroniser
 
         [Variable(true)] public static string DofusCustomPath = "";
 
-        [Variable(true)] public static string FilesOutput = "./generate";
+        [Variable(true)] public static string D2OOutput = "./generate_d2o";
+
+        [Variable(true)] public static string D2IOutput = "./generate_d2i";
+
+        private static Dictionary<string, Languages> m_stringToLang = new Dictionary<string, Languages>
+        {
+            {"fr", Languages.French},       
+            {"en", Languages.English},
+            {"es", Languages.Spanish},
+            {"de", Languages.German},
+            {"it", Languages.Italian},
+            {"ja", Languages.Japanish},
+            {"nl", Languages.Dutsh},
+            {"pt", Languages.Portugese},
+            {"ru", Languages.Russish},
+        };
 
 
         private static readonly Tuple<string, Action>[] m_menus =
@@ -312,6 +329,7 @@ namespace DBSynchroniser
             var uiRecords = new Dictionary<string, LangTextUi>();
             foreach (var file in d2iFiles.Where(file => SpecificLanguage.Contains(file.Key)))
             {
+                var lang = m_stringToLang[file.Key];
                 Console.WriteLine("Import {0}...", Path.GetFileName(file.Value.FilePath));
                 foreach (var text in file.Value.GetAllText())
                 {
@@ -323,36 +341,7 @@ namespace DBSynchroniser
                     }
                     else record = records[text.Key];
 
-                    switch (file.Key)
-                    {
-                        case "fr":
-                            record.French = text.Value;
-                            break;
-                        case "en":
-                            record.English = text.Value;
-                            break;
-                        case "de":
-                            record.German = text.Value;
-                            break;
-                        case "it":
-                            record.Italian = text.Value;
-                            break;
-                        case "es":
-                            record.Spanish = text.Value;
-                            break;
-                        case "ja":
-                            record.Japanish = text.Value;
-                            break;
-                        case "nl":
-                            record.Dutsh = text.Value;
-                            break;
-                        case "pt":
-                            record.Portugese = text.Value;
-                            break;
-                        case "ru":
-                            record.Russish = text.Value;
-                            break;
-                    }
+                    record.SetText(lang, text.Value);
                 }
 
                 foreach (var text in file.Value.GetAllUiText())
@@ -365,36 +354,7 @@ namespace DBSynchroniser
                     }
                     else record = uiRecords[text.Key];
 
-                    switch (file.Key)
-                    {
-                        case "fr":
-                            record.French = text.Value;
-                            break;
-                        case "en":
-                            record.English = text.Value;
-                            break;
-                        case "de":
-                            record.German = text.Value;
-                            break;
-                        case "it":
-                            record.Italian = text.Value;
-                            break;
-                        case "es":
-                            record.Spanish = text.Value;
-                            break;
-                        case "ja":
-                            record.Japanish = text.Value;
-                            break;
-                        case "nl":
-                            record.Dutsh = text.Value;
-                            break;
-                        case "pt":
-                            record.Portugese = text.Value;
-                            break;
-                        case "ru":
-                            record.Russish = text.Value;
-                            break;
-                    }
+                    record.SetText(lang, text.Value);
                 }
             }
 
@@ -498,10 +458,10 @@ namespace DBSynchroniser
 
         private static void GenerateFiles()
         {
-            if (!Directory.Exists(FilesOutput))
-                Directory.CreateDirectory(FilesOutput);
+            if (!Directory.Exists(D2OOutput))
+                Directory.CreateDirectory(D2OOutput);
             else
-                foreach (var file in Directory.EnumerateFiles(FilesOutput))
+                foreach (var file in Directory.EnumerateFiles(D2OOutput))
                     File.Delete(file);
 
             foreach (D2OTable table in m_tables.Values)
@@ -511,10 +471,10 @@ namespace DBSynchroniser
                 {
                     var baseTable = table.Type.BaseType.GetCustomAttribute<D2OClassAttribute>().Name;
                     writer =
-                        new D2OWriter(Path.Combine(FilesOutput, m_tables[baseTable].TableName + ".d2o"));
+                        new D2OWriter(Path.Combine(D2OOutput, m_tables[baseTable].TableName + ".d2o"));
                 }
                 else
-                    writer = new D2OWriter(Path.Combine(FilesOutput, table.TableName + ".d2o"));
+                    writer = new D2OWriter(Path.Combine(D2OOutput, table.TableName + ".d2o"));
 
                 Console.WriteLine("Generating {0} ...", Path.GetFileName(writer.Filename));
 
@@ -528,6 +488,36 @@ namespace DBSynchroniser
                 }
 
                 writer.EndWriting();
+            }
+
+            if (!Directory.Exists(D2IOutput))
+                Directory.CreateDirectory(D2IOutput);
+            else
+                foreach (var file in Directory.EnumerateFiles(D2IOutput))
+                    File.Delete(file);
+
+            Console.WriteLine("Loading langs");
+            var langs = Database.Database.Fetch<LangText>("SELECT * FROM langs");
+            var langsUi = Database.Database.Fetch<LangTextUi>("SELECT * FROM langs_ui");
+
+            foreach (var langStr in SpecificLanguage.Split(','))
+            {
+                var d2i = new D2IFile(Path.Combine(D2IOutput, "i18n_" + langStr + ".d2i"));
+
+                 Console.WriteLine("Generating {0} ...", Path.GetFileName(d2i.FilePath));
+
+                var lang = m_stringToLang[langStr];
+                foreach (var record in langsUi)
+                {
+                    d2i.SetText(record.Name, record.GetText(lang));
+                }
+
+                foreach (var record in langs)
+                {
+                    d2i.SetText((int)record.Id, record.GetText(lang));
+                }
+
+                d2i.Save();
             }
         }
 
@@ -609,8 +599,7 @@ namespace DBSynchroniser
 
                 using (var transaction = Database.Database.GetTransaction())
                 {
-                    int cursorLeft = Console.CursorLeft;
-                    int cursorTop = Console.CursorTop;
+                    InitializeCounter();
                     int i = 0;
                     var rows = GetTableRows(dataTable);
                     foreach (ID2ORecord row in rows)
@@ -637,11 +626,9 @@ namespace DBSynchroniser
                         worldDatabase.Database.Insert(record);
 
                         i++;
-                        Console.SetCursorPosition(cursorLeft, cursorTop);
-                        Console.Write("{0}/{1} ({2}%)", i, rows.Count,
-                                      (int) ((i/(double) rows.Count)*100d));
+                        UpdateCounter(i, rows.Count);
                     }
-                    Console.SetCursorPosition(cursorLeft, cursorTop);
+                    EndCounter();
                     transaction.Complete();
                 }
 
@@ -653,14 +640,47 @@ namespace DBSynchroniser
                     }
                 }
             }
+
+            if (tables.Length == 0)
+            {
+                Console.WriteLine("Synchronise langs ...");
+
+                var langs = Database.Database.Fetch<LangText>("SELECT * FROM langs");
+                var langsUi = Database.Database.Fetch<LangTextUi>("SELECT * FROM langs_ui");
+
+                worldDatabase.Database.Execute("DELETE FROM langs");
+                worldDatabase.Database.Execute("ALTER TABLE langs AUTO_INCREMENT=1");
+
+                worldDatabase.Database.Execute("DELETE FROM langs_ui");
+                worldDatabase.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
+
+                Console.WriteLine("Build table 'langs' ...");
+                InitializeCounter();
+                int count = 0;
+                foreach (var lang in langs)
+                {
+                    worldDatabase.Database.Insert(lang);
+                    count++;
+                    UpdateCounter(count, langs.Count);
+                }
+                EndCounter();
+                Console.WriteLine("Build table 'langs_ui' ...");
+                count = 0;
+                foreach (var lang in langsUi)
+                {
+                    worldDatabase.Database.Insert(lang);
+                    count++;
+                    UpdateCounter(count, langsUi.Count);
+                }
+                EndCounter();
+            }
         }
 
         private static void ExecutePatch(string file, Database database)
         {
             Console.WriteLine("Execute patch '{0}'", Path.GetFileName(file));
             int lineIndex = 0;
-            int cursorLeft = Console.CursorLeft;
-            int cursorTop = Console.CursorTop;
+            InitializeCounter();
             string[] lines = File.ReadAllLines(file);
             foreach (string line in lines)
             {
@@ -677,13 +697,10 @@ namespace DBSynchroniser
                 {
                     lineIndex++;
 
-
-                    Console.SetCursorPosition(cursorLeft, cursorTop);
-                    Console.Write("{0}/{1} ({2}%)", lineIndex, lines.Length,
-                        (int) ((lineIndex/(double) lines.Length)*100d));
+                    UpdateCounter(lineIndex, lines.Length);
                 }
             }
-            Console.SetCursorPosition(cursorLeft, cursorTop);
+            EndCounter();
         }
 
         #endregion
@@ -700,6 +717,30 @@ namespace DBSynchroniser
 
             return rows;
         }
+
+        private static int m_cursorLeft;
+        private static int m_cursorTop;
+        private static void InitializeCounter()
+        {
+            m_cursorLeft = Console.CursorLeft;
+            m_cursorTop = Console.CursorTop;
+        }
+
+
+        private static void UpdateCounter(int i, int count)
+        {
+            Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
+            Console.Write("{0}/{1} ({2}%)", i, count,
+                (int) ((i/(double) count)*100d));
+        }
+
+        private static void EndCounter()
+        {
+            Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
+            Console.Write(new string(' ', Console.BufferWidth - m_cursorLeft));
+            Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
+        }
+
         #endregion
     }
 }

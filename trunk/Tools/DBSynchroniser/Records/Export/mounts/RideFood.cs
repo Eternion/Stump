@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("RideFood")]
     [D2OClass("RideFood", "com.ankamagames.dofus.datacenter.mounts")]
-    public class RideFoodRecord : ID2ORecord
+    public class RideFoodRecord : ID2ORecord, ISaveIntercepter
     {
         public uint gid;
         public uint typeId;
@@ -58,11 +58,14 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (RideFood)parent : new RideFood();
             obj.gid = Gid;
             obj.typeId = TypeId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

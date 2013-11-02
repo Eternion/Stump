@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:23
+// Generated on 11/02/2013 14:55:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("ItemTypes")]
     [D2OClass("ItemType", "com.ankamagames.dofus.datacenter.items")]
-    public class ItemTypeRecord : ID2ORecord
+    public class ItemTypeRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "ItemTypes";
         public int id;
@@ -100,7 +100,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (ItemType)parent : new ItemType();
             obj.id = Id;
             obj.nameId = NameId;
@@ -110,6 +109,10 @@ namespace DBSynchroniser.Records
             obj.rawZone = RawZone;
             obj.needUseConfirm = NeedUseConfirm;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

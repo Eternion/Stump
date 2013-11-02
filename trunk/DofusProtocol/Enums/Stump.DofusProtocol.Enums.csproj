@@ -143,6 +143,7 @@
     <Compile Include="Custom\ActionsEnum.cs" />
     <Compile Include="Custom\InteractiveTypeEnum.cs" />
     <Compile Include="Custom\ItemSuperTypeEnum.cs" />
+    <Compile Include="Custom\NotificationEnum.cs" />
     <Compile Include="Custom\OrnamentEnum.cs" />
     <Compile Include="Custom\SpellShapeEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />

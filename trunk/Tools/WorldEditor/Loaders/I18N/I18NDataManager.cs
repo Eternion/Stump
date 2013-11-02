@@ -149,9 +149,9 @@ namespace WorldEditor.Loaders.I18N
 
         public uint FindFreeId()
         {
-            uint id = m_langs.Keys.Max();
+            int id = DatabaseManager.Instance.Database.ExecuteScalar<int>("SELECT MAX(Id) FROM langs") + 1;
 
-            return id < Settings.MinI18NId ? Settings.MinI18NId : id;
+            return id < Settings.MinI18NId ? Settings.MinI18NId : (uint)id;
         }
     }
 }

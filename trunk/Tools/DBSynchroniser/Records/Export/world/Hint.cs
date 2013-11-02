@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:26
+// Generated on 11/02/2013 14:55:51
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Hints")]
     [D2OClass("Hint", "com.ankamagames.dofus.datacenter.world")]
-    public class HintRecord : ID2ORecord
+    public class HintRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Hints";
         public int id;
@@ -128,7 +128,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Hint)parent : new Hint();
             obj.id = Id;
             obj.categoryId = CategoryId;
@@ -141,6 +140,10 @@ namespace DBSynchroniser.Records
             obj.outdoor = Outdoor;
             obj.subareaId = SubareaId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

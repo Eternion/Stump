@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:22
+// Generated on 11/02/2013 14:55:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("CensoredWords")]
     [D2OClass("CensoredWord", "com.ankamagames.dofus.datacenter.communication")]
-    public class CensoredWordRecord : ID2ORecord
+    public class CensoredWordRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "CensoredWords";
         public uint id;
@@ -81,7 +81,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (CensoredWord)parent : new CensoredWord();
             obj.id = Id;
             obj.listId = ListId;
@@ -89,6 +88,10 @@ namespace DBSynchroniser.Records
             obj.word = Word;
             obj.deepLooking = DeepLooking;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

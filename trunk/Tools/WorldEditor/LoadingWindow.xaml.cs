@@ -83,6 +83,7 @@ namespace WorldEditor
             try
             {
                 DatabaseManager.Instance.Connect();
+                DatabaseManager.Instance.Database.CommandTimeout = 120;
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:24
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Recipes")]
     [D2OClass("Recipe", "com.ankamagames.dofus.datacenter.jobs")]
-    public class RecipeRecord : ID2ORecord
+    public class RecipeRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Recipes";
         public int resultId;
@@ -108,13 +108,18 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Recipe)parent : new Recipe();
             obj.resultId = ResultId;
             obj.resultLevel = ResultLevel;
             obj.ingredientIds = IngredientIds;
             obj.quantities = Quantities;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_ingredientIdsBin = ingredientIds == null ? null : ingredientIds.ToBinary();
+            m_quantitiesBin = quantities == null ? null : quantities.ToBinary();
         
         }
     }

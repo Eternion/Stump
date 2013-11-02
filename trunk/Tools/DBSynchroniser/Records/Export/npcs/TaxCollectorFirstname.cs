@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("TaxCollectorFirstnames")]
     [D2OClass("TaxCollectorFirstname", "com.ankamagames.dofus.datacenter.npcs")]
-    public class TaxCollectorFirstnameRecord : ID2ORecord
+    public class TaxCollectorFirstnameRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "TaxCollectorFirstnames";
         public int id;
@@ -54,11 +54,14 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (TaxCollectorFirstname)parent : new TaxCollectorFirstname();
             obj.id = Id;
             obj.firstnameId = FirstnameId;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }

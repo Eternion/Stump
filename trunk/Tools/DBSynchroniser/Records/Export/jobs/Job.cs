@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:24
+// Generated on 11/02/2013 14:55:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Jobs")]
     [D2OClass("Job", "com.ankamagames.dofus.datacenter.jobs")]
-    public class JobRecord : ID2ORecord
+    public class JobRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Jobs";
         public int id;
@@ -100,7 +100,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Job)parent : new Job();
             obj.id = Id;
             obj.nameId = NameId;
@@ -108,6 +107,11 @@ namespace DBSynchroniser.Records
             obj.iconId = IconId;
             obj.toolIds = ToolIds;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
+            m_toolIdsBin = toolIds == null ? null : toolIds.ToBinary();
         
         }
     }

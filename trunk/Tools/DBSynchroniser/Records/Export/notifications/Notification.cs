@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/28/2013 14:03:25
+// Generated on 11/02/2013 14:55:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +15,7 @@ namespace DBSynchroniser.Records
 {
     [TableName("Notifications")]
     [D2OClass("Notification", "com.ankamagames.dofus.datacenter.notifications")]
-    public class NotificationRecord : ID2ORecord
+    public class NotificationRecord : ID2ORecord, ISaveIntercepter
     {
         private const String MODULE = "Notifications";
         public int id;
@@ -93,7 +93,6 @@ namespace DBSynchroniser.Records
         
         public virtual object CreateObject(object parent = null)
         {
-            
             var obj = parent != null ? (Notification)parent : new Notification();
             obj.id = Id;
             obj.titleId = TitleId;
@@ -102,6 +101,10 @@ namespace DBSynchroniser.Records
             obj.typeId = TypeId;
             obj.trigger = Trigger;
             return obj;
+        }
+        
+        public virtual void BeforeSave(bool insert)
+        {
         
         }
     }
