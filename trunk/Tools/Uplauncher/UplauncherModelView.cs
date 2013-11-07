@@ -462,7 +462,6 @@ namespace Uplauncher
             catch (Exception ex)
             {
                 HandleDownloadError(false, ex, (string)e.UserState);
-                return;
             }
         }
 
@@ -519,11 +518,21 @@ namespace Uplauncher
             var file = Path.GetTempFileName() + ".exe";
             File.WriteAllBytes(file, Resources.UplauncherReplacer);
 
-            Process.Start(file, string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
-                                              Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath),
-                                              Path.GetFullPath(Constants.CurrentExePath)));
-            NotifyIcon.Visible = false;
-            Environment.Exit(1);
+            var procInfo = new ProcessStartInfo();
+            procInfo.Arguments = string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id, Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath), Path.GetFullPath(Constants.CurrentExePath));
+            procInfo.Verb = "runas";
+
+            try
+            {
+                Process.Start(procInfo);
+
+                NotifyIcon.Visible = false;
+                Environment.Exit(1);
+            }
+            catch
+            {
+                //The user refused the elevation
+            }
         }
 
         private void OnUpdateEnded(bool success)
