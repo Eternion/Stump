@@ -58,8 +58,8 @@ namespace WorldEditor.Search.Items
             }
             else
             {
-                matches = DatabaseManager.Instance.Database.Fetch<ItemRecord>("SELECT * FROM Items WHERE " + whereStatement);
-                matches.AddRange(DatabaseManager.Instance.Database.Query<WeaponRecord>("SELECT * FROM Weapons WHERE " + whereStatement));
+                matches = DatabaseManager.Instance.Database.Fetch<ItemRecord>("SELECT * FROM Items WHERE " + whereStatement.Replace("'", "\\'"));
+                matches.AddRange(DatabaseManager.Instance.Database.Query<WeaponRecord>("SELECT * FROM Weapons WHERE " + whereStatement.Replace("'", "\\'")));
             }
 
             return matches.Select(x => new ItemWrapper(x));
