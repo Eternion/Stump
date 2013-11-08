@@ -222,4 +222,42 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
     }
+
+    public class ItemAddTypeCommand : TargetSubCommand
+    {
+        public ItemAddTypeCommand()
+        {
+            Aliases = new[] {"addtype"};
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Add all the items match with typeId.";
+            ParentCommand = typeof (ItemCommand);
+
+            AddParameter<int>("typeid", "type", "TypeId to add");
+            AddTargetParameter(true, "Character who will receive the items");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var typeId = trigger.Get<int>("typeid");
+            var target = GetTarget(trigger);
+
+            var items = ItemManager.Instance.GetTemplates();
+
+            foreach (var item in items)
+            {
+                if (item.TypeId != typeId)
+                    continue;
+
+                var cItem = ItemManager.Instance.CreatePlayerItem(target, item, 1);
+                target.Inventory.AddItem(cItem);
+
+                if (cItem == null)
+                    trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", item.Name, item.Id);
+                else if (trigger is GameTrigger && (trigger as GameTrigger).Character.Id == target.Id)
+                    trigger.Reply("Added '{0}'({1}) to your inventory.", item.Name, item.Id);
+                else
+                    trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", item.Name, item.Id, target.Name);
+            }
+        }
+    }
 }
