@@ -33,7 +33,7 @@ namespace WorldEditor.Editors.Items
     {
         public WeaponWrapper()
         {
-            WrappedWeapon = new WeaponRecord();
+            WrappedItem = new WeaponRecord();
             m_name = new LangText();
             m_name.SetText(Languages.All, "New weapon");
             m_description = new LangText();
@@ -51,13 +51,15 @@ namespace WorldEditor.Editors.Items
         public WeaponWrapper(WeaponRecord wrappedWeapon)
             : base(wrappedWeapon)
         {
-            WrappedWeapon = wrappedWeapon;
+            WrappedItem = wrappedWeapon;
         }
 
         public WeaponRecord WrappedWeapon
         {
-            get;
-            private set;
+            get
+            {
+                return (WeaponRecord) WrappedItem;
+            }
         }
 
         public int ApCost
