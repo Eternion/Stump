@@ -150,5 +150,10 @@ namespace Stump.Core.Sql
         {
             return field.Replace("`", "").Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘").Replace("@", "@@");
         }
+
+        public static string EscapeValue(string field)
+        {
+            return field.Replace("'", "\\'").Replace(@"\", @"\\").Replace("'", @"\'").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("‘", "\\‘").Replace("@", "@@");
+        }
     }
 }
