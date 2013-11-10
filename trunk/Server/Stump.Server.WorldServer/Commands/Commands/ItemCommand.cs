@@ -278,9 +278,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var typeId = trigger.Get<int>("typeid");
             var target = GetTarget(trigger);
 
-            var items = target.Inventory.GetItems();
+            var itemsToDelete = target.Inventory.Where(x => x.Template.TypeId == typeId).ToArray();
 
-            foreach (var item in items)
+            foreach (var item in itemsToDelete)
             {
                 if (item.Template.TypeId == typeId)
                 {

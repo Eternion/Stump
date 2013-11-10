@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Stump.Core.Sql;
 using WorldEditor.Annotations;
 using WorldEditor.Loaders.I18N;
 
@@ -79,7 +80,7 @@ namespace WorldEditor.Search
             {
                 builder.AppendFormat("`{0}` ", I18NColumn);
                 builder.AppendFormat("IN (SELECT Id FROM langs WHERE {0} COLLATE UTF8_GENERAL_CI LIKE '%{1}%')",
-                    I18NDataManager.Instance.DefaultLanguage, ComparedToValueString);
+                    I18NDataManager.Instance.DefaultLanguage, SqlBuilder.EscapeValue(ComparedToValueString));
             }
             else
             {
