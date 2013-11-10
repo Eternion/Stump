@@ -82,6 +82,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*" SharedSizeGroup="Label"/>
@@ -128,6 +129,13 @@
 
                 <TextBlock Text="Criteria" Grid.Row="2" Grid.Column="0" Margin="3"/>
                 <TextBox Text="{Binding Item.Criteria}" Grid.Row="2" Grid.Column="1" Margin="3"/>
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Grid.ColumnSpan="4" Grid.Column="0" Margin="3">
+                    <CheckBox Content="Two handed" IsChecked="{Binding Item.TwoHanded}" Margin="3"/>
+                    <CheckBox Content="Hide effects" IsChecked="{Binding Item.HideEffects}" Margin="3"/>
+                    <CheckBox Content="Cursed" IsChecked="{Binding Item.Cursed}" Margin="3"/>
+                </StackPanel>
+
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="2">

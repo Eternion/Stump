@@ -55,6 +55,11 @@ namespace ArkalysPlugin.SmithMagic
                 var effect = weapon.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_DamageNeutral);
 
                 effect.EffectId = tuple.Item1;
+                if (effect is EffectDice)
+                {
+                    (effect as EffectDice).DiceFace = (short)((effect as EffectDice).DiceFace * boost);
+                    (effect as EffectDice).DiceNum = (short)((effect as EffectDice).DiceNum * boost);
+                }
                 if (effect is EffectInteger)
                     (effect as EffectInteger).Value = (short)((effect as EffectInteger).Value * boost);
                 else if (effect is EffectMinMax)
