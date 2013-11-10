@@ -13,11 +13,14 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
+using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Startup;
 
 namespace Stump.Server.WorldServer.Handlers.Approach
@@ -132,6 +135,29 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             /* Just to get console AutoCompletion */
             if (client.Account.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client);
+
+            var characterInFight = FindCharacterFightReconnection(client);
+            if (characterInFight != null)
+                CharacterHandler.CommonCharacterSelection(client, characterInFight);
+
+        }
+        
+        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
+        {
+            foreach (var characterInFight in client.Characters.Where(x => x.LeftFightId != null))
+            {
+                var fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value);
+
+                if (fight != null)
+                {
+                    var fighter = fight.GetLeaver(characterInFight.Id);
+
+                    if (fighter != null)
+                        return characterInFight;
+                }
+            }
+
+            return null;
         }
 
         public static void SendStartupActionsListMessage(IPacketReceiver client)

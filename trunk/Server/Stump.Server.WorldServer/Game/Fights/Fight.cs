@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
@@ -1801,12 +1802,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor GetOneFighter(int id)
         {
-            return Fighters.Where(entry => entry.Id == id).SingleOrDefault();
+            return Fighters.SingleOrDefault(entry => entry.Id == id);
         }
 
         public FightActor GetOneFighter(Cell cell)
         {
-            return Fighters.Where(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell)).SingleOrDefault();
+            return Fighters.SingleOrDefault(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell));
         }
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
@@ -1821,47 +1822,52 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public T GetOneFighter<T>(int id) where T : FightActor
         {
-            return Fighters.OfType<T>().Where(entry => entry.Id == id).SingleOrDefault();
+            return Fighters.OfType<T>().SingleOrDefault(entry => entry.Id == id);
         }
 
         public T GetOneFighter<T>(Cell cell) where T : FightActor
         {
-            return Fighters.OfType<T>().Where(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell)).SingleOrDefault();
+            return Fighters.OfType<T>().SingleOrDefault(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell));
         }
 
         public T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor
         {
-            return Fighters.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
+            return Fighters.OfType<T>().SingleOrDefault(entry => predicate(entry));
         }
 
         public T GetFirstFighter<T>(int id) where T : FightActor
         {
-            return Fighters.OfType<T>().Where(entry => entry.Id == id).FirstOrDefault();
+            return Fighters.OfType<T>().FirstOrDefault(entry => entry.Id == id);
         }
 
         public T GetFirstFighter<T>(Cell cell) where T : FightActor
         {
-            return Fighters.OfType<T>().Where(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell)).FirstOrDefault();
+            return Fighters.OfType<T>().FirstOrDefault(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell));
         }
 
         public T GetFirstFighter<T>(Predicate<T> predicate) where T : FightActor
         {
-            return Fighters.OfType<T>().Where(entry => predicate(entry)).FirstOrDefault();
+            return Fighters.OfType<T>().FirstOrDefault(entry => predicate(entry));
         }
 
-        public IEnumerable<FightActor> GetAllFighters()
+        public ReadOnlyCollection<FightActor> GetAllFighters()
         {
-            return Fighters;
+            return Fighters.AsReadOnly();
         }
 
-        public IEnumerable<FightActor> GetLeavers()
+        public ReadOnlyCollection<FightActor> GetLeavers()
         {
-            return Leavers;
+            return Leavers.AsReadOnly();
         }
 
-        public IEnumerable<FightSpectator> GetSpectators()
+        public CharacterFighter GetLeaver(int characterId)
         {
-            return Spectators;
+            return Leavers.OfType<CharacterFighter>().SingleOrDefault(x => x.Id == characterId);
+        }
+
+        public ReadOnlyCollection<FightSpectator> GetSpectators()
+        {
+            return Spectators.AsReadOnly();
         }
 
         public IEnumerable<Character> GetCharactersAndSpectators()

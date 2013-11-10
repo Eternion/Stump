@@ -264,6 +264,7 @@
     <Compile Include="Game\Conditions\ComparaisonOperatorEnum.cs" />
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
+    <Compile Include="Game\Dialogs\Guilds\GuildCreationPanel.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapDialog.cs" />
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />

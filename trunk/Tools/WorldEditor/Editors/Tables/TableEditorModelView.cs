@@ -232,6 +232,10 @@ namespace WorldEditor.Editors.Tables
                 {
                     property.SetValue(obj, Activator.CreateInstance(property.PropertyType));
                 }
+                if (property.PropertyType == typeof (string))
+                {
+                    property.SetValue(obj, string.Empty);
+                }
             }
 
             m_rows.Add(obj);
