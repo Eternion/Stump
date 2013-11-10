@@ -1,17 +1,15 @@
 ﻿using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs.Guilds;
+
 namespace Stump.Server.WorldServer.Commands.Commands
 {
-    class GuildCommand : SubCommandContainer
+    internal class GuildCommand : SubCommandContainer
     {
         public GuildCommand()
         {
-            Aliases = new[] { "guild" };
+            Aliases = new[] {"guild"};
             RequiredRole = RoleEnum.GameMaster;
             Description = "Provides many commands to manage guilds";
         }
@@ -21,14 +19,20 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public GuildCreateCommand()
         {
-            Aliases = new[] { "create" };
+            Aliases = new[] {"create"};
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommand = typeof(GuildCommand);
+            ParentCommand = typeof (GuildCommand);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            trigger.GetSource().Send(new GuildCreationStartedMessage());
+            if (trigger is GameTrigger)
+            {
+                var panel = new GuildCreationPanel((trigger as GameTrigger).Character);
+                panel.Open();
+            }
+            else
+                trigger.ReplyError("Only in game");
         }
     }
 }

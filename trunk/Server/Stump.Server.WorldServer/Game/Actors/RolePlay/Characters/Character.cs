@@ -1310,6 +1310,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             base.OnTeleported(position);
 
             UpdateRegenedLife();
+
+            if (Dialog != null)
+                Dialog.Close();
         }
 
         public override bool CanChangeMap()

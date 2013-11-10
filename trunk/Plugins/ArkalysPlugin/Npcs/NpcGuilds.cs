@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -143,7 +144,8 @@ namespace ArkalysPlugin.Npcs
         {
             if (replyId == NpcGuilds.ReplyGuildSuccessId)
             {
-                Character.Client.Send(new GuildCreationStartedMessage());
+                var panel = new GuildCreationPanel(Character);
+                panel.Open();
             }
             else if (replyId == NpcGuilds.ReplyGuildBuyId)
             {
