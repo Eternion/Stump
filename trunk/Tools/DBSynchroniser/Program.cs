@@ -641,7 +641,7 @@ namespace DBSynchroniser
                 }
             }
 
-            if (tables.Length == 0)
+            if (tables.Length > 0)
             {
                 Console.WriteLine("Synchronise langs ...");
 
