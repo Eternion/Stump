@@ -571,6 +571,12 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public int? LeftFightId
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         public CharacterRecord(Breed breed)
