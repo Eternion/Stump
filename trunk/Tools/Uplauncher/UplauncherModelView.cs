@@ -529,9 +529,10 @@ namespace Uplauncher
                 NotifyIcon.Visible = false;
                 Environment.Exit(1);
             }
-            catch
+            catch(Exception ex)
             {
                 //The user refused the elevation
+                HandleDownloadError(false, ex, addFile.LocalURL);
             }
         }
 
