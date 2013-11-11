@@ -641,22 +641,23 @@ namespace DBSynchroniser
                 }
             }
 
-            if (tables.Length > 0)
+            Console.WriteLine("Synchronise langs ...");
+
+            var langs = Database.Database.Fetch<LangText>("SELECT * FROM langs");
+            var langsUi = Database.Database.Fetch<LangTextUi>("SELECT * FROM langs_ui");
+
+            worldDatabase.Database.Execute("DELETE FROM langs");
+            worldDatabase.Database.Execute("ALTER TABLE langs AUTO_INCREMENT=1");
+
+            worldDatabase.Database.Execute("DELETE FROM langs_ui");
+            worldDatabase.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
+                
+            int count = 0;
+            if (tables.Length == 0 || tables.Any(x => "langs".Contains(x)))
             {
-                Console.WriteLine("Synchronise langs ...");
-
-                var langs = Database.Database.Fetch<LangText>("SELECT * FROM langs");
-                var langsUi = Database.Database.Fetch<LangTextUi>("SELECT * FROM langs_ui");
-
-                worldDatabase.Database.Execute("DELETE FROM langs");
-                worldDatabase.Database.Execute("ALTER TABLE langs AUTO_INCREMENT=1");
-
-                worldDatabase.Database.Execute("DELETE FROM langs_ui");
-                worldDatabase.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
-
                 Console.WriteLine("Build table 'langs' ...");
+
                 InitializeCounter();
-                int count = 0;
                 foreach (var lang in langs)
                 {
                     worldDatabase.Database.Insert(lang);
@@ -664,6 +665,10 @@ namespace DBSynchroniser
                     UpdateCounter(count, langs.Count);
                 }
                 EndCounter();
+            }
+
+            if (tables.Length == 0 || tables.Any(x => "langs_ui".Contains(x)))
+            {
                 Console.WriteLine("Build table 'langs_ui' ...");
                 count = 0;
                 foreach (var lang in langsUi)

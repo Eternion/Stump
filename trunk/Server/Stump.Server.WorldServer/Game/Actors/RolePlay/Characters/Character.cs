@@ -941,7 +941,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ushort Honor
         {
             get { return m_record.Honor; }
-            private set
+            set
             {
                 m_record.Honor = value;
                 if (value < UpperBoundHonor || AlignmentGrade >= ExperienceManager.Instance.HighestGrade)
@@ -1310,6 +1310,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             base.OnTeleported(position);
 
             UpdateRegenedLife();
+
+            if (Dialog != null)
+                Dialog.Close();
         }
 
         public override bool CanChangeMap()

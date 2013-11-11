@@ -6,6 +6,7 @@ using Stump.Core.Extensions;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Handlers.Dialogs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -35,14 +36,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         [WorldHandler(GuildCreationValidMessage.Id)]
         public static void HandleGuildCreationValidMessage(WorldClient client, GuildCreationValidMessage message)
         {
-            if (client.Character.Guild != null)
+            var panel = client.Character.Dialog as GuildCreationPanel;
+            if (panel != null)
             {
-                SendGuildCreationResultMessage(client, GuildCreationResultEnum.GUILD_CREATE_ERROR_ALREADY_IN_GUILD);
-                return;
+                panel.CreateGuild(message.guildName, message.guildEmblem);
             }
-
-            var result = Singleton<GuildManager>.Instance.CreateGuild(client.Character, message.guildName, message.guildEmblem);
-            SendGuildCreationResultMessage(client, result);
         }
 
         [WorldHandler(GuildChangeMemberParametersMessage.Id)]
@@ -228,6 +226,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildMemberLeavingMessage(IPacketReceiver client, GuildMember member, bool kicked)
         {
             client.Send(new GuildMemberLeavingMessage(kicked, member.Id));
+        }
+
+        public static void SendGuildCreationStartedMessage(IPacketReceiver client)
+        {
+            client.Send(new GuildCreationStartedMessage());
         }
     }
 }
