@@ -104,7 +104,7 @@ namespace ArkalysPlugin.Npcs
                                                                     : new[]
                                                                         {
                                                                             NpcAlignement.ReplyBecomeAngel,
-                                                                            NpcAlignement.ReplyBecomeAngel
+                                                                            NpcAlignement.ReplyBecomeEvil
                                                                         });
         }
 
@@ -113,7 +113,6 @@ namespace ArkalysPlugin.Npcs
             if (replyId == NpcAlignement.ReplyBecomeAngel)
             {
                 Character.ChangeAlignementSide(AlignmentSideEnum.ALIGNMENT_ANGEL);
-                
             }
             else if (replyId == NpcAlignement.ReplyBecomeEvil)
             {
@@ -123,6 +122,8 @@ namespace ArkalysPlugin.Npcs
             {
                 Character.ChangeAlignementSide(AlignmentSideEnum.ALIGNMENT_NEUTRAL);
             }
+
+            Character.Honor = 0;
 
             Close();
         }

@@ -941,7 +941,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ushort Honor
         {
             get { return m_record.Honor; }
-            private set
+            set
             {
                 m_record.Honor = value;
                 if (value < UpperBoundHonor || AlignmentGrade >= ExperienceManager.Instance.HighestGrade)

@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -324,7 +325,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public bool CanEquip(BasePlayerItem item, CharacterInventoryPositionEnum position, bool send = true)
         {
-            if (Owner.IsInFight())
+            if (Owner.IsInFight() && Owner.Fight.State != FightState.Placement)
                 return false;
 
             if (position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED)
@@ -533,7 +534,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (!HasItem(item.Guid) || !item.IsUsable())
                 return false;
 
-            if (Owner.IsInFight())
+            if (Owner.IsInFight() && Owner.Fight.State != FightState.Placement)
                 return false;
 
             if (!item.AreConditionFilled(Owner))
