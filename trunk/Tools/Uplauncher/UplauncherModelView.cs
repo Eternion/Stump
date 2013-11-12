@@ -240,7 +240,7 @@ namespace Uplauncher
             if (IsUpdating)
                 return;
 
-            var dialogResult = MessageBox.Show("Êtes-vous sur de vouloir réparer le jeu? Tous les fichiers seront supprimés puis téléchargés à nouveau !", "Réparer le jeu", MessageBoxButtons.YesNo);
+            var dialogResult = MessageBox.Show(@"Êtes-vous sur de vouloir réparer le jeu? Tous les fichiers seront supprimés puis téléchargés à nouveau !", "Réparer le jeu", MessageBoxButtons.YesNo);
 
             if (dialogResult != DialogResult.Yes)
                 return;
@@ -518,9 +518,14 @@ namespace Uplauncher
             var file = Path.GetTempFileName() + ".exe";
             File.WriteAllBytes(file, Resources.UplauncherReplacer);
 
-            var procInfo = new ProcessStartInfo();
-            procInfo.Arguments = string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id, Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath), Path.GetFullPath(Constants.CurrentExePath));
-            procInfo.Verb = "runas";
+            var procInfo = new ProcessStartInfo
+            {
+                Arguments =
+                    string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
+                        Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath),
+                        Path.GetFullPath(Constants.CurrentExePath)),
+                Verb = "runas"
+            };
 
             try
             {
