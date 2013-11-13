@@ -313,6 +313,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             internal set;
         }
 
+        public override bool BlockSight
+        {
+            get { return !IsDead(); }
+        }
+
         #region Stats
 
         public abstract byte Level

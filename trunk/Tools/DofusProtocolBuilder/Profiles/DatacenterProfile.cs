@@ -12,6 +12,11 @@ namespace DofusProtocolBuilder.Profiles
     {
         public DatacenterProfile()
         {
+            IgnoredLines = new string[]
+                {
+                    "^switch.*",
+                };
+
             BeforeParsingReplacementRules =
                 new SerializableDictionary<string, string>
                     {
@@ -29,7 +34,7 @@ namespace DofusProtocolBuilder.Profiles
                         {@"(__AS3__\.vec\.)?Vector\.", "List"},
                         {@"\.push\(", @".Add("},
                         {@"\.length", @".Count"},
-                        {@"\bNumber", @"float"},
+                        {@"\bNumber", @"double"},
                         // convert Number to float
 
                         {@"static const", "const"},
@@ -39,15 +44,15 @@ namespace DofusProtocolBuilder.Profiles
                             "readonly static OPERATORS_LIST:Array=new string[]{$1}"
                             },
                         //another hack
-                        {@"(protected|private) var _rawZone", "public var rawZone"},
+                        {@"(protected|private) var _rawZone:", "public var rawZone:"},
                         {@"(protected|private) var _zoneSize = 4.29497e+009", "public var zoneSize"},
                         {@"(protected|private) var _zoneShape = 4.29497e+009", "public var zoneShape"},
                         {@"(protected|private) var _zoneMinSize = 4.29497e+009", "public var zoneMinSize"},
                         {@"(protected|private) var _weight", "public var weight"},
-                        {@"(protected|private) var _type", "public var type"},
-                        {@"(protected|private) var _oldValue", "public var oldValue"},
-                        {@"(protected|private) var _newValue", "public var newValue"},
-                        {@"(protected|private) var _lang", "public var lang"},
+                        {@"public function get oldValue\(\) : int", "public var oldValue:int;"},
+                        {@"public function get newValue\(\) : int", "public var newValue:int;"},
+                        {@"public function get lang\(\) : String", "public var lang:String;"},
+                        {@"public function get type\(\) : int", "public var type:int;"},
                         // ankama's devs are idiots, they attempt to assign -1 to a uint field
                         {@"public var iconId:uint", "public var iconId:int"},
 

@@ -21,7 +21,7 @@ namespace ArkalysPlugin.Commands
 
         public NpcCommand()
         {
-            Aliases = new[] { "npc" };
+            Aliases = new[] { "pnj" };
             RequiredRole = RoleEnum.Player;
             Description = "Téléporte à la zone d'achat d'équipements";
         }

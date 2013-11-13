@@ -22,9 +22,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using Ionic.Zip;
 using Ionic.Zlib;
 using Stump.Core.IO;
+using Stump.Core.Reflection;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 {
@@ -234,7 +236,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
                     foreach (var vectorType in field.VectorTypes)
                     {
-                        m_writer.WriteUTF(vectorType.Item2);
+                        m_writer.WriteUTF(ConvertNETTypeToAS3(vectorType.Item2));
                         m_writer.WriteInt((int) vectorType.Item1);
                     }
                 }
@@ -302,7 +304,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
         private int AllocateClassId(Type classType)
         {
-            int id = m_allocatedClassId.Count > 0 ? m_allocatedClassId.Values.Max() + 1 : 0;
+            int id = m_allocatedClassId.Count > 0 ? m_allocatedClassId.Values.Max() + 1 : 1;
             AllocateClassId(classType, id);
 
             return id;
@@ -340,7 +342,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                     continue;
 
                 var attr = (D2OFieldAttribute) field.GetCustomAttributes(typeof (D2OFieldAttribute), false).SingleOrDefault();
-                var fieldType = GetIdByType(field.FieldType);
+                var fieldType = GetIdByType(field);
                 var vectorTypes = GetVectorTypes(field.FieldType);
                 var fieldName = attr != null ? attr.FieldName : field.Name;
 
@@ -353,7 +355,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                     continue;
 
                 var attr = (D2OFieldAttribute)property.GetCustomAttributes(typeof(D2OFieldAttribute), false).SingleOrDefault();
-                var fieldType = GetIdByType(property.PropertyType);
+                var fieldType = GetIdByType(property);
                 var vectorTypes = GetVectorTypes(property.PropertyType);
                 var fieldName = attr != null ? attr.FieldName : property.Name;
 
@@ -377,6 +379,25 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             }
         }
 
+        private D2OFieldType GetIdByType(FieldInfo field)
+        {
+            var fieldType = field.FieldType;
+
+            if (field.GetCustomAttribute<I18NFieldAttribute>() != null)
+                return D2OFieldType.I18N;
+
+            return GetIdByType(fieldType);
+        }
+        private D2OFieldType GetIdByType(PropertyInfo property)
+        {
+            var fieldType = property.PropertyType;
+
+            if (property.GetCustomAttribute<I18NFieldAttribute>() != null)
+                return D2OFieldType.I18N;
+
+            return GetIdByType(fieldType);
+        }        
+        
         private D2OFieldType GetIdByType(Type fieldType)
         {
             if (fieldType == typeof (int))
@@ -387,8 +408,6 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 return D2OFieldType.String;
             if (fieldType == typeof (double) || fieldType == (typeof(float)))
                 return D2OFieldType.Double;
-            if (fieldType == typeof (int)) // that's useless, i know ...
-                return D2OFieldType.I18N;
             if (fieldType == typeof (uint))
                 return D2OFieldType.UInt;
             if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
@@ -405,9 +424,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             return (D2OFieldType) classId;
         }
 
-        private Tuple<D2OFieldType, string>[] GetVectorTypes(Type vectorType)
+        private Tuple<D2OFieldType, Type>[] GetVectorTypes(Type vectorType)
         {
-            var ids = new List<Tuple<D2OFieldType, string>>();
+            var ids = new List<Tuple<D2OFieldType, Type>>();
 
             if (vectorType.IsGenericType)
             {
@@ -416,7 +435,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
                 while (genericArguments.Length > 0)
                 {
-                    ids.Add(Tuple.Create(GetIdByType(genericArguments[0]), genericArguments[0].Name));
+                    ids.Add(Tuple.Create(GetIdByType(genericArguments[0]), currentGenericType));
 
                     currentGenericType = genericArguments[0];
                     genericArguments = currentGenericType.GetGenericArguments();
@@ -424,6 +443,38 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             }
 
             return ids.ToArray();
+        }
+
+        private string ConvertNETTypeToAS3(Type type)
+        {
+            switch (type.Name)
+            {
+                case "Int32":
+                case "Int16":
+                case "UInt16":
+                    return "int";
+                case "UInt32":
+                    return "uint";
+                case "Int64":
+                case "UInt64":
+                case "Single":
+                case "Double":
+                    return "Number";
+                case "String":
+                    return "String";
+                default:
+                    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof (List<>))
+                    {
+                        return "Vector.<" + ConvertNETTypeToAS3(type.GetGenericArguments()[0]) + ">";
+                    }
+
+                    var @class = m_classes.Values.FirstOrDefault(x => x.ClassType == type);
+
+                    if (@class == null)
+                        throw new Exception(string.Format("Cannot found AS3 type associated to {0}", type));
+
+                    return @class.PackageName + "::" + @class.Name;
+            }
         }
 
         private void WriteObject(IDataWriter writer, object obj, Type type)

@@ -219,7 +219,7 @@ namespace Stump.ORM.SubSonic.Extensions
                     {
                         //default to most common;
                         column.NumberScale = 2;
-                        column.NumericPrecision = 10;
+                        column.NumericPrecision = 16;
                     }
                     /*else if(column.DataType == DbType.String)
                     {

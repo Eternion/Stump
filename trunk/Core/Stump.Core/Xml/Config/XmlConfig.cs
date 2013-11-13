@@ -552,12 +552,12 @@ namespace Stump.Core.Xml.Config
                         if (!node.Value.Serialized)
                         {
                             writer.WriteAttributeString("serialized", "false");
-                            var value = node.Value.GetValue();
+                            var value = node.Value.GetValue(true);
 
                             if (value is IFormattable)
                                 writer.WriteValue(( value as IFormattable ).ToString(null, Culture));
                             else
-                                writer.WriteValue(node.Value.GetValue().ToString());
+                                writer.WriteValue(value.ToString());
                         }
                         else
                         {
@@ -571,7 +571,7 @@ namespace Stump.Core.Xml.Config
                                                     Indentation = 1
                                                 };
 
-                            new XmlSerializer(elementType).Serialize(xmlWriter, node.Value.GetValue());
+                            new XmlSerializer(elementType).Serialize(xmlWriter, node.Value.GetValue(true));
 
                             var xmlReader =
                                 new XmlTextReader(new StringReader(stringWriter.GetStringBuilder().ToString()));

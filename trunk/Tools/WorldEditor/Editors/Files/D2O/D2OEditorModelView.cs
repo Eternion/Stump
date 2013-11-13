@@ -52,7 +52,7 @@ namespace WorldEditor.Editors.Files.D2O
         private readonly string m_filePath;
         private D2OReader m_reader;
         private Type[] m_distinctTypes;
-        private Stack<D2OEditedObject> m_editedObjects = new Stack<D2OEditedObject>();
+        private Stack<EditedObject> m_editedObjects = new Stack<EditedObject>();
         private List<DataGridColumn> m_columns = new List<DataGridColumn>(); 
 
         public D2OEditorModelView(D2OEditor editor, string filePath)
@@ -197,7 +197,7 @@ namespace WorldEditor.Editors.Files.D2O
             m_editor.ObjectsGrid.ScrollIntoView(obj);
             m_editor.ObjectsGrid.Focus();
 
-            var editedObject = new D2OEditedObject(obj, ObjectState.Added);
+            var editedObject = new EditedObject(obj, ObjectState.Added);
             m_editedObjects.Push(editedObject);
         }
 
@@ -229,7 +229,7 @@ namespace WorldEditor.Editors.Files.D2O
             foreach (var item in list)
             {
                 m_rows.Remove(item);
-                m_editedObjects.Push(new D2OEditedObject(item, ObjectState.Removed));
+                m_editedObjects.Push(new EditedObject(item, ObjectState.Removed));
             }
         }
 

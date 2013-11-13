@@ -34,7 +34,7 @@ namespace WorldEditor.Search.Items
             var st = new Style {TargetType = typeof (ListBoxItem)};
             var backGroundSetter = new Setter {Property = Control.BackgroundProperty};
             var listBox = ItemsControl.ItemsControlFromItemContainer(container) as ListBox;
-            int index = listBox.ItemContainerGenerator.IndexFromContainer(container);
+            var index = listBox.ItemContainerGenerator.IndexFromContainer(container);
 
             backGroundSetter.Value = index % 2 == 0 ? LineBrush : Brushes.Transparent;
             st.Setters.Add(backGroundSetter);

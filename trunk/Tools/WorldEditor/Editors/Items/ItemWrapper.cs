@@ -22,28 +22,36 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DBSynchroniser.Records;
+using DBSynchroniser.Records.Langs;
+using Stump.Core.I18N;
 using Stump.DofusProtocol.D2oClasses;
+using Stump.ORM;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Items;
 using WorldEditor.Annotations;
 using WorldEditor.Database;
-using WorldEditor.Loaders.D2O;
+using WorldEditor.Loaders.Data;
 using WorldEditor.Loaders.I18N;
+using ItemTypeRecord = DBSynchroniser.Records.ItemTypeRecord;
 
 namespace WorldEditor.Editors.Items
 {
     public class ItemWrapper : INotifyPropertyChanged
     {
-        private string m_name;
-        private string m_description;
+        protected LangText m_name;
+        protected LangText m_description;
+        private ItemTypeRecord m_type;
         protected ObservableCollection<EffectWrapper> m_effects;
+        private Languages m_currentLanguage = Languages.All;
 
         public ItemWrapper()
         {
-            WrappedItem = new Item();
-            DBTemplate = new ItemTemplate();
-            m_name = "New Item";
-            m_description = "Item description";
+            WrappedItem = new ItemRecord();
+            m_name = new LangText();
+            m_name.SetText(Languages.All, "New item");
+            m_description = new LangText();
+            m_description.SetText(Languages.All, "Item description");
             m_effects = new ObservableCollection<EffectWrapper>();
             WrappedItem.recipeIds = new List<uint>();
             WrappedItem.favoriteSubAreas = new List<uint>();
@@ -54,31 +62,14 @@ namespace WorldEditor.Editors.Items
             New = true;
         }
 
-        public ItemWrapper(WeaponWrapper weapon)
-        {
-            WrappedItem = weapon.WrappedItem;
-            DBTemplate = weapon.DBTemplate;
-            m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
-            m_name = weapon.Name;
-            m_description = weapon.Description;
-            New = weapon.New;
-        }
-
-        public ItemWrapper(Item wrappedItem)
+        public ItemWrapper(ItemRecord wrappedItem)
         {
             WrappedItem = wrappedItem;
-            DBTemplate = ItemManager.Instance.TryGetTemplate(wrappedItem.id) ?? new ItemTemplate();
             m_effects = new ObservableCollection<EffectWrapper>(PossibleEffects.Select(EffectWrapper.Create));
         }
 
 
-        public Item WrappedItem
-        {
-            get;
-            protected set;
-        }
-
-        public ItemTemplate DBTemplate
+        public ItemRecord WrappedItem
         {
             get;
             protected set;
@@ -90,10 +81,27 @@ namespace WorldEditor.Editors.Items
             protected set;
         }
 
+        public Languages CurrentLanguage
+        {
+            get { return m_currentLanguage; }
+            set { m_currentLanguage = value; }
+        }
+
         public string Name
         {
-            get { return m_name ?? (m_name = I18NDataManager.Instance.ReadText(NameId)); }
-            set { m_name = value;
+            get
+            {
+                if (m_name == null)
+                    m_name = I18NDataManager.Instance.GetText(NameId);
+
+                return m_name != null ? m_name.GetText(CurrentLanguage, I18NDataManager.Instance.DefaultLanguage) : "NO_NAME";
+            }
+            set
+            {
+                if (m_name == null)
+                    m_name = new LangText();
+
+                m_name.SetText(CurrentLanguage, value);
             }
         }
 
@@ -115,7 +123,7 @@ namespace WorldEditor.Editors.Items
             set
             {
                 WrappedItem.typeId = (uint)value;
-                WrappedItem.type = ObjectDataManager.Instance.Get<ItemType>((uint)value);
+                m_type = ObjectDataManager.Instance.Get<ItemTypeRecord>(TypeId);
                 OnPropertyChanged("Type");
             }
         }
@@ -130,9 +138,17 @@ namespace WorldEditor.Editors.Items
         {
             get
             {
-                return m_description ?? ( m_description = I18NDataManager.Instance.ReadText(DescriptionId) );
+                if (m_description == null)
+                    m_description = I18NDataManager.Instance.GetText(DescriptionId);
+
+                return m_description != null ? m_description.GetText(CurrentLanguage, I18NDataManager.Instance.DefaultLanguage) : "NO_DESCRIPTION";
             }
-            set { m_description = value;
+            set
+            {
+                if (m_description == null)
+                    m_description = new LangText();
+
+                m_description.SetText(CurrentLanguage, value);
             }
         }
 
@@ -180,7 +196,7 @@ namespace WorldEditor.Editors.Items
             set { WrappedItem.targetable = value; }
         }
 
-        public float Price
+        public double Price
         {
             get { return WrappedItem.price; }
             set { WrappedItem.price = value; }
@@ -287,12 +303,15 @@ namespace WorldEditor.Editors.Items
             set { WrappedItem.favoriteSubAreasBonus = value; }
         }
 
-        public ItemType Type
+        public ItemTypeRecord Type
         {
-            get { return WrappedItem.type; }
+            get
+            {
+                return m_type ?? (m_type = ObjectDataManager.Instance.Get<ItemTypeRecord>(TypeId));
+            }
             set
             {
-                WrappedItem.type = value;
+                m_type = value;
                 WrappedItem.typeId = (uint)value.id;
                 OnPropertyChanged("TypeId");
             }
@@ -311,28 +330,30 @@ namespace WorldEditor.Editors.Items
             if (New)
             {
                 if (Id == 0)
-                    Id = Math.Max(ObjectDataManager.Instance.FindFreeId<Item>(), ObjectDataManager.Instance.FindFreeId<Weapon>());
+                    Id = Math.Max(ObjectDataManager.Instance.FindFreeId<ItemRecord>(), ObjectDataManager.Instance.FindFreeId<WeaponRecord>());
                 NameId = (uint) I18NDataManager.Instance.FindFreeId();
                 DescriptionId = NameId + 1;
             }
 
             WrappedItem.PossibleEffects = WrappedEffects.Select(x => x.WrappedEffect).ToList();
 
-            ObjectDataManager.Instance.StartEditing<Item>();
-            ObjectDataManager.Instance.Set(WrappedItem.Id, WrappedItem);
-            ObjectDataManager.Instance.EndEditing<Item>();
-
-            I18NDataManager.Instance.SetText(NameId, Name);
-            I18NDataManager.Instance.SetText(DescriptionId, Description);
-            I18NDataManager.Instance.Save();
-
-            DBTemplate.AssignFields(WrappedItem);
+            if (New)
+                ObjectDataManager.Instance.Insert(WrappedItem);
+            else
+                ObjectDataManager.Instance.Update(WrappedItem);
 
             if (New)
-                ItemManager.Instance.AddItemTemplate(DBTemplate);
+            {
+                m_name.Id = NameId;
+                m_description.Id = DescriptionId;
+                I18NDataManager.Instance.CreateText(m_name);
+                I18NDataManager.Instance.CreateText(m_description);
+            }
             else
-                DatabaseManager.Instance.Database.Update(DBTemplate);
-
+            {
+                I18NDataManager.Instance.SaveText(m_name);
+                I18NDataManager.Instance.SaveText(m_description);
+            }
             New = false;
         }
 
@@ -341,7 +362,7 @@ namespace WorldEditor.Editors.Items
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }

@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
-using Stump.DofusProtocol.D2oClasses;
-using WorldEditor.Loaders.D2O;
+using DBSynchroniser.Records;
+using WorldEditor.Database;
 using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Helpers.Converters
@@ -28,23 +28,23 @@ namespace WorldEditor.Helpers.Converters
     public class ItemTypeIdToTypeNameConverter : IValueConverter
     {
         private static bool m_initialized;
-        private static Dictionary<int, ItemType> m_types;
+        private static Dictionary<int, ItemTypeRecord> m_types;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!m_initialized)
                 Initialize();
 
-            ItemType type;
-            if (m_types.TryGetValue((int)value, out type))
-                return I18NDataManager.Instance.ReadText(type.NameId);
+            if (value is uint)
+                value = (int) (uint)value;
 
-            return value.ToString();
+            ItemTypeRecord type;
+            return m_types.TryGetValue((int)value, out type) ? I18NDataManager.Instance.ReadText(type.NameId) : value.ToString();
         }
 
         private static void Initialize()
         {
-            m_types = ObjectDataManager.Instance.EnumerateObjects<ItemType>().ToDictionary(x => x.Id);
+            m_types = DatabaseManager.Instance.Database.Query<ItemTypeRecord>("SELECT * FROM ItemTypes").ToDictionary(x => x.Id);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

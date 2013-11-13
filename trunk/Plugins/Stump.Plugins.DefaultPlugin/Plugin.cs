@@ -1,6 +1,4 @@
 using System;
-using Stump.Server.BaseServer.Commands;
-using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Plugins;
 
 namespace Stump.Plugins.DefaultPlugin
@@ -35,11 +33,6 @@ namespace Stump.Plugins.DefaultPlugin
             {
                 return new Version(1, 0);
             }
-        }
-
-        public override void Initialize()
-        {
-            base.Initialize();
         }
 
         public override void Shutdown()

@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // I18NDataManager.cs
 // 
 // Copyright (C) 2012 - BehaviorIsManaged
@@ -12,266 +13,145 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Collections.ObjectModel;
 using System.Linq;
-using NLog;
-using Stump.Core.Memory;
+using DBSynchroniser.Records.Langs;
+using Stump.Core.I18N;
 using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using WorldEditor.Config;
+using WorldEditor.Database;
 
 namespace WorldEditor.Loaders.I18N
 {
     public class I18NDataManager : Singleton<I18NDataManager>
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private WeakCollection<I18NString> m_links = new WeakCollection<I18NString>();
-        private Dictionary<Languages, D2IFile> m_readers = new Dictionary<Languages, D2IFile>();
-        private static Dictionary<string, Languages> m_langsShortcuts = new Dictionary<string, Languages>()
-        {
-            {"fr", Languages.French},
-            {"de", Languages.German},
-            {"en", Languages.English},
-            {"es", Languages.Spanish},
-            {"it", Languages.Italian},
-            {"ja", Languages.Japanish},
-            {"nl", Languages.Dutsh},
-            {"pt", Languages.Portugese},
-            {"ru", Languages.Russish},
-        };
+        private readonly Dictionary<string, LangTextUi> m_langsUi = new Dictionary<string, LangTextUi>();
+        private Dictionary<uint, LangText> m_langs = new Dictionary<uint, LangText>();
 
-        Languages m_defaultLanguage;
+
+        public ReadOnlyDictionary<uint, LangText> Langs
+        {
+            get { return new ReadOnlyDictionary<uint, LangText>(m_langs); }
+        }
+
+        public ReadOnlyDictionary<string, LangTextUi> LangsUi
+        {
+            get { return new ReadOnlyDictionary<string, LangTextUi>(m_langsUi); }
+        }
+
         public Languages DefaultLanguage
         {
-            get
-            {
-                return m_defaultLanguage;
-            }
-            set
-            {
-                m_defaultLanguage = value;
-                EnsureLanguageIsLoaded(m_defaultLanguage);
-            }
+            get;
+            set;
         }
 
-        private bool EnsureLanguageIsLoaded(Languages language)
+        public void Initialize()
         {
-            if (m_readers.ContainsKey(language)) 
-                return true;
-
-            if (string.IsNullOrEmpty(m_d2IPath)) 
-                return false; // AddReaders not called yet
-
-            foreach (var d2iFile in Directory.EnumerateFiles(m_d2IPath).Where(entry => entry.EndsWith(".d2i")).Where(path => GetLanguageOfFile(path) == language))
+            DatabaseManager.Instance.Database.OneTimeCommandTimeout = 120;
+            m_langs = DatabaseManager.Instance.Database.Query<LangText>("SELECT * FROM langs").ToDictionary(x => x.Id);
+            foreach (
+                LangTextUi record in
+                    DatabaseManager.Instance.Database.Query<LangTextUi>("SELECT * FROM langs_ui")
+                                   .Where(record => !m_langsUi.ContainsKey(record.Name)))
             {
-                var reader = new D2IFile(d2iFile);
-                AddReader(reader, language);
-            }
-
-            if (!m_readers.ContainsKey(language))
-                throw new Exception(string.Format("Language {0} not found in the d2i files, check the path of these files and that the file exist ({1})", language, m_d2IPath));
-
-            return true;
-        }
-        private string m_d2IPath;
-        public void AddReaders(string directory)
-        {
-            m_d2IPath = directory;
-            foreach (string d2iFile in Directory.EnumerateFiles(directory).Where(entry => entry.EndsWith(".d2i")))
-            {
-                var reader = new D2IFile(d2iFile);
-
-                AddReader(reader);
+                m_langsUi.Add(record.Name, record);
             }
         }
 
-        private Languages? GetLanguageOfFile(string filePath)
+        public LangText GetText(int id)
         {
-            string file = Path.GetFileNameWithoutExtension(filePath);
-
-            if (!file.Contains("_"))
-                return null;
-
-            string lang = file.Split('_')[1];
-
-            if (!m_langsShortcuts.ContainsKey(lang.ToLower()))
-                return null;
-
-            return m_langsShortcuts[lang.ToLower()];
+            return GetText((uint) id);
         }
 
-        public void AddReader(D2IFile d2iFile)
+        public LangText GetText(uint id)
         {
-            var language = GetLanguageOfFile(d2iFile.FilePath);
-
-            if (language != null)
-                AddReader(d2iFile, language.Value);
+            LangText record;
+            return !m_langs.TryGetValue(id, out record) ? null : record;
         }
 
-        public void AddReader(D2IFile d2iFile, Languages language)
+        public LangTextUi GetText(string id)
         {
-            m_readers.Add(language, d2iFile);
-
-            logger.Info("File added : {0}", Path.GetFileName(d2iFile.FilePath));
-        }
-
-        public string ReadText(uint id, Languages? lang)
-        {
-            return ReadText((int)id, lang);
+            LangTextUi record;
+            return !m_langsUi.TryGetValue(id, out record) ? null : record;
         }
 
         public string ReadText(int id, Languages? lang)
         {
-            if (lang != null)
-            {
-                EnsureLanguageIsLoaded(lang.Value);
-                return m_readers[lang.Value].GetText(id);
-            }
+            return ReadText((uint) id, lang);
+        }
 
-            if (!EnsureLanguageIsLoaded(DefaultLanguage)) return "{null}";
-            return m_readers[DefaultLanguage].GetText(id);
+        public string ReadText(uint id, Languages? lang)
+        {
+            LangText record;
+            return !m_langs.TryGetValue(id, out record) ? "{null}" : record.GetText(lang ?? DefaultLanguage);
         }
 
         public string ReadText(string id, Languages? lang)
         {
-            if (lang != null)
-            {
-                EnsureLanguageIsLoaded(lang.Value);
-                return m_readers[lang.Value].GetText(id);
-            }
-
-            if (!EnsureLanguageIsLoaded(DefaultLanguage)) return "{null}";
-            return m_readers[DefaultLanguage].GetText(id);
+            LangTextUi record;
+            return !m_langsUi.TryGetValue(id, out record) ? "{null}" : record.GetText(lang ?? DefaultLanguage);
         }
 
         public string ReadText(string id)
         {
-            if (!EnsureLanguageIsLoaded(DefaultLanguage)) return "{null}";
-            return m_readers[DefaultLanguage].GetText(id);
+            return ReadText(id, null);
         }
 
         public string ReadText(uint id)
         {
-            return ReadText((int)id);
+            return ReadText((int) id);
         }
 
         public string ReadText(int id)
         {
-            if (!EnsureLanguageIsLoaded(DefaultLanguage)) return "{null}";
-            return m_readers[DefaultLanguage].GetText(id);
+            return ReadText(id, null);
         }
 
-        public I18NString GetTextLink(uint id, Languages? lang = null)
+        public void SaveText(LangText text)
         {
-            return GetTextLink((int)id);
+            m_langs[text.Id] = text;
+            DatabaseManager.Instance.Database.Update(text);
         }
 
-        public I18NString GetTextLink(int id, Languages? lang = null)
+        public void SaveText(LangTextUi text)
         {
-            if (lang != null)
-            {
-                EnsureLanguageIsLoaded(lang.Value);
-            }
-
-            return new I18NString(id, this);
+            m_langsUi[text.Name] = text;
+            DatabaseManager.Instance.Database.Update(text);
         }
 
-        public I18NString GetTextLink(string id, Languages? lang = null)
+        public void CreateText(LangText text)
         {
-            if (lang != null)
-            {
-                EnsureLanguageIsLoaded(lang.Value);
-            }
-
-            return new I18NString(id, this);
+            m_langs.Add(text.Id, text);
+            DatabaseManager.Instance.Database.Insert(text);
         }
 
-        public void SetText(uint id, string text, bool forAllLangs = false)
+        public void CreateText(LangTextUi text)
         {
-            SetText((int)id, text, forAllLangs);
+            m_langsUi.Add(text.Name, text);
+            DatabaseManager.Instance.Database.Insert(text);
         }
 
-        public void SetText(int id, string text, bool forAllLangs = false)
+        public void DeleteText(LangText text)
         {
-            if (forAllLangs)
-            {
-                foreach (var reader in m_readers)
-                {
-                    reader.Value.SetText(id, text);
-                }
-            }
-            else
-            {
-                if (!EnsureLanguageIsLoaded(DefaultLanguage))
-                    throw new Exception(string.Format("Lang {0} not found", DefaultLanguage));
-
-                m_readers[DefaultLanguage].SetText(id, text);
-            }
+            m_langs.Remove(text.Id);
+            DatabaseManager.Instance.Database.Delete(text);
         }
 
-        public void SetText(uint id, string text, Languages lang)
+        public void DeleteText(LangTextUi text)
         {
-            SetText((int) id, text, lang);
+            m_langsUi.Remove(text.Name);
+            DatabaseManager.Instance.Database.Delete(text);
         }
 
-        public void SetText(int id, string text, Languages lang)
+        public uint FindFreeId()
         {
-            if (!EnsureLanguageIsLoaded(lang))
-                throw new Exception(string.Format("Lang {0} not found", lang));
+            int id = DatabaseManager.Instance.Database.ExecuteScalar<int>("SELECT MAX(Id) FROM langs") + 1;
 
-            m_readers[lang].SetText(id, text);
-        }
-
-        public void SaveAll()
-        {
-            foreach (var reader in m_readers)
-            {
-                reader.Value.Save();
-            }
-        }
-
-        public void Save(Languages? lang = null)
-        {
-            if (lang != null)
-            {
-                if (!EnsureLanguageIsLoaded(lang.Value))
-                    throw new Exception(string.Format("Lang {0} not found", lang.Value));
-
-                m_readers[lang.Value].Save();
-            }
-
-            if (!EnsureLanguageIsLoaded(DefaultLanguage))
-                throw new Exception(string.Format("Lang {0} not found", DefaultLanguage));
-
-            m_readers[DefaultLanguage].Save();
-        }
-
-        public int FindFreeId()
-        {
-            var id = m_readers.Select(x => x.Value.FindFreeId()).Max();
-
-            return id < Settings.MinI18NId ? Settings.MinI18NId : id;
-        }
-
-        public void ChangeLinksLanguage(Languages old, Languages @new)
-        {
-            foreach (var link in m_links.Where(x => x.Language == old))
-            {
-                // text refreshed when the language is changed
-                link.Language = @new;
-            }
-        }
-
-        public void RefreshLinks()
-        {
-            foreach (var link in m_links)
-            {
-                link.Refresh();
-            }
+            return id < Settings.MinI18NId ? Settings.MinI18NId : (uint)id;
         }
     }
 }

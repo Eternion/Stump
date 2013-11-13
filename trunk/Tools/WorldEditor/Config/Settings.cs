@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using Stump.Core.Attributes;
+using Stump.Core.I18N;
 using Stump.Core.Xml.Config;
 using Stump.ORM;
 using WorldEditor.Loaders.I18N;
@@ -63,7 +64,7 @@ namespace WorldEditor.Config
         [Variable] public static Languages DefaultLanguage = Languages.French;
 
         [Variable]
-        public static int MinI18NId = 200000;
+        public static uint MinI18NId = 200000;
 
         [Variable]
         public static int MinDataId = 20000;

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:55
+// Generated on 10/28/2013 14:03:19
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -10,13 +10,17 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("Recipe", "com.ankamagames.dofus.datacenter.jobs")]
     [Serializable]
-    public class Recipe : IDataObject
+    public class Recipe : IDataObject, IIndexedData
     {
         private const String MODULE = "Recipes";
         public int resultId;
         public uint resultLevel;
         public List<int> ingredientIds;
         public List<uint> quantities;
+        int IIndexedData.Id
+        {
+            get { return (int)resultId; }
+        }
         [D2OIgnore]
         public int ResultId
         {

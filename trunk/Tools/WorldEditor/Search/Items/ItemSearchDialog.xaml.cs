@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Stump.DofusProtocol.D2oClasses;
+using DBSynchroniser.Records;
+using WorldEditor.Database;
 using WorldEditor.Editors.Items;
-using WorldEditor.Loaders.D2O;
 
 namespace WorldEditor.Search.Items
 {
@@ -15,12 +15,11 @@ namespace WorldEditor.Search.Items
         public ItemSearchDialog()
         {
             InitializeComponent();
-            var items = ObjectDataManager.Instance.EnumerateObjects<Item>().Select(x => x is Weapon ? new WeaponWrapper((Weapon)x) : new ItemWrapper(x));
-            ModelView = new ItemSearchDialogModelView(typeof (ItemWrapper), new ObservableCollection<object>(items));
+            ModelView = new ItemSearchDialogModelView();
             DataContext = ModelView;
         }
 
-        public SearchDialogModelView ModelView
+        public ItemSearchDialogModelView ModelView
         {
             get;
             set;

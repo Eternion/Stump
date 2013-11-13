@@ -334,6 +334,7 @@
     <Compile Include="Tools\D2o\D2OIgnore.cs" />
     <Compile Include="Tools\D2o\D2OReader.cs" />
     <Compile Include="Tools\D2o\D2OWriter.cs" />
+    <Compile Include="Tools\D2o\I18NFieldAttribute.cs" />
     <Compile Include="Tools\D2p\D2pDirectory.cs" />
     <Compile Include="Tools\D2p\D2pEntry.cs" />
     <Compile Include="Tools\D2p\D2pEntryState.cs" />

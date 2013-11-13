@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] {"go", "teleport", "tp"};
             RequiredRole = RoleEnum.Moderator;
             Description = "Teleport the target given map id";
-            AddParameter<int>("mapid", "id", "Map destination");
+            AddParameter("map", "map", "Map destination", converter:ParametersConverter.MapConverter);
             AddTargetParameter(true);
             AddParameter<short>("cellid", "cell", "Cell destination", isOptional: true);
         }
@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var target = GetTarget(trigger);
-            Map map = World.Instance.GetMap(trigger.Get<int>("mapid"));
+            Map map = trigger.Get<Map>("map");
 
             if (map == null)
             {

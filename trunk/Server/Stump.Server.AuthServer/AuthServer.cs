@@ -15,6 +15,7 @@ using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
@@ -92,6 +93,7 @@ namespace Stump.Server.AuthServer
                 logger.Info("Initializing Database...");
                 DBAccessor = new DatabaseAccessor(DatabaseConfiguration);
                 DBAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
+                InitializationManager.Initialize(InitializationPass.Database);
                 DBAccessor.Initialize();
 
                 logger.Info("Opening Database...");

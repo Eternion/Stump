@@ -57,9 +57,9 @@ namespace Stump.ORM.SubSonic.SQLGeneration.Schema
 	{
 		public string ColumnName { get; set; }
 
-		public ColumnAttribute(string tableName)
+		public ColumnAttribute(string columnName)
 		{
-			ColumnName = tableName;
+			ColumnName = columnName;
 		}
 
 		public bool Accept(IColumn col)

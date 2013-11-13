@@ -12,9 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using DBSynchroniser;
+using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses;
 using WorldEditor.Editors.Files.D2O;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
+using IDataObject = System.Windows.IDataObject;
 
 namespace WorldEditor.Editors.Tables
 {
@@ -29,6 +32,7 @@ namespace WorldEditor.Editors.Tables
         {
             InitializeComponent();
             DataContext = ModelView = new TableEditorModelView(this, table);
+            FindSubClasses();
         }
 
         public TableEditorModelView ModelView
@@ -37,17 +41,41 @@ namespace WorldEditor.Editors.Tables
             private set;
         }
 
+         private void FindSubClasses()
+        {
+            foreach (var type in typeof(AbuseReasons).Assembly.GetTypes())
+            {
+                if (!type.HasInterface(typeof(Stump.DofusProtocol.D2oClasses.IDataObject)))
+                    continue;
+
+                if (type.BaseType != typeof(Object))
+                {
+                    var baseType = type.BaseType;
+                    while (baseType.BaseType != typeof(Object))
+                        baseType = baseType.BaseType;
+
+                    if (!m_subTypes.ContainsKey(baseType))
+                        m_subTypes.Add(baseType, new List<Type>());
+
+                    m_subTypes[baseType].Add(type);
+                }
+            }
+        }
+
         private void Window_Closed(object sender, EventArgs e)
         {
         }
 
         private void ObjectsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        {            
+            
             ModelView.RemoveCommand.RaiseCanExecuteChanged();
             ObjectEditor.EditorDefinitions.Clear();
 
             if (ObjectsGrid.SelectedItem == null)
                 return;
+
+            ModelView.OnObjectEdited(ObjectsGrid.SelectedItem);
 
             // hack here to handle lists of lists
             var type = ObjectsGrid.SelectedItem.GetType();
@@ -111,5 +139,6 @@ namespace WorldEditor.Editors.Tables
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
         }
+
     }
 }

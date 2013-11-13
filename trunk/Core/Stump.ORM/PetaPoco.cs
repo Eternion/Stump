@@ -1240,7 +1240,7 @@ namespace Stump.ORM
 							OnExecutedCommand(cmd);
 							return true;
 						}
-
+                        
 
 						object id;
 						switch (_dbType)

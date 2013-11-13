@@ -1,9 +1,11 @@
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
 {
@@ -17,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             UNAPPLY,
         }
 
-        protected ItemEffectHandler(EffectBase effect, Character target, PlayerItem item)
+        protected ItemEffectHandler(EffectBase effect, Character target, BasePlayerItem item)
             : base (effect)
         {
             Target = target;
@@ -38,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             protected set;
         }
 
-        public PlayerItem Item
+        public BasePlayerItem Item
         {
             get;
             protected set;
@@ -53,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         public bool ItemSetApply
         {
             get;
-            protected set;
+            set;
         }
 
         public bool Equiped
@@ -61,6 +63,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             get
             {
                 return Item != null && Item.IsEquiped();
+            }
+        }
+
+        public bool Boost
+        {
+            get
+            {
+                return Item != null && Item.Template.Type.SuperType == ItemSuperTypeEnum.SUPERTYPE_BOOST;
             }
         }
 

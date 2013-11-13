@@ -17,7 +17,7 @@ namespace DofusProtocolBuilder.Parsing
         public static readonly string ConstructorPattern = @"(?<acces>public|protected|private|internal)\s*function\s*(?<name>{0})\((?<argument>[^,)]+,?)*\)";
         public static readonly string ConstFieldPattern = @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*const\s*(?<name>\w+):(?<type>[\w_\.]+(?:<(?:\w+\.)*(?<generictype>[\w_<>]+)>)?)(?<value>\s*=\s*.*)?;";
         public static readonly string FieldPattern = @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*var\s*(?<name>[\w\d@]+):(?<type>[\w\d_\.<>]+)(?<value>\s*=\s*.*)?;";
-        public static readonly string MethodPattern = @"((?<acces>public|protected|private|internal)|(?<override>override)\s)+\s*function\s*(?<prop>get|set)?\s+(?<name>\w+)\((?<argument>[^,)]+,?)*\)\s*:\s*(?:\w+\.)*(?<returntype>\w+)";
+        public static readonly string MethodPattern = @"(^(?<acces>public|protected|private|internal)|(?<override>override)\s)+\s*function\s*(?<prop>get|set)?\s+(?<name>\w+)\((?<arguments>.+)?\)\s*:?\s*(?:\w+\.)*(?<returntype>\w+)?";
 
 
 		private string m_fileText;
@@ -204,19 +204,38 @@ namespace DofusProtocolBuilder.Parsing
 											 MethodPattern, RegexOptions.Multiline);
 			while (matchMethods.Success)
 			{
-				// do not support properties
-				if (!string.IsNullOrEmpty(matchMethods.Groups["prop"].Value))
-				{
-					matchMethods = matchMethods.NextMatch();
-					continue;
-				}
-
 				MethodInfo method = BuildMethodInfoFromMatch(matchMethods, false);
 				method.Statements = BuildMethodElementsFromMatch(matchMethods).ToList();
 
-				Methods.Add(method);
+                var propType = matchMethods.Groups["prop"].Value;
+			    if (!string.IsNullOrEmpty(propType))
+                {
+                    var prop = Properties.FirstOrDefault(x => x.Name == method.Name);
 
-				matchMethods = matchMethods.NextMatch();
+                    if (prop == null)
+                    {
+                        prop = new PropertyInfo()
+                            {
+                                Name = method.Name,
+                                AccessModifier = method.AccessModifier,
+                                PropertyType = method.ReturnType,
+                                MethodModifiers = method.Modifiers,
+                            };
+
+                        Properties.Add(prop);
+                    }
+
+                    if (propType == "set")
+                        prop.MethodSet = method;
+                    else
+                        prop.MethodGet = method;
+                }
+			    else
+			    {
+			        Methods.Add(method);
+			    }
+
+			    matchMethods = matchMethods.NextMatch();
 			}
 		}
 
@@ -304,7 +323,7 @@ namespace DofusProtocolBuilder.Parsing
 		private IEnumerable<IStatement> BuildMethodElementsFromMatch(Match match)
 		{
 		    int bracketOpen =
-		        Array.FindIndex(m_fileLines, (entry) => entry.Contains(match.Groups[0].Value));
+		        Array.FindIndex(m_fileLines, (entry) => entry.Contains(match.Groups[0].Value.Replace("\r\n", "")));
 		    if (!m_fileLines[bracketOpen].EndsWith("{"))
 		        bracketOpen++;
 			int bracketClose = m_brackets[bracketOpen];

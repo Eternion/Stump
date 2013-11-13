@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 throw new Exception("Wrong statsid");
 
             if (message.boostPoint <= 0)
-                throw new Exception("Client given 0 as boostpoint. Forbidden value.");
+                return;
 
             var breed = client.Character.Breed;
             var actualPoints = client.Character.Stats[m_statsEnumRelations[statsid]].Base;

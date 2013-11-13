@@ -53,6 +53,8 @@ namespace Stump.Server.WorldServer.Core.IPC
         [Variable]
         public static int RemotePort = 9100;
 
+        public delegate void IPCMessageHandler(IPCMessage message);
+
         public delegate void RequestCallbackDelegate<in T>(T callbackMessage) where T : IPCMessage;
         public delegate void RequestCallbackErrorDelegate(IPCErrorMessage errorMessage);
         public delegate void RequestCallbackDefaultDelegate(IPCMessage unattemptMessage);
@@ -63,6 +65,8 @@ namespace Stump.Server.WorldServer.Core.IPC
         public event Action<IPCAccessor> Disconnected;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private Dictionary<Type, IPCMessageHandler> m_additionalsHandlers = new Dictionary<Type, IPCMessageHandler>(); 
 
         private bool m_requestingAccess;
         private bool m_wasConnected;
@@ -445,12 +449,20 @@ namespace Stump.Server.WorldServer.Core.IPC
                 });
         }
 
+        public void AddMessageHandler(Type messageType, IPCMessageHandler handler)
+        {
+            m_additionalsHandlers.Add(messageType, handler);
+        }
+
         private void HandleMessage(IPCMessage message)
         {
             if (message is IPCErrorMessage)
                 HandleError(message as IPCErrorMessage);
             if (message is DisconnectClientMessage)
                 HandleMessage(message as DisconnectClientMessage);
+
+            if (m_additionalsHandlers.ContainsKey(message.GetType()))
+                m_additionalsHandlers[message.GetType()](message);
         }
 
         private void HandleMessage(DisconnectClientMessage message)

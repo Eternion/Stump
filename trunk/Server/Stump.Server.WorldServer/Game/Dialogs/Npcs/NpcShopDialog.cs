@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Dialogs;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -114,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     21, amount, itemId);
 
-            PlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
+            BasePlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
             Character.Inventory.AddItem(item);
             if (Token != null)
@@ -159,7 +160,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return false;
             }
 
-            PlayerItem item = Character.Inventory.TryGetItem(guid);
+            BasePlayerItem item = Character.Inventory.TryGetItem(guid);
 
             if (item == null)
             {

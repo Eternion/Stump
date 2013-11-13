@@ -939,7 +939,7 @@
         /// <summary>
         /// +#1{~1~2 to }#2 spell points
         /// </summary>
-        Effect_613 = 613,
+        Effect_AddSpellPoints = 613,
         /// <summary>
         /// +#1 XP for profession #2
         /// </summary>
@@ -1251,7 +1251,7 @@
         /// <summary>
         /// Last meal: #1
         /// </summary>
-        Effect_808 = 808,
+        Effect_LastMeal = 808,
         /// <summary>
         /// Size: #3 squares
         /// </summary>
@@ -1259,7 +1259,7 @@
         /// <summary>
         /// Remaining turn(s): #3
         /// </summary>
-        Effect_811 = 811,
+        Effect_RemainingFights = 811,
         /// <summary>
         /// Durability: #2 / #3
         /// </summary>
@@ -1370,15 +1370,15 @@
         /// Name: #4
         /// </summary>
         Effect_964 = 964,
-        Effect_970 = 970,
+        Effect_LivingObjectId = 970,
         /*  */
-        Effect_971 = 971,
+        Effect_LivingObjectMood = 971,
         /*  */
-        Effect_972 = 972,
+        Effect_LivingObjectSkin = 972,
         /*  */
-        Effect_973 = 973,
+        Effect_LivingObjectCategory = 973,
         /*  */
-        Effect_974 = 974,
+        Effect_LivingObjectLevel = 974,
         /*  */
         /// <summary>
         /// Non-exchangeable

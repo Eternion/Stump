@@ -1,8 +1,6 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Game;
 
 namespace Stump.Plugins.DebugPlugin.Commands
 {
@@ -22,7 +20,6 @@ namespace Stump.Plugins.DebugPlugin.Commands
 
             var character = ( trigger as GameTrigger ).Character;
 
-            var map = World.Instance.GetMap(character.Breed.StartMap);
             character.Teleport(character.Breed.GetStartPosition());
 
             trigger.Reply("Teleported to the start map");

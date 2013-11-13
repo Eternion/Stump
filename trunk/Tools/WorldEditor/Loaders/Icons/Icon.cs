@@ -21,10 +21,9 @@ namespace WorldEditor.Loaders.Icons
 {
     public class Icon
     {
-        public Icon(int id, string name, byte[] data)
+        public Icon(int id, byte[] data)
         {
             Id = id;
-            Name = name;
             Image = new BitmapImage();
             Image.BeginInit();
             Image.StreamSource = new MemoryStream(data);
@@ -33,12 +32,6 @@ namespace WorldEditor.Loaders.Icons
         }
 
         public int Id
-        {
-            get;
-            private set;
-        }
-
-        public string Name
         {
             get;
             private set;

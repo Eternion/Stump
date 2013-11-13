@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:52
+// Generated on 10/28/2013 14:03:17
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,9 +15,13 @@ namespace Stump.DofusProtocol.D2oClasses
         private const String MODULE = "Documents";
         public int id;
         public uint typeId;
+        [I18NField]
         public uint titleId;
+        [I18NField]
         public uint authorId;
+        [I18NField]
         public uint subTitleId;
+        [I18NField]
         public uint contentId;
         public String contentCSS;
         int IIndexedData.Id

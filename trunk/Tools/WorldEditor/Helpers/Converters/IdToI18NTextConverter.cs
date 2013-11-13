@@ -27,7 +27,7 @@ namespace WorldEditor.Helpers.Converters
         {
             if (value is int)
                 return I18NDataManager.Instance.ReadText((int)value);
-            else if (value is uint)
+            if (value is uint)
                 return I18NDataManager.Instance.ReadText((uint)value);
             return "{null}";
         }
