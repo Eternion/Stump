@@ -383,6 +383,7 @@ namespace Uplauncher
 
         private void MD5Worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            m_MD5Worker.DoWork -= MD5Worker_DoWork;
             var path = Directory.GetCurrentDirectory() + @"\app";
 
             var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
@@ -419,6 +420,7 @@ namespace Uplauncher
 
         private void MD5Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            m_MD5Worker.RunWorkerCompleted -= MD5Worker_RunWorkerCompleted;
             DownloadProgress = 100;
             SetState("Vérification de l'intégrité des fichiers terminé.", Colors.Green);
 
