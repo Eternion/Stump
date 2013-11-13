@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
@@ -19,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
         [Variable]
         public static short StatBonusLimit = 101;
 
-        public StatBonus(EffectBase effect, Character target, PlayerItem item) : base(effect, target, item)
+        public StatBonus(EffectBase effect, Character target, BasePlayerItem item) : base(effect, target, item)
         {
         }
 
@@ -30,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (effect == null)
                 return false;
 
-            var bonus = AdjustBonusStat(effect.Value);
+            var bonus = AdjustBonusStat((short) (effect.Value * NumberOfUses));
 
             if (bonus == 0)
             {
@@ -39,6 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             }
 
             Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base += bonus;
+            UsedItems = (uint) Math.Ceiling((double) bonus/effect.Value);
             UpdatePermanentStatField(bonus);
             Target.RefreshStats();
 

@@ -22,6 +22,7 @@ namespace Stump.Server.AuthServer.Database
             Status = ServerStatusEnum.OFFLINE;
         }
 
+        [PrimaryKey("Id", false)]
         public int Id
         {
             get;

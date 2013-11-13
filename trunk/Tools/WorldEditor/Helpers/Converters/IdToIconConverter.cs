@@ -25,7 +25,7 @@ namespace WorldEditor.Helpers.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int id = (int) value;
+            var id = (int) value;
             var icon = IconsManager.Instance.GetIcon(id);
 
             return icon.Image;

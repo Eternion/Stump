@@ -21,7 +21,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 {
     public class D2OFieldDefinition
     {
-        public D2OFieldDefinition(string name, D2OFieldType typeId, FieldInfo fieldInfo, long offset, params Tuple<D2OFieldType, string>[] vectorsTypes)
+        public D2OFieldDefinition(string name, D2OFieldType typeId, FieldInfo fieldInfo, long offset, params Tuple<D2OFieldType, Type>[] vectorsTypes)
         {
             Name = name;
             TypeId = typeId;
@@ -31,7 +31,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             VectorTypes = vectorsTypes;
         }
 
-        public D2OFieldDefinition(string name, D2OFieldType typeId, PropertyInfo propertyInfo, long offset, params Tuple<D2OFieldType, string>[] vectorsTypes)
+        public D2OFieldDefinition(string name, D2OFieldType typeId, PropertyInfo propertyInfo, long offset, params Tuple<D2OFieldType, Type>[] vectorsTypes)
         {
             Name = name;
             TypeId = typeId;
@@ -53,7 +53,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             set;
         }
 
-        public Tuple<D2OFieldType, string>[] VectorTypes
+        public Tuple<D2OFieldType, Type>[] VectorTypes
         {
             get;
             set;

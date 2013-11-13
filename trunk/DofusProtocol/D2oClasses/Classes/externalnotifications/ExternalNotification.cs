@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:53
+// Generated on 10/28/2013 14:03:17
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -17,12 +17,14 @@ namespace Stump.DofusProtocol.D2oClasses
         public int categoryId;
         public int iconId;
         public int colorId;
+        [I18NField]
         public uint descriptionId;
         public Boolean defaultEnable;
         public Boolean defaultSound;
         public Boolean defaultNotify;
         public Boolean defaultMultiAccount;
         public String name;
+        [I18NField]
         public uint messageId;
         int IIndexedData.Id
         {

@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:Search="clr-namespace:WorldEditor.Search"
              xmlns:helpers="clr-namespace:WorldEditor.Helpers" xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:converters="clr-namespace:WorldEditor.Helpers.Converters"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=Search:SearchDialogModelView}">
+             mc:Ignorable="d">
     <UserControl.Resources>
         <helpers:BindingProxy Data="{Binding}" x:Key="ModelView" />
         <Search:OperatorToStringConverter x:Key="OpToString" />
@@ -73,8 +72,7 @@
 
                                     <TextBox DockPanel.Dock="Right" Margin="3" MinWidth="67">
                                         <TextBox.Text>
-                                            <Binding Path="ComparedToValueString" Mode="TwoWay" ConverterParameter="ValueType"
-                                                     UpdateSourceTrigger="PropertyChanged" NotifyOnSourceUpdated="True">
+                                            <Binding Path="ComparedToValueString" Mode="TwoWay" ConverterParameter="ValueType">
                                                 <Binding.ValidationRules>
                                                     <ExceptionValidationRule />
                                                 </Binding.ValidationRules>

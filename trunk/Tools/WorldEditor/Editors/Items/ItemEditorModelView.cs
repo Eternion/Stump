@@ -20,11 +20,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DBSynchroniser.Records;
 using Stump.DofusProtocol.D2oClasses;
 using WorldEditor.Annotations;
 using WorldEditor.Editors.Items.Effects;
 using WorldEditor.Helpers;
-using WorldEditor.Loaders.D2O;
+using WorldEditor.Loaders.Data;
 using WorldEditor.Loaders.Icons;
 
 namespace WorldEditor.Editors.Items
@@ -39,37 +40,17 @@ namespace WorldEditor.Editors.Items
             if (handler != null) handler(this, arg2);
         }
 
-        public ItemEditorModelView(Item item)
-            : this(item is Weapon ? new WeaponWrapper((Weapon)item) : new ItemWrapper(item))
+        public ItemEditorModelView(ItemRecord item)
+            : this(item is WeaponRecord ? new WeaponWrapper((WeaponRecord)item) : new ItemWrapper(item))
         {
         }
 
         public ItemEditorModelView(ItemWrapper wrapper)
         {
             Item = wrapper;
-            Types = ObjectDataManager.Instance.EnumerateObjects<ItemType>().ToList();
-            ItemSets = ObjectDataManager.Instance.EnumerateObjects<ItemSet>().ToList();
-            Item.PropertyChanged += OnPropertyChanged;
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != "Type")
-                return;
-
-            if (!string.IsNullOrEmpty(Item.Type.RawZone) && Item.Type.RawZone != "null" && !( Item is WeaponWrapper )) // it's a weapon
-            {
-                Item.PropertyChanged -= OnPropertyChanged;
-                Item = new WeaponWrapper(Item);
-                Item.PropertyChanged += OnPropertyChanged;
-            }
-            else if ((Item is WeaponWrapper) &&
-                     (string.IsNullOrEmpty(Item.Type.RawZone) || Item.Type.RawZone == "null"))
-            {
-                Item.PropertyChanged -= OnPropertyChanged;
-                Item = new ItemWrapper(Item as WeaponWrapper);
-                Item.PropertyChanged += OnPropertyChanged;
-            }
+            Types = ObjectDataManager.Instance.EnumerateObjects<ItemTypeRecord>().
+                Where(x => IsWeapon ? !string.IsNullOrEmpty(x.RawZone) && x.RawZone != "null" : string.IsNullOrEmpty(x.RawZone) || x.RawZone == "null").ToList();
+            ItemSets = ObjectDataManager.Instance.EnumerateObjects<ItemSetRecord>().ToList();
         }
 
         public ItemWrapper Item
@@ -78,13 +59,13 @@ namespace WorldEditor.Editors.Items
             set;
         }
 
-        public List<ItemType> Types
+        public List<ItemTypeRecord> Types
         {
             get;
             set;
         }
 
-        public List<ItemSet> ItemSets
+        public List<ItemSetRecord> ItemSets
         {
             get;
             set;
@@ -150,7 +131,7 @@ namespace WorldEditor.Editors.Items
         #region EditEffectCommand
 
         private DelegateCommand m_editEffectCommand;
-        private List<Effect> m_effects;
+        private List<EffectRecord> m_effects;
 
         public DelegateCommand EditEffectCommand
         {
@@ -174,7 +155,7 @@ namespace WorldEditor.Editors.Items
                     EffectToEdit = (EffectWrapper) (effect).Clone(),
                     EffectsSource =
                         m_effects ??
-                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<Effect>().ToList())
+                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<EffectRecord>().ToList())
                 };
 
             if (dialog.ShowDialog() != true)
@@ -253,7 +234,7 @@ namespace WorldEditor.Editors.Items
                 {
                     EffectsSource =
                         m_effects ??
-                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<Effect>().ToList())
+                        (m_effects = ObjectDataManager.Instance.EnumerateObjects<EffectRecord>().ToList())
                 };
 
             var effect = new EffectDiceWrapper(new EffectInstanceDice()

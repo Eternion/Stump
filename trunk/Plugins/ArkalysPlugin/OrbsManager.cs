@@ -41,10 +41,10 @@ namespace ArkalysPlugin
         public static ItemTemplate OrbItemTemplate;
 
         [Variable]
-        public static double FormulasCoefficient = 0.001;
+        public static double FormulasCoefficient = 0.0012;
 
         [Variable]
-        public static double FormulasExponent = 2.2;
+        public static double FormulasExponent = 2.18;
 
 
 
@@ -86,8 +86,8 @@ namespace ArkalysPlugin
 
         private static uint GetMonsterDroppedOrbs(MonsterFighter monster)
         {
-            return (uint)Math.Floor(FormulasCoefficient * Math.Pow(monster.Level, FormulasExponent)) +
-                (uint)Math.Floor(Math.Pow(2 * Math.Log(5 * monster.Level), 0.6));
+            return (uint)Math.Floor(FormulasCoefficient * (monster.Monster.Template.IsBoss ? 25 : 1) * Math.Pow(monster.Level, FormulasExponent)) +
+                (uint)Math.Floor(Math.Pow(Math.Log(2 * monster.Level), 0.6));
         }
     }
 }

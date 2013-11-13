@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             
             var occupiedCells = new short[0];
             if (!throughEntities)
-                occupiedCells = Objects.Select(x => x.Cell.Id).ToArray();
+                occupiedCells = Objects.Where(x => x.BlockSight).Select(x => x.Cell.Id).ToArray();
 
             var line = MapPoint.GetPoint(from).GetCellsInLine(MapPoint.GetPoint(to));
             foreach (var point in line.Skip(1)) // skip first cell

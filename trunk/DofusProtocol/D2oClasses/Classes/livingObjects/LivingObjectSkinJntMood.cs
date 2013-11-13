@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:55
+// Generated on 10/28/2013 14:03:19
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -10,11 +10,15 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("LivingObjectSkinJntMood", "com.ankamagames.dofus.datacenter.livingObjects")]
     [Serializable]
-    public class LivingObjectSkinJntMood : IDataObject
+    public class LivingObjectSkinJntMood : IDataObject, IIndexedData
     {
         private const String MODULE = "LivingObjectSkinJntMood";
         public int skinId;
         public List<List<int>> moods;
+        int IIndexedData.Id
+        {
+            get { return (int)skinId; }
+        }
         [D2OIgnore]
         public int SkinId
         {

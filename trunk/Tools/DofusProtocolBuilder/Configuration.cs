@@ -139,7 +139,7 @@ namespace DofusProtocolBuilder
                         OutPutPath = "d2oclasses/",
                         OutPutNamespace = ".D2oClasses",
                         TemplatePath = "./Templates/DataCenterTemplate.tt",
-                        IgnoreMethods = true,
+                        IgnoreMethods = false,
                         EnableParsing = true,
                     };
 
@@ -150,7 +150,7 @@ namespace DofusProtocolBuilder
                     OutPutPath = "dbclasses/",
                     OutPutNamespace = ".Data",
                     TemplatePath = "./Templates/DBTemplate.tt",
-                    IgnoreMethods = true,
+                    IgnoreMethods = false,
                     EnableParsing = true,
 
                 };

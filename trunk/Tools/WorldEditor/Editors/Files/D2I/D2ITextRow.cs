@@ -14,6 +14,8 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using WorldEditor.Loaders.I18N;
+
 namespace WorldEditor.Editors.Files.D2I
 {
     public sealed class D2ITextRow : D2IGridRow

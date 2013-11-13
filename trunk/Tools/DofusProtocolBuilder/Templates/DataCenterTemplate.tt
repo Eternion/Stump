@@ -4,6 +4,7 @@
 <#@ import namespace="System" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="DofusProtocolBuilder.Parsing" #>
+<#@ import namespace="DofusProtocolBuilder.Parsing.Elements" #>
 <#@ parameter name="Parser" type="DofusProtocolBuilder.Parsing.Parser" #>
 <#@ parameter name="Profile" type="DofusProtocolBuilder.Profiles.ParsingProfile" #>
 <#@ include file="./Helper.tt"#>
@@ -18,6 +19,15 @@ namespace <#= Profile.OutPutNamespace #>
 <# PushIndent("    "); #>
 <# 
 var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
+
+if (idField == null)
+    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type == "int" || x.Type == "uint") && !x.Name.ToLower().Contains("type"));
+
+if (idField == null)
+    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type == "int" || x.Type == "uint"));
+
+if (Parser.Class.Name == "InfoMessage" || Parser.Class.Name == "RideFood")
+    idField = null;
 #>
 <# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\", \"" + Parser.Class.Namespace + "\")]"); #>
 [Serializable]
@@ -29,15 +39,37 @@ foreach (var field in Parser.Fields)
 {
 	if (field.Modifiers != AccessModifiers.Public && field.Name != "MODULE")
 		continue;
+    
+    bool isI18nField = false;
+    foreach(var property in Parser.Properties)
+    {
+        if (property.MethodGet != null)
+        {
+            var i18nAssignation = property.MethodGet.Statements.OfType<AssignationStatement>().
+                FirstOrDefault(x => x.Value.Contains("I18n.getText") && x.Value.Contains(field.Name));
+
+            if (i18nAssignation != null)
+            {
+                isI18nField = true;
+                break;
+            }
+        }
+    }
+    
+    if (isI18nField)
+        WriteLine("[I18NField]");
 
     WriteField(field);
 } 
 
-if (idField != null)
+if (idField != null && Parser.Class.Heritage == "Object")
 {
     WriteLine("int IIndexedData.Id");
     WriteLine("{");
-    WriteLine("    get { return (int)id; }");
+    if (Parser.Class.Name == "InfoMessage")
+        WriteLine("    get { return (int)(typeId * 10000 + messageId); }");
+    else
+        WriteLine("    get { return (int)" + idField.Name + "; }");
     WriteLine("}");
 }
 

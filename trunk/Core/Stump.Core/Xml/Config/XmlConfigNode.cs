@@ -159,11 +159,11 @@ namespace Stump.Core.Xml.Config
         /// </summary>
         /// <returns></returns>
         /// <remarks>The return value can be differant from the field value</remarks>
-        public object GetValue()
+        public object GetValue(bool realValue = false)
         {
             if (BindedField != null && BindedProperty == null)
             {
-                if (m_newValue != null &&
+                if (!realValue && m_newValue != null &&
                     !Attribute.DefinableRunning)
                     return m_newValue;
 
@@ -172,7 +172,7 @@ namespace Stump.Core.Xml.Config
 
             else if (BindedProperty != null && BindedField == null)
             {
-                if (m_newValue != null &&
+                if (!realValue && m_newValue != null &&
                     !Attribute.DefinableRunning)
                     return m_newValue;
 

@@ -3,11 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:WorldEditor="clr-namespace:WorldEditor" xmlns:Database="clr-namespace:WorldEditor.Database"
         xmlns:dbSynchroniser="clr-namespace:DBSynchroniser;assembly=DBSynchroniser"
+        xmlns:data="clr-namespace:WorldEditor.Loaders.Data"
         WindowStartupLocation="CenterScreen"
         d:DataContext="{d:DesignInstance Type=WorldEditor:StartModelView}" Title="Stump World Editor" SizeToContent="Height" Width="400">
     <StackPanel x:Name="MdiContainer" AllowDrop="True" PreviewDragEnter="MdiContainer_PreviewDragEnter" Drop="MdiContainer_Drop" Background="Transparent">
         <TextBlock AllowDrop="True" Text="Drop Files Here !" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Margin="10" />
-        <ListBox ItemsSource="{Binding Tables}" Height="200" Name="TableListBox" Margin="5">
+        <ListBox ItemsSource="{Binding Source={x:Static data:ObjectDataManager.Instance}, Path=Tables}" Height="200" Name="TableListBox" Margin="5">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="dbSynchroniser:D2OTable">
                     <TextBlock Text="{Binding TableName}" />
@@ -16,10 +17,14 @@
         </ListBox>
         <Button Content="Edit Table" Margin="5" Command="{Binding EditTableCommand}" CommandParameter="{Binding ElementName=TableListBox, Path=SelectedItem}" />
         <GroupBox Header="Items">
-            <UniformGrid Rows="1">
+            <UniformGrid Rows="2">
                 <Button Content="Create a new item ..." Margin="5" Height="40" Command="{Binding CreateItemCommand}" />
+                <Button Content="Create a new weapon ..." Margin="5" Height="40" Command="{Binding CreateWeaponCommand}" />
                 <Button Content="Search an item ..." Margin="5" Command="{Binding SearchItemCommand}" />
             </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="Langs">
+            <Button Content="Edit langs" Margin="5" Height="40" Command="{Binding EditLangsCommand}" />
         </GroupBox>
         <Button Margin="3" Command="{Binding OpenConfigCommand}">
             <StackPanel Orientation="Horizontal">

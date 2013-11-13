@@ -20,6 +20,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Dialogs;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -81,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
 
             Merchant.Bag.RemoveItem(item, quantity);
 
-            PlayerItem newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, quantity,
+            BasePlayerItem newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, quantity,
                                                             item.Effects);
 
             Character.Inventory.AddItem(newItem);

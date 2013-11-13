@@ -45,8 +45,8 @@ namespace WorldEditor.Loaders.Icons
         {
             m_d2PFile = new D2pFile(path);
             m_icons = EnumerateIcons().ToDictionary(x => x.Id);
-            ErrorIcon = new Icon(-1, m_d2PFile.FileName, m_d2PFile.ReadFile("error.png"));
-            EmptyIcon = new Icon(0, m_d2PFile.FileName, m_d2PFile.ReadFile("empty.png"));
+            ErrorIcon = new Icon(-1, m_d2PFile.ReadFile("error.png"));
+            EmptyIcon = new Icon(0, m_d2PFile.ReadFile("empty.png"));
         }
 
         public IEnumerable<Icon> Icons
@@ -64,7 +64,7 @@ namespace WorldEditor.Loaders.Icons
 
             byte[] data = m_d2PFile.ReadFile(id + ".png");
 
-            return new Icon(id, id + ".png", data);
+            return new Icon(id, data);
         }
 
         private IEnumerable<Icon> EnumerateIcons()
@@ -91,7 +91,7 @@ namespace WorldEditor.Loaders.Icons
                         break;
                 }
 
-                yield return new Icon(id, entry.FileName, data);
+                yield return new Icon(id, data);
             }
         }
     }

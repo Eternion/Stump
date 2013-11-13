@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:57
+// Generated on 10/28/2013 14:03:21
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -16,14 +16,14 @@ namespace Stump.DofusProtocol.D2oClasses
         public int id;
         public int origineX;
         public int origineY;
-        public float mapWidth;
-        public float mapHeight;
+        public double mapWidth;
+        public double mapHeight;
         public uint horizontalChunck;
         public uint verticalChunck;
         public Boolean viewableEverywhere;
-        public float minScale;
-        public float maxScale;
-        public float startScale;
+        public double minScale;
+        public double maxScale;
+        public double startScale;
         public int centerX;
         public int centerY;
         public int totalWidth;
@@ -52,13 +52,13 @@ namespace Stump.DofusProtocol.D2oClasses
             set { origineY = value; }
         }
         [D2OIgnore]
-        public float MapWidth
+        public double MapWidth
         {
             get { return mapWidth; }
             set { mapWidth = value; }
         }
         [D2OIgnore]
-        public float MapHeight
+        public double MapHeight
         {
             get { return mapHeight; }
             set { mapHeight = value; }
@@ -82,19 +82,19 @@ namespace Stump.DofusProtocol.D2oClasses
             set { viewableEverywhere = value; }
         }
         [D2OIgnore]
-        public float MinScale
+        public double MinScale
         {
             get { return minScale; }
             set { minScale = value; }
         }
         [D2OIgnore]
-        public float MaxScale
+        public double MaxScale
         {
             get { return maxScale; }
             set { maxScale = value; }
         }
         [D2OIgnore]
-        public float StartScale
+        public double StartScale
         {
             get { return startScale; }
             set { startScale = value; }

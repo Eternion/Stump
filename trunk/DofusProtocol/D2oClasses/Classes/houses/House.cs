@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:53
+// Generated on 10/28/2013 14:03:17
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -10,14 +10,20 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("House", "com.ankamagames.dofus.datacenter.houses")]
     [Serializable]
-    public class House : IDataObject
+    public class House : IDataObject, IIndexedData
     {
         private const String MODULE = "Houses";
         public int typeId;
         public uint defaultPrice;
+        [I18NField]
         public int nameId;
+        [I18NField]
         public int descriptionId;
         public int gfxId;
+        int IIndexedData.Id
+        {
+            get { return (int)nameId; }
+        }
         [D2OIgnore]
         public int TypeId
         {

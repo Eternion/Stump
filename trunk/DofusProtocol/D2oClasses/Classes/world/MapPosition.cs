@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:57
+// Generated on 10/28/2013 14:03:21
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int posY;
         public Boolean outdoor;
         public int capabilities;
+        [I18NField]
         public int nameId;
         public List<AmbientSound> sounds;
         public int subAreaId;

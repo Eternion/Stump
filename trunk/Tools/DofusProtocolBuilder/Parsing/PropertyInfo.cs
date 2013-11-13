@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DofusProtocolBuilder.Parsing
 {
     public class PropertyInfo
@@ -8,7 +10,7 @@ namespace DofusProtocolBuilder.Parsing
             set;
         }
 
-        public MethodInfo.MethodModifiers MethodModifier
+        public List<MethodInfo.MethodModifiers> MethodModifiers
         {
             get;
             set;

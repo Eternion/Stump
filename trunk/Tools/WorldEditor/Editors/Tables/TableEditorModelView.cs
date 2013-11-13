@@ -18,17 +18,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using DBSynchroniser;
+using Stump.Core.I18N;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.ORM;
+using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Database;
 using System.Linq;
 using WorldEditor.Editors.Files.D2O;
 using WorldEditor.Helpers;
+using WorldEditor.Helpers.Converters;
+using WorldEditor.Loaders.I18N;
 
 namespace WorldEditor.Editors.Tables
 {
@@ -38,10 +45,10 @@ namespace WorldEditor.Editors.Tables
         private ObservableCollection<object> m_rows;
         private ReadOnlyObservableCollection<object> m_readOnylRows;
         private readonly List<DataGridColumn> m_columns = new List<DataGridColumn>();
-        private readonly ObservableCollection<string> m_searchProperties = new ObservableCollection<string>();
+        private readonly List<string> m_searchProperties = new List<string>();
         private ReadOnlyObservableCollection<string> m_readOnlySearchProperties;
         private readonly Dictionary<string, Func<object, object>> m_propertiesGetters = new Dictionary<string, Func<object, object>>();
-        private Stack<D2OEditedObject> m_editedObjects = new Stack<D2OEditedObject>(); 
+        private readonly Dictionary<object, EditedObject> m_editedObjects = new Dictionary<object, EditedObject>(); 
         private readonly TableEditor m_editor;
 
         public TableEditorModelView(TableEditor editor, D2OTable table)
@@ -66,6 +73,14 @@ namespace WorldEditor.Editors.Tables
             get
             {
                 return m_columns.AsReadOnly();
+            }
+        }
+
+        public ReadOnlyCollection<string> SearchProperties
+        {
+            get
+            {
+                return m_searchProperties.AsReadOnly();
             }
         }
 
@@ -113,11 +128,11 @@ namespace WorldEditor.Editors.Tables
                 {
                     element = new FrameworkElementFactory(typeof(TextBlock));
 
-                    /*if (d2oProperty != null && d2oProperty.TypeId == D2OFieldType.I18N)
+                    if (property.GetCustomAttribute<I18NFieldAttribute>() != null)
                     {
                         binding.Converter = new IdToI18NTextConverter();
                         column.Width = 120;
-                    }*/
+                    }
 
                     element.SetBinding(TextBlock.TextProperty, binding);
                     element.SetValue(FrameworkElement.MarginProperty, new Thickness(1));
@@ -139,6 +154,27 @@ namespace WorldEditor.Editors.Tables
             }
         }
 
+        public void OnObjectEdited(object item)
+        {
+            if (!m_editedObjects.ContainsKey(item))
+                m_editedObjects.Add(item, new EditedObject(item, ObjectState.Dirty));
+        }
+
+        public void OnObjectRemoved(object item)
+        {
+            if (m_editedObjects.ContainsKey(item))
+                m_editedObjects[item].State = ObjectState.Removed;
+            else
+                m_editedObjects.Add(item, new EditedObject(item, ObjectState.Removed));
+        }
+
+        public void OnObjectAdded(object item)
+        {
+            if (m_editedObjects.ContainsKey(item))
+                m_editedObjects[item].State = ObjectState.Added;
+            else
+                m_editedObjects.Add(item, new EditedObject(item, ObjectState.Added));
+        }
 
         #region RemoveCommand
 
@@ -149,15 +185,24 @@ namespace WorldEditor.Editors.Tables
             get { return m_removeCommand ?? (m_removeCommand = new DelegateCommand(OnRemove, CanRemove)); }
         }
 
-        private static bool CanRemove(object parameter)
+        private bool CanRemove(object parameter)
         {
-            return true;
+            return parameter is IList && ( (IList)parameter ).Count > 0;
         }
 
-        private static void OnRemove(object parameter)
+        private void OnRemove(object parameter)
         {
             if (parameter == null || !CanRemove(parameter))
-                return;
+                return;   
+            
+            // copy
+            var list = ( parameter as IList ).OfType<object>().ToArray();
+
+            foreach (var item in list)
+            {
+                m_rows.Remove(item);
+                OnObjectRemoved(item);
+            }
         }
 
         #endregion
@@ -172,17 +217,344 @@ namespace WorldEditor.Editors.Tables
             get { return m_addCommand ?? (m_addCommand = new DelegateCommand(OnAdd, CanAdd)); }
         }
 
-        private static bool CanAdd(object parameter)
+        private bool CanAdd(object parameter)
         {
             return true;
         }
 
-        private static void OnAdd(object parameter)
+        private void OnAdd(object parameter)
         {
-            if (parameter == null || !CanAdd(parameter))
-                return;
+            var obj = Activator.CreateInstance(m_table.Type);
+
+            foreach (var property in obj.GetType().GetProperties())
+            {
+                if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    property.SetValue(obj, Activator.CreateInstance(property.PropertyType));
+                }
+                if (property.PropertyType == typeof (string))
+                {
+                    property.SetValue(obj, string.Empty);
+                }
+            }
+
+            m_rows.Add(obj);
+
+            m_editor.ObjectsGrid.SelectedItem = obj;
+            m_editor.ObjectsGrid.ScrollIntoView(obj);
+            m_editor.ObjectsGrid.Focus();
+
+            OnObjectAdded(obj);
         }
 
         #endregion
+
+
+        #region SaveCommand
+
+        private DelegateCommand m_saveCommand;
+
+        public DelegateCommand SaveCommand
+        {
+            get { return m_saveCommand ?? (m_saveCommand = new DelegateCommand(OnSave, CanSave)); }
+        }
+
+        private bool CanSave(object parameter)
+        {
+            return true;
+        }
+
+        private void OnSave(object parameter)
+        {
+            foreach (var obj in m_editedObjects.Values.ToArray())
+            {
+                m_editedObjects.Remove(obj.Object);
+                SaveEditedObject(obj);
+            }
+
+            MessageService.ShowMessage(m_editor, "Table saved");
+        }
+
+        private static void SaveEditedObject(EditedObject obj)
+        {
+            switch (obj.State)
+            {
+                case ObjectState.Added:
+                    DatabaseManager.Instance.Database.Insert(obj.Object);
+                    break;
+                case ObjectState.Removed:
+                    DatabaseManager.Instance.Database.Delete(obj.Object);
+                    break;
+                case ObjectState.Dirty:
+                    DatabaseManager.Instance.Database.Update(obj.Object);
+                    break;
+            }
+
+            obj.State = ObjectState.None;
+        }
+
+        #endregion
+
+
+        #region FindCommand
+
+        private DelegateCommand m_findCommand;
+
+        public int LastFoundIndex
+        {
+            get;
+            set;
+        }
+
+        public string SearchText
+        {
+            get;
+            set;
+        }
+
+        public string SearchProperty
+        {
+            get;
+            set;
+        }
+
+        public DelegateCommand FindCommand
+        {
+            get
+            {
+                return m_findCommand ?? ( m_findCommand = new DelegateCommand(OnFind, CanFind) );
+            }
+        }
+
+        private object FindNext()
+        {
+            int startIndex = LastFoundIndex == -1 || LastFoundIndex + 1 >= Rows.Count ? 0 : LastFoundIndex + 1;
+
+            object row = null;
+            int index = -1;
+
+            if (string.IsNullOrEmpty(SearchProperty))
+                return null;
+
+            if (m_rows.Count == 0)
+                return null;
+
+            var getter = m_propertiesGetters[SearchProperty];
+            var propertyType = getter(m_rows[0]).GetType();
+            var isBool = propertyType == typeof(bool);
+            var isInteger = propertyType == typeof(int) ||
+                propertyType == typeof(uint) ||
+                propertyType == typeof(short) ||
+                propertyType == typeof(ushort);
+            var isLong = propertyType == typeof(long) ||
+                propertyType == typeof(ulong);
+            var isDouble = propertyType == typeof(double) || propertyType == typeof(float);
+
+            int? searchInteger = null;
+            int dummy;
+            if (int.TryParse(SearchText, out dummy))
+                searchInteger = dummy;
+
+            long? searchLong = null;
+            long dummyL;
+            if (long.TryParse(SearchText, out dummyL))
+                searchLong = dummy;
+
+            double? searchDouble = null;
+            double dummyD;
+            if (double.TryParse(SearchText, out dummyD))
+                searchDouble = dummyD;
+
+            bool? searchBool = SearchText.ToLower() == "true" || SearchText.ToLower() == "false" ?
+                SearchText.ToLower() == "true" : (bool?)null;
+
+            for (int i = startIndex; i < m_rows.Count; i++)
+            {
+                var value = getter(m_rows[i]);
+                if (isBool)
+                {
+                    if (( searchBool.HasValue && searchBool == (bool)value ) ||
+                        ( searchInteger.HasValue && (bool)value == ( searchInteger.Value != 0 ) ))
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+                else if (isInteger)
+                {
+                    if (searchInteger.HasValue && searchInteger == Convert.ToInt32(value))
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+                else if (isLong)
+                {
+                    if (searchLong.HasValue && searchLong == Convert.ToInt64(value))
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+                else if (isDouble)
+                {
+                    if (searchDouble.HasValue && searchDouble == Convert.ToDouble(value))
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (value.ToString().IndexOf(SearchText, StringComparison.InvariantCultureIgnoreCase) != -1)
+                    {
+                        row = m_rows[i];
+                        index = i;
+                        break;
+                    }
+                }
+            }
+
+            if (row == null)
+            {
+                LastFoundIndex = -1;
+                return null;
+            }
+            else
+            {
+                LastFoundIndex = index;
+                return row;
+            }
+        }
+
+        private bool CanFind(object parameter)
+        {
+            return !string.IsNullOrEmpty(SearchText);
+        }
+
+        private void OnFind(object parameter)
+        {
+            if (!CanFind(parameter))
+                return;
+
+            LastFoundIndex = 0;
+            var row = FindNext();
+
+            FindNextCommand.RaiseCanExecuteChanged();
+
+            if (row != null)
+            {
+                m_editor.ObjectsGrid.SelectedItem = row;
+                m_editor.ObjectsGrid.ScrollIntoView(row);
+                m_editor.ObjectsGrid.Focus();
+            }
+            else
+            {
+                MessageService.ShowMessage(m_editor, "Not found");
+            }
+        }
+
+        #endregion
+
+
+
+        #region FindNextCommand
+
+        private DelegateCommand m_findNextCommand;
+
+        public DelegateCommand FindNextCommand
+        {
+            get
+            {
+                return m_findNextCommand ?? ( m_findNextCommand = new DelegateCommand(OnFindNext, CanFindNext) );
+            }
+        }
+
+        private bool CanFindNext(object parameter)
+        {
+            return true;
+        }
+
+        private void OnFindNext(object parameter)
+        {
+            var row = FindNext();
+
+            if (row == null)
+                row = FindNext();
+
+            if (row != null)
+            {
+                m_editor.ObjectsGrid.SelectedItem = row;
+                m_editor.ObjectsGrid.ScrollIntoView(row);
+                m_editor.ObjectsGrid.Focus();
+            }
+            else
+            {
+                MessageService.ShowMessage(m_editor, "Not found");
+            }
+        }
+
+        #endregion
+        
+
+        #region GenerateEnumCommand
+
+        private DelegateCommand m_generateEnumCommand;
+
+        public DelegateCommand GenerateEnumCommand
+        {
+            get
+            {
+                return m_generateEnumCommand ?? (m_generateEnumCommand = new DelegateCommand(OnGenerateEnum, CanGenerateEnum));
+            }
+        }
+
+        private bool CanGenerateEnum(object parameter)
+        {
+            return m_table.Type.GetProperties().Any(x => x.GetCustomAttribute<I18NFieldAttribute>() != null);
+        }
+
+        private void OnGenerateEnum(object parameter)
+        {
+            if (!CanGenerateEnum(parameter))
+                return;
+
+            var builder = new StringBuilder();
+            builder.AppendLine("namespace Stump.DofusProtocol.Enums");
+            builder.AppendLine("{");
+            builder.AppendLine("\t");
+            builder.AppendLine(string.Format("\tpublic enum {0}Enum", m_table.ClassName));
+            builder.AppendLine("\t{");
+
+            var nameProperty =
+                m_table.Type.GetProperties().FirstOrDefault(x => x.GetCustomAttribute<I18NFieldAttribute>() != null);
+            var idProperty = 
+                m_table.Type.GetProperties().FirstOrDefault(x => x.GetCustomAttribute<PrimaryKeyAttribute>() != null);
+
+            foreach (var row in m_rows)
+            {
+                var nameId = nameProperty.GetValue(row);
+                var id = idProperty.GetValue(row);
+                var nameRecord = I18NDataManager.Instance.GetText(nameId is uint ? (uint) nameId : (uint) (int) nameId);
+                if (nameRecord == null)
+                    continue;
+
+                var name = !string.IsNullOrEmpty(nameRecord.English) ? nameRecord.English : nameRecord.French;
+
+                var formattedName = name.Trim().ToUpper().Replace(" ", "_").Replace("\"", "").Replace("'", "_");
+                builder.AppendLine(string.Format("\t\t{0} = {1},", formattedName, id));
+            }
+            builder.AppendLine("\t}");
+            builder.AppendLine("}");
+
+            File.WriteAllText("./enums/" + m_table.ClassName + "Enum.cs", builder.ToString());
+        }
+
+        #endregion
+
     }
 }

@@ -21,15 +21,16 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Items
 {
     public class PlayerTradeItem : TradeItem
     {
-        private readonly PlayerItem m_item;
+        private readonly BasePlayerItem m_item;
         private uint m_stack;
 
-        public PlayerTradeItem(PlayerItem item, uint stack)
+        public PlayerTradeItem(BasePlayerItem item, uint stack)
         {
             m_item = item;
             m_stack = stack;

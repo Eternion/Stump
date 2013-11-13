@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -111,7 +110,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommand = typeof(ItemCommand);
             AddParameter("pattern", "p", "Search pattern (see docs)", "*");
             AddParameter("target", "t", "Where items will be search", converter:ParametersConverter.CharacterConverter, isOptional:true);
-            AddParameter("page", "p", "Page number of the list (starts at 0)", 0, isOptional:true);
+            AddParameter("page", "page", "Page number of the list (starts at 0)", 0, isOptional:true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -219,6 +218,75 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     trigger.Reply("Added '{0}'({1}) to your inventory.", template.Name, template.Id);
                 else
                     trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", template.Name, template.Id, target.Name);
+            }
+        }
+    }
+
+    public class ItemAddTypeCommand : TargetSubCommand
+    {
+        public ItemAddTypeCommand()
+        {
+            Aliases = new[] {"addtype"};
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Add all the items match with typeId.";
+            ParentCommand = typeof (ItemCommand);
+
+            AddParameter<int>("typeid", "type", "TypeId to add");
+            AddTargetParameter(true, "Character who will receive the items");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var typeId = trigger.Get<int>("typeid");
+            var target = GetTarget(trigger);
+
+            var items = ItemManager.Instance.GetTemplates();
+
+            foreach (var item in items)
+            {
+                if (item.TypeId != typeId)
+                    continue;
+
+                var cItem = ItemManager.Instance.CreatePlayerItem(target, item, 1);
+                target.Inventory.AddItem(cItem);
+
+                if (cItem == null)
+                    trigger.Reply("Item '{0}'({1}) can't be add for an unknown reason", item.Name, item.Id);
+                else if (trigger is GameTrigger && (trigger as GameTrigger).Character.Id == target.Id)
+                    trigger.Reply("Added '{0}'({1}) to your inventory.", item.Name, item.Id);
+                else
+                    trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", item.Name, item.Id, target.Name);
+            }
+        }
+    }
+
+    public class ItemDelTypeCommand : TargetSubCommand
+    {
+        public ItemDelTypeCommand()
+        {
+            Aliases = new[] { "deltype" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Remove all the items match with typeId.";
+            ParentCommand = typeof(ItemCommand);
+
+            AddParameter<int>("typeid", "type", "TypeId to remove");
+            AddTargetParameter(true, "Character who will remove the items");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var typeId = trigger.Get<int>("typeid");
+            var target = GetTarget(trigger);
+
+            var itemsToDelete = target.Inventory.Where(x => x.Template.TypeId == typeId).ToArray();
+
+            foreach (var item in itemsToDelete)
+            {
+                if (item.Template.TypeId == typeId)
+                {
+                    target.Inventory.RemoveItem(item);
+                    trigger.ReplyBold("Item {0} removed from {1}'s inventory", item.Template.Name, target);
+                }
             }
         }
     }

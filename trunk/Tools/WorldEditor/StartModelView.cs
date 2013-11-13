@@ -14,19 +14,12 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
 using DBSynchroniser;
-using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using WorldEditor.Config;
 using WorldEditor.Editors.Items;
+using WorldEditor.Editors.Langs;
 using WorldEditor.Editors.Tables;
 using WorldEditor.Helpers;
 using WorldEditor.Search.Items;
@@ -35,33 +28,6 @@ namespace WorldEditor
 {
     public class StartModelView
     {
-        private readonly List<D2OTable> m_tables = new List<D2OTable>(); 
-
-        public StartModelView()
-        {
-            LoadTables();
-        }
-
-        private void LoadTables()
-        {
-            foreach (var table in from type in typeof (D2OTable).Assembly.GetTypes() let attr = type.GetCustomAttribute<D2OClassAttribute>() where attr != null let tableAttr = type.GetCustomAttribute<TableNameAttribute>() where tableAttr != null select new D2OTable
-                {
-                    Type = type,
-                    ClassName = attr.Name,
-                    TableName = tableAttr.TableName,
-                    Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
-                })
-            {
-                m_tables.Add(table);
-            }
-        }
-
-        public ReadOnlyCollection<D2OTable> Tables
-        {
-            get { return m_tables.AsReadOnly(); }
-        }
-
-
         #region EditTableCommand
 
         private DelegateCommand m_editTableCommand;
@@ -71,7 +37,7 @@ namespace WorldEditor
             get { return m_editTableCommand ?? (m_editTableCommand = new DelegateCommand(OnEditTable, CanEditTable)); }
         }
 
-        private bool CanEditTable(object parameter)
+        private static bool CanEditTable(object parameter)
         {
             return parameter is D2OTable;
         }
@@ -110,6 +76,32 @@ namespace WorldEditor
         #endregion
 
 
+        #region CreateWeaponCommand
+
+        private DelegateCommand m_createWeaponCommand;
+
+        public DelegateCommand CreateWeaponCommand
+        {
+            get
+            {
+                return m_createWeaponCommand ?? (m_createWeaponCommand = new DelegateCommand(OnCreateWeapon, CanCreateWeapon));
+            }
+        }
+
+        private bool CanCreateWeapon(object parameter)
+        {
+            return true;
+        }
+
+        private void OnCreateWeapon(object parameter)
+        {
+            var editor = new ItemEditor(new WeaponWrapper());
+            editor.Show();
+        }
+
+        #endregion
+
+
         #region SearchItemCommand
 
         private DelegateCommand m_searchItemCommand;
@@ -132,6 +124,31 @@ namespace WorldEditor
 
         #endregion
 
+
+        #region EditLangsCommand
+
+        private DelegateCommand m_editLangsCommand;
+
+        public DelegateCommand EditLangsCommand
+        {
+            get
+            {
+                return m_editLangsCommand ?? (m_editLangsCommand = new DelegateCommand(OnEditLangs, CanEditLangs));
+            }
+        }
+
+        private bool CanEditLangs(object parameter)
+        {
+            return true;
+        }
+
+        private void OnEditLangs(object parameter)
+        {
+            var editor = new LangEditor();
+            editor.Show();
+        }
+
+        #endregion
 
         #region OpenConfigCommand
 

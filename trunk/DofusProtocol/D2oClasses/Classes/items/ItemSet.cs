@@ -1,6 +1,6 @@
 
 
-// Generated on 10/06/2013 17:58:53
+// Generated on 10/28/2013 14:03:18
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,6 +15,7 @@ namespace Stump.DofusProtocol.D2oClasses
         private const String MODULE = "ItemSets";
         public uint id;
         public List<uint> items;
+        [I18NField]
         public uint nameId;
         public List<List<EffectInstance>> effects;
         public Boolean bonusIsSecret;

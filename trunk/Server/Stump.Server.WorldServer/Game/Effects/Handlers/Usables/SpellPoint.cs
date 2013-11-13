@@ -7,13 +7,14 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
-    [EffectHandler(EffectsEnum.Effect_613)]
+    [EffectHandler(EffectsEnum.Effect_AddSpellPoints)]
     public class SpellPoint : UsableEffectHandler
     {
-        public SpellPoint(EffectBase effect, Character target, PlayerItem item) 
+        public SpellPoint(EffectBase effect, Character target, BasePlayerItem item) 
             : base(effect, target, item)
         {
         }
@@ -28,7 +29,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (effect.Value < 1)
                 return false;
 
-            Target.SpellsPoints += (ushort)effect.Value;
+            UsedItems = NumberOfUses;
+            Target.SpellsPoints += (ushort)(effect.Value * NumberOfUses);
             Target.RefreshStats();
             return true;
         }

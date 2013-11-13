@@ -14,6 +14,7 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -48,6 +49,15 @@ namespace Stump.Server.BaseServer.IPC
 
                 Model[typeof(IPCMessage)].AddSubType(m_idCounter++, messageType);
             }
+        }
+
+        public void RegisterMessage(Type type)
+        {
+            Model[typeof(IPCMessage)].AddSubType(m_idCounter++, type);
+        }
+        public void RegisterMessage(Type type, int id)
+        {
+            Model[typeof(IPCMessage)].AddSubType(id, type);
         }
 
         public IPCMessage Deserialize(byte[] buffer)

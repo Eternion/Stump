@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Stump.Core.IO;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
