@@ -196,7 +196,7 @@ namespace Stump.ORM.SubSonic.Extensions
             }
 
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            foreach(var prop in props.GroupBy(x => x.DeclaringType).Reverse().SelectMany(x => x))
+            foreach(var prop in props)
             {
                 if (prop.GetSetMethod() == null)
                     continue;
