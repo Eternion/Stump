@@ -645,7 +645,6 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 
             var method = new DynamicMethod(Guid.NewGuid().ToString("N"), typeof (object),
                                            new[] {typeof (object[])}.ToArray());
-
             ILGenerator ilGenerator = method.GetILGenerator();
 
             ilGenerator.DeclareLocal(classType);
