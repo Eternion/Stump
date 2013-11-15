@@ -24,24 +24,26 @@ namespace PatchBuilder
                 patchDir = args[0];
             }
 
-            if (File.Exists(Path.Combine(patchDir, "patch.xml")))
+            var attr = File.GetAttributes(patchDir);
+
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                File.Delete(Path.Combine(patchDir, "patch.xml"));
-            }
-
-            foreach (var directory in Directory.GetDirectories(patchDir))
-            {
-                var directoryName = Path.GetFileName(directory);
-
-                if (directoryName != "app")
-                    continue;
-
-                var tasks = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).Select(x => new AddFileTask
+                if (File.Exists(Path.Combine(patchDir, "patch.xml")))
                 {
-                    LocalURL = GetRelativePath(x, directory + "\\"),
-                    RelativeURL = GetRelativePath(x, patchDir + "\\"),
-                    FileMD5 = Cryptography.GetFileMD5HashBase64(x)
-                }).ToArray();
+                    File.Delete(Path.Combine(patchDir, "patch.xml"));
+                }
+                if (File.Exists(Path.Combine(patchDir, "checksum.arkalys")))
+                {
+                    File.Delete(Path.Combine(patchDir, "checksum.arkalys"));
+                }
+
+                var tasks =
+                    Directory.EnumerateFiles(patchDir, "*", SearchOption.AllDirectories).Select(x => new AddFileTask
+                    {
+                        LocalURL = GetRelativePath(x, patchDir + "\\app\\"),
+                        RelativeURL = GetRelativePath(x, patchDir + "\\"),
+                        FileMD5 = Cryptography.GetFileMD5HashBase64(x)
+                    }).ToArray();
 
                 var patch = new Patch
                 {
@@ -56,10 +58,15 @@ namespace PatchBuilder
                 XmlUtils.Serialize(Path.Combine(patchDir, "patch.xml"), patch);
                 Console.WriteLine(@"Created Patch in {0} !", Path.Combine(patchDir, "patch.xml"));
 
-                File.WriteAllText(Path.Combine(patchDir, "checksum.arkalys"), GetMD5Dir(directory));
-            }
+                File.WriteAllText(Path.Combine(patchDir, "checksum.arkalys"), GetMD5Dir(patchDir));
 
-            Console.Read();
+                Console.Read();
+            }
+            else
+            {
+                Console.WriteLine(Cryptography.GetFileMD5HashBase64(patchDir));
+                Console.Read();
+            }
         }
 
         static string GetRelativePath(string fullPath, string relativeTo)

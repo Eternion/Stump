@@ -22,9 +22,9 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\ArkalysGame
 DefaultGroupName=Arkalys Uplauncher
 DisableProgramGroupPage=yes
-OutputDir=C:\Users\arnaud.couturier\Desktop\Arkalys\Stump\trunk\Tools\Uplauncher\bin\Release
+OutputDir=C:\Users\arnaud.couturier\Documents\Arkalys\Stump\trunk\Tools\Uplauncher\bin\Release
 OutputBaseFilename=Uplauncher_Setup
-SetupIconFile=C:\Users\arnaud.couturier\Desktop\Arkalys\Stump\trunk\Tools\Uplauncher\Resources\dofus-icon-48.ico
+SetupIconFile=C:\Users\arnaud.couturier\Documents\Arkalys\Stump\trunk\Tools\Uplauncher\Resources\dofus-icon-48.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -39,7 +39,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\arnaud.couturier\Desktop\Arkalys\Stump\trunk\Tools\Uplauncher\bin\Release\Uplauncher_Secure\Uplauncher.exe"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full
+Source: "C:\Users\arnaud.couturier\Documents\Arkalys\Stump\trunk\Tools\Uplauncher\bin\Release\Uplauncher_Secure\Uplauncher.exe"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -51,4 +51,4 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Fil
 Filename: "{app}\{#MyAppExeName}"; Flags: nowait postinstall skipifsilent runascurrentuser; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"
 
 [UninstallDelete]
-Type: filesandordirs; Name: "{app}\app"
+Type: filesandordirs; Name: "{app}"

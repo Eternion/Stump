@@ -356,7 +356,7 @@ namespace Uplauncher
                 m_client = new WebClient();
                 m_client.DownloadProgressChanged += OnDownloadProgressChanged;
                 m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
-                m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
+                m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.RemoteChecksumFile);
             }
             else
             {
@@ -370,7 +370,7 @@ namespace Uplauncher
                         m_client = new WebClient();
                         m_client.DownloadProgressChanged += OnDownloadProgressChanged;
                         m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
-                        m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
+                        m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.RemoteChecksumFile);
                     }
                 }
                 else
@@ -427,7 +427,7 @@ namespace Uplauncher
             m_client = new WebClient();
             m_client.DownloadProgressChanged += OnDownloadProgressChanged;
             m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
-            m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
+            m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.RemoteChecksumFile);
         }
 
         private void OnChecksumFileDownloaded(object sender, DownloadStringCompletedEventArgs e)
@@ -451,7 +451,7 @@ namespace Uplauncher
 
                     // download patch xml
                     m_client.DownloadStringCompleted += OnPatchDownloaded;
-                    m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemotePatchFile), Constants.UpdateSiteURL + Constants.RemotePatchFile);
+                    m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemotePatchFile), Constants.RemotePatchFile);
                 }
                 else
                 {
@@ -498,9 +498,10 @@ namespace Uplauncher
 
                     var task = m_currentTasks.Pop();
 
-                    CheckIfReplaceExe(task);
                     task.Applied += x => ProcessTask();
                     task.Apply(this);
+
+                    //CheckIfReplaceExe(task);
                 });
         }
 
@@ -515,16 +516,24 @@ namespace Uplauncher
             if (!fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath), StringComparison.InvariantCultureIgnoreCase))
                 return;
 
-            addFile.LocalURL = Constants.ExeReplaceTempPath;
+            //addFile.LocalURL = Constants.ExeReplaceTempPath;
+            var path1 = Path.GetFullPath("./app/" + addFile.LocalURL);
+            var path2 = Path.GetFullPath("./" + Constants.ExeReplaceTempPath);
+
+            if (File.Exists(path2))
+                File.Delete(path2);
+
+            File.Move(path1, path2);
 
             var file = Path.GetTempFileName() + ".exe";
             File.WriteAllBytes(file, Resources.UplauncherReplacer);
 
             var procInfo = new ProcessStartInfo
             {
+                FileName = file,
                 Arguments =
                     string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
-                        Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath),
+                        Path.GetFullPath(Constants.ExeReplaceTempPath),
                         Path.GetFullPath(Constants.CurrentExePath)),
                 Verb = "runas"
             };
@@ -545,7 +554,7 @@ namespace Uplauncher
 
         private void OnUpdateEnded(bool success)
         {
-            if (success)
+            /*if (success)
             {
                 m_MD5Worker.WorkerReportsProgress = true;
                 m_MD5Worker.DoWork += MD5Worker_DoWork;
@@ -555,8 +564,8 @@ namespace Uplauncher
                 m_MD5Worker.RunWorkerAsync();
 
                 SetState(string.Format("Le jeu est à jour"), Colors.Green);
-            }
-
+            }*/
+            SetState(string.Format("Le jeu est à jour"), Colors.Green);
             IsUpToDate = success;
             IsUpdating = false;
 
