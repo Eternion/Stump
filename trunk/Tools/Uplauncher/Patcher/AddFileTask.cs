@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // AddFileTask.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
@@ -12,6 +13,7 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
 using System;
@@ -19,7 +21,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 using Stump.Core.Cryptography;
 using Uplauncher.Properties;
@@ -57,41 +58,16 @@ namespace Uplauncher.Patcher
 
         public override void Apply(UplauncherModelView uplauncher)
         {
-            var fullPath = Path.GetFullPath("./" + LocalURL);
-            if (!fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath), StringComparison.InvariantCultureIgnoreCase))
+            string fullPath = Path.GetFullPath("./" + LocalURL);
+            bool isUplauncherExeFile = fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath),
+                StringComparison.InvariantCultureIgnoreCase);
+
+
+            uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
+
+            if (File.Exists(fullPath))
             {
-                var directory = Path.GetDirectoryName("./app/" + LocalURL);
-
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                    Directory.CreateDirectory(directory);
-
-                if (File.Exists("./app/" + LocalURL))
-                {
-                    uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
-
-                    var md5 = Cryptography.GetFileMD5HashBase64("./app/" + LocalURL);
-                    //var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
-
-                    if (md5 != FileMD5)
-                        return;
-
-                    uplauncher.SetState(string.Format("File {0} already exists... Next !", RelativeURL));
-
-                    OnApplied();
-                    return;
-                }
-
-                uplauncher.SetState(string.Format("Download {0} ...", RelativeURL));
-                uplauncher.WebClient.DownloadFileCompleted += OnFileDownloaded;
-                uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL), "./app/" + LocalURL, LocalURL);
-            }
-            else
-            {
-                if (!File.Exists(fullPath))
-                    return;
-
-                uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
-                var md5 = Cryptography.GetFileMD5HashBase64(LocalURL);
+                string md5 = Cryptography.GetFileMD5HashBase64(fullPath);
 
                 if (md5 == FileMD5)
                 {
@@ -100,22 +76,35 @@ namespace Uplauncher.Patcher
                     OnApplied();
                     return;
                 }
+            }
 
-                uplauncher.SetState(string.Format("Download {0} ...", RelativeURL));
+            uplauncher.SetState(string.Format("Download {0} ...", RelativeURL));
+            if (isUplauncherExeFile)
+            {
                 uplauncher.WebClient.DownloadFileCompleted += OnUplauncherDownloaded;
-                uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL), "./" + Constants.ExeReplaceTempPath, Constants.ExeReplaceTempPath);
+
+                uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL),
+                    "./" + Constants.ExeReplaceTempPath, Constants.ExeReplaceTempPath);
+            }
+            else
+            {
+                uplauncher.WebClient.DownloadFileCompleted += OnFileDownloaded;
+                uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL), "./" + LocalURL, LocalURL);
+
             }
         }
 
         private void OnFileDownloaded(object sender, AsyncCompletedEventArgs e)
         {
-            ((WebClient)sender).DownloadFileCompleted -= OnFileDownloaded;
+            ((WebClient) sender).DownloadFileCompleted -= OnFileDownloaded;
             OnApplied();
         }
 
         private void OnUplauncherDownloaded(object sender, AsyncCompletedEventArgs e)
         {
-            var file = Path.GetTempFileName() + ".exe";
+            ((WebClient) sender).DownloadFileCompleted -= OnUplauncherDownloaded;
+
+            string file = Path.GetTempFileName() + ".exe";
             File.WriteAllBytes(file, Resources.UplauncherReplacer);
 
             var procInfo = new ProcessStartInfo
@@ -138,7 +127,7 @@ namespace Uplauncher.Patcher
             catch (Exception ex)
             {
                 //The user refused the elevation
-            }  
+            }
         }
     }
 }
