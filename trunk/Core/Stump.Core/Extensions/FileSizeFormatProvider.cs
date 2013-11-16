@@ -33,7 +33,7 @@ namespace Stump.Core.Extensions
             {
                 size = Convert.ToDecimal(arg);
             }
-            catch (InvalidCastException)
+            catch
             {
                 return DefaultFormat(format, arg, formatProvider);
             }
