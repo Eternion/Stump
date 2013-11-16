@@ -1,5 +1,5 @@
 ﻿#region License GNU GPL
-// RemoveFileTask.cs
+// Patch.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
 // 
@@ -14,32 +14,25 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System.IO;
 using System.Xml.Serialization;
 
 namespace Uplauncher.Patcher
 {
-    [XmlType("Remove")]
-    public class RemoveFileTask : PatchTask
+    public class MetaFile
     {
-        [XmlAttribute("local")]
-        public string LocalURL
+
+        [XmlArray("Tasks")]
+        public MetaFileEntry[] Tasks
         {
             get;
             set;
         }
 
-        public override bool CanApply()
+        [XmlAttribute("checksum")]
+        public string FolderChecksum
         {
-            return true;
-        }
-
-        public override void Apply(UplauncherModelView uplauncher)
-        {
-            if (File.Exists("./" + LocalURL))
-            {
-                File.Delete("./" + LocalURL);
-            }
+            get;
+            set;
         }
     }
 }

@@ -21,13 +21,12 @@ namespace Uplauncher
     public class Constants
     {
         public const string SiteURL = "http://www.arkalys.com/";
-        public const string UpdateSiteURL = "http://patchs.arkalys.com/";
+        public const string UpdateSiteURL = "http://patchs2.arkalys.com/";
         public static readonly Uri RSSNewsURL = new Uri("https://www.facebook.com/feeds/page.php?format=atom10&id=146996812129127");
         public const string VoteURL = "http://www.arkalys.com/vote";
 
         public const string DofusExePath = "app\\Dofus.exe";
         public const string DofusRegExePath = "app\\reg\\Reg.exe";
-        public const string RemoteChecksumFile = "checksum.arkalys";
         public const string LocalChecksumFile = "checksum.arkalys";
         public const string RemotePatchFile = "patch.xml";
 

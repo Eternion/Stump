@@ -101,10 +101,8 @@
     <Compile Include="Helpers\SingleLineConverter.cs" />
     <Compile Include="Helpers\UI\OpaqueClickableImage.cs" />
     <Compile Include="Helpers\UI\OutlinedTextBlock.cs" />
-    <Compile Include="Patcher\AddFileTask.cs" />
-    <Compile Include="Patcher\Patch.cs" />
-    <Compile Include="Patcher\PatchTask.cs" />
-    <Compile Include="Patcher\RemoveFileTask.cs" />
+    <Compile Include="Patcher\MetaFileEntry.cs" />
+    <Compile Include="Patcher\MetaFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

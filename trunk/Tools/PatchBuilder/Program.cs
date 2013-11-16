@@ -30,7 +30,7 @@ namespace PatchBuilder
 
             var files =
                 Directory.EnumerateFiles(patchDir, "*", SearchOption.AllDirectories).OrderBy(p => p).ToList();
-            var tasks = new List<AddFileTask>();
+            var tasks = new List<MetaFileEntry>();
             using (var md5Hasher = MD5.Create())
             {
                 for (int i = 0; i < files.Count; i++)
@@ -42,11 +42,12 @@ namespace PatchBuilder
 
                     var content = File.ReadAllBytes(file);
                     var task =
-                        new AddFileTask
+                        new MetaFileEntry
                         {
                             LocalURL = GetRelativePath(file, patchDir + "\\"),
                             RelativeURL = GetRelativePath(file, patchDir + "\\"),
-                            FileMD5 = Convert.ToBase64String(md5Hasher.ComputeHash(content))
+                            FileMD5 = Convert.ToBase64String(md5Hasher.ComputeHash(content)),
+                            FileSize = content.Length,
                         };
 
                     var pathBytes = Encoding.UTF8.GetBytes(task.LocalURL.ToLower());
@@ -60,7 +61,7 @@ namespace PatchBuilder
                     Console.WriteLine(@"Add " + task.RelativeURL);
                 }
 
-                var patch = new Patch
+                var patch = new MetaFile
                 {
                     Tasks = tasks.ToArray(),
                     FolderChecksum = BitConverter.ToString(md5Hasher.Hash).Replace("-", "").ToLower(),
