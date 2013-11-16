@@ -27,9 +27,17 @@ using Uplauncher.Properties;
 
 namespace Uplauncher.Patcher
 {
-    [XmlType("Add")]
-    public class AddFileTask : PatchTask
-    {
+    [XmlType("Entry")]
+    public class MetaFileEntry
+    {        
+        public event Action<MetaFileEntry> Downloaded;
+
+        protected void OnApplied()
+        {
+            var handler = Downloaded;
+            if (handler != null) handler(this);
+        }
+
         [XmlAttribute("url")]
         public string RelativeURL
         {
@@ -50,13 +58,15 @@ namespace Uplauncher.Patcher
             get;
             set;
         }
-
-        public override bool CanApply()
+        
+        
+        [XmlAttribute("size")]
+        public long FileSize
         {
-            return true;
+            get;
+            set;
         }
-
-        public override void Apply(UplauncherModelView uplauncher)
+        public void Download(UplauncherModelView uplauncher)
         {
             string fullPath = Path.GetFullPath("./" + LocalURL);
             bool isUplauncherExeFile = fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath),
@@ -77,6 +87,9 @@ namespace Uplauncher.Patcher
                     return;
                 }
             }
+
+            if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
 
             uplauncher.SetState(string.Format("Download {0} ...", RelativeURL));
             if (isUplauncherExeFile)
