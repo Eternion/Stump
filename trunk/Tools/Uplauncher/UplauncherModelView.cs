@@ -46,7 +46,7 @@ namespace Uplauncher
         private readonly DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
 
-        private FileSizeFormatProvider m_formatProvider = new FileSizeFormatProvider();
+        private FileSizeFormatProvider m_bytesFormatProvider = new FileSizeFormatProvider();
         private MetaFile m_metaFile;
 
 
@@ -438,7 +438,7 @@ namespace Uplauncher
         }
         private void MD5Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            SetState(string.Format("Vérification de l'intégrité des fichiers en cours... ({0} % accompli) ({1}/s)", e.ProgressPercentage, ((long)e.UserState).ToString(m_formatProvider)), Colors.Green);
+            SetState(string.Format(m_bytesFormatProvider, "Vérification de l'intégrité des fichiers en cours... ({0} % accompli) ({1:fs}/s)", e.ProgressPercentage, (long)e.UserState), Colors.Green);
         }
 
         private void MD5Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -462,6 +462,7 @@ namespace Uplauncher
                     m_currentTasks = new Stack<MetaFileEntry>(m_metaFile.Tasks);
                     GlobalDownloadProgress = true;
                     TotalBytesToDownload = m_metaFile.Tasks.Sum(x => x.FileSize);
+                    DownloadProgress = 0;
                     ProcessTask();
                 }
                 else
@@ -498,7 +499,7 @@ namespace Uplauncher
 
         private void OnTaskApplied(MetaFileEntry x)
         {
-            TotalDownloadedBytes += x.FileSize;                
+            TotalDownloadedBytes += x.FileSize;
             DownloadProgress = ((double)TotalDownloadedBytes / TotalBytesToDownload) * 100;
 
             ProcessTask();
@@ -532,10 +533,46 @@ namespace Uplauncher
             OnUpdateEnded(false);
         }
 
+
+        private DateTime? m_lastProgressChange;
+        private long m_lastGlobalDownloadedBytes;
+        private long m_lastFileDownloadedBytes;
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             if (!GlobalDownloadProgress)
-                DownloadProgress = ((double)e.BytesReceived / e.TotalBytesToReceive) * 100;
+            {
+                DownloadProgress = ((double) e.BytesReceived/e.TotalBytesToReceive)*100;
+
+                if (m_lastProgressChange != null &&
+                    (DateTime.Now - m_lastProgressChange.Value) > TimeSpan.FromSeconds(1))
+                {
+                    ProgressDownloadSpeedInfo = string.Format(m_bytesFormatProvider, "{0:fs} / {1:fs} ({2:fs}/s)",
+                        (e.BytesReceived), e.TotalBytesToReceive,
+                        (e.BytesReceived - m_lastFileDownloadedBytes)/
+                        (DateTime.Now - m_lastProgressChange.Value).TotalSeconds);
+
+                    
+                    m_lastProgressChange = DateTime.Now;
+                    m_lastFileDownloadedBytes = e.BytesReceived;
+                }
+            }
+            else
+            {
+                if (m_lastProgressChange != null && (DateTime.Now - m_lastProgressChange.Value) > TimeSpan.FromSeconds(1))
+                {
+                    ProgressDownloadSpeedInfo = string.Format(m_bytesFormatProvider, "{0:fs} / {1:fs} ({2:fs}/s)",
+                        (TotalDownloadedBytes + e.BytesReceived), TotalBytesToDownload,
+                        ((TotalDownloadedBytes + e.BytesReceived) - m_lastGlobalDownloadedBytes)/
+                        (DateTime.Now - m_lastProgressChange.Value).TotalSeconds);
+
+                    
+                    m_lastProgressChange = DateTime.Now;
+                    m_lastGlobalDownloadedBytes = TotalDownloadedBytes + e.BytesReceived;
+                }
+            }
+
+            if (m_lastProgressChange == null)
+                m_lastProgressChange = DateTime.Now;
         }
 
         public void SetState(string message)
@@ -617,6 +654,12 @@ namespace Uplauncher
         }
 
         public bool GlobalDownloadProgress
+        {
+            get;
+            set;
+        }
+
+        public string ProgressDownloadSpeedInfo
         {
             get;
             set;
