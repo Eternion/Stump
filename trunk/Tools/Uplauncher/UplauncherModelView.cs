@@ -349,11 +349,6 @@ namespace Uplauncher
 
             SetState("Vérification de la mise à jour ...");
 
-            m_MD5Worker.WorkerReportsProgress = true;
-            m_MD5Worker.DoWork += MD5Worker_DoWork;
-            m_MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
-            m_MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
-
             m_client = new WebClient();
             m_client.DownloadProgressChanged += OnDownloadProgressChanged;
             m_client.DownloadStringCompleted += OnPatchDownloaded;
@@ -372,6 +367,11 @@ namespace Uplauncher
             try
             {
                 m_patch = XmlUtils.Deserialize<Patch>(new StringReader(e.Result));
+
+                m_MD5Worker.WorkerReportsProgress = true;
+                m_MD5Worker.DoWork += MD5Worker_DoWork;
+                m_MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
+                m_MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
 
                 // if a checksum of the client already exist with compare it to the remote one
                 if (!File.Exists(Constants.LocalChecksumFile))
@@ -399,8 +399,9 @@ namespace Uplauncher
             m_MD5Worker.DoWork -= MD5Worker_DoWork;
             var path = Directory.GetCurrentDirectory();
 
-            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
-                                 .OrderBy(p => p).ToList();
+            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).
+                Where(x => m_patch.Tasks.OfType<AddFileTask>().Any(y => y.RelativeURL == GetRelativePath(Path.GetFullPath(x), Path.GetFullPath("./")))). 
+                OrderBy(p => p).ToList();
 
             var md5 = MD5.Create();
             
@@ -586,6 +587,13 @@ namespace Uplauncher
         {
             get;
             set;
+        }
+
+        static string GetRelativePath(string fullPath, string relativeTo)
+        {
+            var foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\").Replace("\\\\", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
+
+            return foldersSplitted.Length > 0 ? foldersSplitted.Last() : ""; // return the "rest"
         }
     }
 }

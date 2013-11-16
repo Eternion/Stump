@@ -36,6 +36,10 @@ namespace PatchBuilder
                 for (int i = 0; i < files.Count; i++)
                 {
                     var file = files[i];
+
+                    if ((File.GetAttributes(file) & FileAttributes.Hidden) != 0)
+                        continue;
+
                     var content = File.ReadAllBytes(file);
                     var task =
                         new AddFileTask
