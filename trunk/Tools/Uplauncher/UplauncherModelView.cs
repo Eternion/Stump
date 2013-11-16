@@ -364,6 +364,7 @@ namespace Uplauncher
         }
         private void OnPatchDownloaded(object sender, DownloadStringCompletedEventArgs e)
         {
+            ProgressDownloadSpeedInfo = string.Empty;
             m_client.DownloadStringCompleted -= OnPatchDownloaded;
             try
             {
@@ -440,7 +441,7 @@ namespace Uplauncher
         }
         private void MD5Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            SetState(string.Format(m_bytesFormatProvider, "Vérification de l'intégrité des fichiers en cours... ({0} % accompli) ({1:fs}/s)", e.ProgressPercentage, (long)e.UserState), Colors.Green);
+            SetState(string.Format(m_bytesFormatProvider, "Vérification de l'intégrité des fichiers en cours... ({0} % accompli) ({1:fs}/s)", e.ProgressPercentage, (double)e.UserState), Colors.Green);
         }
 
         private void MD5Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -465,6 +466,7 @@ namespace Uplauncher
                     GlobalDownloadProgress = true;
                     TotalBytesToDownload = m_metaFile.Tasks.Sum(x => x.FileSize);
                     DownloadProgress = 0;
+                    ProgressDownloadSpeedInfo = string.Empty;
                     ProcessTask();
                 }
                 else
@@ -503,6 +505,7 @@ namespace Uplauncher
         {
             TotalDownloadedBytes += x.FileSize;
             DownloadProgress = ((double)TotalDownloadedBytes / TotalBytesToDownload) * 100;
+            ProgressDownloadSpeedInfo = string.Empty;
 
             ProcessTask();
         }
