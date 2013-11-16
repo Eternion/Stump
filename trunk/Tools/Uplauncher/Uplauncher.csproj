@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Uplauncher</RootNamespace>
     <AssemblyName>Uplauncher</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -76,9 +76,7 @@
   <PropertyGroup>
     <StartupObject>Uplauncher.Program</StartupObject>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -107,8 +105,6 @@
     <Compile Include="Patcher\Patch.cs" />
     <Compile Include="Patcher\PatchTask.cs" />
     <Compile Include="Patcher\RemoveFileTask.cs" />
-    <Compile Include="Patcher\UpdateEntry.cs" />
-    <Compile Include="Patcher\UpdateMeta.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

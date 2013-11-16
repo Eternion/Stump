@@ -11,18 +11,15 @@ using DBSynchroniser.Records.Langs;
 using Stump.Core.Attributes;
 using Stump.Core.I18N;
 using Stump.Core.Reflection;
-using Stump.Core.Sql;
 using Stump.Core.Xml.Config;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
 using Stump.ORM;
-using Stump.ORM.SubSonic.Query;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Game;
 
 namespace DBSynchroniser
 {
