@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -399,8 +400,9 @@ namespace Uplauncher
             m_MD5Worker.DoWork -= MD5Worker_DoWork;
             var path = Directory.GetCurrentDirectory();
 
+            var filesNames = new HashSet<string>(m_metaFile.Tasks.Select(x => x.LocalURL));
             var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).
-                Where(x => m_metaFile.Tasks.Any(y => y.RelativeURL == GetRelativePath(Path.GetFullPath(x), Path.GetFullPath("./")))). 
+                Where(x => filesNames.Contains(GetRelativePath(Path.GetFullPath(x), Path.GetFullPath("./")))). 
                 OrderBy(p => p).ToList();
 
             var md5 = MD5.Create();
