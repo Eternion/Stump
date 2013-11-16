@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -9,10 +8,8 @@ using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
-using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace ArkalysPlugin.Npcs
 {
@@ -26,7 +23,7 @@ namespace ArkalysPlugin.Npcs
         public static NpcMessage Message;
 
         private static ItemTemplate m_orbeTemplate;
-        private static bool m_scriptDisabled = false;
+        private static bool m_scriptDisabled;
 
         [Initialization(typeof(NpcManager), Silent = true)]
         public static void Initialize()
