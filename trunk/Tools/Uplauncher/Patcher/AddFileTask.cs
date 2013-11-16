@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // AddFileTask.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
@@ -12,20 +13,17 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
 using System.Xml.Serialization;
 using Stump.Core.Cryptography;
-using Stump.Core.Extensions;
+using Uplauncher.Properties;
 
 namespace Uplauncher.Patcher
 {
@@ -60,17 +58,16 @@ namespace Uplauncher.Patcher
 
         public override void Apply(UplauncherModelView uplauncher)
         {
-            var directory = Path.GetDirectoryName("./app/" + LocalURL);
+            string fullPath = Path.GetFullPath("./" + LocalURL);
+            bool isUplauncherExeFile = fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath),
+                StringComparison.InvariantCultureIgnoreCase);
 
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
 
-            if (File.Exists("./app/" + LocalURL))
+            uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
+
+            if (File.Exists(fullPath))
             {
-                uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
-
-                var md5 = Cryptography.GetFileMD5HashBase64("./app/" + LocalURL);
-                //var remoteMd5 = NetExtensions.RequestMD5(Constants.UpdateSiteURL + RelativeURL);
+                string md5 = Cryptography.GetFileMD5HashBase64(fullPath);
 
                 if (md5 == FileMD5)
                 {
@@ -82,14 +79,55 @@ namespace Uplauncher.Patcher
             }
 
             uplauncher.SetState(string.Format("Download {0} ...", RelativeURL));
-            uplauncher.WebClient.DownloadFileCompleted += OnFileDownloaded;
-            uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL), "./app/" + LocalURL, LocalURL);
+            if (isUplauncherExeFile)
+            {
+                uplauncher.WebClient.DownloadFileCompleted += OnUplauncherDownloaded;
+
+                uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL),
+                    "./" + Constants.ExeReplaceTempPath, Constants.ExeReplaceTempPath);
+            }
+            else
+            {
+                uplauncher.WebClient.DownloadFileCompleted += OnFileDownloaded;
+                uplauncher.WebClient.DownloadFileAsync(new Uri(Constants.UpdateSiteURL + RelativeURL), "./" + LocalURL, LocalURL);
+
+            }
         }
 
         private void OnFileDownloaded(object sender, AsyncCompletedEventArgs e)
         {
-            ((WebClient)sender).DownloadFileCompleted -= OnFileDownloaded;
+            ((WebClient) sender).DownloadFileCompleted -= OnFileDownloaded;
             OnApplied();
+        }
+
+        private void OnUplauncherDownloaded(object sender, AsyncCompletedEventArgs e)
+        {
+            ((WebClient) sender).DownloadFileCompleted -= OnUplauncherDownloaded;
+
+            string file = Path.GetTempFileName() + ".exe";
+            File.WriteAllBytes(file, Resources.UplauncherReplacer);
+
+            var procInfo = new ProcessStartInfo
+            {
+                FileName = file,
+                Arguments =
+                    string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
+                        Path.GetFullPath(Constants.ExeReplaceTempPath),
+                        Path.GetFullPath(Constants.CurrentExePath)),
+                Verb = "runas"
+            };
+
+            try
+            {
+                Process.Start(procInfo);
+
+                //NotifyIcon.Visible = false;
+                Environment.Exit(1);
+            }
+            catch (Exception ex)
+            {
+                //The user refused the elevation
+            }
         }
     }
 }
