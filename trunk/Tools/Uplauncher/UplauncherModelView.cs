@@ -505,7 +505,6 @@ namespace Uplauncher
         {
             TotalDownloadedBytes += x.FileSize;
             DownloadProgress = ((double)TotalDownloadedBytes / TotalBytesToDownload) * 100;
-            ProgressDownloadSpeedInfo = string.Empty;
 
             ProcessTask();
         }
@@ -518,6 +517,7 @@ namespace Uplauncher
             IsUpToDate = success;
             IsUpdating = false;
             GlobalDownloadProgress = false;
+            ProgressDownloadSpeedInfo = string.Empty;
 
             View.Dispatcher.BeginInvoke(new Action(() => m_playCommand.RaiseCanExecuteChanged()));
         }
