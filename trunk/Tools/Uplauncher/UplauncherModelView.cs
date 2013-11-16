@@ -42,12 +42,12 @@ namespace Uplauncher
     {
         private WebClient m_client = new WebClient();
         private readonly SoundProxy m_soundProxy = new SoundProxy();
-        private Stack<PatchTask> m_currentTasks;
+        private Stack<MetaFileEntry> m_currentTasks;
         private readonly DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
 
         private FileSizeFormatProvider m_formatProvider = new FileSizeFormatProvider();
-        private Patch m_patch;
+        private MetaFile m_metaFile;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -347,7 +347,7 @@ namespace Uplauncher
             IsUpdating = true;
             m_playCommand.RaiseCanExecuteChanged();
 
-            SetState("Vérification de la mise à jour ...");
+            SetState("Téléchargement des informations ...");
 
             m_client = new WebClient();
             m_client.DownloadProgressChanged += OnDownloadProgressChanged;
@@ -366,7 +366,7 @@ namespace Uplauncher
             m_client.DownloadStringCompleted -= OnPatchDownloaded;
             try
             {
-                m_patch = XmlUtils.Deserialize<Patch>(new StringReader(e.Result));
+                m_metaFile = XmlUtils.Deserialize<MetaFile>(new StringReader(e.Result));
 
                 m_MD5Worker.WorkerReportsProgress = true;
                 m_MD5Worker.DoWork += MD5Worker_DoWork;
@@ -400,7 +400,7 @@ namespace Uplauncher
             var path = Directory.GetCurrentDirectory();
 
             var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).
-                Where(x => m_patch.Tasks.OfType<AddFileTask>().Any(y => y.RelativeURL == GetRelativePath(Path.GetFullPath(x), Path.GetFullPath("./")))). 
+                Where(x => m_metaFile.Tasks.Any(y => y.RelativeURL == GetRelativePath(Path.GetFullPath(x), Path.GetFullPath("./")))). 
                 OrderBy(p => p).ToList();
 
             var md5 = MD5.Create();
@@ -426,11 +426,14 @@ namespace Uplauncher
                 m_MD5Worker.ReportProgress(percentProgress, bytesComputed/(DateTime.Now - startDate).TotalSeconds);
             });
 
-            var lastFileBytes = File.ReadAllBytes(files.Last());
-            md5.TransformFinalBlock(lastFileBytes, 0, lastFileBytes.Length);
+            if (files.Count > 0)
+            {
+                var lastFileBytes = File.ReadAllBytes(files.Last());
+                md5.TransformFinalBlock(lastFileBytes, 0, lastFileBytes.Length);
+            }
 
 
-            LocalChecksum = BitConverter.ToString(md5.Hash).Replace("-", "").ToLower();
+            LocalChecksum = files.Count > 0 ? BitConverter.ToString(md5.Hash).Replace("-", "").ToLower() : string.Empty;
             File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
         }
         private void MD5Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -451,12 +454,14 @@ namespace Uplauncher
         {
             try
             {
-                if (m_patch != null && m_patch.FolderChecksum != LocalChecksum)
+                if (m_metaFile != null && m_metaFile.FolderChecksum != LocalChecksum)
                 {
                     IsUpToDate = false;
                     m_playCommand.RaiseCanExecuteChanged();
 
-                    m_currentTasks = new Stack<PatchTask>(m_patch.Tasks);
+                    m_currentTasks = new Stack<MetaFileEntry>(m_metaFile.Tasks);
+                    GlobalDownloadProgress = true;
+                    TotalBytesToDownload = m_metaFile.Tasks.Sum(x => x.FileSize);
                     ProcessTask();
                 }
                 else
@@ -486,9 +491,17 @@ namespace Uplauncher
 
                     var task = m_currentTasks.Pop();
 
-                    task.Applied += x => ProcessTask();
-                    task.Apply(this);
+                    task.Downloaded += OnTaskApplied;
+                    task.Download(this);
                 });
+        }
+
+        private void OnTaskApplied(MetaFileEntry x)
+        {
+            TotalDownloadedBytes += x.FileSize;                
+            DownloadProgress = ((double)TotalDownloadedBytes / TotalBytesToDownload) * 100;
+
+            ProcessTask();
         }
 
         private void OnUpdateEnded(bool success)
@@ -498,6 +511,7 @@ namespace Uplauncher
 
             IsUpToDate = success;
             IsUpdating = false;
+            GlobalDownloadProgress = false;
 
             View.Dispatcher.BeginInvoke(new Action(() => m_playCommand.RaiseCanExecuteChanged()));
         }
@@ -520,7 +534,8 @@ namespace Uplauncher
 
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            DownloadProgress = ((double)e.BytesReceived / e.TotalBytesToReceive) * 100;
+            if (!GlobalDownloadProgress)
+                DownloadProgress = ((double)e.BytesReceived / e.TotalBytesToReceive) * 100;
         }
 
         public void SetState(string message)
@@ -584,6 +599,24 @@ namespace Uplauncher
         }
 
         public string StateMessage
+        {
+            get;
+            set;
+        }
+
+        public long TotalBytesToDownload
+        {
+            get;
+            set;
+        }
+
+        public long TotalDownloadedBytes
+        {
+            get;
+            set;
+        }
+
+        public bool GlobalDownloadProgress
         {
             get;
             set;
