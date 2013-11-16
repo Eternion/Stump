@@ -27,5 +27,12 @@ namespace Uplauncher.Patcher
             get;
             set;
         }
+
+        [XmlAttribute("checksum")]
+        public string FolderChecksum
+        {
+            get;
+            set;
+        }
     }
 }
