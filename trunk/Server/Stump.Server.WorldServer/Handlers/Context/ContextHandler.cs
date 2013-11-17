@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void HandleGameMapMovementRequestMessage(WorldClient client, GameMapMovementRequestMessage message)
         {
             if (!client.Character.CanMove())
-                return;
+                SendGameMapNoMovementMessage(client);
 
             var movementPath = Path.BuildFromCompressedPath(client.Character.Map, message.keyMovements);
 
@@ -82,6 +82,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 client.Character.Fighter.ShowCell(client.Character.Map.Cells[message.cellId]);
             else if (client.Character.IsSpectator())
                 client.Character.Spectator.ShowCell(client.Character.Map.Cells[message.cellId]);
+        }
+
+        public static void SendGameMapNoMovementMessage(IPacketReceiver client)
+        {
+            client.Send(new GameMapNoMovementMessage());
         }
 
         public static void SendGameContextCreateMessage(IPacketReceiver client, sbyte context)
