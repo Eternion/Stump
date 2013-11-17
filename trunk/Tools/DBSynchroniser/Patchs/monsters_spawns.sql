@@ -1,3 +1,5 @@
+-- EXECUTE ON:monsters_templates
+
 DELETE FROM monsters_spawns;
 ALTER TABLE `monsters_spawns` AUTO_INCREMENT=1;
 
