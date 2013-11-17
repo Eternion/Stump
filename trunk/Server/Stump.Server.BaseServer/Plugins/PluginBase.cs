@@ -1,8 +1,6 @@
 
 using System;
 using System.IO;
-using System.Reflection;
-using Stump.Core.Xml;
 using Stump.Core.Xml.Config;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Initialization;

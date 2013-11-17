@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace Stump.Server.BaseServer.Plugins
@@ -17,11 +15,11 @@ namespace Stump.Server.BaseServer.Plugins
         {
             Plugin = (IPlugin)Activator.CreateInstance(pluginType, this);
 
-            if (Plugin != null)
-            {
-                Plugin.LoadConfig();
-                Plugin.Initialize();
-            }
+            if (Plugin == null)
+                return;
+
+            Plugin.LoadConfig();
+            Plugin.Initialize();
         }
 
         public string AssemblyPath
