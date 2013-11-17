@@ -1,4 +1,4 @@
---EXECUTE ON: monsters_templates
+-- EXECUTE ON: monsters_templates
 
 DELETE FROM monsters_drops;
 ALTER TABLE `monsters_drops` AUTO_INCREMENT=1;
