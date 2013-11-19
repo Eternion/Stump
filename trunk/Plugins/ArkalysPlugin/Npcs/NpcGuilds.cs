@@ -4,6 +4,7 @@ using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
@@ -36,6 +37,8 @@ namespace ArkalysPlugin.Npcs
         //Guildalogemme
         [Variable]
         public static int RequiredItemId = 1575;
+
+        internal static ItemTemplate RequieredItem;
 
         //Ouvrir le "Panel de création".
         [Variable]
@@ -73,12 +76,13 @@ namespace ArkalysPlugin.Npcs
             npc.NpcSpawned += OnNpcSpawned;
 
             Message = NpcManager.Instance.GetNpcMessage(MessageId);
+            RequieredItem = ItemManager.Instance.TryGetTemplate(RequiredItemId);
 
-            if (Message != null)
-                return;
-
-            Logger.Error("Message {0} not found, script is disabled", MessageId);
-            m_scriptDisabled = true;
+            if (Message == null || RequieredItem == null)
+            {
+                Logger.Error("Message {0} not found, script is disabled", MessageId);
+                m_scriptDisabled = true;
+            }
         }
 
         [Initialization(typeof(OrbsManager), Silent = true)]
@@ -94,7 +98,10 @@ namespace ArkalysPlugin.Npcs
         private static void OnNpcSpawned(NpcTemplate template, Npc npc)
         {
             if (m_scriptDisabled)
+            {
                 template.NpcSpawned -= OnNpcSpawned;
+                return;
+            }
 
             npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_TALK);
             npc.Actions.Add(new NpcGuildsScript());
@@ -143,8 +150,12 @@ namespace ArkalysPlugin.Npcs
 
         public override void Reply(short replyId)
         {
-            if (replyId == NpcGuilds.ReplyGuildSuccessId)
+            var guildalogemme = Character.Inventory.TryGetItem(NpcGuilds.RequieredItem);
+            if (replyId == NpcGuilds.ReplyGuildSuccessId && guildalogemme != null)
             {
+                if (Character.Inventory.RemoveItem(guildalogemme, 1) < 1)
+                    return;
+
                 var panel = new GuildCreationPanel(Character);
                 panel.Open();
             }
@@ -161,8 +172,7 @@ namespace ArkalysPlugin.Npcs
                     Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
 
-                    var guildalogemme = Character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(NpcGuilds.RequiredItemId));
-                    Character.Inventory.AddItem(guildalogemme);
+                    Character.Inventory.AddItem(NpcGuilds.RequieredItem);
                 }
             }
 
