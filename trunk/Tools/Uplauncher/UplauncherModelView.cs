@@ -15,18 +15,21 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
+using Stump.Core.Extensions;
 using Stump.Core.Xml;
 using Uplauncher.Helpers;
 using Uplauncher.Patcher;
@@ -40,9 +43,13 @@ namespace Uplauncher
     {
         private WebClient m_client = new WebClient();
         private readonly SoundProxy m_soundProxy = new SoundProxy();
-        private Stack<PatchTask> m_currentTasks;
+        private Stack<MetaFileEntry> m_currentTasks;
         private readonly DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
+
+        private FileSizeFormatProvider m_bytesFormatProvider = new FileSizeFormatProvider();
+        private MetaFile m_metaFile;
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -66,7 +73,7 @@ namespace Uplauncher
 
             NotifyIcon.DoubleClick += OnTrayDoubleClick;
 
-            Task.Factory.StartNew(CheckVoteTiming);
+            //Task.Factory.StartNew(CheckVoteTiming);
         }
 
         public WebClient WebClient
@@ -341,81 +348,100 @@ namespace Uplauncher
             IsUpdating = true;
             m_playCommand.RaiseCanExecuteChanged();
 
-            SetState("Vérification de la mise à jour ...");
+            SetState("Téléchargement des informations ...");
 
-            m_MD5Worker.WorkerReportsProgress = true;
-            m_MD5Worker.DoWork += MD5Worker_DoWork;
-            m_MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
-            m_MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
-
-            var fullPath = Directory.GetCurrentDirectory() + @"\app";
-            if (!Directory.Exists(fullPath))
+            m_client = new WebClient();
+            m_client.DownloadProgressChanged += OnDownloadProgressChanged;
+            m_client.DownloadStringCompleted += OnPatchDownloaded;
+            try
             {
-                Directory.CreateDirectory("app");
-
-                m_client = new WebClient();
-                m_client.DownloadProgressChanged += OnDownloadProgressChanged;
-                m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
-                m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
+                 m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemotePatchFile), Constants.RemotePatchFile);
             }
-            else
+            catch (SocketException)
             {
-                if (File.Exists(Constants.LocalChecksumFile))
+                SetState("Le serveur est indisponible");
+            }
+        }
+        private void OnPatchDownloaded(object sender, DownloadStringCompletedEventArgs e)
+        {
+            ProgressDownloadSpeedInfo = string.Empty;
+            m_client.DownloadStringCompleted -= OnPatchDownloaded;
+            try
+            {
+                m_metaFile = XmlUtils.Deserialize<MetaFile>(new StringReader(e.Result));
+
+                m_MD5Worker.WorkerReportsProgress = true;
+                m_MD5Worker.DoWork += MD5Worker_DoWork;
+                m_MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
+                m_MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
+
+                // if a checksum of the client already exist with compare it to the remote one
+                if (!File.Exists(Constants.LocalChecksumFile))
+                {
+                    m_MD5Worker.RunWorkerAsync();
+                }
+                else
                 {
                     LocalChecksum = File.ReadAllText(Constants.LocalChecksumFile);
                     if (string.IsNullOrEmpty(LocalChecksum))
                         m_MD5Worker.RunWorkerAsync();
                     else
-                    {
-                        m_client = new WebClient();
-                        m_client.DownloadProgressChanged += OnDownloadProgressChanged;
-                        m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
-                        m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
-                    }
+                        CompareChecksums();
                 }
-                else
-                {
-                    m_MD5Worker.RunWorkerAsync();
-                }
-                //m_MD5Worker.RunWorkerAsync();
+            }
+            catch (Exception ex)
+            {
+                HandleDownloadError(false, ex, (string)e.UserState);
             }
         }
 
+        // create the md5 file from the whole directory
         private void MD5Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             m_MD5Worker.DoWork -= MD5Worker_DoWork;
-            var path = Directory.GetCurrentDirectory() + @"\app";
+            var path = Directory.GetCurrentDirectory();
 
-            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
-                                 .OrderBy(p => p).ToList();
+            var filesNames = new HashSet<string>(m_metaFile.Tasks.Select(x => x.LocalURL));
+            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).
+                Where(x => filesNames.Contains(GetRelativePath(Path.GetFullPath(x), Path.GetFullPath("./")))). 
+                OrderBy(p => p).ToList();
 
             var md5 = MD5.Create();
-
-            for (var i = 0; i < files.Count; i++)
+            
+            var startDate = DateTime.Now;
+            long bytesComputed = 0;
+            int filesChecked = 0;
+            // process in parallel each file but the last
+            Parallel.ForEach(files.Take(files.Count - 1), (file) =>
             {
-                var file = files[i];
-
                 var relativePath = file.Substring(path.Length + 1);
                 var pathBytes = Encoding.UTF8.GetBytes(relativePath.ToLower());
                 md5.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
+                
+                Interlocked.Add(ref bytesComputed, pathBytes.Length);
 
                 var contentBytes = File.ReadAllBytes(file);
-                if (i == files.Count - 1)
-                    md5.TransformFinalBlock(contentBytes, 0, contentBytes.Length);
-                else
-                    md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
+                md5.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
+                Interlocked.Add(ref bytesComputed, contentBytes.Length);
+                Interlocked.Increment(ref filesChecked);
 
-                var percentProgress = (i*100)/files.Count;
-                m_MD5Worker.ReportProgress(percentProgress);
+                var percentProgress = (filesChecked*100)/files.Count;
+                m_MD5Worker.ReportProgress(percentProgress, bytesComputed/(DateTime.Now - startDate).TotalSeconds);
+            });
+
+            if (files.Count > 0)
+            {
+                var lastFileBytes = File.ReadAllBytes(files.Last());
+                md5.TransformFinalBlock(lastFileBytes, 0, lastFileBytes.Length);
             }
 
-            LocalChecksum = files.Count != 0 ? BitConverter.ToString(md5.Hash).Replace("-", "").ToLower() : "0";
-        }
 
+            LocalChecksum = files.Count > 0 ? BitConverter.ToString(md5.Hash).Replace("-", "").ToLower() : string.Empty;
+            File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
+        }
         private void MD5Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            DownloadProgress = e.ProgressPercentage;
-            SetState(string.Format("Vérification de l'intégrité des fichiers en cours... ({0} % accompli)", e.ProgressPercentage), Colors.Green);
+            SetState(string.Format(m_bytesFormatProvider, "Vérification de l'intégrité des fichiers en cours... ({0} % accompli) ({1:fs}/s)", e.ProgressPercentage, (double)e.UserState), Colors.Green);
         }
 
         private void MD5Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -424,34 +450,24 @@ namespace Uplauncher
             DownloadProgress = 100;
             SetState("Vérification de l'intégrité des fichiers terminé.", Colors.Green);
 
-            m_client = new WebClient();
-            m_client.DownloadProgressChanged += OnDownloadProgressChanged;
-            m_client.DownloadStringCompleted += OnChecksumFileDownloaded;
-            m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemoteChecksumFile), Constants.UpdateSiteURL + Constants.RemoteChecksumFile);
+            CompareChecksums();
         }
 
-        private void OnChecksumFileDownloaded(object sender, DownloadStringCompletedEventArgs e)
+        private void CompareChecksums()
         {
-            if (e.Cancelled || e.Error != null)
-            {
-                HandleDownloadError(e.Cancelled, e.Error, (string)e.UserState);
-                return;
-            }
-
-            m_client.DownloadStringCompleted -= OnChecksumFileDownloaded;
-
             try
             {
-                RemoteChecksum = e.Result;
-
-                if (RemoteChecksum != LocalChecksum)
+                if (m_metaFile != null && m_metaFile.FolderChecksum != LocalChecksum)
                 {
                     IsUpToDate = false;
                     m_playCommand.RaiseCanExecuteChanged();
 
-                    // download patch xml
-                    m_client.DownloadStringCompleted += OnPatchDownloaded;
-                    m_client.DownloadStringAsync(new Uri(Constants.UpdateSiteURL + Constants.RemotePatchFile), Constants.UpdateSiteURL + Constants.RemotePatchFile);
+                    m_currentTasks = new Stack<MetaFileEntry>(m_metaFile.Tasks);
+                    GlobalDownloadProgress = true;
+                    TotalBytesToDownload = m_metaFile.Tasks.Sum(x => x.FileSize);
+                    DownloadProgress = 0;
+                    ProgressDownloadSpeedInfo = string.Empty;
+                    ProcessTask();
                 }
                 else
                 {
@@ -463,28 +479,10 @@ namespace Uplauncher
             }
             catch (Exception ex)
             {
-                HandleDownloadError(false, ex, (string)e.UserState);
+                HandleDownloadError(false, ex, Constants.UpdateSiteURL + Constants.RemotePatchFile);
             }
         }
 
-        private void OnPatchDownloaded(object sender, DownloadStringCompletedEventArgs e)
-        {
-            m_client.DownloadStringCompleted -= OnPatchDownloaded;
-            Patch patch;
-            try
-            {
-                patch = XmlUtils.Deserialize<Patch>(new StringReader(e.Result));
-            }
-            catch (Exception ex)
-            {
-                HandleDownloadError(false, ex, (string)e.UserState);
-                return;
-            }
-
-            m_currentTasks = new Stack<PatchTask>(patch.Tasks);
-
-            ProcessTask();
-        }
 
         private void ProcessTask()
         {
@@ -498,67 +496,28 @@ namespace Uplauncher
 
                     var task = m_currentTasks.Pop();
 
-                    CheckIfReplaceExe(task);
-                    task.Applied += x => ProcessTask();
-                    task.Apply(this);
+                    task.Downloaded += OnTaskApplied;
+                    task.Download(this);
                 });
         }
 
-        private void CheckIfReplaceExe(PatchTask task)
+        private void OnTaskApplied(MetaFileEntry x)
         {
-            if (!(task is AddFileTask))
-                return;
+            TotalDownloadedBytes += x.FileSize;
+            DownloadProgress = ((double)TotalDownloadedBytes / TotalBytesToDownload) * 100;
 
-            var addFile = task as AddFileTask;
-            var fullPath = Path.GetFullPath("./" + addFile.LocalURL);
-
-            if (!fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath), StringComparison.InvariantCultureIgnoreCase))
-                return;
-
-            addFile.LocalURL = Constants.ExeReplaceTempPath;
-
-            var file = Path.GetTempFileName() + ".exe";
-            File.WriteAllBytes(file, Resources.UplauncherReplacer);
-
-            var procInfo = new ProcessStartInfo
-            {
-                Arguments =
-                    string.Format("{0} \"{1}\" \"{2}\"", Process.GetCurrentProcess().Id,
-                        Path.GetFullPath("./app/" + Constants.ExeReplaceTempPath),
-                        Path.GetFullPath(Constants.CurrentExePath)),
-                Verb = "runas"
-            };
-
-            try
-            {
-                Process.Start(procInfo);
-
-                NotifyIcon.Visible = false;
-                Environment.Exit(1);
-            }
-            catch(Exception ex)
-            {
-                //The user refused the elevation
-                HandleDownloadError(false, ex, addFile.LocalURL);
-            }
+            ProcessTask();
         }
 
         private void OnUpdateEnded(bool success)
         {
             if (success)
-            {
-                m_MD5Worker.WorkerReportsProgress = true;
-                m_MD5Worker.DoWork += MD5Worker_DoWork;
-                m_MD5Worker.ProgressChanged += MD5Worker_ProgressChanged;
-                m_MD5Worker.RunWorkerCompleted += MD5Worker_RunWorkerCompleted;
-
-                m_MD5Worker.RunWorkerAsync();
-
                 SetState(string.Format("Le jeu est à jour"), Colors.Green);
-            }
 
             IsUpToDate = success;
             IsUpdating = false;
+            GlobalDownloadProgress = false;
+            ProgressDownloadSpeedInfo = string.Empty;
 
             View.Dispatcher.BeginInvoke(new Action(() => m_playCommand.RaiseCanExecuteChanged()));
         }
@@ -579,9 +538,46 @@ namespace Uplauncher
             OnUpdateEnded(false);
         }
 
+
+        private DateTime? m_lastProgressChange;
+        private long m_lastGlobalDownloadedBytes;
+        private long m_lastFileDownloadedBytes;
         private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            DownloadProgress = ((double)e.BytesReceived / e.TotalBytesToReceive) * 100;
+            if (!GlobalDownloadProgress)
+            {
+                DownloadProgress = ((double) e.BytesReceived/e.TotalBytesToReceive)*100;
+
+                if (m_lastProgressChange != null &&
+                    (DateTime.Now - m_lastProgressChange.Value) > TimeSpan.FromSeconds(1))
+                {
+                    ProgressDownloadSpeedInfo = string.Format(m_bytesFormatProvider, "{0:fs} / {1:fs} ({2:fs}/s)",
+                        (e.BytesReceived), e.TotalBytesToReceive,
+                        (e.BytesReceived - m_lastFileDownloadedBytes)/
+                        (DateTime.Now - m_lastProgressChange.Value).TotalSeconds);
+
+                    
+                    m_lastProgressChange = DateTime.Now;
+                    m_lastFileDownloadedBytes = e.BytesReceived;
+                }
+            }
+            else
+            {
+                if (m_lastProgressChange != null && (DateTime.Now - m_lastProgressChange.Value) > TimeSpan.FromSeconds(1))
+                {
+                    ProgressDownloadSpeedInfo = string.Format(m_bytesFormatProvider, "{0:fs} / {1:fs} ({2:fs}/s)",
+                        (TotalDownloadedBytes + e.BytesReceived), TotalBytesToDownload,
+                        ((TotalDownloadedBytes + e.BytesReceived) - m_lastGlobalDownloadedBytes)/
+                        (DateTime.Now - m_lastProgressChange.Value).TotalSeconds);
+
+                    
+                    m_lastProgressChange = DateTime.Now;
+                    m_lastGlobalDownloadedBytes = TotalDownloadedBytes + e.BytesReceived;
+                }
+            }
+
+            if (m_lastProgressChange == null)
+                m_lastProgressChange = DateTime.Now;
         }
 
         public void SetState(string message)
@@ -626,12 +622,6 @@ namespace Uplauncher
             private set;
         }
 
-        public string RemoteChecksum
-        {
-            get;
-            private set;
-        }
-
         public DateTime? LastVote
         {
             get;
@@ -654,6 +644,37 @@ namespace Uplauncher
         {
             get;
             set;
+        }
+
+        public long TotalBytesToDownload
+        {
+            get;
+            set;
+        }
+
+        public long TotalDownloadedBytes
+        {
+            get;
+            set;
+        }
+
+        public bool GlobalDownloadProgress
+        {
+            get;
+            set;
+        }
+
+        public string ProgressDownloadSpeedInfo
+        {
+            get;
+            set;
+        }
+
+        static string GetRelativePath(string fullPath, string relativeTo)
+        {
+            var foldersSplitted = fullPath.Split(new[] { relativeTo.Replace("/", "\\").Replace("\\\\", "\\") }, StringSplitOptions.RemoveEmptyEntries); // cut the source path and the "rest" of the path
+
+            return foldersSplitted.Length > 0 ? foldersSplitted.Last() : ""; // return the "rest"
         }
     }
 }

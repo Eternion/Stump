@@ -1256,6 +1256,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Move
 
+        public override bool CanMove()
+        {
+            return base.CanMove() && !IsDialoging();
+        }
+
         public override bool StartMove(Path movementPath)
         {
             if (IsFighting())
@@ -1296,13 +1301,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 SendServerMessage("Unknown map transition");
 
             return success;
-        }
-
-        public override bool Teleport(ObjectPosition destination)
-        {
-            LeaveDialog();
-
-            return base.Teleport(destination);
         }
 
         protected override void OnTeleported(ObjectPosition position)

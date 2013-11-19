@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Patch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Tasks>
-    <Task xsi:type="Add" url="1_to_2\config.xml" local="config.xml" />
-  </Tasks>
-</Patch>

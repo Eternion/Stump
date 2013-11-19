@@ -31,7 +31,7 @@ namespace ArkalysPlugin.Npcs
 
         //Veux tu devenir Brakmarien?
         [Variable]
-        public static short ReplyBecomeEvil = 20008;
+        public static short ReplyBecomeEvil = 20015;
 
         public static NpcMessage Message;
         private static bool m_scriptDisabled;

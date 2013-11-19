@@ -27,7 +27,6 @@ namespace Uplauncher
 
         public const string DofusExePath = "app\\Dofus.exe";
         public const string DofusRegExePath = "app\\reg\\Reg.exe";
-        public const string RemoteChecksumFile = "checksum.arkalys";
         public const string LocalChecksumFile = "checksum.arkalys";
         public const string RemotePatchFile = "patch.xml";
 

@@ -260,18 +260,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             GuildHandler.SendGuildMemberLeavingMessage(m_clients, kickedMember, true);
 
-            if (kickedMember.IsBoss && m_members.Count == 1)
+            if (kickedMember.IsBoss)
             {
+                if (m_members.Count > 1)
+                    return false;
+
                 GuildManager.Instance.DeleteGuild(kickedMember.Guild);
             }
-            else if (kickedMember.IsBoss)
-            {
-                SetBoss(m_members.OrderBy(x => x.RankId).First(x => x.RankId > 0));
-            }
+
 
             if (kickedMember.IsConnected)
             {
-                kickedMember.Character.RefreshActor();
                 // Vous avez quitté la guilde.
                 kickedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
             }
@@ -287,25 +286,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (kicker.GuildMember != kickedMember && (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
                 return false;
 
-            if (!RemoveMember(kickedMember))
+            if (!KickMember(kickedMember))
                 return false;
-
-            GuildHandler.SendGuildMemberLeavingMessage(m_clients, kickedMember, kicker.GuildMember != kickedMember);
-
-            if (kickedMember.IsBoss)
-            {
-                if (m_members.Count > 1)
-                    return false;
-
-                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
-            }
-
-            if (kickedMember.IsConnected)
-            {
-                kickedMember.Character.RefreshActor();
-                // Vous avez quitté la guilde.
-                kickedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
-            }
 
             // Vous avez banni <b>%1</b> de votre guilde.
             kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
@@ -446,8 +428,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             if (member.IsConnected)
             {
-                GuildHandler.SendGuildLeftMessage(member.Character.Client);
+                member.Character.GuildMember = null;
                 member.Character.RefreshActor();
+                GuildHandler.SendGuildLeftMessage(member.Character.Client);
             }
         }
 
