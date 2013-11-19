@@ -264,6 +264,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Dialog = dialog;
         }
 
+
+        public void CloseDialog(IDialog dialog)
+        {
+            if (Dialog == dialog)
+                Dialoger = null;
+        }
+
         public void ResetDialog()
         {
             Dialoger = null;
