@@ -1315,7 +1315,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanChangeMap()
         {
-            return base.CanChangeMap() && !IsDialoging() && !IsFighting();
+            return base.CanChangeMap() && !IsFighting();
         }
 
         #endregion
