@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             InventoryHandler.SendExchangeLeaveMessage(FirstTrader.Character.Client, DialogTypeEnum.DIALOG_EXCHANGE,
                                                       FirstTrader.ReadyToApply);
 
-            FirstTrader.Character.ResetDialog();
+            FirstTrader.Character.CloseDialog(this);
         }
 
         protected override void Apply()
