@@ -304,10 +304,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item;
         }
 
-        public override void RemoveItem(BasePlayerItem item, bool delete = true)
+        public override  bool RemoveItem(BasePlayerItem item, bool delete = true)
         {
             if (item.OnRemoveItem())
-                base.RemoveItem(item, delete);
+                return base.RemoveItem(item, delete);
+
+            return false;
         }
 
         public void RefreshItemInstance(BasePlayerItem item)
