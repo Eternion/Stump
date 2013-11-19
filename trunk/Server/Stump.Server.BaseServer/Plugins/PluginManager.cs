@@ -1,6 +1,5 @@
 
 using System;
-using System.AddIn.Hosting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -77,24 +76,18 @@ namespace Stump.Server.BaseServer.Plugins
 
             Assembly pluginAssembly = Assembly.Load(asmData);
             var pluginContext = new PluginContext(libPath, pluginAssembly);
-            bool initialized = false;
+            var initialized = false;
 
             // search the entry point (the class that implements IPlugin)
-            foreach (Type pluginType in pluginAssembly.GetTypes())
+            foreach (Type pluginType in pluginAssembly.GetTypes().Where(pluginType => pluginType.IsPublic && !pluginType.IsAbstract).Where(pluginType => pluginType.HasInterface(typeof (IPlugin))))
             {
-                if (pluginType.IsPublic && !pluginType.IsAbstract)
-                {
-                    if (pluginType.HasInterface(typeof(IPlugin)))
-                    {
-                        if (initialized)
-                            throw new PluginLoadException("Found 2 classes that implements IPlugin. A plugin can contains only one");
+                if (initialized)
+                    throw new PluginLoadException("Found 2 classes that implements IPlugin. A plugin can contains only one");
 
-                        pluginContext.Initialize(pluginType);
-                        initialized = true;
+                pluginContext.Initialize(pluginType);
+                initialized = true;
 
-                        RegisterPlugin(pluginContext);
-                    }
-                }
+                RegisterPlugin(pluginContext);
             }
 
             return pluginContext;

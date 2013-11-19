@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Patch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Tasks>
-    <Task xsi:type="Add" url="4_to_5\data\i18n\i18n_fr.d2i" local="data\i18n\i18n_fr.d2i" />
-  </Tasks>
-</Patch>

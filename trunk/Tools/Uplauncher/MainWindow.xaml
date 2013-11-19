@@ -93,6 +93,9 @@
                 </ProgressBar.Template>
 
             </ProgressBar>
+            <TextBlock Text="{Binding ProgressDownloadSpeedInfo}" Canvas.Left="233" Canvas.Top="395" FontSize="11" Foreground="#FFEAFFEE"
+                       Width="460" Style="{StaticResource Arial-Rounded}" FontWeight="Light"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
             <Grid Canvas.Left="234" Canvas.Top="418" Width="460" Height="20">
                 <Grid.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/status_background.png"/>
