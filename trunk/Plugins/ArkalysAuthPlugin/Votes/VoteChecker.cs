@@ -24,7 +24,7 @@ namespace ArkalysAuthPlugin.Votes
                 AuthServer.Instance.DBAccessor.Database.Fetch<VoteRecord>(
                     string.Format("SELECT * FROM Votes INNER JOIN (SELECT UserID, MAX(Date) as MaxDate FROM Votes GROUP BY UserID)" +
                     " grp ON Votes.UserID = grp.UserID AND Votes.Date = grp.MaxDate WHERE grp.MaxDate BETWEEN '{0}' AND '{1}'",
-                    (DateTime.Now - TimeSpan.FromDays(7)).ToString("yyyy-MM-dd  hh:mm:ss"), (DateTime.Now - TimeSpan.FromHours(3)).ToString("yyyy-MM-dd hh:mm:ss")));
+                    (DateTime.Now - TimeSpan.FromDays(7)).ToString("yyyy-MM-dd hh:mm:ss"), (DateTime.Now - TimeSpan.FromHours(3)).ToString("yyyy-MM-dd hh:mm:ss")));
 
             if (votes.Count == 0)
                 return;

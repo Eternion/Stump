@@ -23,11 +23,11 @@ namespace ArkalysPlugin.Npcs
 
         //Je vois que tu as déjà fais ton choix... Veux tu redevenir Neutre?
         [Variable]
-        public static short ReplyBecomeNeutre = 20008;
+        public static short ReplyBecomeNeutre = 20013;
 
         //Veux tu devenir Bontarien?
         [Variable]
-        public static short ReplyBecomeAngel = 20008;
+        public static short ReplyBecomeAngel = 20014;
 
         //Veux tu devenir Brakmarien?
         [Variable]

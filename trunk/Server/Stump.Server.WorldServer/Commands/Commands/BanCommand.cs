@@ -70,20 +70,20 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
 
 
-            if (trigger.IsArgumentDefined("ip"))
-            {
-                var banIPMessage = new BanIPMessage()
-                {
-                    IPRange = target.Client.IP,
-                    BanReason = reason,
-                    BanEndDate = message.BanEndDate,
-                    BannerAccountId = message.BannerAccountId
-                };
+            if (!trigger.IsArgumentDefined("ip"))
+                return;
 
-                IPCAccessor.Instance.SendRequest(message,
-                    ok => trigger.Reply("IP {0} banned", target.Client.IP),
-                    error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));
-            }
+            var banIPMessage = new BanIPMessage()
+            {
+                IPRange = target.Client.IP,
+                BanReason = reason,
+                BanEndDate = message.BanEndDate,
+                BannerAccountId = message.BannerAccountId
+            };
+
+            IPCAccessor.Instance.SendRequest(message,
+                ok => trigger.Reply("IP {0} banned", target.Client.IP),
+                error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));
         }
     }
 

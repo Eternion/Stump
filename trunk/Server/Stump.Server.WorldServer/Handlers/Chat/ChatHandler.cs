@@ -6,7 +6,6 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
-using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Social;
 
@@ -17,32 +16,32 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         [WorldHandler(ChatClientPrivateMessage.Id)]
         public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
         {
-            if (!String.IsNullOrEmpty(message.content))
+            if (String.IsNullOrEmpty(message.content))
+                return;
+
+            var chr = World.Instance.GetCharacter(message.receiver);
+
+            if (chr != null)
             {
-                Character chr = World.Instance.GetCharacter(message.receiver);
-
-                if (chr != null)
+                if (!chr.TranquilityMode)
                 {
-                    if (!chr.TranquilityMode)
-                    {
-                        // send a copy to sender
-                        SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                                  message.content);
+                    // send a copy to sender
+                    SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                        message.content);
 
-                        // Send to receiver
-                        SendChatServerMessage(chr.Client, client.Character,
-                                              ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                              message.content);
-                    }
-                    else
-                    {
-                        client.Send(new ChatErrorMessage((sbyte)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
-                    }
+                    // Send to receiver
+                    SendChatServerMessage(chr.Client, client.Character,
+                        ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                        message.content);
                 }
                 else
                 {
-                    client.Send(new ChatErrorMessage((sbyte) ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                    client.Send(new ChatErrorMessage((sbyte)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
                 }
+            }
+            else
+            {
+                client.Send(new ChatErrorMessage((sbyte) ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
             }
         }
 
@@ -80,28 +79,25 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             SendChatServerMessage(client, sender, channel, message, DateTime.Now.GetUnixTimeStamp(), "");
         }
 
-        public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message,
-                                                 int timestamp, string fingerprint)
+        public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint)
         {
-            if (!String.IsNullOrEmpty(message))
-            {
-                if (sender.Account.Role <= RoleEnum.Moderator)
-                    message = message.HtmlEntities();
+            if (String.IsNullOrEmpty(message))
+                return;
 
-                client.Send(new ChatServerMessage(
-                                (sbyte) channel,
-                                message,
-                                timestamp,
-                                fingerprint,
-                                sender.Id,
-                                sender.Name,
-                                (int) sender.Account.Id));
-            }
+            if (sender.Account.Role <= RoleEnum.Moderator)
+                message = message.HtmlEntities();
+
+            client.Send(new ChatServerMessage(
+                (sbyte) channel,
+                message,
+                timestamp,
+                fingerprint,
+                sender.Id,
+                sender.Name,
+                sender.Account.Id));
         }
 
-        public static void SendChatServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message,
-                                                 int timestamp, string fingerprint, int senderId, string senderName,
-                                                 int accountId)
+        public static void SendChatServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint, int senderId, string senderName, int accountId)
         {
             if (!String.IsNullOrEmpty(message))
             {

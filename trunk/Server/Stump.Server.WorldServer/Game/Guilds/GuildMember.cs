@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.ORM;
-using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using NetworkGuildMember = Stump.DofusProtocol.Types.GuildMember;
@@ -214,7 +211,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             Character = character;
 
-            Action<GuildMember> evnt = Connected;
+            var evnt = Connected;
             if (evnt != null)
                 evnt(this);
         }
@@ -225,7 +222,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             IsDirty = true;
             Character = null;
 
-            Action<GuildMember, Character> evnt = Disconnected;
+            var evnt = Disconnected;
             if (evnt != null)
                 evnt(this, character);
         }
