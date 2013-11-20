@@ -2269,22 +2269,6 @@ INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGra
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (201, 806, 1, 1, 5);
 -- Monster 808 : Tofurby in Tofu House
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (201, 808, 1, 1, 5);
--- Monster 829 : Quetsnakiatl in Minotoror Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (209, 829, 1, 1, 5);
--- Monster 834 : Minoskito in Minotoror Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (209, 834, 1, 1, 5);
--- Monster 835 : Manderisha in Minotoror Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (209, 835, 1, 1, 5);
--- Monster 836 : Khamelerost in Minotoror Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (209, 836, 1, 1, 5);
--- Monster 2287 : Quetnin the Fictional in Minotoror Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (209, 2287, 0.1, 1, 5);
--- Monster 2521 : Khameleltux the Tolerant in Minotoror Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (209, 2521, 0.1, 1, 5);
--- Monster 2529 : Salamaa the Henpeck in Minotoror Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (209, 2529, 0.1, 1, 5);
--- Monster 2533 : Milikkybum the Informer in Minotoror Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (209, 2533, 0.1, 1, 5);
 -- Monster 121 : Minotoror in Inner Labyrinth of the Minotoror
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (210, 121, 1, 1, 5);
 -- Monster 668 : Minokid in Inner Labyrinth of the Minotoror
@@ -3153,26 +3137,6 @@ INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGra
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (450, 974, 1, 1, 5);
 -- Monster 982 : Young Arachnee in Exit of the Temple
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (450, 982, 1, 1, 5);
--- Monster 208 : Tikokoko in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 208, 1, 1, 5);
--- Monster 209 : Kokoko in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 209, 1, 1, 5);
--- Monster 218 : Kokonut in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 218, 1, 1, 5);
--- Monster 1078 : Flib's Cursed Chest in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 1078, 1, 1, 5);
--- Monster 1229 : Drunken Boomba in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 1229, 1, 1, 5);
--- Monster 1230 : Beginner Cannon Dorf in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 1230, 1, 1, 5);
--- Monster 1231 : Lonely Hazwonarm in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 1231, 1, 1, 5);
--- Monster 2292 : Eskoko the Baron in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 2292, 0.1, 1, 5);
--- Monster 2541 : Kokonan the Talker in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 2541, 0.1, 1, 5);
--- Monster 2573 : Misskokoko the Channel in Castaway Island
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (451, 2573, 0.1, 1, 5);
 -- Monster 1229 : Drunken Boomba in Sea
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (452, 1229, 1, 1, 5);
 -- Monster 1230 : Beginner Cannon Dorf in Sea
@@ -4741,26 +4705,6 @@ INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGra
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (624, 2986, 1, 1, 5);
 -- Monster 2992 : Professor Xa in Kolosso's Caverns
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (624, 2992, 1, 1, 5);
--- Monster 2932 : Buzta in Sakai Plain
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (651, 2932, 1, 1, 5);
--- Monster 2933 : Asploda in Sakai Plain
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (651, 2933, 1, 1, 5);
--- Monster 2934 : Grabba in Sakai Plain
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (651, 2934, 1, 1, 5);
--- Monster 2932 : Buzta in Snowy Forest
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (652, 2932, 1, 1, 5);
--- Monster 2933 : Asploda in Snowy Forest
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (652, 2933, 1, 1, 5);
--- Monster 2934 : Grabba in Snowy Forest
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (652, 2934, 1, 1, 5);
--- Monster 2935 : Stabba in Snowy Forest
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (652, 2935, 1, 1, 5);
--- Monster 2937 : Drilla in Snowy Forest
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (652, 2937, 1, 1, 5);
--- Monster 2941 : Gobshell in Snowy Forest
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (652, 2941, 1, 1, 5);
--- Monster 3400 : Doctor Gobotnegg in Snowy Forest
-INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (652, 3400, 1, 1, 5);
 -- Monster 2932 : Buzta in Sakai Abandoned Mine
 INSERT INTO `monsters_spawns` (SubAreaId, MonsterId, Frequency, MinGrade, MaxGrade) VALUES (653, 2932, 1, 1, 5);
 -- Monster 2933 : Asploda in Sakai Abandoned Mine

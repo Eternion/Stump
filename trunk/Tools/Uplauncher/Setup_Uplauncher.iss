@@ -6,7 +6,7 @@
 #define MyAppPublisher "Arkalys.com"
 #define MyAppURL "http://www.arkalys.com"
 #define MyAppExeName "Uplauncher.exe"
-#define SourceFileDir "C:\Users\arnaud.couturier\Documents\Arkalys\Stump\trunk\Tools\Uplauncher"
+#define SourceFileDir "C:\Users\developer\Desktop\Setup"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -23,9 +23,9 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\ArkalysGame
 DefaultGroupName=Arkalys Uplauncher
 DisableProgramGroupPage=yes
-OutputDir={#SourceFileDir}\bin\Release\
+OutputDir={#SourceFileDir}
 OutputBaseFilename=Uplauncher_Setup
-SetupIconFile={#SourceFileDir}\Resources\dofus-icon-48.ico
+SetupIconFile=C:\Users\developer\Desktop\Stump\trunk\Tools\Uplauncher\Resources\dofus-icon-48.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -40,7 +40,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "{#SourceFileDir}\bin\Release\Uplauncher_Secure\Uplauncher.exe"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full
+Source: "{#SourceFileDir}\Uplauncher.exe"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full
+Source: "{#SourceFileDir}\app\*.*"; DestDir: "{app}\app"; Flags: ignoreversion recursesubdirs; Permissions: everyone-full
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
