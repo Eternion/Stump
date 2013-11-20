@@ -153,9 +153,6 @@ namespace ArkalysPlugin.Npcs
             var guildalogemme = Character.Inventory.TryGetItem(NpcGuilds.RequieredItem);
             if (replyId == NpcGuilds.ReplyGuildSuccessId && guildalogemme != null)
             {
-                if (Character.Inventory.RemoveItem(guildalogemme, 1) < 1)
-                    return;
-
                 var panel = new GuildCreationPanel(Character);
                 panel.Open();
             }
