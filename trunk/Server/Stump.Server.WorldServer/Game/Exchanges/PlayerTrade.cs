@@ -39,8 +39,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             InventoryHandler.SendExchangeLeaveMessage(SecondTrader.Character.Client, DialogTypeEnum.DIALOG_EXCHANGE,
                                                       FirstTrader.ReadyToApply && SecondTrader.ReadyToApply);
 
-            FirstTrader.Character.ResetDialog();
-            SecondTrader.Character.ResetDialog();
+            FirstTrader.Character.CloseDialog(this);
+            SecondTrader.Character.CloseDialog(this);
         }
 
         protected override void Apply()

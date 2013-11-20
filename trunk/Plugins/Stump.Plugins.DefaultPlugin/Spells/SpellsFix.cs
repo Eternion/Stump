@@ -77,11 +77,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // whip (30)
             // kill effect target -> summons
             FixEffectOnAllLevels(30, EffectsEnum.Effect_Kill, (level, effect, critical) =>
-                                                              effect.Targets =
-                                                              SpellTargetType.ALLY_STATIC_SUMMONS |
-                                                              SpellTargetType.ALLY_SUMMONS |
-                                                              SpellTargetType.ENNEMY_STATIC_SUMMONS |
-                                                              SpellTargetType.ENNEMY_SUMMONS);
+                {
+                    effect.Targets = 
+                        SpellTargetType.ALLY_STATIC_SUMMONS |
+                        SpellTargetType.ALLY_SUMMONS | (critical ? 
+                        SpellTargetType.ENNEMY_STATIC_SUMMONS |
+                        SpellTargetType.ENNEMY_SUMMONS : 0);
+                });
 
             #endregion
 

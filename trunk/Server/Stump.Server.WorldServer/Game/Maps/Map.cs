@@ -730,8 +730,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 categories.Any(
                     x =>
                     (x & SpellCategory.Damages) != 0 || 
-                    x.HasFlag(SpellCategory.Healing) ||
-                    x.HasFlag(SpellCategory.Summoning));
+                    x.HasFlag(SpellCategory.Healing));
         }
 
         public MonsterGroup SpawnMonsterGroup(MonsterGrade monster, ObjectPosition position)
@@ -1169,7 +1168,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public IEnumerable<T> GetActors<T>()
         {
-            return m_actors.OfType<T>(); // after a benchmark we conclued that it takes approximatively 10 ticks
+            return m_actors.OfType<T>();
         }
 
         public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
@@ -1184,7 +1183,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Cell GetCell(int x, int y)
         {
-            return Cells[MapPoint.CoordToCellId(x, y)];
+           return Cells[MapPoint.CoordToCellId(x, y)];
         }
 
         public Cell GetCell(Point pos)
