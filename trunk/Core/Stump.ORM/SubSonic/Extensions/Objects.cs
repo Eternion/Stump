@@ -196,7 +196,7 @@ namespace Stump.ORM.SubSonic.Extensions
             }
 
             var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            foreach(var prop in props.GroupBy(x => x.DeclaringType).Reverse().SelectMany(x => x))
+            foreach(var prop in props)
             {
                 if (prop.GetSetMethod() == null)
                     continue;
@@ -219,7 +219,7 @@ namespace Stump.ORM.SubSonic.Extensions
                     {
                         //default to most common;
                         column.NumberScale = 2;
-                        column.NumericPrecision = 10;
+                        column.NumericPrecision = 16;
                     }
                     /*else if(column.DataType == DbType.String)
                     {

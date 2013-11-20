@@ -1105,6 +1105,7 @@ namespace Stump.ORM
 			}
 		}
 
+			
 		public IEnumerable<T> Query<T>(Sql sql) 
 		{
 			return Query<T>(sql.SQL, sql.Arguments);
@@ -1239,7 +1240,7 @@ namespace Stump.ORM
 							OnExecutedCommand(cmd);
 							return true;
 						}
-
+                        
 
 						object id;
 						switch (_dbType)
