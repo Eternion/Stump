@@ -258,6 +258,7 @@
     <Compile Include="IPC\IPCMessageSerializer.cs" />
     <Compile Include="IPC\Messages\UpdateAccountMessage.cs" />
     <Compile Include="IPC\Objects\AccountData.cs" />
+    <Compile Include="IPC\Objects\WorldCharacterData.cs" />
     <Compile Include="Network\BaseClient.cs" />
     <Compile Include="Handler\HandlerManager.cs" />
     <Compile Include="Handler\HandlerAttribute.cs" />

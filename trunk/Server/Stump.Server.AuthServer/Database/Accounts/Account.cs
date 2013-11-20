@@ -293,7 +293,7 @@ namespace Stump.Server.AuthServer.Database
                            LastConnection = m_loadedLastConnection,
                            LastConnectionIp = m_loadedLastConnectionIP,
                            SubscriptionEndDate = SubscriptionEnd,
-                           CharactersId = WorldCharacters.Select(entry => entry.CharacterId).ToList(),
+                           Characters = WorldCharacters.Select(entry => new WorldCharacterData(entry.CharacterId, entry.WorldId)).ToList(),
                            Tokens = Tokens,
                            LastVote = LastVote,
                        };

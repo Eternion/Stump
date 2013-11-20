@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
         public void Close()
         {
             DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
-            Character.ResetDialog();
+            Character.CloseDialog(this);
         }
 
         #endregion

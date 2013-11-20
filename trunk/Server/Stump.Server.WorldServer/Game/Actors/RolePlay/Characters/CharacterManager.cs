@@ -49,16 +49,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
-            if (client.Account.CharactersId == null ||
-                client.Account.CharactersId.Count == 0)
+            if (client.Account.Characters == null ||
+                client.Account.Characters.Count == 0)
                 return new List<CharacterRecord>();
 
+            var characterIds =
+                client.Account.Characters.Where(x => x.WorldId == WorldServer.ServerInformation.Id)
+                      .Select(x => x.CharacterId).ToList();
+            
             var characters =
-                Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId,client.Account.CharactersId.ToCSV(",")));
+                Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, characterIds.ToCSV(",")));
 
-            if (characters.Count != client.Account.CharactersId.Count)
+            if (characters.Count != client.Account.Characters.Count)
             {
-                foreach (int id in client.Account.CharactersId.Where(id => characters.All(character => character.Id != id)).Where(id => IPCAccessor.Instance.IsConnected))
+                // delete characters that doesn't exist anymore
+                foreach (int id in characterIds.Where(id => characters.All(character => character.Id != id)).Where(id => IPCAccessor.Instance.IsConnected))
                 {
                     IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
                 }
