@@ -99,16 +99,6 @@ namespace ArkalysPlugin.Npcs
             }
         }
 
-        protected override void OnTraderKamasChanged(Trader trader, uint amount)
-        {
-            base.OnTraderKamasChanged(trader, amount);
-
-            if (trader is PlayerTrader)
-            {
-                AdjustLoots();
-            }
-        }
-
         public double OrbToKamasRate
         {
             get;
@@ -132,21 +122,6 @@ namespace ArkalysPlugin.Npcs
             else
             {
                 SecondTrader.SetKamas(0);
-            }
-
-            var stack = (uint) (FirstTrader.Kamas/OrbToKamasRate);
-            orbs = SecondTrader.Items.FirstOrDefault(x => x.Template == OrbsManager.OrbItemTemplate);
-
-            if (orbs != null)
-            {
-                if (stack > 0)
-                    orbs.Stack = stack;
-                else
-                    SecondTrader.RemoveItem(OrbsManager.OrbItemTemplate, orbs.Stack);
-            }
-            else
-            {
-                SecondTrader.AddItem(OrbsManager.OrbItemTemplate, stack);
             }
         }
     }

@@ -167,16 +167,20 @@ namespace Stump.Server.WorldServer.Game.Items
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <param name="delete"></param>
-        public virtual void RemoveItem(T item, uint amount, bool delete = true)
+        public virtual uint RemoveItem(T item, uint amount, bool delete = true)
         {
             if (!HasItem(item))
-                throw new Exception("Cannot remove an item that is not in the collection");
+                return 0;
 
             if (item.Stack <= amount)
+            {
                 RemoveItem(item, delete);
+                return item.Stack;
+            }
             else
             {
                 UnStackItem(item, amount);
+                return amount;
             }
         }
 
@@ -185,19 +189,22 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="delete"></param>
-        public virtual void RemoveItem(T item, bool delete = true)
+        public virtual bool RemoveItem(T item, bool delete = true)
         {
             if (!HasItem(item))
-                throw new Exception("Cannot remove an item that is not in the collection");
+                return false;
 
             lock (Locker)
             {
-                Items.Remove(item.Guid);
+                var deleted = Items.Remove(item.Guid);
 
                 if (delete)
                     DeleteItem(item);
 
-                NotifyItemRemoved(item);
+                if (deleted)
+                    NotifyItemRemoved(item);
+
+                return deleted;
             }
         }
 

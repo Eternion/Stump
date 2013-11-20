@@ -264,6 +264,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Dialog = dialog;
         }
 
+
+        public void CloseDialog(IDialog dialog)
+        {
+            if (Dialog == dialog)
+                Dialoger = null;
+        }
+
         public void ResetDialog()
         {
             Dialoger = null;
@@ -1256,6 +1263,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Move
 
+        public override bool CanMove()
+        {
+            return base.CanMove() && !IsDialoging();
+        }
+
         public override bool StartMove(Path movementPath)
         {
             if (IsFighting())
@@ -1298,13 +1310,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return success;
         }
 
-        public override bool Teleport(ObjectPosition destination)
-        {
-            LeaveDialog();
-
-            return base.Teleport(destination);
-        }
-
         protected override void OnTeleported(ObjectPosition position)
         {
             base.OnTeleported(position);
@@ -1317,7 +1322,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanChangeMap()
         {
-            return base.CanChangeMap() && !IsDialoging() && !IsFighting();
+            return base.CanChangeMap() && !IsFighting();
         }
 
         #endregion
@@ -1547,8 +1552,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target == this)
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
 
-            if (!PvPEnabled)
-                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
+            if (!target.PvPEnabled || !PvPEnabled)
+                return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
             if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy())
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
@@ -1556,7 +1561,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
-            if (AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL)
+            if (AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL || target.AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL)
                 return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
 
             if (target.AlignmentSide == AlignmentSide)

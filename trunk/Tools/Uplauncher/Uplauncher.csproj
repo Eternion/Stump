@@ -117,6 +117,9 @@
     <Compile Include="SoundClient.cs" />
     <Compile Include="SoundProxy.cs" />
     <Compile Include="UplauncherModelView.cs" />
+    <Compile Include="Utils\Cryptography.cs" />
+    <Compile Include="Utils\FileSizeFormatProvider.cs" />
+    <Compile Include="Utils\XmlUtils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -161,13 +164,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="dofus-icon-48.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
-      <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
-      <Name>Stump.Core</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\background.png" />

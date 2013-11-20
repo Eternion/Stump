@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
         public virtual void Close()
         {
             DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);
-            Character.ResetDialog();
+            Character.CloseDialog(this);
         }
 
         public virtual void Reply(short replyId)

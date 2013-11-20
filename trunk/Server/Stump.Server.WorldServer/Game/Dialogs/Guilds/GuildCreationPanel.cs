@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
 
         public void Close()
         {
-            Character.ResetDialog();
+            Character.CloseDialog(this);
             DialogHandler.SendLeaveDialogMessage(Character.Client, DialogType);        
         }
 
