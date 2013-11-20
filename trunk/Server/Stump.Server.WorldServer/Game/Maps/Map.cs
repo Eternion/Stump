@@ -730,8 +730,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 categories.Any(
                     x =>
                     (x & SpellCategory.Damages) != 0 || 
-                    x.HasFlag(SpellCategory.Healing) ||
-                    x.HasFlag(SpellCategory.Summoning));
+                    x.HasFlag(SpellCategory.Healing));
         }
 
         public MonsterGroup SpawnMonsterGroup(MonsterGrade monster, ObjectPosition position)
