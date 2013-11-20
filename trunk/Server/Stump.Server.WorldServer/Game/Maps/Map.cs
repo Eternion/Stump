@@ -1115,7 +1115,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void ForEach(Action<Character> action)
         {
-            foreach (Character character in GetAllCharacters())
+            foreach (var character in GetAllCharacters())
             {
                 action(character);
             }
