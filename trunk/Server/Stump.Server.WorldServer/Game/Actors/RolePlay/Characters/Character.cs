@@ -1570,6 +1570,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.Map != Map)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
+            if (target.Client.IP == Client.IP)
+                return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
+
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
