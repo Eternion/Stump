@@ -19,17 +19,17 @@ namespace ArkalysPlugin.Npcs
         public static int NpcId = 3002;
         //Tu veux t'engager dans la bataille? Alors choisi ton camp: Bontarien ou Brakmarien?
         [Variable]
-        public static int MessageId = 20008;
+        public static int MessageId = 20012;
 
-        //Je vois que tu as déjà fais ton choix... Veux tu redevenir Neutre?
+        //Je vois que tu as déjà fais ton choix... Redeviens Neutre.
         [Variable]
-        public static short ReplyBecomeNeutre = 20008;
+        public static short ReplyBecomeNeutre = 20013;
 
-        //Veux tu devenir Bontarien?
+        //Je choisis le camp des Bontariens!
         [Variable]
-        public static short ReplyBecomeAngel = 20008;
+        public static short ReplyBecomeAngel = 20014;
 
-        //Veux tu devenir Brakmarien?
+        //Je choisis le camp des Brakmariens!
         [Variable]
         public static short ReplyBecomeEvil = 20015;
 
