@@ -1552,8 +1552,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target == this)
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
 
-            if (!PvPEnabled)
-                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
+            if (!target.PvPEnabled || !PvPEnabled)
+                return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
             if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy())
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
@@ -1561,7 +1561,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
-            if (AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL)
+            if (AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL || target.AlignmentSide <= AlignmentSideEnum.ALIGNMENT_NEUTRAL)
                 return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
 
             if (target.AlignmentSide == AlignmentSide)
