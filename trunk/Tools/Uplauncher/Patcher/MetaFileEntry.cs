@@ -22,8 +22,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Xml.Serialization;
-using Stump.Core.Cryptography;
 using Uplauncher.Properties;
+using Uplauncher.Utils;
 
 namespace Uplauncher.Patcher
 {

@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
         public void Close()
         {
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
-            Character.ResetDialog();
+            Character.CloseDialog(this);
             Merchant.OnDialogClosed(this);
         }
 

@@ -29,11 +29,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
-using Stump.Core.Extensions;
-using Stump.Core.Xml;
 using Uplauncher.Helpers;
 using Uplauncher.Patcher;
 using Uplauncher.Properties;
+using Uplauncher.Utils;
 using Clipboard = System.Windows.Forms.Clipboard;
 using MessageBox = System.Windows.Forms.MessageBox;
 
