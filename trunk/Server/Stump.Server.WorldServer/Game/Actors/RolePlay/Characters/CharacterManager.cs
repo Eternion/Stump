@@ -157,14 +157,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                                                orderby spell.ObtainLevel , spell.Spell ascending
                                                                select spell;
 
-                int slot = 0;
-                foreach (BreedSpell learnableSpell in spellsToLearn)
+                var slot = 0;
+                foreach (var spellRecord in spellsToLearn.Select(learnableSpell => SpellManager.Instance.CreateSpellRecord(record,
+                    SpellManager.Instance.
+                        GetSpellTemplate(
+                            learnableSpell.
+                                Spell))))
                 {
-                    CharacterSpellRecord spellRecord = SpellManager.Instance.CreateSpellRecord(record,
-                                                                                               SpellManager.Instance.
-                                                                                                   GetSpellTemplate(
-                                                                                                       learnableSpell.
-                                                                                                           Spell));
                     Database.Insert(spellRecord);
 
                     var shortcut = new SpellShortcut(record, slot, (short) spellRecord.SpellId);
