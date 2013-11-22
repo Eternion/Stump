@@ -271,6 +271,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             if (kickedMember.IsConnected)
             {
+                kickedMember.Character.GuildMember = null;
+
                 // Vous avez quitté la guilde.
                 kickedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
             }
@@ -288,6 +290,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             if (!KickMember(kickedMember))
                 return false;
+
 
             // Vous avez banni <b>%1</b> de votre guilde.
             kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
