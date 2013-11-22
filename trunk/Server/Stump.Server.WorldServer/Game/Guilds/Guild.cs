@@ -426,12 +426,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
             UnBindMemberEvents(member);
             GuildManager.Instance.DeleteGuildMember(member);
 
-            if (member.IsConnected)
-            {
-                member.Character.GuildMember = null;
-                member.Character.RefreshActor();
-                GuildHandler.SendGuildLeftMessage(member.Character.Client);
-            }
+            if (!member.IsConnected)
+                return;
+
+            member.Character.GuildMember = null;
+            member.Character.RefreshActor();
+            GuildHandler.SendGuildLeftMessage(member.Character.Client);
         }
 
         protected virtual void OnLevelChanged()
