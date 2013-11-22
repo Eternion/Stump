@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -13,9 +12,6 @@ using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
-using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory

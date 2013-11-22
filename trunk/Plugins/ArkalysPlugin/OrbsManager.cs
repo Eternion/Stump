@@ -76,7 +76,7 @@ namespace ArkalysPlugin
 
             foreach (var player in players)
             {
-                int teamPP = player.Team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+                var teamPP = player.Team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var orbs = (uint) (((double)player.Stats[PlayerFields.Prospecting].Total/teamPP)*totalOrbs);
 
                 if (orbs > 0)
