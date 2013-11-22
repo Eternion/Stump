@@ -109,7 +109,7 @@ namespace ArkalysPlugin.Npcs
         {
             foreach (var item in FirstTrader.Items.ToArray())
             {
-                if (item.Template != OrbsManager.OrbItemTemplate)
+                if (item.Template.Id != OrbsManager.OrbItemTemplate.Id)
                     FirstTrader.MoveItemToInventory(item.Guid, item.Stack);
             }
 
