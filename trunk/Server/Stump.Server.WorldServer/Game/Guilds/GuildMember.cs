@@ -237,7 +237,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void Save(ORM.Database database)
         {
-            if (IsNew)
+            if (GuildManager.Instance.TryGetGuildMember(Record.CharacterId) == null)
                 database.Insert(Record);
             else
                 database.Update(Record);
