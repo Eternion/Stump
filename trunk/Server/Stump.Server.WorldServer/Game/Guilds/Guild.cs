@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private readonly List<GuildMember> m_members = new List<GuildMember>();
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private bool m_isDirty;
-        private object m_xpLock = new object();
+        private readonly object m_xpLock = new object();
 
         public Guild(int id, string name)
         {
@@ -84,15 +84,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 member.BindGuild(this);
             }
 
-            if (Boss == null)
-            {
-                logger.Error("There is at no boss in guild {0} ({1})", Id, Name);
+            if (Boss != null)
+                return;
 
-                if (m_members.Count == 0)
-                    logger.Error("Guild {0} ({1}) is empty", Id, Name);
-                else
-                    SetBoss(m_members.First());
-            }
+            logger.Error("There is at no boss in guild {0} ({1})", Id, Name);
+
+            if (m_members.Count == 0)
+                logger.Error("Guild {0} ({1}) is empty", Id, Name);
+            else
+                SetBoss(m_members.First());
         }
 
         public ReadOnlyCollection<GuildMember> Members
@@ -184,7 +184,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             var gap = giver.Level - Level;
 
-            for (int i = XP_PER_GAP.Length - 1; i >= 0; i--)
+            for (var i = XP_PER_GAP.Length - 1; i >= 0; i--)
             {
                 if (gap > XP_PER_GAP[i][0])
                     return (long) (amount*XP_PER_GAP[i][1]*0.01);

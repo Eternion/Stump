@@ -139,9 +139,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public virtual uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
         {
             uint removed = 0;
-            foreach (var effect in Effects)
+            foreach (var handler in Effects.Select(effect => EffectManager.Instance.GetUsableEffectHandler(effect, target ?? Owner, this)))
             {
-                var handler = EffectManager.Instance.GetUsableEffectHandler(effect, target ?? Owner, this);
                 handler.NumberOfUses = amount;
                 handler.TargetCell = targetCell;
 

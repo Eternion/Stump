@@ -413,7 +413,7 @@ namespace DBSynchroniser
 
         private static void LoadIcons()
         {
-            Database.Database.Execute("DELETE FROM langs");
+            Database.Database.Execute("DELETE FROM icons");
 
             string iconsFilePath = Path.Combine(FindDofusPath(), "content", "gfx", "items", "bitmap0.d2p");
             var d2pFile = new D2pFile(iconsFilePath);
