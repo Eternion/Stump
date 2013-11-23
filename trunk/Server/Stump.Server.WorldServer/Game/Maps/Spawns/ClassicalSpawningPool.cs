@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;

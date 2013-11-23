@@ -145,6 +145,12 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        public Boolean IsActive
+        {
+            get;
+            set;
+        }
+
         #region IAssignedByD2O Members
 
         public void AssignFields(object d2oObject)
@@ -160,6 +166,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             CanPlay = monster.canPlay;
             CanTackle = monster.canTackle;
             IsBoss = monster.isBoss;
+            IsActive = true;
         }
 
         #endregion

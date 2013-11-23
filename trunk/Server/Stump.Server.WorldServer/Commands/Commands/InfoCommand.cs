@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
@@ -127,18 +128,18 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.ReplyBold("Kamas : {0}", character.Inventory.Kamas);
             trigger.ReplyBold("Items : {0}", character.Inventory.Count);
             trigger.ReplyBold("Spells : {0}", character.Spells.Count());
-            trigger.ReplyBold("Fight : {0}", character.IsFighting() ? character.Fight.Id.ToString() : "Not fighting");
+            trigger.ReplyBold("Tokens : {0}", character.Account.Tokens);
+            trigger.ReplyBold("Fight : {0}", character.IsFighting() ? character.Fight.Id.ToString(CultureInfo.InvariantCulture) : "Not fighting");
 
-            if (trigger.Get<bool>("stats"))
-            {
-                trigger.ReplyBold("Spells Points : {0}, Stats Points : {1}", character.SpellsPoints,
-                                  character.StatsPoints);
-                trigger.ReplyBold("Health : {0}/{1}", character.Stats.Health.Total, character.Stats.Health.TotalMax);
-                trigger.ReplyBold("AP : {0}, PM : {1}", character.Stats.AP, character.Stats.MP);
-                trigger.ReplyBold("Vitality : {0}, Wisdom : {1}", character.Stats.Vitality, character.Stats.Wisdom);
-                trigger.ReplyBold("Strength : {0}, Intelligence : {1}", character.Stats.Strength, character.Stats.Intelligence);
-                trigger.ReplyBold("Agility : {0}, Chance : {1}", character.Stats.Agility, character.Stats.Chance);
-            }
+            if (!trigger.Get<bool>("stats"))
+                return;
+
+            trigger.ReplyBold("Spells Points : {0}, Stats Points : {1}", character.SpellsPoints, character.StatsPoints);
+            trigger.ReplyBold("Health : {0}/{1}", character.Stats.Health.Total, character.Stats.Health.TotalMax);
+            trigger.ReplyBold("AP : {0}, PM : {1}", character.Stats.AP, character.Stats.MP);
+            trigger.ReplyBold("Vitality : {0}, Wisdom : {1}", character.Stats.Vitality, character.Stats.Wisdom);
+            trigger.ReplyBold("Strength : {0}, Intelligence : {1}", character.Stats.Strength, character.Stats.Intelligence);
+            trigger.ReplyBold("Agility : {0}, Chance : {1}", character.Stats.Agility, character.Stats.Chance);
         }
     }
 
