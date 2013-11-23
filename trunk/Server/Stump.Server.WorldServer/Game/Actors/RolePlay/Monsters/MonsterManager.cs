@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             m_monsterTemplates = Database.Query<MonsterTemplate>(MonsterTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterGrades = Database.Query<MonsterGrade>(MonsterGradeRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterSpells = Database.Query<MonsterSpell>(MonsterSpellRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_monsterSpawns = Database.Query<MonsterSpawn>(MonsterSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterSpawns = Database.Query<MonsterSpawn>(MonsterSpawnRelator.FetchQuery).Where(x => GetTemplate(x.MonsterId).IsActive).ToDictionary(entry => entry.Id);
             m_monsterDungeonsSpawns = Database.Query<MonsterDungeonSpawn>(MonsterDungeonSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_droppableItems = Database.Query<DroppableItem>(DroppableItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterSuperRaces = Database.Query<MonsterSuperRace>(MonsterSuperRaceRelator.FetchQuery).ToDictionary(entry => entry.Id);
@@ -81,10 +81,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public MonsterTemplate GetTemplate(int id)
         {
             MonsterTemplate result;
-            if (!m_monsterTemplates.TryGetValue(id, out result))
-                return null;
-
-            return result;
+            return !m_monsterTemplates.TryGetValue(id, out result) ? null : result;
         }
 
         public MonsterTemplate[] GetTemplates()
@@ -155,6 +152,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             Database.Delete(drop);
             m_droppableItems.Remove(drop.Id);
+        }
+
+        public void RemoveMonsterTemplate(MonsterTemplate monsterTemplate)
+        {
+            Database.Update(monsterTemplate);
+
+            //m_monsterTemplates.Remove(monsterTemplate.Id);
+            //m_monsterTemplates.Add(monsterTemplate.Id, monsterTemplate);
         }
     }
 }
