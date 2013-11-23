@@ -356,6 +356,22 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return true;
         }
 
+        public void Save(ORM.Database database)
+        {
+            if (Record.IsNew)
+                database.Insert(Record);
+            else
+                database.Update(Record);
+
+            foreach (GuildMember member in Members.Where(x => !x.IsConnected && x.IsDirty))
+            {
+                member.Save(database);
+            }
+
+            IsDirty = false;
+            Record.IsNew = false;
+        }
+
         protected void UpdateMember(GuildMember member)
         {
             GuildHandler.SendGuildInformationsMemberUpdateMessage(m_clients, member);

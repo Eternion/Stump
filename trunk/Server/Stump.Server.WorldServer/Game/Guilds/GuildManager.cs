@@ -157,23 +157,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 foreach (var guild in m_guilds.Values.Where(guild => guild.IsDirty))
                 {
-                    if (guild.Record.IsNew)
-                        Database.Insert(guild.Record);
-                    else
-                        Database.Update(guild.Record);
-
-                    guild.IsDirty = false;
+                    guild.Save(Database);
                 }
-
-                /*foreach (var guildMember in m_guildsMembers.Values.Where(guildMember => guildMember.IsDirty))
-                {
-                    if (guildMember.Record.IsNew)
-                        Database.Insert(guildMember.Record);
-                    else
-                        Database.Update(guildMember.Record);
-
-                    guildMember.IsDirty = false;
-                }*/
 
                 while (m_guildsToDelete.Count > 0)
                 {

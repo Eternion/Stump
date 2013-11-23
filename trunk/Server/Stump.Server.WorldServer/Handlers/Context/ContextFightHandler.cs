@@ -136,7 +136,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 }
                 else
                 {
-                    var fight = FightManager.Instance.CreateAgressionFight(target.Map);
+                    var fight = FightManager.Instance.CreateAgressionFight(target.Map, 
+                        client.Character.AlignmentSide, target.AlignmentSide);
 
                     fight.RedTeam.AddFighter(client.Character.CreateFighter(fight.RedTeam));
                     fight.BlueTeam.AddFighter(target.CreateFighter(fight.BlueTeam));
