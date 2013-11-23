@@ -4,10 +4,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Patterns;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Commands;
-using Stump.Server.WorldServer.Commands.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Npcs;
@@ -193,6 +190,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
 
             if (shop == null)
             {
+                trigger.ReplyError("Npc {0} has no shop", template);
                 return;
             }
 
@@ -268,7 +266,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Description = "Set all sold items to max stats";
             ParentCommand = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
-            AddParameter("active", "active", "Active or not", defaultValue:true);
+            AddParameter("active", "active", "Active or not", true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -289,6 +287,44 @@ namespace Stump.Plugins.EditorPlugin.Commands
 
                    NpcManager.Instance.RemoveNpcAction(shop);
                });
+        }
+    }
+
+    public class NpcShopRemoveAll : SubCommand
+    {
+        public NpcShopRemoveAll()
+        {
+            Aliases = new[] { "removeall" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Remove all items from NPC";
+            ParentCommand = typeof(NpcEditorCommands);
+            AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var npc = trigger.Get<NpcTemplate>("npc");
+            var shop = npc.Actions.OfType<NpcBuySellAction>().FirstOrDefault();
+
+            if (shop == null)
+            {
+                trigger.ReplyError("Npc {0} has no shop", npc);
+                return;
+            }
+
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () =>
+                {
+                    var items = shop.Items.ToArray();
+
+                    foreach (var item in items)
+                    {
+                        WorldServer.Instance.DBAccessor.Database.Delete(item);
+                        shop.Items.Remove(item);
+
+                        trigger.Reply("All Items has been removed from '{0}'s' shop", npc.Name);
+                    }
+                });
         }
     }
 }

@@ -232,12 +232,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommand = typeof (ItemCommand);
 
             AddParameter<int>("typeid", "type", "TypeId to add");
+            AddParameter("etheral", "eth", "Etheral", false);
             AddTargetParameter(true, "Character who will receive the items");
         }
 
         public override void Execute(TriggerBase trigger)
         {
             var typeId = trigger.Get<int>("typeid");
+            var isEtheral = trigger.Get<bool>("etheral");
             var target = GetTarget(trigger);
 
             var items = ItemManager.Instance.GetTemplates();
@@ -245,6 +247,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
             foreach (var item in items)
             {
                 if (item.TypeId != typeId)
+                    continue;
+
+                if (item.IsWeapon() && (item.Etheral != isEtheral))
                     continue;
 
                 var cItem = ItemManager.Instance.CreatePlayerItem(target, item, 1);
