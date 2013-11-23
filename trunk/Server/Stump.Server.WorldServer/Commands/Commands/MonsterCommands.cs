@@ -1,8 +1,10 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps;
@@ -97,7 +99,43 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
+    public class MonsterSpellsCommand : SubCommand
+    {
+        public MonsterSpellsCommand()
+        {
+            Aliases = new[] {"spells"};
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Enumerate monster spells";
+            ParentCommand = typeof (MonsterCommands);
+            AddParameter("monster", "m", "Monster template Id", converter: ParametersConverter.MonsterTemplateConverter);
+            AddParameter<sbyte>("grade", "g", "Monster grade", isOptional: true);
+        }
 
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var template = trigger.Get<MonsterTemplate>("monster");
+
+            if (template.Grades.Count <= trigger.Get<sbyte>("grade"))
+            {
+                trigger.ReplyError("Unexistant grade '{0}' for this monster", trigger.Get<sbyte>("grade"));
+                return;
+            }
+
+            MonsterGrade grade = template.Grades[trigger.Get<sbyte>("grade")];
+
+            foreach (var spell in grade.Spells)
+            {
+                trigger.ReplyBold("- {0} ({1})", spell.Template.Name, spell.Template.Id);
+                foreach (var effect in spell.CurrentSpellLevel.Effects)
+                {
+                    var description = TextManager.Instance.GetText(effect.Template.DescriptionId);
+                    trigger.ReplyBold("\t{0} ({1}) Managed : {2}", description, (int) effect.EffectId,
+                        SpellIdentifier.GetEffectCategories(effect.EffectId) != SpellCategory.None);
+                }
+            }
+        }
+    }
     public class MonsterSpawnNextCommand : SubCommand
     {
         public MonsterSpawnNextCommand()
