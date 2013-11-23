@@ -560,6 +560,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public int Compare(SpellTarget cast1, SpellTarget cast2)
         {
+            if (!m_comparers.ContainsKey(Category))
+                return 0;
+
             return m_comparers[Category](cast1, cast2);
         }
 
