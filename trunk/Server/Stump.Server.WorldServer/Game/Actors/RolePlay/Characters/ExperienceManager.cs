@@ -117,19 +117,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public ushort GetAlignementNextGradeHonor(byte grade)
         {
-            if (m_records.ContainsKey((byte) (grade + 1)))
-            {
-                ushort? honor = m_records[(byte) (grade + 1)].AlignmentHonor;
-
-                if (!honor.HasValue)
-                    throw new Exception("Grade " + grade + " is not defined");
-
-                return honor.Value;
-            }
-            else
-            {
+            if (!m_records.ContainsKey((byte) (grade + 1)))
                 return ushort.MaxValue;
-            }
+
+            var honor = m_records[(byte) (grade + 1)].AlignmentHonor;
+
+            return !honor.HasValue ? ushort.MaxValue : honor.Value;
         }
 
         public byte GetAlignementGrade(ushort honor)
