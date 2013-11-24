@@ -15,6 +15,8 @@ using Stump.ORM;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.BaseServer.IPC;
+using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;

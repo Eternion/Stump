@@ -12,7 +12,8 @@ namespace ArkalysAuthPlugin.Votes
             IPCMessageSerializer.Instance.RegisterMessage(typeof (VoteNotificationMessage), 101);
         }
     }
-
+    
+    [ProtoContract]
     public class VoteNotificationMessage : IPCMessage
     {
         public VoteNotificationMessage()

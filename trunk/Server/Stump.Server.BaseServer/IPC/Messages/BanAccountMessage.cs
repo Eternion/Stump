@@ -19,6 +19,7 @@ using ProtoBuf;
 
 namespace Stump.Server.BaseServer.IPC.Messages
 {
+    [ProtoContract]
     public class BanAccountMessage : IPCMessage
     {
         public BanAccountMessage()

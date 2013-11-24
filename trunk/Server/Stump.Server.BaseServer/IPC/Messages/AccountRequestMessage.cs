@@ -18,6 +18,7 @@ using ProtoBuf;
 
 namespace Stump.Server.BaseServer.IPC.Messages
 {
+    [ProtoContract]
     public class AccountRequestMessage : IPCMessage
     {
         public AccountRequestMessage()

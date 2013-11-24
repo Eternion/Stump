@@ -107,8 +107,7 @@ namespace Stump.Server.AuthServer.IPC
             Socket.SendAsync(args);
 
             // is it necessarily ?
-            LastActivity = DateTime.Now;
-        }
+            LastActivity = DateTime.Now;}
 
         private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
         {

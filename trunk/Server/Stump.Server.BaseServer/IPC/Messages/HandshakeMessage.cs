@@ -19,6 +19,7 @@ using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.BaseServer.IPC.Messages
 {
+    [ProtoContract]
     public class HandshakeMessage : IPCMessage
     {
         public HandshakeMessage()

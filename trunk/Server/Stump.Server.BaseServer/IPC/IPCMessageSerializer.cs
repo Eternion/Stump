@@ -21,6 +21,7 @@ using System.Reflection;
 using ProtoBuf;
 using ProtoBuf.Meta;
 using Stump.Core.Reflection;
+using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.BaseServer.IPC
 {
@@ -31,6 +32,8 @@ namespace Stump.Server.BaseServer.IPC
         public IPCMessageSerializer()
         {
             Model = TypeModel.Create();
+            Model.AutoAddMissingTypes = true;
+            Model.AutoAddProtoContractTypesOnly = true;
             RegisterMessages(Assembly.GetExecutingAssembly());
         }
 
@@ -67,13 +70,23 @@ namespace Stump.Server.BaseServer.IPC
 
         public IPCMessage Deserialize(byte[] buffer, int offset, int count)
         {
-            return (IPCMessage)Model.DeserializeWithLengthPrefix(new MemoryStream(buffer, offset, count), null, typeof(IPCMessage), PrefixStyle.Base128, 20);
+            return (IPCMessage)Model.Deserialize(new MemoryStream(buffer, offset, count), null, typeof(IPCMessage));
         }
 
-        public byte[] Serialize(IPCMessage message)
+        public T Deserialize<T>(byte[] buffer, int offset, int count)
+        {
+            return (T)Model.Deserialize(new MemoryStream(buffer, offset, count), null, typeof(T));
+        }
+
+        public T Deserialize<T>(byte[] buffer)
+        {
+            return (T)Deserialize<T>(buffer, 0, buffer.Length);
+        }
+
+        public byte[] Serialize(object obj)
         {
             var stream = new MemoryStream();
-            Model.SerializeWithLengthPrefix(stream, message, typeof(IPCMessage), PrefixStyle.Base128, 20);
+            Model.Serialize(stream, obj);
             return stream.ToArray();
         }
     }
