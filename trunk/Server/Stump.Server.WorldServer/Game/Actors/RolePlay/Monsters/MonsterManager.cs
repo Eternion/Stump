@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             m_monsterTemplates = Database.Query<MonsterTemplate>(MonsterTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterGrades = Database.Query<MonsterGrade>(MonsterGradeRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterSpells = Database.Query<MonsterSpell>(MonsterSpellRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_monsterSpawns = Database.Query<MonsterSpawn>(MonsterSpawnRelator.FetchQuery).Where(x => GetTemplate(x.MonsterId).IsActive).ToDictionary(entry => entry.Id);
+            m_monsterSpawns = Database.Query<MonsterSpawn>(MonsterSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterDungeonsSpawns = Database.Query<MonsterDungeonSpawn>(MonsterDungeonSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_droppableItems = Database.Query<DroppableItem>(DroppableItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterSuperRaces = Database.Query<MonsterSuperRace>(MonsterSuperRaceRelator.FetchQuery).ToDictionary(entry => entry.Id);
@@ -117,7 +117,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public MonsterSpawn[] GetMonsterSpawns()
         {
-            return m_monsterSpawns.Values.ToArray();
+            return m_monsterSpawns.Values.Where(x => GetTemplate(x.MonsterId).IsActive).ToArray();
         }
 
         public MonsterDungeonSpawn[] GetMonsterDungeonsSpawns()
@@ -157,9 +157,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public void RemoveMonsterTemplate(MonsterTemplate monsterTemplate)
         {
             Database.Update(monsterTemplate);
-
-            //m_monsterTemplates.Remove(monsterTemplate.Id);
-            //m_monsterTemplates.Add(monsterTemplate.Id, monsterTemplate);
         }
     }
 }
