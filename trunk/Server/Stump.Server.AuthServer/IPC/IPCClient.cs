@@ -158,23 +158,27 @@ namespace Stump.Server.AuthServer.IPC
                 }
                 else
                 {
-                    var handshake = message as HandshakeMessage;
-                    WorldServer server;
-                    try
+                    // the handshake is managed by the IO thread, the other messages by an other DB connection
+                    AuthServer.Instance.IOTaskPool.AddMessage(() =>
                     {
-                        server = WorldServerManager.Instance.RequestConnection(this, handshake.World);
-                    }
-                    catch (Exception ex)
-                    {
-                        SendError(ex, message);
-                        Disconnect();
-                        return;
-                    }
+                        var handshake = message as HandshakeMessage;
+                        WorldServer server;
+                        try
+                        {
+                            server = WorldServerManager.Instance.RequestConnection(this, handshake.World);
+                        }
+                        catch (Exception ex)
+                        {
+                            SendError(ex, message);
+                            Disconnect();
+                            return;
+                        }
 
-                    Server = server;
-                    m_operations = new IPCOperations(this);
-                    // guid setted manually cause the request is not stored
-                    ReplyRequest(new CommonOKMessage(), message);
+                        Server = server;
+                        m_operations = new IPCOperations(this);
+                        // guid setted manually cause the request is not stored
+                        ReplyRequest(new CommonOKMessage(), message);
+                    });
                 }
             }
             else
