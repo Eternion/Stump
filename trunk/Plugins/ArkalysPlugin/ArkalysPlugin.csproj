@@ -99,10 +99,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="protobuf-net, Version=2.0.0.280, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -160,6 +156,10 @@
     <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
       <Project>{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}</Project>
       <Name>NLog.netfx40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\protobuf-net\protobuf-net.csproj">
+      <Project>{8374e4d7-2a91-48f1-9360-09b09cf27c3f}</Project>
+      <Name>protobuf-net</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Server\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>

@@ -111,7 +111,7 @@ namespace Stump.Server.AuthServer.Managers
         public Account FindAccountByNickname(string nickname)
         {
             return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
-                string.Format(AccountRelator.FindAccountByNickname, nickname)).SingleOrDefault();
+                AccountRelator.FindAccountByNickname, nickname).SingleOrDefault();
         }
 
         public IpBan FindIpBan(string ip)

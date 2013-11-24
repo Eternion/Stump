@@ -198,11 +198,14 @@ namespace Stump.Server.AuthServer.IPC
 
         public void SendError(Exception exception, IPCMessage request)
         {
+            
+            logger.Error("IPC error : {0}", exception.Message);
             ReplyRequest(new IPCErrorMessage(exception.Message, exception.StackTrace), request);
         }
 
         public void SendError(string error, IPCMessage request)
         {
+            logger.Error("IPC error : {0}", error);
             ReplyRequest(new IPCErrorMessage(error), request);
         }
 
