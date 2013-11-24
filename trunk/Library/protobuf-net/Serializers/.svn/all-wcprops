@@ -1,0 +1,257 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/669/trunk/protobuf-net/Serializers
+END
+SingleSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/SingleSerializer.cs
+END
+NullDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/630/trunk/protobuf-net/Serializers/NullDecorator.cs
+END
+UInt32Serializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/UInt32Serializer.cs
+END
+SByteSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/SByteSerializer.cs
+END
+UInt16Serializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/UInt16Serializer.cs
+END
+ArrayDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/630/trunk/protobuf-net/Serializers/ArrayDecorator.cs
+END
+UInt64Serializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/UInt64Serializer.cs
+END
+DefaultValueDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/630/trunk/protobuf-net/Serializers/DefaultValueDecorator.cs
+END
+CompiledSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/616/trunk/protobuf-net/Serializers/CompiledSerializer.cs
+END
+DateTimeSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/DateTimeSerializer.cs
+END
+PropertyDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/666/trunk/protobuf-net/Serializers/PropertyDecorator.cs
+END
+ParseableSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/593/trunk/protobuf-net/Serializers/ParseableSerializer.cs
+END
+ByteSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/ByteSerializer.cs
+END
+ImmutableCollectionDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/666/trunk/protobuf-net/Serializers/ImmutableCollectionDecorator.cs
+END
+UriDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/UriDecorator.cs
+END
+DoubleSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/DoubleSerializer.cs
+END
+IProtoSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/IProtoSerializer.cs
+END
+NetObjectSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/595/trunk/protobuf-net/Serializers/NetObjectSerializer.cs
+END
+TimeSpanSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/TimeSpanSerializer.cs
+END
+TypeSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/657/trunk/protobuf-net/Serializers/TypeSerializer.cs
+END
+TagDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/616/trunk/protobuf-net/Serializers/TagDecorator.cs
+END
+ListDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/665/trunk/protobuf-net/Serializers/ListDecorator.cs
+END
+SystemTypeSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/630/trunk/protobuf-net/Serializers/SystemTypeSerializer.cs
+END
+GuidSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/GuidSerializer.cs
+END
+TupleSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/665/trunk/protobuf-net/Serializers/TupleSerializer.cs
+END
+ISerializerProxy.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/410/trunk/protobuf-net/Serializers/ISerializerProxy.cs
+END
+FieldDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/666/trunk/protobuf-net/Serializers/FieldDecorator.cs
+END
+MemberSpecifiedDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/MemberSpecifiedDecorator.cs
+END
+DecimalSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/DecimalSerializer.cs
+END
+Int32Serializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/Int32Serializer.cs
+END
+Int16Serializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/Int16Serializer.cs
+END
+Int64Serializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/Int64Serializer.cs
+END
+EnumSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/630/trunk/protobuf-net/Serializers/EnumSerializer.cs
+END
+StringSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/StringSerializer.cs
+END
+ProtoDecoratorBase.cs
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/ProtoDecoratorBase.cs
+END
+SubItemSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/616/trunk/protobuf-net/Serializers/SubItemSerializer.cs
+END
+KeyValuePairDecorator.cs
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/410/trunk/protobuf-net/Serializers/KeyValuePairDecorator.cs
+END
+SurrogateSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/669/trunk/protobuf-net/Serializers/SurrogateSerializer.cs
+END
+CharSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/CharSerializer.cs
+END
+IProtoTypeSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/616/trunk/protobuf-net/Serializers/IProtoTypeSerializer.cs
+END
+BlobSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/BlobSerializer.cs
+END
+BooleanSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/519/trunk/protobuf-net/Serializers/BooleanSerializer.cs
+END

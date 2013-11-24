@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/669/trunk/protobuf-net/Meta
+END
+SubType.cs
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/630/trunk/protobuf-net/Meta/SubType.cs
+END
+BasicList.cs
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/664/trunk/protobuf-net/Meta/BasicList.cs
+END
+AttributeMap.cs
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/630/trunk/protobuf-net/Meta/AttributeMap.cs
+END
+TypeModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/659/trunk/protobuf-net/Meta/TypeModel.cs
+END
+ValueMember.cs
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/665/trunk/protobuf-net/Meta/ValueMember.cs
+END
+RuntimeTypeModel.cs
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/664/trunk/protobuf-net/Meta/RuntimeTypeModel.cs
+END
+MetaType.cs
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/669/trunk/protobuf-net/Meta/MetaType.cs
+END
+CallbackSet.cs
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/630/trunk/protobuf-net/Meta/CallbackSet.cs
+END
+TypeFormatEventArgs.cs
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/630/trunk/protobuf-net/Meta/TypeFormatEventArgs.cs
+END

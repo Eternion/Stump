@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/659/trunk/protobuf-net/ServiceModel
+END
+XmlProtoSerializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/659/trunk/protobuf-net/ServiceModel/XmlProtoSerializer.cs
+END
+ProtoEndpointBehavior.cs
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/629/trunk/protobuf-net/ServiceModel/ProtoEndpointBehavior.cs
+END
+ProtoOperationBehavior.cs
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/562/trunk/protobuf-net/ServiceModel/ProtoOperationBehavior.cs
+END
+ProtoBehaviorAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/406/trunk/protobuf-net/ServiceModel/ProtoBehaviorAttribute.cs
+END
+ProtoBehaviorExtensionElement.cs
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/410/trunk/protobuf-net/ServiceModel/ProtoBehaviorExtensionElement.cs
+END

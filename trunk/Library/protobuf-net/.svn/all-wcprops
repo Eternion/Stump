@@ -1,0 +1,179 @@
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/669/trunk/protobuf-net
+END
+IExtensible.cs
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/560/trunk/protobuf-net/IExtensible.cs
+END
+ProtoEnumAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/354/trunk/protobuf-net/ProtoEnumAttribute.cs
+END
+PrefixStyle.cs
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/304/trunk/protobuf-net/PrefixStyle.cs
+END
+ProtoConverterAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/669/trunk/protobuf-net/ProtoConverterAttribute.cs
+END
+ProtoMemberAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/630/trunk/protobuf-net/ProtoMemberAttribute.cs
+END
+protobuf-net.csproj
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/669/trunk/protobuf-net/protobuf-net.csproj
+END
+ProtoException.cs
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/630/trunk/protobuf-net/ProtoException.cs
+END
+SerializationContext.cs
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/600/trunk/protobuf-net/SerializationContext.cs
+END
+DataFormat.cs
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/148/trunk/protobuf-net/DataFormat.cs
+END
+BclHelpers.cs
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/630/trunk/protobuf-net/BclHelpers.cs
+END
+ProtoContractAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/648/trunk/protobuf-net/ProtoContractAttribute.cs
+END
+IExtension.cs
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/303/trunk/protobuf-net/IExtension.cs
+END
+ProtoReader.cs
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/668/trunk/protobuf-net/ProtoReader.cs
+END
+ProtoIgnoreAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/630/trunk/protobuf-net/ProtoIgnoreAttribute.cs
+END
+ProtoIncludeAttribute.cs
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/571/trunk/protobuf-net/ProtoIncludeAttribute.cs
+END
+GlobalSuppressions.cs
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/577/trunk/protobuf-net/GlobalSuppressions.cs
+END
+ProtoWriter.cs
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/630/trunk/protobuf-net/ProtoWriter.cs
+END
+ExtensibleUtil.cs
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/659/trunk/protobuf-net/ExtensibleUtil.cs
+END
+NetObjectCache.cs
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/661/trunk/protobuf-net/NetObjectCache.cs
+END
+ImplicitFields.cs
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/377/trunk/protobuf-net/ImplicitFields.cs
+END
+Extensible.cs
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/566/trunk/protobuf-net/Extensible.cs
+END
+Helpers.cs
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/666/trunk/protobuf-net/Helpers.cs
+END
+KeyValuePairProxy.cs
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/441/trunk/protobuf-net/KeyValuePairProxy.cs
+END
+BufferPool.cs
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/630/trunk/protobuf-net/BufferPool.cs
+END
+CallbackAttributes.cs
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/507/trunk/protobuf-net/CallbackAttributes.cs
+END
+BufferExtension.cs
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/513/trunk/protobuf-net/BufferExtension.cs
+END
+WireType.cs
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/306/trunk/protobuf-net/WireType.cs
+END
+SubItemToken.cs
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/410/trunk/protobuf-net/SubItemToken.cs
+END
+Serializer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/630/trunk/protobuf-net/Serializer.cs
+END

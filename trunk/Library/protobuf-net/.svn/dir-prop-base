@@ -1,0 +1,9 @@
+K 10
+svn:ignore
+V 53
+Settings.SourceAnalysis
+SourceAnalysis.Cache
+bin
+obj
+
+END
