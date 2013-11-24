@@ -199,7 +199,7 @@ namespace Stump.Server.AuthServer.IPC
         public void SendError(Exception exception, IPCMessage request)
         {
             
-            logger.Error("IPC error : {0}", exception.Message);
+            logger.Error("IPC error : {0}", exception);
             ReplyRequest(new IPCErrorMessage(exception.Message, exception.StackTrace), request);
         }
 
