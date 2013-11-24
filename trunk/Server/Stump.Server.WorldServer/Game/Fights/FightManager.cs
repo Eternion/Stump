@@ -36,10 +36,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             return fight;
         }
 
-        public Fight CreateAgressionFight(Map map)
+        public Fight CreateAgressionFight(Map map, AlignmentSideEnum redAlignment, AlignmentSideEnum blueAlignment)
         {
-            var redTeam = new FightTeam(0, map.GetRedFightPlacement());
-            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement());
+            var redTeam = new FightTeam(0, map.GetRedFightPlacement(), redAlignment);
+            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement(), blueAlignment);
 
             var fight = new FightAgression(m_idProvider.Pop(), map, blueTeam, redTeam);
 
