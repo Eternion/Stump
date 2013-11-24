@@ -262,12 +262,18 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
 
             var args = new SocketAsyncEventArgs();
+            args.Completed += OnSendCompleted;
             var data = IPCMessageSerializer.Instance.Serialize(message);
 
             // serialize stuff
 
             args.SetBuffer(data, 0, data.Length);
             Socket.SendAsync(args);
+        }
+
+        private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
+        {
+            e.Dispose();
         }
 
         public void SendRequest<T>(IPCMessage message, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback, RequestCallbackDefaultDelegate defaultCallback,
@@ -397,12 +403,14 @@ namespace Stump.Server.WorldServer.Core.IPC
             if (args.BytesTransferred <= 0 ||
                 args.SocketError != SocketError.Success)
             {
+                args.Dispose();
                 Disconnect();
             }
             else
             {
                 Receive(args.Buffer, args.Offset, args.BytesTransferred);
-
+                
+                args.Dispose();
                 ReceiveLoop();
             }
         }
