@@ -198,9 +198,6 @@
     <Reference Include="Ciloci.Flee">
       <HintPath>..\..\Library\Ciloci.Flee.dll</HintPath>
     </Reference>
-    <Reference Include="protobuf-net">
-      <HintPath>..\..\Library\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\..\Library\ServiceStack.Text.dll</HintPath>
     </Reference>
@@ -302,6 +299,10 @@
     <ProjectReference Include="..\..\Library\NLog\NLog.netfx40.csproj">
       <Project>{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}</Project>
       <Name>NLog.netfx40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\protobuf-net\protobuf-net.csproj">
+      <Project>{8374e4d7-2a91-48f1-9360-09b09cf27c3f}</Project>
+      <Name>protobuf-net</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
