@@ -100,6 +100,7 @@ namespace Stump.Server.AuthServer.IPC
             }
 
             var args = new SocketAsyncEventArgs();
+            args.Completed += OnSendCompleted;
             var data = IPCMessageSerializer.Instance.Serialize(message);
 
             args.SetBuffer(data, 0, data.Length);
@@ -107,6 +108,11 @@ namespace Stump.Server.AuthServer.IPC
 
             // is it necessarily ?
             LastActivity = DateTime.Now;
+        }
+
+        private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
+        {
+            e.Dispose();
         }
 
         internal void ProcessReceive(byte[] data, int offset, int count)
