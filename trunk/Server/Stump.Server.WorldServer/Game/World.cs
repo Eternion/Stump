@@ -2,37 +2,25 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
 using NLog;
-using Stump.Core.Reflection;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Accounts;
-using Stump.Server.WorldServer.Database.Interactives;
-using Stump.Server.WorldServer.Database.Monsters;
-using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
-using Stump.Server.WorldServer.Database.World.Triggers;
-using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
-using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Handlers.Chat;
 
 namespace Stump.Server.WorldServer.Game
 {
@@ -152,11 +140,8 @@ namespace Stump.Server.WorldServer.Game
 
         private void SetLinks()
         {
-            foreach (Map map in m_maps.Values)
+            foreach (var map in m_maps.Values.Where(map => map.Record.Position != null))
             {
-                if (map.Record.Position == null)
-                    continue;
-
                 SubArea subArea;
                 if (m_subAreas.TryGetValue(map.Record.Position.SubAreaId, out subArea))
                 {
@@ -164,7 +149,7 @@ namespace Stump.Server.WorldServer.Game
                 }
             }
 
-            foreach (SubArea subArea in m_subAreas.Values)
+            foreach (var subArea in m_subAreas.Values)
             {
                 Area area;
                 if (m_areas.TryGetValue(subArea.Record.AreaId, out area))
@@ -173,7 +158,7 @@ namespace Stump.Server.WorldServer.Game
                 }
             }
 
-            foreach (Area area in m_areas.Values)
+            foreach (var area in m_areas.Values)
             {
                 SuperArea superArea;
                 if (m_superAreas.TryGetValue(area.Record.SuperAreaId, out superArea))
@@ -185,11 +170,8 @@ namespace Stump.Server.WorldServer.Game
 
         private void UnSetLinks()
         {
-            foreach (Map map in m_maps.Values)
+            foreach (var map in m_maps.Values.Where(map => map.Record.Position != null))
             {
-                if (map.Record.Position == null)
-                    continue;
-
                 SubArea subArea;
                 if (m_subAreas.TryGetValue(map.Record.Position.SubAreaId, out subArea))
                 {
@@ -218,9 +200,9 @@ namespace Stump.Server.WorldServer.Game
 
         private void SpawnNpcs()
         {
-            foreach (NpcSpawn npcSpawn in NpcManager.Instance.GetNpcSpawns())
+            foreach (var npcSpawn in NpcManager.Instance.GetNpcSpawns())
             {
-                ObjectPosition position = npcSpawn.GetPosition();
+                var position = npcSpawn.GetPosition();
 
                 position.Map.SpawnNpc(npcSpawn);
             }
@@ -261,9 +243,9 @@ namespace Stump.Server.WorldServer.Game
 
         private void SpawnInteractives()
         {
-            foreach (InteractiveSpawn interactive in InteractiveManager.Instance.GetInteractiveSpawns())
+            foreach (var interactive in InteractiveManager.Instance.GetInteractiveSpawns())
             {
-                Map map = interactive.GetMap();
+                var map = interactive.GetMap();
 
                 if (map == null)
                 {
@@ -277,17 +259,15 @@ namespace Stump.Server.WorldServer.Game
 
         private void SpawnCellTriggers()
         {
-            foreach (CellTriggerRecord cellTrigger in CellTriggerManager.Instance.GetCellTriggers())
+            foreach (var trigger in CellTriggerManager.Instance.GetCellTriggers().Select(cellTrigger => cellTrigger.GenerateTrigger()))
             {
-                CellTrigger trigger = cellTrigger.GenerateTrigger();
-
                 trigger.Position.Map.AddTrigger(trigger);
             }
         }
 
         private void SpawnMonsters()
         {
-            foreach (MonsterSpawn spawn in MonsterManager.Instance.GetMonsterSpawns())
+            foreach (var spawn in MonsterManager.Instance.GetMonsterSpawns())
             {
                 if (spawn.Map != null)
                 {
@@ -299,32 +279,24 @@ namespace Stump.Server.WorldServer.Game
                 }
             }
 
-            foreach (var spawn in MonsterManager.Instance.GetMonsterDungeonsSpawns())
+            foreach (var spawn in MonsterManager.Instance.GetMonsterDungeonsSpawns().Where(spawn => spawn.Map != null))
             {
-                if (spawn.Map != null)
-                {
-                    spawn.Map.AddMonsterDungeonSpawn(spawn);
-                }
+                spawn.Map.AddMonsterDungeonSpawn(spawn);
             }
 
-            foreach (var map in m_maps)
+            foreach (var map in m_maps.Where(map => map.Value.MonsterSpawnsCount > 0))
             {
-                if (map.Value.MonsterSpawnsCount > 0)
-                    map.Value.EnableClassicalMonsterSpawns();
+                map.Value.EnableClassicalMonsterSpawns();
             }
         }
 
         private void SpawnMerchants()
         {
-            foreach (WorldMapMerchantRecord spawn in MerchantManager.Instance.GetMerchantSpawns())
+            foreach (var merchant in from spawn in MerchantManager.Instance.GetMerchantSpawns() where spawn.Map != null select new Merchant(spawn))
             {
-                if (spawn.Map != null)
-                {
-                    var merchant = new Merchant(spawn);
-                    merchant.LoadRecord();
-                    MerchantManager.Instance.ActiveMerchant(merchant);
-                    merchant.Map.Enter(merchant);
-                }
+                merchant.LoadRecord();
+                MerchantManager.Instance.ActiveMerchant(merchant);
+                merchant.Map.Enter(merchant);
             }
         }
 
@@ -351,7 +323,7 @@ namespace Stump.Server.WorldServer.Game
 
         public Map GetMap(int x, int y, bool outdoor = true)
         {
-            return m_maps.Values.Where(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor).FirstOrDefault();
+            return m_maps.Values.FirstOrDefault(entry => entry.Position.X == x && entry.Position.Y == y && entry.Outdoor == outdoor);
         }
 
         public IEnumerable<Map> GetMaps()
@@ -380,10 +352,7 @@ namespace Stump.Server.WorldServer.Game
                 return maps;
 
             maps = reference.SuperArea.GetMaps(x, y);
-            if (maps.Length > 0)
-                return maps;
-
-            return new Map[0];
+            return maps.Length > 0 ? maps : new Map[0];
         }
 
         public Map[] GetMaps(Map reference, int x, int y, bool outdoor)
@@ -397,10 +366,7 @@ namespace Stump.Server.WorldServer.Game
                 return maps;
 
             maps = reference.SuperArea.GetMaps(x, y, outdoor);
-            if (maps.Length > 0)
-                return maps;
-
-            return new Map[0];
+            return maps.Length > 0 ? maps : new Map[0];
         }
 
         public SubArea GetSubArea(int id)
@@ -627,7 +593,7 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private List<Area> m_pausedAreas = new List<Area>();
+        private readonly List<Area> m_pausedAreas = new List<Area>();
         /// <summary>
         /// Has to be called from another thread !!
         /// </summary>

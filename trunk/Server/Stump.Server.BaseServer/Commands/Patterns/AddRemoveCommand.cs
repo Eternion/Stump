@@ -19,17 +19,13 @@ namespace Stump.Server.BaseServer.Commands.Patterns
                 return;
             }
 
-            if (action.Equals("remove", StringComparison.InvariantCultureIgnoreCase) ||
-                action.Equals("rm", StringComparison.InvariantCultureIgnoreCase))
+            if (action.Equals("remove", StringComparison.InvariantCultureIgnoreCase) || action.Equals("rm", StringComparison.InvariantCultureIgnoreCase))
             {
                 ExecuteRemove(trigger);
-                return;
             }
-
             else
             {
                 trigger.ReplyError("Invalid action {0}, define add or remove", action);
-                return;
             }
         }
 
@@ -58,13 +54,11 @@ namespace Stump.Server.BaseServer.Commands.Patterns
                 action.Equals("rm", StringComparison.InvariantCultureIgnoreCase))
             {
                 ExecuteRemove(trigger);
-                return;
             }
 
             else
             {
                 trigger.ReplyError("Invalid action {0}, define add or remove", action);
-                return;
             }
         }
 
