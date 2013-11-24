@@ -20,9 +20,9 @@ namespace Stump.Server.AuthServer.Database
         /// </summary>
         public static string FindAccountByLogin = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Login = @0";
         /// <summary>
-        /// Use string.Format
+        /// Use SQL parameter
         /// </summary>
-        public static string FindAccountByNickname = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Nickname = {0}";
+        public static string FindAccountByNickname = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Nickname = @0";
 
         private Account m_current;
         public Account Map(Account account, WorldCharacter character)

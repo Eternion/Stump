@@ -66,10 +66,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="protobuf-net, Version=2.0.0.280, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -93,6 +89,10 @@
     <ProjectReference Include="..\..\Core\Stump.ORM\Stump.ORM.csproj">
       <Project>{e7406629-e127-4b96-8f29-287947075631}</Project>
       <Name>Stump.ORM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\protobuf-net\protobuf-net.csproj">
+      <Project>{8374e4d7-2a91-48f1-9360-09b09cf27c3f}</Project>
+      <Name>protobuf-net</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Server\Stump.Server.AuthServer\Stump.Server.AuthServer.csproj">
       <Project>{b838009e-be0a-463f-a814-73ebf3663785}</Project>
