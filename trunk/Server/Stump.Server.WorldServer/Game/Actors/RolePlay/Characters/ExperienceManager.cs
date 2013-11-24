@@ -118,11 +118,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ushort GetAlignementNextGradeHonor(byte grade)
         {
             if (!m_records.ContainsKey((byte) (grade + 1)))
-                return ushort.MaxValue;
+                return (ushort)short.MaxValue;
+                
 
             var honor = m_records[(byte) (grade + 1)].AlignmentHonor;
 
-            return !honor.HasValue ? ushort.MaxValue : honor.Value;
+            return !honor.HasValue ? (ushort)short.MaxValue : honor.Value;
         }
 
         public byte GetAlignementGrade(ushort honor)
