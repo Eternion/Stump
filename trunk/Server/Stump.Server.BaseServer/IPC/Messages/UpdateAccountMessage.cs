@@ -21,6 +21,7 @@ using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.BaseServer.IPC.Messages
 {
+    [ProtoContract]
     public class UpdateAccountMessage : IPCMessage
     {
         public UpdateAccountMessage()

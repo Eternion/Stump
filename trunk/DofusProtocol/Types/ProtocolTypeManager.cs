@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Stump.Core.Reflection;
-using NLog;
-using Version = Stump.DofusProtocol.Types.Version;
 
 namespace Stump.DofusProtocol.Types
 {

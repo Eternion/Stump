@@ -19,6 +19,7 @@ using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.IPC.Messages
 {
+    [ProtoContract]
     public class ChangeStateMessage : IPCMessage
     {
         public ChangeStateMessage()
