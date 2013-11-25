@@ -70,6 +70,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             Owner.Inventory.AddItem(livingObject);
 
             Owner.UpdateLook();
+            OnObjectModified();
         }
     }
 }

@@ -69,31 +69,51 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
         protected EffectInteger SelectedLevelEffect
         {
             get { return m_selectedLevelEffect; }
-            set { m_selectedLevelEffect = value; }
+            set
+            {
+                m_selectedLevelEffect = value;
+                OnObjectModified();
+            }
         }
 
         protected EffectInteger CategoryEffect
         {
             get { return m_categoryEffect; }
-            set { m_categoryEffect = value; }
+            set
+            {
+                m_categoryEffect = value;
+                OnObjectModified();
+            }
         }
 
         protected EffectInteger ExperienceEffect
         {
             get { return m_experienceEffect; }
-            set { m_experienceEffect = value; }
+            set
+            {
+                m_experienceEffect = value;
+                OnObjectModified();
+            }
         }
 
         protected EffectInteger MoodEffect
         {
             get { return m_moodEffect; }
-            set { m_moodEffect = value; }
+            set
+            {
+                m_moodEffect = value;
+                OnObjectModified();
+            }
         }
 
         protected EffectDate LastMealEffect
         {
             get { return m_lastMealEffect; }
-            set { m_lastMealEffect = value; }
+            set
+            {
+                m_lastMealEffect = value;
+                OnObjectModified();
+            }
         }
 
         
@@ -103,6 +123,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             set
             {
                 m_moodEffect.Value = value;
+                OnObjectModified();
                 Invalidate();
             }
         }
@@ -113,6 +134,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             set
             {
                 m_experienceEffect.Value = value;
+                OnObjectModified();
                 Invalidate();
             }
         }
@@ -140,6 +162,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 Invalidate();
                 Owner.Inventory.RefreshItem(this);
                 Owner.UpdateLook();
+                OnObjectModified();
             }
         }
 
@@ -191,6 +214,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 else
                     m_lastMealEffect.SetDate(value.Value);
 
+                OnObjectModified();
                 Invalidate();
             }
         }

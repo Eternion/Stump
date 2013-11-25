@@ -69,6 +69,7 @@ namespace ArkalysPlugin.SmithMagic
                 }
 
                 Owner.Inventory.RefreshItem(weapon);
+                weapon.OnObjectModified();
 
                 return 1;
             }

@@ -182,6 +182,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return false;
         }
 
+        public void OnObjectModified()
+        {
+            Record.IsDirty = true;
+        }
+
         #region ObjectItem
 
         private readonly ObjectValidator<ObjectItem> m_objectItemValidator;
