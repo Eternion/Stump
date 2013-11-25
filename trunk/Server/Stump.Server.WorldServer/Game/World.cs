@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game
 
         private void OnCharacterLeft(Character character)
         {
-            Action<Character> handler = CharacterLeft;
+            var handler = CharacterLeft;
             if (handler != null) handler(character);
         }
 
@@ -271,11 +271,18 @@ namespace Stump.Server.WorldServer.Game
             {
                 if (spawn.Map != null)
                 {
-                    spawn.Map.AddMonsterSpawn(spawn);
+                    if (spawn.SubArea == null)
+                        spawn.Map.AddMonsterSpawn(spawn);
+                    else
+                    {
+                        if (!MonsterManager.Instance.GetMonsterDisableSpawns(spawn.MonsterId, spawn.SubArea.Id))
+                            spawn.Map.AddMonsterSpawn(spawn);
+                    }                        
                 }
                 else if (spawn.SubArea != null)
                 {
-                    spawn.SubArea.AddMonsterSpawn(spawn);
+                    if (!MonsterManager.Instance.GetMonsterDisableSpawns(spawn.MonsterId, spawn.SubArea.Id))
+                        spawn.SubArea.AddMonsterSpawn(spawn);
                 }
             }
 

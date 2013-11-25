@@ -201,7 +201,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly Dictionary<int, MapNeighbour> m_clientMapsAround = new Dictionary<int, MapNeighbour>();
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
-        private readonly List<WorldMapMerchantRecord> m_merchantSpawns = new List<WorldMapMerchantRecord>();
 
         private Map m_bottomNeighbour;
         private Map m_leftNeighbour;
@@ -257,7 +256,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return Area.SuperArea; }
         }
 
-        private List<SpawningPoolBase> m_spawningPools = new List<SpawningPoolBase>();
+        private readonly List<SpawningPoolBase> m_spawningPools = new List<SpawningPoolBase>();
 
         public ReadOnlyCollection<SpawningPoolBase> SpawningPools
         {
