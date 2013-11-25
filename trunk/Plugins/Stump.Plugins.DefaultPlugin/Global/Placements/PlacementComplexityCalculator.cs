@@ -15,11 +15,11 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
                 Center = center;
             }
 
-            public Point[] Points;
-            public Point Center;
+            public readonly Point[] Points;
+            public readonly Point Center;
         }
 
-        private Point[] m_points;
+        private readonly Point[] m_points;
 
         public PlacementComplexityCalculator(Point[] points)
         {
@@ -63,26 +63,23 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
 
                 var group = adjacents.ToArray();
 
-                if (group.Length > 0)
-                {
-                    exclusions.Add(point);
-                    exclusions.AddRange(adjacents);
-                    result.Add(new PointsGroup(group, GetCenter(group)));
-                }
+                if (@group.Length <= 0)
+                    continue;
+
+                exclusions.Add(point);
+                exclusions.AddRange(adjacents);
+                result.Add(new PointsGroup(@group, GetCenter(@group)));
             } 
 
             return result.ToArray();
         }
 
-        private List<Point> FindAllAdjacentsPoints(Point point, List<Point> exclusions)
+        private List<Point> FindAllAdjacentsPoints(Point point, ICollection<Point> exclusions)
         {
             var result = new List<Point>();
 
-            foreach (var adjacentPoint in GetAdjacentPoints(point).Where(entry => m_points.Contains(entry)))
+            foreach (var adjacentPoint in GetAdjacentPoints(point).Where(entry => m_points.Contains(entry)).Where(adjacentPoint => !exclusions.Contains(adjacentPoint)))
             {
-                if (exclusions.Contains(adjacentPoint))
-                    continue;
-
                 exclusions.Add(adjacentPoint);
                 result.Add(adjacentPoint);
 
@@ -92,17 +89,17 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
             return result;
         }
 
-        private Point GetCenter(Point[] points)
+        private static Point GetCenter(ICollection<Point> points)
         {
-            return new Point(points.Sum(entry => entry.X) / points.Length, points.Sum(entry => entry.Y) / points.Length);
+            return new Point(points.Sum(entry => entry.X) / points.Count, points.Sum(entry => entry.Y) / points.Count);
         }
 
-        private double DistanceTo(Point ptA, Point ptB)
+        private static double DistanceTo(Point ptA, Point ptB)
         {
             return Math.Sqrt(( ptB.X - ptA.X ) * ( ptB.X - ptA.X ) + ( ptB.Y - ptA.Y ) * ( ptB.Y - ptA.Y ));
         }
 
-        private Point[] GetAdjacentPoints(Point point)
+        private static IEnumerable<Point> GetAdjacentPoints(Point point)
         {
             return new[] {
                               point + new Size(1, 0),

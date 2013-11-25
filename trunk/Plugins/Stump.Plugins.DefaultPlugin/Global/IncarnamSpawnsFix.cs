@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using NLog;
+﻿using NLog;
 using Stump.Server.BaseServer.Initialization;
 
 namespace Stump.Plugins.DefaultPlugin.Global

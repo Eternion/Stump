@@ -20,27 +20,27 @@ namespace Stump.Server.BaseServer
 
         private Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static readonly string[] AsciiLogo = new[]
-            {
-                "  _____  _______  _     _   __   __   _____   ",
-                " (_____)(__ _ __)(_)   (_) (__)_(__) (_____)  ",
-                "(_)___     (_)   (_)   (_)(_) (_) (_)(_)__(_) ",
-                "  (___)_   (_)   (_)   (_)(_) (_) (_)(_____)  ",
-                "  ____(_)  (_)   (_)___(_)(_)     (_)(_)      ",
-                " (_____)   (_)    (_____) (_)     (_)(_)      ",
-            };
+        public static readonly string[] AsciiLogo =
+        {
+            "  _____  _______  _     _   __   __   _____   ",
+            " (_____)(__ _ __)(_)   (_) (__)_(__) (_____)  ",
+            "(_)___     (_)   (_)   (_)(_) (_) (_)(_)__(_) ",
+            "  (___)_   (_)   (_)   (_)(_) (_) (_)(_____)  ",
+            "  ____(_)  (_)   (_)___(_)(_)     (_)(_)      ",
+            " (_____)   (_)    (_____) (_)     (_)(_)      ",
+        };
 
-        public static readonly ConsoleColor[] LogoColors = new[]
-            {
-                ConsoleColor.DarkCyan,
-                ConsoleColor.DarkRed, 
-                ConsoleColor.DarkGray, 
-                ConsoleColor.DarkGreen, 
-                ConsoleColor.DarkYellow,
-                ConsoleColor.Green,
-                ConsoleColor.Red,
-                ConsoleColor.White,
-            };
+        public static readonly ConsoleColor[] LogoColors =
+        {
+            ConsoleColor.DarkCyan,
+            ConsoleColor.DarkRed, 
+            ConsoleColor.DarkGray, 
+            ConsoleColor.DarkGreen, 
+            ConsoleColor.DarkYellow,
+            ConsoleColor.Green,
+            ConsoleColor.Red,
+            ConsoleColor.White,
+        };
 
         protected string Cmd = "";
         protected readonly ConditionWaiter m_conditionWaiter;

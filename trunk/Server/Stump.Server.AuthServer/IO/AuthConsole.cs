@@ -58,12 +58,12 @@ namespace Stump.Server.AuthServer.IO
             {
                 try
                 {
-                    if (Cmd.StartsWith(CommandPreffix))
-                    {
-                        Cmd = Cmd.Substring(CommandPreffix.Length);
-                        AuthServer.Instance.CommandManager.HandleCommand(
-                            new AuthConsoleTrigger(new StringStream(Cmd)));
-                    }
+                    if (!Cmd.StartsWith(CommandPreffix))
+                        return;
+
+                    Cmd = Cmd.Substring(CommandPreffix.Length);
+                    AuthServer.Instance.CommandManager.HandleCommand(
+                        new AuthConsoleTrigger(new StringStream(Cmd)));
                 }
                 finally
                 {
@@ -72,7 +72,7 @@ namespace Stump.Server.AuthServer.IO
             }
         }
 
-        private List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+        private readonly List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
             get

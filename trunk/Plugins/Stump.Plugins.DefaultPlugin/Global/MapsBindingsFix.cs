@@ -4,7 +4,6 @@ using System.Text;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
-using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Maps;
@@ -32,12 +31,10 @@ namespace Stump.Plugins.DefaultPlugin.Global
                 File.Delete(patchPath);
             var console = new ConsoleProgress();
             var maps = World.Instance.GetMaps().ToArray();
-            int counter = 0;
-            int patches = 0;
-            foreach (var map in maps)
+            var counter = 0;
+            var patches = 0;
+            foreach (var request in maps.Select(FixMap))
             {
-                var request = FixMap(map);
-
                 if (request != string.Empty)
                 {
                     File.AppendAllText(patchPath, request + "\r\n");
@@ -107,27 +104,18 @@ namespace Stump.Plugins.DefaultPlugin.Global
                 builder.AppendFormat("LeftNeighbourId='{0}', ", -1);
             }
 
-            if (top != null || bottom != null || right != null || left != null)
-            {
-                builder.Remove(builder.Length - 2, 2); // remove ", "
-                builder.AppendFormat(" WHERE Id='{0}'", map.Id);
-                builder.Append(";");
-                return builder.ToString();
-            }
-            else
-            {
-                return string.Empty;
-            }
+            if (top == null && bottom == null && right == null && left == null) return string.Empty;
+            builder.Remove(builder.Length - 2, 2); // remove ", "
+            builder.AppendFormat(" WHERE Id='{0}'", map.Id);
+            builder.Append(";");
+            return builder.ToString();
         }
 
         private static Map[] FindMaps(Map adjacent, int x, int y)
         {
             var maps = FindMaps(adjacent, x, y, adjacent.Outdoor);
 
-            if (maps.Length == 0)
-                return FindMaps(adjacent, x, y, !adjacent.Outdoor);
-
-            return maps;
+            return maps.Length == 0 ? FindMaps(adjacent, x, y, !adjacent.Outdoor) : maps;
         }
 
         private static Map[] FindMaps(Map adjacent, int x, int y, bool outdoor)
@@ -141,10 +129,7 @@ namespace Stump.Plugins.DefaultPlugin.Global
                 return maps;
 
             maps = adjacent.SuperArea.GetMaps(x, y, outdoor);
-            if (maps.Length > 0)
-                return maps;
-
-            return new Map[0];
+            return maps.Length > 0 ? maps : new Map[0];
         }
     }
 }

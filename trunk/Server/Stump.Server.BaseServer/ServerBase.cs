@@ -12,16 +12,11 @@ using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
-using Stump.Core.IO.Watchers;
-using Stump.Core.Pool.Task;
 using Stump.Core.Threading;
-using Stump.Core.Xml;
 using Stump.Core.Xml.Config;
 using Stump.ORM;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Exceptions;
-using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.BaseServer.Plugins;
@@ -304,14 +299,9 @@ namespace Stump.Server.BaseServer
         /// </summary>
         private static void PreLoadReferences(Assembly executingAssembly)
         {
-            foreach (var assemblyName in executingAssembly.GetReferencedAssemblies())
+            foreach (var loadedAssembly in from assemblyName in executingAssembly.GetReferencedAssemblies() where AppDomain.CurrentDomain.GetAssemblies().Count(entry => entry.GetName().FullName == assemblyName.FullName) <= 0 select Assembly.Load(assemblyName))
             {
-                if (AppDomain.CurrentDomain.GetAssemblies().Count(entry => entry.GetName().FullName == assemblyName.FullName) <= 0)
-                {
-                    var loadedAssembly = Assembly.Load(assemblyName);
-
-                    PreLoadReferences(loadedAssembly);
-                }
+                PreLoadReferences(loadedAssembly);
             }
         }
 
