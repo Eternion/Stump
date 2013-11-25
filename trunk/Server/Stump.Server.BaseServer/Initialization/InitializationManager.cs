@@ -137,10 +137,9 @@ namespace Stump.Server.BaseServer.Initialization
 
         public void InitializeAll()
         {
-            foreach (InitializationPass pass in Enum.GetValues(typeof(InitializationPass)))
+            foreach (InitializationPass pass in Enum.GetValues(typeof(InitializationPass)).Cast<InitializationPass>().Where(pass => pass != InitializationPass.Database))
             {
-                if (pass != InitializationPass.Database)
-                    Initialize(pass);
+                Initialize(pass);
             }
         }
 

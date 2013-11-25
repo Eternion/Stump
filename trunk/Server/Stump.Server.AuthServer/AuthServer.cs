@@ -16,9 +16,7 @@ using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.Network;
-using Stump.Server.BaseServer.Plugins;
 using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.AuthServer
@@ -128,11 +126,6 @@ namespace Stump.Server.AuthServer
                 HandleCrashException(ex);
                 Shutdown();
             }
-        }
-
-        protected override void OnPluginAdded(PluginContext plugincontext)
-        {
-            base.OnPluginAdded(plugincontext);
         }
 
         public override void Start()
