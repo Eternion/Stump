@@ -193,45 +193,4 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
     }
-
-    public class MonsterDisableCommand : SubCommand
-    {
-        public MonsterDisableCommand()
-        {
-            Aliases = new[] { "disable" };
-            RequiredRole = RoleEnum.GameMaster;
-            Description = "Disable a monster to prevent spawning";
-            ParentCommand = typeof(MonsterCommands);
-            AddParameter("monster", "m", "Monster template Id", converter: ParametersConverter.MonsterTemplateConverter);
-        }
-
-        public override void Execute(TriggerBase trigger)
-        {
-            var template = trigger.Get<MonsterTemplate>("monster");
-
-            template.IsActive = false;
-
-            MonsterManager.Instance.RemoveMonsterTemplate(template);
-
-            var spawns = MonsterManager.Instance.GetMonsterSpawns().Where(entry =>
-                entry.MonsterId == template.Id).ToArray();
-
-
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () =>
-                {
-                    foreach (var spawn in spawns)
-                    {
-                        MonsterManager.Instance.RemoveMonsterSpawn(spawn);
-
-                        if (spawn.Map != null)
-                            spawn.Map.RemoveMonsterSpawn(spawn);
-                        else if (spawn.SubArea != null)
-                            spawn.SubArea.RemoveMonsterSpawn(spawn);
-
-                        trigger.Reply("Monster spawn {0} removed", spawn.Id);
-                    }
-                });
-        }
-    }
 }

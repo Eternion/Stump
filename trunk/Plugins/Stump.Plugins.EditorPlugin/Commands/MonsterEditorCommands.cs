@@ -105,6 +105,62 @@ namespace Stump.Plugins.EditorPlugin.Commands
         }
     }
 
+    public class MonsterDisableCommand : SubCommand
+    {
+        public MonsterDisableCommand()
+        {
+            Aliases = new[] { "disable" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Disable a monster spawn";
+            ParentCommand = typeof(MonsterEditorCommands);
+            AddParameter("monster", "m", "Monster to disable", converter: ParametersConverter.MonsterTemplateConverter);
+            AddParameter("subarea", "subarea", isOptional: true, converter: ParametersConverter.SubAreaConverter);
+        }
+        public override void Execute(TriggerBase trigger)
+        {
+            var disableSpawn = new MonsterDisableSpawn { SubAreaId = -1, MonsterId = trigger.Get<MonsterTemplate>("monster").Id };
+
+            if (trigger.IsArgumentDefined("subarea"))
+                disableSpawn.SubAreaId = trigger.Get<SubArea>("subarea").Id;
+
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () =>
+                {
+                    MonsterManager.Instance.AddMonsterDisableSpawn(disableSpawn);
+
+                    trigger.Reply("Monster {0} spawn disable", trigger.Get<MonsterTemplate>("monster").ToString());
+                });
+        }
+    }
+
+    public class MonsterEnableCommand : SubCommand
+    {
+        public MonsterEnableCommand()
+        {
+            Aliases = new[] { "enable" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Enable a monster spawn";
+            ParentCommand = typeof(MonsterEditorCommands);
+            AddParameter("monster", "m", "Monster to enable", converter: ParametersConverter.MonsterTemplateConverter);
+            AddParameter("subarea", "subarea", isOptional: true, converter: ParametersConverter.SubAreaConverter);
+        }
+        public override void Execute(TriggerBase trigger)
+        {
+            var enableSpawn = new MonsterDisableSpawn { SubAreaId = -1, MonsterId = trigger.Get<MonsterTemplate>("monster").Id };
+
+            if (trigger.IsArgumentDefined("subarea"))
+                enableSpawn.SubAreaId = trigger.Get<SubArea>("subarea").Id;
+
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () =>
+                {
+                    MonsterManager.Instance.RemoveMonsterDisableSpawn(enableSpawn);
+
+                    trigger.Reply("Monster {0} spawn enable", trigger.Get<MonsterTemplate>("monster").ToString());
+                });
+        }
+    }
+
     public class MonsterDropCommand : AddRemoveSubCommand
     {
         public MonsterDropCommand()
