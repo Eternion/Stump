@@ -57,7 +57,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
         public void Dissociate()
         {
-            var effects = new List<EffectBase> {MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect};
+            // todo : remove hotfix
+            var effects = new List<EffectBase> {MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect, new EffectInteger(EffectsEnum.Effect_NonExchangeable_981, 0)};
 
             if (LastMealEffect != null)
                 effects.Add(LastMealEffect);
