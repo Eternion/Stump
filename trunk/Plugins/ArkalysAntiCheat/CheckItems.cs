@@ -25,15 +25,6 @@ namespace ArkalysAntiCheat
                         Logger.Info("Objiviant not account linked - Delete item {0} from player's inventory {1}", item.ToString(), item.OwnerId);
                         World.Instance.Database.Delete(item);
                     }
-
-                    foreach (var item in items)
-                    {
-                        foreach (var effectLiving in item.Effects.Where(x => x.EffectId == EffectsEnum.Effect_LivingObjectId))
-                        {
-                            Logger.Info("Objiviant Effect && Not Account Linked - Remove Objiviant effect from player's inventory {0}", item.OwnerId);
-                            item.Effects.Remove(effectLiving);
-                        }
-                    }
                 });
         }
     }
