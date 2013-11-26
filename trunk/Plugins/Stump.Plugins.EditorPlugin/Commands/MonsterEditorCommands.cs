@@ -121,7 +121,17 @@ namespace Stump.Plugins.EditorPlugin.Commands
             var disableSpawn = new MonsterDisableSpawn { SubAreaId = -1, MonsterId = trigger.Get<MonsterTemplate>("monster").Id };
 
             if (trigger.IsArgumentDefined("subarea"))
+            {
                 disableSpawn.SubAreaId = trigger.Get<SubArea>("subarea").Id;
+
+                var spawn = new MonsterSpawn
+                {
+                    MonsterId = trigger.Get<MonsterTemplate>("monster").Id,
+                    SubAreaId = trigger.Get<SubArea>("subarea").Id
+                };
+
+                spawn.SubArea.RemoveMonsterSpawn(spawn);
+            }
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
@@ -149,7 +159,17 @@ namespace Stump.Plugins.EditorPlugin.Commands
             var enableSpawn = new MonsterDisableSpawn { SubAreaId = -1, MonsterId = trigger.Get<MonsterTemplate>("monster").Id };
 
             if (trigger.IsArgumentDefined("subarea"))
+            {
                 enableSpawn.SubAreaId = trigger.Get<SubArea>("subarea").Id;
+
+                var spawn = new MonsterSpawn
+                {
+                    MonsterId = trigger.Get<MonsterTemplate>("monster").Id,
+                    SubAreaId = trigger.Get<SubArea>("subarea").Id
+                };
+
+                spawn.SubArea.AddMonsterSpawn(spawn);
+            }
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
