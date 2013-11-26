@@ -138,7 +138,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 {
                     MonsterManager.Instance.AddMonsterDisableSpawn(disableSpawn);
 
-                    trigger.Reply("Monster {0} spawn disable", trigger.Get<MonsterTemplate>("monster").ToString());
+                    trigger.Reply("Monster {0}<{1}> spawn disable", trigger.Get<MonsterTemplate>("monster").Name, trigger.Get<MonsterTemplate>("monster").Id);
                 });
         }
     }
@@ -176,7 +176,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 {
                     MonsterManager.Instance.RemoveMonsterDisableSpawn(enableSpawn);
 
-                    trigger.Reply("Monster {0} spawn enable", trigger.Get<MonsterTemplate>("monster").ToString());
+                    trigger.Reply("Monster {0}<{1}> spawn enable", trigger.Get<MonsterTemplate>("monster").Name, trigger.Get<MonsterTemplate>("monster").Id);
                 });
         }
     }

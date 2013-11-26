@@ -628,6 +628,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             m_monsterSpawns.Remove(spawn);
         }
 
+        public void RemoveMonsterSpawns(int monsterId)
+        {
+            m_monsterSpawns.RemoveAll(x => x.MonsterId == monsterId);
+        }
+
         public void AddMonsterDungeonSpawn(MonsterDungeonSpawn spawn)
         {
             var pool = m_spawningPools.FirstOrDefault(entry => entry is DungeonSpawningPool) as DungeonSpawningPool;
