@@ -16,7 +16,7 @@ namespace ArkalysAuthPlugin.Votes
             AuthServer.Instance.IOTaskPool.CallPeriodically(10000, CheckVotes);
         }
 
-        private void CheckVotes()
+        private static void CheckVotes()
         {
 
             // select all votes between 1 week and 3 hours ago, limited by 1 vote by account (the one with the last vote)
