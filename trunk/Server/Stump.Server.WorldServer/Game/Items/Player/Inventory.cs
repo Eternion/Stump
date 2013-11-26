@@ -452,9 +452,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (quantity > item.Stack || quantity == 0)
                 return null;
 
+            if (item.IsLinked())
+                return null;
+
             RemoveItem(item, quantity);
 
-            MerchantItem existingItem = Owner.MerchantBag.FirstOrDefault(x => x.MustStackWith(item));
+            var existingItem = Owner.MerchantBag.FirstOrDefault(x => x.MustStackWith(item));
 
             if (existingItem != null)
             {

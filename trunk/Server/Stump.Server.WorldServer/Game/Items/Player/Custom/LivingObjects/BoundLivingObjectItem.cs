@@ -15,16 +15,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        
-        private EffectInteger m_idEffect;
-        private ItemTemplate m_livingObjectTemplate;
+
+        private readonly ItemTemplate m_livingObjectTemplate;
 
         public BoundLivingObjectItem(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
-            m_idEffect = (EffectInteger) Effects.First(x => x.EffectId == EffectsEnum.Effect_LivingObjectId);
-            m_livingObjectTemplate = ItemManager.Instance.TryGetTemplate(m_idEffect.Value);
-            LivingObjectRecord = ItemManager.Instance.TryGetLivingObjectRecord(m_idEffect.Value);
+            var idEffect = (EffectInteger) Effects.First(x => x.EffectId == EffectsEnum.Effect_LivingObjectId);
+            m_livingObjectTemplate = ItemManager.Instance.TryGetTemplate(idEffect.Value);
+            LivingObjectRecord = ItemManager.Instance.TryGetLivingObjectRecord(idEffect.Value);
 
             if (LivingObjectRecord == null || m_livingObjectTemplate == null)
                 logger.Error("Living Object {0} has no template", Template.Id);
@@ -57,8 +56,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
         public void Dissociate()
         {
-            // todo : remove hotfix
-            var effects = new List<EffectBase> {MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect, new EffectInteger(EffectsEnum.Effect_NonExchangeable_981, 0)};
+            var effects = new List<EffectBase> {MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect, new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0)};
 
             if (LastMealEffect != null)
                 effects.Add(LastMealEffect);

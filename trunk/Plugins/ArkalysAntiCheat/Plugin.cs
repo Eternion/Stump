@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using Stump.Server.BaseServer.Plugins;
 
-namespace ArkalysPlugin
+namespace ArkalysAntiCheat
 {
     public class Plugin : PluginBase
     {
@@ -13,17 +13,17 @@ namespace ArkalysPlugin
 
         public override string Name
         {
-            get { return "Arkalys Plugin"; }
+            get { return "Arkalys AntiCheat"; }
         }
 
         public override string Description
         {
-            get { return "This plugin manage the gameplay of arkalys server"; }
+            get { return "This plugin perform multiple check to detect cheat"; }
         }
 
         public override string Author
         {
-            get { return "bouh2"; }
+            get { return "SpheX"; }
         }
 
         public override Version Version
@@ -56,7 +56,7 @@ namespace ArkalysPlugin
 
         public override string ConfigFileName
         {
-            get { return "arkalys_plugin.xml"; }
+            get { return "arkalys_anticheat.xml"; }
         }
 
         public static Plugin CurrentPlugin
