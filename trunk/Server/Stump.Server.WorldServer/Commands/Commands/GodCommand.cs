@@ -1,14 +1,7 @@
-using System.Collections.Generic;
-using System.Drawing;
-using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -68,7 +61,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public LevelUpCommand()
         {
             Aliases = new[] { "levelup" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Gives some levels to the target";
             AddParameter("amount", "amount", "Amount of levels to add", (short)1);
             AddTargetParameter(true, "Character who will level up");
@@ -106,7 +99,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public SetKamasCommand()
         {
             Aliases = new[] { "kamas" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Set the amount kamas of target's inventory";
             AddParameter<int>("amount", "amount", "Amount of kamas to set");
             AddTargetParameter(true);
@@ -167,7 +160,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public TranquilityCommand()
         {
             Aliases = new[] { "tranquility" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Toggle tranquility mod";
         }
 

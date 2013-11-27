@@ -363,7 +363,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             else
                 database.Update(Record);
 
-            foreach (GuildMember member in Members.Where(x => !x.IsConnected && x.IsDirty))
+            foreach (var member in Members.Where(x => !x.IsConnected && x.IsDirty))
             {
                 member.Save(database);
             }

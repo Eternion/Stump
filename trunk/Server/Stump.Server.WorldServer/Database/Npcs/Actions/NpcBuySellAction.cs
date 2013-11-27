@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
 
         public override void Execute(Npc npc, Character character)
         {
-            var dialog = new NpcShopDialog(character, npc, Items, Token)
+            var dialog = new NpcShopDialogLogger(character, npc, Items, Token)
                 {
                     CanSell = CanSell,
                     MaxStats = MaxStats

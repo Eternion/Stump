@@ -5,8 +5,6 @@ using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -16,7 +14,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public BanCommand()
         {
             Aliases = new[] { "ban" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Ban a player";
 
             AddParameter("target", "t", "Player to ban", converter: ParametersConverter.CharacterConverter);
@@ -81,7 +79,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 BannerAccountId = message.BannerAccountId
             };
 
-            IPCAccessor.Instance.SendRequest(message,
+            IPCAccessor.Instance.SendRequest(banIPMessage,
                 ok => trigger.Reply("IP {0} banned", target.Client.IP),
                 error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));
         }
@@ -92,7 +90,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public BanIpCommand()
         {
             Aliases = new[] { "banip" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Ban an ip";
 
             AddParameter<string>("ip", "ip", "The ip to ban");
@@ -153,7 +151,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public UnBanIPCommand()
         {
             Aliases = new[] { "unbanip" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Unban an ip";
 
             AddParameter<string>("ip", "ip", "The ip to unban");
@@ -180,7 +178,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public BanAccountCommand()
         {
             Aliases = new[] {"banacc"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Ban an account";
 
             AddParameter<string>("account", "account", "Account login");
@@ -232,7 +230,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public UnBanAccountCommand()
         {
             Aliases = new[] { "unban" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Unban an account";
 
             AddParameter<string>("account", "account", "Account login");

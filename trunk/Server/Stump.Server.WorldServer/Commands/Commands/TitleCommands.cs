@@ -27,7 +27,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
     public class AddRemoveTitleCommand : AddRemoveCommand
     {
         public AddRemoveTitleCommand()
-             : base()
         {
             Aliases = new[] {"title"};
             RequiredRole = RoleEnum.GameMaster;

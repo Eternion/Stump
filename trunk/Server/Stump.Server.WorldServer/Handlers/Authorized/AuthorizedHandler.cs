@@ -1,4 +1,3 @@
-using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -28,7 +27,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
                 }
                 case ("moveto"):
                 {
-                    string id = data[1];
+                    var id = data[1];
 
                     WorldServer.Instance.CommandManager.HandleCommand(
                         new TriggerConsole(string.Format("go {0}", id), client.Character));
