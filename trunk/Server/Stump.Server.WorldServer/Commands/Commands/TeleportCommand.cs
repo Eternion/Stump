@@ -5,7 +5,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -19,7 +18,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public GoPosCommand()
         {
             Aliases = new[] {"gopos", "teleporto"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Teleport the target to the given map position (x/y)";
             AddParameter<int>("x");
             AddParameter<int>("y");
@@ -74,7 +73,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public GoCommand()
         {
             Aliases = new[] {"go", "teleport", "tp"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Teleport the target given map id";
             AddParameter("map", "map", "Map destination", converter:ParametersConverter.MapConverter);
             AddTargetParameter(true);
@@ -135,7 +134,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public NameGoCommand()
         {
             Aliases = new[] { "namego" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Teleport target to you";
             AddTargetParameter(false, "The character to teleport");
         }

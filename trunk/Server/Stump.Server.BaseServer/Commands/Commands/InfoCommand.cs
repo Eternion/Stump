@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands.Commands

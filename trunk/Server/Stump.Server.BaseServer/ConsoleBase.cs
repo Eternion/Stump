@@ -18,7 +18,7 @@ namespace Stump.Server.BaseServer
         [Variable(true)]
         public static int AskWaiterInterval = 20;
 
-        private Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public static readonly string[] AsciiLogo =
         {

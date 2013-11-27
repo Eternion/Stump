@@ -14,7 +14,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         public DebugCommand()
         {
             Aliases = new[] { "debug" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Provides command to debug things";
         }
     }
@@ -25,7 +25,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             Aliases = new[] {"cmderror"};
             ParentCommand = typeof (DebugCommand);
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Give command error details";
             AddParameter<int>("index", "i", "Error index (last if not defined)", isOptional: true);
         }
@@ -62,7 +62,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             Aliases = new[] { "error" };
             ParentCommand = typeof(DebugCommand);
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Give error details";
             AddParameter<int>("index", "i", "Error index (last if not defined)", isOptional: true);
         }

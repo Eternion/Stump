@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         #endregion
 
-        public bool BuyItem(int itemId, uint amount)
+        public virtual bool BuyItem(int itemId, uint amount)
         {
             NpcItem itemToSell = Items.FirstOrDefault(entry => entry.Item.Id == itemId);
 
@@ -128,8 +128,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                         46, finalPrice);
             }
-
-            ItemBoughtEvent(item, amount, finalPrice, Token != null);
 
             Character.Client.Send(new ExchangeBuyOkMessage());
             return true;
@@ -203,11 +201,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             Character.Client.Send(new ExchangeSellOkMessage());
             return true;
-        }
-
-        public virtual void ItemBoughtEvent(BasePlayerItem item, uint amount, uint finalPrice, bool isToken)
-        {
-
         }
     }
 }

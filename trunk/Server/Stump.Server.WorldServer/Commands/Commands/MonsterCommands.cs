@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public MonsterCommands()
         {
             Aliases = new[] {"monster"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Manage monsters";
         }
     }

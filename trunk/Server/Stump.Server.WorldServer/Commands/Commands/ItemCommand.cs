@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemAddCommand()
         {
             Aliases = new[] {"add", "new"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Add an item to the targeted character";
             ParentCommand = typeof (ItemCommand);
 
@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemRemoveCommand()
         {
             Aliases = new[] { "remove", "delete" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Delete an item from the target";
             ParentCommand = typeof(ItemCommand);
 
@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemListCommand()
         {
             Aliases = new[] { "list", "ls" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Lists loaded items or items from an inventory with a search pattern";
             ParentCommand = typeof(ItemCommand);
             AddParameter("pattern", "p", "Search pattern (see docs)", "*");
@@ -191,7 +191,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemAddSetCommand()
         {
             Aliases = new[] {"addset"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Add the entire itemset to the targeted character";
             ParentCommand = typeof (ItemCommand);
 
@@ -227,7 +227,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemAddTypeCommand()
         {
             Aliases = new[] {"addtype"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Add all the items match with typeId.";
             ParentCommand = typeof (ItemCommand);
 
@@ -270,7 +270,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemDelTypeCommand()
         {
             Aliases = new[] { "deltype" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Remove all the items match with typeId.";
             ParentCommand = typeof(ItemCommand);
 

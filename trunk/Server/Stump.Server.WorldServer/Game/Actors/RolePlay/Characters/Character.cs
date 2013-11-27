@@ -25,7 +25,6 @@ using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Guilds;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -228,9 +227,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        public NpcShopDialog NpcShopDialog
+        public NpcShopDialogLogger NpcShopDialog
         {
-            get { return Dialog as NpcShopDialog; }
+            get { return Dialog as NpcShopDialogLogger; }
         }
 
         public ZaapDialog ZaapDialog
