@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
-using NLog;
-using NLog.Config;
-using Stump.Core.IO;
 using Stump.Server.BaseServer;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -14,8 +13,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 {
     public class NpcShopDialogLogger : NpcShopDialog
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         public NpcShopDialogLogger(Character character, Npc npc, IEnumerable<NpcItem> items) : base(character, npc, items)
         {
             Character = character;
@@ -47,10 +44,11 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 { "ItemId", itemToSell.ItemId },
                 { "Amount", amount },
                 { "FinalPrice", (itemToSell.Price * amount) },
-                { "IsToken", Token != null }
+                { "IsToken", Token != null },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
             };
 
-            ServerBase.MongoLogger.Insert(GetType().Name, document);
+            ServerBase.MongoLogger.Insert("NpcShopBuy", document);
 
             return true;
         }
