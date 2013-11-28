@@ -18,7 +18,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private Dictionary<int, Guild> m_guilds;
         private Dictionary<int, GuildMember> m_guildsMembers;
         private readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
-        private readonly Stack<GuildMember> m_guildsMemberToDelete = new Stack<GuildMember>();
 
         private readonly object m_lock = new object();
 
@@ -146,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             lock (m_lock)
             {
                 m_guildsMembers.Remove(member.Id);
-                m_guildsMemberToDelete.Push(member);
+                Database.Delete(member);
                 return true;
             }
         }
@@ -165,13 +164,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     var guild = m_guildsToDelete.Pop();
 
                     Database.Delete(guild.Record);
-                }
-
-                while (m_guildsMemberToDelete.Count > 0)
-                {
-                    var member = m_guildsMemberToDelete.Pop();
-
-                    Database.Delete(member.Record);
                 }
             }
         }
