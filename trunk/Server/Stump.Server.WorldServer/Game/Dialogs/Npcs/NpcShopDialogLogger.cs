@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson;
 using NLog;
 using NLog.Config;
+using Stump.Core.IO;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -36,8 +38,18 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return false;
 
             var itemToSell = Items.FirstOrDefault(entry => entry.Item.Id == itemId);
-          
-            logger.Info("Player {0} buy {1}({2}) for {3} {4}", Character.ToString(), itemToSell.ItemId, amount, (itemToSell.Price * amount), Token != null ? "Jetons" : "Kamas");
+
+            var document = new BsonDocument
+            {
+                { "AcctId", Character.Account.Id },
+                { "CharacterId", Character.Id },
+                { "ItemId", itemToSell.ItemId },
+                { "Amount", amount },
+                { "FinalPrice", (itemToSell.Price * amount) },
+                { "IsToken", Token != null }
+            };
+
+            MongoDbHelper.Insert(GetType().Name, document);
 
             return true;
         }
