@@ -168,7 +168,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             var player = ((GameTrigger) trigger).Character;
 
-            trigger.Reply(player.ToggleTranquility() ? "Tranquility mode is now ON" : "Tranquility mode is now OFF");
+            trigger.Reply(player.ToggleAway() ? "Tranquility mode is now ON" : "Tranquility mode is now OFF");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 return;
             }
 
-            if (target.TranquilityMode)
+            if (target.IsAway)
             {
                 SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY);
                 return;

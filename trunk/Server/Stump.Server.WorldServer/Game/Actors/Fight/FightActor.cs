@@ -137,7 +137,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnSpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            if (!spell.CurrentSpellLevel.Effects.Any(effect => effect.EffectId == EffectsEnum.Effect_Invisibility) &&
+            if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
                 VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
             {
                 ShowCell(Cell, false);

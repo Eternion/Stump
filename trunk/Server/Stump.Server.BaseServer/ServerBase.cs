@@ -40,6 +40,16 @@ namespace Stump.Server.BaseServer
         [Variable]
         public static int AutomaticShutdownTimer = 6*60;
 
+        [Variable(Priority = 10)]
+        public static DatabaseConfiguration MongoDBConfiguration = new DatabaseConfiguration
+        {
+            Host = "localhost",
+            DbName = "stump_logs",
+            Port = "3307",
+            User = "root",
+            Password = ""
+        };
+
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
         private bool m_ignoreReload;
@@ -164,6 +174,12 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public static MongoDbHelper MongoLogger
+        {
+            get;
+            set;
+        }
+
         public virtual void Initialize()
         {
             InstanceAsBase = this;
@@ -211,6 +227,10 @@ namespace Stump.Server.BaseServer
             }
             else
                 Config.Load();
+
+            logger.Info("Initialize MongoDB...");
+            MongoLogger = new MongoDbHelper(MongoDBConfiguration.User, MongoDBConfiguration.Password,
+                MongoDBConfiguration.Host, MongoDBConfiguration.Port, MongoDBConfiguration.DbName);
 
             logger.Info("Initialize Task Pool");
             IOTaskPool = new SelfRunningTaskPool(IOTaskInterval, "IO Task Pool");

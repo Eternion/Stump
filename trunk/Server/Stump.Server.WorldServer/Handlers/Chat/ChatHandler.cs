@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
             if (chr != null)
             {
-                if (!chr.TranquilityMode)
+                if (!chr.IsAway)
                 {
                     // send a copy to sender
                     SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
