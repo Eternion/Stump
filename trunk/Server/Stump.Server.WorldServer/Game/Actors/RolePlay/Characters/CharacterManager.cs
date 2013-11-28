@@ -56,9 +56,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var characterIds =
                 client.Account.Characters.Where(x => x.WorldId == WorldServer.ServerInformation.Id)
                       .Select(x => x.CharacterId).ToList();
-            
-            var characters =
-                Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, characterIds.ToCSV(",")));
+
+            if (characterIds.Count == 0)
+                return new List<CharacterRecord>();
+
+            var characters = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, characterIds.ToCSV(",")));
 
             if (characters.Count != client.Account.Characters.Count)
             {
