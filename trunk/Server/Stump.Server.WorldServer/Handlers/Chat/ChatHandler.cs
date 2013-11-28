@@ -1,7 +1,10 @@
 using System;
+using System.Globalization;
+using MongoDB.Bson;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
@@ -11,7 +14,7 @@ using Stump.Server.WorldServer.Game.Social;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
 {
-    public partial class ChatHandler : WorldHandlerContainer
+    public partial class ChatHandler
     {
         [WorldHandler(ChatClientPrivateMessage.Id)]
         public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
@@ -33,6 +36,16 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                     SendChatServerMessage(chr.Client, client.Character,
                         ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
                         message.content);
+
+                    var document = new BsonDocument
+                    {
+                        { "SenderId", client.Character.Id },
+                        { "ReceiverId", chr.Id },
+                        { "Message", message.content },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+                    ServerBase.MongoLogger.Insert("PrivateMSG", document);
                 }
                 else
                 {
