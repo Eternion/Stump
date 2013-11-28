@@ -205,10 +205,6 @@
     <Reference Include="MongoDB.Driver">
       <HintPath>..\..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="NLog.MongoDB">
-      <HintPath>..\..\packages\NLog.MongoDB.0.7.0\lib\net40\NLog.MongoDB.dll</HintPath>
-      <Aliases>global</Aliases>
-    </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\..\Library\ServiceStack.Text.dll</HintPath>
     </Reference>
@@ -245,6 +241,7 @@
     <Compile Include="IO\ConsoleProgress.cs" />
     <Compile Include="IO\FastBigEndianReader.cs" />
     <Compile Include="IO\FastLittleEndianReader.cs" />
+    <Compile Include="IO\MongoDbHelper.cs" />
     <Compile Include="IO\Watchers\FileWatcher.cs">
       <SubType>Component</SubType>
     </Compile>
