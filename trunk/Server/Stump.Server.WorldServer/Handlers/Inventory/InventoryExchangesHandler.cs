@@ -224,10 +224,10 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeStartedWithPodsMessage(
                             (sbyte)ExchangeTypeEnum.PLAYER_TRADE,
                             playerTrade.FirstTrader.Character.Id,
-                            (int)playerTrade.FirstTrader.Character.Inventory.Weight,
+                            playerTrade.FirstTrader.Character.Inventory.Weight,
                             (int)playerTrade.FirstTrader.Character.Inventory.WeightTotal,
                             playerTrade.SecondTrader.Character.Id,
-                            (int)playerTrade.SecondTrader.Character.Inventory.Weight,
+                            playerTrade.SecondTrader.Character.Inventory.Weight,
                             (int)playerTrade.SecondTrader.Character.Inventory.WeightTotal
                             ));
         }
