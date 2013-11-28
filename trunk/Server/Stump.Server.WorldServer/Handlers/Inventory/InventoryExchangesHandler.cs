@@ -100,7 +100,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeReadyMessage.Id)]
         public static void HandleExchangeReadyMessage(WorldClient client, ExchangeReadyMessage message)
         {
-            client.Character.Trader.ToggleReady(message.ready);
+            if (message != null)
+                client.Character.Trader.ToggleReady(message.ready);
         }
 
         [WorldHandler(ExchangeBuyMessage.Id)]
