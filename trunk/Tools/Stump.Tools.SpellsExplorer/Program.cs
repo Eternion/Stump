@@ -18,7 +18,7 @@ namespace Stump.Tools.SpellsExplorer
     {
         private static DatabaseAccessor m_databaseAccessor;
 
-        private readonly static Languages SecondaryLanguage = Languages.French;
+        private const Languages SecondaryLanguage = Languages.French;
 
         public static void Main()
         {

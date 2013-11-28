@@ -563,16 +563,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool TranquilityMode
+        public bool IsAway
         {
             get;
             private set;
         }
 
-        public bool ToggleTranquility()
+        public bool ToggleAway()
         {
-            TranquilityMode = !TranquilityMode;
-            return TranquilityMode;
+            IsAway = !IsAway;
+            return IsAway;
         }
 
         public bool ToggleInvisibility(bool toggle)
@@ -1530,7 +1530,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public FighterRefusedReasonEnum CanRequestFight(Character target)
         {
             if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy() ||
-                target.TranquilityMode)
+                target.IsAway)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
             if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())

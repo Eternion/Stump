@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using NLog;
 using NLog.Config;
 using Stump.Core.IO;
+using Stump.Server.BaseServer;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -49,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 { "IsToken", Token != null }
             };
 
-            MongoDbHelper.Insert(GetType().Name, document);
+            ServerBase.MongoLogger.Insert(GetType().Name, document);
 
             return true;
         }

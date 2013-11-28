@@ -10,9 +10,10 @@ namespace Stump.ORM
             
         }
 
-        public DatabaseConfiguration(string host, string user, string password, string dbName, string providerName)
+        public DatabaseConfiguration(string host, string port, string user, string password, string dbName, string providerName)
         {
             Host = host;
+            Port = port;
             User = user;
             Password = password;
             DbName = dbName;
@@ -38,6 +39,12 @@ namespace Stump.ORM
         }
 
         public string Host
+        {
+            get;
+            set;
+        }
+
+        public string Port
         {
             get;
             set;

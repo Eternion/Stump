@@ -1,24 +1,51 @@
-﻿using MongoDB.Bson;
+﻿using System;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Stump.Core.IO
 {
-    public static class MongoDbHelper
+    public class MongoDbHelper
     {
-        private static MongoDatabase Connect()
-        {
-            var client = new MongoClient("mongodb://server:dxdv6gy7@94.242.228.147:3307");
-            var server = client.GetServer();
-            var stump_logs = server.GetDatabase("stump_logs");
+        public string Username;
 
-            return stump_logs;
+        public string Password;
+
+        public string Host;
+
+        public string Port;
+
+        private readonly string Database;
+
+        public MongoDbHelper(string username, string password, string host, string port, string database)
+        {
+            Username = username;
+            Password = password;
+            Host = host;
+            Port = port;
+            Database = database;
         }
 
-        public static bool Insert(string collection, BsonDocument document)
+        private MongoDatabase Connect()
+        {
+            if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(Host) &&
+                !string.IsNullOrEmpty(Port) && !string.IsNullOrEmpty(Database))
+                return null;
+
+            var client = new MongoClient(String.Format("mongodb://{0}:{1}@{2}:{3}", Username, Password, Host, Port));
+            var server = client.GetServer();
+            var database = server.GetDatabase(Database);
+
+            return database;
+        }
+
+        public bool Insert(string collection, BsonDocument document)
         {
             var database = Connect();
 
-            database.GetCollection<BsonDocument>(collection).Insert(document);
+            if (database != null)
+                database.GetCollection<BsonDocument>(collection).Insert(document);
+            else
+                return false;
 
             return true;
         }

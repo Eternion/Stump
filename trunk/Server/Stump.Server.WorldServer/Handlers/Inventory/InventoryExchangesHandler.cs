@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         return;
                     }
 
-                    if (target.TranquilityMode)
+                    if (target.IsAway)
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
                         return;
