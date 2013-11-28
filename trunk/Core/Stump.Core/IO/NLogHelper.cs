@@ -1,6 +1,5 @@
 ﻿using NLog;
 using NLog.Config;
-using NLog.MongoDB;
 using NLog.Targets;
 
 namespace Stump.Core.IO
@@ -28,7 +27,6 @@ namespace Stump.Core.IO
             var config = new LoggingConfiguration();
 
             var consoleTarget = new ColoredConsoleTarget {Layout = LogFormatConsole};
-            var MongoTarget = new MongoDBTarget{ Host = "", Port = 3307, Username = "", Password = ""};
 
             var fileTarget = new FileTarget
             {
@@ -53,8 +51,6 @@ namespace Stump.Core.IO
             if (activeconsoleLog)
                 config.AddTarget("console", consoleTarget);
 
-            config.AddTarget("Mongo", MongoTarget);
-
 #if DEBUG
             var level = LogLevel.Debug;
 #else
@@ -77,11 +73,6 @@ namespace Stump.Core.IO
                 var errorRule = new LoggingRule("*", LogLevel.Warn, fileErrorTarget);
                 config.LoggingRules.Add(errorRule);
             }
-
-            var mongoRule = new LoggingRule("*", level, MongoTarget);
-            mongoRule.DisableLoggingForLevel(LogLevel.Fatal);
-            mongoRule.DisableLoggingForLevel(LogLevel.Error);
-            config.LoggingRules.Add(mongoRule);
 
             LogManager.Configuration = config;
         }
