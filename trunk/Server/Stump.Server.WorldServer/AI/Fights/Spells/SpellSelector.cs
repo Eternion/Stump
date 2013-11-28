@@ -66,16 +66,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     mpToUse = 0;
                     return true;
                 }
-                else if (diff <= Fighter.MP)
+
+                if (diff <= Fighter.MP)
                 {
                     mpToUse = (int) diff;
                     return true;
                 }
-                else
-                {
-                    mpToUse = (int) diff;
-                    return false;
-                }
+
+                mpToUse = (int) diff;
+                return false;
             }
             
             // todo
