@@ -176,8 +176,11 @@ namespace Stump.Server.BaseServer
 
         public static MongoDbHelper MongoLogger
         {
-            get;
-            set;
+            get
+            {
+                return new MongoDbHelper(MongoDBConfiguration.User, MongoDBConfiguration.Password,
+                MongoDBConfiguration.Host, MongoDBConfiguration.Port, MongoDBConfiguration.DbName);
+            }
         }
 
         public virtual void Initialize()
@@ -227,10 +230,6 @@ namespace Stump.Server.BaseServer
             }
             else
                 Config.Load();
-
-            logger.Info("Initialize MongoDB...");
-            MongoLogger = new MongoDbHelper(MongoDBConfiguration.User, MongoDBConfiguration.Password,
-                MongoDBConfiguration.Host, MongoDBConfiguration.Port, MongoDBConfiguration.DbName);
 
             logger.Info("Initialize Task Pool");
             IOTaskPool = new SelfRunningTaskPool(IOTaskInterval, "IO Task Pool");

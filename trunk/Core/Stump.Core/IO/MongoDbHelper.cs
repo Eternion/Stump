@@ -27,8 +27,8 @@ namespace Stump.Core.IO
 
         private MongoDatabase Connect()
         {
-            if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(Host) &&
-                !string.IsNullOrEmpty(Port) && !string.IsNullOrEmpty(Database))
+            if (string.IsNullOrEmpty(Username) && string.IsNullOrEmpty(Password) && string.IsNullOrEmpty(Host) &&
+                string.IsNullOrEmpty(Port) && string.IsNullOrEmpty(Database))
                 return null;
 
             var client = new MongoClient(String.Format("mongodb://{0}:{1}@{2}:{3}", Username, Password, Host, Port));
