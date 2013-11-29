@@ -1,7 +1,10 @@
 using System;
+using System.Globalization;
+using MongoDB.Bson;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
@@ -13,10 +16,11 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 {
     public partial class ChatHandler
     {
-        public virtual bool HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
+        [WorldHandler(ChatClientPrivateMessage.Id)]
+        public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
         {
             if (String.IsNullOrEmpty(message.content))
-                return false;
+                return;
 
             var chr = World.Instance.GetCharacter(message.receiver);
 
@@ -33,19 +37,39 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                         ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
                         message.content);
 
-                    return true;
+                    var document = new BsonDocument
+                    {
+                        { "SenderId", client.Character.Id },
+                        { "ReceiverId", chr.Id },
+                        { "Message", message.content },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+                    ServerBase.MongoLogger.Insert("PrivateMSG", document);
                 }
-
-                client.Send(new ChatErrorMessage((sbyte)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
-                return false;
+                else
+                {
+                    client.Send(new ChatErrorMessage((sbyte)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                }
             }
-
-            client.Send(new ChatErrorMessage((sbyte) ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
-            return false;
+            else
+            {
+                client.Send(new ChatErrorMessage((sbyte)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+            }
         }
 
-        public virtual void HandleChatClientMultiMessage(WorldClient client, ChatClientMultiMessage message)
+        [WorldHandler(ChatClientMultiMessage.Id)]
+        public static void HandleChatClientMultiMessage(WorldClient client, ChatClientMultiMessage message)
         {
+            var document = new BsonDocument
+                    {
+                        { "SenderId", client.Character.Id },
+                        { "Message", message.content },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+            ServerBase.MongoLogger.Insert("MultiMessage", document);
+
             ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum) message.channel, message.content);
         }
 

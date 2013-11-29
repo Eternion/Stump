@@ -18,6 +18,8 @@ using System;
 using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
+using ServiceStack.Text;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
@@ -89,8 +91,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                         { "NpcId", SecondTrader.Npc.TemplateId },
                         { "PlayerId", FirstTrader.Id },
                         { "NpcKamas", SecondTrader.Kamas },
-                        { "PlayerItems", FirstTrader.Items.ToBson() },
-                        { "NpcItems", SecondTrader.Items.ToBson() },
+                        { "PlayerItems", FirstTrader.Items.SerializeToString() },
+                        { "NpcItems", SecondTrader.Items.SerializeToString() },
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 

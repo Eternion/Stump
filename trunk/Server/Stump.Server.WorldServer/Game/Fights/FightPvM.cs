@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
+using ServiceStack.Text;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -118,7 +119,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                         { "MapId", looter.Fight.Map.Id },
                         { "FightersCount", looters.Count() },
                         { "winXP", FightFormulas.CalculateWinExp(looter) },
-                        { "winItems", looter.Loot.GetFightLoot().ToBson() },
+                        { "winItems", looter.Loot.GetFightLoot().SerializeToString() },
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 

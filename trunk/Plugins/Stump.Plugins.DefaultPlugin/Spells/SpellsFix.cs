@@ -3,7 +3,6 @@ using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
