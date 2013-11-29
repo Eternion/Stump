@@ -107,10 +107,9 @@ namespace ArkalysPlugin.Npcs
 
         private void AdjustLoots()
         {
-            foreach (var item in FirstTrader.Items.ToArray())
+            foreach (var item in FirstTrader.Items.ToArray().Where(item => item.Template.Id != OrbsManager.OrbItemTemplate.Id))
             {
-                if (item.Template.Id != OrbsManager.OrbItemTemplate.Id)
-                    FirstTrader.MoveItemToInventory(item.Guid, item.Stack);
+                FirstTrader.MoveItemToInventory(item.Guid, item.Stack);
             }
 
             var orbs = FirstTrader.Items.FirstOrDefault(x => x.Template == OrbsManager.OrbItemTemplate);

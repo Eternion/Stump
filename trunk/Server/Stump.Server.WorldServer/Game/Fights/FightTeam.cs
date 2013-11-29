@@ -303,27 +303,27 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor GetOneFighter(int id)
         {
-            return m_fighters.Where(entry => entry.Id == id).SingleOrDefault();
+            return m_fighters.SingleOrDefault(entry => entry.Id == id);
         }
 
         public FightActor GetOneFighter(Cell cell)
         {
-            return m_fighters.Where(entry => Equals(entry.Position.Cell, cell)).SingleOrDefault();
+            return m_fighters.SingleOrDefault(entry => Equals(entry.Position.Cell, cell));
         }
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
         {
-            return m_fighters.Where(entry => predicate(entry)).SingleOrDefault();
+            return m_fighters.SingleOrDefault(entry => predicate(entry));
         }
 
         public T GetOneFighter<T>(int id) where T : FightActor
         {
-            return m_fighters.OfType<T>().Where(entry => entry.Id == id).SingleOrDefault();
+            return m_fighters.OfType<T>().SingleOrDefault(entry => entry.Id == id);
         }
 
         public T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor
         {
-            return m_fighters.OfType<T>().Where(entry => predicate(entry)).SingleOrDefault();
+            return m_fighters.OfType<T>().SingleOrDefault(entry => predicate(entry));
         }
 
         public IEnumerable<FightActor> GetAllFighters()

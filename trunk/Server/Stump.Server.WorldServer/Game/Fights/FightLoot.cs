@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 
@@ -32,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 m_items.Add(item.ItemId, new DroppedItem(item.ItemId, item.Amount));
         }
 
-        // todo : give look to a inventory owner
+        // todo : give loot to a inventory owner
         public void GiveLoot(Character character)
         {
             character.Inventory.AddKamas(Kamas);
@@ -43,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 if (template.Effects.Count > 0)
                 {
-                    for (int i = 0; i < drop.Amount; i++)
+                    for (var i = 0; i < drop.Amount; i++)
                     {
                         var item = ItemManager.Instance.CreatePlayerItem(character, drop.ItemId, drop.Amount);
                         character.Inventory.AddItem(item);

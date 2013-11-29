@@ -1,8 +1,10 @@
+using System;
+using System.Globalization;
 using System.Linq;
+using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
-using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
@@ -45,14 +47,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         protected override void Apply()
         {
+            // check all items are still there
             if (!FirstTrader.Items.All(x =>
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
 
-                if (item == null || item.Stack < x.Stack)
-                    return false;
-
-                return true;}))
+                return item != null && item.Stack >= x.Stack;
+            }))
             {
                 return;
             }
@@ -61,10 +62,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             {
                 var item = SecondTrader.Character.Inventory.TryGetItem(x.Guid);
 
-                if (item == null || item.Stack < x.Stack)
-                    return false;
-
-                return true;}))
+                return item != null && item.Stack >= x.Stack;
+            }))
             {
                 return;
             }
@@ -80,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
 
                 FirstTrader.Character.Inventory.ChangeItemOwner(
-                    SecondTrader.Character, item, (uint)tradeItem.Stack);
+                    SecondTrader.Character, item, tradeItem.Stack);
             }
 
             foreach (var tradeItem in SecondTrader.Items)
@@ -88,11 +87,24 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                 var item = SecondTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
 
                 SecondTrader.Character.Inventory.ChangeItemOwner(
-                    FirstTrader.Character, item, (uint)tradeItem.Stack);
+                    FirstTrader.Character, item, tradeItem.Stack);
             }
 
             InventoryHandler.SendInventoryWeightMessage(FirstTrader.Character.Client);
             InventoryHandler.SendInventoryWeightMessage(SecondTrader.Character.Client);
+
+            var document = new BsonDocument
+                    {
+                        { "FirstTraderId", FirstTrader.Id },
+                        { "SecondTraderId", SecondTrader.Id },
+                        { "FirstTraderKamas", FirstTrader.Kamas },
+                        { "SecondTraderKamas", SecondTrader.Kamas },
+                        { "FirstTraderItems", FirstTrader.Items.ToBson() },
+                        { "SecondTraderItems", SecondTrader.Items.ToBson() },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+            ServerBase.MongoLogger.Insert("PlayerTrade", document);
         }
 
         protected override void OnTraderItemMoved(Trader trader, TradeItem item, bool modified, int difference)
