@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
+using ServiceStack.Text;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
@@ -99,8 +100,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                         { "SecondTraderId", SecondTrader.Id },
                         { "FirstTraderKamas", FirstTrader.Kamas },
                         { "SecondTraderKamas", SecondTrader.Kamas },
-                        { "FirstTraderItems", FirstTrader.Items.ToBson() },
-                        { "SecondTraderItems", SecondTrader.Items.ToBson() },
+                        { "FirstTraderItems", FirstTrader.Items.SerializeToString() },
+                        { "SecondTraderItems", SecondTrader.Items.SerializeToString() },
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 

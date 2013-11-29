@@ -158,7 +158,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 ChatHandler.SendChatServerMessage(client, sender, channel, message);
         }
 
-        private static void SendChatServerMessage(IPacketReceiver client, NamedActor sender, ChatActivableChannelsEnum channel, string message)
+        private void SendChatServerMessage(IPacketReceiver client, NamedActor sender, ChatActivableChannelsEnum channel, string message)
         {
             ChatHandler.SendChatServerMessage(client, sender, channel, message);
         }
