@@ -14,8 +14,12 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System;
+using System.Globalization;
 using System.Linq;
+using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -53,22 +57,17 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         protected override void Apply()
         {                            
             // check all items are still there
-
             if (!FirstTrader.Items.All(x =>
                 {
                     var item = FirstTrader.Character.Inventory.TryGetItem(x.Guid);
                     
-                    if (item == null || item.Stack < x.Stack)
-                        return false;
-
-                    return true;
+                    return item != null && item.Stack >= x.Stack;
                 }))
             {
                 return;
             }
 
-            FirstTrader.Character.Inventory.SetKamas(
-                (int)( FirstTrader.Character.Inventory.Kamas + ( SecondTrader.Kamas - FirstTrader.Kamas ) ));
+            FirstTrader.Character.Inventory.SetKamas((int)(FirstTrader.Character.Inventory.Kamas + (SecondTrader.Kamas - FirstTrader.Kamas)));
 
 
             // trade items
@@ -85,6 +84,17 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
             InventoryHandler.SendInventoryWeightMessage(FirstTrader.Character.Client);
 
+            var document = new BsonDocument
+                    {
+                        { "NpcId", SecondTrader.Npc.TemplateId },
+                        { "PlayerId", FirstTrader.Id },
+                        { "NpcKamas", SecondTrader.Kamas },
+                        { "PlayerItems", FirstTrader.Items.ToBson() },
+                        { "NpcItems", SecondTrader.Items.ToBson() },
+                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                    };
+
+            ServerBase.MongoLogger.Insert("NpcTrade", document);
         }
 
         protected override void OnTraderReadyStatusChanged(Trader trader, bool status)

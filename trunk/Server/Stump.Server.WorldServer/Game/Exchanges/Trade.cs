@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         where TFirst : Trader
         where TSecond : Trader
     {
-        public Trade(int id)
+        protected Trade(int id)
         {
             Id = id;
         }

@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors;
@@ -366,7 +362,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ReadyChecker.Cancel();
             }
 
-            ReadyChecker = ReadyChecker.RequestCheck(this, () => OnFightEnded(), actors => OnFightEnded());
+            ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
         }
 
         protected virtual void OnFightEnded()
@@ -374,7 +370,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = null;
             DeterminsWinners();
 
-            List<IFightResult> results = GenerateResults().ToList();
+            var results = GenerateResults().ToList();
 
             ApplyResults(results);
 
@@ -431,7 +427,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void ApplyResults(IEnumerable<IFightResult> results)
         {
-            foreach (IFightResult fightResult in results)
+            foreach (var fightResult in results)
             {
                 fightResult.Apply();
             }
@@ -668,9 +664,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             fighter.Team.RemoveFighter(fighter);
 
-            if (fighter is CharacterFighter)
+            var characterFighter = fighter as CharacterFighter;
+            if (characterFighter != null)
             {
-                ( (CharacterFighter)fighter ).Character.RejoinMap();
+                characterFighter.Character.RejoinMap();
             }
 
             CheckFightEnd();
@@ -970,7 +967,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnTurnStarted()
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
-            FighterPlaying.TriggerBuffs(Buffs.BuffTriggerType.TURN_BEGIN);
+            FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_BEGIN);
             FighterPlaying.DecrementAllCastedBuffsDuration();
             DecrementGlyphDuration(FighterPlaying);
             TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_BEGIN);
@@ -1205,14 +1202,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fighter = actor as FightActor;
             var character = actor is CharacterFighter ? (actor as CharacterFighter).Character : null;
 
-            if (!fighter.IsFighterTurn())
+            if (fighter != null && !fighter.IsFighterTurn())
                 return;
 
             if (path.IsEmpty() || path.MPCost == 0)
                 return;
 
             StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-            if (fighter.GetTackledMP() > 0 || fighter.GetTackledAP() > 0)
+            if (fighter != null && (fighter.GetTackledMP() > 0 || fighter.GetTackledAP() > 0))
             {
                 // tackle
                 OnTackled(fighter, path);
@@ -1223,31 +1220,33 @@ namespace Stump.Server.WorldServer.Game.Fights
                     return;
                 }
             }
-            Cell[] cells = path.GetPath();
-            var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.IsVisibleFor(fighter)).Select(entry => entry.Cell.Id).ToList();
-            var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
-
-            for (int i = 0; i < cells.Length; i++)
+            var cells = path.GetPath();
+            if (fighter != null)
             {
-                // if there is a trap on the way we trigger it
-                // or if there is a fighter on a adjacent cell
-                if (i > 0 && ShouldTriggerOnMove(cells[i]))
-                {
-                    path.CutPath(i + 1);
-                    break;
-                }
+                var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.IsVisibleFor(fighter)).Select(entry => entry.Cell.Id).ToList();
+                var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
 
-                // fighter adjacent to this cell, ignore first cell
-                // characters only can be tackled
-                if (i > 0 && fighter is CharacterFighter && 
-                    fighter.VisibleState == GameActionFightInvisibilityStateEnum.VISIBLE &&
-                    new MapPoint(cells[i]).GetAdjacentCells(entry => true).Any(entry => fighterCells.Contains(entry.CellId)))
+                for (var i = 0; i < cells.Length; i++)
                 {
-                    path.CutPath(i + 1);
-                    break;
-                }
-                else if (obstaclesCells.Contains(cells[i].Id)) // there is an invisible obstacle
-                {
+                    // if there is a trap on the way we trigger it
+                    // or if there is a fighter on a adjacent cell
+                    if (i > 0 && ShouldTriggerOnMove(cells[i]))
+                    {
+                        path.CutPath(i + 1);
+                        break;
+                    }
+
+                    // fighter adjacent to this cell, ignore first cell
+                    // characters only can be tackled
+                    if (i > 0 && fighter is CharacterFighter && 
+                        fighter.VisibleState == GameActionFightInvisibilityStateEnum.VISIBLE &&
+                        new MapPoint(cells[i]).GetAdjacentCells(entry => true).Any(entry => fighterCells.Contains(entry.CellId)))
+                    {
+                        path.CutPath(i + 1);
+                        break;
+                    }
+                    if (!obstaclesCells.Contains(cells[i].Id))
+                        continue;
                     if (character != null)
                     {
                         // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
@@ -1295,21 +1294,24 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var fighter = actor as FightActor;
 
-            if (!fighter.IsFighterTurn())
+            if (fighter != null && !fighter.IsFighterTurn())
                 return;
 
             if (canceled)
                 return; // error, mouvement shouldn't be canceled in a fight.
 
+            if (fighter == null)
+                return;
+
             fighter.UseMP((short) path.MPCost);
-            fighter.TriggerBuffs(Buffs.BuffTriggerType.MOVE, path);
+            fighter.TriggerBuffs(BuffTriggerType.MOVE, path);
         }
 
         protected virtual void OnPositionChanged(ContextActor actor, ObjectPosition objectPosition)
         {
             var fighter = actor as FightActor;
 
-            TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
+            if (fighter != null) TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
         }
 
         public void SwitchFighters(FightActor fighter1, FightActor fighter2)
@@ -1404,7 +1406,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private SequenceTypeEnum m_lastSequenceAction;
         private int m_sequenceLevel;
-        private Stack<SequenceTypeEnum> m_sequences = new Stack<SequenceTypeEnum>(); 
+        private readonly Stack<SequenceTypeEnum> m_sequences = new Stack<SequenceTypeEnum>(); 
 
         public SequenceTypeEnum Sequence
         {
@@ -1508,12 +1510,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 fighter.Team.RemoveFighter(fighter);
 
-                if (fighter is CharacterFighter)
-                {
-                    Character character = ((CharacterFighter) fighter).Character;
+                if (!(fighter is CharacterFighter))
+                    return;
 
-                    character.RejoinMap();
-                }
+                var character = ((CharacterFighter) fighter).Character;
+
+                character.RejoinMap();
             }
             else
             {
@@ -1521,11 +1523,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 if (fighter is CharacterFighter && (fighter as CharacterFighter).Character.IsLoggedIn)
                 {
-                    Character character = ( (CharacterFighter)fighter ).Character;
-
                     // wait the character to be ready
                     var readyChecker = new ReadyChecker(this, new[] { ( (CharacterFighter)fighter ) });
-                    readyChecker.Success += (obj) => OnPlayerReadyToLeave(fighter as CharacterFighter);
+                    readyChecker.Success += obj => OnPlayerReadyToLeave(fighter as CharacterFighter);
                     readyChecker.Timeout += (obj, laggers) => OnPlayerReadyToLeave(fighter as CharacterFighter);
 
                     ( (CharacterFighter)fighter ).PersonalReadyChecker = readyChecker;
@@ -1643,15 +1643,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void DecrementGlyphDuration(FightActor caster)
         {
-            var triggersToRemove = new List<MarkTrigger>();
-            foreach (MarkTrigger trigger in m_triggers)
+            var triggersToRemove = m_triggers.Where(trigger => trigger is Glyph && (trigger as Glyph).Caster == caster).Where(trigger =>
             {
-                if (trigger is Glyph && (trigger as Glyph).Caster == caster)
-                {
-                    if ((trigger as Glyph).DecrementDuration())
-                        triggersToRemove.Add(trigger);
-                }
-            }
+                var glyph = trigger as Glyph;
+                return glyph != null && glyph.DecrementDuration();
+            }).ToList();
 
             if (triggersToRemove.Count == 0)
                 return;
@@ -1743,7 +1739,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void ForEach(Action<Character> action)
         {
-            foreach (Character character in GetAllCharacters())
+            foreach (var character in GetAllCharacters())
             {
                 action(character);
             }
@@ -1814,10 +1810,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             IEnumerable<FightActor> entries = Fighters.Where(entry => predicate(entry));
 
-            if (entries.Count() != 0)
+            var fightActors = entries as FightActor[] ?? entries.ToArray();
+            if (fightActors.Count() != 0)
                 return null;
 
-            return entries.SingleOrDefault();
+            return fightActors.SingleOrDefault();
         }
 
         public T GetOneFighter<T>(int id) where T : FightActor
