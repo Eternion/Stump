@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
@@ -71,6 +72,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         public ReadOnlyCollection<TradeItem> Items
         {
             get { return m_items.AsReadOnly(); }
+        }
+
+        public string ItemsString
+        {
+            get { return string.Join("|", m_items.Select(x => x.Template.Id) + "(" + m_items.Select(x => x.Stack) + ")"); }
         }
 
         public abstract int Id
