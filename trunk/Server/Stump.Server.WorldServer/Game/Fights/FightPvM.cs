@@ -119,7 +119,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                         { "MapId", looter.Fight.Map.Id },
                         { "FightersCount", looters.Count() },
                         { "winXP", FightFormulas.CalculateWinExp(looter) },
-                        { "winItems", looter.Loot.GetFightLoot().SerializeToString() },
+                        { "winKamas", looter.Loot.Kamas },
+                        { "winItems", looter.Loot.FightItemsString() },
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 
