@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
@@ -176,11 +177,8 @@ namespace Stump.Server.BaseServer
 
         public static MongoDbHelper MongoLogger
         {
-            get
-            {
-                return new MongoDbHelper(MongoDBConfiguration.User, MongoDBConfiguration.Password,
-                MongoDBConfiguration.Host, MongoDBConfiguration.Port, MongoDBConfiguration.DbName);
-            }
+            get;
+            private set;
         }
 
         public virtual void Initialize()
@@ -230,6 +228,10 @@ namespace Stump.Server.BaseServer
             }
             else
                 Config.Load();
+
+            logger.Info("Initializing MongoDB...");
+            MongoLogger = new MongoDbHelper(MongoDBConfiguration.User, MongoDBConfiguration.Password,
+                MongoDBConfiguration.Host, MongoDBConfiguration.Port, MongoDBConfiguration.DbName);
 
             logger.Info("Initialize Task Pool");
             IOTaskPool = new SelfRunningTaskPool(IOTaskInterval, "IO Task Pool");

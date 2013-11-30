@@ -100,8 +100,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                         { "SecondTraderId", SecondTrader.Id },
                         { "FirstTraderKamas", FirstTrader.Kamas },
                         { "SecondTraderKamas", SecondTrader.Kamas },
-                        { "FirstTraderItems", FirstTrader.Items.SerializeToString() },
-                        { "SecondTraderItems", SecondTrader.Items.SerializeToString() },
+                        { "FirstTraderItems", FirstTrader.ItemsString },
+                        { "SecondTraderItems", SecondTrader.ItemsString },
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 
