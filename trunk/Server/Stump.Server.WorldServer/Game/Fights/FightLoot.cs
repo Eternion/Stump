@@ -60,5 +60,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             return new DofusProtocol.Types.FightLoot(m_items.Values.SelectMany(entry => new[] { entry.ItemId, (short)entry.Amount }), Kamas);
         }
+
+        public string FightItemsString()
+        {
+            return string.Join("|", m_items.Select(item => item.Value.ItemId + "_" + item.Value.Amount).ToList());
+        }
     }
 }

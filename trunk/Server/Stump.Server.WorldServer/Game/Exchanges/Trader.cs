@@ -14,6 +14,7 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         public string ItemsString
         {
-            get { return string.Join("|", m_items.Select(x => x.Template.Id) + "(" + m_items.Select(x => x.Stack) + ")"); }
+            get { return string.Join("|", m_items.Select(item => item.Template.Id + "_" + item.Stack).ToList()); }
         }
 
         public abstract int Id
