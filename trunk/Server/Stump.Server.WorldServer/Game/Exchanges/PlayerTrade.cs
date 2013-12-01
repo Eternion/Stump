@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using ServiceStack.Text;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -105,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 
-            ServerBase.MongoLogger.Insert("PlayerTrade", document);
+            MongoLogger.Instance.Insert("PlayerTrade", document);
         }
 
         protected override void OnTraderItemMoved(Trader trader, TradeItem item, bool modified, int difference)

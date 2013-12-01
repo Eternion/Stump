@@ -19,8 +19,6 @@ namespace Stump.Server.AuthServer.Network
         public AuthClient(Socket socket)
             : base(socket)
         {
-            Key = new Random().RandomString(32);
-
             var patch = AuthServer.Instance.GetConnectionSwfPatch();
             if (patch != null)
                 Send(new RawDataMessageFixed(patch));
@@ -41,12 +39,6 @@ namespace Stump.Server.AuthServer.Network
         }
 
         public string Password
-        {
-            get;
-            set;
-        }
-
-        public string Key
         {
             get;
             set;

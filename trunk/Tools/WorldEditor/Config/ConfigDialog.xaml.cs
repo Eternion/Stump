@@ -14,6 +14,7 @@ namespace WorldEditor.Config
             DataContext = ModelView = new ConfigDialogModelView();
             ModelView.DBConfig = new DatabaseConfiguration(
                 Settings.DatabaseConfiguration.Host,
+                Settings.DatabaseConfiguration.Port,
                 Settings.DatabaseConfiguration.User,
                 Settings.DatabaseConfiguration.Password,
                 Settings.DatabaseConfiguration.DbName,

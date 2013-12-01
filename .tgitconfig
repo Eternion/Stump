@@ -1,0 +1,4 @@
+[bugtraq]
+	append = true
+	number = true
+	warnifnoissue = true
