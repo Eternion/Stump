@@ -22,6 +22,7 @@ using ServiceStack.Text;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -96,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 
-            ServerBase.MongoLogger.Insert("NpcTrade", document);
+            MongoLogger.Instance.Insert("NpcTrade", document);
         }
 
         protected override void OnTraderReadyStatusChanged(Trader trader, bool status)
