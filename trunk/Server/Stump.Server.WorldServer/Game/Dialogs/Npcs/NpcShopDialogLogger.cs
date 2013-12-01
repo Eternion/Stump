@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
 using Stump.Server.BaseServer;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -48,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
             };
 
-            ServerBase.MongoLogger.Insert("NpcShopBuy", document);
+            MongoLogger.Instance.Insert("NpcShopBuy", document);
 
             return true;
         }
