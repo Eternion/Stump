@@ -241,7 +241,6 @@
     <Compile Include="IO\ConsoleProgress.cs" />
     <Compile Include="IO\FastBigEndianReader.cs" />
     <Compile Include="IO\FastLittleEndianReader.cs" />
-    <Compile Include="IO\MongoDbHelper.cs" />
     <Compile Include="IO\Watchers\FileWatcher.cs">
       <SubType>Component</SubType>
     </Compile>

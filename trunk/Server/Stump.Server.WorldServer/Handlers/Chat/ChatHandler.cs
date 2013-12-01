@@ -5,6 +5,7 @@ using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
@@ -45,7 +46,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 
-                    ServerBase.MongoLogger.Insert("PrivateMSG", document);
+                    MongoLogger.Instance.Insert("PrivateMSG", document);
                 }
                 else
                 {
@@ -68,7 +69,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                         { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
                     };
 
-            ServerBase.MongoLogger.Insert("MultiMessage", document);
+            MongoLogger.Instance.Insert("MultiMessage", document);
 
             ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum) message.channel, message.content);
         }
