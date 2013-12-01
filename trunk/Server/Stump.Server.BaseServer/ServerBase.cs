@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
-using MongoDB.Driver;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
