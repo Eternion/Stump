@@ -283,7 +283,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.LookingOfServers = false;
 
             /* Bind Ticket */
-            client.Account.Ticket = client.Key;
+            client.Account.Ticket = new Random().RandomString(32);
             AccountManager.Instance.CacheAccount(client.Account);
 
             client.Account.LastConnection = DateTime.Now;
@@ -296,7 +296,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                             world.Address,
                             world.Port,
                             (client.Account.Role >= world.RequiredRole),
-                            client.Key));
+                            client.Account.Ticket));
 
             client.Disconnect();
         }
