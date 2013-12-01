@@ -25,7 +25,7 @@ namespace ArkalysAuthPlugin.Votes
             set;
         }
 
-        [Column("UserID")]
+        [Column("AccID")]
         public int AccountId
         {
             get;
