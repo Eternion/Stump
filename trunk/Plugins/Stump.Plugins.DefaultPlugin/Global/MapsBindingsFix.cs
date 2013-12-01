@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using NLog;
@@ -111,7 +112,7 @@ namespace Stump.Plugins.DefaultPlugin.Global
             return builder.ToString();
         }
 
-        private static Map[] FindMaps(Map adjacent, int x, int y)
+        private static IEnumerable<Map> FindMaps(Map adjacent, int x, int y)
         {
             var maps = FindMaps(adjacent, x, y, adjacent.Outdoor);
 

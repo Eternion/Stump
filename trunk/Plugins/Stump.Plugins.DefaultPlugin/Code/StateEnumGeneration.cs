@@ -19,8 +19,6 @@ using System.Text;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.I18n;
-using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Plugins.DefaultPlugin.Code

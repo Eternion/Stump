@@ -21,7 +21,7 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
         [Variable]
         public static readonly double StatsFactor = 7;
 
-        private static int[] m_thresholds = new[]
+        private static readonly int[] m_thresholds = new[]
             {
                 100, 350, 600
             };
