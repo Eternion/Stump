@@ -1,10 +1,13 @@
 ﻿using System.Linq;
 using NLog;
-using Stump.DofusProtocol.Enums;
+using Stump.ORM;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer;
+using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Accounts;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace ArkalysAntiCheat
 {
@@ -18,12 +21,20 @@ namespace ArkalysAntiCheat
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
                 {
-                    var items = World.Instance.Database.Fetch<PlayerItemRecord>(string.Format(PlayerItemRelator.FetchQuery));
-
-                    foreach (var item in items.Where(item => item.ItemId == 13210 || item.ItemId == 13211 || item.ItemId == 13212 || item.ItemId == 13213).Where(item => !item.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982)))
+                    var characters = World.Instance.Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchQuery));
+                    
+                    foreach (var character in characters)
                     {
-                        Logger.Info("Objiviant not account linked - Delete item {0} from player's inventory {1}", item.ToString(), item.OwnerId);
-                        World.Instance.Database.Delete(item);
+                        if (character.Kamas >= 150000)
+                            World.Instance.Database.Delete(character);
+                        else
+                        {
+                            var items = World.Instance.Database.Fetch<PlayerItemRecord>(string.Format(PlayerItemRelator.FetchByOwner, character.Id));
+                            var orbeCount = items.Where(item => item.Template.Id == 20000).Aggregate<PlayerItemRecord, long>(0, (current, item) => current + item.Stack);
+
+                            if (orbeCount >= 25000)
+                                World.Instance.Database.Delete(character);
+                        }
                     }
                 });
         }

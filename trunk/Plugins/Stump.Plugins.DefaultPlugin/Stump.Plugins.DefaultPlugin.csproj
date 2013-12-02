@@ -121,7 +121,6 @@
     <Compile Include="Global\Placements\PlacementPattern.cs" />
     <Compile Include="Global\Placements\PlacementsFix.cs" />
     <Compile Include="Global\ZaapFinder.cs" />
-    <Compile Include="Items\WeaponEffectsFix.cs" />
     <Compile Include="Monsters\MonsterStatsFix.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -171,6 +170,9 @@
       <Project>{7A1BEAB5-1A69-48B6-B064-0F6F372AC23B}</Project>
       <Name>Stump.Server.WorldServer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Items\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
