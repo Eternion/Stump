@@ -20,17 +20,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static readonly double[][] XP_PER_GAP = new[]
-            {
-                new double[] {0, 10}, 
-                new double[] {10, 8}, 
-                new double[] {20, 6}, 
-                new double[] {30, 4},
-                new double[] {40, 3},
-                new double[] {50, 2}, 
-                new double[] {60, 1.5}, 
-                new double[] {70, 1}
-            };
+        private static readonly double[][] XP_PER_GAP =
+        {
+            new double[] {0, 10}, 
+            new double[] {10, 8}, 
+            new double[] {20, 6}, 
+            new double[] {30, 4},
+            new double[] {40, 3},
+            new double[] {50, 2}, 
+            new double[] {60, 1.5}, 
+            new double[] {70, 1}
+        };
 
         [Variable(true)]
         public static int MaxMembersNumber = 50;
@@ -310,7 +310,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 member.Rights = (GuildRightsBitEnum) rights;
             }
 
-            member.GivenPercent = (byte)xpPercent;
+            member.GivenPercent = xpPercent;
 
             UpdateMember(member);
 

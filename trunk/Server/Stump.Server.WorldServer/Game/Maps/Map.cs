@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             OnLeave(actor);
 
-            Action<Map, RolePlayActor> handler = ActorLeave;
+            var handler = ActorLeave;
             if (handler != null)
                 handler(this, actor);
         }
@@ -942,18 +942,18 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(RolePlayActor actor)
         {
-            if (m_actors.Remove(actor))
-            {
-                RolePlayActor removedActor;
-                if (m_actorsMap.TryRemove(actor.Id, out removedActor))
-                {
-                    if (removedActor != actor)
-                        logger.Error("Did not removed the expected actor !!");
-                    // todo : manage this errors better ..
-                }
+            if (!m_actors.Remove(actor))
+                return;
 
-                OnActorLeave(actor);
+            RolePlayActor removedActor;
+            if (m_actorsMap.TryRemove(actor.Id, out removedActor))
+            {
+                if (removedActor != actor)
+                    logger.Error("Did not removed the expected actor !!");
+                // todo : manage this errors better ..
             }
+
+            OnActorLeave(actor);
         }
 
         public void Leave(int actorId)
@@ -1043,8 +1043,9 @@ namespace Stump.Server.WorldServer.Game.Maps
             actor.StartMoving -= OnActorStartMoving;
             actor.StopMoving -= OnActorStopMoving;
 
-            if (actor is Character)
-                Clients.Remove(( (Character)actor ).Client);
+            var character = actor as Character;
+            if (character != null)
+                Clients.Remove(character.Client);
 
             ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);
 
@@ -1053,11 +1054,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
 
             var monsterGroup = actor as MonsterGroup;
-            if (monsterGroup != null)
-            {
-                monsterGroup.MoveTimer.Dispose();
-                monsterGroup.MoveTimer = null;
-            }
+            if (monsterGroup == null)
+                return;
+
+            monsterGroup.MoveTimer.Dispose();
+            monsterGroup.MoveTimer = null;
         }
 
         #endregion
