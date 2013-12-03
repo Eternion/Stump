@@ -694,7 +694,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         {
             var result = new byte[knownZaaps.Count*4];
 
-            for (int i = 0; i < knownZaaps.Count; i++)
+            for (var i = 0; i < knownZaaps.Count; i++)
             {
                 result[i*4] = (byte) (knownZaaps[i].Id >> 24);
                 result[i*4 + 1] = (byte) ((knownZaaps[i].Id >> 16) & 0xFF);
@@ -709,11 +709,11 @@ namespace Stump.Server.WorldServer.Database.Characters
         {
             var result = new List<Map>();
 
-            for (int i = 0; i < serialized.Length; i += 4)
+            for (var i = 0; i < serialized.Length; i += 4)
             {
-                int id = serialized[i] << 24 | serialized[i + 1] << 16 | serialized[i + 2] << 8 | serialized[i + 3];
+                var id = serialized[i] << 24 | serialized[i + 1] << 16 | serialized[i + 2] << 8 | serialized[i + 3];
 
-                Map map = Game.World.Instance.GetMap(id);
+                var map = Game.World.Instance.GetMap(id);
 
                 if (map == null)
                     throw new Exception("Map " + id + " not found");

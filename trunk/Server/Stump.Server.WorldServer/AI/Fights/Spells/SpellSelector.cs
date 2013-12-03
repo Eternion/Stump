@@ -2,16 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Stump.Core.Extensions;
 using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -116,11 +111,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 }
                 else
                 {
-                    foreach (var fighter in Fighter.Fight.Fighters)
+                    foreach (var fighter in Fighter.Fight.Fighters.Where(fighter => fighter.IsAlive()))
                     {
-                        if (!fighter.IsAlive())
-                            continue;
-                      
                         int mpToUse;
                         if (!CanReach(fighter, spell, out mpToUse))
                             continue;
@@ -147,40 +139,39 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 Possibilities.Add(cast);
             }
 
-            if (Brain.Brain.DebugMode)
+            if (!Brain.Brain.DebugMode)
+                return;
+            Debug.WriteLine(Fighter.Name);
+            foreach (var spell in Fighter.Spells.Values)
             {
-                Debug.WriteLine(Fighter.Name);
-                foreach (var spell in Fighter.Spells.Values)
+                Debug.WriteLine("Spell {0} ({1}) :: {2}", spell.Template.Name, spell.Id, SpellIdentifier.GetSpellCategories(spell));
+
+                var possibility = Possibilities.FirstOrDefault(x => x.Spell == spell);
+
+                if (possibility == null)
+                    continue;
+
+                if (possibility.IsSummoningSpell)
                 {
-                    Debug.WriteLine("Spell {0} ({1}) :: {2}", spell.Template.Name, spell.Id, SpellIdentifier.GetSpellCategories(spell));
-
-                    var possibility = Possibilities.FirstOrDefault(x => x.Spell == spell);
-
-                    if (possibility == null)
-                        continue;
-
-                    if (possibility.IsSummoningSpell)
+                    Debug.WriteLine("\tSummon Spell");
+                }
+                else
+                {
+                    var dumper = new ObjectDumper(8)
                     {
-                        Debug.WriteLine("\tSummon Spell");
-                    }
-                    else
-                    {
-                        var dumper = new ObjectDumper(8)
-                        {
-                            MemberPredicate = (member) => !member.Name.Contains("Target")
-                        };
+                        MemberPredicate = (member) => !member.Name.Contains("Target")
+                    };
 
-                        Debug.WriteLine("\t{0} Targets", possibility.Impacts.Count);
-                        foreach (var impact in possibility.Impacts)
-                        {
-                            Debug.Write(dumper.DumpElement(impact));
-                            if (impact.Target != null)
-                                Debug.WriteLine("\t\tTarget = " + impact.Target is NamedFighter ? ( (NamedFighter)impact.Target ).Name : impact.Target.Id.ToString());
-                        }
+                    Debug.WriteLine("\t{0} Targets", possibility.Impacts.Count);
+                    foreach (var impact in possibility.Impacts)
+                    {
+                        Debug.Write(dumper.DumpElement(impact));
+                        if (impact.Target != null)
+                            Debug.WriteLine("\t\tTarget = " + impact.Target is NamedFighter ? ( (NamedFighter)impact.Target ).Name : impact.Target.Id.ToString());
                     }
                 }
-                Debug.WriteLine("");
             }
+            Debug.WriteLine("");
         }
 
         public IEnumerable<SpellCast> EnumerateSpellsCast()
@@ -209,6 +200,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     {
                         foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
                         {
+                            if (impact.Target == null)
+                                continue;
+                            if (possibleCast.Spell == null)
+                                continue;
+
                             int mpToUse;
                             if (!CanReach(impact.Target, possibleCast.Spell, out mpToUse))
                                 continue;
@@ -253,7 +249,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             return damages;
         }
 
-        private double CumulEffects(EffectDice effect, ref SpellTarget spellImpact, FightActor target, Spell spell)
+        private void CumulEffects(EffectDice effect, ref SpellTarget spellImpact, FightActor target, Spell spell)
         {
             var isFriend = Fighter.Team.Id == target.Team.Id;
             var result = new SpellTarget();
@@ -262,7 +258,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
 
             if (category == 0)
-                return 0; // No category selected in this spell
+                return;
 
             double chanceToHappen = 1.0; // 
 
@@ -381,8 +377,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 spellImpact.Add(result);
             else
                 spellImpact = result;
-
-            return result.Damage;
         }
 
         private static void AdjustDamage(SpellTarget damages, uint damage1, uint damage2, SpellCategory category,

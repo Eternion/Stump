@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -49,12 +50,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public int GetMerchantTax()
         {
-            double resultTax = 0;
-
-            foreach(var item in Items)
-            {
-                resultTax += ( item.Value.Price * item.Value.Stack );
-            }
+            var resultTax = Items.Aggregate<KeyValuePair<int, MerchantItem>, double>(0, (current, item) => current + (item.Value.Price*item.Value.Stack));
 
             resultTax = (resultTax * 0.1);
 
