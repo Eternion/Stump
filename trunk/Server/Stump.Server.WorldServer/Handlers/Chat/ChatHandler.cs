@@ -29,6 +29,9 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             {
                 if (!chr.IsAway)
                 {
+                    if (client.Character.IsAway)
+                        client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
+
                     // send a copy to sender
                     SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
                         message.content);
@@ -50,7 +53,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 }
                 else
                 {
-                    client.Send(new ChatErrorMessage((sbyte)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, chr.Name);
                 }
             }
             else

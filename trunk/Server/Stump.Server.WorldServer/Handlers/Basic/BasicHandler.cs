@@ -16,13 +16,17 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         [WorldHandler(BasicSwitchModeRequestMessage.Id)]
         public static void HandleBasicSwitchModeRequestMessage(WorldClient client, BasicSwitchModeRequestMessage message)
         {
+            if (client.Character.ToggleAway())
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 37);
+            else
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 38);
         }
 
         [WorldHandler(BasicWhoAmIRequestMessage.Id)]
         public static void HandleBasicWhoAmIRequestMessage(WorldClient client, BasicWhoAmIRequestMessage message)
         {
             /* Get Current character */
-            Character character = client.Character;
+            var character = client.Character;
 
             /* Send informations about it */
             client.Send(new BasicWhoIsMessage(true, (sbyte) character.Account.Role,
