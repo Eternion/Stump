@@ -105,14 +105,16 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         [WorldHandler(GameRolePlayPlayerFightRequestMessage.Id)]
-        public static void HandleGameRolePlayPlayerFightRequestMessage(WorldClient client,
-                                                                       GameRolePlayPlayerFightRequestMessage message)
+        public static void HandleGameRolePlayPlayerFightRequestMessage(WorldClient client, GameRolePlayPlayerFightRequestMessage message)
         {
             var target = client.Character.Map.GetActor<Character>(message.targetId);
 
+            if (target == null)
+                return;
+
             if (message.friendly)
             {
-                FighterRefusedReasonEnum reason = client.Character.CanRequestFight(target);
+                var reason = client.Character.CanRequestFight(target);
                 if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
                 {
                     SendChallengeFightJoinRefusedMessage(client, client.Character, reason);
@@ -129,7 +131,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             }
             else // agression
             {
-                FighterRefusedReasonEnum reason = client.Character.CanAgress(target);
+                var reason = client.Character.CanAgress(target);
                 if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
                 {
                     SendChallengeFightJoinRefusedMessage(client, client.Character, reason);
@@ -148,9 +150,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         [WorldHandler(GameRolePlayPlayerFightFriendlyAnswerMessage.Id)]
-        public static void HandleGameRolePlayPlayerFightFriendlyAnswerMessage(WorldClient client,
-                                                                              GameRolePlayPlayerFightFriendlyAnswerMessage
-                                                                                  message)
+        public static void HandleGameRolePlayPlayerFightFriendlyAnswerMessage(WorldClient client, GameRolePlayPlayerFightFriendlyAnswerMessage message)
         {
             if (!client.Character.IsInRequest() ||
                 !(client.Character.RequestBox is FightRequest))

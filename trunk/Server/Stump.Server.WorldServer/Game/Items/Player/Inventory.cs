@@ -387,28 +387,27 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 if (equipedItem.AllowFeeding)
                 {
-                    if (equipedItem.Feed(item))
-                    {
-                        RemoveItem(item);
+                    if (!equipedItem.Feed(item))
                         return;
-                    }
+
+                    RemoveItem(item);
+                    return;
                 }
-                else if (item.AllowDropping)
+
+                if (item.AllowDropping)
                 {
-                    if (item.Drop(equipedItem))
-                    {
-                        RemoveItem(item);
+                    if (!item.Drop(equipedItem))
                         return;
-                    }
+
+                    RemoveItem(item);
+                    return;
                 }
-                else
-                {
-                    // if there is one we move it to the inventory
-                    if (CanEquip(item, position, false))
-                        MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-                }
+
+                // if there is one we move it to the inventory
+                if (CanEquip(item, position, false))
+                    MoveItem(equipedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
-                
+
             if (!CanEquip(item, position))
                 return;
 

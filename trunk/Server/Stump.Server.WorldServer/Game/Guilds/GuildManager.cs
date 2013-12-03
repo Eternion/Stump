@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             lock (m_lock)
             {
                 m_guildsMembers.Remove(member.Id);
-                Database.Delete(member);
+                Database.Delete(member.Record);
                 return true;
             }
         }

@@ -33,9 +33,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (Target.Stats.Health.DamageTaken < heal)
             {
                 heal = Target.Stats.Health.DamageTaken;
-                UsedItems = (uint)Math.Ceiling((double)heal/integerEffect.Value);
             }
 
+            UsedItems = (uint)Math.Ceiling((double)heal / integerEffect.Value);
             Target.Stats.Health.DamageTaken -= heal;
 
             // x hp restored

@@ -1,5 +1,4 @@
 using System;
-using Stump.Server.WorldServer.Database.Items;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -12,13 +11,12 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             OnKamasAmountChanged(kamas);
 
-            Action<ItemsStorage<T>, int> handler = KamasAmountChanged;
+            var handler = KamasAmountChanged;
             if (handler != null) handler(this, kamas);
         }
 
         protected virtual void OnKamasAmountChanged(int amount)
         {
-
         }
 
         public void AddKamas(int amount)

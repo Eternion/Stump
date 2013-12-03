@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Timers;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -159,7 +158,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 return;
             }
 
-            Fights.Fight fight = FightManager.Instance.CreatePvMFight(Map);
+            var fight = FightManager.Instance.CreatePvMFight(Map);
 
             fight.RedTeam.AddFighter(character.CreateFighter(fight.RedTeam));
 

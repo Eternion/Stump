@@ -1501,7 +1501,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnDied()
         {
-            var dest = GetSpawnPoint();
+            var dest = GetSpawnPoint() ?? Breed.GetStartPosition();
 
             // use nextmap to update correctly the areas changements
             NextMap = dest.Map;
@@ -1511,7 +1511,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             // energy lost go here
             Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
 
-            CharacterDiedHandler handler = Died;
+            var handler = Died;
             if (handler != null) handler(this);
         }
 
@@ -1753,25 +1753,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public ObjectPosition GetSpawnPoint()
         {
-            if (Record.SpawnMap != null)
-            {
-                if (m_spawnPoint != null)
-                    return m_spawnPoint;
+            if (Record.SpawnMap == null)
+                return Breed.GetStartPosition();
 
-                var map = Record.SpawnMap;
+            if (m_spawnPoint != null)
+                return m_spawnPoint;
 
-                if (map.Zaap != null)
-                {
-                    var cell = map.GetRandomAdjacentFreeCell(map.Zaap.Position.Point);
-                    var direction = map.Zaap.Position.Point.OrientationTo(new MapPoint(cell));
+            var map = Record.SpawnMap;
 
-                    return new ObjectPosition(map, cell, direction);
-                }
-
+            if (map.Zaap == null)
                 return new ObjectPosition(map, map.GetRandomFreeCell(), Direction);
-            }
 
-            return Breed.GetStartPosition();
+            var cell = map.GetRandomAdjacentFreeCell(map.Zaap.Position.Point);
+            var direction = map.Zaap.Position.Point.OrientationTo(new MapPoint(cell));
+
+            return new ObjectPosition(map, cell, direction);
         }
 
         #endregion
@@ -1893,17 +1889,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 merchant.Save();
 
-                if (merchant.Record.CharacterId == Id)
+                if (merchant.Record.CharacterId != Id)
+                    continue;
+                if (merchant.KamasEarned > 0)
                 {
-                    if (merchant.KamasEarned > 0)
-                    {
-                        Inventory.AddKamas((int) merchant.KamasEarned);
-                        m_earnKamasInMerchant = (int) merchant.KamasEarned;
-                    }
-                    MerchantBag.LoadMerchantBag(merchant.Bag);
-
-                    MerchantManager.Instance.RemoveMerchantSpawn(merchant.Record);
+                    Inventory.AddKamas((int) merchant.KamasEarned);
+                    m_earnKamasInMerchant = (int) merchant.KamasEarned;
                 }
+                MerchantBag.LoadMerchantBag(merchant.Bag);
+
+                MerchantManager.Instance.RemoveMerchantSpawn(merchant.Record);
             }
 
             // if the merchant wasn't active

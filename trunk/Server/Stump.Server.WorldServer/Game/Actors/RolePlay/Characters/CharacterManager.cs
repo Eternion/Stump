@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
@@ -216,14 +217,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             do
             {
                 var rand = new Random();
-                int namelen = rand.Next(5, 10);
+                var namelen = rand.Next(5, 10);
                 name = string.Empty;
 
-                bool vowel = rand.Next(0, 2) == 0;
-                name += GetChar(vowel, rand).ToString().ToUpper();
+                var vowel = rand.Next(0, 2) == 0;
+                name += GetChar(vowel, rand).ToString(CultureInfo.InvariantCulture).ToUpper();
                 vowel = !vowel;
 
-                for (int i = 0; i < namelen - 1; i++)
+                for (var i = 0; i < namelen - 1; i++)
                 {
                     name += GetChar(vowel, rand);
                     vowel = !vowel;

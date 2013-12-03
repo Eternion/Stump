@@ -1,10 +1,7 @@
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items

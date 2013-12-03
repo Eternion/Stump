@@ -1,7 +1,6 @@
 ﻿using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables

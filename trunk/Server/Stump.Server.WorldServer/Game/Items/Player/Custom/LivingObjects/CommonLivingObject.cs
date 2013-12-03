@@ -2,7 +2,6 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
@@ -53,11 +52,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
 
             if ((m_categoryEffect = (EffectInteger)
-                (Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LivingObjectCategory))) == null)
-            {
-                m_categoryEffect = new EffectInteger(EffectsEnum.Effect_LivingObjectCategory, (short) m_record.ItemType);
-                Effects.Add(m_categoryEffect);
-            }
+                (Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LivingObjectCategory))) != null) return;
+            m_categoryEffect = new EffectInteger(EffectsEnum.Effect_LivingObjectCategory, (short) m_record.ItemType);
+            Effects.Add(m_categoryEffect);
         }
 
         protected LivingObjectRecord LivingObjectRecord
