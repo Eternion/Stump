@@ -8,8 +8,6 @@ using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
@@ -17,7 +15,6 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
@@ -128,7 +125,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnSpellCasting(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            SpellCastingHandler handler = SpellCasting;
+            var handler = SpellCasting;
             if (handler != null)
                 handler(this, spell, target, critical, silentCast);
         }
@@ -1436,16 +1433,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!(this is CharacterFighter))
                 return true;
 
-            if (spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Trap) || // traps
-                spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
-                spell.Template.Id == 74 || // double
-                spell.Template.Id == 62 || // chakra pulsion
-                spell.Template.Id == 66 || // insidious poison
-                spell.Template.Id == 67) // fear
-                // todo : masteries
-                return true;
-
-            return false;
+            return spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Trap) || // traps
+                   spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
+                   spell.Template.Id == 74 || // double
+                   spell.Template.Id == 62 || // chakra pulsion
+                   spell.Template.Id == 66 || // insidious poison
+                   spell.Template.Id == 67;
         }
 
         public bool DispellInvisibilityBuff()

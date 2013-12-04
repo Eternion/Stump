@@ -1,6 +1,5 @@
 using NLog;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -13,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
     [EffectHandler(EffectsEnum.Effect_Trap)]
     public class TrapSpawn : SpellEffectHandler
     {
-        private Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public TrapSpawn(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)

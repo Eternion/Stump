@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -31,13 +30,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 ContextHandler.SendGameActionFightMarkCellsMessage(Fight.Clients, trap);
             }
 
-            foreach (var target in GetAffectedActors())
+            foreach (var target in GetAffectedActors().Where(target => target.VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE &&
+                                                                       target.IsEnnemyWith(Caster)))
             {
-                if (target.VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE &&
-                    target.IsEnnemyWith(Caster))
-                {
-                    target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.DETECTED);
-                }
+                target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.DETECTED);
             }
 
             return true;

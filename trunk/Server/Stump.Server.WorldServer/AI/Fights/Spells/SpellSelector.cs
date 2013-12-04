@@ -200,11 +200,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     {
                         foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
                         {
-                            if (impact.Target == null)
-                                continue;
-                            if (possibleCast.Spell == null)
-                                continue;
-
                             int mpToUse;
                             if (!CanReach(impact.Target, possibleCast.Spell, out mpToUse))
                                 continue;
