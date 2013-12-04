@@ -98,17 +98,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public ushort GetAlignementGradeHonor(byte grade)
         {
-            if (m_records.ContainsKey(grade))
-            {
-                ushort? honor = m_records[grade].AlignmentHonor;
+            if (!m_records.ContainsKey(grade)) throw new Exception("Grade " + grade + " not found");
+            var honor = m_records[grade].AlignmentHonor;
 
-                if (!honor.HasValue)
-                    throw new Exception("Grade " + grade + " is not defined");
+            if (!honor.HasValue)
+                throw new Exception("Grade " + grade + " is not defined");
 
-                return honor.Value;
-            }
-
-            throw new Exception("Grade " + grade + " not found");
+            return honor.Value;
         }
 
         /// <summary>
@@ -123,7 +119,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             var honor = m_records[(byte) (grade + 1)].AlignmentHonor;
 
-            return !honor.HasValue ? (ushort)20000 : honor.Value;
+            return honor == null ? (ushort)20000 : honor.Value;
         }
 
         public byte GetAlignementGrade(ushort honor)
@@ -181,10 +177,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 return exp.Value;
             }
-            else
-            {
-                return long.MaxValue;
-            }
+            return long.MaxValue;
         }
 
         public byte GetGuildLevel(long experience)

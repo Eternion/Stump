@@ -845,16 +845,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 var effect = boost.Effects.OfType<EffectMinMax>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
 
-                if (effect != null)
-                {
-                    effect.ValueMax--;
+                if (effect == null)
+                    continue;
 
-                    if (effect.ValueMax <= 0)
-                        RemoveItem(boost);
-                    else
-                        RefreshItem(boost);
-                }
+                effect.ValueMax--;
 
+                if (effect.ValueMax <= 0)
+                    RemoveItem(boost);
+                else
+                    RefreshItem(boost);
             }
         }
 
