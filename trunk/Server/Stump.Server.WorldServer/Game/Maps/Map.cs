@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             OnEnter(actor);
 
-            Action<Map, RolePlayActor> handler = ActorEnter;
+            var handler = ActorEnter;
             if (handler != null)
                 handler(this, actor);
         }
@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnFightRemoved(Fight fight)
         {
-            Action<Map, Fight> handler = FightRemoved;
+            var handler = FightRemoved;
             if (handler != null)
                 handler(this, fight);
         }
@@ -107,7 +107,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             InteractiveHandler.SendInteractiveUsedMessage(Clients, user, interactive, skill);
 
-            Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUsed;
+            var handler = InteractiveUsed;
             if (handler != null)
                 handler(this, user, interactive, skill);
         }
@@ -116,7 +116,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnInteractiveUseEnded(Character user, InteractiveObject interactive, Skill skill)
         {
-            Action<Map, Character, InteractiveObject, Skill> handler = InteractiveUseEnded;
+            var handler = InteractiveUseEnded;
             if (handler != null)
                 handler(this, user, interactive, skill);
         }
@@ -1152,7 +1152,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public bool IsCellFree(short cell, WorldObject exclude)
         {
-            return Objects.All(x => x == exclude || x.Cell.Id != cell);
+            return exclude != null && Objects.All(x => x == exclude || x.Cell.Id != cell);
         }
 
         public T GetActor<T>(int id)

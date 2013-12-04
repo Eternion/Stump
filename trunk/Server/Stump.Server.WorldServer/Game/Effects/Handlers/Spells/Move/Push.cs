@@ -1,6 +1,5 @@
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -26,13 +25,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (integerEffect == null)
                 return false;
 
-            foreach (FightActor actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors())
             {
-                MapPoint referenceCell;
-                if (TargetedCell.Id == actor.Cell.Id)
-                    referenceCell = new MapPoint(CastCell);
-                else
-                    referenceCell = TargetedPoint;
+                var referenceCell = TargetedCell.Id == actor.Cell.Id ? new MapPoint(CastCell) : TargetedPoint;
 
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
@@ -41,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
-                for (int i = 0; i < integerEffect.Value; i++)
+                for (var i = 0; i < integerEffect.Value; i++)
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 

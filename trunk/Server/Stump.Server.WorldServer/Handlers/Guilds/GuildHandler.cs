@@ -8,7 +8,6 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
-using Stump.Server.WorldServer.Handlers.Dialogs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
