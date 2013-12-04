@@ -1,7 +1,6 @@
 using System.Drawing;
 using NLog;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -32,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             }
             
             // todo : find usage of Dice.Value
-            Glyph glyph = EffectZone.ShapeType == SpellShapeEnum.Q ?
+            var glyph = EffectZone.ShapeType == SpellShapeEnum.Q ?
                 new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, GameActionMarkCellsTypeEnum.CELLS_CROSS, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell)) :
                 new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell));
 

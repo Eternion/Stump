@@ -56,7 +56,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             }
             else if (trigger is GameTrigger)
             {
-                position = ( trigger as GameTrigger ).Character.Position;
+                position = (trigger as GameTrigger).Character.Position;
             }
 
             if (position == null)
@@ -67,21 +67,21 @@ namespace Stump.Plugins.EditorPlugin.Commands
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
-                    {
-                        var spawn = new NpcSpawn()
-                                        {
-                                            Template = template,
-                                            MapId = position.Map.Id,
-                                            CellId = position.Cell.Id,
-                                            Direction = position.Direction,
-                                            Look = template.Look
-                                        };
+                {
+                    var spawn = new NpcSpawn()
+                                    {
+                                        Template = template,
+                                        MapId = position.Map.Id,
+                                        CellId = position.Cell.Id,
+                                        Direction = position.Direction,
+                                        Look = template.Look
+                                    };
 
-                        NpcManager.Instance.AddNpcSpawn(spawn);
-                        var npc = position.Map.SpawnNpc(spawn);
+                    NpcManager.Instance.AddNpcSpawn(spawn);
+                    var npc = position.Map.SpawnNpc(spawn);
 
-                        trigger.Reply("Npc {0} spawned", npc.Id);
-                    });
+                    trigger.Reply("Npc {0} spawned", npc.Id);
+                });
         }
     }
 
@@ -108,7 +108,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             }
             else if (trigger is GameTrigger)
             {
-                npc = ( trigger as GameTrigger ).Character.Map.GetActor<Npc>(npcId);
+                npc = (trigger as GameTrigger).Character.Map.GetActor<Npc>(npcId);
             }
             else
             {
@@ -158,10 +158,10 @@ namespace Stump.Plugins.EditorPlugin.Commands
                     if (shop == null)
                     {
                         shop = new NpcBuySellAction(new NpcActionRecord
-                            {
-                                Type = NpcBuySellAction.Discriminator,
-                                Template = template
-                            });
+                        {
+                            Type = NpcBuySellAction.Discriminator,
+                            Template = template
+                        });
 
                         NpcManager.Instance.AddNpcAction(shop);
                         template.Actions.Add(shop);
@@ -175,6 +175,13 @@ namespace Stump.Plugins.EditorPlugin.Commands
                         BuyCriterion = string.Empty,
                         MaxStats = trigger.IsArgumentDefined("max")
                     };
+
+                    foreach (var actualItem in shop.Items.Where(x => x.ItemId == item.ItemId).ToArray())
+                    {
+                        WorldServer.Instance.DBAccessor.Database.Delete(actualItem);
+                        shop.Items.Remove(actualItem);
+                        trigger.Reply("Item '{0}' remove from '{1}'s' shop", itemTemplate.Name, template.Name);
+                    }
 
                     WorldServer.Instance.DBAccessor.Database.Insert(item);
                     shop.Items.Add(item);

@@ -946,7 +946,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public ushort Honor
         {
-            get { return m_record.Honor; }
+            get { return LowerBoundHonor; }
             set
             {
                 m_record.Honor = value;
