@@ -158,10 +158,10 @@ namespace Stump.Plugins.EditorPlugin.Commands
                     if (shop == null)
                     {
                         shop = new NpcBuySellAction(new NpcActionRecord
-                            {
-                                Type = NpcBuySellAction.Discriminator,
-                                Template = template
-                            });
+                        {
+                            Type = NpcBuySellAction.Discriminator,
+                            Template = template
+                        });
 
                         NpcManager.Instance.AddNpcAction(shop);
                         template.Actions.Add(shop);
@@ -176,11 +176,11 @@ namespace Stump.Plugins.EditorPlugin.Commands
                         MaxStats = trigger.IsArgumentDefined("max")
                     };
 
-                    foreach (var existItem in shop.Items.Where(x => x.ItemId == item.ItemId))
+                    foreach (var actualItem in shop.Items.Where(x => x.ItemId == item.ItemId).ToArray())
                     {
-                        WorldServer.Instance.DBAccessor.Database.Delete(existItem);
-                        shop.Items.Remove(existItem);
-                        trigger.Reply("Item '{0}' removed from '{1}'s' shop", itemTemplate.Name, template.Name);
+                        WorldServer.Instance.DBAccessor.Database.Delete(actualItem);
+                        shop.Items.Remove(actualItem);
+                        trigger.Reply("Item '{0}' remove from '{1}'s' shop", itemTemplate.Name, template.Name);
                     }
 
                     WorldServer.Instance.DBAccessor.Database.Insert(item);
