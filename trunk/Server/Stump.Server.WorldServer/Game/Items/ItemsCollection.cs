@@ -2,10 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
-using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
@@ -177,11 +174,9 @@ namespace Stump.Server.WorldServer.Game.Items
                 RemoveItem(item, delete);
                 return item.Stack;
             }
-            else
-            {
-                UnStackItem(item, amount);
-                return amount;
-            }
+
+            UnStackItem(item, amount);
+            return amount;
         }
 
         /// <summary>

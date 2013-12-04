@@ -22,7 +22,7 @@ namespace ArkalysPlugin.SmithMagic
             ItemManager.Instance.AddItemConstructor(typeof(SmithMagicPotionItem));
         }
 
-        private static Tuple<EffectsEnum, int[]>[] m_potions =
+        private static readonly Tuple<EffectsEnum, int[]>[] m_potions =
         {
             Tuple.Create(EffectsEnum.Effect_DamageEarth, new []{1338, 1340, 1348}),
             Tuple.Create(EffectsEnum.Effect_DamageFire, new []{1333, 1343, 1345}),
@@ -31,7 +31,7 @@ namespace ArkalysPlugin.SmithMagic
 
         };
 
-        private static double[] m_potionsBoosts = {0.5, 0.6, 0.8};
+        private static readonly double[] m_potionsBoosts = {0.5, 0.6, 0.8};
 
         public SmithMagicPotionItem(Character owner, PlayerItemRecord record) : base(owner, record)
         {
@@ -49,30 +49,30 @@ namespace ArkalysPlugin.SmithMagic
 
             var tuple = m_potions.FirstOrDefault(x => x.Item2.Contains(Template.Id));
 
-            if (tuple != null)
-            {
-                var boost = m_potionsBoosts[Array.IndexOf(tuple.Item2, Template.Id)];
-                var effect = weapon.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_DamageNeutral);
-
-                effect.EffectId = tuple.Item1;
-                if (effect is EffectDice)
-                {
-                    (effect as EffectDice).DiceFace = (short)((effect as EffectDice).DiceFace * boost);
-                    (effect as EffectDice).DiceNum = (short)((effect as EffectDice).DiceNum * boost);
-                }
-                if (effect is EffectInteger)
-                    (effect as EffectInteger).Value = (short)((effect as EffectInteger).Value * boost);
-                else if (effect is EffectMinMax)
-                {
-                    (effect as EffectMinMax).ValueMin = (short)((effect as EffectMinMax).ValueMin * boost);
-                    (effect as EffectMinMax).ValueMax = (short)((effect as EffectMinMax).ValueMax * boost);
-                }
-
-                Owner.Inventory.RefreshItem(weapon);
-                weapon.OnObjectModified();
-
+            if (tuple == null)
                 return 1;
+
+            var boost = m_potionsBoosts[Array.IndexOf(tuple.Item2, Template.Id)];
+            var effect = weapon.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_DamageNeutral);
+            weapon.Effects.Remove(effect);
+
+            effect.EffectId = tuple.Item1;
+            if (effect is EffectDice)
+            {
+                (effect as EffectDice).DiceFace = (short)((effect as EffectDice).DiceFace * boost);
+                (effect as EffectDice).DiceNum = (short)((effect as EffectDice).DiceNum * boost);
             }
+            if (effect is EffectInteger)
+                (effect as EffectInteger).Value = (short)((effect as EffectInteger).Value * boost);
+            else if (effect is EffectMinMax)
+            {
+                (effect as EffectMinMax).ValueMin = (short)((effect as EffectMinMax).ValueMin * boost);
+                (effect as EffectMinMax).ValueMax = (short)((effect as EffectMinMax).ValueMax * boost);
+            }
+
+            weapon.Effects.Add(effect);
+            Owner.Inventory.RefreshItem(weapon);
+            weapon.OnObjectModified();
 
             return 1;
         }

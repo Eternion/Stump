@@ -1605,7 +1605,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             trigger.Triggered += OnMarkTriggered;
             m_triggers.Add(trigger);
 
-            foreach (CharacterFighter fighter in GetAllFighters<CharacterFighter>())
+            foreach (var fighter in GetAllFighters<CharacterFighter>())
             {
                 ContextHandler.SendGameActionFightMarkCellsMessage(fighter.Character.Client, trigger, trigger.DoesSeeTrigger(fighter));
             }
@@ -1747,7 +1747,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void ForEach(Action<Character> action, bool withSpectators = false)
         {
-            foreach (Character character in GetAllCharacters(withSpectators))
+            foreach (var character in GetAllCharacters(withSpectators))
             {
                 action(character);
             }
@@ -1755,11 +1755,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void ForEach(Action<Character> action, Character except, bool withSpectators = false)
         {
-            foreach (Character character in GetAllCharacters(withSpectators))
+            foreach (var character in GetAllCharacters(withSpectators).Where(character => character != except))
             {
-                if (character == except)
-                    continue;
-
                 action(character);
             }
         }
@@ -1808,13 +1805,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
         {
-            IEnumerable<FightActor> entries = Fighters.Where(entry => predicate(entry));
+            var entries = Fighters.Where(entry => predicate(entry));
 
             var fightActors = entries as FightActor[] ?? entries.ToArray();
-            if (fightActors.Count() != 0)
-                return null;
-
-            return fightActors.SingleOrDefault();
+            return fightActors.Count() != 0 ? null : fightActors.SingleOrDefault();
         }
 
         public T GetOneFighter<T>(int id) where T : FightActor

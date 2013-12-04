@@ -457,7 +457,7 @@
         /// <summary>
         /// Gain #1{~1~2 to }#2 Kamas
         /// </summary>
-        Effect_194 = 194,
+        Effect_GiveKamas = 194,
         /// <summary>
         /// Transform into #1
         /// </summary>

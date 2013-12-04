@@ -55,6 +55,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 (Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_LivingObjectCategory))) != null) return;
             m_categoryEffect = new EffectInteger(EffectsEnum.Effect_LivingObjectCategory, (short) m_record.ItemType);
             Effects.Add(m_categoryEffect);
+
+            OnObjectModified();
         }
 
         protected LivingObjectRecord LivingObjectRecord

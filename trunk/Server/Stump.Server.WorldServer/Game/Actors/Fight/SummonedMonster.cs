@@ -1,14 +1,12 @@
-﻿using System.Linq;
+﻿using System.Globalization;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -60,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override string GetMapRunningFighterName()
         {
-            return Monster.Id.ToString();
+            return Monster.Id.ToString(CultureInfo.InvariantCulture);
         }
 
         public override string Name
