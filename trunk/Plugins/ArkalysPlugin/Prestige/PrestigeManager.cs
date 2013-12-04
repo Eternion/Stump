@@ -161,7 +161,7 @@ namespace ArkalysPlugin.Prestige
                 "les bonus s'appliquent sans équipper l'objet");
         }
 
-        private void AddEffects(BasePlayerItem item, IEnumerable<EffectInteger> effects)
+        private static void AddEffects(BasePlayerItem item, IEnumerable<EffectInteger> effects)
         {
             foreach (var effect in effects)
             {
