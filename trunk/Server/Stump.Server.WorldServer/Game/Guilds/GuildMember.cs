@@ -9,9 +9,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
 {
     public class GuildMember
     {
-        public GuildMember(GuildMemberRecord record)
+        public GuildMember(GuildMemberRecord record, CharacterRecord characterRecord)
         {
             Record = record;
+            CharacterRecord = characterRecord;
         }
 
         public GuildMember(Guild guild, Character character)
@@ -29,7 +30,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             Guild = guild;
             Character = character;
-            CharacterRecord = CharacterManager.Instance.GetCharacterById(Record.CharacterId);
             IsDirty = true;
             IsNew = true;
         }
