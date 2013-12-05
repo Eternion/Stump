@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using Stump.Core.Reflection;
 using Stump.Server.AuthServer;
 using Stump.Server.AuthServer.Database;
@@ -18,15 +19,33 @@ namespace ArkalysAuthPlugin.Votes
 
         private static void CheckVotes()
         {
-            var query =
-                string.Format("SELECT * FROM `accounts` WHERE `LastConnectionWorld` IS NOT NULL AND `LastVote` IS NULL OR `LastVote` < '{0}'",
-                    (DateTime.Now - TimeSpan.FromHours(3)).ToString("yyyy-MM-dd hh:mm:ss"));
+            var votes =
+                AuthServer.Instance.DBAccessor.Database.Query<Account>(
+                    string.Format(
+                        "SELECT Id,LastConnectionWorld FROM `accounts` WHERE `LastConnectionWorld` IS NOT NULL AND `LastVote` IS NULL OR `LastVote` < '{0}'",
+                        (DateTime.Now - TimeSpan.FromHours(3)).ToString("yyyy-MM-dd hh:mm:ss")));
 
-            var accounts = AuthServer.Instance.DBAccessor.Database.Query<Account>(query);
+            var groupedAccounts = from vote in votes
+                                  group vote by vote.LastConnectionWorld.Value;
 
-            foreach (var world in accounts.ToArray().Select(account => WorldServerManager.Instance.GetServerById(account.LastConnectionWorld.Value)).Where(world => world.IPCClient != null))
+            foreach (var group in groupedAccounts)
             {
-                world.IPCClient.Send(new VoteNotificationMessage(accounts.Select(x => x.Id).ToArray()));
+                var world = WorldServerManager.Instance.GetServerById(group.Key);
+
+                if (world.IPCClient == null)
+                    continue;
+
+                var total = group.Count();
+                for (var i = 0; i <= total; i += 2000)
+                {
+                    var list = group.Skip(i).Take(2000);
+
+                    var send = list.Select(x => x.Id).ToArray();
+                    world.IPCClient.Send(new VoteNotificationMessage(send));
+
+                    //Very Ugly
+                    Thread.Sleep(1000);
+                }
             }
         }
     }

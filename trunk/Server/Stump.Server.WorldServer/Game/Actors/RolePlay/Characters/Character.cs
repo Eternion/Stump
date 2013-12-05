@@ -152,9 +152,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 m_record.Name = value;
                 base.Name = value;
-
-                if (GuildMember != null)
-                    GuildMember.Name = value;
             }
         }
 
@@ -634,9 +631,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set
             {
                 m_level = value;
-
-                if (GuildMember != null)
-                    GuildMember.Level = value;
             }
         }
 
@@ -926,9 +920,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set
             {
                 m_record.AlignmentSide = value;
-
-                if (GuildMember != null)
-                    GuildMember.AlignmentSide = value;
             }
         }
 
