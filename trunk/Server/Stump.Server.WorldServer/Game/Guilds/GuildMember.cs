@@ -180,6 +180,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 evnt(this, character);
         }
 
+        public void AddXP(long experience)
+        {
+            GivenExperience += experience;
+            Guild.AddXP(experience);
+        }
+
         public void BindGuild(Guild guild)
         {
             if (Guild != null)

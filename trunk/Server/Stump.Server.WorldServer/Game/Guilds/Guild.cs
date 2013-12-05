@@ -207,7 +207,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 var level = ExperienceManager.Instance.GetGuildLevel(Experience);
 
-                if (level == Level) return;
+                if (level == Level)
+                    return;
 
                 Level = level;
                 OnLevelChanged();
