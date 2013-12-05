@@ -12,7 +12,6 @@ using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Breeds;
@@ -58,16 +57,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             var characters = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, characterIds.ToCSV(",")));
 
-            if (characters.Count != client.Account.Characters.Count)
+            if (characters.Count == client.Account.Characters.Count)
+                return characters;
+
+            // delete characters that doesn't exist anymore
+            foreach (var id in characterIds.Where(id => characters.All(character => character.Id != id)).Where(id => IPCAccessor.Instance.IsConnected))
             {
-                // delete characters that doesn't exist anymore
-                foreach (int id in characterIds.Where(id => characters.All(character => character.Id != id)).Where(id => IPCAccessor.Instance.IsConnected))
-                {
-                    IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
-                }
+                IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, id));
             }
 
             return characters;
+        }
+
+        public CharacterRecord GetCharacterById(int id)
+        {
+            var character = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, id));
+
+            return character.Count == 0 ? null : character.FirstOrDefault();
         }
 
         public bool DoesNameExist(string name)
@@ -150,10 +156,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 // add items here
 
-                IOrderedEnumerable<BreedSpell> spellsToLearn = from spell in breed.Spells
-                                                               where spell.ObtainLevel <= breed.StartLevel
-                                                               orderby spell.ObtainLevel , spell.Spell ascending
-                                                               select spell;
+                var spellsToLearn = from spell in breed.Spells
+                                    where spell.ObtainLevel <= breed.StartLevel
+                                    orderby spell.ObtainLevel , spell.Spell ascending
+                                    select spell;
 
                 var slot = 0;
                 foreach (var spellRecord in spellsToLearn.Select(learnableSpell => SpellManager.Instance.CreateSpellRecord(record,

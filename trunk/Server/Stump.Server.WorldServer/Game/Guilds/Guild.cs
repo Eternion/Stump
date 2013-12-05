@@ -80,19 +80,28 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     Boss = member;
                 }
 
+                if (member.CharacterRecord == null)
+                {
+                    logger.Error("GuildMember {0} is not linked to a Character -> Delete", member.Id);
+
+                    World.Instance.Database.Delete(member.Record);
+                }
+
                 BindMemberEvents(member);
                 member.BindGuild(this);
             }
 
-            if (Boss != null)
-                return;
-
-            logger.Error("There is at no boss in guild {0} ({1})", Id, Name);
-
             if (m_members.Count == 0)
+            {
                 logger.Error("Guild {0} ({1}) is empty", Id, Name);
-            else
-                SetBoss(m_members.First());
+                World.Instance.Database.Delete(Record);
+            }
+            else if (Boss == null)
+            {
+                var member = m_members.First();
+                SetBoss(member);
+                logger.Error("There is at no boss in guild {0} ({1}) -> Promote {2}({3})", Id, Name, member.CharacterRecord.Name, member.CharacterRecord.Id);
+            }
         }
 
         public ReadOnlyCollection<GuildMember> Members
@@ -240,7 +249,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 {
                     // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
                     BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, 
-                                                                 guildMember.Name, Boss.Name, Name);
+                                                                 guildMember.CharacterRecord.Name, Boss.CharacterRecord.Name, Name);
                 }
 
                 UpdateMember(Boss);
@@ -293,7 +302,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
 
             // Vous avez banni <b>%1</b> de votre guilde.
-            kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
+            kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.CharacterRecord.Name);
 
             return true;
         }
@@ -473,7 +482,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 if (connectedMember != member && connectedMember.Character.WarnOnGuildConnection)
                     // Un membre de votre guilde, {player,%1,%2}, est en ligne.
                     connectedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                                     224, member.Name);
+                                                                     224, member.CharacterRecord.Name);
             }
         }
 
