@@ -140,17 +140,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
                                               (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
                                               Record.AccountId, 0);
             }
-            else
-            {
-                var character = CharacterRecord;
-                if (character == null)
-                    return null;
 
-                return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(character.Experience), character.Name, (sbyte)character.Breed, character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                                              GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
-                                              (sbyte)character.AlignmentSide, (ushort)(DateTime.Now - character.LastUsage.Value).TotalHours, 0,
-                                              Record.AccountId, 0);
-            }
+            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(CharacterRecord.Experience), CharacterRecord.Name, (sbyte)CharacterRecord.Breed, character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
+                GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
+                (sbyte)CharacterRecord.AlignmentSide, (ushort)(DateTime.Now - CharacterRecord.LastUsage.Value).TotalHours, 0,
+                Record.AccountId, 0);
         }
 
         public bool HasRight(GuildRightsBitEnum right)
