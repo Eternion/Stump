@@ -18,35 +18,15 @@ namespace ArkalysAuthPlugin.Votes
 
         private static void CheckVotes()
         {
+            var query =
+                string.Format("SELECT * FROM `accounts` WHERE `LastConnectionWorld` IS NOT NULL AND `LastVote` IS NULL OR `LastVote` < '{0}'",
+                    (DateTime.Now - TimeSpan.FromHours(3)).ToString("yyyy-MM-dd hh:mm:ss"));
 
-            // select all votes between 1 week and 3 hours ago, limited by 1 vote by account (the one with the last vote)
-            var votes =
-                AuthServer.Instance.DBAccessor.Database.Fetch<VoteRecord>(
-                    string.Format("SELECT * FROM Votes INNER JOIN (SELECT UserID, MAX(Date) as MaxDate FROM Votes GROUP BY UserID)" +
-                    " grp ON Votes.UserID = grp.UserID AND Votes.Date = grp.MaxDate WHERE grp.MaxDate BETWEEN '{0}' AND '{1}'",
-                    (DateTime.Now - TimeSpan.FromDays(7)).ToString("yyyy-MM-dd hh:mm:ss"), (DateTime.Now - TimeSpan.FromHours(3)).ToString("yyyy-MM-dd hh:mm:ss")));
+            var accounts = AuthServer.Instance.DBAccessor.Database.Query<Account>(query);
 
-            if (votes.Count == 0)
-                return;
-
-            var accounts = AuthServer.Instance.DBAccessor.Database.Query<Account>(
-                string.Format("SELECT * FROM accounts WHERE Id IN ({0})",
-                    string.Join(",", votes.Select(x => x.AccountId)))).ToDictionary(x => x.Id);
-
-            var groupedVotes = from vote in votes
-                where accounts.ContainsKey(vote.AccountId)
-                let acc = accounts[vote.AccountId]
-                where acc.LastConnectionWorld != null
-                group vote by acc.LastConnectionWorld.Value;
-
-            foreach (var group in groupedVotes)
+            foreach (var world in accounts.ToArray().Select(account => WorldServerManager.Instance.GetServerById(account.LastConnectionWorld.Value)).Where(world => world.IPCClient != null))
             {
-                var world = WorldServerManager.Instance.GetServerById(group.Key);
-
-                if (world.IPCClient == null)
-                    continue;
-
-                world.IPCClient.Send(new VoteNotificationMessage(group.Select(x => x.AccountId).ToArray()));
+                world.IPCClient.Send(new VoteNotificationMessage(accounts.Select(x => x.Id).ToArray()));
             }
         }
     }

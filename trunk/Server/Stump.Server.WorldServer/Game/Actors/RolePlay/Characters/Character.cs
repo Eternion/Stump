@@ -1328,9 +1328,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Dialog
 
-        public void DisplayNotification(string text)
+        public void DisplayNotification(string text, NotificationEnum notification = NotificationEnum.INFORMATION)
         {
-            Client.Send(new NotificationByServerMessage((ushort) NotificationEnum.INFORMATION, new []{text}, true));
+            Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}, true));
         }
 
         public void DisplayNotification(Notification notification)
