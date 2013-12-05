@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -48,9 +52,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public GuildMember[] FindGuildMembers(int guildId)
         {
-            return
-                Database.Query<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId))
-                        .Select(x => new GuildMember(x)).ToArray();
+            var guildMembersRecord = Database.Query<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId)).ToArray();
+            var guildMembers = new List<GuildMember>();
+
+            foreach (var guildMemberRecord in guildMembersRecord)
+            {
+                var character = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, guildMemberRecord.CharacterId)).ToArray();
+                guildMembers.Add(new GuildMember(guildMemberRecord, character.FirstOrDefault()));
+            }
+
+            return guildMembers.ToArray();
         }
 
         public Guild TryGetGuild(int id)
