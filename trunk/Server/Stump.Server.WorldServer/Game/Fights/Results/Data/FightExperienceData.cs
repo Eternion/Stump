@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
             Character.AddExperience(ExperienceFightDelta);
 
             if (Character.Guild != null && ExperienceForGuild > 0)
-                Character.Guild.AddXP(ExperienceForGuild);
+                Character.GuildMember.AddXP(ExperienceForGuild);
         }
     }
 }
