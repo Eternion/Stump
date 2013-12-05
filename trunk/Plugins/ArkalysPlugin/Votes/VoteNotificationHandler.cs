@@ -23,7 +23,7 @@ namespace ArkalysPlugin.Votes
             foreach (var character in World.Instance.GetCharacters(x => msg.AccountsToNotify.Contains(x.Account.Id)))
             {
                 character.DisplayNotification(
-                    "Plus de 3H se sont écoulées depuis votre dernier vote, vous pouvez à nouveau voter pour gagner des jetons depuis le site www.arkalys.com/vote",
+                    "Plus de 3H se sont écoulées depuis votre dernier vote, vous pouvez à nouveau voter pour gagner des jetons en cliquant <u><b><a href='http://www.arkalys.com/vote' target='_blank'><font color='#0000FF'>ICI</font></a></b></u>",
                     NotificationEnum.ERREUR);
             }
         }
