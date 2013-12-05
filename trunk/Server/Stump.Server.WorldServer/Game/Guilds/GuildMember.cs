@@ -29,6 +29,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             Guild = guild;
             Character = character;
+            CharacterRecord = CharacterManager.Instance.GetCharacterById(Record.CharacterId);
             IsDirty = true;
             IsNew = true;
         }
@@ -55,7 +56,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public CharacterRecord CharacterRecord
         {
-            get { return CharacterManager.Instance.GetCharacterById(Id); }
+            get;
+            private set;
         }
 
         public bool IsConnected
@@ -131,14 +133,24 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public NetworkGuildMember GetNetworkGuildMember()
         {
-            var character = CharacterRecord;
-            if (character == null)
-                return null;
+            if (IsConnected)
+            {
+                return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Character.Experience), Character.Name, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
+                                              GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
+                                              (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
+                                              Record.AccountId, 0);
+            }
+            else
+            {
+                var character = CharacterRecord;
+                if (character == null)
+                    return null;
 
-            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(character.Experience), character.Name, (sbyte) character.Breed, character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                                          GivenExperience, (sbyte) GivenPercent, (uint) Rights, (sbyte) (IsConnected ? 1 : 0),
-                                          (sbyte) character.AlignmentSide, (ushort) (DateTime.Now - character.LastUsage.Value).TotalHours, 0,
-                                          Record.AccountId, 0);
+                return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(character.Experience), character.Name, (sbyte)character.Breed, character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
+                                              GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
+                                              (sbyte)character.AlignmentSide, (ushort)(DateTime.Now - character.LastUsage.Value).TotalHours, 0,
+                                              Record.AccountId, 0);
+            }
         }
 
         public bool HasRight(GuildRightsBitEnum right)

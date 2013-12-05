@@ -100,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 var member = m_members.First();
                 SetBoss(member);
-                logger.Error("There is at no boss in guild {0} ({1}) -> Promote {2}({3})", Id, Name, member.CharacterRecord.Name, member.CharacterRecord.Id);
+                logger.Error("There is at no boss in guild {0} ({1}) -> Promote new Boss", Id, Name);
             }
         }
 
