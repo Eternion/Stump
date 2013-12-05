@@ -82,9 +82,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 if (member.CharacterRecord == null)
                 {
-                    logger.Error("GuildMember {0} is not linked to a Character -> Delete", member.Id);
-
-                    World.Instance.Database.Delete(member.Record);
+                    logger.Error("GuildMember {0} is not linked to a Character", member.Id);
                 }
 
                 BindMemberEvents(member);
@@ -94,7 +92,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (m_members.Count == 0)
             {
                 logger.Error("Guild {0} ({1}) is empty", Id, Name);
-                World.Instance.Database.Delete(Record);
             }
             else if (Boss == null)
             {
