@@ -476,7 +476,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             foreach (var connectedMember in Members.Where(x => x.IsConnected))
             {
-                if (connectedMember != member && connectedMember.Character.WarnOnGuildConnection)
+                if (connectedMember.Character == null)
+                    continue;
+
+                if (connectedMember.Character.Id != member.Character.Id && connectedMember.Character.WarnOnGuildConnection)
                     // Un membre de votre guilde, {player,%1,%2}, est en ligne.
                     connectedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                                      224, member.CharacterRecord.Name);
