@@ -482,7 +482,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 if (connectedMember.Character.Id != member.Character.Id && connectedMember.Character.WarnOnGuildConnection)
                     // Un membre de votre guilde, {player,%1,%2}, est en ligne.
                     connectedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                                     224, member.CharacterRecord.Name);
+                                                                     224, member.Character.Name);
             }
         }
 
