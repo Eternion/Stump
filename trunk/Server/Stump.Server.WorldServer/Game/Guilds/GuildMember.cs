@@ -141,7 +141,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                                               Record.AccountId, 0);
             }
 
-            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(CharacterRecord.Experience), CharacterRecord.Name, (sbyte)CharacterRecord.Breed, character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
+            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(CharacterRecord.Experience), CharacterRecord.Name, (sbyte)CharacterRecord.Breed, CharacterRecord.Sex == SexTypeEnum.SEX_FEMALE, RankId,
                 GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
                 (sbyte)CharacterRecord.AlignmentSide, (ushort)(DateTime.Now - CharacterRecord.LastUsage.Value).TotalHours, 0,
                 Record.AccountId, 0);
