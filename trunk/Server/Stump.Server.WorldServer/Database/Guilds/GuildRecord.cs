@@ -1,5 +1,4 @@
 ﻿using System;
-using Stump.DofusProtocol.Types;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 

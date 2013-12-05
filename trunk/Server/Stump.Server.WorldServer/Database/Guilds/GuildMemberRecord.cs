@@ -1,5 +1,4 @@
-﻿using System;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -67,42 +66,6 @@ namespace Stump.Server.WorldServer.Database.Guilds
         }
 
         public byte GivenPercent
-        {
-            get;
-            set;
-        }
-
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        public byte Level
-        {
-            get;
-            set;
-        }
-
-        public PlayableBreedEnum Breed
-        {
-            get;
-            set;
-        }
-
-        public SexTypeEnum Sex
-        {
-            get;
-            set;
-        }
-
-        public AlignmentSideEnum AlignmentSide
-        {
-            get;
-            set;
-        }
-
-        public DateTime LastConnection
         {
             get;
             set;
