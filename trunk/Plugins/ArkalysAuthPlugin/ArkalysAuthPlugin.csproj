@@ -79,7 +79,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Votes\VoteChecker.cs" />
     <Compile Include="Votes\VoteNotificationMessage.cs" />
-    <Compile Include="Votes\VoteRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">
