@@ -69,12 +69,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return characters;
         }
 
-        public CharacterRecord GetCharacterById(int id)
+        /*public CharacterRecord GetCharacterById(int id)
         {
             var character = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, id));
 
             return character.Count == 0 ? null : character.FirstOrDefault();
-        }
+        }*/
 
         public bool DoesNameExist(string name)
         {

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
 
@@ -9,7 +7,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     public class ShutdownCommand : CommandBase
     {
         private Timer m_shutdownTimer;
-        private int m_shutdownCountdown = 0;
+        private int m_shutdownCountdown;
 
         public ShutdownCommand()
         {
@@ -18,7 +16,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             Description = "Stop the server";
             Usage = "";
 
-            AddParameter("time", "t", "Stop after [time] seconds", 0, true);
+            AddParameter<int>("time", "t", "Stop after [time] seconds");
             AddParameter<string>("reason", "r", "Display a reason for the shutdown", isOptional: true);
             AddParameter<bool>("cancel", "c", "Cancel a shutting down procedure", isOptional:true);
         }

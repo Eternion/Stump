@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System;
+using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -11,18 +12,11 @@ namespace Stump.Server.WorldServer.Database.Guilds
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FetchByGuildId =
-            "SELECT * FROM guild_members WHERE GuildId={0}";
-
+        public static string FetchByGuildId = "SELECT * FROM guild_members gm LEFT JOIN characters ch ON ch.Id = gm.CharacterId WHERE GuildId={0}";
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FindByCharacterId = "SELECT * FROM guild_members WHERE CharacterId={0}";
-
-        /// <summary>
-        /// Use string.Format
-        /// </summary>
-        public static string FetchCharacterById = "SELECT * FROM characters WHERE Id={0}";
+        public static string FindByCharacterId = "SELECT * FROM guild_members gm LEFT JOIN characters ch ON ch.Id = gm.CharacterId WHERE CharacterId={0}";
     }
 
     [TableName("guild_members")]
@@ -66,6 +60,48 @@ namespace Stump.Server.WorldServer.Database.Guilds
         }
 
         public byte GivenPercent
+        {
+            get;
+            set;
+        }
+        
+        [Ignore]
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public byte Level
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public PlayableBreedEnum Breed
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public SexTypeEnum Sex
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public AlignmentSideEnum AlignementSide
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public DateTime LastConnection
         {
             get;
             set;
