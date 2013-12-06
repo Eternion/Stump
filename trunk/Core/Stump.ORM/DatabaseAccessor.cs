@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
 using System.Reflection;
 using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.Extensions;

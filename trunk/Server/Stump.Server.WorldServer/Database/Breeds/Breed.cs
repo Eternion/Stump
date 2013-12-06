@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -35,7 +34,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
                 return null;
             }
 
-            Breed previous = m_current;
+            var previous = m_current;
 
             m_current = breed;
             if (item.Id != 0)

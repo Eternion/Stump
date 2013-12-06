@@ -9,10 +9,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
 {
     public class GuildMember
     {
-        public GuildMember(GuildMemberRecord record, CharacterRecord characterRecord)
+        public GuildMember(GuildMemberRecord record)
         {
             Record = record;
-            CharacterRecord = characterRecord;
         }
 
         public GuildMember(Guild guild, Character character)
@@ -21,8 +20,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 {
                     CharacterId = character.Id,
                     AccountId = character.Account.Id,
+                    Name = character.Name,
+                    Level = character.Level,
+                    Breed = character.BreedId,
+                    Sex = character.Sex,
+                    AlignementSide = character.AlignmentSide,
                     GivenExperience = 0,
                     GivenPercent = 0,
+                    LastConnection = DateTime.Now,
                     RankId = 0,
                     GuildId = guild.Id,
                     Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE,
@@ -114,6 +119,68 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public bool IsBoss
         {
             get { return RankId == 1; }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return Record.Name;
+            }
+            set
+            {
+                Record.Name = value;
+                IsDirty = true;
+            }
+        }
+
+        public byte Level
+        {
+            get
+            {
+                return Record.Level;
+            }
+            set
+            {
+                Record.Level = value;
+                IsDirty = true;
+            }
+        }
+
+        public PlayableBreedEnum Breed
+        {
+            get { return Record.Breed; }
+            set
+            {
+                Record.Breed = value;
+                IsDirty = true;
+            }
+        }
+
+        public SexTypeEnum Sex
+        {
+            get { return Record.Sex; }
+            set
+            {
+                Record.Sex = value;
+                IsDirty = true;
+            }
+        }
+
+        public AlignmentSideEnum AlignementSide
+        {
+            get { return Record.AlignementSide; }
+            set
+            {
+                Record.AlignementSide = value;
+                IsDirty = true;
+            }
+        }
+
+        public DateTime LastConnection
+        {
+            get;
+            set;
         }
 
         /// <summary>
