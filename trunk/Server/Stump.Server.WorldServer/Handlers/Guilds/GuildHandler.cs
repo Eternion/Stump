@@ -209,13 +209,12 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildInformationsMembersMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildInformationsMembersMessage(guild.Members.Where(x => x.CharacterRecord != null).Select(x => x.GetNetworkGuildMember())));
+            client.Send(new GuildInformationsMembersMessage(guild.Members.Select(x => x.GetNetworkGuildMember())));
         }
 
         public static void SendGuildInformationsMemberUpdateMessage(IPacketReceiver client, GuildMember member)
         {
-            if (member.CharacterRecord != null)
-                client.Send(new GuildInformationsMemberUpdateMessage(member.GetNetworkGuildMember()));
+            client.Send(new GuildInformationsMemberUpdateMessage(member.GetNetworkGuildMember()));
         }
 
         public static void SendGuildJoinedMessage(IPacketReceiver client, GuildMember member)
