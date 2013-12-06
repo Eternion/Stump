@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
@@ -28,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
         {
-            m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
+            m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
             m_guildsMembers = m_guilds.Values.SelectMany(x => x.Members).ToDictionary(x => x.Id);
             m_idProvider = m_guilds.Any() ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max()) : new UniqueIdProvider(1);
 
@@ -52,16 +49,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public GuildMember[] FindGuildMembers(int guildId)
         {
-            var guildMembersRecord = Database.Query<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId)).ToArray();
-            var guildMembers = new List<GuildMember>();
-
-            foreach (var guildMemberRecord in guildMembersRecord)
-            {
-                var character = Database.Fetch<CharacterRecord>(string.Format(CharacterRelator.FetchByMultipleId, guildMemberRecord.CharacterId)).ToArray();
-                guildMembers.Add(new GuildMember(guildMemberRecord, character.FirstOrDefault()));
-            }
-
-            return guildMembers.ToArray();
+            return Database.Query<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchByGuildId, guildId)).ToArray().Select(x => new GuildMember(x, CharacterManager.Instance.GetCharacterById(x.CharacterId))).ToArray();
         }
 
         public Guild TryGetGuild(int id)

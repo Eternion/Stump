@@ -285,13 +285,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             var itemsToDelete = target.Inventory.Where(x => x.Template.TypeId == typeId).ToArray();
 
-            foreach (var item in itemsToDelete)
+            foreach (var item in itemsToDelete.Where(item => item.Template.TypeId == typeId))
             {
-                if (item.Template.TypeId == typeId)
-                {
-                    target.Inventory.RemoveItem(item);
-                    trigger.ReplyBold("Item {0} removed from {1}'s inventory", item.Template.Name, target);
-                }
+                target.Inventory.RemoveItem(item);
+                trigger.ReplyBold("Item {0} removed from {1}'s inventory", item.Template.Name, target);
             }
         }
     }
