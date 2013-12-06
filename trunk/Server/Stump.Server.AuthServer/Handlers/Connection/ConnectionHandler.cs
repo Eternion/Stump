@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
 using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Cryptography;
 using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Messages.Custom;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.AuthServer.Network;
@@ -51,11 +47,10 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                             toRemove.Add(authClient);
                         }
 
-                        if (DateTime.Now - authClient.InQueueUntil > TimeSpan.FromSeconds(3))
-                        {
-                            SendQueueStatusMessage(authClient, (ushort) count, (ushort) ConnectionQueue.Count);
-                            authClient.QueueShowed = true;
-                        }
+                        if (DateTime.Now - authClient.InQueueUntil <= TimeSpan.FromSeconds(3))
+                            continue;
+                        SendQueueStatusMessage(authClient, (ushort) count, (ushort) ConnectionQueue.Count);
+                        authClient.QueueShowed = true;
                     }
 
                     foreach (var authClient in toRemove)

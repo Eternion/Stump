@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             {
                 base.Equiped = value;
                 if (Limit && Total > APLimit)
-                    base.Equiped = APLimit;
+                    base.Equiped = value - (Total - APLimit);
             }
         }
 

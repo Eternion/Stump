@@ -111,16 +111,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         public void Initialize(CharacterRecord record)
         {
             // note : keep this order !
-
             Fields = new Dictionary<PlayerFields, StatsData>();
-                         
+
             Fields.Add(PlayerFields.Initiative, new StatsInitiative(Owner, 0));
-            Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, (short) record.Prospection, FormulasChanceDependant));
-            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.AP, true));
-            Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short) record.MP));
+            Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, (short)record.Prospection, FormulasChanceDependant));
+            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short)record.AP, true));
+            Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short)record.MP, true));
             Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));
-            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));                             
-            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short) record.BaseHealth, (short) record.DamageTaken));
+            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));
+            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short)record.BaseHealth, (short)record.DamageTaken));
             Fields.Add(PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, record.Wisdom));
             Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance));
             Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility));
@@ -178,15 +177,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.MagicDamage, new StatsData(Owner, PlayerFields.MagicDamage, 0));
             Fields.Add(PlayerFields.PhysicalDamageReduction, new StatsData(Owner, PlayerFields.PhysicalDamageReduction, 0));
             Fields.Add(PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0));
-            // custom fields
 
-            Fields.Add(PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0));
-            Fields.Add(PlayerFields.EarthDamageArmor, new StatsData(Owner, PlayerFields.EarthDamageArmor, 0));
-            Fields.Add(PlayerFields.NeutralDamageArmor, new StatsData(Owner, PlayerFields.NeutralDamageArmor, 0));
-            Fields.Add(PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0));
-            Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
-            Fields.Add(PlayerFields.Erosion, new StatsData(Owner, PlayerFields.Erosion, 10));
-                         
+            // custom fields
         }
 
         public void Initialize(MonsterGrade record)

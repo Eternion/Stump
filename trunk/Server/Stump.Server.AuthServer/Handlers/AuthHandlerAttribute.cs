@@ -1,7 +1,4 @@
-﻿
-using System;
-using Stump.Server.BaseServer.Handler;
-using Stump.Server.BaseServer.Network;
+﻿using Stump.Server.BaseServer.Handler;
 
 namespace Stump.Server.AuthServer.Handlers
 {
