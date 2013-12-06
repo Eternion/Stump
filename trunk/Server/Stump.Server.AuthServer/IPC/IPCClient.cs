@@ -15,15 +15,10 @@
 #endregion
 
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using NLog;
-using ProtoBuf;
-using ProtoBuf.Meta;
-using Stump.Core.IO;
-using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
@@ -34,7 +29,7 @@ namespace Stump.Server.AuthServer.IPC
     public class IPCClient
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private object m_recvLock = new object();
+        private readonly object m_recvLock = new object();
         private bool m_recvLockAcquired = false;
         private IPCMessage m_currentRequest;
 
@@ -109,7 +104,7 @@ namespace Stump.Server.AuthServer.IPC
             // is it necessarily ?
             LastActivity = DateTime.Now;}
 
-        private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
+        private static void OnSendCompleted(object sender, SocketAsyncEventArgs e)
         {
             e.Dispose();
         }
@@ -183,10 +178,7 @@ namespace Stump.Server.AuthServer.IPC
             }
             else
             {
-                if (message.RequestGuid != Guid.Empty)
-                    m_currentRequest = message;
-                else
-                    m_currentRequest = null;
+                m_currentRequest = message.RequestGuid != Guid.Empty ? message : null;
 
                 try
                 {
