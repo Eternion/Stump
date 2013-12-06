@@ -80,11 +80,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     Boss = member;
                 }
 
-                if (member.CharacterRecord == null)
-                {
-                    logger.Error("GuildMember {0} is not linked to a Character", member.Id);
-                }
-
                 BindMemberEvents(member);
                 member.BindGuild(this);
             }
@@ -247,7 +242,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 {
                     // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
                     BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, 
-                                                                 guildMember.CharacterRecord.Name, Boss.CharacterRecord.Name, Name);
+                                                                 guildMember.Name, Boss.Name, Name);
                 }
 
                 UpdateMember(Boss);
@@ -300,7 +295,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
 
             // Vous avez banni <b>%1</b> de votre guilde.
-            kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.CharacterRecord.Name);
+            kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
 
             return true;
         }

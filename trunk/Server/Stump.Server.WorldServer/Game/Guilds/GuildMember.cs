@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     CharacterId = character.Id,
                     AccountId = character.Account.Id,
                     Name = character.Name,
-                    Level = character.Level,
+                    Experience = character.Experience,
                     Breed = character.BreedId,
                     Sex = character.Sex,
                     AlignementSide = character.AlignmentSide,
@@ -54,12 +54,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
         ///     Null if the character isn't connected.
         /// </summary>
         public Character Character
-        {
-            get;
-            private set;
-        }
-
-        public CharacterRecord CharacterRecord
         {
             get;
             private set;
@@ -134,15 +128,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public byte Level
+        public long Experience
         {
             get
             {
-                return Record.Level;
+                return Record.Experience;
             }
             set
             {
-                Record.Level = value;
+                Record.Experience = value;
                 IsDirty = true;
             }
         }
@@ -179,8 +173,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public DateTime LastConnection
         {
-            get;
-            set;
+            get { return Record.LastConnection; }
+            set
+            {
+                Record.LastConnection = value;
+                IsDirty = true;
+            }
         }
 
         /// <summary>
@@ -208,9 +206,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
                                               Record.AccountId, 0);
             }
 
-            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(CharacterRecord.Experience), CharacterRecord.Name, (sbyte)CharacterRecord.Breed, CharacterRecord.Sex == SexTypeEnum.SEX_FEMALE, RankId,
+            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Experience), Name, (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
                 GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
-                (sbyte)CharacterRecord.AlignmentSide, (ushort)(DateTime.Now - CharacterRecord.LastUsage.Value).TotalHours, 0,
+                (sbyte)AlignementSide, (ushort)(DateTime.Now - LastConnection).TotalHours, 0,
                 Record.AccountId, 0);
         }
 
@@ -239,6 +237,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void OnCharacterDisconnected(Character character)
         {
+            Record.AlignementSide = Character.AlignmentSide;
+            Record.Experience = Character.Experience;
+            Record.Name = Character.Name;
+            Record.Sex = Character.Sex;
+            Record.Breed = Character.BreedId;
+
             IsDirty = true;
             Character = null;
 

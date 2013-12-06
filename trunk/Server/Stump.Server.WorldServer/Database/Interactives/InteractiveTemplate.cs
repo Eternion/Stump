@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Data;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
-using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.ORM.SubSonic.Schema;
 using Stump.Server.WorldServer.Database.I18n;
 
 namespace Stump.Server.WorldServer.Database.Interactives
@@ -33,7 +29,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
                 return null;
             }
 
-            InteractiveTemplate previous = m_current;
+            var previous = m_current;
 
             m_current = template;
             if (binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id)

@@ -64,7 +64,8 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get;
             set;
         }
-        
+
+        [ResultColumn("Name")]
         [Ignore]
         public string Name
         {
@@ -72,13 +73,15 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
+        [ResultColumn("Experience")]
         [Ignore]
-        public byte Level
+        public long Experience
         {
             get;
             set;
         }
 
+        [ResultColumn("Breed")]
         [Ignore]
         public PlayableBreedEnum Breed
         {
@@ -86,6 +89,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
+        [ResultColumn("Sex")]
         [Ignore]
         public SexTypeEnum Sex
         {
@@ -93,6 +97,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
+        [ResultColumn("AlignementSide")]
         [Ignore]
         public AlignmentSideEnum AlignementSide
         {
@@ -100,6 +105,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
+        [ResultColumn("LastConnection")]
         [Ignore]
         public DateTime LastConnection
         {

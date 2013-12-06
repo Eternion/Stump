@@ -132,10 +132,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
 
         public ObjectPosition GetTeleportPosition()
         {
-            if (!TeleportEvent)
-                return null;
-
-            return new ObjectPosition(TeleportMap, TeleportCell, TeleportDirection);
+            return !TeleportEvent ? null : new ObjectPosition(TeleportMap, TeleportCell, TeleportDirection);
         }
     }
 }
