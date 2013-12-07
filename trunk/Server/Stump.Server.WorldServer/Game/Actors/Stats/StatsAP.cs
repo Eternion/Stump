@@ -32,25 +32,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             set;
         }
 
-        public override int Equiped
-        {
-            get
-            {
-                return base.Equiped;
-            }
-            set
-            {
-                base.Equiped = value;
-                if (Limit && Total > APLimit)
-                    base.Equiped = value - (Total - APLimit);
-            }
-        }
-
         public int TotalMax
         {
             get
             {
-                return Base + Equiped + Given + Context;
+                var totalNoBoost = Base + Equiped;
+
+                if (Limit && totalNoBoost > APLimit)
+                    totalNoBoost = APLimit;
+                
+                return totalNoBoost + Given + Context;
             }
         }
 
@@ -58,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                return Base + Equiped + Given + Context - Used;
+                return TotalMax - Used;
             }
         }
     }
