@@ -38,17 +38,9 @@ namespace ArkalysAuthPlugin.Votes
                 if (world.IPCClient == null)
                     continue;
 
-                var total = group.Count();
-                for (var i = 0; i <= total; i += 2000)
-                {
-                    var list = group.Skip(i).Take(2000);
+                var send = group.Select(x => x.Id).ToArray();
+                world.IPCClient.Send(new VoteNotificationMessage(new int[5000]));
 
-                    var send = list.Select(x => x.Id).ToArray();
-                    world.IPCClient.Send(new VoteNotificationMessage(send));
-
-                    //Very Ugly
-                    Thread.Sleep(1000);
-                }
             }
         }
     }

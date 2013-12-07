@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.IO;
+using Stump.Core.Pool.New;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
@@ -72,6 +74,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         private bool m_wasConnected;
         private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
         private TimerEntry m_updateTimer;
+        private IPCMessagePart m_messagePart;
 
         private void OnMessageReceived(IPCMessage message)
         {
@@ -263,7 +266,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             var args = new SocketAsyncEventArgs();
             args.Completed += OnSendCompleted;
-            var data = IPCMessageSerializer.Instance.Serialize(message);
+            var data = IPCMessageSerializer.Instance.SerializeWithLength(message);
 
             // serialize stuff
 
@@ -417,16 +420,28 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void Receive(byte[] data, int offset, int count)
         {
+            if (m_messagePart == null)
+                m_messagePart = new IPCMessagePart();
+
+            m_messagePart.Build(data, offset, count);
+
+            if (!m_messagePart.IsValid)
+                return;
+
             IPCMessage message;
 
             try
             {
-                message = IPCMessageSerializer.Instance.Deserialize(data, offset, count);
+                message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
             }
             catch (Exception ex)
             {
                 logger.Error("Cannot deserialize received message ! Exception : {0}" + ex);
                 return;
+            }
+            finally
+            {
+                m_messagePart = null;
             }
 
             TaskPool.AddMessage(() =>

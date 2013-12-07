@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using ProtoBuf;
 using ProtoBuf.Meta;
+using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.Server.BaseServer.IPC.Objects;
 
@@ -88,6 +89,41 @@ namespace Stump.Server.BaseServer.IPC
             var stream = new MemoryStream();
             Model.Serialize(stream, obj);
             return stream.ToArray();
+        }
+        
+        public byte[] SerializeWithLength(object obj)
+        {
+            var objStream = new MemoryStream();
+            Model.Serialize(objStream, obj);
+            var len = objStream.Length;
+            var lenSize = ComputeTypeLen(len);
+
+            var msgStream = new MemoryStream();
+            msgStream.WriteByte(lenSize);
+            for (int i = lenSize - 1; i >= 0; i--)
+            {
+                msgStream.WriteByte((byte)(len >> 8*i & 255));
+            }
+            msgStream.Write(objStream.ToArray(), 0, (int) objStream.Length);
+
+            return msgStream.ToArray();
+        }
+
+        private static byte ComputeTypeLen(long len)
+        {
+            if (len < 256)
+            {
+                return 1;
+            }
+            if (len < 256*256)
+            {
+                return 2;
+            }
+            if (len < 256*256*256)
+            {
+                return 3;
+            }
+            return (byte)Math.Floor(Math.Log(len, 256) + 1);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Stump.Server.AuthServer.IPC
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly object m_recvLock = new object();
         private bool m_recvLockAcquired = false;
-        private IPCMessage m_currentRequest;
+        private IPCMessagePart m_messagePart;
 
         public IPCClient(Socket socket)
         {
@@ -39,6 +39,7 @@ namespace Stump.Server.AuthServer.IPC
         }
 
         private IPCOperations m_operations;
+        private IPCMessage m_currentRequest;
 
         public WorldServer Server
         {
@@ -96,7 +97,7 @@ namespace Stump.Server.AuthServer.IPC
 
             var args = new SocketAsyncEventArgs();
             args.Completed += OnSendCompleted;
-            var data = IPCMessageSerializer.Instance.Serialize(message);
+            var data = IPCMessageSerializer.Instance.SerializeWithLength(message);
 
             args.SetBuffer(data, 0, data.Length);
             Socket.SendAsync(args);
@@ -111,11 +112,21 @@ namespace Stump.Server.AuthServer.IPC
 
         internal void ProcessReceive(byte[] data, int offset, int count)
         {
+
             try
             {
                 // stuff
                 LastActivity = DateTime.Now;
-                var message = IPCMessageSerializer.Instance.Deserialize(data, offset, count);
+
+                if (m_messagePart == null)
+                    m_messagePart = new IPCMessagePart();
+
+                m_messagePart.Build(data, offset, count);
+
+                if (!m_messagePart.IsValid)
+                    return;
+
+                var message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
 
                 if (m_recvLockAcquired)
                 {
@@ -138,6 +149,10 @@ namespace Stump.Server.AuthServer.IPC
                 logger.Error("Forced disconnection during reception : " + ex);
 
                 Disconnect();
+            }
+            finally
+            {
+                m_messagePart = null;
             }
         }
 
