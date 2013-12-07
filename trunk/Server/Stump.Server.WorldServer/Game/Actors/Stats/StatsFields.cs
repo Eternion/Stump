@@ -179,6 +179,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0));
 
             // custom fields
+            Fields.Add(PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0));
+            Fields.Add(PlayerFields.EarthDamageArmor, new StatsData(Owner, PlayerFields.EarthDamageArmor, 0));
+            Fields.Add(PlayerFields.NeutralDamageArmor, new StatsData(Owner, PlayerFields.NeutralDamageArmor, 0));
+            Fields.Add(PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0));
+            Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
+            Fields.Add(PlayerFields.Erosion, new StatsData(Owner, PlayerFields.Erosion, 10));
         }
 
         public void Initialize(MonsterGrade record)
