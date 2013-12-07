@@ -922,6 +922,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Enter(RolePlayActor actor)
         {
+#if DEBUG
+            Area.EnsureContext();
+#endif
             if (m_actors.Contains(actor))
             {
                 logger.Error("Map already contains actor {0}", actor);
