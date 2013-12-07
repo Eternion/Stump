@@ -26,14 +26,15 @@ namespace ArkalysAuthPlugin.Votes
                         (DateTime.Now - TimeSpan.FromHours(3)).ToString("yyyy-MM-dd hh:mm:ss")));
 
             var groupedAccounts = from vote in votes
-                                  group vote by vote.LastConnectionWorld;
+                                  where vote.LastConnectionWorld != null
+                                  group vote by vote.LastConnectionWorld.Value;
 
             foreach (var group in groupedAccounts)
             {
                 if (group.Key == null)
                     continue;
          
-                var world = WorldServerManager.Instance.GetServerById((int)group.Key);
+                var world = WorldServerManager.Instance.GetServerById(group.Key);
 
                 if (world.IPCClient == null)
                     continue;
