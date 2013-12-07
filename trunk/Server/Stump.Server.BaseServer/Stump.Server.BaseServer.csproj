@@ -244,6 +244,7 @@
     <Compile Include="Initialization\InitializationPass.cs" />
     <Compile Include="IPC\IPCErrorTimeoutMessage.cs" />
     <Compile Include="IPC\IPCMessage.cs" />
+    <Compile Include="IPC\IPCMessagePart.cs" />
     <Compile Include="IPC\Messages\AccountAnswerMessage.cs" />
     <Compile Include="IPC\Messages\AccountRequestMessage.cs" />
     <Compile Include="IPC\Messages\AddCharacterMessage.cs" />
