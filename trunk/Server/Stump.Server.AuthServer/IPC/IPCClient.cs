@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -112,47 +113,51 @@ namespace Stump.Server.AuthServer.IPC
 
         internal void ProcessReceive(byte[] data, int offset, int count)
         {
+            var reader = new BinaryReader(new MemoryStream(data, offset, count));
 
-            try
+            while (reader.BaseStream.Length - reader.BaseStream.Position > 0)
             {
-                // stuff
-                LastActivity = DateTime.Now;
-
-                if (m_messagePart == null)
-                    m_messagePart = new IPCMessagePart();
-
-                m_messagePart.Build(data, offset, count);
-
-                if (!m_messagePart.IsValid)
-                    return;
-
-                var message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
-
-                if (m_recvLockAcquired)
-                {
-                    logger.Error("Recv lock should not be set 'cause it's mono thread !");
-                }
-
-                Monitor.Enter(m_recvLock, ref m_recvLockAcquired);
                 try
                 {
-                    ProcessMessage(message);
+                    // stuff
+                    LastActivity = DateTime.Now;
+
+                    if (m_messagePart == null)
+                        m_messagePart = new IPCMessagePart();
+
+                    m_messagePart.Build(reader, reader.BaseStream.Length - reader.BaseStream.Position);
+
+                    if (!m_messagePart.IsValid)
+                        return;
+
+                    var message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
+
+                    if (m_recvLockAcquired)
+                    {
+                        logger.Error("Recv lock should not be set 'cause it's mono thread !");
+                    }
+
+                    Monitor.Enter(m_recvLock, ref m_recvLockAcquired);
+                    try
+                    {
+                        ProcessMessage(message);
+                    }
+                    finally
+                    {
+                        Monitor.Exit(m_recvLock);
+                        m_recvLockAcquired = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Forced disconnection during reception : " + ex);
+
+                    Disconnect();
                 }
                 finally
                 {
-                    Monitor.Exit(m_recvLock);
-                    m_recvLockAcquired = false;
+                    m_messagePart = null;
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Forced disconnection during reception : " + ex);
-
-                Disconnect();
-            }
-            finally
-            {
-                m_messagePart = null;
             }
         }
 
