@@ -46,24 +46,22 @@ namespace Stump.Server.BaseServer.IPC
         /// <summary>
         ///     Build or continue building the message. Returns true if the resulted message is valid and ready to be parsed
         /// </summary>
-        public bool Build(byte[] buffer, int count, int length)
+        public bool Build(BinaryReader reader, long count)
         {
-            var reader = new BinaryReader(new MemoryStream(buffer, count, length));
-
-            if (length <= 0)
+            if (count <= 0)
                 return false;
 
             if (IsValid)
                 return true;
 
-            if (!LengthBytesCount.HasValue && length < 1)
+            if (!LengthBytesCount.HasValue && count < 1)
                 return false;
 
-            if (length >= 1 && !LengthBytesCount.HasValue)
+            if (count >= 1 && !LengthBytesCount.HasValue)
                 LengthBytesCount = reader.ReadByte();
 
             if (LengthBytesCount.HasValue &&
-                length >= LengthBytesCount && !Length.HasValue)
+                count >= LengthBytesCount && !Length.HasValue)
             {
                 Length = 0;
 
@@ -83,16 +81,16 @@ namespace Stump.Server.BaseServer.IPC
                 }
 
                 // enough bytes in the buffer to build a complete message
-                if (length >= Length)
+                if (count >= Length)
                 {
                     Data = reader.ReadBytes(Length.Value);
 
                     return true;
                 }
                     // not enough bytes, so we read what we can
-                if (Length > length)
+                if (Length > count)
                 {
-                    Data = reader.ReadBytes((int) length);
+                    Data = reader.ReadBytes((int) count);
 
                     m_dataMissing = true;
                     return false;
@@ -103,18 +101,19 @@ namespace Stump.Server.BaseServer.IPC
             else if (Length.HasValue && m_dataMissing)
             {
                 // still miss some bytes ...
-                if (Data.Length + length < Length)
+                if (Data.Length + count < Length)
                 {
                     int lastLength = m_data.Length;
-                    Array.Resize(ref m_data, (int) (Data.Length + length));
-                    byte[] array = reader.ReadBytes((int) length);
+                    Array.Resize(ref m_data, (int) (Data.Length + count));
+                    byte[] array = reader.ReadBytes((int) count);
 
                     Array.Copy(array, 0, Data, lastLength, array.Length);
 
                     m_dataMissing = true;
+                    return false;
                 }
                 // there is enough bytes in the buffer to complete the message :)
-                if (Data.Length + length >= Length)
+                if (Data.Length + count >= Length)
                 {
                     int bytesToRead = Length.Value - Data.Length;
 

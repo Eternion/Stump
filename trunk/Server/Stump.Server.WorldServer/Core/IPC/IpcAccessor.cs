@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.Attributes;
@@ -420,31 +421,35 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void Receive(byte[] data, int offset, int count)
         {
-            if (m_messagePart == null)
-                m_messagePart = new IPCMessagePart();
+            var reader = new BinaryReader(new MemoryStream(data, offset, count));
 
-            m_messagePart.Build(data, offset, count);
-
-            if (!m_messagePart.IsValid)
-                return;
-
-            IPCMessage message;
-
-            try
+            while (reader.BaseStream.Length - reader.BaseStream.Position > 0)
             {
-                message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Cannot deserialize received message ! Exception : {0}" + ex);
-                return;
-            }
-            finally
-            {
-                m_messagePart = null;
-            }
+                if (m_messagePart == null)
+                    m_messagePart = new IPCMessagePart();
 
-            TaskPool.AddMessage(() =>
+                m_messagePart.Build(reader, reader.BaseStream.Length - reader.BaseStream.Position);
+
+                if (!m_messagePart.IsValid)
+                    return;
+
+                IPCMessage message;
+
+                try
+                {
+                    message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Cannot deserialize received message ! Exception : {0}" + ex);
+                    return;
+                }
+                finally
+                {
+                    m_messagePart = null;
+                }
+
+                TaskPool.AddMessage(() =>
                 {
                     if (message.RequestGuid != Guid.Empty)
                     {
@@ -460,7 +465,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                             }
                             m_requests.Remove(request.Guid);
                             if (request.TimeoutTimer != null)
-                            TaskPool.RemoveTimer(request.TimeoutTimer);
+                                TaskPool.RemoveTimer(request.TimeoutTimer);
                         }
 
                         request.ProcessMessage(message);
@@ -470,6 +475,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                         HandleMessage(message);
                     }
                 });
+            }
         }
 
         public void AddMessageHandler(Type messageType, IPCMessageHandler handler)
