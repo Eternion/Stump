@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
+using Stump.Server.WorldServer.Database.Characters;
 
 namespace Stump.Server.WorldServer.Database.Guilds
 {
@@ -12,11 +13,34 @@ namespace Stump.Server.WorldServer.Database.Guilds
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FetchByGuildId = "SELECT * FROM guild_members gm LEFT JOIN characters ch ON ch.Id = gm.CharacterId WHERE GuildId={0}";
+        public static string FetchByGuildId = "SELECT * FROM guild_members gm LEFT JOIN " + 
+            "(SELECT Id, Name, Experience, Breed, Sex, AlignmentSide, LastUsage FROM characters) ch ON ch.Id = gm.CharacterId WHERE GuildId={0}";
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FindByCharacterId = "SELECT * FROM guild_members gm LEFT JOIN characters ch ON ch.Id = gm.CharacterId WHERE CharacterId={0}";
+        public static string FindByCharacterId = "SELECT * FROM guild_members gm LEFT JOIN " + 
+            "(SELECT Id, Name, Experience, Breed, Sex, AlignmentSide, LastUsage FROM characters) ch ON ch.Id = gm.CharacterId WHERE CharacterId={0}";
+
+        
+        private GuildMemberRecord m_current;
+
+        public GuildMemberRecord Map(GuildMemberRecord record, CharacterRecord character)
+        {
+            if (record == null)
+                return m_current;
+
+            if (m_current != null && m_current.CharacterId == record.CharacterId)
+            {
+                m_current.Character = character;
+                return null;
+            }
+
+            var previous = m_current;
+
+            m_current = record;
+            m_current.Character = character;
+            return previous;
+        }
     }
 
     [TableName("guild_members")]
@@ -24,6 +48,13 @@ namespace Stump.Server.WorldServer.Database.Guilds
     {
         [PrimaryKey("CharacterId", false)]
         public int CharacterId
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public CharacterRecord Character
         {
             get;
             set;
@@ -65,52 +96,52 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
-        [ResultColumn("Name")]
-        [Ignore]
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return Character.Name;
+            }
         }
 
-        [ResultColumn("Experience")]
-        [Ignore]
         public long Experience
         {
-            get;
-            set;
+            get
+            {
+                return Character.Experience;
+            }        
         }
 
-        [ResultColumn("Breed")]
-        [Ignore]
         public PlayableBreedEnum Breed
-        {
-            get;
-            set;
+        {            
+            get
+            {
+                return Character.Breed;
+            } 
         }
 
-        [ResultColumn("Sex")]
-        [Ignore]
         public SexTypeEnum Sex
         {
-            get;
-            set;
+            get
+            {
+                return Character.Sex;
+            } 
         }
 
-        [ResultColumn("AlignementSide")]
-        [Ignore]
         public AlignmentSideEnum AlignementSide
         {
-            get;
-            set;
+            get
+            {
+                return Character.AlignmentSide;
+            } 
         }
 
-        [ResultColumn("LastConnection")]
-        [Ignore]
-        public DateTime LastConnection
+        public DateTime? LastConnection
         {
-            get;
-            set;
+            get
+            {
+                return Character.LastUsage;
+            } 
         }
     }
 }

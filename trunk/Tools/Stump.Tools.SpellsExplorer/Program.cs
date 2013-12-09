@@ -36,19 +36,13 @@ namespace Stump.Tools.SpellsExplorer
 
             Console.WriteLine("Loading texts...");
             TextManager.Instance.Initialize();
+            TextManager.Instance.SetDefaultLanguage(SecondaryLanguage);
 
             Console.WriteLine("Loading effects...");
             EffectManager.Instance.Initialize();
 
             Console.WriteLine("Loading spells...");
             SpellManager.Instance.Initialize();
-
-            var spells = SpellManager.Instance.GetSpellLevels().Where(entry => entry.Effects.Any(effect => effect.EffectId == EffectsEnum.Effect_Punishment && effect.DiceNum == 407));
-
-            foreach (var spell in spells)
-            {
-                
-            }
 
             while (true)
             {
@@ -127,7 +121,7 @@ namespace Stump.Tools.SpellsExplorer
 
             foreach (var effect in critical ? levelTemplate.CriticalEffects : levelTemplate.Effects)
             {
-                Console.WriteLine("Effect \"{0}\" ({1})", TextManager.Instance.GetText(effect.Template.DescriptionId), (int)effect.EffectId);
+                Console.WriteLine("Effect \"{0}\" ({1}, {2})", TextManager.Instance.GetText(effect.Template.DescriptionId), effect.EffectId, (int)effect.EffectId);
                 Console.WriteLine("DiceFace = {0}, DiceNum = {1}, Value = {2}", effect.DiceFace, effect.DiceNum, effect.Value);
                 Console.WriteLine("Hidden = {0}, Modificator = {1}, Random = {2}, Trigger = {3}", effect.Hidden, effect.Modificator, effect.Random, effect.Trigger);
                 Console.WriteLine("ZoneShape = {0}, ZoneSize = {1}, Duration = {2}, Target = {3}", (SpellShapeEnum)effect.ZoneShape, effect.ZoneSize, effect.Duration, effect.Targets);
