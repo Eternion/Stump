@@ -168,6 +168,8 @@ namespace Stump.Server.AuthServer.IPC
             {
                 WorldServerManager.Instance.ChangeWorldState(WorldServer, ServerStatusEnum.ONLINE);
             }
+
+            Database.Update(WorldServer);
             Client.ReplyRequest(new CommonOKMessage(), message);
         }
 

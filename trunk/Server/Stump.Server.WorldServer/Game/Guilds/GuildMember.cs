@@ -20,14 +20,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 {
                     CharacterId = character.Id,
                     AccountId = character.Account.Id,
-                    Name = character.Name,
-                    Experience = character.Experience,
-                    Breed = character.BreedId,
-                    Sex = character.Sex,
-                    AlignementSide = character.AlignmentSide,
+                    Character = character.Record,
                     GivenExperience = 0,
                     GivenPercent = 0,
-                    LastConnection = DateTime.Now,
                     RankId = 0,
                     GuildId = guild.Id,
                     Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE,
@@ -121,11 +116,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 return Record.Name;
             }
-            set
-            {
-                Record.Name = value;
-                IsDirty = true;
-            }
         }
 
         public long Experience
@@ -134,51 +124,26 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 return Record.Experience;
             }
-            set
-            {
-                Record.Experience = value;
-                IsDirty = true;
-            }
         }
 
         public PlayableBreedEnum Breed
         {
             get { return Record.Breed; }
-            set
-            {
-                Record.Breed = value;
-                IsDirty = true;
-            }
         }
 
         public SexTypeEnum Sex
         {
             get { return Record.Sex; }
-            set
-            {
-                Record.Sex = value;
-                IsDirty = true;
-            }
         }
 
         public AlignmentSideEnum AlignementSide
         {
             get { return Record.AlignementSide; }
-            set
-            {
-                Record.AlignementSide = value;
-                IsDirty = true;
-            }
         }
 
-        public DateTime LastConnection
+        public DateTime? LastConnection
         {
             get { return Record.LastConnection; }
-            set
-            {
-                Record.LastConnection = value;
-                IsDirty = true;
-            }
         }
 
         /// <summary>
@@ -208,7 +173,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Experience), Name, (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
                 GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
-                (sbyte)AlignementSide, (ushort)(DateTime.Now - LastConnection).TotalHours, 0,
+                (sbyte)AlignementSide, LastConnection!= null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
                 Record.AccountId, 0);
         }
 
@@ -237,12 +202,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void OnCharacterDisconnected(Character character)
         {
-            Record.AlignementSide = Character.AlignmentSide;
-            Record.Experience = Character.Experience;
-            Record.Name = Character.Name;
-            Record.Sex = Character.Sex;
-            Record.Breed = Character.BreedId;
-
             IsDirty = true;
             Character = null;
 
