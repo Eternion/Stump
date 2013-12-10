@@ -1,6 +1,5 @@
 ﻿using System;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using NetworkGuildMember = Stump.DofusProtocol.Types.GuildMember;

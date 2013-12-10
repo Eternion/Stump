@@ -26,7 +26,7 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
                 100, 350, 600
             };
 
-    [Initialization(typeof(MonsterManager), Silent = true)]
+        [Initialization(typeof(MonsterManager), Silent = true)]
         public static void ApplyFix()
         {
             logger.Debug("Apply monster stats fix");

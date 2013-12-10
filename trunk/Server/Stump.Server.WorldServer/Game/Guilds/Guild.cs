@@ -6,6 +6,7 @@ using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Guilds;
@@ -37,6 +38,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         private readonly List<GuildMember> m_members = new List<GuildMember>();
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
+        private readonly List<GuildTaxCollector> m_taxCollectors = new List<GuildTaxCollector>(); 
         private bool m_isDirty;
         private readonly object m_xpLock = new object();
 
@@ -47,6 +49,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Id = id;
             Name = name;
             Level = 1;
+            Boost = 0;
+            Prospecting = 100;
+            Wisdom = 0;
+            Pods = 1000;
+            MaxTaxCollectors = 1;
             ExperienceLevelFloor = 0;
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Record.CreationDate = DateTime.Now;
@@ -61,10 +68,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             IsDirty = true;
         }
 
-        public Guild(GuildRecord record, IEnumerable<GuildMember> members)
+        public Guild(GuildRecord record, IEnumerable<GuildMember> members, IEnumerable<GuildTaxCollector> taxcollectors)
         {
             Record = record;
             m_members.AddRange(members);
+            m_taxCollectors.AddRange(taxcollectors);
             Level = ExperienceManager.Instance.GetGuildLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetGuildLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
@@ -82,6 +90,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 BindMemberEvents(member);
                 member.BindGuild(this);
+            }
+
+            foreach (var taxcollector in m_taxCollectors)
+            {
+                taxcollector.BindGuild(this);
             }
 
             if (m_members.Count == 0)
@@ -106,6 +119,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             get { return m_clients; }
         }
 
+        public ReadOnlyCollection<GuildTaxCollector> TaxCollectors
+        {
+            get { return m_taxCollectors.AsReadOnly(); }
+        }
+
         public GuildRecord Record
         {
             get;
@@ -127,7 +145,57 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public long Experience
         {
             get { return Record.Experience; }
-            protected set { Record.Experience = value;
+            protected set {
+                Record.Experience = value;
+                IsDirty = true;
+            }
+        }
+
+        public short Boost
+        {
+            get { return Record.Boost; }
+            protected set {
+                Record.Boost = value;
+                IsDirty = true;
+            }
+        }
+
+        public short Prospecting
+        {
+            get { return Record.Prospecting; }
+            protected set
+            {
+                Record.Prospecting = value;
+                IsDirty = true;
+            }
+        }
+
+        public short Wisdom
+        {
+            get { return Record.Wisdom; }
+            protected set
+            {
+                Record.Wisdom = value;
+                IsDirty = true;
+            }
+        }
+
+        public short Pods
+        {
+            get { return Record.Pods; }
+            protected set
+            {
+                Record.Pods = value;
+                IsDirty = true;
+            }
+        }
+
+        public sbyte MaxTaxCollectors
+        {
+            get { return Record.MaxTaxCollectors; }
+            protected set
+            {
+                Record.MaxTaxCollectors = value;
                 IsDirty = true;
             }
         }
@@ -205,6 +273,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 if (level == Level)
                     return;
 
+                if (level > Level)
+                    Boost += (short)((level - Level) * 5);
+
                 Level = level;
                 OnLevelChanged();
             }
@@ -223,6 +294,74 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 Level = level;
                 OnLevelChanged();
             }
+        }
+
+        public bool UpgradePods()
+        {
+            if (Pods >= 5000)
+                return false;
+
+            if (Boost <= 0)
+                return false;
+
+            Boost -= 1;
+            Pods += 20;
+
+            if (Pods > 5000)
+                Pods = 5000;
+
+            return true;
+        }
+
+        public bool UpgradeProspecting()
+        {
+            if (Prospecting >= 500)
+                return false;
+
+            if (Boost <= 0)
+                return false;
+
+            Boost -= 1;
+            Prospecting += 1;
+
+            if (Prospecting > 500)
+                Prospecting = 500;
+
+            return true;
+        }
+
+        public bool UpgradeWisdom()
+        {
+            if (Wisdom >= 400)
+                return false;
+
+            if (Boost <= 0)
+                return false;
+
+            Boost -= 1;
+            Wisdom += 1;
+
+            if (Wisdom > 400)
+                Wisdom = 400;
+
+            return true;
+        }
+
+        public bool UpgradeMaxTaxCollectors()
+        {
+            if (MaxTaxCollectors >= 50)
+                return false;
+
+            if (Boost < 10)
+                return false;
+
+            Boost -= 10;
+            MaxTaxCollectors += 1;
+
+            if (MaxTaxCollectors > 50)
+                MaxTaxCollectors = 50;
+
+            return true;
         }
 
         public void SetBoss(GuildMember guildMember)
@@ -407,6 +546,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_members.Add(member);
             character.GuildMember = member;
 
+            m_clients.Add(character.Client);
+
             if (m_members.Count == 1)
                 SetBoss(member);
 
@@ -421,6 +562,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return false;
 
             m_members.Remove(member);
+            m_clients.Remove(member.Character.Client);
 
             OnMemberRemoved(member);
             return true;
@@ -462,24 +604,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             //Votre guilde passe niveau %1
             BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 208, Level);
+
+            m_clients.Send(new GuildLevelUpMessage(Level));
         }
 
         private void OnMemberConnected(GuildMember member)
         {
+            //Un membre de votre guilde, {player,%1,%2}, est en ligne.
+            BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 224, member.Character.Name);
+
             m_clients.Add(member.Character.Client);
 
             UpdateMember(member);
 
-            foreach (var connectedMember in Members.Where(x => x.IsConnected))
-            {
-                if (connectedMember.Character == null)
-                    continue;
-
-                if (connectedMember.Character.Id != member.Character.Id && connectedMember.Character.WarnOnGuildConnection)
-                    // Un membre de votre guilde, {player,%1,%2}, est en ligne.
-                    connectedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                                     224, member.Character.Name);
-            }
+            m_clients.Send(new GuildMemberOnlineStatusMessage(member.Id, true));
         }
 
         private void OnMemberDisconnected(GuildMember member, Character character)
@@ -487,6 +625,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_clients.Remove(character.Client);
 
             UpdateMember(member);
+
+            m_clients.Send(new GuildMemberOnlineStatusMessage(member.Id, false));
         }
 
         private void BindMemberEvents(GuildMember member)
@@ -510,6 +650,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public BasicGuildInformations GetBasicGuildInformations()
         {
             return new BasicGuildInformations(Id, Name);
+        }
+
+        public GuildInfosUpgradeMessage GetGuildInfosUpgrade()
+        {
+            var spellsId = new short[] { 462, 461, 460, 459, 458, 457, 456, 455, 454, 453, 452, 451 };
+            var spellsLevels = new sbyte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            return new GuildInfosUpgradeMessage(MaxTaxCollectors, (sbyte)GuildManager.Instance.GetTaxCollectorSpawns(Id).Count(), (short)(100 * Level), (short)(1 * Level), Pods, Prospecting, Wisdom, Boost,
+                spellsId, spellsLevels);
         }
     }
 }

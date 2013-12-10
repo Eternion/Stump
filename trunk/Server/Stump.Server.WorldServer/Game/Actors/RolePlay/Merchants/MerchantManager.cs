@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Spells;
 using MerchantSpawn = Stump.Server.WorldServer.Database.World.WorldMapMerchantRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
@@ -35,10 +31,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
         public MerchantSpawn GetMerchantSpawn(int characterId)
         {
             MerchantSpawn spawn;
-            if (m_merchantSpawns.TryGetValue(characterId, out spawn))
-                return spawn;
-
-            return null;
+            return m_merchantSpawns.TryGetValue(characterId, out spawn) ? spawn : null;
         }
 
         public ReadOnlyCollection<Merchant> Merchants

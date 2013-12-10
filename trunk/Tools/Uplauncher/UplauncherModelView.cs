@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -46,7 +45,7 @@ namespace Uplauncher
         private readonly DateTime? m_lastUpdateCheck;
         private static readonly Color DefaultMessageColor = Colors.Black;
 
-        private FileSizeFormatProvider m_bytesFormatProvider = new FileSizeFormatProvider();
+        private readonly FileSizeFormatProvider m_bytesFormatProvider = new FileSizeFormatProvider();
         private MetaFile m_metaFile;
 
 

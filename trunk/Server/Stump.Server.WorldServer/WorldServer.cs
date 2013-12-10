@@ -147,7 +147,7 @@ namespace Stump.Server.WorldServer
             var afkClients = FindClients(client =>
                 DateTime.Now.Subtract(client.LastActivity).TotalSeconds >= BaseServer.Settings.InactivityDisconnectionTime);
 
-            foreach (WorldClient client in afkClients)
+            foreach (var client in afkClients)
             {
                 client.DisconnectAfk();
             }
@@ -170,7 +170,7 @@ namespace Stump.Server.WorldServer
             return ClientManager.FindAll(predicate);
         }
 
-        private TimeSpan? m_lastAnnouncedTime = null;
+        private TimeSpan? m_lastAnnouncedTime;
 
         public override void ScheduleShutdown(TimeSpan timeBeforeShuttingDown)
         {

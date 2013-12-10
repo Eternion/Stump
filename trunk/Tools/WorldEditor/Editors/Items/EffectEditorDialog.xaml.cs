@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using DBSynchroniser.Records;
-using Stump.DofusProtocol.D2oClasses;
 
 namespace WorldEditor.Editors.Items
 {
     /// <summary>
     ///     Interaction logic for EffectEditorDialog.xaml
     /// </summary>
-    public partial class EffectEditorDialog : Window
+    public partial class EffectEditorDialog
     {
         public static readonly DependencyProperty EffectToEditProperty =
             DependencyProperty.Register("EffectToEdit", typeof (EffectWrapper), typeof (EffectEditorDialog),

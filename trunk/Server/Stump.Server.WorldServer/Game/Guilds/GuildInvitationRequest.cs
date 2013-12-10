@@ -31,13 +31,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
         protected override void OnOpen()
         {
             GuildHandler.SendGuildInvitationStateRecruterMessage(Source.Client, Target, GuildInvitationStateEnum.GUILD_INVITATION_SENT);
+            GuildHandler.SendGuildInvitationStateRecrutedMessage(Target.Client, GuildInvitationStateEnum.GUILD_INVITATION_SENT);
+
             GuildHandler.SendGuildInvitedMessage(Target.Client, Source);
         }
 
         protected override void OnAccept()
         {
             GuildHandler.SendGuildInvitationStateRecruterMessage(Source.Client, Target, GuildInvitationStateEnum.GUILD_INVITATION_OK);
-            GuildHandler.SendGuildInvitationStateRecruterMessage(Target.Client, Target, GuildInvitationStateEnum.GUILD_INVITATION_OK);
+            GuildHandler.SendGuildInvitationStateRecrutedMessage(Target.Client, GuildInvitationStateEnum.GUILD_INVITATION_OK);
 
             var guild = Source.Guild;
             if (guild == null)
