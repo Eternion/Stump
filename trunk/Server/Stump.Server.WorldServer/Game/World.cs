@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using MongoDB.Driver.Linq;
 using NLog;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
@@ -18,6 +19,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
@@ -136,6 +138,9 @@ namespace Stump.Server.WorldServer.Game
 
             logger.Info("Spawn merchants ...");
             SpawnMerchants();
+
+            logger.Info("Spawn TaxCollectors ...");
+            SpawnTaxCollectors();
         }
 
         private void SetLinks()
@@ -297,7 +302,7 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private void SpawnMerchants()
+        private static void SpawnMerchants()
         {
             foreach (var merchant in from spawn in MerchantManager.Instance.GetMerchantSpawns() where spawn.Map != null select new Merchant(spawn))
             {
@@ -316,6 +321,13 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
+        private void SpawnTaxCollectors()
+        {
+            foreach (var taxcollector in from spawn in GuildManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null select new GuildTaxCollector(spawn))
+            {
+                taxcollector.Map.Enter(taxcollector);
+            }
+        }
         #endregion
 
         #region Maps

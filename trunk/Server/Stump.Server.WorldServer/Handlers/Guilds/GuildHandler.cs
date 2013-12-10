@@ -3,6 +3,7 @@ using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Core.Extensions;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
@@ -29,7 +30,62 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 case (sbyte)GuildInformationsTypeEnum.INFO_MEMBERS:
                     SendGuildInformationsMembersMessage(client, client.Character.Guild);
                     break;
+                case (sbyte)GuildInformationsTypeEnum.INFO_BOOSTS:
+                    SendGuildInfosUpgradeMessage(client, client.Character.Guild);
+                    break;
+                case (sbyte)GuildInformationsTypeEnum.INFO_PADDOCKS:
+                    SendGuildInformationsPaddocksMessage(client);
+                    break;
+                case (sbyte)GuildInformationsTypeEnum.INFO_HOUSES:
+                    break;
+                case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR:
+                    SendTaxCollectorListMessage(client, client.Character.Guild);
+                    break;
+                case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR_LEAVE:
+                    break;
             }
+        }
+
+        [WorldHandler(GuildCharacsUpgradeRequestMessage.Id)]
+        public static void HandleGuildCharacsUpgradeRequestMessage(WorldClient client, GuildCharacsUpgradeRequestMessage message)
+        {
+            if (client.Character.Guild == null)
+                return;
+
+            if (!client.Character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_GUILD_BOOSTS))
+                return;
+
+            switch (message.charaTypeTarget)
+            {
+                case 0: //Pods
+                    client.Character.Guild.UpgradePods();
+                    break;
+                case 1: //Prospecting
+                    client.Character.Guild.UpgradeProspecting();
+                    break;
+                case 2: //Wisdom
+                    client.Character.Guild.UpgradeWisdom();
+                    break;
+                case 3: //MaxTaxCollectors
+                    client.Character.Guild.UpgradeMaxTaxCollectors();
+                    break;
+            }
+
+            SendGuildInfosUpgradeMessage(client, client.Character.Guild);
+        }
+
+        [WorldHandler(GuildSpellUpgradeRequestMessage.Id)]
+        public static void HandleGuildSpellUpgradeRequestMessage(WorldClient client, GuildSpellUpgradeRequestMessage message)
+        {
+            if (client.Character.Guild == null)
+                return;
+
+            var spellsId = new[] { 462, 461, 460, 459, 458, 457, 456, 455, 454, 453, 452, 451 };
+
+            if (!spellsId.Contains(message.spellId))
+                return;
+
+            SendGuildInfosUpgradeMessage(client, client.Character.Guild);
         }
 
         [WorldHandler(GuildCreationValidMessage.Id)]
@@ -182,6 +238,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Send(new GuildInvitedMessage(recruter.Id, recruter.Name, recruter.Guild.GetBasicGuildInformations()));
         }
 
+        public static void SendGuildInvitationStateRecrutedMessage(IPacketReceiver client, GuildInvitationStateEnum state)
+        {
+            client.Send(new GuildInvitationStateRecrutedMessage((sbyte)state));
+        }
+
         public static void SendGuildInvitationStateRecruterMessage(IPacketReceiver client, Character recruted, GuildInvitationStateEnum state)
         {
             client.Send(new GuildInvitationStateRecruterMessage(recruted.Name, (sbyte)state));
@@ -215,6 +276,21 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildInformationsMemberUpdateMessage(IPacketReceiver client, GuildMember member)
         {
             client.Send(new GuildInformationsMemberUpdateMessage(member.GetNetworkGuildMember()));
+        }
+
+        public static void SendGuildInfosUpgradeMessage(IPacketReceiver client, Guild guild)
+        {
+            client.Send(guild.GetGuildInfosUpgrade());
+        }
+
+        public static void SendGuildInformationsPaddocksMessage(IPacketReceiver client)
+        {
+            client.Send(new GuildInformationsPaddocksMessage(0, new PaddockContentInformations[0]));
+        }
+
+        public static void SendTaxCollectorListMessage(IPacketReceiver client, Guild guild)
+        {
+            client.Send(new TaxCollectorListMessage(guild.MaxTaxCollectors, 0, guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()), new TaxCollectorFightersInformation[0]));
         }
 
         public static void SendGuildJoinedMessage(IPacketReceiver client, GuildMember member)

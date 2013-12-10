@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;

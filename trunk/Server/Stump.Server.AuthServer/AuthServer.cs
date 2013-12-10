@@ -150,13 +150,11 @@ namespace Stump.Server.AuthServer
             if (m_patchBuffer != null)
                 return m_patchBuffer;
 
-            if (!File.Exists(ConnectionSwfPatch))
-            {
-                logger.Warn("SWF Patch for connection not found ({0}", ConnectionSwfPatch);
-                return null;
-            }
-            else
+            if (File.Exists(ConnectionSwfPatch))
                 return m_patchBuffer = File.ReadAllBytes(ConnectionSwfPatch);
+
+            logger.Warn("SWF Patch for connection not found ({0}", ConnectionSwfPatch);
+            return null;
         }
 
 

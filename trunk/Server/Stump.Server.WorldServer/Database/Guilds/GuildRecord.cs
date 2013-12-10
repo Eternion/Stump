@@ -48,6 +48,36 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
+        public short Boost
+        {
+            get;
+            set;
+        }
+
+        public short Prospecting
+        {
+            get;
+            set;
+        }
+
+        public short Wisdom
+        {
+            get;
+            set;
+        }
+
+        public short Pods
+        {
+            get;
+            set;
+        }
+
+        public sbyte MaxTaxCollectors
+        {
+            get;
+            set;
+        }
+
         public short EmblemBackgroundShape
         {
             get;

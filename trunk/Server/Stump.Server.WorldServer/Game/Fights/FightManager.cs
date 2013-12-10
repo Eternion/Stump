@@ -1,9 +1,5 @@
-using System.Linq;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Accounts;
-using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Game.Fights
