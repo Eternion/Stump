@@ -2,7 +2,6 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Stump.Core.Attributes;
-using Stump.Core.Pool.Task;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.ORM;

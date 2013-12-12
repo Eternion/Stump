@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using Stump.Core.Reflection;
 using Stump.Server.AuthServer;
 using Stump.Server.AuthServer.Database;
@@ -31,9 +30,6 @@ namespace ArkalysAuthPlugin.Votes
 
             foreach (var group in groupedAccounts)
             {
-                if (group.Key == null)
-                    continue;
-         
                 var world = WorldServerManager.Instance.GetServerById(group.Key);
 
                 if (world.IPCClient == null)

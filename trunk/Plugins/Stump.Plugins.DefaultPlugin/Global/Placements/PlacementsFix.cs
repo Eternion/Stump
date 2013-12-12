@@ -41,7 +41,7 @@ namespace Stump.Plugins.DefaultPlugin.Global.Placements
         [Variable]
         public static bool SortByComplexity = true;
 
-        [Initialization(typeof(Server.WorldServer.Game.World), Silent = true)]
+        [Initialization(typeof(World), Silent = true)]
         public static void ApplyFix()
         {
             logger.Debug("Apply placements fix ...");

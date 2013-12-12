@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
                                                      BonesID = BAG_SKIN
                                                  }));
 
-            m_record = new WorldMapMerchantRecord()
+            m_record = new WorldMapMerchantRecord
                 {
                     CharacterId = character.Id,
                     AccountId = character.Account.Id,

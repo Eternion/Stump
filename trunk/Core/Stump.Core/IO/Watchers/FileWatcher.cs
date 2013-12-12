@@ -31,17 +31,14 @@ namespace Stump.Core.IO.Watchers
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (System.IO.Path.GetFullPath(e.FullPath) == FullPath && Watching && Type == WatcherType.Modification &&
-                (DateTime.Now - m_lastModification).TotalMilliseconds > 100d) // it's a hack because sometimes it raises the event twice
-            {
-                m_lastModification = DateTime.Now;
-                EnableRaisingEvents = false;
-                Watching = false;
-                Action(FullPath);
-                Watching = true;
-                EnableRaisingEvents = true;
-
-            }
+            if (System.IO.Path.GetFullPath(e.FullPath) != FullPath || !Watching || Type != WatcherType.Modification ||
+                !((DateTime.Now - m_lastModification).TotalMilliseconds > 100d)) return;
+            m_lastModification = DateTime.Now;
+            EnableRaisingEvents = false;
+            Watching = false;
+            Action(FullPath);
+            Watching = true;
+            EnableRaisingEvents = true;
         }
 
         private void OnCreated(object sender, FileSystemEventArgs e)
@@ -56,12 +53,12 @@ namespace Stump.Core.IO.Watchers
 
         private void OnDeleted(object sender, FileSystemEventArgs e)
         {
-            if (e.FullPath == FullPath && Watching && Watching && Type == WatcherType.Deletion)
-            {
-                Watching = false;
-                Action(FullPath);
-                Watching = true;
-            }
+            if (e.FullPath != FullPath || !Watching || !Watching || Type != WatcherType.Deletion)
+                return;
+
+            Watching = false;
+            Action(FullPath);
+            Watching = true;
         }
 
         public WatchAction Action

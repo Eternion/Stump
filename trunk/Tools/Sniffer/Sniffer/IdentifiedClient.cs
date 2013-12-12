@@ -111,8 +111,14 @@ namespace Stump.Tools.Sniffer
                 try
                 {
                     message = MessageReceiver.BuildMessage((uint)m_currentMessage.MessageId.Value, messageDataReader);
+
+                    if (message.MessageId == 5632)
+                        Debug.Print("Message = {0}", m_currentMessage.Data);
+
                     if (OnNewMessage != null)
+                    {
                         OnNewMessage(message, m_name);
+                    }
                 }
                 catch (Exception)
                 {

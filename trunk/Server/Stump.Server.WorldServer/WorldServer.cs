@@ -157,7 +157,7 @@ namespace Stump.Server.WorldServer
         {
             IEnumerable<WorldClient> clients = FindClients(client => client.Account != null && client.Account.Id == accountId);
 
-            foreach (WorldClient client in clients)
+            foreach (var client in clients)
             {
                 client.Disconnect();
             }

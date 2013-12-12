@@ -39,7 +39,7 @@ namespace Stump.Core.Memory
         /// <param name="target">The object to track. May not be null.</param>
         public WeakReference(T target)
         {
-            this.safeHandle = new SafeGCHandle(target, GCHandleType.Weak);
+            safeHandle = new SafeGCHandle(target, GCHandleType.Weak);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return this.safeHandle.Handle.Target as T;
+                return safeHandle.Handle.Target as T;
             }
         }
 
@@ -60,7 +60,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return this.safeHandle.Handle.Target != null;
+                return safeHandle.Handle.Target != null;
             }
         }
 

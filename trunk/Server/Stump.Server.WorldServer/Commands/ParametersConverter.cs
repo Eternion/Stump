@@ -123,17 +123,14 @@ namespace Stump.Server.WorldServer.Commands
         public static ConverterHandler<Fight> FightConverter = (entry, trigger) =>
         {
             int outvalue;
-            if (int.TryParse(entry, out outvalue))
-            {
-                var fight = FightManager.Instance.GetFight(outvalue);
+            if (!int.TryParse(entry, out outvalue))
+                throw new ConverterException(string.Format("'{0}' invalid fight id. Must be a number.", entry));
+            var fight = FightManager.Instance.GetFight(outvalue);
 
-                if (fight == null)
-                    throw new ConverterException(string.Format("Fight not found'{0}'", entry));
+            if (fight == null)
+                throw new ConverterException(string.Format("Fight not found'{0}'", entry));
 
-                return fight;
-            }
-
-            throw new ConverterException(string.Format("'{0}' invalid fight id. Must be a number.", entry));
+            return fight;
         };
 
         public static ConverterHandler<NpcTemplate> NpcTemplateConverter = (entry, trigger) =>

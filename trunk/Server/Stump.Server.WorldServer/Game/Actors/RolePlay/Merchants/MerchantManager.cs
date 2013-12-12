@@ -45,6 +45,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
                 WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(spawn));
             else
                 Database.Insert(spawn);
+
             m_merchantSpawns.Add(spawn.CharacterId, spawn);
         }
 
@@ -54,6 +55,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
                 WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Delete(spawn));
             else
                 Database.Delete(spawn);
+
             m_merchantSpawns.Remove(spawn.CharacterId);
         }
 
@@ -81,10 +83,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public void Save()
         {
-            foreach (var merchant in m_activeMerchants)
+            foreach (var merchant in m_activeMerchants.Where(merchant => merchant.IsRecordDirty))
             {
-                if (merchant.IsRecordDirty)
-                    merchant.Save();
+                merchant.Save();
             }
         }
     }

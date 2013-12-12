@@ -16,7 +16,7 @@ namespace Stump.Core.Xml.Config
             Node = node;
 
             Name = node.Attributes["name"] != null ? node.Attributes["name"].Value : "";
-            Serialized = node.Attributes["serialized"] != null ? node.Attributes["serialized"].Value == "true" : false;
+            Serialized = node.Attributes["serialized"] != null && node.Attributes["serialized"].Value == "true";
             ClassName = GetClassNameFromNode(node);
             Namespace = GetNamespaceFromNode(node);
             Documentation = FindDescription(node);

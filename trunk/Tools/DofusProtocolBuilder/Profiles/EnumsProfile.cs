@@ -1,7 +1,6 @@
 using System;
 using System.CodeDom.Compiler;
 using System.IO;
-using System.Linq;
 using DofusProtocolBuilder.Parsing;
 using DofusProtocolBuilder.Templates;
 using Microsoft.VisualStudio.TextTemplating;

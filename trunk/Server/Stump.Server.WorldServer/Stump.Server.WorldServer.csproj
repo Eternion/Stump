@@ -233,6 +233,7 @@
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
     <Compile Include="Game\Actors\Look\SubActorLook.cs" />
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
+    <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
     <Compile Include="Game\Conditions\BoolOperator.cs" />
     <Compile Include="Game\Conditions\Criterions\AdminRightsCriterion.cs" />
@@ -339,7 +340,6 @@
     <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
-    <Compile Include="Game\Guilds\GuildTaxCollector.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
@@ -491,7 +491,7 @@
     <Compile Include="Game\Actors\RolePlay\Npcs\NpcManager.cs" />
     <Compile Include="Game\Actors\RolePlay\Prism.cs" />
     <Compile Include="Game\Actors\RolePlay\RolePlayActor.cs" />
-    <Compile Include="Game\Actors\RolePlay\TaxCollectorNpc.cs" />
+    <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorNpc.cs" />
     <Compile Include="Game\Actors\Stats\StatsAP.cs" />
     <Compile Include="Game\Actors\Stats\StatsFields.cs" />
     <Compile Include="Game\Actors\Stats\StatsHealth.cs" />

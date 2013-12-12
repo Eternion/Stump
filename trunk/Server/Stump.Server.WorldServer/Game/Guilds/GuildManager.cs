@@ -7,7 +7,6 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
@@ -21,29 +20,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private Dictionary<int, Guild> m_guilds;
         private Dictionary<int, GuildMember> m_guildsMembers;
         private readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
-        private Dictionary<int, TaxCollectorSpawn> m_taxCollectorSpawns;
 
         private readonly object m_lock = new object();
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
         {
-            m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id), FindTaxCollectors(x.Id))).ToDictionary(x => x.Id);
+            m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
             m_guildsMembers = m_guilds.Values.SelectMany(x => x.Members).ToDictionary(x => x.Id);
             m_idProvider = m_guilds.Any() ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max()) : new UniqueIdProvider(1);
-            m_taxCollectorSpawns = Database.Query<TaxCollectorSpawn>(WorldMapTaxCollectorRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
             World.Instance.RegisterSaveableInstance(this);
-        }
-
-        public TaxCollectorSpawn[] GetTaxCollectorSpawns()
-        {
-            return m_taxCollectorSpawns.Values.ToArray();
-        }
-
-        public TaxCollectorSpawn[] GetTaxCollectorSpawns(int guildId)
-        {
-            return m_taxCollectorSpawns.Values.Where(x => x.GuildId == guildId).ToArray();
         }
 
         public bool DoesNameExist(string name)
@@ -65,11 +52,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             return Database.Fetch<GuildMemberRecord, CharacterRecord, GuildMemberRecord>(new GuildMemberRelator().Map,
                 string.Format(GuildMemberRelator.FetchByGuildId, guildId)).Select(x => new GuildMember(x)).ToArray();
-        }
-
-        public GuildTaxCollector[] FindTaxCollectors(int guildId)
-        {
-            return Database.Fetch<TaxCollectorSpawn>(WorldMapTaxCollectorRelator.FetchQuery).Where(x => x.GuildId == guildId).Select(x => new GuildTaxCollector(x)).ToArray();
         }
 
         public Guild TryGetGuild(int id)
@@ -163,8 +145,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
-                m_guildsMembers.Remove(member.Id);
                 Database.Delete(member.Record);
+                m_guildsMembers.Remove(member.Id);
                 return true;
             }
         }

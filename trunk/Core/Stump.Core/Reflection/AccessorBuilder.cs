@@ -112,8 +112,8 @@ namespace Stump.Core.Reflection
                 new[] { typeof(object), typeof(object) },
                 instanceType);
 
-            ILGenerator generator = setterDef.GetILGenerator();
-            LocalBuilder local = generator.DeclareLocal(fInfo.DeclaringType);
+            var generator = setterDef.GetILGenerator();
+            var local = generator.DeclareLocal(fInfo.DeclaringType);
             generator.Emit(OpCodes.Ldarg_0);
             if (fInfo.DeclaringType.IsValueType)
             {
