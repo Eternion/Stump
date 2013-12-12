@@ -171,101 +171,100 @@ namespace Stump.Core.Threading
                 return;
             }
 
-            if (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) == 0)
+            if (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) != 0)
+                return;
+            long timerStart = 0;
+            try
             {
-                long timerStart = 0;
-                try
-                {
-                    // get the time at the start of our task processing
-                    timerStart = m_queueTimer.ElapsedMilliseconds;
-                    var updateDt = (int) (timerStart - m_lastUpdate);
-                    m_lastUpdate = (int) timerStart;
+                // get the time at the start of our task processing
+                timerStart = m_queueTimer.ElapsedMilliseconds;
+                var updateDt = (int) (timerStart - m_lastUpdate);
+                m_lastUpdate = (int) timerStart;
 
-                    // process timer entries
-                    foreach (TimerEntry timer in m_timers)
+                // process timer entries
+                foreach (TimerEntry timer in m_timers)
+                {
+                    try
+                    {
+                        timer.Update(updateDt);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Failed to update {0} : {1}", timer, ex);
+                    }
+                    if (!IsRunning)
+                    {
+                        return;
+                    }
+                }
+
+                // process timers
+                var count = m_simpleTimers.Count;
+                for (var i = count - 1; i >= 0; i--)
+                {
+                    SimpleTimerEntry timer = m_simpleTimers[i];
+                    if (GetDelayUntilNextExecution(timer) <= 0)
                     {
                         try
                         {
-                            timer.Update(updateDt);
+                            timer.Execute(this);
                         }
                         catch (Exception ex)
                         {
-                            logger.Error("Failed to update {0} : {1}", timer, ex);
-                        }
-                        if (!IsRunning)
-                        {
-                            return;
+                            logger.Error("Failed to execute timer {0} : {1}", timer, ex);
                         }
                     }
 
-                    // process timers
-                    int count = m_simpleTimers.Count;
-                    for (int i = count - 1; i >= 0; i--)
+                    if (!IsRunning)
                     {
-                        SimpleTimerEntry timer = m_simpleTimers[i];
-                        if (GetDelayUntilNextExecution(timer) <= 0)
-                        {
-                            try
-                            {
-                                timer.Execute(this);
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Error("Failed to execute timer {0} : {1}", timer, ex);
-                            }
-                        }
-
-                        if (!IsRunning)
-                        {
-                            return;
-                        }
-                    }
-
-                    // process messages
-                    IMessage msg;
-                    while (m_messageQueue.TryDequeue(out msg))
-                    {
-                        try
-                        {
-                            msg.Execute();
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Error("Failed to execute message {0} : {1}", msg, ex);
-                        }
-
-                        if (!IsRunning)
-                        {
-                            return;
-                        }
+                        return;
                     }
                 }
-                catch (Exception ex)
+
+                // process messages
+                IMessage msg;
+                while (m_messageQueue.TryDequeue(out msg))
                 {
-                    logger.Error("Failed to run TaskQueue callback for \"{0}\" : {1}", Name, ex);
+                    try
+                    {
+                        msg.Execute();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Failed to execute message {0} : {1}", msg, ex);
+                    }
+
+                    if (!IsRunning)
+                    {
+                        return;
+                    }
                 }
-                finally
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Failed to run TaskQueue callback for \"{0}\" : {1}", Name, ex);
+            }
+            finally
+            {
+                // get the end time
+                long timerStop = m_queueTimer.ElapsedMilliseconds;
+
+                bool updateLagged = timerStop - timerStart > UpdateInterval;
+                long callbackTimeout = updateLagged ? 0 : ((timerStart + UpdateInterval) - timerStop);
+
+                Interlocked.Exchange(ref m_currentThreadId, 0);
+
+                if (updateLagged)
+                    logger.Debug("TaskPool '{0}' update lagged ({1}ms)", Name, timerStop - timerStart);
+
+                if (IsRunning)
                 {
-                    // get the end time
-                    long timerStop = m_queueTimer.ElapsedMilliseconds;
-
-                    bool updateLagged = timerStop - timerStart > UpdateInterval;
-                    long callbackTimeout = updateLagged ? 0 : ((timerStart + UpdateInterval) - timerStop);
-
-                    Interlocked.Exchange(ref m_currentThreadId, 0);
-
-                    if (updateLagged)
-                        logger.Debug("TaskPool '{0}' update lagged ({1}ms)", Name, timerStop - timerStart);
-
-                    if (IsRunning)
-                    {
-                        // re-register the Update-callback
-                        m_updateTask = Task.Factory.StartNewDelayed((int) callbackTimeout, ProcessCallback, this);
-                    }
-                    else
-                    {
-                        m_stoppedAsync.Set();
-                    }
+                    // re-register the Update-callback
+                    m_updateTask = Task.Factory.StartNewDelayed((int) callbackTimeout, ProcessCallback, this);
+                }
+                else
+                {
+                    m_stoppedAsync.Set();
                 }
             }
         }

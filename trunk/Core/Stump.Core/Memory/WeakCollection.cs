@@ -88,7 +88,7 @@ namespace Stump.Core.Memory
         /// </summary>
         public WeakCollection()
         {
-            this.list = new List<WeakReference<T>>();
+            list = new List<WeakReference<T>>();
         }
 
         /// <summary>
@@ -98,8 +98,8 @@ namespace Stump.Core.Memory
         {
             get
             {
-                List<T> ret = new List<T>(this.list.Count);
-                ret.AddRange(this.UnsafeLiveList);
+                var ret = new List<T>(list.Count);
+                ret.AddRange(UnsafeLiveList);
                 return ret;
             }
         }
@@ -111,7 +111,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return this.list.Select(x => x.Target);
+                return list.Select(x => x.Target);
             }
         }
 
@@ -122,7 +122,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return this.CompleteList.Where(x => x != null);
+                return CompleteList.Where(x => x != null);
             }
         }
 
@@ -133,7 +133,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return this.list.Count;
+                return list.Count;
             }
         }
 
@@ -144,7 +144,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return this.CompleteList.Count(x => x == null);
+                return CompleteList.Count(x => x == null);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return this.UnsafeLiveList.Count();
+                return UnsafeLiveList.Count();
             }
         }
 
@@ -166,7 +166,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return this.CompleteList.Count(x => x != null);
+                return CompleteList.Count(x => x != null);
             }
         }
 
@@ -177,7 +177,7 @@ namespace Stump.Core.Memory
         /// </summary>
         int ICollection<T>.Count
         {
-            get { return this.LiveCount; }
+            get { return LiveCount; }
         }
 
         /// <summary>
@@ -200,18 +200,18 @@ namespace Stump.Core.Memory
                 // This implementation uses logic similar to List<T>.RemoveAll, which always has O(n) time.
                 //  Some other implementations seen in the wild have O(n*m) time, where m is the number of dead entries.
                 //  As m approaches n (e.g., mass object extinctions), their running time approaches O(n^2).
-                int writeIndex = 0;
-                for (int readIndex = 0; readIndex != this.list.Count; ++readIndex)
+                var writeIndex = 0;
+                for (var readIndex = 0; readIndex != list.Count; ++readIndex)
                 {
-                    WeakReference<T> weakReference = this.list[readIndex];
-                    T weakDelegate = weakReference.Target;
+                    var weakReference = list[readIndex];
+                    var weakDelegate = weakReference.Target;
                     if (weakDelegate != null)
                     {
                         yield return weakDelegate;
 
                         if (readIndex != writeIndex)
                         {
-                            this.list[writeIndex] = this.list[readIndex];
+                            list[writeIndex] = list[readIndex];
                         }
 
                         ++writeIndex;
@@ -222,7 +222,7 @@ namespace Stump.Core.Memory
                     }
                 }
 
-                this.list.RemoveRange(writeIndex, this.list.Count - writeIndex);
+                list.RemoveRange(writeIndex, this.list.Count - writeIndex);
             }
         }
 
@@ -232,7 +232,7 @@ namespace Stump.Core.Memory
         /// <param name="item">The object to add a weak reference to.</param>
         public void Add(T item)
         {
-            this.list.Add(new WeakReference<T>(item));
+            list.Add(new WeakReference<T>(item));
         }
 
         /// <summary>
@@ -242,16 +242,15 @@ namespace Stump.Core.Memory
         /// <returns>True if the object was found and removed; false if the object was not found.</returns>
         public bool Remove(T item)
         {
-            for (int i = 0; i != this.list.Count; ++i)
+            for (var i = 0; i != list.Count; ++i)
             {
-                WeakReference<T> weakReference = this.list[i];
-                T weakDelegate = weakReference.Target;
-                if (weakDelegate == item)
-                {
-                    this.list.RemoveAt(i);
-                    weakReference.Dispose();
-                    return true;
-                }
+                var weakReference = list[i];
+                var weakDelegate = weakReference.Target;
+                if (weakDelegate != item)
+                    continue;
+                list.RemoveAt(i);
+                weakReference.Dispose();
+                return true;
             }
 
             return false;
@@ -282,12 +281,12 @@ namespace Stump.Core.Memory
         /// </summary>
         public void Clear()
         {
-            foreach (WeakReference<T> weakReference in this.list)
+            foreach (var weakReference in list)
             {
                 weakReference.Dispose();
             }
 
-            this.list.Clear();
+            list.Clear();
         }
 
         #region ICollection<T> Methods

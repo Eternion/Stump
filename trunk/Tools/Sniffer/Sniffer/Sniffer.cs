@@ -125,7 +125,7 @@ namespace Stump.Tools.Sniffer
                                  };
                 if (dialog.ShowDialog() == DialogResult.OK && dialog.SelectedInterface != null)
                 {
-                    m_selectedDevice = allDevices.Where(entry => entry.Name + ":" + (entry.Description ?? "") == dialog.SelectedInterface).First();
+                    m_selectedDevice = allDevices.First(entry => entry.Name + ":" + (entry.Description ?? "") == dialog.SelectedInterface);
 
                     IdentifiedClient.OnNewMessage += IdentifiedClient_OnNewMessage;
 
@@ -159,6 +159,7 @@ namespace Stump.Tools.Sniffer
         {
             m_thread.Abort();
             m_running = false;
+            m_initialized = false;
         }
 
         private void StartSniffing()

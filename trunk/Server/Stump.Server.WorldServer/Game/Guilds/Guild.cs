@@ -11,6 +11,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Handlers.Basic;
 using GuildMemberNetwork = Stump.DofusProtocol.Types.GuildMember;
 using Stump.Server.WorldServer.Handlers.Guilds;
@@ -33,12 +34,44 @@ namespace Stump.Server.WorldServer.Game.Guilds
             new double[] {70, 1}
         };
 
+        private static readonly short[] TAX_COLLECTOR_SPELLS =
+        {
+            462, //Déstabilisation
+            461, //Compulsion de masse
+            460, //Désenvoûtement
+            459, //Mot soignant
+            458, //Rocher
+            457, //Vague
+            456, //Cyclone
+            455, //Flamme
+            454, //Armure Venteuse
+            453, //Armure Terrestre
+            452, //Armure Incandescente
+            451  //Armure Aqueuse
+        };
+
+        private static readonly short[][] TAX_COLLECTOR_SPELLS_LEVELS =
+        {
+            new short[] { 2308, 2309, 2310, 2311, 2312 }, //Déstabilisation
+            new short[] { 2303, 2304, 2305, 2306, 2307 }, //Compulsion de masse
+            new short[] { 2298, 2299, 2300, 2301, 2302 }, //Désenvoûtement
+            new short[] { 2293, 2294, 2295, 2296, 2297 }, //Mot soignant
+            new short[] { 2288, 2289, 2290, 2291, 2292 }, //Rocher
+            new short[] { 2283, 2284, 2285, 2286, 2287 }, //Vague
+            new short[] { 2278, 2279, 2280, 2281, 2282 }, //Cyclone
+            new short[] { 2273, 2274, 2275, 2276, 2277 }, //Flamme
+            new short[] { 2268, 2269, 2270, 2271, 2272 }, //Armure Venteuse
+            new short[] { 2263, 2264, 2265, 2266, 2267 }, //Armure Terrestre
+            new short[] { 2258, 2259, 2260, 2261, 2262 }, //Armure Incandescente
+            new short[] { 2253, 2254, 2255, 2256, 2257 }  //Armure Aqueuse
+        };
+
         [Variable(true)]
         public static int MaxMembersNumber = 50;
 
         private readonly List<GuildMember> m_members = new List<GuildMember>();
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
-        private readonly List<GuildTaxCollector> m_taxCollectors = new List<GuildTaxCollector>(); 
+        private readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>(); 
         private bool m_isDirty;
         private readonly object m_xpLock = new object();
 
@@ -54,6 +87,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Wisdom = 0;
             Pods = 1000;
             MaxTaxCollectors = 1;
+            Spells = new List<sbyte> {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             ExperienceLevelFloor = 0;
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Record.CreationDate = DateTime.Now;
@@ -68,11 +102,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
             IsDirty = true;
         }
 
-        public Guild(GuildRecord record, IEnumerable<GuildMember> members, IEnumerable<GuildTaxCollector> taxcollectors)
+        public Guild(GuildRecord record, IEnumerable<GuildMember> members)
         {
             Record = record;
             m_members.AddRange(members);
-            m_taxCollectors.AddRange(taxcollectors);
             Level = ExperienceManager.Instance.GetGuildLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetGuildLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
@@ -90,11 +123,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 BindMemberEvents(member);
                 member.BindGuild(this);
-            }
-
-            foreach (var taxcollector in m_taxCollectors)
-            {
-                taxcollector.BindGuild(this);
             }
 
             if (m_members.Count == 0)
@@ -119,7 +147,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             get { return m_clients; }
         }
 
-        public ReadOnlyCollection<GuildTaxCollector> TaxCollectors
+        public ReadOnlyCollection<TaxCollectorNpc> TaxCollectors
         {
             get { return m_taxCollectors.AsReadOnly(); }
         }
@@ -200,6 +228,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
+        public List<sbyte> Spells
+        {
+            get { return Record.Spells; }
+            protected set
+            {
+                Record.Spells = value;
+                IsDirty = true;
+            }
+        }
+
         public long ExperienceLevelFloor
         {
             get;
@@ -239,6 +277,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             protected set;
         }
 
+        public short HireCost
+        {
+            get { return (short)(1000 + (Level * 100)); }
+        }
+
         public bool IsDirty
         {
             get { return m_isDirty || Emblem.IsDirty; }
@@ -247,6 +290,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 if (!value)
                     Emblem.IsDirty = false;
             }
+        }
+
+        public void AddTaxCollector(TaxCollectorNpc taxCollector)
+        {
+            m_taxCollectors.Add(taxCollector);
+        }
+
+        public void RemoveTaxCollector(TaxCollectorNpc taxCollector)
+        {
+            m_taxCollectors.Remove(taxCollector);
         }
 
         public long AdjustGivenExperience(Character giver, long amount)
@@ -364,6 +417,32 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return true;
         }
 
+        public bool UpgradeSpell(int spellId)
+        {
+            if (!TAX_COLLECTOR_SPELLS.Contains((short)spellId))
+                return false;
+
+            if (Boost < 5)
+                return false;
+
+            var i = 0;
+            foreach(var spell in TAX_COLLECTOR_SPELLS)
+            {
+                if (spell == spellId)
+                {
+                    if (Spells[i] < 5)
+                    {
+                        Boost -= 5;
+                        Spells[i] += 1;
+                    }
+                }
+
+                i++;
+            }
+
+            return true;
+        }
+
         public void SetBoss(GuildMember guildMember)
         {
             if (guildMember.Guild != this)
@@ -401,22 +480,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             GuildHandler.SendGuildMemberLeavingMessage(m_clients, kickedMember, true);
 
-            if (kickedMember.IsBoss)
-            {
-                if (m_members.Count > 1)
-                    return false;
+            if (!kickedMember.IsBoss)
+                return true;
 
-                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
-            }
+            if (m_members.Count > 1)
+                return false;
 
-
-            if (kickedMember.IsConnected)
-            {
-                kickedMember.Character.GuildMember = null;
-
-                // Vous avez quitté la guilde.
-                kickedMember.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
-            }
+            GuildManager.Instance.DeleteGuild(kickedMember.Guild);
 
             return true;
         }
@@ -586,15 +656,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         protected virtual void OnMemberRemoved(GuildMember member)
         {
-            UnBindMemberEvents(member);
             GuildManager.Instance.DeleteGuildMember(member);
+            UnBindMemberEvents(member);
 
             if (!member.IsConnected)
                 return;
 
-            member.Character.GuildMember = null;
-            member.Character.RefreshActor();
-            GuildHandler.SendGuildLeftMessage(member.Character.Client);
+            var character = member.Character;
+
+            character.GuildMember = null;
+            character.RefreshActor();
+
+            // Vous avez quitté la guilde.
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 176);
+            GuildHandler.SendGuildLeftMessage(character.Client);
         }
 
         protected virtual void OnLevelChanged()
@@ -654,11 +729,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public GuildInfosUpgradeMessage GetGuildInfosUpgrade()
         {
-            var spellsId = new short[] { 462, 461, 460, 459, 458, 457, 456, 455, 454, 453, 452, 451 };
-            var spellsLevels = new sbyte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-            return new GuildInfosUpgradeMessage(MaxTaxCollectors, (sbyte)GuildManager.Instance.GetTaxCollectorSpawns(Id).Count(), (short)(100 * Level), (short)(1 * Level), Pods, Prospecting, Wisdom, Boost,
-                spellsId, spellsLevels);
+            return new GuildInfosUpgradeMessage(MaxTaxCollectors, (sbyte)TaxCollectorManager.Instance.GetTaxCollectorSpawns(Id).Count(), (short)(100 * Level), (short)(1 * Level), Pods, Prospecting, Wisdom, Boost,
+                TAX_COLLECTOR_SPELLS, Spells);
         }
     }
 }

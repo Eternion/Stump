@@ -100,7 +100,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public override void Execute(TriggerBase trigger)
         {
             var npcId = trigger.Get<sbyte>("npcid");
-            Npc npc = null;
+            Npc npc;
 
             if (trigger.IsArgumentDefined("map"))
             {

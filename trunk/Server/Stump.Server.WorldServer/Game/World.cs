@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using MongoDB.Driver.Linq;
 using NLog;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
@@ -15,11 +14,12 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
+using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Game.Guilds;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Game
             SpawnMerchants();
 
             logger.Info("Spawn TaxCollectors ...");
-            SpawnTaxCollectors();
+            //SpawnTaxCollectors();
         }
 
         private void SetLinks()
@@ -321,9 +321,9 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private void SpawnTaxCollectors()
+        public void SpawnTaxCollectors()
         {
-            foreach (var taxcollector in from spawn in GuildManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null select new GuildTaxCollector(spawn))
+            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null select new TaxCollectorNpc(spawn))
             {
                 taxcollector.Map.Enter(taxcollector);
             }

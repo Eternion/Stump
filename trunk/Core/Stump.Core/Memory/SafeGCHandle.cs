@@ -45,7 +45,7 @@ namespace Stump.Core.Memory
             }
             finally
             {
-                this.SetHandle(GCHandle.ToIntPtr(GCHandle.Alloc(target, type)));
+                SetHandle(GCHandle.ToIntPtr(GCHandle.Alloc(target, type)));
             }
         }
 
@@ -56,7 +56,7 @@ namespace Stump.Core.Memory
         {
             get
             {
-                return GCHandle.FromIntPtr(this.handle);
+                return GCHandle.FromIntPtr(handle);
             }
         }
 
@@ -69,7 +69,7 @@ namespace Stump.Core.Memory
             [PrePrepareMethod]
             get
             {
-                return this.handle == IntPtr.Zero;
+                return handle == IntPtr.Zero;
             }
         }
 
@@ -81,7 +81,7 @@ namespace Stump.Core.Memory
         [PrePrepareMethod]
         protected override bool ReleaseHandle()
         {
-            GCHandle.FromIntPtr(this.handle).Free();
+            GCHandle.FromIntPtr(handle).Free();
             return true;
         }
     }

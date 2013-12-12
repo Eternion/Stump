@@ -26,7 +26,7 @@ namespace Stump.Core.IO
     /// </summary>
     public unsafe class FastBigEndianReader : IDataReader
     {
-        private long m_position = 0;
+        private long m_position;
         private readonly byte[] m_buffer;
         private long m_maxPosition = -1;
 

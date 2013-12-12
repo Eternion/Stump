@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using ServiceStack.Text;
 
 namespace Stump.Core.IO
 {
@@ -53,10 +51,10 @@ namespace Stump.Core.IO
         public static string ToCSV(this IEnumerable enumerable, string separator)
         {
             var builder = new StringBuilder();
-            int count = 0;
+            var count = 0;
             foreach (var entity in enumerable)
             {
-                builder.Append(entity.ToString());
+                builder.Append(entity);
                 builder.Append(separator);
                 count++;
             }

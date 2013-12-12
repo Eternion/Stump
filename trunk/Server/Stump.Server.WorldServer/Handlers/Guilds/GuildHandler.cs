@@ -7,6 +7,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -80,12 +81,17 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (client.Character.Guild == null)
                 return;
 
-            var spellsId = new[] { 462, 461, 460, 459, 458, 457, 456, 455, 454, 453, 452, 451 };
+            if (client.Character.Guild.UpgradeSpell(message.spellId))
+                SendGuildInfosUpgradeMessage(client, client.Character.Guild);
+        }
 
-            if (!spellsId.Contains(message.spellId))
+        [WorldHandler(TaxCollectorHireRequestMessage.Id)]
+        public static void HandleTaxCollectorHireRequestMessage(WorldClient client, TaxCollectorHireRequestMessage message)
+        {
+            if (client.Character.Guild == null)
                 return;
 
-            SendGuildInfosUpgradeMessage(client, client.Character.Guild);
+            TaxCollectorManager.Instance.AddTaxCollectorSpawn(client.Character);
         }
 
         [WorldHandler(GuildCreationValidMessage.Id)]
@@ -290,7 +296,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendTaxCollectorListMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new TaxCollectorListMessage(guild.MaxTaxCollectors, 0, guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()), new TaxCollectorFightersInformation[0]));
+            client.Send(new TaxCollectorListMessage(guild.MaxTaxCollectors, guild.HireCost, guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()), new TaxCollectorFightersInformation[0]));
         }
 
         public static void SendGuildJoinedMessage(IPacketReceiver client, GuildMember member)

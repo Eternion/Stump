@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Stump.Core.IO;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
@@ -76,6 +79,37 @@ namespace Stump.Server.WorldServer.Database.Guilds
         {
             get;
             set;
+        }
+
+        private List<sbyte> m_spells = new List<sbyte>();
+        private string m_spellsCSV;
+
+        [Ignore]
+        public List<sbyte> Spells
+        {
+            get
+            {
+                return m_spells;
+            }
+            set
+            {
+                m_spells = value;
+                m_spellsCSV = m_spells.ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string SpellsCSV
+        {
+            get
+            {
+                return m_spellsCSV;
+            }
+            set
+            {
+                m_spellsCSV = value;
+                m_spells = !string.IsNullOrEmpty(m_spellsCSV) ? m_spellsCSV.FromCSV<sbyte>(",").ToList() : new List<sbyte>();
+            }
         }
 
         public short EmblemBackgroundShape

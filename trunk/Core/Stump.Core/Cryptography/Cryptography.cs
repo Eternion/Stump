@@ -2,9 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Stump.Core.Extensions;
 
 namespace Stump.Core.Cryptography
 {
@@ -19,14 +17,14 @@ namespace Stump.Core.Cryptography
         /// <returns>MD5 Hash</returns>
         public static string GetMD5Hash(string input)
         {
-            MD5 md5Hasher = MD5.Create();
+            var md5Hasher = MD5.Create();
             byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
 
             var sBuilder = new StringBuilder();
 
-            for (int i = 0; i < data.Length; i++)
+            foreach (var t in data)
             {
-                sBuilder.Append(data[i].ToString("x2", CultureInfo.CurrentCulture));
+                sBuilder.Append(t.ToString("x2", CultureInfo.CurrentCulture));
             }
 
             return sBuilder.ToString();
@@ -40,7 +38,7 @@ namespace Stump.Core.Cryptography
 
             using (var fs = File.OpenRead(fileName))
             {
-                foreach (Byte b in md5Hasher.ComputeHash(fs))
+                foreach (var b in md5Hasher.ComputeHash(fs))
                     sb.Append(b.ToString("x2").ToLower());
             }
 
@@ -65,9 +63,9 @@ namespace Stump.Core.Cryptography
         /// <returns></returns>
         public static bool VerifyMD5Hash(string chaine, string hash)
         {
-            string hashOfInput = GetMD5Hash(chaine);
+            var hashOfInput = GetMD5Hash(chaine);
 
-            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+            var comparer = StringComparer.OrdinalIgnoreCase;
 
             return comparer.Compare(hashOfInput, hash) == 0;
         }
@@ -81,10 +79,10 @@ namespace Stump.Core.Cryptography
             var rsa = new RSACryptoServiceProvider();
             rsa.ImportParameters(parameters);
 
-            byte[] bytesToEncrypt = Encoding.UTF8.GetBytes(encryptValue);
-            byte[] bytesEncrypted = rsa.Encrypt(bytesToEncrypt, false);
+            var bytesToEncrypt = Encoding.UTF8.GetBytes(encryptValue);
+            var bytesEncrypted = rsa.Encrypt(bytesToEncrypt, false);
 
-            string encryptedValue = Convert.ToBase64String(bytesEncrypted);
+            var encryptedValue = Convert.ToBase64String(bytesEncrypted);
 
 
             return encryptedValue;
@@ -95,7 +93,7 @@ namespace Stump.Core.Cryptography
             var rsa = new RSACryptoServiceProvider();
             rsa.ImportParameters(parameters);
 
-            string decryptedValue = Encoding.UTF8.GetString(rsa.Decrypt(encryptedValue, false));
+            var decryptedValue = Encoding.UTF8.GetString(rsa.Decrypt(encryptedValue, false));
 
             return decryptedValue;
         }

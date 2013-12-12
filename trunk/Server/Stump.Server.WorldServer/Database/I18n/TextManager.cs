@@ -26,10 +26,7 @@ namespace Stump.Server.WorldServer.Database.I18n
 
         public Languages GetDefaultLanguage()
         {
-            if (m_defaultLanguages.HasValue)
-                return m_defaultLanguages.Value;
-
-            return BaseServer.Settings.Language;
+            return m_defaultLanguages.HasValue ? m_defaultLanguages.Value : BaseServer.Settings.Language;
         }
 
         public string GetText(int id)
