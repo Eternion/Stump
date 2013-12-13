@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 }
                 else
                 {
-                    foreach (var fighter in Fighter.Fight.Fighters.Where(fighter => fighter.IsAlive()))
+                    foreach (var fighter in Fighter.Fight.Fighters.Where(fighter => fighter.IsAlive() && fighter.IsVisibleFor(Fighter)))
                     {
                         int mpToUse;
                         if (!CanReach(fighter, spell, out mpToUse))
