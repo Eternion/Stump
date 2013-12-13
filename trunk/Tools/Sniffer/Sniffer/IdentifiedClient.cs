@@ -122,7 +122,8 @@ namespace Stump.Tools.Sniffer
                 }
                 catch (Exception)
                 {
-                    Debug.Print("Message = {0}", m_currentMessage.Data);
+                    if (m_currentMessage.MessageId == 5632)
+                        Debug.Print("Message = {0}", m_currentMessage.Data);
                 }
 
                 m_currentMessage = null;

@@ -89,8 +89,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 client.Character.Trader.MoveItem(message.objectUID, message.quantity);
             else if (message.quantity <= 0) // he is modifying his merchant bag and remove an item
             {
-                MerchantItem merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
-                bool result = client.Character.MerchantBag.MoveToInventory(merchantItem);
+                var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
+                var result = client.Character.MerchantBag.MoveToInventory(merchantItem);
 
                 if (result)
                     client.Send(new ExchangeShopStockMovementRemovedMessage(message.objectUID));
@@ -123,8 +123,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeShowVendorTaxMessage.Id)]
         public static void HandleExchangeShowVendorTaxMessage(WorldClient client, ExchangeShowVendorTaxMessage message)
         {
-            int objectValue = 0;
-            int totalTax = client.Character.MerchantBag.GetMerchantTax();
+            const int objectValue = 0;
+            var totalTax = client.Character.MerchantBag.GetMerchantTax();
 
             if (totalTax <= 0)
                 totalTax = 1;

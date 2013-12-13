@@ -83,7 +83,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                         SpellTargetType.ENNEMY_STATIC_SUMMONS |
                         SpellTargetType.ENNEMY_SUMMONS : 0);
                 });
-
             #endregion
 
             #region ECAFLIP

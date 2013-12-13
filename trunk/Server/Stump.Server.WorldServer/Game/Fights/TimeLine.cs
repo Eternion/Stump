@@ -135,20 +135,20 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void OrderLine()
         {
-            IOrderedEnumerable<FightActor> redFighters = Fight.RedTeam.GetAllFighters().
+            var redFighters = Fight.RedTeam.GetAllFighters().
                 OrderByDescending(entry => entry.Stats[PlayerFields.Initiative].Total);
-            IOrderedEnumerable<FightActor> blueFighters = Fight.BlueTeam.GetAllFighters().
+            var blueFighters = Fight.BlueTeam.GetAllFighters().
                 OrderByDescending(entry => entry.Stats[PlayerFields.Initiative].Total);
 
-            bool redFighterFirst = redFighters.First().Stats[PlayerFields.Initiative].Total >
+            var redFighterFirst = redFighters.First().Stats[PlayerFields.Initiative].Total >
                                    blueFighters.First().Stats[PlayerFields.Initiative].Total;
 
-            IEnumerator<FightActor> redEnumerator = redFighters.GetEnumerator();
-            IEnumerator<FightActor> blueEnumerator = blueFighters.GetEnumerator();
+            var redEnumerator = redFighters.GetEnumerator();
+            var blueEnumerator = blueFighters.GetEnumerator();
             var timeLine = new List<FightActor>();
 
             bool hasRed;
-            bool hasBlue = false;
+            bool hasBlue;
             while (( hasRed = redEnumerator.MoveNext() ) | ( hasBlue = blueEnumerator.MoveNext() ))
             {
                 if (redFighterFirst)

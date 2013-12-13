@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
-using ServiceStack.Text;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Formulas;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
 

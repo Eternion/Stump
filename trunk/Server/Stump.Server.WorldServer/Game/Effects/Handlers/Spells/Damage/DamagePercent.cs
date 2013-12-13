@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         public override bool Apply()
         {
-            foreach (FightActor actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors())
             {
                 var integerEffect = GenerateEffect();
 
@@ -41,16 +41,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
-                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel)
+                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                     {
                         NotifySpellReflected(actor);
-                        Caster.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell, withBoost:false);
+                        Caster.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell, false);
 
                         actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
-                        var inflictedDamage = actor.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell, withBoost:false);
+                        actor.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell, withBoost:false);
                     }
                 }
             }

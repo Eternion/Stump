@@ -38,6 +38,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                     SendGuildInformationsPaddocksMessage(client);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_HOUSES:
+                    SendGuildHousesInformationMessage(client);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR:
                     SendTaxCollectorListMessage(client, client.Character.Guild);
@@ -92,6 +93,15 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 return;
 
             TaxCollectorManager.Instance.AddTaxCollectorSpawn(client.Character);
+        }
+
+        [WorldHandler(ExchangeRequestOnTaxCollectorMessage.Id)]
+        public static void HandleExchangeRequestOnTaxCollectorMessage(WorldClient client, ExchangeRequestOnTaxCollectorMessage message)
+        {
+            if (client.Character.Guild == null)
+                return;
+
+            SendExchangeGuildTaxCollector(client, message.taxCollectorId);
         }
 
         [WorldHandler(GuildCreationValidMessage.Id)]
@@ -294,9 +304,20 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Send(new GuildInformationsPaddocksMessage(0, new PaddockContentInformations[0]));
         }
 
+        public static void SendGuildHousesInformationMessage(IPacketReceiver client)
+        {
+            client.Send(new GuildHousesInformationMessage(new HouseInformationsForGuild[0]));
+        }
+
         public static void SendTaxCollectorListMessage(IPacketReceiver client, Guild guild)
         {
             client.Send(new TaxCollectorListMessage(guild.MaxTaxCollectors, guild.HireCost, guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()), new TaxCollectorFightersInformation[0]));
+        }
+
+        public static void SendExchangeGuildTaxCollector(IPacketReceiver client, int taxCollectorId)
+        {
+            var taxCollectorNpc = GuildManager.Instance.FindTaxCollectorNpc(taxCollectorId);
+            client.Send(taxCollectorNpc.GetExchangeGuildTaxCollector());
         }
 
         public static void SendGuildJoinedMessage(IPacketReceiver client, GuildMember member)

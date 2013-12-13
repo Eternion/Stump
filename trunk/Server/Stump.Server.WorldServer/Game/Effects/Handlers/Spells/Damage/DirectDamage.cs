@@ -1,6 +1,5 @@
 using System;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -31,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         public override bool Apply()
         {
-            foreach (FightActor actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors())
             {
                 var integerEffect = GenerateEffect();
 
@@ -46,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 {
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
-                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel)
+                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                     {
                         NotifySpellReflected(actor);
                         Caster.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell);
@@ -55,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     }
                     else
                     {
-                        var inflictedDamage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
+                        actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
                     }
                 }
             }
