@@ -57,10 +57,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 if (cast.MoveBefore != null)
                 {
                     Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                    bool success = Fighter.StartMove(cast.MoveBefore);
+                    var success = Fighter.StartMove(cast.MoveBefore);
                     var lastPos = Fighter.Cell.Id;
 
-                    int tries = 0;
+                    var tries = 0;
                     var destinationId = cast.MoveBefore.EndCell.Id;
                     // re-attempt to move if we didn't reach the cell i.e as we trigger a trap
                     while (success && Fighter.Cell.Id != destinationId && Fighter.CanMove() && tries <= MaxMovesTries)
@@ -96,7 +96,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                     Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                 }
 
-                int i = 0;
+                var i = 0;
                 while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell) == SpellCastResult.OK && i <= MaxCastLimit)
                 {
                     if (!Fighter.CastSpell(cast.Spell, cast.TargetCell))
@@ -106,12 +106,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 }
             }
 
-            if (Fighter.CanMove())
+            if (!Fighter.CanMove()) return;
+            foreach (var action in new MoveNearTo(Fighter, Environment.GetNearestEnnemy()).Execute(this))
             {
-                foreach (var action in new MoveNearTo(Fighter, Environment.GetNearestEnnemy()).Execute(this))
-                {
 
-                }
             }
 
             /*var spell = SpellSelector.GetBestSpell();
