@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             Loot.GiveLoot(Character);
             if (AdditionalDatas != null)
-                foreach (FightResultAdditionalData additionalData in AdditionalDatas)
+                foreach (var additionalData in AdditionalDatas)
                 {
                     additionalData.Apply();
                 }

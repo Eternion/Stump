@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -36,17 +35,16 @@ namespace Stump.Server.WorldServer.Game.Formulas
         }
 
         public static readonly double[] GroupCoefficients =
-            new[]
-                {
-                    1,
-                    1.1,
-                    1.5,
-                    2.3,
-                    3.1,
-                    3.6,
-                    4.2,
-                    4.7
-                };
+        {
+            1,
+            1.1,
+            1.5,
+            2.3,
+            3.1,
+            3.6,
+            4.2,
+            4.7
+        };
 
 
         public static int CalculateWinExp(CharacterFighter fighter)

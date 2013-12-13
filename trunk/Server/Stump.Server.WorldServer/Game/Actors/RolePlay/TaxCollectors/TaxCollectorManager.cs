@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Pool;
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Handlers.Basic;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
@@ -38,13 +39,36 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             return m_taxCollectorSpawns.Values.Where(x => x.GuildId == guildId).ToArray();
         }
 
+        public TaxCollectorSpawn GetMapTaxCollector(int mapId)
+        {
+            return m_taxCollectorSpawns.FirstOrDefault(x => x.Value.MapId == mapId).Value;
+        }
+
         public void AddTaxCollectorSpawn(Character character, bool lazySave = true)
         {
-            if (character.Guild.TaxCollectors.Count() >= character.Guild.MaxTaxCollectors)
+            if (character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_HIRE_TAX_COLLECTOR))
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NO_RIGHTS));
                 return;
+            }
+
+            if (character.Guild.TaxCollectors.Count() >= character.Guild.MaxTaxCollectors)
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_MAX_REACHED));
+                return;
+            }
+
+            if (GetMapTaxCollector(character.Position.Map.Id) != null)
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
+                return;
+            }
 
             if (character.Inventory.Kamas < character.Guild.HireCost)
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_ENOUGH_KAMAS));
                 return;
+            }
 
             character.Inventory.SubKamas(character.Guild.HireCost);
 
@@ -57,6 +81,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             m_taxCollectorSpawns.Add(taxCollectorNpc.Id, taxCollectorNpc.Record);
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
+
+            //Le percepteur %1 a été posé en <b>%2</b> par <b>%3</b>.
         }
 
         public void RemoveTaxCollectorSpawn(TaxCollectorSpawn spawn, bool lazySave = true)
@@ -67,6 +93,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 Database.Delete(spawn);
 
             m_taxCollectorSpawns.Remove(spawn.Id);
+
+            //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
         }
 
         public void Save()

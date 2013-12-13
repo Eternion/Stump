@@ -1,7 +1,9 @@
 using System;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -64,6 +66,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             get { return m_record.Id; }
             protected set { m_record.Id = value; }
         }
+
+        //public override string Name
+        //{
+        //    get
+        //    {
+        //        return TextManager.Instance.GetText(FirstNameId) + TextManager.Instance.GetText(LastNameId);
+        //    }
+        //}
 
         public int GuildId
         {
@@ -144,9 +154,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
-            var test = new TaxCollectorInformations(Id, FirstNameId, LastNameId, new AdditionalTaxCollectorInformations("", 0), (short)Position.Point.X, (short)Position.Point.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), (int)KamasEarned, 0, 0, 0);
-            return test;
+            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, new AdditionalTaxCollectorInformations("", 0), (short)Position.Point.X, (short)Position.Point.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), (int)KamasEarned, 0, 0, 0);
         }
+
+        public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
+        {
+            return new ExchangeGuildTaxCollectorGetMessage("", (short)Position.Point.X, (short)Position.Point.Y, Position.Map.Id, (short)Position.Map.SubArea.Id, "", 0, new ObjectItemQuantity[0]);
+        }
+
         #endregion
     }
 }

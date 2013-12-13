@@ -529,7 +529,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.AP.Used -= amount;
 
-            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_WIN, this, this, (short)( amount ));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_WIN, this, this, amount);
 
             return true;
         }
@@ -541,7 +541,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.MP.Used -= amount;
 
-            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, (short)( amount ));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, amount);
 
             return true;
         }
@@ -870,8 +870,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool pvp)
         {
-            double percentResistance = 0;
-            double fixResistance = 0;
+            double percentResistance;
+            double fixResistance;
 
             switch (type)
             {
@@ -937,7 +937,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
         public virtual int CalculateArmorReduction(EffectSchoolEnum damageType)
         {
-            int specificArmor = 0;
+            int specificArmor;
             switch (damageType)
             {
                 case EffectSchoolEnum.Neutral:
@@ -1227,32 +1227,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void TriggerBuffs(BuffTriggerType trigger, object token = null)
         {
             var copy = m_buffList.ToArray();
-            foreach (var buff in copy)
+            foreach (var triggerBuff in copy.OfType<TriggerBuff>().Where(triggerBuff => (triggerBuff.Trigger & trigger) == trigger))
             {
-                var triggerBuff = buff as TriggerBuff;
-
-                if (triggerBuff == null)
-                    continue;
-
-                if ((triggerBuff.Trigger & trigger) == trigger)
-                {
-                    Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
-                    triggerBuff.Apply(trigger, token);
-                    Fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
-                }
+                Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
+                triggerBuff.Apply(trigger, token);
+                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
             }
         }
 
         public void DecrementBuffsDuration(FightActor caster)
         {
-            var buffsToRemove = new List<Buff>();
-
-            foreach (var buff in m_buffList)
-            {
-                if (buff.Caster == caster)
-                    if (buff.DecrementDuration())
-                        buffsToRemove.Add(buff);
-            }
+            var buffsToRemove = m_buffList.Where(buff => buff.Caster == caster).Where(buff => buff.DecrementDuration()).ToList();
 
             foreach (var buff in buffsToRemove)
             {
@@ -1317,13 +1302,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Summons
 
-        private int m_summonedCount;
-
         private readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
 
         public int SummonedCount
         {
-            get { return m_summonedCount; }
+            get;
+            private set;
         }
 
         public ReadOnlyCollection<SummonedFighter> GetSummons()
@@ -1333,13 +1317,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool CanSummon()
         {
-            return m_summonedCount < Stats[PlayerFields.SummonLimit].Total;
+            return SummonedCount < Stats[PlayerFields.SummonLimit].Total;
         }
 
         public void AddSummon(SummonedFighter summon)
         {
             if (summon is SummonedMonster && ( summon as SummonedMonster ).Monster.Template.UseSummonSlot)
-                m_summonedCount++;
+                SummonedCount++;
             // clone
 
             m_summons.Add(summon);
@@ -1348,7 +1332,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void RemoveSummon(SummonedFighter summon)
         {
             if (summon is SummonedMonster && ( summon as SummonedMonster ).Monster.Template.UseSummonSlot)
-                m_summonedCount--;
+                SummonedCount--;
 
             m_summons.Remove(summon);
         }
@@ -1445,7 +1429,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var buffs = GetBuffs(entry => entry is InvisibilityBuff).ToArray();
 
-            foreach (Buff buff in buffs)
+            foreach (var buff in buffs)
             {
                 RemoveAndDispellBuff(buff);
             }
@@ -1619,7 +1603,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override EntityDispositionInformations GetEntityDispositionInformations()
         {
-            return GetEntityDispositionInformations(null);
+            return GetEntityDispositionInformations();
         }
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations(WorldClient client = null)

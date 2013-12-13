@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Handlers.Context;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -12,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public abstract class SummonedFighter : AIFighter
     {
-        protected SummonedFighter(int id, FightTeam team, Spell[] spells, FightActor summoner, Cell cell)
+        protected SummonedFighter(int id, FightTeam team, IEnumerable<Spell> spells, FightActor summoner, Cell cell)
             : base(team, spells)
         {
             Id = id;

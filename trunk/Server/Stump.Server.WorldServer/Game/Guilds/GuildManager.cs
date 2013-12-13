@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Items;
 using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
@@ -52,6 +53,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             return Database.Fetch<GuildMemberRecord, CharacterRecord, GuildMemberRecord>(new GuildMemberRelator().Map,
                 string.Format(GuildMemberRelator.FetchByGuildId, guildId)).Select(x => new GuildMember(x)).ToArray();
+        }
+
+        public TaxCollectorNpc FindTaxCollectorNpc(int Id)
+        {
+            return m_guilds.Values.SelectMany(guild => guild.TaxCollectors.Where(taxCollector => taxCollector.Id == Id)).FirstOrDefault();
         }
 
         public Guild TryGetGuild(int id)
