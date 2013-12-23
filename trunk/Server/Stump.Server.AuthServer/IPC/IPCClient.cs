@@ -20,6 +20,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using NLog;
+using Stump.Core.Attributes;
+using Stump.Core.Pool.Task;
+using Stump.Core.Timers;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
@@ -27,8 +30,11 @@ using Stump.Server.BaseServer.IPC.Messages;
 
 namespace Stump.Server.AuthServer.IPC
 {
-    public class IPCClient
+    public class IPCClient : IPCEntity
     {
+        [Variable(DefinableRunning = true)]
+        public static int DefaultRequestTimeout = 5;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly object m_recvLock = new object();
         private bool m_recvLockAcquired = false;
@@ -40,7 +46,6 @@ namespace Stump.Server.AuthServer.IPC
         }
 
         private IPCOperations m_operations;
-        private IPCMessage m_currentRequest;
 
         public WorldServer Server
         {
@@ -65,7 +70,7 @@ namespace Stump.Server.AuthServer.IPC
             get { return ((IPEndPoint) Socket.RemoteEndPoint).Address; }
         }
 
-        public bool Connected
+        public bool IsConnected
         {
             get { return Socket != null && Socket.Connected; }
         }
@@ -76,22 +81,22 @@ namespace Stump.Server.AuthServer.IPC
             set;
         }
 
-        public void ReplyRequest(IPCMessage message, IPCMessage request)
+        protected override int RequestTimeout
         {
-            if (!Connected)
-            {
-                return;
-            }
-
-            if (request != null)
-                message.RequestGuid = request.RequestGuid;
-
-            Send(message);
+            get { return DefaultRequestTimeout; }
         }
 
-        public void Send(IPCMessage message)
+        protected override TimerEntry RegisterTimer(Action<int> action, int timeout)
         {
-            if (!Connected)
+            var timer = new TimerEntry() {Action = action, InitialDelay = timeout};
+            AuthServer.Instance.IOTaskPool.AddTimer(timer);
+
+            return timer;
+        }
+
+        public override void Send(IPCMessage message)
+        {
+            if (!IsConnected)
             {
                 return;
             }
@@ -161,7 +166,7 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
-        private void ProcessMessage(IPCMessage message)
+        protected override void ProcessMessage(IPCMessage message)
         {
             // handshake not done yet
             if (m_operations == null)
@@ -198,16 +203,27 @@ namespace Stump.Server.AuthServer.IPC
             }
             else
             {
-                m_currentRequest = message.RequestGuid != Guid.Empty ? message : null;
+                base.ProcessMessage(message);
 
-                try
-                {
-                    m_operations.HandleMessage(message);
-                }
-                catch (Exception ex)
-                {
-                    SendError(ex, message);
-                }
+            }
+        }
+
+        protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
+        {
+            request.TimeoutTimer.Stop();
+            AuthServer.Instance.IOTaskPool.RemoveTimer(request.TimeoutTimer);
+            request.ProcessMessage(answer);
+        }
+
+        protected override void ProcessRequest(IPCMessage request)
+        {
+            try
+            {
+                m_operations.HandleMessage(request);
+            }
+            catch (Exception ex)
+            {
+                SendError(ex, request);
             }
         }
 

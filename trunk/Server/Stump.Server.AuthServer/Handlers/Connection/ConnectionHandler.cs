@@ -82,47 +82,12 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             if (client.QueueShowed)
                 SendQueueStatusMessage(client, 0, 0); // close the popup
 
-            /* Handle common identification */
-            if (!HandleIndentification(client, message))
-                return;
-
-            /* If autoconnect, send to the lastServer */
-            if (message.autoconnect && client.Account.LastConnectionWorld != null &&
-                WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
-            {
-                SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
-            }
-            else
-            {
-                SendServersListMessage(client);
-            }
-        }
-
-        /*[AuthHandler(IdentificationWithServerIdMessage.Id)]
-        public static void HandleIdentificationMessageWithServerIdMessage(AuthClient client, IdentificationWithServerIdMessage message)
-        {
-            // Handle common identification
-            HandleIndentification(client, message);
-
-            // If world exist and connected
-            if (WorldServerManager.Instance.CanAccessToWorld(client, message.serverId))
-            {
-                SendSelectServerData(client, WorldServerManager.Instance.GetServerById(message.serverId));
-            }
-            else
-            {
-                SendServersListMessage(client);
-            }
-        }*/
-
-        private static bool HandleIndentification(AuthClient client, IdentificationMessage message)
-        {
-            /* Wrong Version */
+             /* Wrong Version */
             if (!message.version.IsUpToDate())
             {
                 SendIdentificationFailedForBadVersionMessage(client, VersionExtension.ExpectedVersion);
                 client.DisconnectLater(1000);
-                return false;
+                return;
             }
 
 
@@ -134,7 +99,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
                 client.DisconnectLater(1000);
-                return false;
+                return;
             }
 
             /* Check Sanctions */
@@ -142,13 +107,13 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             {
                 SendIdentificationFailedBannedMessage(client, account.BanEndDate.Value);
                 client.DisconnectLater(1000);
-                return false;
+                return;
             }
             else if (account.IsLifeBanned)
             {
                 SendIdentificationFailedBannedMessage(client);
                 client.DisconnectLater(1000);
-                return false;
+                return;
             }
             else if (account.IsBanned)
             {
@@ -161,44 +126,49 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             {
                 SendIdentificationFailedBannedMessage(client, ipBan.GetEndDate());
                 client.DisconnectLater(1000);
-                return false;
+                return;
             }
 
-            /* Already connected on this account */
-            /*bool wasAlreadyConnected = AccountManager.Instance.DisconnectClientsUsingAccount(account);
-            if (wasAlreadyConnected)
+            AccountManager.Instance.DisconnectClientsUsingAccount(account, success => AuthServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                client.Send(new AlreadyConnectedMessage());
-            }*/
-            AccountManager.Instance.DisconnectClientsUsingAccount(account);
+                // we must reload the record since it may have been modified
+                if (success)
+                    account = AccountManager.Instance.FindAccountById(account.Id);
 
-            /* Bind Account to Client */
-            client.Account = account;
+                /* Bind Account to Client */
+                client.Account = account;
 
-            /* Propose at client to give a nickname */
-            if (client.Account.Nickname == string.Empty)
-            {
-                client.Send(new NicknameRegistrationMessage());
-                return false;
-            }
+                /* Propose at client to give a nickname */
+                if (client.Account.Nickname == string.Empty)
+                {
+                    client.Send(new NicknameRegistrationMessage());
+                    return;
+                }
 
-            SendIdentificationSuccessMessage(client, false);
+                SendIdentificationSuccessMessage(client, false);
 
-            return true;
+                /* If autoconnect, send to the lastServer */
+                if (message.autoconnect && client.Account.LastConnectionWorld != null &&
+                    WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
+                    SendSelectServerData(client,
+                        WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
+                else
+                    SendServersListMessage(client);
+            }));
         }
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
             client.Send(new IdentificationSuccessMessage(
-                            client.Account.Role >= RoleEnum.Moderator,
-                            wasAlreadyConnected,
-                            client.Account.Login,
-                            client.Account.Nickname,
-                            (int) client.Account.Id,
-                            0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
-                            client.Account.SecretQuestion,
-                            client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStamp() : 0, 
-                            (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
+                client.Account.Role >= RoleEnum.Moderator,
+                wasAlreadyConnected,
+                client.Account.Login,
+                client.Account.Nickname,
+                (int) client.Account.Id,
+                0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
+                client.Account.SecretQuestion,
+                client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStamp() : 0,
+                (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
 
             client.LookingOfServers = true;
         }
@@ -210,17 +180,19 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendIdentificationFailedForBadVersionMessage(AuthClient client, Version version)
         {
-            client.Send(new IdentificationFailedForBadVersionMessage((sbyte) IdentificationFailureReasonEnum.BAD_VERSION, version));
+            client.Send(new IdentificationFailedForBadVersionMessage(
+                (sbyte) IdentificationFailureReasonEnum.BAD_VERSION, version));
         }
 
         public static void SendIdentificationFailedBannedMessage(AuthClient client)
         {
-            client.Send(new IdentificationFailedMessage((sbyte)IdentificationFailureReasonEnum.BANNED));
+            client.Send(new IdentificationFailedMessage((sbyte) IdentificationFailureReasonEnum.BANNED));
         }
 
         public static void SendIdentificationFailedBannedMessage(AuthClient client, DateTime date)
         {
-            client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED, date.GetUnixTimeStamp()));
+            client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED,
+                date.GetUnixTimeStamp()));
         }
 
         public static void SendQueueStatusMessage(IPacketReceiver client, ushort position, ushort total)
@@ -240,28 +212,32 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             /* World not exist */
             if (world == null)
             {
-                SendSelectServerRefusedMessage(client, message.serverId, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_NO_REASON);
+                SendSelectServerRefusedMessage(client, message.serverId,
+                    ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_NO_REASON);
                 return;
             }
 
             /* Wrong state */
             if (world.Status != ServerStatusEnum.ONLINE)
             {
-                SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_DUE_TO_STATUS);
+                SendSelectServerRefusedMessage(client, world,
+                    ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_DUE_TO_STATUS);
                 return;
             }
 
             /* not suscribe */
             if (world.RequireSubscription && client.Account.SubscriptionEnd <= DateTime.Now)
             {
-                SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_SUBSCRIBERS_ONLY);
+                SendSelectServerRefusedMessage(client, world,
+                    ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_SUBSCRIBERS_ONLY);
                 return;
             }
 
             /* not the rights */
             if (world.RequiredRole > client.Account.Role)
             {
-                SendSelectServerRefusedMessage(client, world, ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_ACCOUNT_RESTRICTED);
+                SendSelectServerRefusedMessage(client, world,
+                    ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_ACCOUNT_RESTRICTED);
                 return;
             }
 
@@ -287,23 +263,26 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.SaveNow();
 
             client.Send(new SelectedServerDataMessage(
-                            (short) world.Id,
-                            world.Address,
-                            world.Port,
-                            (client.Account.Role >= world.RequiredRole),
-                            client.Account.Ticket));
+                (short) world.Id,
+                world.Address,
+                world.Port,
+                (client.Account.Role >= world.RequiredRole),
+                client.Account.Ticket));
 
             client.Disconnect();
         }
 
-        public static void SendSelectServerRefusedMessage(AuthClient client, WorldServer world, ServerConnectionErrorEnum reason)
+        public static void SendSelectServerRefusedMessage(AuthClient client, WorldServer world,
+            ServerConnectionErrorEnum reason)
         {
             client.Send(new SelectedServerRefusedMessage((short) world.Id, (sbyte) reason, (sbyte) world.Status));
         }
 
-        public static void SendSelectServerRefusedMessage(AuthClient client, short worldId, ServerConnectionErrorEnum reason)
+        public static void SendSelectServerRefusedMessage(AuthClient client, short worldId,
+            ServerConnectionErrorEnum reason)
         {
-            client.Send(new SelectedServerRefusedMessage(worldId, (sbyte) reason, (sbyte) ServerStatusEnum.STATUS_UNKNOWN));
+            client.Send(new SelectedServerRefusedMessage(worldId, (sbyte) reason,
+                (sbyte) ServerStatusEnum.STATUS_UNKNOWN));
         }
 
         public static void SendServersListMessage(AuthClient client)
@@ -314,7 +293,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendServerStatusUpdateMessage(AuthClient client, WorldServer world)
         {
             if (world != null)
-                client.Send(new ServerStatusUpdateMessage(WorldServerManager.Instance.GetServerInformation(client, world)));
+                client.Send(
+                    new ServerStatusUpdateMessage(WorldServerManager.Instance.GetServerInformation(client, world)));
         }
 
         #endregion

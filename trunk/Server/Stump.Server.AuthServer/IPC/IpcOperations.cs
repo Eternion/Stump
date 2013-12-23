@@ -120,6 +120,8 @@ namespace Stump.Server.AuthServer.IPC
                     Client.SendError(string.Format("Account not found with ticket {0}", message.Ticket), message);
                     return;
                 }
+                AccountManager.Instance.UnCacheAccount(account);
+                
 
                 Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
             }

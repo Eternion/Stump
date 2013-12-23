@@ -16,9 +16,8 @@
 
 using System;
 using Stump.Core.Timers;
-using Stump.Server.BaseServer.IPC;
 
-namespace Stump.Server.WorldServer.Core.IPC
+namespace Stump.Server.BaseServer.IPC
 {
     public interface IIPCRequest
     {
@@ -45,8 +44,8 @@ namespace Stump.Server.WorldServer.Core.IPC
 
     public class IPCRequest<T> : IIPCRequest where T : IPCMessage
     {
-        public IPCRequest(IPCMessage requestMessage, Guid guid, IPCAccessor.RequestCallbackDelegate<T> callback, IPCAccessor.RequestCallbackErrorDelegate errorCallback,
-            IPCAccessor.RequestCallbackDefaultDelegate defaultCallback, TimerEntry timeoutTimer)
+        public IPCRequest(IPCMessage requestMessage, Guid guid, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback,
+            RequestCallbackDefaultDelegate defaultCallback, TimerEntry timeoutTimer)
         {
             RequestMessage = requestMessage;
             Guid = guid;
@@ -74,19 +73,19 @@ namespace Stump.Server.WorldServer.Core.IPC
             set;
         }
 
-        public IPCAccessor.RequestCallbackDelegate<T> Callback
+        public RequestCallbackDelegate<T> Callback
         {
             get;
             set;
         }
 
-        public IPCAccessor.RequestCallbackErrorDelegate ErrorCallback
+        public RequestCallbackErrorDelegate ErrorCallback
         {
             get;
             set;
         }
 
-        public IPCAccessor.RequestCallbackDefaultDelegate DefaultCallback
+        public RequestCallbackDefaultDelegate DefaultCallback
         {
             get;
             set;
