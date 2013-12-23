@@ -165,7 +165,6 @@
     <Compile Include="Commands\Trigger\TriggerConsole.cs" />
     <Compile Include="Commands\Trigger\WorldConsoleTrigger.cs" />
     <Compile Include="Core\IPC\IPCAccessor.cs" />
-    <Compile Include="Core\IPC\IPCRequest.cs" />
     <Compile Include="Core\Network\CharactersToClientsExtension.cs" />
     <Compile Include="Core\Network\WorldClientCollection.cs" />
     <Compile Include="Core\Network\WorldPacketHandler.cs" />

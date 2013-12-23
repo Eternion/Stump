@@ -16,8 +16,8 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Value
         {
-            get { return value; }
-            set { value = value; }
+            get { return this.value; }
+            set { this.value = value; }
         }
     }
 }

@@ -91,6 +91,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (handler != null) handler(this);
         }
 
+        public event Action<Character> Saved;
+
+        private void OnSaved()
+        {
+            var handler = Saved;
+            if (handler != null) handler(this);
+        }
+
         public event Action<Character, int> LifeRegened;
 
         private void OnLifeRegened(int regenedLife)
@@ -2047,6 +2055,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     transaction.Complete();
                 }
             }
+
+            OnSaved();
+
         }
 
         private void LoadRecord()

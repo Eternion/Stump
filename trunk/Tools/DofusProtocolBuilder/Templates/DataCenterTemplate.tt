@@ -88,8 +88,8 @@ foreach (var field in Parser.Fields)
     Write(field.Type);
     WriteLine(" " + name);
     WriteLine("{");
-    WriteLine("    get { return " + field.Name + "; }");
-    WriteLine("    set { " + field.Name + " = value; }");
+    WriteLine("    get { return this." + field.Name + "; }");
+    WriteLine("    set { this." + field.Name + " = value; }");
     WriteLine("}");
 }
 

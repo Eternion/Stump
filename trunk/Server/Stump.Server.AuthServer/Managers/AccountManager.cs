@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Timers;
@@ -256,8 +257,12 @@ namespace Stump.Server.AuthServer.Managers
             return true;
         }
 
-        // todo : callback to know if an account has been disconnected
         public void DisconnectClientsUsingAccount(Account account)
+        {
+            DisconnectClientsUsingAccount(account, result => { }); // do nothing
+        }
+
+        public void DisconnectClientsUsingAccount(Account account, Action<bool> callback)
         {
             var clients = AuthServer.Instance.FindClients(entry => entry.Account != null &&
                                                                             entry.Account.Id == account.Id).ToArray();
@@ -269,13 +274,17 @@ namespace Stump.Server.AuthServer.Managers
             }
 
             if (account.LastConnectionWorld == null)
+            {
+                callback(false);
                 return;
+            }
 
             var server = WorldServerManager.Instance.GetServerById(account.LastConnectionWorld.Value);
 
             if (server != null && server.Connected && server.IPCClient != null)
             {
-                server.IPCClient.Send(new DisconnectClientMessage(account.Id));
+                server.IPCClient.SendRequest<DisconnectedClientMessage>(new DisconnectClientMessage(account.Id),
+                    msg => callback(msg.Disconnected), msg => callback(false));
             }
         }
     }
