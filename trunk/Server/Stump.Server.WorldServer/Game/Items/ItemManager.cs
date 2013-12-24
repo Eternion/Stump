@@ -79,6 +79,7 @@ namespace Stump.Server.WorldServer.Game.Items
                             Stack = amount,
                             Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
                             Effects = effects,
+                            IsNew = true,
                         };
 
             return CreateItemInstance(owner, record);

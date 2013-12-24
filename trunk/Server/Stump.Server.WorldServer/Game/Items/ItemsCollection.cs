@@ -150,7 +150,6 @@ namespace Stump.Server.WorldServer.Game.Items
                 }
 
                 Items.Add(item.Guid, item);
-                item.Record.IsNew = true;
 
                 NotifyItemAdded(item);
             }
