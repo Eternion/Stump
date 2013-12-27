@@ -450,13 +450,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Fighting
 
-        public override bool StartMove(Path movementPath)
-        {
-
-
-            return base.StartMove(movementPath);
-        }
-
         public void ShowCell(Cell cell, bool team = true)
         {
             if (team)
@@ -1296,6 +1289,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return m_buffedSpells[spell];
         }
+        public bool MustSkipTurn()
+        {
+            return GetBuffs(x => x is SkipTurnBuff).Any();
+        }
 
 
         #endregion
@@ -1555,6 +1552,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return Fight.TimeLine.Current == this;
         }
+
 
         public bool IsFriendlyWith(FightActor actor)
         {

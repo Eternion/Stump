@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Linq;
+using MongoDB.Driver.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
@@ -15,6 +16,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Glyph : MarkTrigger
     {
+        private static readonly int[] SPELLS_GLYPH_END_TURN = {13, 2035}; // glyphe de répulsion
+
         public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
                      Cell centerCell, byte size, Color color)
             : base(
@@ -52,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override TriggerType TriggerType
         {
-            get { return TriggerType.TURN_BEGIN; }
+            get { return SPELLS_GLYPH_END_TURN.Contains(GlyphSpell.Id) ? TriggerType.TURN_END : TriggerType.TURN_BEGIN; }
         }
 
         public override bool DecrementDuration()

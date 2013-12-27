@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
@@ -48,11 +49,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                         if (buff.Duration <= 0)
                             actor.RemoveAndDispellBuff(buff);
-                        else
-                            Fight.UpdateBuff(buff);
                     }
 
                 }
+
+                ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor,
+                    (short)-(integerEffect.Value));
             }
 
             return true;

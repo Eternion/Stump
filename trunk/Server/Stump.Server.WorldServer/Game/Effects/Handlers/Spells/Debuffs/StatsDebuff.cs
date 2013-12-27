@@ -19,6 +19,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
     [EffectHandler(EffectsEnum.Effect_SubCriticalHit)]
     [EffectHandler(EffectsEnum.Effect_SubDamageBonus)]
     [EffectHandler(EffectsEnum.Effect_SubDamageBonusPercent)]
+    [EffectHandler(EffectsEnum.Effect_SubDodge)]
+    [EffectHandler(EffectsEnum.Effect_SubLock)]
+    [EffectHandler(EffectsEnum.Effect_SubDodgeAPProbability)]
+    [EffectHandler(EffectsEnum.Effect_SubDodgeMPProbability)]
     public class StatsDebuff : SpellEffectHandler
     {
         public StatsDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -59,14 +63,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 case EffectsEnum.Effect_SubWisdom:
                     return PlayerFields.Wisdom;
                 case EffectsEnum.Effect_SubRange:
+                case EffectsEnum.Effect_SubRange_135:
                     return PlayerFields.Range;
                 case EffectsEnum.Effect_SubCriticalHit:
                     return PlayerFields.CriticalHit;
                 case EffectsEnum.Effect_SubDamageBonus:
                     return PlayerFields.DamageBonus;
-                case EffectsEnum.Effect_IncreaseDamage_138:
                 case EffectsEnum.Effect_SubDamageBonusPercent:
                     return PlayerFields.DamageBonusPercent;
+                case EffectsEnum.Effect_SubDodge:
+                    return PlayerFields.TackleEvade;
+                case EffectsEnum.Effect_SubLock:
+                    return PlayerFields.TackleBlock;
+                case EffectsEnum.Effect_SubDodgeAPProbability:
+                    return PlayerFields.DodgeAPProbability;
+                case EffectsEnum.Effect_SubDodgeMPProbability:
+                    return PlayerFields.DodgeMPProbability;
 
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));

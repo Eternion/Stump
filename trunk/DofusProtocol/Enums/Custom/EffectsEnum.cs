@@ -1129,19 +1129,19 @@
         /// <summary>
         /// Dodge bonus: #1{~1~2 to }#2
         /// </summary>
-        Effect_752 = 752,
+        Effect_AddDodge = 752,
         /// <summary>
         /// Lock bonus: #1{~1~2 to }#2
         /// </summary>
-        Effect_753 = 753,
+        Effect_AddLock = 753,
         /// <summary>
         /// Dodge penalty: #1{~1~2 to }#2
         /// </summary>
-        Effect_754 = 754,
+        Effect_SubDodge = 754,
         /// <summary>
         /// Lock penalty: #1{~1~2 to }#2
         /// </summary>
-        Effect_755 = 755,
+        Effect_SubLock = 755,
         /// <summary>
         /// Disappear by moving
         /// </summary>

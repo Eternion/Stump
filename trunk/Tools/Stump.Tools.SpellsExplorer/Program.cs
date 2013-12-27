@@ -92,7 +92,8 @@ namespace Stump.Tools.SpellsExplorer
             {
                 foreach (SpellTemplate spell in SpellManager.Instance.GetSpellTemplates())
                 {
-                    if (string.IsNullOrEmpty(pattern) || spell.Name.IndexOf(pattern, StringComparison.InvariantCultureIgnoreCase) != -1 || TextManager.Instance.GetText(spell.NameId, SecondaryLanguage).Contains(pattern))
+                    if (string.IsNullOrEmpty(pattern) || spell.Name.IndexOf(pattern, StringComparison.InvariantCultureIgnoreCase) != -1 || 
+                        TextManager.Instance.GetText(spell.NameId, SecondaryLanguage).Contains(pattern))
                         yield return spell;
                 }
             }

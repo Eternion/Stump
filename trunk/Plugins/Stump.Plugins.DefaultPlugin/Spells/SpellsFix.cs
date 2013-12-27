@@ -31,7 +31,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // concentration (158)
             // #2 effect = summons
+            FixEffectOnAllLevels(158, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALL_SUMMONS);
             FixEffectOnAllLevels(158, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL_SUMMONS);
+
+            // bond (142)
+            // #2 effect = enemies
+            FixEffectOnAllLevels(142, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             #endregion
 
             #region SADIDA

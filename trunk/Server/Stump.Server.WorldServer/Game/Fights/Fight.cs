@@ -976,12 +976,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             // can die with triggers
             if (CheckFightEnd())
                 return;
-
-            if (FighterPlaying.IsDead())
-                PassTurn();
-
+            
             if (TimeLine.NewRound)
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
+
+            if (FighterPlaying.IsDead() || FighterPlaying.MustSkipTurn())
+            {
+                PassTurn();
+                return;
+            }
 
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
                                                          TurnTime);
