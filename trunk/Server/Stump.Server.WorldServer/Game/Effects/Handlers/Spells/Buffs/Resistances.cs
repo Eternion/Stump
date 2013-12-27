@@ -6,9 +6,10 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_SubResistances)]
+    [EffectHandler(EffectsEnum.Effect_AddResistances)]
     public class Resistances : SpellEffectHandler
     {
         public Resistances(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -25,10 +26,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
             foreach (FightActor actor in GetAffectedActors())
             {
-                if (actor == Caster) // just an ugly hack
-                    continue;
-
-                var buff = new ResistancesDebuff(actor.PopNextBuffId(), actor, Caster, integerEffect, Spell, integerEffect.Value, false, true);
+                var buff = new ResistancesBuff(actor.PopNextBuffId(), actor, Caster, integerEffect, Spell, 
+                    (short) ((Effect.EffectId == EffectsEnum.Effect_SubResistances) ? -integerEffect.Value : integerEffect.Value),
+                    false, true);
                 actor.AddAndApplyBuff(buff);
             }
 

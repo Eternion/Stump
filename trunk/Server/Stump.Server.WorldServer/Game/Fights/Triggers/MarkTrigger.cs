@@ -102,5 +102,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public abstract GameActionMark GetGameActionMark();
         public abstract GameActionMark GetHiddenGameActionMark();
         public abstract bool DoesSeeTrigger(FightActor fighter);
+
+        public abstract bool DecrementDuration();
     }
 }

@@ -79,13 +79,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             LastMap = Map;
 
             Position.Map.Leave(this);
-            Position = destination.Clone();
-
+            
             // must execute this is a different thread
             if (NextMap.Area != Area)
             {
                 NextMap.Area.AddMessage(() =>
                     {
+                        Position = destination.Clone();
                         Position.Map.Enter(this);
 
                         NextMap = null;
@@ -96,6 +96,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             }
             else
             {
+                Position = destination.Clone();
                 Position.Map.Enter(this);
 
                 NextMap = null;

@@ -288,6 +288,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\Erosion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\MPDebuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\RestoreHpPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Marks\DamageSharing.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\RewindEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
@@ -508,7 +509,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\StatsBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\APDebuffNonFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\MPDebuffNonFix.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\Resistances.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Resistances.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\StatsDebuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Marks\GlyphSpawn.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Marks\TrapSpawn.cs" />
@@ -519,7 +520,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Move\Teleportation.cs" />
     <Compile Include="Game\Fights\Buffs\Buff.cs" />
     <Compile Include="Game\Fights\Buffs\BuffType.cs" />
-    <Compile Include="Game\Fights\Buffs\Customs\ResistancesDebuff.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\ResistancesBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SpellReflectionBuff.cs" />
     <Compile Include="Game\Fights\Buffs\SpellImmunityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\TriggerBuff.cs" />

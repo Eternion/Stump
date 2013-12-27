@@ -1730,7 +1730,7 @@
         /// <summary>
         /// #1{~1~2 to }#2% Resistance
         /// </summary>
-        Effect_1076 = 1076,
+        Effect_AddResistances = 1076,
         /// <summary>
         /// -#1{~1~2 to -}#2% Resistance
         /// </summary>

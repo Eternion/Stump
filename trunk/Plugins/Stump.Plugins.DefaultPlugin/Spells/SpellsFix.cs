@@ -93,6 +93,16 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(102, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(102, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
             FixEffectOnAllLevels(102, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            #region TOFU
+            // béco du tofu (1999)
+            // steal agility
+            // target only self -> all
+            FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
+                (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+
+            #endregion
+
             #endregion
         }
 

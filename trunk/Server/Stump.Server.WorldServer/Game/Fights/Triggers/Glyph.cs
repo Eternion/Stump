@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             get { return TriggerType.TURN_BEGIN; }
         }
 
-        public bool DecrementDuration()
+        public override bool DecrementDuration()
         {
             return (Duration--) <= 0;
         }

@@ -6,9 +6,9 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
-    public class ResistancesDebuff : Buff
+    public class ResistancesBuff : Buff
     {
-        public ResistancesDebuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, bool critical, bool dispelable)
+        public ResistancesBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, bool critical, bool dispelable)
             : base(id, target, caster, effect, spell, critical, dispelable)
         {
             Value = value;
@@ -22,20 +22,20 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Apply()
         {
-            Target.Stats[PlayerFields.AirResistPercent].Context -= Value;
-            Target.Stats[PlayerFields.FireResistPercent].Context -= Value;
-            Target.Stats[PlayerFields.EarthResistPercent].Context -= Value;
-            Target.Stats[PlayerFields.NeutralResistPercent].Context -= Value;
-            Target.Stats[PlayerFields.WaterResistPercent].Context -= Value;
-        }
-
-        public override void Dispell()
-        {
             Target.Stats[PlayerFields.AirResistPercent].Context += Value;
             Target.Stats[PlayerFields.FireResistPercent].Context += Value;
             Target.Stats[PlayerFields.EarthResistPercent].Context += Value;
             Target.Stats[PlayerFields.NeutralResistPercent].Context += Value;
             Target.Stats[PlayerFields.WaterResistPercent].Context += Value;
+        }
+
+        public override void Dispell()
+        {
+            Target.Stats[PlayerFields.AirResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.FireResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.EarthResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.NeutralResistPercent].Context -= Value;
+            Target.Stats[PlayerFields.WaterResistPercent].Context -= Value;
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
