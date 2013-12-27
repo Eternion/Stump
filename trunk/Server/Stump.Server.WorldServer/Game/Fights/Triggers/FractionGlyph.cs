@@ -1,4 +1,5 @@
 ﻿#region License GNU GPL
+
 // FractionGlyph.cs
 // 
 // Copyright (C) 2013 - BehaviorIsManaged
@@ -12,8 +13,11 @@
 // See the GNU General Public License for more details. 
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
 #endregion
 
+using System;
+using System.Drawing;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -27,8 +31,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class FractionGlyph : MarkTrigger
     {
-        public FractionGlyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, params MarkShape[] shapes) : base(id, caster, castedSpell, originEffect, centerCell, shapes)
+        public FractionGlyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect,
+            Cell centerCell, byte size, Color color) : base(id, caster, castedSpell, originEffect, centerCell,
+                new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, color))
         {
+            Duration = originEffect.Duration;
+        }
+
+        public int Duration
+        {
+            get;
+            private set;
         }
 
         public override GameActionMarkTypeEnum Type
@@ -43,13 +56,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override GameActionMark GetGameActionMark()
         {
-            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte)Type,
-                                      Shapes.Select(entry => entry.GetGameActionMarkedCell()));
+            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type,
+                Shapes.Select(entry => entry.GetGameActionMarkedCell()));
         }
 
         public override GameActionMark GetHiddenGameActionMark()
@@ -62,9 +75,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return true;
         }
 
-        public int DispatchDamages(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null, bool withBoost = true)
+        public override bool DecrementDuration()
         {
-            var actors = GetCells().Select(x => Fight.GetFirstFighter<FightActor>(x)).ToArray();
+            return (Duration--) <= 0;
+        }
+
+        public int DispatchDamages(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false,
+            Spell spell = null, bool withBoost = true)
+        {
+            FightActor[] actors = GetCells().Select(x => Fight.GetFirstFighter<FightActor>(x)).
+                                             Where(x => x != null && !(x is SummonedFighter) && x.IsFriendlyWith(Caster)).ToArray();
 
             if (spell != null)
                 damage += from.GetSpellBoost(spell);
@@ -72,17 +92,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             if (withBoost)
                 damage = from.CalculateDamage(damage, school);
 
-            var percentResistance = GetAveragePercentResistance(actors, school, pvp);
-            var fixResistance = GetAverageFixResistance(actors, school, pvp);
-            damage = (int)( ( 1 - percentResistance / 100d ) * ( damage - fixResistance ) );
+            int percentResistance = GetAveragePercentResistance(actors, school, pvp);
+            int fixResistance = GetAverageFixResistance(actors, school, pvp);
+            damage = (int) ((1 - percentResistance/100d)*(damage - fixResistance));
 
-            var damagePerFighter = damage / actors.Length;
+            int damagePerFighter = damage/actors.Length;
 
-            foreach (var actor in actors)
+            foreach (FightActor actor in actors)
             {
                 if (from != actor)
                 {
-                    int reflected = actor.CalculateDamageReflection(damage);
+                    int reflected = actor.CalculateDamageReflection(damagePerFighter);
 
                     if (reflected > 0)
                     {
@@ -91,10 +111,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                     }
                 }
 
-                if (damage <= 0)
-                    damage = 0;
+                if (damagePerFighter <= 0)
+                    damagePerFighter = 0;
 
-                actor.InflictDirectDamage(damage, from);
+                actor.InflictDirectDamage(damagePerFighter, from);
             }
 
             return damagePerFighter;
@@ -105,15 +125,30 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             switch (type)
             {
                 case EffectSchoolEnum.Neutral:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.NeutralResistPercent].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpNeutralResistPercent].Total) : 0 ));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.NeutralResistPercent].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpNeutralResistPercent].Total) : 0));
                 case EffectSchoolEnum.Earth:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.EarthResistPercent].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpEarthResistPercent].Total) : 0 ));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.EarthResistPercent].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpEarthResistPercent].Total) : 0));
                 case EffectSchoolEnum.Air:
-                    return (int) ( actors.Average(x => x.Stats[PlayerFields.AirResistPercent].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpAirResistPercent].Total) : 0 ));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.AirResistPercent].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpAirResistPercent].Total) : 0));
                 case EffectSchoolEnum.Water:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.WaterResistPercent].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpWaterResistPercent].Total) : 0 ));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.WaterResistPercent].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpWaterResistPercent].Total) : 0));
                 case EffectSchoolEnum.Fire:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.FireResistPercent].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpFireResistPercent].Total) : 0 ));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.FireResistPercent].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpFireResistPercent].Total) : 0));
                 default:
                     return 0;
             }
@@ -124,15 +159,35 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             switch (type)
             {
                 case EffectSchoolEnum.Neutral:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.NeutralElementReduction].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpNeutralElementReduction].Total) : 0 ) + actors.Average(x => x.Stats[PlayerFields.PhysicalDamageReduction].Total));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.NeutralElementReduction].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpNeutralElementReduction].Total) : 0) +
+                             actors.Average(x => x.Stats[PlayerFields.PhysicalDamageReduction].Total));
                 case EffectSchoolEnum.Earth:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.EarthElementReduction].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpEarthElementReduction].Total) : 0 ) + actors.Average(x => x.Stats[PlayerFields.PhysicalDamageReduction].Total));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.EarthElementReduction].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpEarthElementReduction].Total) : 0) +
+                             actors.Average(x => x.Stats[PlayerFields.PhysicalDamageReduction].Total));
                 case EffectSchoolEnum.Air:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.AirElementReduction].Total) + (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpAirElementReduction].Total) : 0) + actors.Average(x => x.Stats[PlayerFields.MagicDamageReduction].Total));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.AirElementReduction].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpAirElementReduction].Total) : 0) +
+                             actors.Average(x => x.Stats[PlayerFields.MagicDamageReduction].Total));
                 case EffectSchoolEnum.Water:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.WaterElementReduction].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpWaterElementReduction].Total) : 0 ) + actors.Average(x => x.Stats[PlayerFields.MagicDamageReduction].Total));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.WaterElementReduction].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpWaterElementReduction].Total) : 0) +
+                             actors.Average(x => x.Stats[PlayerFields.MagicDamageReduction].Total));
                 case EffectSchoolEnum.Fire:
-                    return (int) (actors.Average(x => x.Stats[PlayerFields.FireElementReduction].Total) + ( pvp ? actors.Average(x => x.Stats[PlayerFields.PvpFireElementReduction].Total) : 0 ) + actors.Average(x => x.Stats[PlayerFields.MagicDamageReduction].Total));
+                    return
+                        (int)
+                            (actors.Average(x => x.Stats[PlayerFields.FireElementReduction].Total) +
+                             (pvp ? actors.Average(x => x.Stats[PlayerFields.PvpFireElementReduction].Total) : 0) +
+                             actors.Average(x => x.Stats[PlayerFields.MagicDamageReduction].Total));
                 default:
                     return 0;
             }

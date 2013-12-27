@@ -204,6 +204,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return GetAffectedActors().Where(entry => predicate(entry)).ToArray();
         }
 
+        
         public EffectInteger GenerateEffect()
         {
             var effect = Effect.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;

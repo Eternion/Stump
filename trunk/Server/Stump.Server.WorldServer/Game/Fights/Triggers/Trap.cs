@@ -56,6 +56,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return VisibleState != GameActionFightInvisibilityStateEnum.INVISIBLE || fighter.IsFriendlyWith(Caster);
         }
 
+        public override bool DecrementDuration()
+        {
+            return false;
+        }
+
         public override void Trigger(FightActor trigger)
         {
             NotifyTriggered(trigger, TrapSpell);

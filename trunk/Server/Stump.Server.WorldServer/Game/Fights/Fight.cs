@@ -1013,7 +1013,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ReadyChecker.Cancel();
                 ReadyChecker = null;
             }
-
+            
             if (CheckFightEnd())
                 return;
 
@@ -1027,8 +1027,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
             FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_END);
             FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
+            TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_END);
             FighterPlaying.ResetUsedPoints();
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
+
+            // can die with triggers
+            if (CheckFightEnd())
+                return;
 
             if (IsSequencing)
                 EndSequence(Sequence, true);
@@ -1640,11 +1645,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void DecrementGlyphDuration(FightActor caster)
         {
-            var triggersToRemove = m_triggers.Where(trigger => trigger is Glyph && (trigger as Glyph).Caster == caster).Where(trigger =>
-            {
-                var glyph = trigger as Glyph;
-                return glyph != null && glyph.DecrementDuration();
-            }).ToList();
+            var triggersToRemove = m_triggers.Where(trigger => trigger.Caster == caster).
+                Where(trigger => trigger.DecrementDuration()).ToList();
 
             if (triggersToRemove.Count == 0)
                 return;

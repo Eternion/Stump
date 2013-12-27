@@ -3,6 +3,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
@@ -23,17 +24,30 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
+                var target = actor;
+                var buff = actor.GetBestReflectionBuff();
+                if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
+                {
+                    NotifySpellReflected(actor);
+                    actor.RemoveAndDispellBuff(buff);
+                    target = Caster;
+                }
+
                 if (Effect.Duration > 1)
                 {
-                    AddStatBuff(actor, (short)(-(integerEffect.Value)), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
+                    AddStatBuff(target, (short)(-(integerEffect.Value)), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
                 }
                 else
                 {
-                    actor.LostAP(integerEffect.Value);
+                    target.LostAP(integerEffect.Value);
                 }
             }
 
             return true;
+        }
+        private void NotifySpellReflected(FightActor source)
+        {
+            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, source, Caster);
         }
     }
 }
