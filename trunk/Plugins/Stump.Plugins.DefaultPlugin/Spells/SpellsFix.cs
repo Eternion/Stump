@@ -36,7 +36,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // bond (142)
             // #2 effect = enemies
-            FixEffectOnAllLevels(142, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(142, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             #endregion
 
             #region SADIDA

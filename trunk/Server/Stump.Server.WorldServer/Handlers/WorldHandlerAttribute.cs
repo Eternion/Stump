@@ -32,5 +32,11 @@ namespace Stump.Server.WorldServer.Handlers
             get;
             set;
         }
+
+        public bool IgnorePredicate
+        {
+            get;
+            set;
+        }
     }
 }

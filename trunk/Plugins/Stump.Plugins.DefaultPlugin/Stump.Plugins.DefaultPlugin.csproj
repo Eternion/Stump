@@ -115,6 +115,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AntiBot\AntiBotChecker.cs" />
     <Compile Include="Code\EffectsEnumGeneration.cs" />
     <Compile Include="Code\StateEnumGeneration.cs" />
     <Compile Include="Global\Placements\PlacementComplexityCalculator.cs" />
@@ -174,11 +175,17 @@
   <ItemGroup>
     <Folder Include="Items\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="SWF\AntiBot.swf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\" mkdir "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\"
 copy "$(TargetPath)" "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\$(TargetFileName)"
 copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\$(TargetName).pdb"
+copy "$(TargetDir)SWF\AntiBot.swf" "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\AntiBot.swf"
 IF NOT EXIST "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\patterns" mkdir "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\patterns"
 IF EXIST "$(SolutionDir)Tools\Stump.Tools.CellPatternBuilder\patterns\" copy "$(SolutionDir)Tools\Stump.Tools.CellPatternBuilder\patterns\" "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\patterns"</PostBuildEvent>
   </PropertyGroup>
