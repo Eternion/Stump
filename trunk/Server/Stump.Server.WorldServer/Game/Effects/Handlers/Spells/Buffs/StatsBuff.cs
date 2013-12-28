@@ -16,7 +16,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddVitality)]
     [EffectHandler(EffectsEnum.Effect_AddRange)]
     [EffectHandler(EffectsEnum.Effect_AddRange_136)]
-    [EffectHandler(EffectsEnum.Effect_AddCriticalHit)]
     [EffectHandler(EffectsEnum.Effect_AddSummonLimit)]
     [EffectHandler(EffectsEnum.Effect_AddDamageBonus)]
     [EffectHandler(EffectsEnum.Effect_AddDamageBonus_121)]
@@ -30,6 +29,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddMagicDamageReduction)]
     [EffectHandler(EffectsEnum.Effect_AddLock)]
     [EffectHandler(EffectsEnum.Effect_AddDodge)]
+    [EffectHandler(EffectsEnum.Effect_AddCriticalHit)]
+    [EffectHandler(EffectsEnum.Effect_AddCriticalMiss)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -74,8 +75,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 case EffectsEnum.Effect_AddRange:
                 case EffectsEnum.Effect_AddRange_136:
                     return PlayerFields.Range;
-                case EffectsEnum.Effect_AddCriticalHit:
-                    return PlayerFields.CriticalHit;
                 case EffectsEnum.Effect_AddSummonLimit:
                     return PlayerFields.SummonLimit;
                 case EffectsEnum.Effect_AddDamageBonus:
@@ -98,6 +97,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.TackleBlock;
                 case EffectsEnum.Effect_AddDodge:
                     return PlayerFields.TackleEvade;
+                case EffectsEnum.Effect_AddCriticalHit:
+                    return PlayerFields.CriticalHit;
+                case EffectsEnum.Effect_AddCriticalMiss:
+                    return PlayerFields.CriticalMiss;
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }

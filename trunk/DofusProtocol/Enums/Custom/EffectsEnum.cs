@@ -1906,43 +1906,43 @@
         /// <summary>
         /// #2 HP (Air) lost for every #1 AP used
         /// </summary>
-        Effect_1131 = 1131,
+        Effect_DamageAirPerAP = 1131,
         /// <summary>
         /// #2 HP (Water) lost for every #1 AP used
         /// </summary>
-        Effect_1132 = 1132,
+        Effect_DamageWaterPerAP = 1132,
         /// <summary>
         /// #2 HP (Fire) lost for every #1 AP used
         /// </summary>
-        Effect_1133 = 1133,
+        Effect_DamageFirePerAP = 1133,
         /// <summary>
         /// #2 HP (Neutral) lost for every #1 AP used
         /// </summary>
-        Effect_1134 = 1134,
+        Effect_DamageNeutralPerAP = 1134,
         /// <summary>
         /// #2 HP (Earth) lost for every #1 AP used
         /// </summary>
-        Effect_1135 = 1135,
+        Effect_DamageEarthPerAP = 1135,
         /// <summary>
         /// #2 HP (Air) lost for every #1 MP used
         /// </summary>
-        Effect_1136 = 1136,
+        Effect_DamageAirPerMP = 1136,
         /// <summary>
         /// #2 HP (Water) lost for every #1 MP used
         /// </summary>
-        Effect_1137 = 1137,
+        Effect_DamageWaterPerMP = 1137,
         /// <summary>
         /// #2 HP (Fire) lost for every #1 MP used
         /// </summary>
-        Effect_1138 = 1138,
+        Effect_DamageFirePerMP = 1138,
         /// <summary>
         /// #2 HP (Neutral) lost for every #1 MP used
         /// </summary>
-        Effect_1139 = 1139,
+        Effect_DamageNeutralPerMP = 1139,
         /// <summary>
         /// #2 HP (Earth) lost for every #1 MP used
         /// </summary>
-        Effect_1140 = 1140,
+        Effect_DamageEarthPerMP = 1140,
         /// <summary>
         /// [!]
         /// </summary>
