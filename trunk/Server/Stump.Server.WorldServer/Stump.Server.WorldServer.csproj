@@ -282,6 +282,8 @@
     <Compile Include="Game\Dialogs\RequestBox.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerMPUsed.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerAPUsed.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\PunishmentDamage.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\APDebuff.cs" />

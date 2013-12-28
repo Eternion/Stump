@@ -746,7 +746,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, this);
         }
 
-        public int InflictDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null, bool withBoost = true)
+        public int InflictDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null, bool withBoost = true, bool reducted = true)
         {
             var fractionGlyph = Fight.GetTriggers().FirstOrDefault(x => x is FractionGlyph && x.ContainsCell(Cell)) as FractionGlyph;
             if (fractionGlyph != null)
@@ -760,31 +760,34 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var minDamage = CalculateErosionDamage(damage);
 
-            damage = CalculateDamageResistance(damage, school, pvp);
-
-            int reduction = CalculateArmorReduction(school);
-
-            if (damage - reduction < minDamage)
+            if (reducted)
             {
-                reduction = damage - minDamage;
-            }
+                damage = CalculateDamageResistance(damage, school, pvp);
 
-            if (reduction > 0)
-                OnDamageReducted(from, reduction);
+                int reduction = CalculateArmorReduction(school);
 
-            if (from != this)
-            {
-                int reflected = CalculateDamageReflection(damage);
-
-                if (reflected > 0)
+                if (damage - reduction < minDamage)
                 {
-                    from.InflictDirectDamage(reflected, this);
-                    OnDamageReflected(from, reflected);
+                    reduction = damage - minDamage;
                 }
-            }
 
-            if (reduction > 0)
-                damage -= reduction;
+                if (reduction > 0)
+                    OnDamageReducted(from, reduction);
+
+                if (from != this)
+                {
+                    int reflected = CalculateDamageReflection(damage);
+
+                    if (reflected > 0)
+                    {
+                        from.InflictDirectDamage(reflected, this);
+                        OnDamageReflected(from, reflected);
+                    }
+                }
+
+                if (reduction > 0)
+                    damage -= reduction;
+            }
 
             if (damage <= 0)
                 damage = 0;
