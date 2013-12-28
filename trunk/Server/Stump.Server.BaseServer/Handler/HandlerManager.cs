@@ -51,7 +51,7 @@ namespace Stump.Server.BaseServer.Handler
         ///   Key : Typeof handled message
         ///   Value : Target method
         /// </summary>
-        protected readonly Dictionary<uint, MessageHandler> m_handlers = new Dictionary<uint, MessageHandler>();
+        protected readonly Dictionary<uint, List<MessageHandler>> m_handlers = new Dictionary<uint, List<MessageHandler>>();
 
         /// <summary>
         ///   Automatically detects and registers all PacketHandlers within the given Assembly
@@ -69,7 +69,7 @@ namespace Stump.Server.BaseServer.Handler
         ///   Registers all packet handlers defined in the given type.
         /// </summary>
         /// <param name = "type">the type to search through for packet handlers</param>
-        private void Register(Type type)
+        public void Register(Type type)
         {
             if (type.IsAbstract || !(type.GetInterfaces().Contains(typeof(TContainer)) || type.IsSubclassOf(typeof(TContainer))))
                 return;
@@ -124,12 +124,10 @@ namespace Stump.Server.BaseServer.Handler
 
         private void RegisterHandler(uint messageId, TContainer handlerContainer, TAttribute handlerAttribute, Action<object, TClient, Message> target)
         {
-            if (m_handlers.ContainsKey(messageId))
-            {
-                m_logger.Debug(string.Format("Packet handler {0} already registered ! Func : {1} ", MessageReceiver.GetMessageType(messageId), target));
-            }
+            if (!m_handlers.ContainsKey(messageId))
+                m_handlers.Add(messageId, new List<MessageHandler>());
 
-            m_handlers.Add(messageId,
+            m_handlers[messageId].Add(
                            target != null
                                ? new MessageHandler(handlerContainer, handlerAttribute, target)
                                : new MessageHandler(handlerContainer, handlerAttribute, null));
@@ -142,18 +140,21 @@ namespace Stump.Server.BaseServer.Handler
 
         public virtual void Dispatch(TClient client, Message message)
         {
-            MessageHandler handler;
-            if (m_handlers.TryGetValue(message.MessageId, out handler))
+            List<MessageHandler> handlers;
+            if (m_handlers.TryGetValue(message.MessageId, out handlers))
             {
                 try
                 {
-                    if (!handler.Container.CanHandleMessage(client, message.MessageId))
+                    foreach (var handler in handlers)
                     {
-                        m_logger.Warn(client + " tried to send " + message + " but predicate didn't success");
-                        return;
-                    }
+                        if (!handler.Container.CanHandleMessage(client, message.MessageId))
+                        {
+                            m_logger.Warn(client + " tried to send " + message + " but predicate didn't success");
+                            return;
+                        }
 
-                    ServerBase.InstanceAsBase.IOTaskPool.AddMessage(() => handler.Action(null, client, message));
+                        ServerBase.InstanceAsBase.IOTaskPool.AddMessage(() => handler.Action(null, client, message));
+                    }
                 }
                 catch (Exception ex)
                 {

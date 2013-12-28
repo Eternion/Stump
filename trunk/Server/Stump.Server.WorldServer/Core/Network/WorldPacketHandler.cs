@@ -1,4 +1,5 @@
-﻿using Stump.Core.Threading;
+﻿using System.Collections.Generic;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
@@ -17,19 +18,45 @@ namespace Stump.Server.WorldServer.Core.Network
                 return;
             }
 
-            MessageHandler handler;
-            if (m_handlers.TryGetValue(message.MessageId, out handler))
-            {
-                if (!handler.Container.CanHandleMessage(client, message.MessageId))
-                {
-                    m_logger.Warn(client + " tried to send " + message + " but predicate didn't success");
-                    return;
-                }
 
-                IContextHandler context = GetContextHandler(handler.Attribute, client, message);
-                if (context != null)
+            List<MessageHandler> handlers;
+            if (m_handlers.TryGetValue(message.MessageId, out handlers))
+            {
+                foreach (MessageHandler handler in handlers)
                 {
-                    context.AddMessage(new HandledMessage<WorldClient>(handler.Action, client, message));
+                    if (!handler.Container.CanHandleMessage(client, message.MessageId))
+                    {
+                        m_logger.Warn(client + " tried to send " + message + " but predicate didn't success");
+                        return;
+                    }
+
+                    if (client.Character == null && handler.Attribute.ShouldBeLogged)
+                    {
+                        if (handler.Attribute.IgnorePredicate)
+                            continue;
+
+                        m_logger.Warn(
+                            "Handler id = {0} cannot handle this message because the client {1} is not logged and should be",
+                            message, client);
+                        client.Disconnect();
+                        break;
+                    }
+
+                    if (client.Character != null && !handler.Attribute.ShouldBeLogged)
+                    {                       
+                        if (handler.Attribute.IgnorePredicate)
+                            continue;
+
+                        m_logger.Warn(
+                            "Handler id = {0} cannot handle this message because the client {1} is already logged and should be not",
+                            message, client);
+                        client.Disconnect();
+                        break;
+                    }
+
+                    IContextHandler context = GetContextHandler(handler.Attribute, client, message);
+                    if (context != null)
+                        context.AddMessage(new HandledMessage<WorldClient>(handler.Action, client, message));
                 }
             }
             else
@@ -41,19 +68,6 @@ namespace Stump.Server.WorldServer.Core.Network
 
         public IContextHandler GetContextHandler(WorldHandlerAttribute attr, WorldClient client, Message message)
         {
-            if (client.Character == null && attr.ShouldBeLogged)
-            {
-                m_logger.Warn("Handler id = {0} cannot handle this message because the client {1} is not logged and should be", message, client);
-                client.Disconnect();
-                return null;
-            }
-
-            if (client.Character != null && !attr.ShouldBeLogged)
-            {
-                m_logger.Warn("Handler id = {0} cannot handle this message because the client {1} is already logged and should be not", message, client);
-                client.Disconnect();
-                return null;
-            }
 
             if (!attr.IsGamePacket)
             {

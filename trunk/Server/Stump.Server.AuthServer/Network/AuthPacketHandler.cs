@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Messages;
+﻿using System.Collections.Generic;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Handlers;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
@@ -9,16 +10,20 @@ namespace Stump.Server.AuthServer.Network
     {
         public override void Dispatch(AuthClient client, Message message)
         {
-            MessageHandler handler;
-            if (m_handlers.TryGetValue(message.MessageId, out handler))
+            List<MessageHandler> handlers;
+            if (m_handlers.TryGetValue(message.MessageId, out handlers))
             {
-                if (!handler.Container.CanHandleMessage(client, message.MessageId))
+                foreach (var handler in handlers)
                 {
-                    m_logger.Warn(client + " tried to send " + message + " but predicate didn't success");
-                    return;
-                }
+                    if (!handler.Container.CanHandleMessage(client, message.MessageId))
+                    {
+                        m_logger.Warn(client + " tried to send " + message + " but predicate didn't success");
+                        return;
+                    }
 
-                AuthServer.Instance.IOTaskPool.AddMessage(new HandledMessage<AuthClient>(handler.Action, client, message));
+                    AuthServer.Instance.IOTaskPool.AddMessage(new HandledMessage<AuthClient>(handler.Action, client,
+                        message));
+                }
             }
             else
             {
