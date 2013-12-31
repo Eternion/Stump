@@ -46,7 +46,7 @@ namespace Stump.Server.AuthServer.Managers
 
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly Dictionary<int, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<int, Tuple<DateTime, Account>>();
+        private readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
         private List<IpBan> m_ipBans = new List<IpBan>(); 
         private SimpleTimerEntry m_timer;
         private SimpleTimerEntry m_bansTimer;
@@ -72,7 +72,7 @@ namespace Stump.Server.AuthServer.Managers
 
         private void TimerTick()
         {
-            var toRemove = (from tuple in m_accountsCache.Values where tuple.Item1 >= DateTime.Now select tuple.Item2.Id).ToList();
+            var toRemove = (from keyPair in m_accountsCache where keyPair.Value.Item1 >= DateTime.Now select keyPair.Key).ToList();
 
             foreach (var id in toRemove)
             {
@@ -136,35 +136,21 @@ namespace Stump.Server.AuthServer.Managers
 
         public void CacheAccount(Account account)
         {
-            if (m_accountsCache.ContainsKey(account.Id))
-                m_accountsCache[account.Id] = Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account);
+            if (m_accountsCache.ContainsKey(account.Ticket))
+                m_accountsCache[account.Ticket] = Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account);
             else
-                m_accountsCache.Add(account.Id, Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
+                m_accountsCache.Add(account.Ticket, Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
         }
 
         public void UnCacheAccount(Account account)
         {
-            m_accountsCache.Remove(account.Id);
+            m_accountsCache.Remove(account.Ticket);
         }
 
         public Account FindCachedAccountByTicket(string ticket)
         {
-            var accounts = m_accountsCache.Values.Where(entry => entry.Item2.Ticket == ticket).ToArray();
-
-            if (accounts.Count() > 1)
-            {
-                foreach (var conflictedAccount in accounts)
-                {
-                    conflictedAccount.Item2.Ticket = string.Empty;
-                    UnCacheAccount(conflictedAccount.Item2);
-                }
-
-                return null;
-            }
-
-            var result = accounts.SingleOrDefault();
-
-            return result != null ? result.Item2 : null;
+            Tuple<DateTime, Account> tuple;
+            return m_accountsCache.TryGetValue(ticket, out tuple) ? tuple.Item2 : null;
         }
 
         public bool LoginExists(string login)
