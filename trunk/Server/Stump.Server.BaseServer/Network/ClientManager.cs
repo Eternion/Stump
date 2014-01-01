@@ -252,8 +252,9 @@ namespace Stump.Server.BaseServer.Network
                     m_resumeEvent.WaitOne();
                 }
 
-                if (MaxIPConnexions.HasValue &&
-                    CountClientWithSameIp(( (IPEndPoint)e.AcceptSocket.RemoteEndPoint ).Address) > MaxIPConnexions.Value)
+                var IP = ((IPEndPoint)e.AcceptSocket.RemoteEndPoint).Address;
+
+                if (MaxIPConnexions.HasValue && CountClientWithSameIp(IP) > MaxIPConnexions.Value)
                 {
                     logger.Error("Client {0} try to connect more then {1} times", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
                     m_semaphore.Release();
