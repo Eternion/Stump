@@ -137,9 +137,18 @@ namespace Stump.Server.AuthServer.Managers
         public void CacheAccount(Account account)
         {
             if (m_accountsCache.ContainsKey(account.Ticket))
-                m_accountsCache[account.Ticket] = Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account);
+            {
+                if (m_accountsCache[account.Ticket].Item2.Id != account.Id)
+                {
+                    throw new Exception("BE CAREFUL, two accounts have the same ticket");
+                }
+
+                m_accountsCache[account.Ticket] = Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout),
+                    account);
+            }
             else
-                m_accountsCache.Add(account.Ticket, Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
+                m_accountsCache.Add(account.Ticket,
+                    Tuple.Create(DateTime.Now + TimeSpan.FromSeconds(CacheTimeout), account));
         }
 
         public void UnCacheAccount(Account account)
