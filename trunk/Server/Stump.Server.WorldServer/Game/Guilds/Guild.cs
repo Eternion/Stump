@@ -69,6 +69,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
         [Variable(true)]
         public static int MaxMembersNumber = 50;
 
+        [Variable]
+        public static int MaxGuildXP = 300000;
+
         private readonly List<GuildMember> m_members = new List<GuildMember>();
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>(); 
@@ -478,7 +481,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (!RemoveMember(kickedMember))
                 return false;
 
-            GuildHandler.SendGuildMemberLeavingMessage(m_clients, kickedMember, true);
+            foreach(var m_client in m_clients)
+            {
+                GuildHandler.SendGuildMemberLeavingMessage(m_client, kickedMember, true);
+            }
 
             if (!kickedMember.IsBoss)
                 return true;
@@ -499,12 +505,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (kicker.GuildMember != kickedMember && (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
                 return false;
 
+            if (kicker.GuildMember != kickedMember)
+            {
+                // Vous avez banni <b>%1</b> de votre guilde.
+                kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
+            }
+
             if (!KickMember(kickedMember))
                 return false;
-
-
-            // Vous avez banni <b>%1</b> de votre guilde.
-            kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
 
             return true;
         }
