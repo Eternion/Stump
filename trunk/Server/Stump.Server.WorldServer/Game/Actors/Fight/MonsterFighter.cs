@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override uint GetDroppedKamas()
         {
-            var random = new Random();
+            var random = new AsyncRandom();
 
             return (uint) random.Next(Monster.Template.MinDroppedKamas, Monster.Template.MaxDroppedKamas + 1);
         }
@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!IsDead())
                 return new DroppedItem[0];
 
-            var random = new Random();
+            var random = new AsyncRandom();
             var items = new List<DroppedItem>();
 
             var prospectingSum = OpposedTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
