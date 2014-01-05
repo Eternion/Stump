@@ -254,7 +254,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.LookingOfServers = false;
 
             /* Bind Ticket */
-            client.Account.Ticket = new Random().RandomString(32);
+            client.Account.Ticket = new AsyncRandom().RandomString(32);
             AccountManager.Instance.CacheAccount(client.Account);
 
             client.Account.LastConnection = DateTime.Now;

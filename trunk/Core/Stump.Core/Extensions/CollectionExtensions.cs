@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using Stump.Core.Threading;
 
 namespace Stump.Core.Extensions
 {
@@ -92,7 +93,7 @@ namespace Stump.Core.Extensions
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable)
         {
-            var rand = new Random();
+            var rand = new AsyncRandom();
 
             T[] elements = enumerable.ToArray();
             // Note i > 0 to avoid final pointless iteration
