@@ -39,7 +39,7 @@ namespace ArkalysPlugin.SmithMagic
         {
             BasePlayerItem weapon = Owner.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
 
-            if (weapon == null || weapon.Effects.All(x => x.EffectId != EffectsEnum.Effect_DamageNeutral))
+            if (weapon == null || weapon.Effects.FirstOrDefault(x => x.EffectId != EffectsEnum.Effect_DamageNeutral) == null)
             {
                 Owner.SendServerMessage("Vous devez vous équipper d'une arme de dégats neutre pour la forgemager");
                 return 0;

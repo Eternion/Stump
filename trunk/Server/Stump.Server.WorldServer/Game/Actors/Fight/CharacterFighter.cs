@@ -300,7 +300,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                 experience -= xp;
 
-                m_guildEarnedExp = (int)Character.Guild.AdjustGivenExperience(Character, xp); ;
+                m_guildEarnedExp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
             }
 
             m_earnedExp = experience;
