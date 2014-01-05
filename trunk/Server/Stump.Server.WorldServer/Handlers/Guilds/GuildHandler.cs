@@ -176,6 +176,12 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 return;
             }
 
+            if (!client.Character.Guild.CanAddMember())
+            {
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 55, Guild.MaxMembersNumber);
+                return;
+            }
+
             var request = new GuildInvitationRequest(client.Character, target);
             request.Open();
         }
