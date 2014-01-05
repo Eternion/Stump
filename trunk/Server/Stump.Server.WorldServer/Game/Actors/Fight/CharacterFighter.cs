@@ -26,6 +26,7 @@ using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Guilds;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -296,11 +297,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (Character.GuildMember != null && Character.GuildMember.GivenPercent > 0)
             {
-                var xp = (int)(experience*Character.GuildMember.GivenPercent*0.01);
-
-                experience -= xp;
-
+                var xp = (int)(experience*(Character.GuildMember.GivenPercent*0.01));
                 m_guildEarnedExp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
+
+                m_guildEarnedExp = m_guildEarnedExp > Guild.MaxGuildXP ? Guild.MaxGuildXP : m_guildEarnedExp;
+                experience -= m_guildEarnedExp;
             }
 
             m_earnedExp = experience;
