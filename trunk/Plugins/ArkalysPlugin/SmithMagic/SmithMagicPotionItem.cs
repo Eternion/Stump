@@ -39,7 +39,7 @@ namespace ArkalysPlugin.SmithMagic
         {
             BasePlayerItem weapon = Owner.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
 
-            if (weapon == null || weapon.Effects.FirstOrDefault(x => x.EffectId != EffectsEnum.Effect_DamageNeutral) == null)
+            if (weapon == null || weapon.Effects.All(x => x.EffectId != EffectsEnum.Effect_DamageNeutral))
             {
                 Owner.SendServerMessage("Vous devez vous équipper d'une arme de dégats neutre pour la forgemager");
                 return 0;
@@ -59,20 +59,25 @@ namespace ArkalysPlugin.SmithMagic
                 var newEffect = new EffectDice((EffectDice) effect) {EffectId = tuple.Item1};
                 newEffect.DiceFace = (short) (newEffect.DiceFace*boost);
                 newEffect.DiceNum = (short) (newEffect.DiceNum*boost);
+
+                weapon.Effects.Add(newEffect);
             }
-            if (effect is EffectInteger)
+            else if (effect is EffectInteger)
             {
                 var newEffect = new EffectInteger((EffectInteger) effect) {EffectId = tuple.Item1};
                 newEffect.Value = (short) (newEffect.Value*boost);
+
+                weapon.Effects.Add(newEffect);
             }
             else if (effect is EffectMinMax)
             {
                 var newEffect = new EffectMinMax((EffectMinMax) effect) {EffectId = tuple.Item1};
                 newEffect.ValueMin = (short) (newEffect.ValueMin*boost);
                 newEffect.ValueMax = (short) (newEffect.ValueMax*boost);
+
+                weapon.Effects.Add(newEffect);
             }
 
-            weapon.Effects.Add(effect);
             Owner.Inventory.RefreshItem(weapon);
             weapon.OnObjectModified();
 
