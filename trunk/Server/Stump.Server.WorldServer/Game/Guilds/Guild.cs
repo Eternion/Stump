@@ -473,12 +473,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
             UpdateMember(Boss);
         }
 
-        public bool KickMember(GuildMember kickedMember)
+        public bool KickMember(GuildMember kickedMember, bool kicked)
         {
             if (!RemoveMember(kickedMember))
                 return false;
 
-            GuildHandler.SendGuildMemberLeavingMessage(m_clients, kickedMember, true);
+            foreach (var client in m_clients)
+            {
+                GuildHandler.SendGuildMemberLeavingMessage(client, kickedMember, kicked);   
+            }
 
             if (!kickedMember.IsBoss)
                 return true;
@@ -499,12 +502,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (kicker.GuildMember != kickedMember && (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
                 return false;
 
-            if (!KickMember(kickedMember))
+            if (!KickMember(kickedMember, kickedMember.Character.Id == kicker.Id))
                 return false;
 
-
-            // Vous avez banni <b>%1</b> de votre guilde.
-            kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
+            if (kicker.Id != kickedMember.Character.Id)
+            {
+                // Vous avez banni <b>%1</b> de votre guilde.
+                kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
+            }
 
             return true;
         }
