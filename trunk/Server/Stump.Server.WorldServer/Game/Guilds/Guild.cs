@@ -69,6 +69,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
         [Variable(true)]
         public static int MaxMembersNumber = 50;
 
+        [Variable(true)]
+        public static int MaxGuildXP = 300000;
+
         private readonly List<GuildMember> m_members = new List<GuildMember>();
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>(); 
