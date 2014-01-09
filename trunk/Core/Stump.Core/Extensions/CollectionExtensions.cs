@@ -14,9 +14,9 @@ namespace Stump.Core.Extensions
         {
             var output = new StringBuilder(bytes.Length);
 
-            for (int i = 0; i < bytes.Length; i++)
+            foreach (var t in bytes)
             {
-                output.Append(bytes[i].ToString("X2"));
+                output.Append(t.ToString("X2"));
             }
 
             return output.ToString().ToLower();
@@ -26,7 +26,7 @@ namespace Stump.Core.Extensions
         {
             var output = new StringBuilder(bytes.Length);
 
-            foreach (byte t in bytes)
+            foreach (var t in bytes)
             {
                 output.Append((char) t);
             }
@@ -50,24 +50,24 @@ namespace Stump.Core.Extensions
             if (a1.Length != a2.Length)
                 return false;
 
-            return a1.Except(a2).Count() == 0 && a2.Except(a1).Count() == 0;
+            return !a1.Except(a2).Any() && !a2.Except(a1).Any();
         }
 
         public static T MaxOf<T, T1>(this IList<T> collection, Func<T, T1> selector) where T1 : IComparable<T1>
         {
             if (collection.Count == 0) return default(T);
 
-            T maxT = collection[0];
-            T1 maxT1 = selector(maxT);
+            var maxT = collection[0];
+            var maxT1 = selector(maxT);
 
-            for (int i = 1; i < collection.Count; i++)
+            for (var i = 1; i < collection.Count; i++)
             {
-                T1 currentT1 = selector(collection[i]);
-                if (currentT1.CompareTo(maxT1) > 0)
-                {
-                    maxT = collection[i];
-                    maxT1 = currentT1;
-                }
+                var currentT1 = selector(collection[i]);
+                if (currentT1.CompareTo(maxT1) <= 0)
+                    continue;
+
+                maxT = collection[i];
+                maxT1 = currentT1;
             }
             return maxT;
         }
@@ -76,17 +76,17 @@ namespace Stump.Core.Extensions
         {
             if (collection.Count == 0) return default(T);
 
-            T maxT = collection[0];
-            T1 maxT1 = selector(maxT);
+            var maxT = collection[0];
+            var maxT1 = selector(maxT);
 
-            for (int i = 1; i < collection.Count; i++)
+            for (var i = 1; i < collection.Count; i++)
             {
-                T1 currentT1 = selector(collection[i]);
-                if (currentT1.CompareTo(maxT1) < 0)
-                {
-                    maxT = collection[i];
-                    maxT1 = currentT1;
-                }
+                var currentT1 = selector(collection[i]);
+                if (currentT1.CompareTo(maxT1) >= 0)
+                    continue;
+
+                maxT = collection[i];
+                maxT1 = currentT1;
             }
             return maxT;
         }
@@ -95,21 +95,18 @@ namespace Stump.Core.Extensions
         {
             var rand = new AsyncRandom();
 
-            T[] elements = enumerable.ToArray();
+            var elements = enumerable.ToArray();
             // Note i > 0 to avoid final pointless iteration
-            for (int i = elements.Length - 1; i > 0; i--)
+            for (var i = elements.Length - 1; i > 0; i--)
             {
                 // Swap element "i" with a random earlier element it (or itself)
-                int swapIndex = rand.Next(i + 1);
-                T tmp = elements[i];
+                var swapIndex = rand.Next(i + 1);
+                var tmp = elements[i];
                 elements[i] = elements[swapIndex];
                 elements[swapIndex] = tmp;
             }
             // Lazily yield (avoiding aliasing issues etc)
-            foreach (T element in elements)
-            {
-                yield return element;
-            }
+            return elements;
         }
 
         public static IEnumerable<T> ShuffleWithProbabilities<T>(this IEnumerable<T> enumerable,

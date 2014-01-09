@@ -189,7 +189,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnWeaponUsed(weapon, cell, critical, silentCast);
             UseAP((short) weapon.ApCost);
 
-            foreach (SpellEffectHandler handler in handlers)
+            foreach (var handler in handlers)
                 handler.Apply();
 
             Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
