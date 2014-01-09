@@ -212,11 +212,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void EnsureContext()
         {
-            if (Thread.CurrentThread.ManagedThreadId != m_currentThreadId && IsRunning)
-            {
-                Stop();
-                throw new InvalidOperationException(string.Format("Context needed in Area '{0}'", this));
-            }
+            if (Thread.CurrentThread.ManagedThreadId == m_currentThreadId || !IsRunning)
+                return;
+
+            Stop();
+            throw new InvalidOperationException(string.Format("Context needed in Area '{0}'", this));
         }
 
         #endregion
@@ -225,7 +225,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnStarted()
         {
-            Action<Area> handler = Started;
+            var handler = Started;
             if (handler != null)
                 handler(this);
         }
@@ -234,7 +234,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnStopped()
         {
-            Action<Area> handler = Stopped;
+            var handler = Stopped;
             if (handler != null)
                 handler(this);
         }
