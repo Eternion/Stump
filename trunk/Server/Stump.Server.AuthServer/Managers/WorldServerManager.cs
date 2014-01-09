@@ -195,7 +195,7 @@ namespace Stump.Server.AuthServer.Managers
 
         public bool CanAccessToWorld(AuthClient client, int worldId)
         {
-            WorldServer world = GetServerById(worldId);
+            var world = GetServerById(worldId);
             return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole && world.CharsCount < world.CharCapacity &&
                    ( !world.RequireSubscription || ( client.Account.SubscriptionEnd <= DateTime.Now ) );
         }

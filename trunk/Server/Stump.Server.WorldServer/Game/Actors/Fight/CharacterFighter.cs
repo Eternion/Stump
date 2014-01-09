@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Stump.Core.Attributes;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
@@ -134,79 +131,76 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
 
             // weapon attack
-            if (spell.Id == 0 &&
-                Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) != null)
-            {
-                var weapon =
-                    Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON).Template as
+            if (spell.Id != 0 ||
+                Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
+                return base.CastSpell(spell, cell);
+            var weapon =
+                Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON).Template as
                     WeaponTemplate;
 
-                if (weapon == null || !CanUseWeapon(cell, weapon))
-                    return false;
+            if (weapon == null || !CanUseWeapon(cell, weapon))
+                return false;
 
-                Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
+            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
-                var random = new AsyncRandom();
-                FightSpellCastCriticalEnum critical = RollCriticalDice(weapon);
+            var random = new AsyncRandom();
+            var critical = RollCriticalDice(weapon);
 
-                if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
-                {
-                    OnWeaponUsed(weapon, cell, critical, false);
-                    UseAP((short) weapon.ApCost);
-                    Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
-
-                    PassTurn();
-
-                    return false;
-                }
-                if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
-                    m_criticalWeaponBonus = weapon.CriticalHitBonus;
-
-                m_isUsingWeapon = true;
-                IEnumerable<EffectDice> effects =
-                    weapon.Effects.Where(entry => EffectManager.Instance.IsUnRandomableWeaponEffect(entry.EffectId)).OfType<EffectDice>();
-                var handlers = new List<SpellEffectHandler>();
-                foreach (EffectDice effect in effects)
-                {
-                    if (effect.Random > 0)
-                    {
-                        if (random.NextDouble() > effect.Random/100d)
-                        {
-                            // effect ignored
-                            continue;
-                        }
-                    }
-
-                    SpellEffectHandler handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell,
-                                                                                              critical ==
-                                                                                              FightSpellCastCriticalEnum
-                                                                                                  .CRITICAL_HIT);
-                    handler.EffectZone = new Zone(weapon.Type.ZoneShape, (byte) weapon.Type.ZoneSize,
-                                                  handler.CastPoint.OrientationTo(handler.TargetedPoint));
-                    handler.Targets = SpellTargetType.ENEMY_ALL | SpellTargetType.ALLY_ALL;
-                    handlers.Add(handler);
-                }
-
-                bool silentCast = handlers.Any(entry => entry.RequireSilentCast());
-
-                OnWeaponUsed(weapon, cell, critical, silentCast);
+            if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+            {
+                OnWeaponUsed(weapon, cell, critical, false);
                 UseAP((short) weapon.ApCost);
-
-                foreach (SpellEffectHandler handler in handlers)
-                    handler.Apply();
-
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
-                m_isUsingWeapon = false;
-                m_criticalWeaponBonus = 0;
+                PassTurn();
 
-                // is it the right place to do that ?
-                Fight.CheckFightEnd();
+                return false;
+            }
+            if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
+                m_criticalWeaponBonus = weapon.CriticalHitBonus;
 
-                return true;
+            m_isUsingWeapon = true;
+            var effects =
+                weapon.Effects.Where(entry => EffectManager.Instance.IsUnRandomableWeaponEffect(entry.EffectId)).OfType<EffectDice>();
+            var handlers = new List<SpellEffectHandler>();
+            foreach (var effect in effects)
+            {
+                if (effect.Random > 0)
+                {
+                    if (random.NextDouble() > effect.Random/100d)
+                    {
+                        // effect ignored
+                        continue;
+                    }
+                }
+
+                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell,
+                    critical ==
+                    FightSpellCastCriticalEnum
+                        .CRITICAL_HIT);
+                handler.EffectZone = new Zone(weapon.Type.ZoneShape, (byte) weapon.Type.ZoneSize,
+                    handler.CastPoint.OrientationTo(handler.TargetedPoint));
+                handler.Targets = SpellTargetType.ENEMY_ALL | SpellTargetType.ALLY_ALL;
+                handlers.Add(handler);
             }
 
-            return base.CastSpell(spell, cell);
+            var silentCast = handlers.Any(entry => entry.RequireSilentCast());
+
+            OnWeaponUsed(weapon, cell, critical, silentCast);
+            UseAP((short) weapon.ApCost);
+
+            foreach (SpellEffectHandler handler in handlers)
+                handler.Apply();
+
+            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
+
+            m_isUsingWeapon = false;
+            m_criticalWeaponBonus = 0;
+
+            // is it the right place to do that ?
+            Fight.CheckFightEnd();
+
+            return true;
         }
 
         public override SpellCastResult CanCastSpell(Spell spell, Cell cell)
