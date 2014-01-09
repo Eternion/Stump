@@ -37,8 +37,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 lock (ConnectionQueue.SyncRoot)
                 {
                     var toRemove = new List<AuthClient>();
-                    int count = 0;
-                    foreach (AuthClient authClient in ConnectionQueue)
+                    var count = 0;
+                    foreach (var authClient in ConnectionQueue)
                     {
                         count++;
 
@@ -49,6 +49,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
                         if (DateTime.Now - authClient.InQueueUntil <= TimeSpan.FromSeconds(3))
                             continue;
+
                         SendQueueStatusMessage(authClient, (ushort) count, (ushort) ConnectionQueue.Count);
                         authClient.QueueShowed = true;
                     }
@@ -109,13 +110,15 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.DisconnectLater(1000);
                 return;
             }
-            else if (account.IsLifeBanned)
+
+            if (account.IsLifeBanned)
             {
                 SendIdentificationFailedBannedMessage(client);
                 client.DisconnectLater(1000);
                 return;
             }
-            else if (account.IsBanned)
+
+            if (account.IsBanned)
             {
                 account.IsBanned = false;
                 account.BanEndDate = null;
@@ -147,11 +150,10 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
                 SendIdentificationSuccessMessage(client, false);
 
+                //todo: Fix connection bug if Last World isn't ONLINE
                 /* If autoconnect, send to the lastServer */
-                if (message.autoconnect && client.Account.LastConnectionWorld != null &&
-                    WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
-                    SendSelectServerData(client,
-                        WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
+                if (message.autoconnect && client.Account.LastConnectionWorld != null && WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
+                    SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
                 else
                     SendServersListMessage(client);
             }));

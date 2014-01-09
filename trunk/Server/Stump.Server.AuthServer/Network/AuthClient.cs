@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using Stump.Core.Extensions;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Messages.Custom;
 using Stump.Server.AuthServer.Database;
@@ -16,8 +13,7 @@ namespace Stump.Server.AuthServer.Network
     {
         private string m_login;
 
-        public AuthClient(Socket socket)
-            : base(socket)
+        public AuthClient(Socket socket) : base(socket)
         {
             var patch = AuthServer.Instance.GetConnectionSwfPatch();
             if (patch != null)
