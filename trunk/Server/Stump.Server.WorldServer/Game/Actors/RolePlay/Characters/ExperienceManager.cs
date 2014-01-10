@@ -119,7 +119,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             var honor = m_records[(byte) (grade + 1)].AlignmentHonor;
 
-            return honor == null ? (ushort)20000 : honor.Value;
+            return !honor.HasValue ? (ushort)20000 : honor.Value;
         }
 
         public byte GetAlignementGrade(ushort honor)
