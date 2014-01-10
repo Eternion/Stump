@@ -912,8 +912,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int CalculateHeal(int heal)
         {
-            return
-                (int) (heal*(100 + Stats[PlayerFields.Intelligence].Total)/100d + Stats[PlayerFields.HealBonus].Total);
+            return (int) (heal*(100 + Stats[PlayerFields.Intelligence].Total)/100d + Stats[PlayerFields.HealBonus].Total);
         }
 
         public virtual int CalculateArmorValue(int reduction)
