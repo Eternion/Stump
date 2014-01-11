@@ -127,11 +127,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
-                foreach (var member in guild.Members)
-                {
-                    DeleteGuildMember(member);
-                }
-
                 m_guilds.Remove(guild.Id);
                 m_guildsToDelete.Push(guild);
 
