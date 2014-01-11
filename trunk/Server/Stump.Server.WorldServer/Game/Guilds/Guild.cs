@@ -640,7 +640,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return false;
 
             m_members.Remove(member);
-            m_clients.Remove(member.Character.Client);
+
+            if (member.IsConnected)
+                m_clients.Remove(member.Character.Client);
 
             OnMemberRemoved(member);
             return true;

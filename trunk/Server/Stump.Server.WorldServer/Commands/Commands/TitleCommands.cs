@@ -122,7 +122,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
     public class AddRemoveOrnamentCommand : AddRemoveCommand
     {
         public AddRemoveOrnamentCommand()
-            : base()
         {
             Aliases = new[] { "ornament" };
             RequiredRole = RoleEnum.GameMaster;
