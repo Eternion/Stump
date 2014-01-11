@@ -45,37 +45,46 @@ namespace ArkalysPlugin.SmithMagic
                 return 0;
             }
 
-            Tuple<EffectsEnum, int[]> tuple = m_potions.FirstOrDefault(x => x.Item2.Contains(Template.Id));
+            var tuple = m_potions.FirstOrDefault(x => x.Item2.Contains(Template.Id));
 
             if (tuple == null)
                 return 1;
 
-            double boost = m_potionsBoosts[Array.IndexOf(tuple.Item2, Template.Id)];
-            EffectBase effect = weapon.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_DamageNeutral);
+            var boost = m_potionsBoosts[Array.IndexOf(tuple.Item2, Template.Id)];
+            var effect = weapon.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_DamageNeutral);
             weapon.Effects.Remove(effect);
 
-            if (effect is EffectDice)
+            var effectDice = effect as EffectDice;
+            if (effectDice != null)
             {
-                var newEffect = new EffectDice((EffectDice) effect) {EffectId = tuple.Item1};
+                var newEffect = new EffectDice(effectDice) { EffectId = tuple.Item1 };
                 newEffect.DiceFace = (short) (newEffect.DiceFace*boost);
                 newEffect.DiceNum = (short) (newEffect.DiceNum*boost);
 
                 weapon.Effects.Add(newEffect);
             }
-            else if (effect is EffectInteger)
+            else
             {
-                var newEffect = new EffectInteger((EffectInteger) effect) {EffectId = tuple.Item1};
-                newEffect.Value = (short) (newEffect.Value*boost);
+                var effectInteger = effect as EffectInteger;
+                if (effectInteger != null)
+                {
+                    var newEffect = new EffectInteger(effectInteger) {EffectId = tuple.Item1};
+                    newEffect.Value = (short) (newEffect.Value*boost);
 
-                weapon.Effects.Add(newEffect);
-            }
-            else if (effect is EffectMinMax)
-            {
-                var newEffect = new EffectMinMax((EffectMinMax) effect) {EffectId = tuple.Item1};
-                newEffect.ValueMin = (short) (newEffect.ValueMin*boost);
-                newEffect.ValueMax = (short) (newEffect.ValueMax*boost);
+                    weapon.Effects.Add(newEffect);
+                }
+                else
+                {
+                    var effectMinMax = effect as EffectMinMax;
+                    if (effectMinMax != null)
+                    {
+                        var newEffect = new EffectMinMax(effectMinMax) {EffectId = tuple.Item1};
+                        newEffect.ValueMin = (short) (newEffect.ValueMin*boost);
+                        newEffect.ValueMax = (short) (newEffect.ValueMax*boost);
 
-                weapon.Effects.Add(newEffect);
+                        weapon.Effects.Add(newEffect);
+                    }
+                }
             }
 
             Owner.Inventory.RefreshItem(weapon);

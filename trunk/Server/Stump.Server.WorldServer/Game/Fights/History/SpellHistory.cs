@@ -80,12 +80,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
             var castsOnThisTarget = castsThisRound.Count(entry => entry.Target != null && entry.Target.Id == target.Id);
 
-            if (spell.MaxCastPerTarget > 0 && castsOnThisTarget >= spell.MaxCastPerTarget)
-            {
-                return false;
-            }
-
-            return true;
+            return spell.MaxCastPerTarget <= 0 || castsOnThisTarget < spell.MaxCastPerTarget;
         }
 
         public bool CanCastSpell(SpellLevelTemplate spell)
