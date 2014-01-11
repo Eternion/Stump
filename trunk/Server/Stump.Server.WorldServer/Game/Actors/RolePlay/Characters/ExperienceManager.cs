@@ -38,17 +38,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public long GetCharacterLevelExperience(byte level)
         {
-            if (m_records.ContainsKey(level))
-            {
-                long? exp = m_records[level].CharacterExp;
+            if (!m_records.ContainsKey(level))
+                throw new Exception("Level " + level + " not found");
 
-                if (!exp.HasValue)
-                    throw new Exception("Character level " + level + " is not defined");
+            var exp = m_records[level].CharacterExp;
 
-                return exp.Value;
-            }
+            if (!exp.HasValue)
+                throw new Exception("Character level " + level + " is not defined");
 
-            throw new Exception("Level " + level + " not found");
+            return exp.Value;
         }
 
         /// <summary>
@@ -60,17 +58,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (m_records.ContainsKey((byte) (level + 1)))
             {
-                long? exp = m_records[(byte) (level + 1)].CharacterExp;
+                var exp = m_records[(byte) (level + 1)].CharacterExp;
 
                 if (!exp.HasValue)
                     throw new Exception("Character level " + level + " is not defined");
 
                 return exp.Value;
             }
-            else
-            {
-                return long.MaxValue;
-            }
+
+            return long.MaxValue;
         }
 
         public byte GetCharacterLevel(long experience)
@@ -98,7 +94,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public ushort GetAlignementGradeHonor(byte grade)
         {
-            if (!m_records.ContainsKey(grade)) throw new Exception("Grade " + grade + " not found");
+            if (!m_records.ContainsKey(grade))
+                throw new Exception("Grade " + grade + " not found");
+
             var honor = m_records[grade].AlignmentHonor;
 
             if (!honor.HasValue)
@@ -114,12 +112,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ushort GetAlignementNextGradeHonor(byte grade)
         {
             if (!m_records.ContainsKey((byte) (grade + 1)))
-                return 20000;
-                
+                return 17500;
 
             var honor = m_records[(byte) (grade + 1)].AlignmentHonor;
 
-            return !honor.HasValue ? (ushort)20000 : honor.Value;
+            return !honor.HasValue ? (ushort)17500 : honor.Value;
         }
 
         public byte GetAlignementGrade(ushort honor)
