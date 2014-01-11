@@ -20,12 +20,11 @@ namespace ArkalysPlugin.Votes
         {
             var msg = (VoteNotificationMessage) message;
 
-            foreach (var character in World.Instance.GetCharacters(x => msg.AccountsToNotify.Contains(x.Account.Id)))
+            foreach (var character in World.Instance.GetCharacters(x => msg.AccountsToNotify.Contains(x.Account.Id)).Where(character => character.Account.Role == RoleEnum.Player))
             {
-                if (character.Account.Role == RoleEnum.Player)
-                    character.DisplayNotification(
-                        "Plus de 3H se sont écoulées depuis votre dernier vote, vous pouvez à nouveau voter pour gagner des jetons en cliquant <u><b><a href='http://www.arkalys.com/vote' target='_blank'><font color='#0000FF'>ICI</font></a></b></u>",
-                        NotificationEnum.ERREUR);
+                character.DisplayNotification(
+                    "Plus de 3H se sont écoulées depuis votre dernier vote, vous pouvez à nouveau voter pour gagner des jetons en cliquant <u><b><a href='http://www.arkalys.com/vote' target='_blank'><font color='#0000FF'>ICI</font></a></b></u>",
+                    NotificationEnum.ERREUR);
             }
         }
     }

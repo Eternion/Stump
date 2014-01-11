@@ -492,7 +492,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (m_members.Count > 1)
                 return false;
 
-            GuildManager.Instance.DeleteGuild(kickedMember.Guild);
+            if (kickedMember.IsBoss && m_members.Count == 0)
+                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
 
             return true;
         }
