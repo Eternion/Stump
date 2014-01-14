@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            CharacterRecord character = client.Characters.Find(entry => entry.Id == message.characterId);
+            var character = client.Characters.Find(entry => entry.Id == message.characterId);
 
             /* check null */
             if (character == null)
@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            string secretAnswerHash = message.secretAnswerHash;
+            var secretAnswerHash = message.secretAnswerHash;
 
             /* Level < 20 or > 20 and Good secret Answer */
             if (ExperienceManager.Instance.GetCharacterLevel(character.Experience) <= 20 || (client.Account.SecretAnswer != null
