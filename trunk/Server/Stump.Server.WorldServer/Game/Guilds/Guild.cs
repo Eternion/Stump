@@ -478,19 +478,16 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool KickMember(GuildMember kickedMember, bool kicked)
         {
+            if (kickedMember.IsBoss && m_members.Count > 1)
+                return false;
+
             if (!RemoveMember(kickedMember))
                 return false;
 
             foreach (var client in m_clients)
             {
-                GuildHandler.SendGuildMemberLeavingMessage(client, kickedMember, kicked);   
+                GuildHandler.SendGuildMemberLeavingMessage(client, kickedMember, true);   
             }
-
-            if (!kickedMember.IsBoss)
-                return true;
-
-            if (m_members.Count > 1)
-                return false;
 
             if (kickedMember.IsBoss && m_members.Count == 0)
                 GuildManager.Instance.DeleteGuild(kickedMember.Guild);
@@ -713,6 +710,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             UpdateMember(member);
 
             m_clients.Send(new GuildMemberOnlineStatusMessage(member.Id, false));
+            m_clients.Send(new GuildMemberLeavingMessage(false, member.Id));
         }
 
         private void BindMemberEvents(GuildMember member)

@@ -56,7 +56,7 @@ namespace DBSynchroniser
 
         [Variable(true)] public static string D2IOutput = "./generate_d2i";
 
-        private static Dictionary<string, Languages> m_stringToLang = new Dictionary<string, Languages>
+        private static readonly Dictionary<string, Languages> m_stringToLang = new Dictionary<string, Languages>
         {
             {"fr", Languages.French},       
             {"en", Languages.English},
@@ -568,21 +568,18 @@ namespace DBSynchroniser
 
                     var line = reader.ReadLine().Trim().Replace(" ", "");
 
-                    if (line.StartsWith("--EXECUTEON:"))
-                    {
-                        var table = line.Remove(0, "--EXECUTEON:".Length).ToLower();
-                        if (!patchs.ContainsKey(table)) 
-                            patchs.Add(table, new List<string>());
-                        patchs[table].Add(filePath);
-                    }
+                    if (!line.StartsWith("--EXECUTEON:"))
+                        continue;
+
+                    var table = line.Remove(0, "--EXECUTEON:".Length).ToLower();
+                    if (!patchs.ContainsKey(table)) 
+                        patchs.Add(table, new List<string>());
+                    patchs[table].Add(filePath);
                 }
             }
 
-            foreach (var table in worldTables)
+            foreach (var table in worldTables.Where(table => tables.Any(x => table.TableName.Contains(x))))
             {
-                if (tables.All(x => !table.TableName.Contains(x)))
-                    continue;
-
                 // reset the table
                 worldDatabase.Database.Execute("DELETE FROM " + table.TableName);
                 worldDatabase.Database.Execute("ALTER TABLE " + table.TableName + " AUTO_INCREMENT=1");
@@ -603,7 +600,7 @@ namespace DBSynchroniser
                 using (var transaction = Database.Database.GetTransaction())
                 {
                     InitializeCounter();
-                    int i = 0;
+                    var i = 0;
                     var rows = GetTableRows(dataTable);
                     foreach (ID2ORecord row in rows)
                     {
@@ -614,7 +611,7 @@ namespace DBSynchroniser
                         var monster = obj as Monster;
                         if (monster != null && monsterGradeTable != null)
                         {
-                            foreach (MonsterGrade monsterGrade in monster.grades)
+                            foreach (var monsterGrade in monster.grades)
                             {
                                 record = (IAssignedByD2O)monsterGradeTable.Constructor.DynamicInvoke();
                                 record.AssignFields(monsterGrade);
@@ -635,12 +632,12 @@ namespace DBSynchroniser
                     transaction.Complete();
                 }
 
-                if (patchs.ContainsKey(table.TableName.ToLower()))
+                if (!patchs.ContainsKey(table.TableName.ToLower()))
+                    continue;
+
+                foreach (var filePath in patchs[table.TableName.ToLower()])
                 {
-                    foreach (var filePath in patchs[table.TableName.ToLower()])
-                    {
-                        ExecutePatch(filePath, worldDatabase.Database);
-                    }
+                    ExecutePatch(filePath, worldDatabase.Database);
                 }
             }
 
@@ -655,7 +652,7 @@ namespace DBSynchroniser
             worldDatabase.Database.Execute("DELETE FROM langs_ui");
             worldDatabase.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
                 
-            int count = 0;
+            var count = 0;
             if (tables.Length == 0 || tables.Any(x => "langs".Contains(x)))
             {
                 Console.WriteLine("Build table 'langs' ...");
@@ -670,27 +667,27 @@ namespace DBSynchroniser
                 EndCounter();
             }
 
-            if (tables.Length == 0 || tables.Any(x => "langs_ui".Contains(x)))
+            if (tables.Length != 0 && !tables.Any(x => "langs_ui".Contains(x)))
+                return;
+
+            Console.WriteLine("Build table 'langs_ui' ...");
+            count = 0;
+            foreach (var lang in langsUi)
             {
-                Console.WriteLine("Build table 'langs_ui' ...");
-                count = 0;
-                foreach (var lang in langsUi)
-                {
-                    worldDatabase.Database.Insert(lang);
-                    count++;
-                    UpdateCounter(count, langsUi.Count);
-                }
-                EndCounter();
+                worldDatabase.Database.Insert(lang);
+                count++;
+                UpdateCounter(count, langsUi.Count);
             }
+            EndCounter();
         }
 
         private static void ExecutePatch(string file, Database database)
         {
             Console.WriteLine("Execute patch '{0}'", Path.GetFileName(file));
-            int lineIndex = 0;
+            var lineIndex = 0;
             InitializeCounter();
-            string[] lines = File.ReadAllLines(file);
-            foreach (string line in lines)
+            var lines = File.ReadAllLines(file);
+            foreach (var line in lines)
             {
                 try
                 {
@@ -716,8 +713,8 @@ namespace DBSynchroniser
         #region Helpers
         private static IList GetTableRows(D2OTable table)
         {
-            MethodInfo method = typeof (Database).GetMethodExt("Fetch", 1, new[] {typeof (Sql)});
-            MethodInfo generic = method.MakeGenericMethod(table.Type);
+            var method = typeof (Database).GetMethodExt("Fetch", 1, new[] {typeof (Sql)});
+            var generic = method.MakeGenericMethod(table.Type);
             var rows =
                 ((IList)
                     generic.Invoke(Database.Database,
