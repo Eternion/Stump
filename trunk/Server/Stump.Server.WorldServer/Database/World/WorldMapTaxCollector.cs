@@ -77,11 +77,5 @@ namespace Stump.Server.WorldServer.Database.World
             get;
             set;
         }
-
-        public uint KamasEarned
-        {
-            get;
-            set;
-        }
     }
 }

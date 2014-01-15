@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ServiceStack.Text;
+using System.Linq;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -132,12 +132,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             protected set { m_record.LastNameId = value; }
         }
 
-        public uint KamasEarned
-        {
-            get { return m_record.KamasEarned; }
-            set { m_record.KamasEarned = value; }
-        }
-
         protected override void OnDisposed()
         {
             foreach (var dialog in OpenDialogs.ToArray())
@@ -206,12 +200,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
-            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, new AdditionalTaxCollectorInformations("", 0), (short)Position.Point.X, (short)Position.Point.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), (int)KamasEarned, 0, 0, 0);
+            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, new AdditionalTaxCollectorInformations("", 0), (short)Position.Point.X, (short)Position.Point.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
         }
 
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
             return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Point.X, (short)Position.Point.Y, Position.Map.Id, (short)Position.Map.SubArea.Id, "", 0, new ObjectItemQuantity[0]);
+        }
+
+        public StorageInventoryContentMessage GetStorageInventoryContent()
+        {
+            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), 0);
         }
 
         #endregion
