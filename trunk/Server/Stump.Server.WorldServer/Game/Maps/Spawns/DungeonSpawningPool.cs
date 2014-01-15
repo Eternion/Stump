@@ -119,29 +119,29 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             if (draw)
                 return;
 
-            if (winners.IsPlayerTeam() && losers.IsMonsterTeam())
+            if (!winners.IsPlayerTeam() || !losers.IsMonsterTeam())
+                return;
+
+            var group = ((MonsterFighter) losers.Leader).Monster.Group;
+
+            if (!m_groupsSpawn.ContainsKey(@group))
             {
-                var group = (losers.Leader as MonsterFighter).Monster.Group;
+                logger.Error("Group {0} (Map {1}) has ended his fight but is not register in the pool", @group.Id, Map.Id);
+                return;
+            }
 
-                if (!m_groupsSpawn.ContainsKey(group))
-                {
-                    logger.Error("Group {0} (Map {1}) has ended his fight but is not register in the pool", group.Id, Map.Id);
-                    return;
-                }
+            var spawn = m_groupsSpawn[@group];
 
-                var spawn = m_groupsSpawn[group];
+            if (!spawn.TeleportEvent)
+                return;
 
-                if (!spawn.TeleportEvent)
-                    return;
+            var pos = spawn.GetTeleportPosition();
 
-                var pos = spawn.GetTeleportPosition();
-
-                foreach (var fighter in winners.GetAllFighters<CharacterFighter>())
-                {
-                    fighter.Character.NextMap = pos.Map;
-                    fighter.Character.Cell = pos.Cell;
-                    fighter.Character.Direction = pos.Direction;
-                }
+            foreach (var fighter in winners.GetAllFighters<CharacterFighter>())
+            {
+                fighter.Character.NextMap = pos.Map;
+                fighter.Character.Cell = pos.Cell;
+                fighter.Character.Direction = pos.Direction;
             }
         }
 
