@@ -182,6 +182,7 @@
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
     <Compile Include="Database\Interactives\InteractiveSkillRecord.cs" />
     <Compile Include="Database\ISaveable.cs" />
+    <Compile Include="Database\Items\TaxCollectorItemRecord.cs" />
     <Compile Include="Database\Items\Templates\PetTemplate.cs" />
     <Compile Include="Database\Items\PlayerItemRecord.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
@@ -280,6 +281,7 @@
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
+    <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorExchangeDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerMPUsed.cs" />
@@ -359,6 +361,8 @@
     <Compile Include="Game\Items\Player\CharacterMerchantBag.cs" />
     <Compile Include="Game\Items\Player\MerchantItem.cs" />
     <Compile Include="Game\Items\Pet.cs" />
+    <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
+    <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Social\ChatEntry.cs" />
@@ -389,6 +393,7 @@
     <Compile Include="Handlers\Prism\PrismHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
+    <Compile Include="Handlers\TaxCollector\TaxCollectorHandler.cs" />
     <Compile Include="Handlers\Titles\TitleHandler.cs" />
     <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />

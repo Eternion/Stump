@@ -57,16 +57,12 @@ namespace Stump.Server.BaseServer.Commands
 
         public string GetSafeUsage()
         {
-            if (string.IsNullOrEmpty(Usage))
-            {
-                if (Parameters == null)
-                    return "";
+            if (!string.IsNullOrEmpty(Usage)) return Usage;
+            if (Parameters == null)
+                return "";
 
-                return string.Join(" ", from entry in Parameters
-                                        select entry.GetUsage());
-            }
-
-            return Usage;
+            return string.Join(" ", from entry in Parameters
+                select entry.GetUsage());
         }
 
         public abstract void Execute(TriggerBase trigger);

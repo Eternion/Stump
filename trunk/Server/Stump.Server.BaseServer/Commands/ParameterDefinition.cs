@@ -83,10 +83,7 @@ namespace Stump.Server.BaseServer.Commands
             if (ValueType.HasInterface(typeof(IConvertible)))
                 return Convert.ChangeType(value, typeof(T));
 
-            if (ValueType.IsEnum)
-                return Enum.Parse(ValueType, value);
-
-            return DefaultValue;
+            return ValueType.IsEnum ? Enum.Parse(ValueType, value) : DefaultValue;
         }
 
         /// <summary>
@@ -100,7 +97,7 @@ namespace Stump.Server.BaseServer.Commands
 
         public string GetUsage()
         {
-            string usage = Name != ShortName ? Name + "/" + ShortName : Name;
+            var usage = Name != ShortName ? Name + "/" + ShortName : Name;
 
             if (!Equals(DefaultValue, default(T)))
             {

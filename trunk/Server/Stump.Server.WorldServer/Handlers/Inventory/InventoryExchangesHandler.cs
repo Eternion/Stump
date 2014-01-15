@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
@@ -210,6 +211,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             shop.Open();
         }
 
+        [WorldHandler(ExchangeRequestOnTaxCollectorMessage.Id)]
+        public static void HandleExchangeRequestOnTaxCollectorMessage(WorldClient client, ExchangeRequestOnTaxCollectorMessage message)
+        {
+            if (client.Character.Guild == null)
+                return;
+
+            SendExchangeGuildTaxCollector(client, message.taxCollectorId);
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
@@ -281,6 +291,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)
         {
             client.Send(new ExchangeStartOkHumanVendorMessage(merchant.Id, merchant.Bag.Select(x => x.GetObjectItemToSellInHumanVendorShop())));
+        }
+
+        public static void SendExchangeGuildTaxCollector(IPacketReceiver client, int taxCollectorId)
+        {
+            var taxCollectorNpc = GuildManager.Instance.FindTaxCollectorNpc(taxCollectorId);
+            client.Send(taxCollectorNpc.GetExchangeGuildTaxCollector());
         }
     }
 }
