@@ -7,9 +7,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
 {
     public class TaxCollectorExchangeDialog : IDialog
     {
-        public TaxCollectorExchangeDialog(TaxCollectorNpc merchant, Character character)
+        public TaxCollectorExchangeDialog(TaxCollectorNpc taxCollector, Character character)
         {
-            TaxCollector = merchant;
+            TaxCollector = taxCollector;
             Character = character;
         }
 
@@ -37,7 +37,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
         {
             Character.SetDialog(this);
             TaxCollector.OnDialogOpened(this);
-            InventoryHandler.SendExchangeGuildTaxCollector(Character.Client, TaxCollector.Id);
+
+            InventoryHandler.SendStorageInventoryContentMessage(Character.Client, TaxCollector);
+            //Todo: Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
         }
 
         public void Close()

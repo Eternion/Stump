@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Stump.Core.Extensions;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
@@ -43,6 +45,11 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         {
             return (compared.Template.Id == Template.Id &&
                     compared.Effects.CompareEnumerable(Effects));
+        }
+
+        public ObjectItem GetObjectItem()
+        {
+            return new ObjectItem(0, (short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
         }
 
         #endregion

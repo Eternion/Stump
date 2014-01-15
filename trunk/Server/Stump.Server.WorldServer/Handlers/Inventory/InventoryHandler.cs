@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
-using Stump.Server.WorldServer.Core.Network;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
-    public partial class InventoryHandler : WorldHandlerContainer
+    public partial class InventoryHandler
     {
         public static void SendKamasUpdateMessage(IPacketReceiver client, int kamasAmount)
         {
