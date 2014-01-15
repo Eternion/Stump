@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Commands.Commands;
 using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.BaseServer.Commands
@@ -220,19 +218,19 @@ namespace Stump.Server.BaseServer.Commands
             if (BindedCommand.Parameters.Count == 0)
                 return true;
 
-            string word = Args.NextWord();
-            bool definedOnly = false;
+            var word = Args.NextWord();
+            var definedOnly = false;
             while (!string.IsNullOrEmpty(word) && definedParam.Count < BindedCommand.Parameters.Count)
             {
                 if (word.StartsWith("\"") && word.EndsWith("\""))
                     word = word.Remove(word.Length - 1, 1).Remove(0, 1);
 
-                bool parsed = false;
+                var parsed = false;
                 if (word.StartsWith("-")) // becareful it can be the minus sign
                 {
                     string name = null;
                     string value = null;
-                    Match matchIsNamed = m_regexIsNamed.Match(word);
+                    var matchIsNamed = m_regexIsNamed.Match(word);
                     if (matchIsNamed.Success)
                     {
                         name = matchIsNamed.Groups[1].Value;
@@ -243,7 +241,7 @@ namespace Stump.Server.BaseServer.Commands
                     }
                     else
                     {
-                        Match matchVar = m_regexVar.Match(word);
+                        var matchVar = m_regexVar.Match(word);
                         if (matchVar.Success)
                         {
                             name = matchVar.Groups[1].Value;
@@ -254,13 +252,12 @@ namespace Stump.Server.BaseServer.Commands
 
                     if (!string.IsNullOrEmpty(name)) // if one of both regex success
                     {
-                        IParameterDefinition definition =
+                        var definition =
                             paramToDefine.SingleOrDefault(entry => CompareParameterName(entry, name, CommandBase.IgnoreCommandCase));
 
                         if (definition != null)
                         {
-                            IParameter parameter = definition.CreateParameter();
-
+                            var parameter = definition.CreateParameter();
 
                             try
                             {

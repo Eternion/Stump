@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
                 return null;
             }
 
-            MonsterDungeonSpawn previous = m_current;
+            var previous = m_current;
 
             m_current = spawn;
             m_current.GroupMonsters.Add(grade);

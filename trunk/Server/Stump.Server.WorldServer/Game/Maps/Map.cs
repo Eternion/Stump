@@ -603,16 +603,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (!SpawnEnabled)
                 return;
 
-            foreach (var actor in GetActors<MonsterGroup>())
+            foreach (var actor in GetActors<MonsterGroup>().Where(actor => actor.GetMonsters().All(entry => MonsterSpawns.Any(spawn => spawn.MonsterId == entry.Template.Id))))
             {
-                if (actor.GetMonsters().All(entry => MonsterSpawns.Any(spawn => spawn.MonsterId == entry.Template.Id)))
-                    Leave(actor);
+                Leave(actor);
             }
 
-            foreach (var spawningPool in SpawningPools.OfType<ClassicalSpawningPool>())
+            foreach (var spawningPool in SpawningPools.OfType<ClassicalSpawningPool>().Where(spawningPool => spawningPool.AutoSpawnEnabled))
             {
-                if (spawningPool.AutoSpawnEnabled)
-                    spawningPool.StopAutoSpawn();
+                spawningPool.StopAutoSpawn();
             }
 
             SpawnEnabled = false;
@@ -683,7 +681,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             var group = new MonsterGroup(GetNextContextualId(), new ObjectPosition(this, GetRandomFreeCell(), GetRandomDirection()));
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 var roll = rand.NextDouble(0, freqSum);
                 var l = 0d;
@@ -693,14 +691,13 @@ namespace Stump.Server.WorldServer.Game.Maps
                 {
                     l += spawn.Frequency;
 
-                    if (roll <= l)
-                    {
-                        monster = MonsterManager.Instance.GetMonsterGrade(spawn.MonsterId, SubArea.RollMonsterGrade(spawn.MinGrade, spawn.MaxGrade));
+                    if (!(roll <= l))
+                        continue;
 
-                        if (CheckMonsterAI(monster))
-                            break;
-                    }
+                    monster = MonsterManager.Instance.GetMonsterGrade(spawn.MonsterId, SubArea.RollMonsterGrade(spawn.MinGrade, spawn.MaxGrade));
 
+                    if (CheckMonsterAI(monster))
+                        break;
                 }
 
                 if (monster == null)
@@ -709,16 +706,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 group.AddMonster(new Monster(monster, group));
             }
 
-            if (group.Count() <= 0)
-            {
-#if DEBUG
-                throw new Exception("An empty monster group has been generated !");
-#else
-                return null;
-#endif
-            }
-
-            return group;
+            return @group.Count() <= 0 ? null : @group;
         }
 
         /// <summary>
@@ -726,7 +714,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         /// </summary>
         /// <param name="grade"></param>
         /// <returns></returns>
-        private bool CheckMonsterAI(MonsterGrade grade)
+        private static bool CheckMonsterAI(MonsterGrade grade)
         {
             var categories = grade.Spells.Select(SpellIdentifier.GetSpellCategories);
 
@@ -758,11 +746,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (position.Map != this)
                 throw new Exception("Try to spawn a monster group on the wrong map");
 
-            sbyte id = GetNextContextualId();
+            var id = GetNextContextualId();
 
             var group = new MonsterGroup(id, position);
 
-            foreach (MonsterGrade grade in monsters)
+            foreach (var grade in monsters)
                 group.AddMonster(new Monster(grade, group));
 
             Enter(group);

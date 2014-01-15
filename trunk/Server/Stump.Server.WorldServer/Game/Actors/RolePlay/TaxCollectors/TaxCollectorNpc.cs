@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using ServiceStack.Text;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -7,7 +10,9 @@ using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Guilds;
+using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
@@ -17,6 +22,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public const string TAXCOLLECTOR_LOOK = "{714|||140}"; //todo: Find correct Look
         
         private readonly WorldMapTaxCollectorRecord m_record;
+        private readonly List<TaxCollectorExchangeDialog> m_openedDialogs = new List<TaxCollectorExchangeDialog>();
 
         public TaxCollectorNpc(int IdProvide, Character character)
         {
@@ -32,6 +38,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             };
 
             Guild = character.Guild;
+            Bag = new TaxCollectorBag(this);
             Position = character.Position.Clone();
 
             Guild.AddTaxCollector(this);
@@ -40,6 +47,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public TaxCollectorNpc(WorldMapTaxCollectorRecord record)
         {
             m_record = record;
+            Bag = new TaxCollectorBag(this);
 
             if (record.MapId == null)
                 throw new Exception("TaxCollector's map not found");
@@ -61,19 +69,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
         }
 
+        public ReadOnlyCollection<TaxCollectorExchangeDialog> OpenDialogs
+        {
+            get { return m_openedDialogs.AsReadOnly(); }
+        }
+
         public override int Id
         {
             get { return m_record.Id; }
             protected set { m_record.Id = value; }
         }
 
-        //public override string Name
-        //{
-        //    get
-        //    {
-        //        return TextManager.Instance.GetText(FirstNameId) + TextManager.Instance.GetText(LastNameId);
-        //    }
-        //}
+        public override string Name
+        {
+            get
+            {
+                return string.Format("{0} {1}", TextManager.Instance.GetText(FirstNameId) + TextManager.Instance.GetText(LastNameId));
+            }
+        }
 
         public int GuildId
         {
@@ -82,6 +95,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         }
 
         public Guild Guild
+        {
+            get;
+            protected set;
+        }
+
+        public TaxCollectorBag Bag
         {
             get;
             protected set;
@@ -119,6 +138,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             set { m_record.KamasEarned = value; }
         }
 
+        protected override void OnDisposed()
+        {
+            foreach (var dialog in OpenDialogs.ToArray())
+            {
+                dialog.Close();
+            }
+
+            base.OnDisposed();
+        }
+
         public bool IsRecordDirty
         {
             get;
@@ -133,14 +162,37 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Guild = guild;
         }
 
+        public bool IsBagEmpty()
+        {
+            return Bag.Count == 0;
+        }
+
+        public void LoadRecord()
+        {
+            Bag.LoadRecord();
+        }
+
         public void Save()
         {
+            if (Bag.IsDirty)
+                Bag.Save();
+
             WorldServer.Instance.DBAccessor.Database.Update(m_record);
         }
 
         public bool IsTaxCollectorOwner(Guilds.GuildMember member)
         {
             return member.Guild.Id == m_record.GuildId;
+        }
+
+        public void OnDialogOpened(TaxCollectorExchangeDialog dialog)
+        {
+            m_openedDialogs.Add(dialog);
+        }
+
+        public void OnDialogClosed(TaxCollectorExchangeDialog dialog)
+        {
+            m_openedDialogs.Remove(dialog);
         }
 
         #region Network
@@ -159,7 +211,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
-            return new ExchangeGuildTaxCollectorGetMessage("", (short)Position.Point.X, (short)Position.Point.Y, Position.Map.Id, (short)Position.Map.SubArea.Id, "", 0, new ObjectItemQuantity[0]);
+            return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Point.X, (short)Position.Point.Y, Position.Map.Id, (short)Position.Map.SubArea.Id, "", 0, new ObjectItemQuantity[0]);
         }
 
         #endregion

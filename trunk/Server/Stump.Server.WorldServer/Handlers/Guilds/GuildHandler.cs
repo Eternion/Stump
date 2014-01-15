@@ -7,10 +7,10 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Handlers.Guilds
@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                     SendGuildHousesInformationMessage(client);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR:
-                    SendTaxCollectorListMessage(client, client.Character.Guild);
+                    TaxCollectorHandler.SendTaxCollectorListMessage(client, client.Character.Guild);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR_LEAVE:
                     break;
@@ -84,24 +84,6 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
             if (client.Character.Guild.UpgradeSpell(message.spellId))
                 SendGuildInfosUpgradeMessage(client, client.Character.Guild);
-        }
-
-        [WorldHandler(TaxCollectorHireRequestMessage.Id)]
-        public static void HandleTaxCollectorHireRequestMessage(WorldClient client, TaxCollectorHireRequestMessage message)
-        {
-            if (client.Character.Guild == null)
-                return;
-
-            TaxCollectorManager.Instance.AddTaxCollectorSpawn(client.Character);
-        }
-
-        [WorldHandler(ExchangeRequestOnTaxCollectorMessage.Id)]
-        public static void HandleExchangeRequestOnTaxCollectorMessage(WorldClient client, ExchangeRequestOnTaxCollectorMessage message)
-        {
-            if (client.Character.Guild == null)
-                return;
-
-            SendExchangeGuildTaxCollector(client, message.taxCollectorId);
         }
 
         [WorldHandler(GuildCreationValidMessage.Id)]
@@ -313,17 +295,6 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildHousesInformationMessage(IPacketReceiver client)
         {
             client.Send(new GuildHousesInformationMessage(new HouseInformationsForGuild[0]));
-        }
-
-        public static void SendTaxCollectorListMessage(IPacketReceiver client, Guild guild)
-        {
-            client.Send(new TaxCollectorListMessage(guild.MaxTaxCollectors, guild.HireCost, guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()), new TaxCollectorFightersInformation[0]));
-        }
-
-        public static void SendExchangeGuildTaxCollector(IPacketReceiver client, int taxCollectorId)
-        {
-            var taxCollectorNpc = GuildManager.Instance.FindTaxCollectorNpc(taxCollectorId);
-            client.Send(taxCollectorNpc.GetExchangeGuildTaxCollector());
         }
 
         public static void SendGuildJoinedMessage(IPacketReceiver client, GuildMember member)
