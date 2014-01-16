@@ -1,6 +1,5 @@
 using System;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Game.Maps.Cells
@@ -14,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
 
         private void NotifyPositionChanged()
         {
-            Action<ObjectPosition> handler = PositionChanged;
+            var handler = PositionChanged;
             if (handler != null)
                 handler(this);
         }
