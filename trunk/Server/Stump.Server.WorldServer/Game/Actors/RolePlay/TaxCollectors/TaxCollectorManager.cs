@@ -85,16 +85,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             //Le percepteur %1 a été posé en <b>%2</b> par <b>%3</b>.
         }
 
-        public void RemoveTaxCollectorSpawn(TaxCollectorSpawn spawn, bool lazySave = true)
+        public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)
         {
             if (lazySave)
-                WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Delete(spawn));
+                WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Delete(taxCollector.Record));
             else
-                Database.Delete(spawn);
+                Database.Delete(taxCollector.Record);
 
-            m_taxCollectorSpawns.Remove(spawn.Id);
-
-            //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
+            m_taxCollectorSpawns.Remove(taxCollector.Id);
+            taxCollector.Map.Leave(taxCollector);
         }
 
         public void Save()
