@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -190,6 +189,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public void OnDialogClosed(TaxCollectorExchangeDialog dialog)
         {
             m_openedDialogs.Remove(dialog);
+            TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(this);
+
+            //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
         }
 
         #region Network
