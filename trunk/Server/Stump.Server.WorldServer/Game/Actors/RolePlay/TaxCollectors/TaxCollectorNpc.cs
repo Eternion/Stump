@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.ORM.SubSonic.Extensions;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
@@ -26,20 +27,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorNpc(int IdProvide, Character character)
         {
+            Position = character.Position.Clone();
+
             m_record = new WorldMapTaxCollectorRecord
             {
                 Id = IdProvide,
-                Map = character.Map,
-                Cell = character.Cell.Id,
-                Direction = (int)character.Direction,
-                FirstNameId = (short)FastRandom.Current.Next(1, 154),
-                LastNameId = (short)FastRandom.Current.Next(1, 253),
+                Map = Position.Map,
+                Cell = Position.Cell.Id,
+                Direction = (int)Position.Direction,
+                FirstNameId = (short)Numeric.Random(1, 154),
+                LastNameId = (short)Numeric.Random(1, 253),
                 GuildId = character.Guild.Id,
             };
 
             Guild = character.Guild;
             Bag = new TaxCollectorBag(this);
-            Position = character.Position.Clone();
 
             Guild.AddTaxCollector(this);
         }
@@ -57,8 +59,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 record.Map.Cells[m_record.Cell],
                 (DirectionsEnum)m_record.Direction);
 
-            var guild = GuildManager.Instance.TryGetGuild(Record.GuildId);
-            guild.AddTaxCollector(this);
+
+            Guild = GuildManager.Instance.TryGetGuild(Record.GuildId);
+            Guild.AddTaxCollector(this);
         }
 
         public WorldMapTaxCollectorRecord Record
