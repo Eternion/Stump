@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             if (client.Character.IsTrading())
                 client.Character.Trader.MoveItem(message.objectUID, message.quantity);
-            else if (message.quantity <= 0) // he is modifying his merchant bag and remove an item
+            else if (client.Character.IsInMerchantDialog() && message.quantity <= 0) // he is modifying his merchant bag and remove an item
             {
                 var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
                 var result = client.Character.MerchantBag.MoveToInventory(merchantItem);

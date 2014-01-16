@@ -22,6 +22,7 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Guilds;
@@ -45,8 +46,7 @@ using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
-    public sealed class Character : Humanoid,
-                                    IStatsOwner, IInventoryOwner, ICommandsUser
+    public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
         private const int AURA_1_SKIN = 170;
         private const int AURA_2_SKIN = 171;
@@ -323,6 +323,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsInZaapDialog()
         {
             return Dialog is ZaapDialog;
+        }
+
+        public bool IsInMerchantDialog()
+        {
+            return Dialog is MerchantShopDialog;
         }
 
         #endregion
@@ -1007,10 +1012,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void AddHonor(ushort amount)
         {
-            if (amount < 0)
-                SubHonor((ushort) (-amount));
-            else
-                Honor += amount;
+            Honor += amount;
         }
 
         public void SubHonor(ushort amount)
