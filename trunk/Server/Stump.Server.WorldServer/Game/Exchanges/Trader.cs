@@ -14,7 +14,6 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -34,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         protected virtual void OnItemMoved(TradeItem item, bool modified, int difference)
         {
-            ItemMovedHandler handler = ItemMoved;
+            var handler = ItemMoved;
             if (handler != null)
                 handler(this, item, modified, difference);
         }
@@ -43,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         protected virtual void OnKamasChanged(uint kamasAmount)
         {
-            KamasChangedHandler handler = KamasChanged;
+            var handler = KamasChanged;
             if (handler != null)
                 handler(this, kamasAmount);
         }
@@ -52,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         protected virtual void OnReadyStatusChanged(bool isready)
         {
-            ReadyStatusChangedHandler handler = ReadyStatusChanged;
+            var handler = ReadyStatusChanged;
             if (handler != null)
                 handler(this, isready);
         }

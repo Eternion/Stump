@@ -33,6 +33,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
             }
         }
 
+        #region IDialog Members
+
         public void Open()
         {
             Character.SetDialog(this);
@@ -48,5 +50,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
             Character.CloseDialog(this);
             TaxCollector.OnDialogClosed(this);
         }
+
+        #endregion
     }
 }
