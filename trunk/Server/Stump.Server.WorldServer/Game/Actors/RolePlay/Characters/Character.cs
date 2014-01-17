@@ -330,6 +330,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Dialog is MerchantShopDialog;
         }
 
+        public bool IsInTaxCollectorDialog()
+        {
+            return Dialog is TaxCollectorExchangeDialog;
+        }
+
         #endregion
 
         #region Party
