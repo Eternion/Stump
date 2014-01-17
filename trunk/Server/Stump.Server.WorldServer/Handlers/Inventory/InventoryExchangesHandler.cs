@@ -90,9 +90,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             if (client.Character.IsTrading())
                 client.Character.Trader.MoveItem(message.objectUID, message.quantity);
-            else if (client.Character.IsInTaxCollectorDialog() && message.quantity <= 0)
+            else if (client.Character.IsInTaxCollectorDialog())
             {
-                client.Character.Trader.MoveItem(message.objectUID, message.quantity);
+                if (message.quantity <= 0)
+                    client.Character.Trader.MoveItem(message.objectUID, message.quantity);
+                else
+                    client.Character.SendSystemMessage(7, false);
             }
             else if (client.Character.IsInMerchantDialog() && message.quantity <= 0)
             {
