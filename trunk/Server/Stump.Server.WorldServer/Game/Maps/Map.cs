@@ -24,6 +24,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
@@ -1296,17 +1297,17 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public bool Equals(Map other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Id, Id);
+            if (ReferenceEquals(null, other))
+                return false;
+
+            return ReferenceEquals(this, other) || Equals(other.Id, Id);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (Map)) return false;
-            return Equals((Map) obj);
+            return obj.GetType() == typeof (Map) && Equals((Map) obj);
         }
 
         public override int GetHashCode()
