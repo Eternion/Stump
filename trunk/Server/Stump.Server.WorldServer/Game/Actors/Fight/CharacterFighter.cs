@@ -207,26 +207,32 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
              var result = base.CanCastSpell(spell, cell);
 
-             if (result != SpellCastResult.OK)
-             {
-                 if (result == SpellCastResult.NO_LOS)
-                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 174);
-                 else if (result == SpellCastResult.HAS_NOT_SPELL)
-                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 169);
-                 else if (result == SpellCastResult.NOT_ENOUGH_AP)
-                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
-                 else if (result == SpellCastResult.CELL_NOT_FREE || result == SpellCastResult.UNWALKABLE_CELL)
-                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 172);
-                 else
-                 {
-                     // cannot cast spell msg
-                     BasicHandler.SendTextInformationMessage(Character.Client,
-                                                             TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
-                     Character.SendServerMessage("(" + result.ToString() + ")", Color.Red);
-                 }
-             }
+            if (result == SpellCastResult.OK)
+                return result;
 
-             return result;
+            switch (result)
+            {
+                case SpellCastResult.NO_LOS:
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 174);
+                    break;
+                case SpellCastResult.HAS_NOT_SPELL:
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 169);
+                    break;
+                case SpellCastResult.NOT_ENOUGH_AP:
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
+                    break;
+                case SpellCastResult.UNWALKABLE_CELL:
+                case SpellCastResult.CELL_NOT_FREE:
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 172);
+                    break;
+                default:
+                    BasicHandler.SendTextInformationMessage(Character.Client,
+                        TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
+                    Character.SendServerMessage("(" + result + ")", Color.Red);
+                    break;
+            }
+
+            return result;
         }
 
 
@@ -252,13 +258,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 point.DistanceToCell(Position.Point) < weapon.MinRange)
                 return false;
 
-            if (AP < weapon.ApCost)
-                return false;
-
-            if (!Fight.CanBeSeen(cell, Position.Cell))
-                return false;
-
-            return true;
+            return AP >= weapon.ApCost && Fight.CanBeSeen(cell, Position.Cell);
         }
 
         public override Spell GetSpell(int id)
@@ -275,7 +275,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var random = new AsyncRandom();
 
-            FightSpellCastCriticalEnum critical = FightSpellCastCriticalEnum.NORMAL;
+            var critical = FightSpellCastCriticalEnum.NORMAL;
 
             if (weapon.CriticalHitProbability != 0 && random.Next(weapon.CriticalFailureProbability) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
@@ -388,58 +388,47 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #region God state
         public override bool UseAP(short amount)
         {
-            if (Character.GodMode)
-            {
-                base.UseAP(amount);
-                RegainAP(amount);
+            if (!Character.GodMode)
+                return base.UseAP(amount);
 
-                return true;
-            }
+            base.UseAP(amount);
+            RegainAP(amount);
 
-            return base.UseAP(amount);
+            return true;
         }
 
         public override bool UseMP(short amount)
         {
-            if (Character.GodMode)
-                return true;
-
-            return base.UseMP(amount);
+            return Character.GodMode || base.UseMP(amount);
         }
 
         public override bool LostAP(short amount)
         {
-            if (Character.GodMode)
-            {
-                base.LostAP(amount);
-                RegainAP(amount);
+            if (!Character.GodMode)
+                return base.LostAP(amount);
 
-                return true;
-            }
+            base.LostAP(amount);
+            RegainAP(amount);
 
-            return base.LostAP(amount);
+            return true;
         }
 
         public override bool LostMP(short amount)
         {
-            if (Character.GodMode)
-                return true;
-
-            return base.LostMP(amount);
+            return Character.GodMode || base.LostMP(amount);
         }
 
 
         public override int InflictDirectDamage(int damage, FightActor from)
         {
-            if (Character.GodMode)
-            {
-                TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
-                OnDamageReducted(from, damage);
-                TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
-                return 0;
-            }
+            if (!Character.GodMode)
+                return base.InflictDirectDamage(damage, @from);
 
-            return base.InflictDirectDamage(damage, from);
+            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
+            OnDamageReducted(@from, damage);
+            TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+
+            return 0;
         }
         #endregion
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -13,7 +14,6 @@ using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.ORM.SubSonic.Extensions;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
@@ -26,6 +26,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorNpc(int IdProvide, Character character)
         {
+            var random = new AsyncRandom();
+
             Position = character.Position.Clone();
 
             m_record = new WorldMapTaxCollectorRecord
@@ -34,8 +36,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 Map = Position.Map,
                 Cell = Position.Cell.Id,
                 Direction = (int)Position.Direction,
-                FirstNameId = (short)Numeric.Random(1, 154),
-                LastNameId = (short)Numeric.Random(1, 253),
+                FirstNameId = (short)random.Next(1, 154),
+                LastNameId = (short)random.Next(1, 253),
                 GuildId = character.Guild.Id,
             };
 

@@ -1,7 +1,5 @@
 ﻿using System.Linq;
-using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
-using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 {

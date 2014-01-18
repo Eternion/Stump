@@ -6,8 +6,10 @@ using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Formulas;
+using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -40,14 +42,14 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.OnFighterAdded(team, actor);
 
-            if (team.IsMonsterTeam() && !m_ageBonusDefined)
-            {
-                var monsterFighter = team.Leader as MonsterFighter;
-                if (monsterFighter != null)
-                    AgeBonus = monsterFighter.Monster.Group.AgeBonus;
+            if (!team.IsMonsterTeam() || m_ageBonusDefined)
+                return;
 
-                m_ageBonusDefined = true;
-            }
+            var monsterFighter = team.Leader as MonsterFighter;
+            if (monsterFighter != null)
+                AgeBonus = monsterFighter.Monster.Group.AgeBonus;
+
+            m_ageBonusDefined = true;
         }
 
         public override FightTypeEnum FightType
@@ -124,6 +126,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                     MongoLogger.Instance.Insert("FightLoots", document);
                 }
+
+                var taxCollector = TaxCollectorManager.Instance.GetMapTaxCollector(Map.Id);
+
+                if (taxCollector != null)
+                {
+                    //taxCollector.Bag.AddItem(new TaxCollectorItem());
+                }  
             }
         }
     }
