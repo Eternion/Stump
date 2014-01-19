@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public BanCommand()
         {
             Aliases = new[] { "ban" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Ban a player";
 
             AddParameter("target", "t", "Player to ban", converter: ParametersConverter.CharacterConverter);
@@ -60,6 +60,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 trigger.ReplyError("No ban duration given");
                 return;
             }
+
+            if ((trigger.Get<int>("time") > (60 * 60 * 24) || message.BanEndDate == null) && source.Account.Role == RoleEnum.GameMaster_Padawan)
+                message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes((60 * 60 * 24));
 
             target.Client.Disconnect();
 
