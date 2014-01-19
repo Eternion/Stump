@@ -144,10 +144,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DeleteGuildMember(GuildMember member)
         {
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () => Database.Delete(member.Record));
+
             lock (m_lock)
             {
                 m_guildsMembers.Remove(member.Id);
-                Database.Delete(member.Record);
                 return true;
             }
         }
