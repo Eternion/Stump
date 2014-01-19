@@ -1,9 +1,8 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.Look;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -12,7 +11,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public LookCommand()
         {
             Aliases = new[] {"look"};
-            RequiredRole = RoleEnum.GameMaster_Padawan;
+            RequiredRole = RoleEnum.Moderator;
             Description = "Change the look of the target";
             AddParameter<string>("look", "l", "The new look for the target", isOptional:true);
             AddTargetParameter(true);
@@ -22,6 +21,16 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var target = GetTarget(trigger);
+            var source = trigger.GetSource() as WorldClient;
+
+            if (source.Account.Role <= RoleEnum.GameMaster_Padawan)
+            {
+                target.CustomLook = ActorLook.Parse("{705}");
+                target.CustomLookActivated = true;
+
+                target.RefreshActor();
+                return;
+            }
 
             if (trigger.IsArgumentDefined("demorph"))
             {
