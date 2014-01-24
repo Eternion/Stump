@@ -1,5 +1,4 @@
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -24,11 +23,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (integerEffect == null)
                 return false;
 
-            foreach (FightActor actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors())
             {
                 var buff = new ResistancesBuff(actor.PopNextBuffId(), actor, Caster, integerEffect, Spell, 
                     (short) ((Effect.EffectId == EffectsEnum.Effect_SubResistances) ? -integerEffect.Value : integerEffect.Value),
                     false, true);
+
                 actor.AddAndApplyBuff(buff);
             }
 

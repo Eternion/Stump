@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                return (int)( m_formulas != null ? m_formulas(Owner) + ValueBase : ValueBase );
+                return m_formulas != null ? m_formulas(Owner) + ValueBase : ValueBase;
             }
             set
             {
@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             get { return ValueContext; }
             set
             {
-                ValueContext = value;
+                ValueContext = Total + value > 50 ? 50 - Total : value;
                 OnModified();
             }
         }
@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                int result = Base + Equiped + Context + Given;
+                var result = Base + Equiped + Context + Given;
 
                 return result;
             }
@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                int total = Total;
+                var total = Total;
 
                 return total > 0 ? total : 0;
             }
@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         protected virtual void OnModified()
         {
-            Action<StatsData, int> handler = Modified;
+            var handler = Modified;
             if (handler != null) handler(this, Total);
         }
 
