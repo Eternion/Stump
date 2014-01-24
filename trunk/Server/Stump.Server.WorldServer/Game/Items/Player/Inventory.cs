@@ -306,23 +306,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public override  bool RemoveItem(BasePlayerItem item, bool delete = true)
         {
-            if (item.OnRemoveItem())
-                return base.RemoveItem(item, delete);
-
-            return false;
+            return item.OnRemoveItem() && base.RemoveItem(item, delete);
         }
 
         public void RefreshItemInstance(BasePlayerItem item)
         {
-            if (Items.ContainsKey(item.Guid))
-            {
-                Items.Remove(item.Guid);
+            if (!Items.ContainsKey(item.Guid))
+                return;
 
-                var newInstance = ItemManager.Instance.RecreateItemInstance(item);
-                Items.Add(newInstance.Guid, newInstance);
+            Items.Remove(item.Guid);
 
-                RefreshItem(item);
-            }
+            var newInstance = ItemManager.Instance.RecreateItemInstance(item);
+            Items.Add(newInstance.Guid, newInstance);
+
+            RefreshItem(item);
         }
 
         public bool CanEquip(BasePlayerItem item, CharacterInventoryPositionEnum position, bool send = true)
