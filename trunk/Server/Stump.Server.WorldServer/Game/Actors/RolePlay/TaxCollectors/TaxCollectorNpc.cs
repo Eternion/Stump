@@ -23,28 +23,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         
         private readonly WorldMapTaxCollectorRecord m_record;
         private readonly List<TaxCollectorExchangeDialog> m_openedDialogs = new List<TaxCollectorExchangeDialog>();
+        private string m_name;
+        private ActorLook m_look;
 
-        public TaxCollectorNpc(int IdProvide, Character character)
+        public TaxCollectorNpc(int id, ObjectPosition position, Guild guild)
         {
             var random = new AsyncRandom();
 
-            Position = character.Position.Clone();
+            Position = position;
+            Guild = guild;
+            Bag = new TaxCollectorBag(this);
+            Guild.AddTaxCollector(this);
 
             m_record = new WorldMapTaxCollectorRecord
             {
-                Id = IdProvide,
+                Id = id,
                 Map = Position.Map,
                 Cell = Position.Cell.Id,
                 Direction = (int)Position.Direction,
                 FirstNameId = (short)random.Next(1, 154),
                 LastNameId = (short)random.Next(1, 253),
-                GuildId = character.Guild.Id,
+                GuildId = guild.Id,
             };
-
-            Guild = character.Guild;
-            Bag = new TaxCollectorBag(this);
-
-            Guild.AddTaxCollector(this);
         }
 
         public TaxCollectorNpc(WorldMapTaxCollectorRecord record)
@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         {
             get
             {
-                return string.Format("{0} {1}", TextManager.Instance.GetText(FirstNameId) + TextManager.Instance.GetText(LastNameId));
+                return m_name ?? (m_name= string.Format("{0} {1}", TextManager.Instance.GetText(FirstNameId), TextManager.Instance.GetText(LastNameId)));
             }
         }
 
@@ -116,11 +116,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             protected set;
         }
 
-        public ActorLook Look
+        public override ActorLook Look
         {
             get
             {
-                return ActorLook.Parse(TAXCOLLECTOR_LOOK);
+                return m_look ?? (m_look = ActorLook.Parse(TAXCOLLECTOR_LOOK));
             }
         }
 
@@ -152,14 +152,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             set;
         }
 
-        public void BindGuild(Guild guild)
-        {
-            if (Guild != null)
-                throw new Exception(string.Format("Guild already bound to TaxCollector {0}", Id));
-
-            Guild = guild;
-        }
-
         public bool IsBagEmpty()
         {
             return Bag.Count == 0;
@@ -172,6 +164,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public void Save()
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
+
             if (Bag.IsDirty)
                 Bag.Save();
 
@@ -200,19 +194,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public override GameContextActorInformations GetGameContextActorInformations()
         {
-            var guild = GuildManager.Instance.TryGetGuild(GuildId);
-
-            return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), FirstNameId, LastNameId, guild.GetGuildInformations(), guild.Level, 0);
+            return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), FirstNameId, LastNameId, Guild.GetGuildInformations(), Guild.Level, 0);
         }
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
-            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, new AdditionalTaxCollectorInformations("", 0), (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
+            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, new AdditionalTaxCollectorInformations("", 0),
+                (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
         }
 
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
-            return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id, (short)Position.Map.SubArea.Id, "", 0, new ObjectItemQuantity[0]);
+            return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
+                (short)Position.Map.SubArea.Id, "", 0, new ObjectItemQuantity[0]);
         }
 
         public StorageInventoryContentMessage GetStorageInventoryContent()

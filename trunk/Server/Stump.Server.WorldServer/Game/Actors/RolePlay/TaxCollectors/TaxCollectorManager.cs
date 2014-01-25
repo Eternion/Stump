@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             character.Inventory.SubKamas(character.Guild.HireCost);
 
-            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), character);
+            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), character.Position.Clone(), character.Guild);
 
             if (lazySave)
                 WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(taxCollectorNpc.Record));

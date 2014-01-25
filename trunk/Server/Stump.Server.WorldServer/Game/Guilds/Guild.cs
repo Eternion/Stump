@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private readonly List<TaxCollectorNpc> m_taxCollectors = new List<TaxCollectorNpc>(); 
         private bool m_isDirty;
-        private readonly object m_xpLock = new object();
+        private readonly object m_lock = new object();
 
         public Guild(int id, string name)
         {
@@ -320,7 +320,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void AddXP(long experience)
         {
-            lock (m_xpLock)
+            lock (m_lock)
             {
                 Experience += experience;
 
@@ -339,7 +339,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void SetXP(long experience)
         {
-            lock (m_xpLock)
+            lock (m_lock)
             {
                 Experience = experience;
 
@@ -354,223 +354,256 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool UpgradePods()
         {
-            if (Pods >= 5000)
-                return false;
+            lock (m_lock)
+            {
+                if (Pods >= 5000)
+                    return false;
 
-            if (Boost <= 0)
-                return false;
+                if (Boost <= 0)
+                    return false;
 
-            Boost -= 1;
-            Pods += 20;
+                Boost -= 1;
+                Pods += 20;
 
-            if (Pods > 5000)
-                Pods = 5000;
+                if (Pods > 5000)
+                    Pods = 5000;
 
-            return true;
+                return true;
+            }
         }
 
         public bool UpgradeProspecting()
         {
-            if (Prospecting >= 500)
-                return false;
+            lock (m_lock)
+            {
+                if (Prospecting >= 500)
+                    return false;
 
-            if (Boost <= 0)
-                return false;
+                if (Boost <= 0)
+                    return false;
 
-            Boost -= 1;
-            Prospecting += 1;
+                Boost -= 1;
+                Prospecting += 1;
 
-            if (Prospecting > 500)
-                Prospecting = 500;
+                if (Prospecting > 500)
+                    Prospecting = 500;
 
-            return true;
+                return true;
+            }
         }
 
         public bool UpgradeWisdom()
         {
-            if (Wisdom >= 400)
-                return false;
+            lock (m_lock)
+            {
+                if (Wisdom >= 400)
+                    return false;
 
-            if (Boost <= 0)
-                return false;
+                if (Boost <= 0)
+                    return false;
 
-            Boost -= 1;
-            Wisdom += 1;
+                Boost -= 1;
+                Wisdom += 1;
 
-            if (Wisdom > 400)
-                Wisdom = 400;
+                if (Wisdom > 400)
+                    Wisdom = 400;
 
-            return true;
+                return true;
+            }
         }
 
         public bool UpgradeMaxTaxCollectors()
         {
-            if (MaxTaxCollectors >= 50)
-                return false;
+            lock (m_lock)
+            {
+                if (MaxTaxCollectors >= 50)
+                    return false;
 
-            if (Boost < 10)
-                return false;
+                if (Boost < 10)
+                    return false;
 
-            Boost -= 10;
-            MaxTaxCollectors += 1;
+                Boost -= 10;
+                MaxTaxCollectors += 1;
 
-            if (MaxTaxCollectors > 50)
-                MaxTaxCollectors = 50;
+                if (MaxTaxCollectors > 50)
+                    MaxTaxCollectors = 50;
 
-            return true;
+                return true;
+            }
         }
 
         public bool UpgradeSpell(int spellId)
         {
-            if (!TAX_COLLECTOR_SPELLS.Contains((short)spellId))
-                return false;
-
-            if (Boost < 5)
-                return false;
-
-            var i = 0;
-            foreach(var spell in TAX_COLLECTOR_SPELLS)
+            lock (m_lock)
             {
-                if (spell == spellId)
+                if (!TAX_COLLECTOR_SPELLS.Contains((short) spellId))
+                    return false;
+
+                if (Boost < 5)
+                    return false;
+
+                var i = 0;
+                foreach (var spell in TAX_COLLECTOR_SPELLS)
                 {
-                    if (Spells[i] < 5)
+                    if (spell == spellId)
                     {
-                        Boost -= 5;
-                        Spells[i] += 1;
+                        if (Spells[i] < 5)
+                        {
+                            Boost -= 5;
+                            Spells[i] += 1;
+                        }
                     }
+
+                    i++;
                 }
 
-                i++;
+                return true;
             }
-
-            return true;
         }
 
         public void SetBoss(GuildMember guildMember)
         {
-            if (guildMember.Guild != this)
-                return;
-
-            if (Boss == guildMember)
-                return;
-
-            if (Boss != null)
+            lock (m_lock)
             {
-                Boss.RankId = 0;
-                Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+                if (guildMember.Guild != this)
+                    return;
 
-                if (m_members.Count > 1)
+                if (Boss == guildMember)
+                    return;
+
+                if (Boss != null)
                 {
-                    // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
-                    BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199, 
-                                                                 guildMember.Name, Boss.Name, Name);
+                    Boss.RankId = 0;
+                    Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+
+                    if (m_members.Count > 1)
+                    {
+                        // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
+                        BasicHandler.SendTextInformationMessage(m_clients,
+                            TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199,
+                            guildMember.Name, Boss.Name, Name);
+                    }
+
+                    UpdateMember(Boss);
                 }
+
+                Boss = guildMember;
+                Boss.RankId = 1;
+                Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
 
                 UpdateMember(Boss);
             }
-            
-            Boss = guildMember;
-            Boss.RankId = 1;
-            Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
-
-            UpdateMember(Boss);
         }
 
         public bool KickMember(GuildMember kickedMember, bool kicked)
         {
-            if (kickedMember.IsBoss && m_members.Count > 1)
-                return false;
-
-            if (!RemoveMember(kickedMember))
-                return false;
-
-            foreach (var client in m_clients)
+            lock (m_lock)
             {
-                GuildHandler.SendGuildMemberLeavingMessage(client, kickedMember, true);   
+                if (kickedMember.IsBoss && m_members.Count > 1)
+                    return false;
+
+                if (!RemoveMember(kickedMember))
+                    return false;
+
+                foreach (var client in m_clients)
+                {
+                    GuildHandler.SendGuildMemberLeavingMessage(client, kickedMember, true);
+                }
+
+                if (kickedMember.IsBoss && m_members.Count == 0)
+                    GuildManager.Instance.DeleteGuild(kickedMember.Guild);
+
+                return true;
             }
-
-            if (kickedMember.IsBoss && m_members.Count == 0)
-                GuildManager.Instance.DeleteGuild(kickedMember.Guild);
-
-            return true;
         }
 
         public bool KickMember(Character kicker, GuildMember kickedMember)
         {
-            if (kicker.Guild != kickedMember.Guild)
-                return false;
-
-            if (kicker.GuildMember != kickedMember && (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
-                return false;
-
-            if (!KickMember(kickedMember, kickedMember.Id == kicker.GuildMember.Id))
-                return false;
-
-            if (kicker.GuildMember.Id != kickedMember.Id)
+            lock (m_lock)
             {
-                // Vous avez banni <b>%1</b> de votre guilde.
-                kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
-            }
+                if (kicker.Guild != kickedMember.Guild)
+                    return false;
 
-            return true;
+                if (kicker.GuildMember != kickedMember &&
+                    (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
+                    return false;
+
+                if (!KickMember(kickedMember, kickedMember.Id == kicker.GuildMember.Id))
+                    return false;
+
+                if (kicker.GuildMember.Id != kickedMember.Id)
+                {
+                    // Vous avez banni <b>%1</b> de votre guilde.
+                    kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177,
+                        kickedMember.Name);
+                }
+
+                return true;
+            }
         }
 
         public bool ChangeParameters(GuildMember member, short rank, byte xpPercent, uint rights)
         {
-            if (rank == 1)
+            lock (m_lock)
             {
-                SetBoss(member);
+                if (rank == 1)
+                {
+                    SetBoss(member);
+                }
+                else
+                {
+                    member.RankId = rank;
+                    member.Rights = (GuildRightsBitEnum) rights;
+                }
+
+                member.GivenPercent = xpPercent;
+
+                UpdateMember(member);
+
+                if (member.IsConnected)
+                    GuildHandler.SendGuildMembershipMessage(member.Character.Client, member);
+
+                return true;
             }
-            else
-            {
-                member.RankId = rank;
-                member.Rights = (GuildRightsBitEnum) rights;
-            }
-
-            member.GivenPercent = xpPercent;
-
-            UpdateMember(member);
-
-            if (member.IsConnected)
-                GuildHandler.SendGuildMembershipMessage(member.Character.Client, member);
-
-            return true;
         }
 
         public bool ChangeParameters(Character modifier, GuildMember member, short rank, byte xpPercent, uint rights)
         {
-            if (modifier.Guild != member.Guild)
-                return false;
+            lock (m_lock)
+            {
+                if (modifier.Guild != member.Guild)
+                    return false;
 
-            if (modifier.GuildMember != member && modifier.GuildMember.IsBoss && rank == 1)
-            {
-                SetBoss(member);
-            }
-            else
-            {
-                if (modifier.GuildMember == member || !member.IsBoss)
+                if (modifier.GuildMember != member && modifier.GuildMember.IsBoss && rank == 1)
                 {
-                    if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
-                        member.RankId = rank;
-
-                    if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
-                        member.Rights = (GuildRightsBitEnum)rights;
+                    SetBoss(member);
                 }
+                else
+                {
+                    if (modifier.GuildMember == member || !member.IsBoss)
+                    {
+                        if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
+                            member.RankId = rank;
+
+                        if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
+                            member.Rights = (GuildRightsBitEnum) rights;
+                    }
+                }
+
+                if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) ||
+                    (modifier.GuildMember == member &&
+                     modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
+                {
+                    member.GivenPercent = (byte) (xpPercent < 90 ? xpPercent : 90);
+                }
+
+                UpdateMember(member);
+
+                if (member.IsConnected)
+                    GuildHandler.SendGuildMembershipMessage(member.Character.Client, member);
+
+                return true;
             }
-
-            if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_XP_CONTRIBUTION) ||
-                (modifier.GuildMember == member &&
-                 modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_MY_XP_CONTRIBUTION)))
-            {
-                member.GivenPercent = (byte) (xpPercent < 90 ? xpPercent : 90);
-            }
-
-            UpdateMember(member);
-
-            if (member.IsConnected)
-                GuildHandler.SendGuildMembershipMessage(member.Character.Client, member);
-
-            return true;
         }
 
         public void Save(ORM.Database database)
@@ -612,38 +645,44 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool TryAddMember(Character character, out GuildMember member)
         {
-            if (!CanAddMember())
+            lock (m_lock)
             {
-                member = null;
-                return false;
+                if (!CanAddMember())
+                {
+                    member = null;
+                    return false;
+                }
+
+                member = new GuildMember(this, character);
+                m_members.Add(member);
+                character.GuildMember = member;
+
+                m_clients.Add(character.Client);
+
+                if (m_members.Count == 1)
+                    SetBoss(member);
+
+                OnMemberAdded(member);
+
+                return true;
             }
-
-            member = new GuildMember(this, character);
-            m_members.Add(member);
-            character.GuildMember = member;
-
-            m_clients.Add(character.Client);
-
-            if (m_members.Count == 1)
-                SetBoss(member);
-
-            OnMemberAdded(member);
-
-            return true;
         }
 
         public bool RemoveMember(GuildMember member)
         {
-            if (member == null || !m_members.Contains(member))
-                return false;
+            lock (m_lock)
+            {
+                if (member == null || !m_members.Contains(member))
+                    return false;
 
-            m_members.Remove(member);
+                m_members.Remove(member);
 
-            if (member.IsConnected)
-                m_clients.Remove(member.Character.Client);
+                if (member.IsConnected)
+                    m_clients.Remove(member.Character.Client);
 
-            OnMemberRemoved(member);
-            return true;
+                OnMemberRemoved(member);
+                return true;
+            }
         }
 
         protected virtual void OnMemberAdded(GuildMember member)

@@ -59,6 +59,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
+            // todo add taxcollector
+            var results = new List<IFightResult>();
+
             ShareLoots();
 
             foreach (var fighter in GetAllFighters<CharacterFighter>())
@@ -66,7 +69,9 @@ namespace Stump.Server.WorldServer.Game.Fights
                 fighter.SetEarnedExperience(FightFormulas.CalculateWinExp(fighter));
             }
 
-            return GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult());
+            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
+
+            return results;
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
@@ -126,13 +131,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                     MongoLogger.Instance.Insert("FightLoots", document);
                 }
-
-                var taxCollector = TaxCollectorManager.Instance.GetMapTaxCollector(Map.Id);
-
-                if (taxCollector != null)
-                {
-                    //taxCollector.Bag.AddItem(new TaxCollectorItem());
-                }  
             }
         }
     }

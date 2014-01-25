@@ -296,6 +296,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             set { Record.TopNeighbourId = value; }
         }
 
+        public int Capabilities
+        {
+            get
+            {
+                return Record.Position != null ? Record.Position.Capabilities : 0xFFFF;
+            }
+        }
+
         public Map TopNeighbour
         {
             get
@@ -377,6 +385,75 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #endregion
 
+        #region Restrictions
+        
+        public bool AllowChallenge
+        {
+            get { return (Capabilities & 1) != 0; }
+        }
+
+        public bool AllowAggression
+        {
+            get { return (Capabilities & 2) != 0; }
+        }
+
+        public bool AllowTeleportTo
+        {
+            get { return (Capabilities & 4) != 0; }
+        }
+
+        public bool AllowTeleportFrom
+        {
+            get { return (Capabilities & 8) != 0; }
+        }
+
+        public bool AllowExchangesBetweenPlayers
+        {
+            get { return (Capabilities & 16) != 0; }
+        }
+
+        public bool AllowHumanVendor
+        {
+            get { return (Capabilities & 32) != 0; }
+        }
+
+        public bool AllowCollector
+        {
+            get { return (Capabilities & 64) != 0; }
+        }
+
+        public bool AllowSoulCapture
+        {
+            get { return (Capabilities & 128) != 0; }
+        }
+
+        public bool AllowSoulSummon
+        {
+            get { return (Capabilities & 256) != 0; }
+        }
+
+        public bool AllowTavernRegen
+        {
+            get { return (Capabilities & 512) != 0; }
+        }
+
+        public bool AllowTombMode
+        {
+            get { return (Capabilities & 1024) != 0; }
+        }
+
+        public bool AllowTeleportEverywhere
+        {
+            get { return (Capabilities & 2048) != 0; }
+        }
+
+        public bool AllowFightChallenges
+        {
+            get { return (Capabilities & 4096) != 0; }
+        }
+
+        #endregion
+
         #region Npcs
 
         public Npc SpawnNpc(NpcTemplate template, ObjectPosition position, ActorLook look)
@@ -429,6 +506,16 @@ namespace Stump.Server.WorldServer.Game.Maps
                 throw new Exception(string.Format("Npc with id {0} not found, cannot unspawn an unexistant npc", npc.Id));
 
             Leave(npc);
+        }
+
+        #endregion
+
+        #region TaxCollector
+
+        public TaxCollectorNpc TaxCollector
+        {
+            get;
+            private set;
         }
 
         #endregion
@@ -982,6 +1069,17 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (character != null)
                 Clients.Add(character.Client);
+
+            if (actor is TaxCollectorNpc)
+            {
+                if (TaxCollector != null)
+                {
+                    logger.Error("There is already a Tax Collector on that map ({0}).", Id);
+                    Leave(actor);
+                    return;
+                }
+                TaxCollector = actor as TaxCollectorNpc;
+            }
 
             ForEach(x =>
                 {
