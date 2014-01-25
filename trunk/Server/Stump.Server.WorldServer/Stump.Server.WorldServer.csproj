@@ -339,6 +339,7 @@
     <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
     <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
+    <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
     <Compile Include="Game\Fights\Triggers\FractionGlyph.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
@@ -482,7 +483,6 @@
     <Compile Include="Game\Actors\Fight\MonsterFighter.cs" />
     <Compile Include="Game\Actors\Fight\MutantFighter.cs" />
     <Compile Include="Game\Actors\Fight\NamedFighter.cs" />
-    <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Interfaces\IInventoryOwner.cs" />
     <Compile Include="Game\Actors\Interfaces\IStatsOwner.cs" />
     <Compile Include="Game\Actors\RolePlay\Characters\Character.cs" />
