@@ -18,6 +18,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
+using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -48,6 +49,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var spell = trigger.Get<SpellTemplate>("spell");
+
             var target = GetTarget(trigger);
 
             var result = target.Spells.LearnSpell(spell);
@@ -88,6 +90,34 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
+    public class LearnMonsterSpellCommand : TargetSubCommand
+    {
+        public LearnMonsterSpellCommand()
+        {
+            Aliases = new[] { "learnmonster" };
+            RequiredRole = RoleEnum.GameMaster;
+            ParentCommand = typeof(SpellsCommands);
+            Description = "Learn the given spell";
+            AddParameter("monster", "monster", "Target monster to learn spells", converter: ParametersConverter.MonsterTemplateConverter, isOptional: true);
+            AddTargetParameter(true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var monster = trigger.Get<MonsterTemplate>("monster");
+            var target = GetTarget(trigger);
+
+            foreach (var spell in monster.Grades.FirstOrDefault().SpellsTemplates)
+            {
+                var result = target.Spells.LearnSpell(spell.SpellId);
+
+                if (result != null)
+                    trigger.Reply("'{0}' learned the spell '{1}'", trigger.Bold(target), trigger.Bold(result.Template.Name));
+                else
+                    trigger.ReplyError("Spell {0} not learned. Unknow reason", trigger.Bold(spell.SpellId));
+            }
+        }
+    }
     public class ListSpellsCommand : TargetSubCommand
     {
         public ListSpellsCommand()

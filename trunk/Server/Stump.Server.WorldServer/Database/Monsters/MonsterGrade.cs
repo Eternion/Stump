@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ServiceStack.Text;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -186,10 +185,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
             {
                 m_statsJSON = value;
 
-                if (value == null)
-                    Stats = new Dictionary<PlayerFields, short>();
-                else
-                    Stats = value.FromJson<Dictionary<PlayerFields, short>>();
+                Stats = value == null ? new Dictionary<PlayerFields, short>() : value.FromJson<Dictionary<PlayerFields, short>>();
             }
         }
 
