@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Globalization;
+﻿using System.Drawing;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
@@ -24,11 +22,11 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Color color = ColorTranslator.FromHtml(AnnounceColor);
+            var color = ColorTranslator.FromHtml(AnnounceColor);
 
             var msg = trigger.Get<string>("msg");
             var formatMsg = trigger is GameTrigger
-                                ? string.Format("(ANNOUNCE) [{0}] : {1}", ((GameTrigger) trigger).Character.Name, msg)
+                                ? string.Format("(ANNOUNCE) {0} : {1}", ((GameTrigger) trigger).Character.Name, msg)
                                 : string.Format("(ANNOUNCE) {0}", msg);
 
             World.Instance.SendAnnounce(formatMsg, color);

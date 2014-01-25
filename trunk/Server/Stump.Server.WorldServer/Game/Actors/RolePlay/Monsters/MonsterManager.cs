@@ -44,10 +44,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public MonsterGrade GetMonsterGrade(int id)
         {
             MonsterGrade result;
-            if (!m_monsterGrades.TryGetValue(id, out result))
-                return null;
-
-            return result;
+            return !m_monsterGrades.TryGetValue(id, out result) ? null : result;
         }
 
         public MonsterGrade GetMonsterGrade(int monsterId, int grade)
@@ -75,10 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public MonsterSuperRace GetSuperRace(int id)
         {
             MonsterSuperRace result;
-            if (!m_monsterSuperRaces.TryGetValue(id, out result))
-                return null;
-
-            return result;
+            return !m_monsterSuperRaces.TryGetValue(id, out result) ? null : result;
         }
 
         public MonsterTemplate GetTemplate(int id)
