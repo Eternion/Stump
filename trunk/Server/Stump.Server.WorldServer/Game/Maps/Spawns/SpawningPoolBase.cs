@@ -152,15 +152,20 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         private void TimerCallBack()
         {
-            lock (this)
-            {
-                SpawnNextGroup();
-            }
-
             if (IsLimitReached())
                 PauseAutoSpawn();
             else
-                ResetTimer();
+            {
+                lock (this)
+                {
+                    SpawnNextGroup();
+                }
+
+                if (IsLimitReached())
+                    PauseAutoSpawn();
+                else
+                    ResetTimer();
+            }
         }
 
         private void ResetTimer()
