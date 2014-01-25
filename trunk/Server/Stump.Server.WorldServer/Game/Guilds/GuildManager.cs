@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
@@ -136,6 +137,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void RegisterGuildMember(GuildMember member)
         {
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () => Database.Insert(member.Record));
+
             lock (m_lock)
             {
                 m_guildsMembers.Add(member.Id, member);
@@ -144,10 +148,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DeleteGuildMember(GuildMember member)
         {
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () => Database.Delete(member.Record));
+
             lock (m_lock)
             {
                 m_guildsMembers.Remove(member.Id);
-                Database.Delete(member.Record);
                 return true;
             }
         }

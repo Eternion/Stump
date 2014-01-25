@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
@@ -15,15 +11,14 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.Server.WorldServer.Game.Spells;
 using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public sealed class MonsterFighter : AIFighter
     {
-        private Dictionary<DroppableItem, int> m_dropsCount = new Dictionary<DroppableItem, int>();
-        private StatsFields m_stats;
+        private readonly Dictionary<DroppableItem, int> m_dropsCount = new Dictionary<DroppableItem, int>();
+        private readonly StatsFields m_stats;
 
         public MonsterFighter(FightTeam team, Monster monster)
             : base(team, monster.Grade.Spells.ToArray(), monster.Grade.MonsterId)
@@ -99,12 +94,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var prospectingSum = OpposedTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
 
-            foreach (var droppableItem in Monster.Template.DroppableItems)
+            foreach (var droppableItem in Monster.Template.DroppableItems.Where(droppableItem => prospectingSum >= droppableItem.ProspectingLock))
             {
-                if (prospectingSum < droppableItem.ProspectingLock)
-                    continue;
-
-                for (int i = 0; i < droppableItem.RollsCounter; i++)
+                for (var i = 0; i < droppableItem.RollsCounter; i++)
                 {
                     if (droppableItem.DropLimit > 0 && m_dropsCount.ContainsKey(droppableItem) && m_dropsCount[droppableItem] >= droppableItem.DropLimit)
                         break;
@@ -112,15 +104,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     var chance = ( random.Next(0, 100) + random.NextDouble() );
                     var dropRate = FightFormulas.AdjustDropChance(looter, droppableItem, Monster, Fight.AgeBonus);
 
-                    if (dropRate >= chance)
-                    {
-                        items.Add(new DroppedItem(droppableItem.ItemId, 1));
+                    if (!(dropRate >= chance))
+                        continue;
 
-                        if (!m_dropsCount.ContainsKey(droppableItem))
-                            m_dropsCount.Add(droppableItem, 1);
-                        else
-                            m_dropsCount[droppableItem]++;
-                    }
+                    items.Add(new DroppedItem(droppableItem.ItemId, 1));
+
+                    if (!m_dropsCount.ContainsKey(droppableItem))
+                        m_dropsCount.Add(droppableItem, 1);
+                    else
+                        m_dropsCount[droppableItem]++;
                 }
             }
 

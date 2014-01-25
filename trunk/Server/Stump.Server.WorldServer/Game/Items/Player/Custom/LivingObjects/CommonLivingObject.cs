@@ -182,7 +182,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
         {
             get
             {
-                uint skin = Template.AppearanceId;
+                var skin = Template.AppearanceId;
 
                 if (SelectedLevel > 0 && m_record.Skins.Count > SelectedLevel - 1)
                     skin = (uint) m_record.Skins[SelectedLevel - 1];

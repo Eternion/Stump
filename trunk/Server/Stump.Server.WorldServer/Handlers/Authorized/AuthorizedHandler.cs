@@ -15,8 +15,8 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
             if (client.Account.Role < RoleEnum.GameMaster_Padawan)
                 return;
 
-            string[] data = message.content.Split(' ');
-            string command = data[0];
+            var data = message.content.Split(' ');
+            var command = data[0];
 
             switch (command)
             {

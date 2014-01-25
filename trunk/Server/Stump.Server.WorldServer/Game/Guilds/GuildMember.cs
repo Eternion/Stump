@@ -30,7 +30,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Guild = guild;
             Character = character;
             IsDirty = true;
-            IsNew = true;
         }
 
         public GuildMemberRecord Record
@@ -154,12 +153,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             protected set;
         }
 
-        public bool IsNew
-        {
-            get;
-            protected set;
-        }
-
         public NetworkGuildMember GetNetworkGuildMember()
         {
             if (IsConnected)
@@ -225,12 +218,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void Save(ORM.Database database)
         {
-            if (IsNew)
-                database.Insert(Record);
-            else
-                database.Update(Record);
+            database.Update(Record);
 
-            IsNew = false;
             IsDirty = false;
         }
     }
