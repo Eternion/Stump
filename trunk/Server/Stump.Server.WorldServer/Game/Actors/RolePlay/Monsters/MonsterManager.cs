@@ -31,7 +31,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             m_monsterSpells = Database.Query<MonsterSpell>(MonsterSpellRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterSpawns = Database.Query<MonsterSpawn>(MonsterSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterDisableSpawns = Database.Query<MonsterDisableSpawn>(MonsterDisableSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_monsterDungeonsSpawns = Database.Query<MonsterDungeonSpawn>(MonsterDungeonSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterDungeonsSpawns = Database
+                .Query<MonsterDungeonSpawn, MonsterDungeonSpawnEntity, MonsterGrade, MonsterDungeonSpawn>
+                (new MonsterDungeonSpawnRelator().Map, MonsterDungeonSpawnRelator.FetchQuery)
+                .ToDictionary(entry => entry.Id);
             m_droppableItems = Database.Query<DroppableItem>(DroppableItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterSuperRaces = Database.Query<MonsterSuperRace>(MonsterSuperRaceRelator.FetchQuery).ToDictionary(entry => entry.Id);
         }
