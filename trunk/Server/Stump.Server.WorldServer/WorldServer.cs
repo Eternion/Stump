@@ -56,10 +56,10 @@ namespace Stump.Server.WorldServer
         [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
-            Host = "arkalys.com",
+            Host = "localhost",
             DbName = "stump_world",
-            User = "server",
-            Password = "dxdv6gy7",
+            User = "root",
+            Password = "",
             ProviderName = "MySql.Data.MySqlClient",
             //UpdateFileDir = "./sql_update/",
         };
