@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson;
 using Stump.Core.Pool;
@@ -67,6 +68,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 Guild guild;
                 return m_guilds.TryGetValue(id, out guild) ? guild : null;
+            }
+        }
+
+        public Guild TryGetGuild(string name)
+        {
+            lock (m_lock)
+            {
+                return m_guilds.FirstOrDefault(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase)).Value;
             }
         }
 
