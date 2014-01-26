@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             get { return ValueContext; }
             set
             {
-                ValueContext = Total + value > 50 ? 50 - Total : value;
+                ValueContext = value;
                 OnModified();
             }
         }
