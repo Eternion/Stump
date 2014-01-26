@@ -134,22 +134,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (spell.Id != 0 ||
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
                 return base.CastSpell(spell, cell);
-            var weapon =
-                Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON).Template as
-                    WeaponTemplate;
+            var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
+            var weaponTemplate =  weapon.Template as WeaponTemplate;
 
-            if (weapon == null || !CanUseWeapon(cell, weapon))
+            if (weaponTemplate == null || !CanUseWeapon(cell, weaponTemplate))
                 return false;
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
             var random = new AsyncRandom();
-            var critical = RollCriticalDice(weapon);
+            var critical = RollCriticalDice(weaponTemplate);
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
-                OnWeaponUsed(weapon, cell, critical, false);
-                UseAP((short) weapon.ApCost);
+                OnWeaponUsed(weaponTemplate, cell, critical, false);
+                UseAP((short) weaponTemplate.ApCost);
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
                 PassTurn();
@@ -157,7 +156,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
             if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
-                m_criticalWeaponBonus = weapon.CriticalHitBonus;
+                m_criticalWeaponBonus = weaponTemplate.CriticalHitBonus;
 
             m_isUsingWeapon = true;
             var effects =
@@ -178,7 +177,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     critical ==
                     FightSpellCastCriticalEnum
                         .CRITICAL_HIT);
-                handler.EffectZone = new Zone(weapon.Type.ZoneShape, (byte) weapon.Type.ZoneSize,
+                handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize,
                     handler.CastPoint.OrientationTo(handler.TargetedPoint));
                 handler.Targets = SpellTargetType.ENEMY_ALL | SpellTargetType.ALLY_ALL;
                 handlers.Add(handler);
@@ -186,8 +185,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var silentCast = handlers.Any(entry => entry.RequireSilentCast());
 
-            OnWeaponUsed(weapon, cell, critical, silentCast);
-            UseAP((short) weapon.ApCost);
+            OnWeaponUsed(weaponTemplate, cell, critical, silentCast);
+            UseAP((short) weaponTemplate.ApCost);
 
             foreach (var handler in handlers)
                 handler.Apply();
