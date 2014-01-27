@@ -6,10 +6,8 @@ using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Formulas;
-using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -71,6 +69,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
 
+            if (Map.TaxCollector != null)
+                results.Add(Map.TaxCollector.FightResult);
+
             return results;
         }
 
@@ -107,6 +108,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 var looters = team.GetAllFighters<CharacterFighter>().OrderByDescending(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var teamPP = team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
+                var taxCollector = Map.TaxCollector;
 
                 foreach (var looter in looters)
                 {
@@ -115,6 +117,9 @@ namespace Stump.Server.WorldServer.Game.Fights
                     foreach (var item in droppers.SelectMany(dropper => dropper.RollLoot(looter)))
                     {
                         looter.Loot.AddItem(item);
+
+                        //Todo: Just for testing
+                        taxCollector.FightResult.Loot.AddItem(item);
                     }
 
                     var document = new BsonDocument
