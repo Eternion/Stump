@@ -119,7 +119,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                         looter.Loot.AddItem(item);
 
                         //Todo: Just for testing
-                        taxCollector.FightResult.Loot.AddItem(item);
+                        if (taxCollector != null)
+                            taxCollector.FightResult.Loot.AddItem(item);
                     }
 
                     var document = new BsonDocument
