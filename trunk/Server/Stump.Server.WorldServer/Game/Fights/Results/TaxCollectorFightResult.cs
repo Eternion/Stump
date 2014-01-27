@@ -1,11 +1,7 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Game.Items.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -67,12 +63,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public void Apply()
         {
-            foreach (DroppedItem drop in Loot.Items.Values)
+            foreach (var drop in Loot.Items.Values)
             {
-                ItemTemplate template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
+                var template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
 
                 if (template.Effects.Count > 0)
-                    for (int i = 0; i < drop.Amount; i++)
+                    for (var i = 0; i < drop.Amount; i++)
                     {
                         var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, drop.Amount);
                         TaxCollector.Bag.AddItem(item);
