@@ -56,24 +56,24 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             Character.Inventory.AddKamas(Loot.Kamas);
 
-            foreach (DroppedItem drop in Loot.Items.Values)
+            foreach (var drop in Loot.Items.Values)
             {
-                ItemTemplate template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
+                var template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
 
                 if (template.Effects.Count > 0)
-                    for (int i = 0; i < drop.Amount; i++)
+                    for (var i = 0; i < drop.Amount; i++)
                     {
-                        BasePlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, 1);
+                        var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, 1);
                         Character.Inventory.AddItem(item);
                     }
                 else
                 {
-                    BasePlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, drop.Amount);
+                    var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, drop.Amount);
                     Character.Inventory.AddItem(item);
                 }
             }
             if (AdditionalDatas != null)
-                foreach (FightResultAdditionalData additionalData in AdditionalDatas)
+                foreach (var additionalData in AdditionalDatas)
                 {
                     additionalData.Apply();
                 }
