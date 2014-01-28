@@ -8,7 +8,7 @@ namespace Stump.Core.Cache
 
         private void NotifyObjectInvalidated()
         {
-            Action<ObjectValidator<T>> handler = ObjectInvalidated;
+            var handler = ObjectInvalidated;
             if (handler != null)
                 handler(this);
         }
@@ -33,16 +33,16 @@ namespace Stump.Core.Cache
 
         public static implicit operator T(ObjectValidator<T> validator)
         {
-            if (!validator.m_isValid)
+            if (validator.m_isValid)
+                return validator.m_instance;
+
+            lock (validator.m_sync)
             {
-                lock (validator.m_sync)
-                {
-                    if (!validator.m_isValid) // if a thread is blocked on the lock then an other thread is recreating a new instance
-                    {
-                        validator.m_instance = validator.m_creator();
-                        validator.m_isValid = true;
-                    }
-                }
+                if (validator.m_isValid)
+                    return validator.m_instance;
+
+                validator.m_instance = validator.m_creator();
+                validator.m_isValid = true;
             }
 
             return validator.m_instance;
@@ -55,7 +55,7 @@ namespace Stump.Core.Cache
 
         private void NotifyObjectInvalidated()
         {
-            Action<ObjectValidator<T, TContext>> handler = ObjectInvalidated;
+            var handler = ObjectInvalidated;
             if (handler != null)
                 handler(this);
         }
@@ -84,16 +84,16 @@ namespace Stump.Core.Cache
 
         public static implicit operator T(ObjectValidator<T, TContext> validator)
         {
-            if (!validator.m_isValid)
+            if (validator.m_isValid)
+                return validator.m_instance;
+
+            lock (validator.m_sync)
             {
-                lock (validator.m_sync)
-                {
-                    if (!validator.m_isValid) // if a thread is blocked on the lock then an other thread is recreating a new instance
-                    {
-                        validator.m_instance = validator.m_creator(validator.m_context);
-                        validator.m_isValid = true;
-                    }
-                }
+                if (validator.m_isValid)
+                    return validator.m_instance;
+
+                validator.m_instance = validator.m_creator(validator.m_context);
+                validator.m_isValid = true;
             }
 
             return validator.m_instance;

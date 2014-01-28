@@ -41,16 +41,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (integerEffect == null)
                     return false;
 
-                foreach (var buff in actor.GetBuffs().ToArray())
+                foreach (var buff in actor.GetBuffs().ToArray().Where(buff => buff.Dispellable))
                 {
-                    if (buff.Dispellable)
-                    {
-                        buff.Duration -= integerEffect.Value;
+                    buff.Duration -= integerEffect.Value;
 
-                        if (buff.Duration <= 0)
-                            actor.RemoveAndDispellBuff(buff);
-                    }
-
+                    if (buff.Duration <= 0)
+                        actor.RemoveAndDispellBuff(buff);
                 }
 
                 ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor,

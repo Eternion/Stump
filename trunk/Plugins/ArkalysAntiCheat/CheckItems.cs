@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using NLog;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Items;
