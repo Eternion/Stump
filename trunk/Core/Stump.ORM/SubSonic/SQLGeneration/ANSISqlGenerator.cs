@@ -73,7 +73,7 @@ namespace Stump.ORM.SubSonic.SQLGeneration
 			set
 			{
                 // TODO: What???
-                this.sqlFragment = value._provider.SqlFragment;
+                sqlFragment = value._provider.SqlFragment;
 				query = value;
 			}
 		}
@@ -700,9 +700,9 @@ namespace Stump.ORM.SubSonic.SQLGeneration
 		/// <returns></returns>
 		public string GetQualifiedSelect(ITable table)
 		{
-			StringBuilder sb = new StringBuilder();
-			bool isFirst = true;
-			foreach (IColumn tc in table.Columns)
+			var sb = new StringBuilder();
+			var isFirst = true;
+			foreach (var tc in table.Columns)
 			{
 				if (!isFirst)
 					sb.Append(", ");
@@ -720,14 +720,14 @@ namespace Stump.ORM.SubSonic.SQLGeneration
 		/// <returns></returns>
 		public virtual string GenerateSelectColumnList()
 		{
-			StringBuilder sbColumns = new StringBuilder();
-			int loopCount = 1;
+			var sbColumns = new StringBuilder();
+			var loopCount = 1;
 
-			foreach (ITable tbl in query.FromTables)
+			foreach (var tbl in query.FromTables)
 			{
 				if (tbl.Columns.Count > 0)
 				{
-					string columnList = GetQualifiedSelect(tbl);
+					var columnList = GetQualifiedSelect(tbl);
 					sbColumns.Append(columnList);
 
 					if (loopCount < query.FromTables.Count)
@@ -750,9 +750,9 @@ namespace Stump.ORM.SubSonic.SQLGeneration
 		/// <returns></returns>
 		protected virtual string BuildAggregateCommands()
 		{
-			StringBuilder sb = new StringBuilder();
-			bool isFirst = true;
-			foreach (SubSonic.Query.Aggregate agg in query.Aggregates)
+			var sb = new StringBuilder();
+			var isFirst = true;
+			foreach (var agg in query.Aggregates)
 			{
 				if (!isFirst)
 					sb.Append(", ");
@@ -771,9 +771,9 @@ namespace Stump.ORM.SubSonic.SQLGeneration
 		/// The ToString() logic moved from <see cref="SubSonic.Query.Aggregate.ToString"/>, rather than
 		/// including it in the Aggregate class itself...
 		/// </remarks>
-		protected virtual string GenerateAggregateSelect(SubSonic.Query.Aggregate aggregate)
+		protected virtual string GenerateAggregateSelect(Aggregate aggregate)
 		{
-			bool hasAlias = !String.IsNullOrEmpty(aggregate.Alias);
+			var hasAlias = !String.IsNullOrEmpty(aggregate.Alias);
 
 			if (aggregate.AggregateType == AggregateFunction.GroupBy && hasAlias)
 				return String.Format("{0} AS {1}", aggregate.ColumnName, aggregate.Alias);

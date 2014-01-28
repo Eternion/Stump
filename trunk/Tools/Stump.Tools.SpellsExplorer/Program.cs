@@ -48,10 +48,10 @@ namespace Stump.Tools.SpellsExplorer
             while (true)
             {
                 Console.Write(">");
-                string pattern = Console.ReadLine();
+                var pattern = Console.ReadLine();
                 try
                 {
-                    bool critical = pattern.EndsWith("!");
+                    var critical = pattern.EndsWith("!");
                     if (critical)
                         pattern = pattern.Remove(pattern.Length - 1, 1);
 
