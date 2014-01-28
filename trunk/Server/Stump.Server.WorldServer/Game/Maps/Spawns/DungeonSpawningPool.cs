@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
             lock (m_locker)
             {
-                if (m_spawns.Count == 0)
+                if (m_spawnsQueue.Count == 0)
                 {
                     logger.Error("SpawningPool Map = {0} try to spawn a monser but m_groupsToSpawn is empty", Map.Id);
                     return null;
@@ -142,6 +142,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                     fighter.Character.Cell = pos.Cell;
                     fighter.Character.Direction = pos.Direction;
                 }
+
+                
+                m_groupsSpawn.Remove(group);
             }
         }
 
@@ -156,8 +159,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                 else
                 {
                     var spawn = m_groupsSpawn[monster];
-
-                    m_groupsSpawn.Remove(monster);
 
                     if (m_spawns.Contains(spawn))
                         m_spawnsQueue.Enqueue(spawn);

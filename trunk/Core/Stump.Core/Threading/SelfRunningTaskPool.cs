@@ -182,7 +182,7 @@ namespace Stump.Core.Threading
                 m_lastUpdate = (int) timerStart;
 
                 // process timer entries
-                foreach (TimerEntry timer in m_timers)
+                foreach (var timer in m_timers)
                 {
                     try
                     {
@@ -202,7 +202,7 @@ namespace Stump.Core.Threading
                 var count = m_simpleTimers.Count;
                 for (var i = count - 1; i >= 0; i--)
                 {
-                    SimpleTimerEntry timer = m_simpleTimers[i];
+                    var timer = m_simpleTimers[i];
                     if (GetDelayUntilNextExecution(timer) <= 0)
                     {
                         try
@@ -247,10 +247,10 @@ namespace Stump.Core.Threading
             finally
             {
                 // get the end time
-                long timerStop = m_queueTimer.ElapsedMilliseconds;
+                var timerStop = m_queueTimer.ElapsedMilliseconds;
 
-                bool updateLagged = timerStop - timerStart > UpdateInterval;
-                long callbackTimeout = updateLagged ? 0 : ((timerStart + UpdateInterval) - timerStop);
+                var updateLagged = timerStop - timerStart > UpdateInterval;
+                var callbackTimeout = updateLagged ? 0 : ((timerStart + UpdateInterval) - timerStop);
 
                 Interlocked.Exchange(ref m_currentThreadId, 0);
 
