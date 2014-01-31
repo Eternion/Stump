@@ -742,7 +742,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (position.Map != this)
                 throw new Exception("Try to spawn a monster group on the wrong map");
 
-            sbyte id = GetNextContextualId();
+            var id = GetNextContextualId();
 
             var group = new MonsterGroup(id, position);
 
