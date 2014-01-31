@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
-using Stump.Core.Mathematics;
 
 namespace Stump.Core.Threading
 {
@@ -10,7 +8,7 @@ namespace Stump.Core.Threading
     /// </summary>
     public sealed class AsyncRandom : Random
     {
-        private static int m_incrementer = 0;
+        private static int m_incrementer;
 
         public AsyncRandom()
             : base (Environment.TickCount + Thread.CurrentThread.ManagedThreadId + m_incrementer)

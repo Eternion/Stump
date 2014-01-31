@@ -267,24 +267,20 @@ namespace DBSynchroniser
                 Database.Database.Execute("ALTER TABLE " + table.Value.TableName + " AUTO_INCREMENT=1");
             }
 
-            foreach (string filePath in Directory.EnumerateFiles(d2oFolder))
+            foreach (var filePath in from filePath in Directory.EnumerateFiles(d2oFolder) let ext = Path.GetExtension(filePath) where ext == ".d2o" || ext == ".d2os" select filePath)
             {
-                string ext = Path.GetExtension(filePath);
-                if (ext != ".d2o" && ext != ".d2os")
-                    continue;
-
                 Console.Write("Import {0}...", Path.GetFileName(filePath));
 
-                int cursorLeft = Console.CursorLeft;
-                int cursorTop = Console.CursorTop;
-                int i = 0;
+                var cursorLeft = Console.CursorLeft;
+                var cursorTop = Console.CursorTop;
+                var i = 0;
                 var d2oReader = new D2OReader(filePath);
                 foreach (var entry in d2oReader.GetObjectsClasses())
                 {
-                    D2OTable table = !m_tables.ContainsKey(entry.Value.Name)
+                    var table = !m_tables.ContainsKey(entry.Value.Name)
                         ? m_tables[entry.Value.ClassType.BaseType.Name]
                         : m_tables[entry.Value.Name];
-                    object obj = d2oReader.ReadObject(entry.Key);
+                    var obj = d2oReader.ReadObject(entry.Key);
 
                     var record = table.Constructor.DynamicInvoke() as ID2ORecord;
                     record.AssignFields(obj);
@@ -312,11 +308,11 @@ namespace DBSynchroniser
 
 
             var d2iFiles = new Dictionary<string, D2IFile>();
-            string d2iFolder = Path.Combine(FindDofusPath(), "data", "i18n");
+            var d2iFolder = Path.Combine(FindDofusPath(), "data", "i18n");
 
-            foreach (string file in Directory.EnumerateFiles(d2iFolder, "*.d2i"))
+            foreach (var file in Directory.EnumerateFiles(d2iFolder, "*.d2i"))
             {
-                Match match = Regex.Match(Path.GetFileName(file), @"i18n_(\w+)\.d2i");
+                var match = Regex.Match(Path.GetFileName(file), @"i18n_(\w+)\.d2i");
                 var i18NFile = new D2IFile(file);
 
                 d2iFiles.Add(match.Groups[1].Value, i18NFile);
@@ -356,13 +352,13 @@ namespace DBSynchroniser
             }
 
 
-            int cursorLeft = Console.CursorLeft;
-            int cursorTop = Console.CursorTop;
-            int i = 0;
-            int count = records.Count + uiRecords.Count;
+            var cursorLeft = Console.CursorLeft;
+            var cursorTop = Console.CursorTop;
+            var i = 0;
+            var count = records.Count + uiRecords.Count;
 
             Console.WriteLine("Save texts(1/2)...");
-            foreach (LangText record in records.Values)
+            foreach (var record in records.Values)
             {
                 Database.Database.Insert(record);
 
@@ -375,7 +371,7 @@ namespace DBSynchroniser
             Console.WriteLine("Save texts(2/2)...");
             cursorLeft = Console.CursorLeft;
             cursorTop = Console.CursorTop;
-            foreach (LangTextUi record in uiRecords.Values)
+            foreach (var record in uiRecords.Values)
             {
                 Database.Database.Insert(record);
 
