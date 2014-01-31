@@ -54,32 +54,31 @@ namespace Stump.Core.Collections
         public void Enqueue(T item)
         {
             SingleLinkNode<T> oldTail = null;
-            SingleLinkNode<T> oldTailNext;
 
             var newNode = new SingleLinkNode<T> { Item = item };
 
-            bool newNodeWasAdded = false;
+            var newNodeWasAdded = false;
 
             while (!newNodeWasAdded)
             {
                 oldTail = _tail;
-                oldTailNext = oldTail.Next;
+                var oldTailNext = oldTail.Next;
 
-                if (_tail == oldTail)
+                if (_tail != oldTail)
+                    continue;
+
+                if (oldTailNext == null)
                 {
-                    if (oldTailNext == null)
-                    {
-                        newNodeWasAdded =
-                            Interlocked.CompareExchange<SingleLinkNode<T>>(ref _tail.Next, newNode, null) == null;
-                    }
-                    else
-                    {
-                        Interlocked.CompareExchange<SingleLinkNode<T>>(ref _tail, oldTailNext, oldTail);
-                    }
+                    newNodeWasAdded =
+                        Interlocked.CompareExchange(ref _tail.Next, newNode, null) == null;
+                }
+                else
+                {
+                    Interlocked.CompareExchange(ref _tail, oldTailNext, oldTail);
                 }
             }
 
-            Interlocked.CompareExchange<SingleLinkNode<T>>(ref _tail, newNode, oldTail);
+            Interlocked.CompareExchange(ref _tail, newNode, oldTail);
             Interlocked.Increment(ref _count);
         }
 
@@ -104,31 +103,30 @@ namespace Stump.Core.Collections
         public bool TryDequeue(out T item)
         {
             item = default(T);
-            SingleLinkNode<T> oldHead = null;
 
-            bool haveAdvancedHead = false;
+            var haveAdvancedHead = false;
             while (!haveAdvancedHead)
             {
-                oldHead = _head;
-                SingleLinkNode<T> oldTail = _tail;
-                SingleLinkNode<T> oldHeadNext = oldHead.Next;
+                var oldHead = _head;
+                var oldTail = _tail;
+                var oldHeadNext = oldHead.Next;
 
-                if (oldHead == _head)
+                if (oldHead != _head)
+                    continue;
+
+                if (oldHead == oldTail)
                 {
-                    if (oldHead == oldTail)
-                    {
-                        if (oldHeadNext == null)
-                            return false;
+                    if (oldHeadNext == null)
+                        return false;
 
-                        Interlocked.CompareExchange<SingleLinkNode<T>>(ref _tail, oldHeadNext, oldTail);
-                    }
+                    Interlocked.CompareExchange(ref _tail, oldHeadNext, oldTail);
+                }
 
-                    else
-                    {
-                        item = oldHeadNext.Item;
-                        haveAdvancedHead =
-                          Interlocked.CompareExchange<SingleLinkNode<T>>(ref _head, oldHeadNext, oldHead) == oldHead;
-                    }
+                else
+                {
+                    item = oldHeadNext.Item;
+                    haveAdvancedHead =
+                        Interlocked.CompareExchange(ref _head, oldHeadNext, oldHead) == oldHead;
                 }
             }
 
@@ -160,7 +158,7 @@ namespace Stump.Core.Collections
         /// <returns>an enumerator for the queue</returns>
         public IEnumerator<T> GetEnumerator()
         {
-            SingleLinkNode<T> currentNode = _head;
+            var currentNode = _head;
 
             do
             {
@@ -168,14 +166,8 @@ namespace Stump.Core.Collections
                 {
                     yield break;
                 }
-                else
-                {
-                    yield return currentNode.Item;
-                }
-            }
-            while ((currentNode = currentNode.Next) != null);
-
-            yield break;
+                yield return currentNode.Item;
+            } while ((currentNode = currentNode.Next) != null);
         }
 
         #endregion
@@ -199,12 +191,11 @@ namespace Stump.Core.Collections
         /// <remarks>This method is not thread-safe.</remarks>
         public void Clear()
         {
-            SingleLinkNode<T> tempNode;
-            SingleLinkNode<T> currentNode = _head;
+            var currentNode = _head;
 
             while (currentNode != null)
             {
-                tempNode = currentNode;
+                var tempNode = currentNode;
                 currentNode = currentNode.Next;
 
                 tempNode.Item = default(T);
