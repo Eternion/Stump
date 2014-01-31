@@ -14,7 +14,6 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
-using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
@@ -36,8 +35,8 @@ namespace Stump.Server.WorldServer.Game
         private readonly ConcurrentDictionary<string, Character> m_charactersByName =
             new ConcurrentDictionary<string, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections);
 
-        private readonly Dictionary<int, WorldAccount> m_connectedAccounts =
-            new Dictionary<int, WorldAccount>();
+        private readonly ConcurrentDictionary<int, WorldAccount> m_connectedAccounts =
+            new ConcurrentDictionary<int, WorldAccount>();
 
         private Dictionary<int, Area> m_areas = new Dictionary<int, Area>();
 
@@ -54,7 +53,7 @@ namespace Stump.Server.WorldServer.Game
 
         private void OnCharacterEntered(Character character)
         {
-            Action<Character> handler = CharacterJoined;
+            var handler = CharacterJoined;
             if (handler != null) handler(character);
         }
 
@@ -445,7 +444,7 @@ namespace Stump.Server.WorldServer.Game
                 logger.Error("Cannot add character {0} to the World", character);
 
             if (!m_connectedAccounts.ContainsKey(character.Account.Id))
-                m_connectedAccounts.Add(character.Account.Id, character.Client.WorldAccount);
+                m_connectedAccounts.TryAdd(character.Account.Id, character.Client.WorldAccount);
         }
 
         public void Leave(Character character)
@@ -459,7 +458,8 @@ namespace Stump.Server.WorldServer.Game
             else
                 logger.Error("Cannot remove character {0} from the World", character);
 
-            m_connectedAccounts.Remove(character.Account.Id);
+            WorldAccount dAccount;
+            m_connectedAccounts.TryRemove(character.Account.Id, out dAccount);
         }
 
         public bool IsConnected(int id)
@@ -511,16 +511,14 @@ namespace Stump.Server.WorldServer.Game
         /// <returns></returns>
         public Character GetCharacterByPattern(string pattern)
         {
-            if (pattern[0] == '*')
-            {
-                string name = pattern.Remove(0, 1);
+            if (pattern[0] != '*')
+                return GetCharacter(pattern);
+
+            var name = pattern.Remove(0, 1);
 
 
-                return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
-                    Select(entry => entry.Character).SingleOrDefault();
-            }
-
-            return GetCharacter(pattern);
+            return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
+                Select(entry => entry.Character).SingleOrDefault();
         }
 
         /// <summary>
@@ -529,10 +527,7 @@ namespace Stump.Server.WorldServer.Game
         /// <returns></returns>
         public Character GetCharacterByPattern(Character caller, string pattern)
         {
-            if (pattern == "*")
-                return caller;
-
-            return GetCharacterByPattern(pattern);
+            return pattern == "*" ? caller : GetCharacterByPattern(pattern);
         }
 
         public void ForEachCharacter(Action<Character> action)

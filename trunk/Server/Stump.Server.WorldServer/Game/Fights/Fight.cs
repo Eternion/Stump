@@ -417,7 +417,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void ResetFightersProperties()
         {
-            foreach (FightActor fighter in Fighters)
+            foreach (var fighter in Fighters)
             {
                 fighter.ResetFightProperties();
             }

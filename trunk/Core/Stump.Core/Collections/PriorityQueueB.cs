@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -57,13 +56,13 @@ namespace Stump.Core.Collections
         /// <returns>The index in the list where the object is _now_. This will change when objects are taken from or put onto the PQ.</returns>
         public int Push(T item)
         {
-            int p = InnerList.Count, p2;
+            var p = InnerList.Count;
             InnerList.Add(item); // E[p] = O
             do
             {
                 if (p == 0)
                     break;
-                p2 = (p - 1)/2;
+                var p2 = (p - 1)/2;
                 if (OnCompare(p, p2) < 0)
                 {
                     SwitchElements(p, p2);
@@ -81,15 +80,16 @@ namespace Stump.Core.Collections
         /// <returns>The smallest object</returns>
         public T Pop()
         {
-            T result = InnerList[0];
-            int p = 0, p1, p2, pn;
+            var result = InnerList[0];
+            var p = 0;
             InnerList[0] = InnerList[InnerList.Count - 1];
             InnerList.RemoveAt(InnerList.Count - 1);
             do
             {
-                pn = p;
-                p1 = 2*p + 1;
-                p2 = 2*p + 2;
+                var pn = p;
+                var p1 = 2*p + 1;
+                var p2 = 2*p + 2;
+
                 if (InnerList.Count > p1 && OnCompare(p, p1) > 0)
                     p = p1;
                 if (InnerList.Count > p2 && OnCompare(p, p2) > 0)
@@ -113,8 +113,8 @@ namespace Stump.Core.Collections
         /// <param name="i">The index of the changed object.</param>
         public void Update(int i)
         {
-            int p = i,pn;
-            int p2, p1;
+            var p = i;
+            int p2;
             do
             {
                 if (p == 0)
@@ -132,8 +132,8 @@ namespace Stump.Core.Collections
                 return;
             do
             {
-                pn = p;
-                p1 = 2*p + 1;
+                var pn = p;
+                var p1 = 2*p + 1;
                 p2 = 2*p + 2;
                 if (InnerList.Count > p1 && OnCompare(p, p1) > 0)
                     p = p1;
@@ -152,16 +152,14 @@ namespace Stump.Core.Collections
         /// <returns>The smallest object</returns>
         public T Peek()
         {
-            if (InnerList.Count > 0)
-                return InnerList[0];
-            return default(T);
+            return InnerList.Count > 0 ? InnerList[0] : default(T);
         }
 
         #endregion
 
         protected void SwitchElements(int i, int j)
         {
-            T h = InnerList[i];
+            var h = InnerList[i];
             InnerList[i] = InnerList[j];
             InnerList[j] = h;
         }
@@ -178,8 +176,8 @@ namespace Stump.Core.Collections
 
         public void Remove(T item)
         {
-            int index = -1;
-            for (int i = 0; i < InnerList.Count; i++)
+            var index = -1;
+            for (var i = 0; i < InnerList.Count; i++)
             {
                 if (Comparer.Compare(InnerList[i], item) == 0)
                     index = i;
