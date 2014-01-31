@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Breeds;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
@@ -210,8 +211,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
         {   
             // todo cascade
+            var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
+
+            if (guildMember != null)
+                GuildManager.Instance.DeleteGuildMember(guildMember);
+
             Database.Delete(character);
             client.Characters.Remove(character);
+
             // no check needed
             IPCAccessor.Instance.Send(new DeleteCharacterMessage(client.Account.Id, character.Id));
         }
