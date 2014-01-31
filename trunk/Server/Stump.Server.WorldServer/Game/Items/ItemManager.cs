@@ -32,10 +32,10 @@ namespace Stump.Server.WorldServer.Game.Items
         private Dictionary<int, ItemTypeRecord> m_itemTypes = new Dictionary<int, ItemTypeRecord>();
         private Dictionary<int, NpcItem> m_npcShopItems = new Dictionary<int, NpcItem>();
 
-        private Dictionary<ItemTypeEnum, PlayerItemConstructor> m_itemCtorByTypes =
+        private readonly Dictionary<ItemTypeEnum, PlayerItemConstructor> m_itemCtorByTypes =
             new Dictionary<ItemTypeEnum, PlayerItemConstructor>();
         
-        private Dictionary<EffectsEnum, PlayerItemConstructor> m_itemCtorByEffects =
+        private readonly Dictionary<EffectsEnum, PlayerItemConstructor> m_itemCtorByEffects =
             new Dictionary<EffectsEnum, PlayerItemConstructor>();
 
         private delegate BasePlayerItem PlayerItemConstructor(Character owner, PlayerItemRecord record);
@@ -103,10 +103,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 return ctor(character, record);
             }
 
-            if (m_itemCtorByTypes.TryGetValue((ItemTypeEnum) record.Template.Type.Id, out ctor))
-                return ctor(character, record);
-
-            return new DefaultItem(character, record);
+            return m_itemCtorByTypes.TryGetValue((ItemTypeEnum) record.Template.Type.Id, out ctor) ? ctor(character, record) : new DefaultItem(character, record);
         }
 
         public MerchantItem CreateMerchantItem(BasePlayerItem item, uint quantity, uint price)
@@ -121,15 +118,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
         {
-            var effects = new List<EffectBase>();
-
-            foreach (var effect in template.Effects)
-            {
-                if (EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId))
-                    effects.Add(effect);
-                else
-                    effects.Add(effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal));
-            }
+            var effects = template.Effects.Select(effect => EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId) ? effect : effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();
 
             return effects.ToList();
         }
@@ -177,18 +166,18 @@ namespace Stump.Server.WorldServer.Game.Items
 
                 var effectAttr = type.GetCustomAttribute<ItemHasEffectAttribute>();
 
-                if (effectAttr != null)
-                {
-                    if (m_itemCtorByEffects.ContainsKey(effectAttr.Effect))
-                    {
-                        logger.Error("Item Constructor with Effect {0} defined twice or more !", effectAttr.Effect);
-                        continue;
-                    }
+                if (effectAttr == null)
+                    continue;
 
-                    m_itemCtorByEffects.Add(effectAttr.Effect,
-                        type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
-                            .CreateDelegate<PlayerItemConstructor>());
+                if (m_itemCtorByEffects.ContainsKey(effectAttr.Effect))
+                {
+                    logger.Error("Item Constructor with Effect {0} defined twice or more !", effectAttr.Effect);
+                    continue;
                 }
+
+                m_itemCtorByEffects.Add(effectAttr.Effect,
+                    type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                        .CreateDelegate<PlayerItemConstructor>());
             }
         }
 
@@ -292,7 +281,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (pattern == "*")
                 return list;
 
-            bool ignorecase = pattern[0] == '@';
+            var ignorecase = pattern[0] == '@';
 
             if (ignorecase)
                 pattern = pattern.Remove(0, 1);
@@ -355,7 +344,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (pattern == "*")
                 return list;
 
-            bool ignorecase = pattern[0] == '@';
+            var ignorecase = pattern[0] == '@';
 
             if (ignorecase)
                 pattern = pattern.Remove(0, 1);
@@ -383,9 +372,7 @@ namespace Stump.Server.WorldServer.Game.Items
         public LivingObjectRecord TryGetLivingObjectRecord(int id)
         {
             LivingObjectRecord livingObjectRecord;
-            if (!m_livingObjects.TryGetValue(id, out livingObjectRecord))
-                return null;
-            return livingObjectRecord;        
+            return !m_livingObjects.TryGetValue(id, out livingObjectRecord) ? null : livingObjectRecord;
         }
 
         #endregion
