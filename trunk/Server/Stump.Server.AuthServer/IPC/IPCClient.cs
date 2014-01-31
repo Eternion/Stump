@@ -21,7 +21,6 @@ using System.Net.Sockets;
 using System.Threading;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Pool.Task;
 using Stump.Core.Timers;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
@@ -37,7 +36,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly object m_recvLock = new object();
-        private bool m_recvLockAcquired = false;
+        private bool m_recvLockAcquired;
         private IPCMessagePart m_messagePart;
 
         public IPCClient(Socket socket)
