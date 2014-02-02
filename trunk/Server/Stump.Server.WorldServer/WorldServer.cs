@@ -67,6 +67,12 @@ namespace Stump.Server.WorldServer
         [Variable(true)]
         public static int AutoSaveInterval  = 3 * 60;
 
+        public WorldVirtualConsole VirtualConsoleInterface
+        {
+            get;
+            protected set;
+        }
+
         public WorldPacketHandler HandlerManager
         {
             get;
@@ -82,6 +88,7 @@ namespace Stump.Server.WorldServer
         {
             base.Initialize();
             ConsoleInterface = new WorldConsole();
+            VirtualConsoleInterface = new WorldVirtualConsole();
             ConsoleBase.SetTitle("#Stump World Server : " + ServerInformation.Name);
 
             logger.Info("Initializing Database...");
