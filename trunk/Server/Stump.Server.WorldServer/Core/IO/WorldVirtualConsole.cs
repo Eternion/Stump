@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Commands.Trigger;
 
 namespace Stump.Server.WorldServer.Core.IO
 {
-    class WorldVirtualConsole : ConsoleBase, ICommandsUser
+    public class WorldVirtualConsole : ConsoleBase, ICommandsUser
     {
         public void EnterCommand(string Cmd, Action<bool, string> callback)
         {

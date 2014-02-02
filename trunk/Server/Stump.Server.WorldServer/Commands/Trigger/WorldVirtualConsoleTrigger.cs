@@ -1,24 +1,25 @@
 ﻿using System;
 using Stump.Core.IO;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Game;
+using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.WorldServer.Commands.Trigger
 {
     class WorldVirtualConsoleTrigger : TriggerBase
     {
         public WorldVirtualConsoleTrigger(StringStream args)
-            : base(args)
+            : base(args, RoleEnum.Administrator)
         {
         }
 
         public WorldVirtualConsoleTrigger(string args)
-            : base(args)
+            : base(args, RoleEnum.Administrator)
         {
         }
 
         public WorldVirtualConsoleTrigger(StringStream args, Action<bool, string> callback)
-            : base(args)
+            : base(args, RoleEnum.Administrator)
         {
             Callback = callback;
         }
@@ -41,8 +42,6 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         {
             if (Callback != null)
                 Callback(true, text);
-            else
-                User.Commands.Add(text);
         }
 
         public override void ReplyError(string message)
@@ -56,6 +55,11 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         public override ICommandsUser User
         {
             get { return WorldServer.Instance.VirtualConsoleInterface; }
+        }
+
+        public override BaseClient GetSource()
+        {
+            throw new NotImplementedException();
         }
     }
 }
