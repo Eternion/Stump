@@ -605,7 +605,7 @@ namespace Stump.Server.WorldServer.Database.Characters
 
             MapId = breed.StartMap;
             CellId = breed.StartCell;
-            Direction = (DirectionsEnum) breed.StartDirection;
+            Direction = breed.StartDirection;
 
             SpellsPoints = breed.StartLevel;
             StatsPoints = (ushort) (breed.StartLevel*5);
@@ -696,7 +696,7 @@ namespace Stump.Server.WorldServer.Database.Characters
         }
 
 
-        private byte[] SerializeZaaps(List<Map> knownZaaps)
+        private static byte[] SerializeZaaps(IReadOnlyList<Map> knownZaaps)
         {
             var result = new byte[knownZaaps.Count*4];
 
@@ -711,11 +711,11 @@ namespace Stump.Server.WorldServer.Database.Characters
             return result;
         }
 
-        private List<Map> UnSerializeZaaps(byte[] serialized)
+        private static List<Map> UnSerializeZaaps(IList<byte> serialized)
         {
             var result = new List<Map>();
 
-            for (var i = 0; i < serialized.Length; i += 4)
+            for (var i = 0; i < serialized.Count; i += 4)
             {
                 var id = serialized[i] << 24 | serialized[i + 1] << 16 | serialized[i + 2] << 8 | serialized[i + 3];
 
