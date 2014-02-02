@@ -503,10 +503,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (kicker.GuildMember != kickedMember && (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
                 return false;
 
-            if (!KickMember(kickedMember, kickedMember.Id == kicker.GuildMember.Id))
+            var kickerId = kicker.GuildMember.Id;
+
+            if (!KickMember(kickedMember, kickedMember.Id == kickerId))
                 return false;
 
-            if (kicker.GuildMember.Id != kickedMember.Id)
+            if (kickerId != kickedMember.Id)
             {
                 // Vous avez banni <b>%1</b> de votre guilde.
                 kicker.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 177, kickedMember.Name);
