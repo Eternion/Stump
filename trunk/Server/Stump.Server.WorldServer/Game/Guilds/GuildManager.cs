@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DoesNameExist(string name)
         {
-            return m_guilds.Any(x => x.Value.Name == name);
+            return m_guilds.Any(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase));
         }
 
         public bool DoesEmblemExist(NetworkGuildEmblem emblem)

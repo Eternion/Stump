@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
                 GuildHandler.SendGuildCreationResultMessage(Character.Client, GuildCreationResultEnum.GUILD_CREATE_ERROR_ALREADY_IN_GUILD);
                 return;
             }
-
+            
             var result = GuildManager.Instance.CreateGuild(Character, guildName, emblem);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
         }
