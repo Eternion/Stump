@@ -114,7 +114,7 @@ namespace Stump.Server.AuthServer.IPC
             if (!string.IsNullOrEmpty(message.Ticket))
             {
                 // no DB action here
-                Account account = AccountManager.Instance.FindCachedAccountByTicket(message.Ticket);
+                var account = AccountManager.Instance.FindCachedAccountByTicket(message.Ticket);
                 if (account == null)
                 {
                     Client.SendError(string.Format("Account not found with ticket {0}", message.Ticket), message);
