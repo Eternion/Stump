@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            if ((trigger.Get<int>("time") > (60 * 60 * 24) || message.BanEndDate == null) && source.Account.Role == RoleEnum.GameMaster_Padawan)
+            if ((((message.BanEndDate.Value.Second - DateTime.Now.Second) > (60 * 60 * 24)) || message.BanEndDate == null) && source.Account.Role == RoleEnum.GameMaster_Padawan)
                 message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes((60 * 60 * 24));
 
             target.Client.Disconnect();

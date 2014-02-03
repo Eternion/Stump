@@ -4,8 +4,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
@@ -33,6 +33,19 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
                 client.DisconnectLater(1000);
                 return;
+            }
+
+            /* Check be the boss of a Guild */
+            var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
+
+            if (guildMember != null)
+            {
+                if (guildMember.IsBoss)
+                {
+                    client.Send(new CharacterDeletionErrorMessage((int)CharacterDeletionErrorEnum.DEL_ERR_NO_REASON));
+                    client.DisconnectLater(1000);
+                    return;
+                }
             }
 
             var secretAnswerHash = message.secretAnswerHash;

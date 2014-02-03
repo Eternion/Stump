@@ -635,11 +635,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public byte Level
         {
-            get { return m_level; }
-            private set
-            {
-                m_level = value;
-            }
+            get;
+            private set;
         }
 
         public long Experience
@@ -2134,7 +2131,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         private readonly List<Exception> m_errors = new List<Exception>();
-        private byte m_level;
 
         public List<Exception> Errors
         {

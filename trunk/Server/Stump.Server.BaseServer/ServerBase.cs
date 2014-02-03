@@ -75,7 +75,6 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-
         public DatabaseAccessor DBAccessor
         {
             get;
