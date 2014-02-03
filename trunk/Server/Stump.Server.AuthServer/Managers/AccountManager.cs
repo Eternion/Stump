@@ -281,6 +281,10 @@ namespace Stump.Server.AuthServer.Managers
                 server.IPCClient.SendRequest<DisconnectedClientMessage>(new DisconnectClientMessage(account.Id),
                     msg => callback(msg.Disconnected), msg => callback(false));
             }
+            else
+            {
+                callback(false);
+            }
         }
     }
 }
