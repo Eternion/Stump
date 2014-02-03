@@ -305,6 +305,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_taxCollectors.Remove(taxCollector);
         }
 
+        public void RemoveTaxCollectors()
+        {
+            foreach (var taxCollector in m_taxCollectors)
+            {
+                TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(taxCollector);
+            }
+        }
+
         public long AdjustGivenExperience(Character giver, long amount)
         {
             var gap = giver.Level - Level;
