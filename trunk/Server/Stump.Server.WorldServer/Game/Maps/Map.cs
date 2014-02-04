@@ -1309,16 +1309,14 @@ namespace Stump.Server.WorldServer.Game.Maps
         public bool Equals(Map other)
         {
             if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Id, Id);
+            return ReferenceEquals(this, other) || Equals(other.Id, Id);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (Map)) return false;
-            return Equals((Map) obj);
+            return obj.GetType() == typeof (Map) && Equals((Map) obj);
         }
 
         public override int GetHashCode()
@@ -1338,7 +1336,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Network
 
-        private void InitializeValidators()
+        private static void InitializeValidators()
         {
             // for later
         }
