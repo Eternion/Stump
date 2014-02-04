@@ -9,8 +9,10 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -162,6 +164,17 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             character.LastUsage = DateTime.Now;
             WorldServer.Instance.DBAccessor.Database.Update(character);
+
+            if (!client.Account.IsJailed)
+                return;
+
+            var map = World.Instance.GetMap(105121026);
+
+            if (map == null) 
+                return;
+
+            var cell = map.Cells[179];
+            client.Character.Teleport(new ObjectPosition(map, cell));
         }
 
 

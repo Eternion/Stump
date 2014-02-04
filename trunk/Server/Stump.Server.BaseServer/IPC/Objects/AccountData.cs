@@ -102,12 +102,12 @@ namespace Stump.Server.BaseServer.IPC.Objects
         {
             get
             {
-                if (m_breeds == null)
-                {
-                    m_breeds = new List<PlayableBreedEnum>();
-                    m_breeds.AddRange(Enum.GetValues(typeof (PlayableBreedEnum)).Cast<PlayableBreedEnum>().
-                                          Where(breed => CanUseBreed((int) breed)));
-                }
+                if (m_breeds != null)
+                    return m_breeds;
+
+                m_breeds = new List<PlayableBreedEnum>();
+                m_breeds.AddRange(Enum.GetValues(typeof (PlayableBreedEnum)).Cast<PlayableBreedEnum>().
+                    Where(breed => CanUseBreed((int) breed)));
 
                 return m_breeds;
             }
@@ -163,33 +163,40 @@ namespace Stump.Server.BaseServer.IPC.Objects
             set;
         }
 
+        [ProtoMember(19)]
+        public bool IsJailed
+        {
+            get;
+            set;
+        }
+
         public bool IsBanned
         {
             get { return BanEndDate > DateTime.Now; }
         }
 
-        [ProtoMember(19)]
+        [ProtoMember(20)]
         public DateTime? BanEndDate
         {
             get;
             set;
         }
 
-        [ProtoMember(20)]
+        [ProtoMember(21)]
         public string BanReason
         {
             get;
             set;
         }
 
-        [ProtoMember(21)]
+        [ProtoMember(22)]
         public uint Tokens
         {
             get;
             set;
         }
 
-        [ProtoMember(22)]
+        [ProtoMember(23)]
         public DateTime? LastVote
         {
             get;
@@ -201,7 +208,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
             if (breedId <= 0)
                 return false;
 
-            int flag = (1 << (breedId - 1));
+            var flag = (1 << (breedId - 1));
             return (BreedFlags & flag) == flag;
         }
     }

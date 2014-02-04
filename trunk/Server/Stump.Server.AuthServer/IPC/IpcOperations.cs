@@ -298,7 +298,16 @@ namespace Stump.Server.AuthServer.IPC
                 return;
             }
 
-            victimAccount.IsBanned = true;
+            if (message.Jailed == 0)
+            {
+                victimAccount.IsBanned = true;
+            }
+            else
+            {
+                victimAccount.IsBanned = false;
+                victimAccount.IsJailed = true;
+            }
+
             victimAccount.BanReason = message.BanReason;
             victimAccount.BanEndDate = message.BanEndDate;
             victimAccount.BannerAccountId = message.BannerAccountId;

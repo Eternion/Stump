@@ -166,7 +166,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 wasAlreadyConnected,
                 client.Account.Login,
                 client.Account.Nickname,
-                (int) client.Account.Id,
+                client.Account.Id,
                 0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                 client.Account.SecretQuestion,
                 client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStamp() : 0,

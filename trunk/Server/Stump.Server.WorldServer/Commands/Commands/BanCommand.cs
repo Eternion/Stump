@@ -5,7 +5,10 @@ using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -19,9 +22,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             AddParameter("target", "t", "Player to ban", converter: ParametersConverter.CharacterConverter);
             AddParameter<int>("time", "time", "Ban duration (in minutes)", isOptional: true);
-            AddParameter("reason", "r", "Reason of ban", "No reason");
+            AddParameter<string>("reason", "r", "Reason of ban");
             AddParameter<bool>("life", "l", "Specify a life ban", isOptional: true);
             AddParameter<bool>("ip", "ip", "Also ban the ip", isOptional: true);
+            AddParameter("jail", "jail", "Just jailed?", isOptional: true, defaultValue: false);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -41,7 +45,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            var message = new BanAccountMessage()
+            var message = new BanAccountMessage
             {
                 AccountId = target.Account.Id,
                 BanReason = reason,
@@ -64,27 +68,50 @@ namespace Stump.Server.WorldServer.Commands.Commands
             if ((((message.BanEndDate.Value.Second - DateTime.Now.Second) > (60 * 60 * 24)) || message.BanEndDate == null) && source.Account.Role == RoleEnum.GameMaster_Padawan)
                 message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes((60 * 60 * 24));
 
-            target.Client.Disconnect();
-
-            IPCAccessor.Instance.SendRequest(message, 
-                ok => trigger.Reply("Account {0} banned", target.Account.Login),
-                error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
-
-
-            if (!trigger.IsArgumentDefined("ip"))
-                return;
-
-            var banIPMessage = new BanIPMessage()
+            if (trigger.IsArgumentDefined("jail"))
             {
-                IPRange = target.Client.IP,
-                BanReason = reason,
-                BanEndDate = message.BanEndDate,
-                BannerAccountId = message.BannerAccountId
-            };
+                var map = World.Instance.GetMap(105121026);
 
-            IPCAccessor.Instance.SendRequest(banIPMessage,
-                ok => trigger.Reply("IP {0} banned", target.Client.IP),
-                error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));
+                if (map == null)
+                {
+                    trigger.ReplyError("Map {0} not found", 105121026);
+                    return;
+                }
+
+                var cell = map.Cells[179];
+
+                target.Teleport(new ObjectPosition(map, cell));
+
+                message.Jailed = 1;
+
+                IPCAccessor.Instance.SendRequest(message,
+                    ok => trigger.Reply("Account {0} jailed", target.Account.Login),
+                    error => trigger.ReplyError("Account {0} not jailed : {1}", target.Account.Login, error.Message));
+            }
+            else
+            {
+                target.Client.Disconnect();
+
+                IPCAccessor.Instance.SendRequest(message,
+                    ok => trigger.Reply("Account {0} banned", target.Account.Login),
+                    error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
+
+
+                if (!trigger.IsArgumentDefined("ip"))
+                    return;
+
+                var banIPMessage = new BanIPMessage()
+                {
+                    IPRange = target.Client.IP,
+                    BanReason = reason,
+                    BanEndDate = message.BanEndDate,
+                    BannerAccountId = message.BannerAccountId
+                };
+
+                IPCAccessor.Instance.SendRequest(banIPMessage,
+                    ok => trigger.Reply("IP {0} banned", target.Client.IP),
+                    error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));       
+            }
         }
     }
 
