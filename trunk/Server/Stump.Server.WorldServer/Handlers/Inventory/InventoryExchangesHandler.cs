@@ -49,6 +49,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
                         return;
                     }
+                    
+                    if (!client.Character.Map.AllowExchangesBetweenPlayers)
+                    {
+                        SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_IMPOSSIBLE);
+                        return;
+                    }
 
                     var request = new PlayerTradeRequest(client.Character, target);
                     client.Character.OpenRequestBox(request);
