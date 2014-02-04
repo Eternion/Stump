@@ -9,6 +9,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
@@ -108,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 case ChatActivableChannelsEnum.CHANNEL_ADMIN:
                     return character.Account.Role >= AdministratorChatMinAccess;
                 case ChatActivableChannelsEnum.CHANNEL_ADS:
-                    return false;
+                    return !character.IsMuted();
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
                     return true;
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO:
@@ -158,7 +159,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 ChatHandler.SendChatServerMessage(client, sender, channel, message);
         }
 
-        private static void SendChatServerMessage(IPacketReceiver client, NamedActor sender, ChatActivableChannelsEnum channel, string message)
+        private static void SendChatServerMessage(IPacketReceiver client, INamedActor sender, ChatActivableChannelsEnum channel, string message)
         {
             ChatHandler.SendChatServerMessage(client, sender, channel, message);
         }
@@ -189,7 +190,7 @@ namespace Stump.Server.WorldServer.Game.Social
             World.Instance.ForEachCharacter(entry =>
             {
                 if (CanUseChannel(entry, ChatActivableChannelsEnum.CHANNEL_ADMIN))
-                    ChatHandler.SendChatAdminServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ADMIN, msg);
+                    ChatHandler.SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ADMIN, msg);
             });
         }
 
