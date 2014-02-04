@@ -1513,13 +1513,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnFightEnded(CharacterFighter fighter)
         {
-            CharacterFightEndedHandler handler = FightEnded;
+            var handler = FightEnded;
             if (handler != null) handler(this, fighter);
         }
 
         private void OnCharacterContextChanged(bool inFight)
         {
-            CharacterContextChangedHandler handler = ContextChanged;
+            var handler = ContextChanged;
             if (handler != null) handler(this, inFight);
         }
 
@@ -1535,7 +1535,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target == this)
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
 
-            if (target.Map != Map)
+            if (target.Map != Map || Map.AllowFightChallenges)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
@@ -1562,7 +1562,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.AlignmentSide == AlignmentSide)
                 return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
 
-            if (target.Map != Map)
+            if (target.Map != Map || !Map.AllowAggression)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             if (target.Client.IP == Client.IP)
@@ -1837,6 +1837,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 if (sendError)
                     SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 23);
+                return false;
+            }
+
+            if (!Map.AllowHumanVendor)
+            {
+                if (sendError)
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 237);
+
                 return false;
             }
 
