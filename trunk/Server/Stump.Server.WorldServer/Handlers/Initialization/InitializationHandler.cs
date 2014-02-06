@@ -1,7 +1,6 @@
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
-using Stump.Server.WorldServer.Core.Network;
 
 namespace Stump.Server.WorldServer.Handlers.Initialization
 {

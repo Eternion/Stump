@@ -12,16 +12,13 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
-using Stump.Server.WorldServer.Handlers.Startup;
 
 namespace Stump.Server.WorldServer.Handlers.Approach
 {
@@ -43,10 +40,10 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             try
             {
                 var toRemove = new List<WorldClient>();
-                int count = 0;
+                var count = 0;
                 lock (ConnectionQueue.SyncRoot)
                 {
-                    foreach (WorldClient worldClient in ConnectionQueue)
+                    foreach (var worldClient in ConnectionQueue)
                     {
                         count++;
 
@@ -55,11 +52,11 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                             toRemove.Add(worldClient);
                         }
 
-                        if (DateTime.Now - worldClient.InQueueUntil > TimeSpan.FromSeconds(3))
-                        {
-                            SendQueueStatusMessage(worldClient, (ushort)count, (ushort)ConnectionQueue.Count);
-                            worldClient.QueueShowed = true;
-                        }
+                        if (DateTime.Now - worldClient.InQueueUntil <= TimeSpan.FromSeconds(3))
+                            continue;
+
+                        SendQueueStatusMessage(worldClient, (ushort)count, (ushort)ConnectionQueue.Count);
+                        worldClient.QueueShowed = true;
                     }
 
                     foreach (var worldClient in toRemove)
@@ -96,7 +93,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             if (client.QueueShowed)
                 SendQueueStatusMessage(client, 0, 0); // close the popup
 
-            AccountData ticketAccount = message.Account;
+            var ticketAccount = message.Account;
 
             /* Check null ticket */
             if (ticketAccount == null)
@@ -144,20 +141,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
         
         private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
         {
-            foreach (var characterInFight in client.Characters.Where(x => x.LeftFightId != null))
-            {
-                var fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value);
-
-                if (fight != null)
-                {
-                    var fighter = fight.GetLeaver(characterInFight.Id);
-
-                    if (fighter != null)
-                        return characterInFight;
-                }
-            }
-
-            return null;
+            return (from characterInFight in client.Characters.Where(x => x.LeftFightId != null) let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value) where fight != null let fighter = fight.GetLeaver(characterInFight.Id) where fighter != null select characterInFight).FirstOrDefault();
         }
 
         public static void SendStartupActionsListMessage(IPacketReceiver client)
@@ -173,7 +157,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
             client.Send(new AccountCapabilitiesMessage(
-                            (int)client.Account.Id,
+                            client.Account.Id,
                             false,
                             (short)client.Account.BreedFlags,
                             (short)BreedManager.Instance.AvailableBreedsFlags,

@@ -70,18 +70,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             if (trigger.IsArgumentDefined("jail"))
             {
-                var map = World.Instance.GetMap(105121026);
-
-                if (map == null)
-                {
-                    trigger.ReplyError("Map {0} not found", 105121026);
-                    return;
-                }
-
-                var cell = map.Cells[179];
-
-                target.Teleport(new ObjectPosition(map, cell));
-
+                target.TeleportToJail();
+                target.Account.IsJailed = true;
                 message.Jailed = 1;
 
                 IPCAccessor.Instance.SendRequest(message,

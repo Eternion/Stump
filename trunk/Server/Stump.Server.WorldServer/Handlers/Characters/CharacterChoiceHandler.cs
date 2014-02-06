@@ -164,17 +164,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             character.LastUsage = DateTime.Now;
             WorldServer.Instance.DBAccessor.Database.Update(character);
-
-            if (!client.Account.IsJailed)
-                return;
-
-            var map = World.Instance.GetMap(105121026);
-
-            if (map == null) 
-                return;
-
-            var cell = map.Cells[179];
-            client.Character.Teleport(new ObjectPosition(map, cell));
         }
 
 

@@ -301,6 +301,7 @@ namespace Stump.Server.AuthServer.IPC
             if (message.Jailed == 0)
             {
                 victimAccount.IsBanned = true;
+                victimAccount.IsJailed = false;
             }
             else
             {
@@ -336,6 +337,7 @@ namespace Stump.Server.AuthServer.IPC
             }
 
             victimAccount.IsBanned = false;
+            victimAccount.IsJailed = false;
             victimAccount.BanEndDate = null;
             victimAccount.BanReason = null;
             victimAccount.BannerAccountId = null;
