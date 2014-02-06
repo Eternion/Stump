@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnFightCreated(Fight fight)
         {
-            Action<Map, Fight> handler = FightCreated;
+            var handler = FightCreated;
             if (handler != null)
                 handler(this, fight);
         }
@@ -1107,24 +1107,31 @@ namespace Stump.Server.WorldServer.Game.Maps
                 monsterGroup.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
                     () => MoveRandomlyMonsterGroup(monsterGroup));
             }
+
+
+            if (character == null)
+                return;
+
+            if (character.Account.IsJailed)
+                character.TeleportToJail();
         }
 
         private void SendActorsActions(Character character)
         {
-            foreach (RolePlayActor actor in m_actors)
+            foreach (var actor in m_actors)
             {
-                if (actor.IsMoving())
-                {
-                    var moveKeys = actor.MovementPath.GetServerPathKeys();
-                    RolePlayActor actorMoving = actor;
+                if (!actor.IsMoving())
+                    continue;
 
-                    ContextHandler.SendGameMapMovementMessage(character.Client, moveKeys, actorMoving);
-                    BasicHandler.SendBasicNoOperationMessage(character.Client);
-                }
+                var moveKeys = actor.MovementPath.GetServerPathKeys();
+                var actorMoving = actor;
+
+                ContextHandler.SendGameMapMovementMessage(character.Client, moveKeys, actorMoving);
+                BasicHandler.SendBasicNoOperationMessage(character.Client);
             }
         }
 
-        private void OnLeave(RolePlayActor actor)
+        private void OnLeave(ContextActor actor)
         {
             // if the actor will change of area we notify it
             if (actor.IsGonnaChangeZone())
@@ -1313,15 +1320,13 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             var rand = new AsyncRandom();
 
-            if (actorFree)
-            {
-                var excludedCells = GetActors<RolePlayActor>().Select(entry => entry.Cell.Id);
-                var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
+            if (!actorFree)
+                return m_freeCells[rand.Next(0, m_freeCells.Length)];
 
-                return cells[rand.Next(0, cells.Length)];
-            }
+            var excludedCells = GetActors<RolePlayActor>().Select(entry => entry.Cell.Id);
+            var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
 
-            return m_freeCells[rand.Next(0, m_freeCells.Length)];
+            return cells[rand.Next(0, cells.Length)];
         }
 
         public Cell GetRandomAdjacentFreeCell(MapPoint cell, bool actorFree = false)
