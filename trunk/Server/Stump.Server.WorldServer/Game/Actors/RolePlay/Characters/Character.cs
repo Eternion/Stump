@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using NLog;
+using Stump.Core.Cryptography;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -1296,17 +1297,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool TeleportToJail()
         {
-            var random = new Random().Next(1, 3);
             var map = World.Instance.GetMap(105121026);
             var cell = map.Cells[179];
 
-            switch (random)
+            switch (Cryptography.RandNumber(1, 3))
             {
                 case 1:
                     map = World.Instance.GetMap(105121026);
-                    random = new Random().Next(1, 4);
 
-                    switch (random)
+                    switch (Cryptography.RandNumber(1, 4))
                     {
                         case 1:
                             cell = map.Cells[179];
