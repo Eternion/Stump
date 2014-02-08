@@ -287,30 +287,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return critical;
         }
 
-        public void SetEarnedExperience(int experience)
-        {
-            if (Character.GuildMember != null && Character.GuildMember.GivenPercent > 0)
-            {
-                var xp = (int)(experience*(Character.GuildMember.GivenPercent*0.01));
-                m_guildEarnedExp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
-
-                m_guildEarnedExp = m_guildEarnedExp > Guild.MaxGuildXP ? Guild.MaxGuildXP : m_guildEarnedExp;
-                experience -= m_guildEarnedExp;
-            }
-
-            m_earnedExp = experience;
-        }
-
-        public void SetEarnedHonor(short honor)
-        {
-            m_earnedHonor = honor;
-        }
-
-        public void SetEarnedDishonor(short dishonor)
-        {
-            m_earnedDishonor = dishonor;
-        }
-
         public override void ResetFightProperties()
         {
             base.ResetFightProperties();
@@ -328,37 +304,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override IFightResult GetFightResult()
         {
-            var additionalDatas = new List<FightResultAdditionalData>();
-
-            if (m_earnedExp != 0)
-            {
-                additionalDatas.Add(new FightExperienceData(Character)
-                                        {
-                                            ExperienceFightDelta = m_earnedExp,
-                                            ExperienceForGuild = m_guildEarnedExp,
-                                            ShowExperienceForGuild = m_guildEarnedExp > 0,
-                                            ShowExperience = true,
-                                            ShowExperienceFightDelta = true,
-                                            ShowExperienceLevelFloor = true,
-                                            ShowExperienceNextLevelFloor = true,
-                                        });
-            }
-
-            if (m_earnedHonor != 0 || m_earnedDishonor != 0)
-            {
-                additionalDatas.Add(new FightPvpData(Character)
-                                        {
-                                            HonorDelta = m_earnedHonor,
-                                            DishonorDelta = m_earnedDishonor,
-                                            Honor = Character.Honor,
-                                            Dishonor = Character.Dishonor,
-                                            Grade = (byte) Character.AlignmentGrade,
-                                            MinHonorForGrade = Character.LowerBoundHonor,
-                                            MaxHonorForGrade = Character.UpperBoundHonor,
-                                        });
-            }
-
-            return new FightPlayerResult(this, GetFighterOutcome(), Loot, additionalDatas.ToArray());
+            return new FightPlayerResult(this, GetFighterOutcome(), Loot);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

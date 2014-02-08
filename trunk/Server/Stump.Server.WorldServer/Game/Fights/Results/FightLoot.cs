@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace Stump.Server.WorldServer.Game.Fights
+namespace Stump.Server.WorldServer.Game.Fights.Loots
 {
     public class FightLoot
     {

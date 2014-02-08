@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
@@ -59,17 +60,52 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            // todo add taxcollector
             var results = new List<IFightResult>();
+            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
 
-            ShareLoots();
+            if (Map.TaxCollector != null)
+                results.Add(new TaxCollectorFightResult(Map.TaxCollector, this));
 
-            foreach (var fighter in GetAllFighters<CharacterFighter>())
+            foreach (var team in m_teams)
             {
-                fighter.SetEarnedExperience(FightFormulas.CalculateWinExp(fighter));
+                IEnumerable<FightActor> droppers = ( team == RedTeam ? BlueTeam : RedTeam ).GetAllFighters(entry => entry.IsDead()).ToList();
+                var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorFightResult ? -1 : entry.Prospecting); // tax collector loots at the end
+                var teamPP = team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+                var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
+
+                foreach (var looter in looters)
+                {
+                    looter.Loot.Kamas = FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas);
+
+                    foreach (var item in droppers.SelectMany(dropper => dropper.RollLoot(looter)))
+                    {
+                        looter.Loot.AddItem(item);
+                    }
+
+                    if (looter is IExperienceResult)
+                    {
+                        (looter as IExperienceResult).SetEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters(), droppers));
+                    }
+
+                    if (looter is FightPlayerResult)
+                    {
+                        var document = new BsonDocument
+                        {
+                            {"PlayerId", (looter as FightPlayerResult).Character.Id},
+                            {"FightId", looter.Fight.Id},
+                            {"MapId", looter.Fight.Map.Id},
+                            {"FightersCount", looters.Count()},
+                            {"winXP", (looter as FightPlayerResult).ExperienceData.ExperienceFightDelta},
+                            {"winKamas", looter.Loot.Kamas},
+                            {"winItems", looter.Loot.FightItemsString()},
+                            {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
+                        };
+
+                        MongoLogger.Instance.Insert("FightLoots", document);
+                    }
+                }
             }
 
-            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
 
             return results;
         }
@@ -99,39 +135,5 @@ namespace Stump.Server.WorldServer.Game.Fights
             return (int)timeleft;
         }
 
-        private void ShareLoots()
-        {
-            foreach (var team in m_teams)
-            {
-                IEnumerable<FightActor> droppers = ( team == RedTeam ? BlueTeam : RedTeam ).GetAllFighters(entry => entry.IsDead()).ToList();
-                var looters = team.GetAllFighters<CharacterFighter>().OrderByDescending(entry => entry.Stats[PlayerFields.Prospecting].Total);
-                var teamPP = team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-                var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
-
-                foreach (var looter in looters)
-                {
-                    looter.Loot.Kamas = FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas);
-
-                    foreach (var item in droppers.SelectMany(dropper => dropper.RollLoot(looter)))
-                    {
-                        looter.Loot.AddItem(item);
-                    }
-
-                    var document = new BsonDocument
-                    {
-                        { "PlayerId", looter.Character.Id },
-                        { "FightId", looter.Fight.Id },
-                        { "MapId", looter.Fight.Map.Id },
-                        { "FightersCount", looters.Count() },
-                        { "winXP", FightFormulas.CalculateWinExp(looter) },
-                        { "winKamas", looter.Loot.Kamas },
-                        { "winItems", looter.Loot.FightItemsString() },
-                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-                    };
-
-                    MongoLogger.Instance.Insert("FightLoots", document);
-                }
-            }
-        }
     }
 }

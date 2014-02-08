@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         public TaxCollectorNpc Owner
         {
             get;
-            set;
+            private set;
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         public bool IsDirty
         {
             get;
-            set;
+            private set;
         }
 
         protected override void OnItemStackChanged(TaxCollectorItem item, int difference)
@@ -51,6 +51,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 
         public void LoadRecord()
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             var records = ItemManager.Instance.FindTaxCollectorItems(Owner.Id);
             Items = records.Select(entry => new TaxCollectorItem(entry)).ToDictionary(entry => entry.Guid);
         }

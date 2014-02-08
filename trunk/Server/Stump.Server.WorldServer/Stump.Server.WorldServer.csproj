@@ -339,6 +339,8 @@
     <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
     <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
+    <Compile Include="Game\Fights\Results\IExperienceResult.cs" />
+    <Compile Include="Game\Fights\Results\IPvpResult.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
     <Compile Include="Game\Fights\Triggers\FractionGlyph.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
@@ -562,7 +564,7 @@
     <Compile Include="Game\Exchanges\PlayerTrader.cs" />
     <Compile Include="Game\Exchanges\PlayerTradeRequest.cs" />
     <Compile Include="Game\Exchanges\TradeManager.cs" />
-    <Compile Include="Game\Fights\FightLoot.cs" />
+    <Compile Include="Game\Fights\Results\FightLoot.cs" />
     <Compile Include="Game\Fights\FightManager.cs" />
     <Compile Include="Game\Fights\FightRequest.cs" />
     <Compile Include="Game\Fights\FightState.cs" />

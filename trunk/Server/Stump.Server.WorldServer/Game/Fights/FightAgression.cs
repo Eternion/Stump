@@ -37,13 +37,21 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            foreach (var character in GetAllFighters<CharacterFighter>())
+            var results = GetFightersAndLeavers().Where(entry => !( entry is SummonedFighter )).
+                Select(fighter => fighter.GetFightResult()).ToArray();
+
+            foreach (var result in results)
             {
-                character.SetEarnedHonor(CalculateEarnedHonor(character));
-                character.SetEarnedDishonor(CalculateEarnedDishonor(character));
+                var playerResult = result as FightPlayerResult;
+                if (playerResult != null)
+                {                
+                    playerResult.SetEarnedHonor(CalculateEarnedHonor(playerResult.Fighter),
+                        CalculateEarnedDishonor(playerResult.Fighter));
+
+                }
             }
 
-            return GetFightersAndLeavers().Where(entry => !( entry is SummonedFighter )).Select(fighter => fighter.GetFightResult());
+            return results;
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
