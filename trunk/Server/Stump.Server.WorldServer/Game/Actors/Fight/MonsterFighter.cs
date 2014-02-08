@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -88,7 +89,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (uint) random.Next(Monster.Template.MinDroppedKamas, Monster.Template.MaxDroppedKamas + 1);
         }
 
-        public override IEnumerable<DroppedItem> RollLoot(CharacterFighter looter)
+        public override int GetGivenExperience()
+        {
+            return Monster.Grade.GradeXp;
+        }
+
+        public override IEnumerable<DroppedItem> RollLoot(IFightResult looter)
         {
             // have to be dead before
             if (!IsDead())

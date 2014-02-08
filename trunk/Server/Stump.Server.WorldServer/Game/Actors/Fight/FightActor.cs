@@ -29,7 +29,7 @@ using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
-using FightLoot = Stump.Server.WorldServer.Game.Fights.FightLoot;
+using FightLoot = Stump.Server.WorldServer.Game.Fights.Loots.FightLoot;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
@@ -1486,12 +1486,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.PermanentDamages = 0;
         }
 
-        public virtual IEnumerable<DroppedItem> RollLoot(CharacterFighter looter)
+        public virtual IEnumerable<DroppedItem> RollLoot(IFightResult looter)
         {
             return new DroppedItem[0];
         }
 
         public virtual uint GetDroppedKamas()
+        {
+            return 0;
+        }
+
+        public virtual int GetGivenExperience()
         {
             return 0;
         }

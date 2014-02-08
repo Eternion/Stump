@@ -26,6 +26,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         private string m_name;
         private ActorLook m_look;
 
+        /// <summary>
+        /// Create a new tax collector with a new record (no IO)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="position"></param>
+        /// <param name="guild"></param>
         public TaxCollectorNpc(int id, ObjectPosition position, Guild guild)
         {
             var random = new AsyncRandom();
@@ -45,8 +51,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 LastNameId = (short)random.Next(1, 253),
                 GuildId = guild.Id,
             };
-        }
 
+            IsRecordDirty = true;
+        }
+        
+        /// <summary>
+        /// Create and load the tax collector (IO)
+        /// </summary>
+        /// <param name="record"></param>
         public TaxCollectorNpc(WorldMapTaxCollectorRecord record)
         {
             m_record = record;
@@ -63,6 +75,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             Guild = GuildManager.Instance.TryGetGuild(Record.GuildId);
             Guild.AddTaxCollector(this);
+            LoadRecord();
         }
 
         public WorldMapTaxCollectorRecord Record
@@ -95,7 +108,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public int GuildId
         {
             get { return m_record.GuildId; }
-            protected set { m_record.GuildId = value; }
         }
 
         public Guild Guild
@@ -127,13 +139,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public short FirstNameId
         {
             get { return m_record.FirstNameId; }
-            protected set { m_record.FirstNameId = value; }
+            protected set { m_record.FirstNameId = value;
+                m_name = null;
+            }
         }
 
         public short LastNameId
         {
             get { return m_record.LastNameId; }
-            protected set { m_record.LastNameId = value; }
+            protected set { m_record.LastNameId = value; m_name = null; }
         }
 
         protected override void OnDisposed()
@@ -149,7 +163,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public bool IsRecordDirty
         {
             get;
-            set;
+            private set;
         }
 
         public bool IsBagEmpty()
@@ -159,6 +173,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public void LoadRecord()
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             Bag.LoadRecord();
         }
 

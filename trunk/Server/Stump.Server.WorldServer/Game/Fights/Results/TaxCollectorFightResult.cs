@@ -6,18 +6,26 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
+using FightLoot = Stump.Server.WorldServer.Game.Fights.Loots.FightLoot;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
-    public class TaxCollectorFightResult : IFightResult
+    public class TaxCollectorFightResult : IFightResult, IExperienceResult
     {
-        public TaxCollectorFightResult(TaxCollectorNpc taxCollector)
+        public TaxCollectorFightResult(TaxCollectorNpc taxCollector, Fight fight)
         {
             TaxCollector = taxCollector;
+            Fight = fight;
             Loot = new FightLoot();
         }
 
         public TaxCollectorNpc TaxCollector
+        {
+            get;
+            private set;
+        }
+
+        public Fight Fight
         {
             get;
             private set;
@@ -38,6 +46,33 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 return TaxCollector.Id;
             }
         }
+
+        public int Prospecting
+        {
+            get
+            {
+                return TaxCollector.Guild.Prospecting;
+            }
+        }
+
+        public int Wisdom
+        {
+            get
+            {
+                return TaxCollector.Guild.Wisdom;
+            }
+        }
+
+        public int Level
+        {
+            get { return TaxCollector.Guild.Level; }
+        }
+
+        public bool CanLoot(FightTeam team)
+        {
+            return true;
+        }
+
 
         public FightLoot Loot
         {
@@ -85,6 +120,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             }
 
             TaxCollector.Guild.AddXP(Experience);
+        }
+
+        public void SetEarnedExperience(int experience)
+        {
+            Experience = (int) (experience * 0.1d); // own only a percent
         }
     }
 }
