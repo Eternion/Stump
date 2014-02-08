@@ -124,6 +124,12 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 account.BanEndDate = null;
             }
 
+            if (account.IsJailed && account.BanEndDate < DateTime.Now)
+            {
+                account.IsJailed = false;
+                account.BanEndDate = null;
+            }
+
             var ipBan = AccountManager.Instance.FindMatchingIpBan(client.IP);
             if (ipBan != null && ipBan.GetRemainingTime() > TimeSpan.Zero)
             {

@@ -1297,15 +1297,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool TeleportToJail()
         {
+            var random = new AsyncRandom();
             var map = World.Instance.GetMap(105121026);
             var cell = map.Cells[179];
 
-            switch (Cryptography.RandNumber(1, 3))
+            switch (random.Next(1, 3))
             {
                 case 1:
                     map = World.Instance.GetMap(105121026);
 
-                    switch (Cryptography.RandNumber(1, 4))
+                    switch (random.Next(1, 4))
                     {
                         case 1:
                             cell = map.Cells[179];
@@ -1348,7 +1349,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanChangeMap()
         {
-            return base.CanChangeMap() && !IsFighting();
+            return base.CanChangeMap() && !IsFighting() && !Account.IsJailed;
         }
 
         #endregion

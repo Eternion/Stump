@@ -98,17 +98,5 @@ namespace Stump.Core.Cryptography
             return decryptedValue;
         }
         #endregion
-
-        #region Random
-
-        public static int RandNumber(int low, int high)
-        {
-            var rndNum = new Random(int.Parse(Guid.NewGuid().ToString().Substring(0, 8), NumberStyles.HexNumber));
-            var rnd = rndNum.Next(low, high);
-
-            return rnd;
-        }
-
-        #endregion
     }
 }

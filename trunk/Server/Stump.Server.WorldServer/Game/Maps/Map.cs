@@ -1107,13 +1107,6 @@ namespace Stump.Server.WorldServer.Game.Maps
                 monsterGroup.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
                     () => MoveRandomlyMonsterGroup(monsterGroup));
             }
-
-
-            if (character == null)
-                return;
-
-            if (character.Account.IsJailed)
-                character.TeleportToJail();
         }
 
         private void SendActorsActions(Character character)
