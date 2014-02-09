@@ -13,16 +13,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         #region Formulas
 
         private static readonly StatsFormulasHandler FormulasChanceDependant =
-            (owner) =>
+            owner =>
             (short) (owner.Stats[PlayerFields.Chance]/10d);
 
         private static readonly StatsFormulasHandler FormulasWisdomDependant =
-             (owner) =>
+             owner =>
                  (short) ( owner.Stats[PlayerFields.Wisdom] / 10d );
 
 
         private static readonly StatsFormulasHandler FormulasAgilityDependant =
-             (owner) =>
+             owner =>
                  (short) ( owner.Stats[PlayerFields.Agility] / 10d );
 
         #endregion
@@ -102,10 +102,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             var field = this[name];
 
-            if (field == null)
-                return 0;
-
-            return field.Total;
+            return field == null ? 0 : field.Total;
         }
 
         public void Initialize(CharacterRecord record)
