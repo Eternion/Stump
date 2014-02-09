@@ -157,7 +157,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (message.quantity <= 0 || message.price <= 0)
                 return;
 
-            BasePlayerItem item = client.Character.Inventory.TryGetItem(message.objectUID);
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
 
             if (item == null) 
                 return;
@@ -177,7 +177,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (message.price <= 0)
                 return;
 
-            MerchantItem merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
+            var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
 
             if (merchantItem == null)
                 return;

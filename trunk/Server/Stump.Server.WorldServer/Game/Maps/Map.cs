@@ -1111,21 +1111,26 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void SendActorsActions(Character character)
         {
-            foreach (RolePlayActor actor in m_actors)
+            foreach (var actor in m_actors)
             {
-                if (actor.IsMoving())
-                {
-                    var moveKeys = actor.MovementPath.GetServerPathKeys();
-                    RolePlayActor actorMoving = actor;
+                if (!actor.IsMoving())
+                    continue;
 
-                    ContextHandler.SendGameMapMovementMessage(character.Client, moveKeys, actorMoving);
-                    BasicHandler.SendBasicNoOperationMessage(character.Client);
-                }
+                var moveKeys = actor.MovementPath.GetServerPathKeys();
+                var actorMoving = actor;
+
+                ContextHandler.SendGameMapMovementMessage(character.Client, moveKeys, actorMoving);
+                BasicHandler.SendBasicNoOperationMessage(character.Client);
             }
         }
 
-        private void OnLeave(RolePlayActor actor)
+        private void OnLeave(ContextActor actor)
         {
+            if (actor is TaxCollectorNpc)
+            {
+                TaxCollector = null;
+            }
+
             // if the actor will change of area we notify it
             if (actor.IsGonnaChangeZone())
                 Area.Leave(actor);
