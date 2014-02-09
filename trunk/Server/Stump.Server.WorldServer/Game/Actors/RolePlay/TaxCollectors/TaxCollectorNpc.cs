@@ -38,7 +38,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Position = position;
             Guild = guild;
             Bag = new TaxCollectorBag(this);
-            FightResult = new TaxCollectorFightResult(this);
             Guild.AddTaxCollector(this);
 
             m_record = new WorldMapTaxCollectorRecord
@@ -245,7 +244,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public StorageInventoryContentMessage GetStorageInventoryContent()
         {
-            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), Bag.Kamas);
+            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), 0);
         }
 
         #endregion
