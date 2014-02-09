@@ -303,12 +303,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public void RemoveTaxCollector(TaxCollectorNpc taxCollector)
         {
             m_taxCollectors.Remove(taxCollector);
+            TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(taxCollector);
         }
 
         public void RemoveTaxCollectors()
         {
-            foreach (var taxCollector in m_taxCollectors)
+            foreach (var taxCollector in m_taxCollectors.ToArray())
             {
+                m_taxCollectors.Remove(taxCollector);
                 TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(taxCollector);
             }
         }

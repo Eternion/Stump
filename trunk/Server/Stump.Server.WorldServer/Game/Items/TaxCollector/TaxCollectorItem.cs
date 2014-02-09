@@ -49,7 +49,12 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 
         public ObjectItem GetObjectItem()
         {
-            return new ObjectItem(0, (short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
+            return new ObjectItem(63, (short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
+        }
+
+        public ObjectItemQuantity GetObjectItemQuantity()
+        {
+            return new ObjectItemQuantity(Guid, (int)Stack);
         }
 
         #endregion

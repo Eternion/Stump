@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Runtime.InteropServices;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
