@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         public string ItemsString
         {
-            get { return string.Join("|", m_items.Select(item => item.Template.Id + "_" + item.Stack).ToList()); }
+            get { return string.Join("|", m_items.Select(item => item.Template.Id + "_" + item.Stack)); }
         }
 
         public abstract int Id
