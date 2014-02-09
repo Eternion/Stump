@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         private readonly List<TaxCollectorExchangeDialog> m_openedDialogs = new List<TaxCollectorExchangeDialog>();
         private string m_name;
         private ActorLook m_look;
-        private int m_contextId;
+        private readonly int m_contextId;
 
         /// <summary>
         /// Create a new tax collector with a new record (no IO)
@@ -218,7 +218,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public void OnDialogClosed(TaxCollectorExchangeDialog dialog)
         {
             m_openedDialogs.Remove(dialog);
-            TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(this);
+            Guild.RemoveTaxCollector(this);
 
             //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
         }
@@ -239,7 +239,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
             return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
-                (short)Position.Map.SubArea.Id, "", 0, new ObjectItemQuantity[0]);
+                (short)Position.Map.SubArea.Id, "", 0, Bag.Select(x => x.GetObjectItemQuantity()));
         }
 
         public StorageInventoryContentMessage GetStorageInventoryContent()
