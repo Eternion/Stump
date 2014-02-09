@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Messages;
@@ -245,7 +246,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public UnBanCommand()
         {
-            Aliases = new[] { "unbana" };
+            Aliases = new[] { "unban" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Unban an character";
 
@@ -270,6 +271,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             character.Account.BanEndDate = null;
 
             character.Teleport(character.Breed.GetStartPosition());
+
+            character.SendServerMessage("Vous avez été libéré de prison.", Color.Red);
         }
     }
 
