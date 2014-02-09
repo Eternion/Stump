@@ -5,10 +5,7 @@ using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -90,7 +87,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 if (!trigger.IsArgumentDefined("ip"))
                     return;
 
-                var banIPMessage = new BanIPMessage()
+                var banIPMessage = new BanIPMessage
                 {
                     IPRange = target.Client.IP,
                     BanReason = reason,
@@ -140,7 +137,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            var message = new BanIPMessage()
+            var message = new BanIPMessage
             {
                 IPRange = ip,
                 BanReason = reason,
@@ -218,7 +215,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            var message = new BanAccountMessage()
+            var message = new BanAccountMessage
             {
                 AccountName = accountName,
                 BanReason = reason,
@@ -244,29 +241,60 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-
-    public class UnBanAccountCommand : CommandBase
+    public class UnBanCommand : CommandBase
     {
-        public UnBanAccountCommand()
+        public UnBanCommand()
         {
-            Aliases = new[] { "unban" };
+            Aliases = new[] { "unbana" };
             RequiredRole = RoleEnum.GameMaster;
-            Description = "Unban an account";
+            Description = "Unban an character";
 
-            AddParameter<string>("account", "account", "Account login");
+            AddParameter("target", "t", "Player to unban", converter: ParametersConverter.CharacterConverter);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var accountName = trigger.Get<string>("account");
-           
+            var character = trigger.Get<Character>("target");
+
             if (!IPCAccessor.Instance.IsConnected)
             {
                 trigger.ReplyError("IPC service not operational !");
                 return;
             }
 
-            IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(accountName), 
+            IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(character.Account.Login),
+                ok => trigger.Reply("Account {0} unbanned", character.Account.Login),
+                error => trigger.ReplyError("Account {0} not unbanned : {1}", character.Account.Login, error.Message));
+
+            character.Account.IsJailed = false;
+            character.Account.BanEndDate = null;
+
+            character.Teleport(character.Breed.GetStartPosition());
+        }
+    }
+
+    public class UnBanAccountCommand : CommandBase
+    {
+        public UnBanAccountCommand()
+        {
+            Aliases = new[] { "unbanacc" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Unban an account";
+
+            AddParameter<string>("character", "account", "Account login");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var accountName = trigger.Get<string>("account");
+
+            if (!IPCAccessor.Instance.IsConnected)
+            {
+                trigger.ReplyError("IPC service not operational !");
+                return;
+            }
+
+            IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(accountName),
                 ok => trigger.Reply("Account {0} unbanned", accountName),
                 error => trigger.ReplyError("Account {0} not unbanned : {1}", accountName, error.Message));
         }
