@@ -461,7 +461,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (position.Map != this)
                 throw new Exception("Try to spawn a npc on the wrong map");
 
-            sbyte id = GetNextContextualId();
+            var id = GetNextContextualId();
 
             var npc = new Npc(id, template, position, look);
             template.OnNpcSpawned(npc);
@@ -478,7 +478,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (position.Map != this)
                 throw new Exception("Try to spawn a npc on the wrong map");
 
-            sbyte id = GetNextContextualId();
+            var id = GetNextContextualId();
 
             var npc = new Npc(id, spawn);
             spawn.Template.OnNpcSpawned(npc);
@@ -818,7 +818,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (position.Map != this)
                 throw new Exception("Try to spawn a monster group on the wrong map");
 
-            sbyte id = GetNextContextualId();
+            var id = GetNextContextualId();
 
             var group = new MonsterGroup(id, position);
 
@@ -1139,7 +1139,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);
 
-            if (actor is MonsterGroup || actor is Npc)
+            if (actor is MonsterGroup || actor is Npc || actor is TaxCollectorNpc)
                 FreeContextualId((sbyte) actor.Id);
 
 
@@ -1215,14 +1215,20 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public sbyte GetNextContextualId()
+        public int GetNextContextualId()
         {
-            return (sbyte) m_contextualIds.Pop();
+            lock (m_contextualIds)
+            {
+                return m_contextualIds.Pop();
+            }
         }
 
-        public void FreeContextualId(sbyte id)
+        public void FreeContextualId(int id)
         {
-            m_contextualIds.Push(id);
+            lock (m_contextualIds)
+            {
+                m_contextualIds.Push(id);
+            }
         }
 
         public bool IsActor(int id)

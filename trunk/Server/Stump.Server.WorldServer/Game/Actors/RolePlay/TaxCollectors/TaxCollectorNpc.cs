@@ -25,17 +25,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         private readonly List<TaxCollectorExchangeDialog> m_openedDialogs = new List<TaxCollectorExchangeDialog>();
         private string m_name;
         private ActorLook m_look;
+        private int m_contextId;
 
         /// <summary>
         /// Create a new tax collector with a new record (no IO)
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="position"></param>
-        /// <param name="guild"></param>
-        public TaxCollectorNpc(int id, ObjectPosition position, Guild guild)
+        public TaxCollectorNpc(int globalId, int contextId, ObjectPosition position, Guild guild)
         {
             var random = new AsyncRandom();
 
+            m_contextId = contextId;
             Position = position;
             Guild = guild;
             Bag = new TaxCollectorBag(this);
@@ -43,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             m_record = new WorldMapTaxCollectorRecord
             {
-                Id = id,
+                Id = globalId,
                 Map = Position.Map,
                 Cell = Position.Cell.Id,
                 Direction = (int)Position.Direction,
@@ -58,10 +57,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         /// <summary>
         /// Create and load the tax collector (IO)
         /// </summary>
-        /// <param name="record"></param>
-        public TaxCollectorNpc(WorldMapTaxCollectorRecord record)
+        public TaxCollectorNpc(WorldMapTaxCollectorRecord record, int contextId)
         {
             m_record = record;
+            m_contextId = contextId;
             Bag = new TaxCollectorBag(this);
 
             if (record.MapId == null)
@@ -91,7 +90,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             get { return m_openedDialogs.AsReadOnly(); }
         }
 
+        /// <summary>
+        /// Context id
+        /// </summary>
         public override int Id
+        {
+            get
+            {
+                return m_contextId;
+            }
+        }
+
+        /// <summary>
+        /// Unique id among all tax collectors
+        /// </summary>
+        public int GlobalId
         {
             get { return m_record.Id; }
             protected set { m_record.Id = value; }
@@ -173,7 +186,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public void LoadRecord()
         {
-            WorldServer.Instance.IOTaskPool.EnsureContext();
             Bag.LoadRecord();
         }
 

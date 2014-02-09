@@ -39,11 +39,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             return m_taxCollectorSpawns.Values.Where(x => x.GuildId == guildId).ToArray();
         }
 
-        public TaxCollectorNpc GetMapTaxCollector(int mapId)
-        {
-            return m_activeTaxCollectors.FirstOrDefault(x => x.Map.Id == mapId);
-        }
-
         public void AddTaxCollectorSpawn(Character character, bool lazySave = true)
         {
             if (!character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_HIRE_TAX_COLLECTOR))
@@ -58,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
-            if (GetMapTaxCollector(character.Position.Map.Id) != null)
+            if (character.Position.Map.TaxCollector != null)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
                 return;
@@ -71,15 +66,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
 
             character.Inventory.SubKamas(character.Guild.HireCost);
+            var position = character.Position.Clone();
 
-            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), character.Position.Clone(), character.Guild);
+            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), position.Map.GetNextContextualId(), position, character.Guild);
 
             if (lazySave)
                 WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(taxCollectorNpc.Record));
             else
                 Database.Insert(taxCollectorNpc.Record);
 
-            m_taxCollectorSpawns.Add(taxCollectorNpc.Id, taxCollectorNpc.Record);
+            m_taxCollectorSpawns.Add(taxCollectorNpc.GlobalId, taxCollectorNpc.Record);
             m_activeTaxCollectors.Add(taxCollectorNpc);
 
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
@@ -94,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             else
                 Database.Delete(taxCollector.Record);
 
-            m_taxCollectorSpawns.Remove(taxCollector.Id);
+            m_taxCollectorSpawns.Remove(taxCollector.GlobalId);
             m_activeTaxCollectors.Remove(taxCollector);
 
             taxCollector.Map.Leave(taxCollector);

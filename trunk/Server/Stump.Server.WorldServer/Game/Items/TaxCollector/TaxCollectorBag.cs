@@ -51,7 +51,6 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 
         public void LoadRecord()
         {
-            WorldServer.Instance.IOTaskPool.EnsureContext();
             var records = ItemManager.Instance.FindTaxCollectorItems(Owner.Id);
             Items = records.Select(entry => new TaxCollectorItem(entry)).ToDictionary(entry => entry.Guid);
         }
