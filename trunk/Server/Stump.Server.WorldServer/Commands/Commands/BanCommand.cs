@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Messages;
@@ -19,9 +20,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             AddParameter("target", "t", "Player to ban", converter: ParametersConverter.CharacterConverter);
             AddParameter<int>("time", "time", "Ban duration (in minutes)", isOptional: true);
-            AddParameter("reason", "r", "Reason of ban", "No reason");
+            AddParameter<string>("reason", "r", "Reason of ban");
             AddParameter<bool>("life", "l", "Specify a life ban", isOptional: true);
             AddParameter<bool>("ip", "ip", "Also ban the ip", isOptional: true);
+            AddParameter("jail", "jail", "Just jailed?", isOptional: true, defaultValue: false);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -41,7 +43,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            var message = new BanAccountMessage()
+            var message = new BanAccountMessage
             {
                 AccountId = target.Account.Id,
                 BanReason = reason,
@@ -64,27 +66,40 @@ namespace Stump.Server.WorldServer.Commands.Commands
             if ((((message.BanEndDate.Value.Second - DateTime.Now.Second) > (60 * 60 * 24)) || message.BanEndDate == null) && source.Account.Role == RoleEnum.GameMaster_Padawan)
                 message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes((60 * 60 * 24));
 
-            target.Client.Disconnect();
-
-            IPCAccessor.Instance.SendRequest(message, 
-                ok => trigger.Reply("Account {0} banned", target.Account.Login),
-                error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
-
-
-            if (!trigger.IsArgumentDefined("ip"))
-                return;
-
-            var banIPMessage = new BanIPMessage()
+            if (trigger.IsArgumentDefined("jail"))
             {
-                IPRange = target.Client.IP,
-                BanReason = reason,
-                BanEndDate = message.BanEndDate,
-                BannerAccountId = message.BannerAccountId
-            };
+                target.TeleportToJail();
+                target.Account.IsJailed = true;
+                message.Jailed = 1;
 
-            IPCAccessor.Instance.SendRequest(banIPMessage,
-                ok => trigger.Reply("IP {0} banned", target.Client.IP),
-                error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));
+                IPCAccessor.Instance.SendRequest(message,
+                    ok => trigger.Reply("Account {0} jailed", target.Account.Login),
+                    error => trigger.ReplyError("Account {0} not jailed : {1}", target.Account.Login, error.Message));
+            }
+            else
+            {
+                target.Client.Disconnect();
+
+                IPCAccessor.Instance.SendRequest(message,
+                    ok => trigger.Reply("Account {0} banned", target.Account.Login),
+                    error => trigger.ReplyError("Account {0} not banned : {1}", target.Account.Login, error.Message));
+
+
+                if (!trigger.IsArgumentDefined("ip"))
+                    return;
+
+                var banIPMessage = new BanIPMessage
+                {
+                    IPRange = target.Client.IP,
+                    BanReason = reason,
+                    BanEndDate = message.BanEndDate,
+                    BannerAccountId = message.BannerAccountId
+                };
+
+                IPCAccessor.Instance.SendRequest(banIPMessage,
+                    ok => trigger.Reply("IP {0} banned", target.Client.IP),
+                    error => trigger.ReplyError("IP {0} not banned : {1}", target.Client.IP, error.Message));       
+            }
         }
     }
 
@@ -123,7 +138,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            var message = new BanIPMessage()
+            var message = new BanIPMessage
             {
                 IPRange = ip,
                 BanReason = reason,
@@ -201,7 +216,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            var message = new BanAccountMessage()
+            var message = new BanAccountMessage
             {
                 AccountName = accountName,
                 BanReason = reason,
@@ -227,29 +242,62 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-
-    public class UnBanAccountCommand : CommandBase
+    public class UnBanCommand : CommandBase
     {
-        public UnBanAccountCommand()
+        public UnBanCommand()
         {
             Aliases = new[] { "unban" };
             RequiredRole = RoleEnum.GameMaster;
-            Description = "Unban an account";
+            Description = "Unban an character";
 
-            AddParameter<string>("account", "account", "Account login");
+            AddParameter("target", "t", "Player to unban", converter: ParametersConverter.CharacterConverter);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var accountName = trigger.Get<string>("account");
-           
+            var character = trigger.Get<Character>("target");
+
             if (!IPCAccessor.Instance.IsConnected)
             {
                 trigger.ReplyError("IPC service not operational !");
                 return;
             }
 
-            IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(accountName), 
+            IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(character.Account.Login),
+                ok => trigger.Reply("Account {0} unbanned", character.Account.Login),
+                error => trigger.ReplyError("Account {0} not unbanned : {1}", character.Account.Login, error.Message));
+
+            character.Account.IsJailed = false;
+            character.Account.BanEndDate = null;
+
+            character.Teleport(character.Breed.GetStartPosition());
+
+            character.SendServerMessage("Vous avez été libéré de prison.", Color.Red);
+        }
+    }
+
+    public class UnBanAccountCommand : CommandBase
+    {
+        public UnBanAccountCommand()
+        {
+            Aliases = new[] { "unbanacc" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Unban an account";
+
+            AddParameter<string>("character", "account", "Account login");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var accountName = trigger.Get<string>("account");
+
+            if (!IPCAccessor.Instance.IsConnected)
+            {
+                trigger.ReplyError("IPC service not operational !");
+                return;
+            }
+
+            IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(accountName),
                 ok => trigger.Reply("Account {0} unbanned", accountName),
                 error => trigger.ReplyError("Account {0} not unbanned : {1}", accountName, error.Message));
         }

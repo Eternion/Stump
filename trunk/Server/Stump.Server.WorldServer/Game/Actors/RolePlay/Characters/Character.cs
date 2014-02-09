@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using NLog;
+using Stump.Core.Cryptography;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -1265,44 +1267,74 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool StartMove(Path movementPath)
         {
-            if (IsFighting())
-                return Fighter.StartMove(movementPath);
-
-            return base.StartMove(movementPath);
+            return IsFighting() ? Fighter.StartMove(movementPath) : base.StartMove(movementPath);
         }
 
         public override bool StopMove()
         {
-            if (IsFighting())
-                return Fighter.StopMove();
-
-            return base.StopMove();
+            return IsFighting() ? Fighter.StopMove() : base.StopMove();
         }
 
         public override bool MoveInstant(ObjectPosition destination)
         {
-            if (IsFighting())
-                return Fighter.MoveInstant(destination);
-
-            return base.MoveInstant(destination);
+            return IsFighting() ? Fighter.MoveInstant(destination) : base.MoveInstant(destination);
         }
 
         public override bool StopMove(ObjectPosition currentObjectPosition)
         {
-            if (IsFighting())
-                return Fighter.StopMove(currentObjectPosition);
-
-            return base.StopMove(currentObjectPosition);
+            return IsFighting() ? Fighter.StopMove(currentObjectPosition) : base.StopMove(currentObjectPosition);
         }
 
         public override bool Teleport(MapNeighbour mapNeighbour)
         {
-            bool success = base.Teleport(mapNeighbour);
+            var success = base.Teleport(mapNeighbour);
 
             if (!success)
                 SendServerMessage("Unknown map transition");
 
             return success;
+        }
+
+        public bool TeleportToJail()
+        {
+            var random = new AsyncRandom();
+            var map = World.Instance.GetMap(105121026);
+            var cell = map.Cells[179];
+
+            switch (random.Next(1, 3))
+            {
+                case 1:
+                    map = World.Instance.GetMap(105121026);
+
+                    switch (random.Next(1, 4))
+                    {
+                        case 1:
+                            cell = map.Cells[179];
+                            break;
+                        case 2:
+                            cell = map.Cells[445];
+                            break;
+                        case 3:
+                            cell = map.Cells[184];
+                            break;
+                        case 4:
+                            cell = map.Cells[435];
+                            break;
+                    }
+                    break;
+                case 2:
+                    map = World.Instance.GetMap(105119744);
+                    cell = map.Cells[314];
+                    break;
+                case 3:
+                    map = World.Instance.GetMap(105120002);
+                    cell = map.Cells[300];
+                    break;
+            }
+
+            Teleport(new ObjectPosition(map, cell), false);
+
+            return true;
         }
 
         protected override void OnTeleported(ObjectPosition position)
@@ -1317,7 +1349,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanChangeMap()
         {
-            return base.CanChangeMap() && !IsFighting();
+            return base.CanChangeMap() && !IsFighting() && !Account.IsJailed;
         }
 
         #endregion
