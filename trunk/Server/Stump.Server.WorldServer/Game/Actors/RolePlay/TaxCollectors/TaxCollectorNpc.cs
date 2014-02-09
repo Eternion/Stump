@@ -238,7 +238,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public StorageInventoryContentMessage GetStorageInventoryContent()
         {
-            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), 0);
+            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), Bag.Kamas);
         }
 
         #endregion
