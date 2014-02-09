@@ -1332,7 +1332,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     break;
             }
 
-            Teleport(new ObjectPosition(map, cell));
+            Teleport(new ObjectPosition(map, cell), false);
 
             return true;
         }
