@@ -61,15 +61,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
         public virtual bool Teleport(Map map, Cell cell)
         {
-            return Teleport(new ObjectPosition(map, cell));
+            return Teleport(new ObjectPosition(map, cell), true);
         }
 
-        public virtual bool Teleport(ObjectPosition destination)
+        public virtual bool Teleport(ObjectPosition destination, bool performCheck = true)
         {
             if (IsMoving())
                 StopMove();
 
-            if (!CanChangeMap())
+            if (!CanChangeMap() && performCheck)
                 return false;
 
             if (Position.Map == destination.Map)

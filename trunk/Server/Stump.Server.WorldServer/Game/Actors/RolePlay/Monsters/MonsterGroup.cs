@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return false;
         }
 
-        public override bool Teleport(ObjectPosition destination)
+        public override bool Teleport(ObjectPosition destination, bool performCheck)
         {
             return false;
         }
