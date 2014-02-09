@@ -323,7 +323,8 @@ namespace Stump.Server.WorldServer.Game
 
         public void SpawnTaxCollectors()
         {
-            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null select new TaxCollectorNpc(spawn))
+            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null
+                                         select new TaxCollectorNpc(spawn, spawn.Map.GetNextContextualId()))
             {
                 taxcollector.Map.Enter(taxcollector);
             }

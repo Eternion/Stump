@@ -117,6 +117,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 }
             }
 
+            ExperienceData.ShowExperienceFightDelta = true;
             ExperienceData.ShowExperience = true;
             ExperienceData.ShowExperienceLevelFloor = true;
             ExperienceData.ShowExperienceNextLevelFloor = true;
