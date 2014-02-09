@@ -9,8 +9,8 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
+using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -38,6 +38,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Position = position;
             Guild = guild;
             Bag = new TaxCollectorBag(this);
+            FightResult = new TaxCollectorFightResult(this);
             Guild.AddTaxCollector(this);
 
             m_record = new WorldMapTaxCollectorRecord
@@ -147,6 +148,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             {
                 return m_look ?? (m_look = ActorLook.Parse(TAXCOLLECTOR_LOOK));
             }
+        }
+
+        public TaxCollectorFightResult FightResult
+        {
+            get;
+            protected set;
         }
 
         public short FirstNameId
