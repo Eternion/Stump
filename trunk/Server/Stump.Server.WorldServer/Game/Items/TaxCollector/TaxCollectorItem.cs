@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Extensions;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -49,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 
         public ObjectItem GetObjectItem()
         {
-            return new ObjectItem(63, (short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
+            return new ObjectItem((int)CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, (short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
         }
 
         public ObjectItemQuantity GetObjectItemQuantity()

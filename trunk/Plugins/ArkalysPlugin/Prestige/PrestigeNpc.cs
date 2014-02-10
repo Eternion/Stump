@@ -14,11 +14,9 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using ArkalysPlugin.Npcs;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
@@ -34,15 +32,17 @@ namespace ArkalysPlugin.Prestige
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         [Variable]
-        public static int NpcId = 3001;
+        public static int NpcId = 3003;
         [Variable]
-        public static int MessageId = 20007;
+        public static int MessageId = 20016;
         [Variable]
-        public static int MessageLevelErrorId = 20007;
+        public static int MessageLevelErrorId = 20023;
         [Variable]
-        public static int MessagePrestigeMaxId = 20007;
+        public static int MessagePrestigeMaxId = 20021;
         [Variable]
-        public static short ReplyPrestigeSuccessId = 20010;
+        public static short ReplyPrestigeAcceptId = 20017;
+        [Variable]
+        public static short ReplyPrestigeDenyId = 20018;
 
         public static NpcMessage Message;
         public static NpcMessage MessageError;
@@ -117,13 +117,13 @@ namespace ArkalysPlugin.Prestige
 
             ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage,
                                                                 Character.Level >= 200
-                                                                    ? new[] {PrestigeNpc.ReplyPrestigeSuccessId}
+                                                                    ? new[] { PrestigeNpc.ReplyPrestigeAcceptId, PrestigeNpc.ReplyPrestigeDenyId }
                                                                     : new short[0]);
         }
 
         public override void Reply(short replyId)
         {
-            if (replyId == PrestigeNpc.ReplyPrestigeSuccessId)
+            if (replyId == PrestigeNpc.ReplyPrestigeAcceptId)
             {
                 if (Character.Level >= 200)
                     PrestigeManager.Instance.IncrementPrestige(Character);
