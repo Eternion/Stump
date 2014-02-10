@@ -304,7 +304,7 @@ namespace Stump.Server.AuthServer.Database
             if ((int) breed <= 0)
                 return false;
 
-            int flag = (1 << ((int) breed - 1));
+            var flag = (1 << ((int) breed - 1));
             return (AvailableBreedsFlag & flag) == flag;
         }
 
