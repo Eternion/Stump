@@ -323,8 +323,6 @@
     <Compile Include="Game\Exchanges\ITrade.cs" />
     <Compile Include="Game\Exchanges\NpcTrade.cs" />
     <Compile Include="Game\Exchanges\NpcTrader.cs" />
-    <Compile Include="Game\Exchanges\TaxCollectorTrade.cs" />
-    <Compile Include="Game\Exchanges\TaxCollectorTrader.cs" />
     <Compile Include="Game\Exchanges\Trade.cs" />
     <Compile Include="Game\Exchanges\Items\TradeItem.cs" />
     <Compile Include="Game\Exchanges\Trader.cs" />

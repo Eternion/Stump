@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             Record = new TaxCollectorItemRecord // create the associated record
                          {
                              Id = guid,
-                             OwnerId = owner.Id,
+                             OwnerId = owner.GlobalId,
                              Template = template,
                              Stack = stack,
                              Effects = effects,

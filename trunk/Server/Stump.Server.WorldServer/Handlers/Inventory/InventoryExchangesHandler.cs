@@ -16,6 +16,7 @@ using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -98,6 +99,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                     var taxCollectorItem = taxCollector.Bag.TryGetItem(message.objectUID);
                     if (taxCollectorItem == null)
                         return;
+
+                    int[] objectUIDList = { message.objectUID };
+
+                    if (taxCollector.Bag.MoveToInventory(taxCollectorItem, client.Character))
+                        client.Send(new StorageObjectsRemoveMessage(objectUIDList));
                 }
                 else
                     client.Character.SendSystemMessage(7, false);
