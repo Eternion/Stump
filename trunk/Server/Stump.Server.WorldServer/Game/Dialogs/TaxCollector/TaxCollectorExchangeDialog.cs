@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
             Character.SetDialog(this);
             TaxCollector.OnDialogOpened(this);
 
-            InventoryHandler.SendExchangeStartOkTaxCollectorMessage(Character.Client, TaxCollector);
+            InventoryHandler.SendStorageInventoryContentMessage(Character.Client, TaxCollector);
             //Todo: Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
         }
 

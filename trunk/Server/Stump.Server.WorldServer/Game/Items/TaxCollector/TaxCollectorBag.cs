@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 {
@@ -47,6 +49,28 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
                 Owner.Delete();
 
             base.OnItemRemoved(item);
+        }
+
+        public bool MoveToInventory(TaxCollectorItem item, Character character)
+        {
+            return MoveToInventory(item, character, item.Stack);
+        }
+
+        public bool MoveToInventory(TaxCollectorItem item, Character character, uint quantity)
+        {
+            if (quantity == 0)
+                return false;
+
+            if (quantity > item.Stack)
+                quantity = item.Stack;
+
+            RemoveItem(item, quantity);
+            BasePlayerItem newItem = ItemManager.Instance.CreatePlayerItem(character, item.Template, quantity,
+                                                                       item.Effects);
+
+            character.Inventory.AddItem(newItem);
+
+            return true;
         }
 
         public void LoadRecord()
