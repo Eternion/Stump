@@ -65,6 +65,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
+            if (!character.Position.Map.AllowCollector)
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_CANT_HIRE_HERE));
+                return;
+            }
+
             character.Inventory.SubKamas(character.Guild.HireCost);
             var position = character.Position.Clone();
 
