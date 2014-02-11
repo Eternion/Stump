@@ -115,7 +115,10 @@ namespace ArkalysPlugin.Prestige
             if (m_disabled)
                 return 0;
 
-            return character.Titles.Max(x => Array.IndexOf(PrestigeTitles, x)) + 1;;
+            if (character.Titles.Count == 0)
+                return 0;
+
+            return character.Titles.Max(x => Array.IndexOf(PrestigeTitles, x)) + 1;
         }
 
         public bool IsPrestigeMax(Character character)
