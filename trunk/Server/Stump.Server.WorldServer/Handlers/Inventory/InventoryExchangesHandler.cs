@@ -244,8 +244,10 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
 
             if (taxCollectorNpc.Guild.Id != client.Character.Guild.Id)
+            {
+                client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_OWNED));
                 return;
-                //TODO: Send error Message
+            }
 
             var exchange = new TaxCollectorExchangeDialog(taxCollectorNpc, client.Character);
             exchange.Open();

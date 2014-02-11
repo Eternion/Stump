@@ -41,7 +41,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
             TaxCollector.OnDialogOpened(this);
 
             InventoryHandler.SendStorageInventoryContentMessage(Character.Client, TaxCollector);
-            //Todo: Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
+
+            //Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
+            Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 139, 2);
         }
 
         public void Close()
