@@ -247,7 +247,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             foreach (var client in Guild.Clients)
             {
                 client.Send(new TaxCollectorMovementMessage(false, GetTaxCollectorBasicInformations(), dialog.Character.Name));
-                client.Send(new TaxCollectorMovementRemoveMessage(GlobalId));
+                client.Send(new TaxCollectorMovementRemoveMessage(Id));
             }
         }
 
