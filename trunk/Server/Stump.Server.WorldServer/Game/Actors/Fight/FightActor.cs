@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnReadyStateChanged(bool isReady)
         {
-            Action<FightActor, bool> handler = ReadyStateChanged;
+            var handler = ReadyStateChanged;
             if (handler != null)
                 handler(this, isReady);
         }
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnCellShown(Cell cell, bool team)
         {
-            Action<FightActor, Cell, bool> handler = CellShown;
+            var handler = CellShown;
             if (handler != null)
                 CellShown(this, cell, team);
         }
@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnLifePointsChanged(int delta, int permanentDamages, FightActor from)
         {
-            Action<FightActor, int, int, FightActor> handler = LifePointsChanged;
+            var handler = LifePointsChanged;
 
             if (handler != null)
                 handler(this, delta, permanentDamages, from);
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnDamageInflicted(int damage, EffectSchoolEnum school, FightActor from)
         {
-            Action<FightActor, int, EffectSchoolEnum, FightActor> handler = DamageInflicted;
+            var handler = DamageInflicted;
 
             if (handler != null)
                 handler(this, damage, school, from);
@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnDamageReducted(FightActor source, int reduction)
         {
-            Action<FightActor, FightActor, int> handler = DamageReducted;
+            var handler = DamageReducted;
             if (handler != null)
                 handler(this, source, reduction);
         }
@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, reflected);
 
-            Action<FightActor, FightActor, int> handler = DamageReflected;
+            var handler = DamageReflected;
             if (handler != null)
                 handler(this, target, reflected);
         }
@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnPrePlacementChanged(ObjectPosition position)
         {
-            Action<FightActor, ObjectPosition> handler = PrePlacementChanged;
+            var handler = PrePlacementChanged;
             if (handler != null)
                 handler(this, position);
         }
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnTurnPassed()
         {
-            Action<FightActor> handler = TurnPassed;
+            var handler = TurnPassed;
             if (handler != null)
                 handler(this);
         }
@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
 
-            SpellCastingHandler handler = SpellCasted;
+            var handler = SpellCasted;
             if (handler != null)
                 handler(this, spell, target, critical, silentCast);
         }
@@ -170,7 +170,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                      SetInvisibilityState(VisibleStateEnum.VISIBLE);
             }
 
-            Action<FightActor, WeaponTemplate, Cell, FightSpellCastCriticalEnum, bool> handler = WeaponUsed;
+            var handler = WeaponUsed;
             if (handler != null) handler(this, weapon, cell, critical, silentCast);
         }
 
@@ -178,7 +178,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnBuffAdded(Buff buff)
         {
-            Action<FightActor, Buff> handler = BuffAdded;
+            var handler = BuffAdded;
             if (handler != null) handler(this, buff);
         }
 
@@ -186,7 +186,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnBuffRemoved(Buff buff)
         {
-            Action<FightActor, Buff> handler = BuffRemoved;
+            var handler = BuffRemoved;
             if (handler != null) handler(this, buff);
         }
 
@@ -196,7 +196,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             RemoveAndDispellAllBuffs();
 
-            Action<FightActor, FightActor> handler = Dead;
+            var handler = Dead;
             if (handler != null)
                 handler(this, killedBy);
         }
@@ -217,7 +217,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     break;
             }
 
-            FightPointsVariationHandler handler = FightPointsVariation;
+            var handler = FightPointsVariation;
             if (handler != null)
                 handler(this, action, source, target, delta);
         }
@@ -227,7 +227,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnApUsed(short amount)
         {
-            Action<FightActor, short> handler = ApUsed;
+            var handler = ApUsed;
             if (handler != null)
                 handler(this, amount);
         }
@@ -236,7 +236,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnMpUsed(short amount)
         {
-            Action<FightActor, short> handler = MpUsed;
+            var handler = MpUsed;
             if (handler != null)
                 handler(this, amount);
         }

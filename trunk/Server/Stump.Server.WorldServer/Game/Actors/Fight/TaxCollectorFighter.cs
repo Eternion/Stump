@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override StatsFields Stats
         {
-            get { throw new NotImplementedException(); }
+            get { return m_stats; }
         }
 
         public override string GetMapRunningFighterName()
