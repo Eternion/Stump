@@ -7,14 +7,10 @@ using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -110,9 +106,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
-                var account = AccountManager.Instance.FindById(client.Account.Id);
-                if (account == null)
-                    account = AccountManager.Instance.CreateWorldAccount(client);
+                var account = AccountManager.Instance.FindById(client.Account.Id) ??
+                              AccountManager.Instance.CreateWorldAccount(client);
                 client.WorldAccount = account;
             }
 
@@ -192,7 +187,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharactersListMessage(WorldClient client)
         {
-            List<CharacterBaseInformations> characters = client.Characters.Select(
+            var characters = client.Characters.Select(
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
@@ -216,7 +211,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var charactersToRename = new List<int>();
             var unusableCharacters = new List<int>();
 
-            foreach (CharacterRecord characterRecord in client.Characters)
+            foreach (var characterRecord in client.Characters)
             {
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),

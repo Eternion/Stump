@@ -87,21 +87,16 @@ namespace Stump.Server.WorldServer.Game.Spells
         public SpellTemplate GetSpellTemplate(int id)
         {
             SpellTemplate template;
-            if (m_spells.TryGetValue(id, out template))
-                return template;
-
-            return null;
+            return m_spells.TryGetValue(id, out template) ? template : null;
         }
 
         public SpellTemplate GetSpellTemplate(string name, bool ignorecase)
         {
             return
-                m_spells.Values.Where(
-                    entry =>
-                    entry.Name.Equals(name,
-                                      ignorecase
-                                          ? StringComparison.InvariantCultureIgnoreCase
-                                          : StringComparison.InvariantCulture)).FirstOrDefault();
+                m_spells.Values.FirstOrDefault(entry => entry.Name.Equals(name,
+                    ignorecase
+                        ? StringComparison.InvariantCultureIgnoreCase
+                        : StringComparison.InvariantCulture));
         }
 
 
@@ -118,10 +113,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         public SpellLevelTemplate GetSpellLevel(int id)
         {
             SpellLevelTemplate template;
-            if (m_spellsLevels.TryGetValue((uint) id, out template))
-                return template;
-
-            return null;
+            return m_spellsLevels.TryGetValue((uint) id, out template) ? template : null;
         }
 
         public SpellLevelTemplate GetSpellLevel(int templateid, int level)
@@ -131,10 +123,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (template == null)
                 return null;
 
-            if (template.SpellLevelsIds.Length <= level - 1)
-                return null;
-
-            return GetSpellLevel((int) template.SpellLevelsIds[level - 1]);
+            return template.SpellLevelsIds.Length <= level - 1 ? null : GetSpellLevel((int) template.SpellLevelsIds[level - 1]);
         }
 
         public IEnumerable<SpellLevelTemplate> GetSpellLevels(SpellTemplate template)
@@ -155,19 +144,13 @@ namespace Stump.Server.WorldServer.Game.Spells
         public SpellType GetSpellType(uint id)
         {
             SpellType template;
-            if (m_spellsTypes.TryGetValue((int) id, out template))
-                return template;
-
-            return null;
+            return m_spellsTypes.TryGetValue((int) id, out template) ? template : null;
         }
 
         public SpellState GetSpellState(uint id)
         {
             SpellState state;
-            if (m_spellsState.TryGetValue((int)id, out state))
-                return state;
-
-            return null;
+            return m_spellsState.TryGetValue((int)id, out state) ? state : null;
         }
 
         public IEnumerable<SpellState> GetSpellStates()
@@ -188,12 +171,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         public SpellCastHandler GetSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
         {
             SpellCastConstructor ctor;
-            if (m_spellsCastHandler.TryGetValue(spell.Template.Id, out ctor))
-            {
-                return ctor(caster, spell, targetedCell, critical);
-            }
-
-            return new DefaultSpellCastHandler(caster, spell, targetedCell, critical);
+            return m_spellsCastHandler.TryGetValue(spell.Template.Id, out ctor) ? ctor(caster, spell, targetedCell, critical) : new DefaultSpellCastHandler(caster, spell, targetedCell, critical);
         }
     }
 }

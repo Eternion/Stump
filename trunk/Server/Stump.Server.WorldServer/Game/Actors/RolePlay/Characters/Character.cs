@@ -16,6 +16,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs;
@@ -1523,13 +1524,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnFightEnded(CharacterFighter fighter)
         {
-            CharacterFightEndedHandler handler = FightEnded;
+            var handler = FightEnded;
             if (handler != null) handler(this, fighter);
         }
 
         private void OnCharacterContextChanged(bool inFight)
         {
-            CharacterContextChangedHandler handler = ContextChanged;
+            var handler = ContextChanged;
             if (handler != null) handler(this, inFight);
         }
 
@@ -1577,6 +1578,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (target.Client.IP == Client.IP)
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
+
+            return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
+        }
+
+        public FighterRefusedReasonEnum CanAttack(TaxCollectorNpc target)
+        {
+            if (target.IsTaxCollectorOwner(GuildMember))
+                return FighterRefusedReasonEnum.WRONG_GUILD;
+
+            if (target.IsBusy())
+                return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
+
+            if (target.Map != Map)
+                return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }

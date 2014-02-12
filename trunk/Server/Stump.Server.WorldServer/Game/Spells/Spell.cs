@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Spells;
 using SpellType = Stump.Server.WorldServer.Database.Spells.SpellType;
 
@@ -22,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
-            int counter = 1;
+            var counter = 1;
             ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
         }
 
@@ -33,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
-            int counter = 1;
+            var counter = 1;
             ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
         }
 
