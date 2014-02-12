@@ -639,6 +639,7 @@ namespace Stump.Server.WorldServer.Database.Characters
                 m_customEntityLookString = value != null ? value.ToString() : string.Empty;
             }
         }
+
         #region Zaaps
 
         private ActorLook m_customEntityLook;

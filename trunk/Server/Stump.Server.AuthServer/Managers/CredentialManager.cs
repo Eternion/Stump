@@ -47,9 +47,9 @@ namespace Stump.Server.AuthServer.Managers
             var writer = new PemWriter(new StringWriter(stringBuilder));
             writer.WriteObject(keyParameters);
 
-            string key = stringBuilder.ToString();
+            var key = stringBuilder.ToString();
 
-            string partial = key.Remove(key.IndexOf("-----END PUBLIC KEY-----")).Remove(0, "-----BEGIN PUBLIC KEY-----\n".Length);
+            var partial = key.Remove(key.IndexOf("-----END PUBLIC KEY-----")).Remove(0, "-----BEGIN PUBLIC KEY-----\n".Length);
 
             return Convert.FromBase64String(partial).Select(entry => (sbyte)entry).ToArray();
         }
