@@ -593,8 +593,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     if (modifier.GuildMember == member || !member.IsBoss)
                     {
                         if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RANKS))
-                            member.RankId = rank;
-
+                        {
+                            if (rank >= 0 && rank <= 35)
+                                member.RankId = rank;
+                        }
+                            
                         if (modifier.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_MANAGE_RIGHTS))
                             member.Rights = (GuildRightsBitEnum) rights;
                     }
@@ -703,8 +706,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (member.IsConnected)
             {
                 GuildHandler.SendGuildJoinedMessage(member.Character.Client, member);
-                GuildHandler.SendGuildInformationsMembersMessage(member.Character.Client, this);
-                GuildHandler.SendGuildInformationsGeneralMessage(member.Character.Client, this);
+                GuildHandler.SendGuildInformationsMembersMessage(member.Character.Client);
+                GuildHandler.SendGuildInformationsGeneralMessage(member.Character.Client);
                 member.Character.RefreshActor();
             }
 
