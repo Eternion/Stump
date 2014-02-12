@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -31,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         /// <summary>
         /// Create a new tax collector with a new record (no IO)
         /// </summary>
-        public TaxCollectorNpc(int globalId, int contextId, ObjectPosition position, Guild guild)
+        public TaxCollectorNpc(int globalId, int contextId, ObjectPosition position, Guild guild, string callerName)
         {
             var random = new AsyncRandom();
 
@@ -50,6 +51,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 FirstNameId = (short)random.Next(1, 154),
                 LastNameId = (short)random.Next(1, 253),
                 GuildId = guild.Id,
+                CallerName = callerName,
+                Date = DateTime.Now.GetUnixTimeStamp()
             };
 
             IsRecordDirty = true;
@@ -243,8 +246,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
             foreach (var client in Guild.Clients)
             {
-                client.Send(new TaxCollectorMovementMessage(false, GetTaxCollectorBasicInformations(),
-                    dialog.Character.Name));
+                client.Send(new TaxCollectorMovementMessage(false, GetTaxCollectorBasicInformations(), dialog.Character.Name));
+                client.Send(new TaxCollectorMovementRemoveMessage(GlobalId));
             }
         }
 
@@ -257,8 +260,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
-            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, new AdditionalTaxCollectorInformations("", 0),
+            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
                 (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
+        }
+
+        public AdditionalTaxCollectorInformations GetAdditionalTaxCollectorInformations()
+        {
+            return new AdditionalTaxCollectorInformations(Record.CallerName, Record.Date);
         }
 
         public TaxCollectorBasicInformations GetTaxCollectorBasicInformations()

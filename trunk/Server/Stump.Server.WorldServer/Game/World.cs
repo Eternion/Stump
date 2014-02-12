@@ -512,16 +512,14 @@ namespace Stump.Server.WorldServer.Game
         /// <returns></returns>
         public Character GetCharacterByPattern(string pattern)
         {
-            if (pattern[0] == '*')
-            {
-                string name = pattern.Remove(0, 1);
+            if (pattern[0] != '*')
+                return GetCharacter(pattern);
+
+            var name = pattern.Remove(0, 1);
 
 
-                return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
-                    Select(entry => entry.Character).SingleOrDefault();
-            }
-
-            return GetCharacter(pattern);
+            return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
+                Select(entry => entry.Character).SingleOrDefault();
         }
 
         /// <summary>
@@ -530,10 +528,7 @@ namespace Stump.Server.WorldServer.Game
         /// <returns></returns>
         public Character GetCharacterByPattern(Character caller, string pattern)
         {
-            if (pattern == "*")
-                return caller;
-
-            return GetCharacterByPattern(pattern);
+            return pattern == "*" ? caller : GetCharacterByPattern(pattern);
         }
 
         public void ForEachCharacter(Action<Character> action)

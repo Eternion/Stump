@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             character.Inventory.SubKamas(character.Guild.HireCost);
             var position = character.Position.Clone();
 
-            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), position.Map.GetNextContextualId(), position, character.Guild);
+            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), position.Map.GetNextContextualId(), position, character.Guild, character.Name);
 
             if (lazySave)
                 WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(taxCollectorNpc.Record));
@@ -88,10 +88,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
 
             //Le percepteur %1 a été posé en <b>%2</b> par <b>%3</b>.
-            foreach (var client in character.Guild.Clients)
+            foreach (var client in taxCollectorNpc.Guild.Clients)
             {
-                client.Send(new TaxCollectorMovementMessage(true, taxCollectorNpc.GetTaxCollectorBasicInformations(),
-                    character.Name));
+                client.Send(new TaxCollectorMovementMessage(true, taxCollectorNpc.GetTaxCollectorBasicInformations(), character.Name));
+                client.Send(new TaxCollectorMovementAddMessage(taxCollectorNpc.GetNetworkTaxCollector()));
             }
         }
 
