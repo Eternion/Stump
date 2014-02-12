@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             new double[] {70, 1}
         };
 
-        private static readonly short[] TAX_COLLECTOR_SPELLS =
+        public static readonly short[] TAX_COLLECTOR_SPELLS =
         {
             462, //Déstabilisation
             461, //Compulsion de masse
@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             Wisdom = 0;
             Pods = 1000;
             MaxTaxCollectors = 1;
-            Spells = new List<sbyte> {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            Spells = new List<sbyte> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             ExperienceLevelFloor = 0;
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Record.CreationDate = DateTime.Now;

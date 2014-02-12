@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
@@ -118,6 +119,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
         }
 
+        public List<Spell> Spells
+        {
+            get
+            {
+                
+                return Guild.TAX_COLLECTOR_SPELLS.SelectMany(entry => Guild.Spells, (sT, sL) => new Spell(sT, (byte)sL)).ToList();
+            }
+        }
+
+        public byte Level
+        {
+            get { return Guild.Level; }
+        }
+
         public int GuildId
         {
             get { return m_record.GuildId; }
@@ -210,6 +225,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             return member.Guild.Id == m_record.GuildId;
         }
 
+        public bool IsBusy()
+        {
+            return OpenDialogs.Count != 0;
+        }
+
         public void OnDialogOpened(TaxCollectorExchangeDialog dialog)
         {
             m_openedDialogs.Add(dialog);
@@ -221,6 +241,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Guild.RemoveTaxCollector(this);
 
             //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
+            foreach (var client in Guild.Clients)
+            {
+                client.Send(new TaxCollectorMovementMessage(false, GetTaxCollectorBasicInformations(),
+                    dialog.Character.Name));
+            }
         }
 
         #region Network
@@ -234,6 +259,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         {
             return new TaxCollectorInformations(Id, FirstNameId, LastNameId, new AdditionalTaxCollectorInformations("", 0),
                 (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
+        }
+
+        public TaxCollectorBasicInformations GetTaxCollectorBasicInformations()
+        {
+            return new TaxCollectorBasicInformations(FirstNameId, LastNameId, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id, (short)Position.Map.SubArea.Id);
         }
 
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
