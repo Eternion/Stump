@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.Core.Cache;
 using Stump.DofusProtocol.Enums;
@@ -15,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
     public sealed class Npc : RolePlayActor
     {
-        private List<NpcAction> m_actions = new List<NpcAction>();
+        private readonly List<NpcAction> m_actions = new List<NpcAction>();
 
         public Npc(int id, NpcTemplate template, ObjectPosition position, ActorLook look)
         {
@@ -74,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
         private void OnInteracted(NpcActionTypeEnum actionType, NpcAction action, Character character)
         {
-            Action<Npc, NpcActionTypeEnum, NpcAction, Character> handler = Interacted;
+            var handler = Interacted;
             if (handler != null) handler(this, actionType, action, character);
         }
 
@@ -91,8 +90,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (!CanInteractWith(actionType, dialoguer))
                 return;
 
-            NpcAction action =
-                Actions.First(entry => entry.ActionType == actionType && entry.CanExecute(this, dialoguer));
+            var action = Actions.First(entry => entry.ActionType == actionType && entry.CanExecute(this, dialoguer));
 
             action.Execute(this, dialoguer);
             OnInteracted(actionType, action, dialoguer);

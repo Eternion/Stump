@@ -57,7 +57,7 @@ namespace Stump.Server.AuthServer.Managers
             ClientManager.Instance.FindAll<AuthClient>(entry => entry.LookingOfServers).
                 ForEach(entry => ConnectionHandler.SendServerStatusUpdateMessage(entry, server));
 
-            Action<WorldServer> handler = ServerAdded;
+            var handler = ServerAdded;
             if (handler != null)
                 handler(server);
         }
