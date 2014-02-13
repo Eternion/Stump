@@ -1584,7 +1584,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public FighterRefusedReasonEnum CanAttack(TaxCollectorNpc target)
         {
-            if (target.IsTaxCollectorOwner(GuildMember))
+            if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
             if (target.IsBusy())
