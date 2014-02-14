@@ -141,7 +141,7 @@ namespace Stump.Server.WorldServer.Game.Social
             else
             {
                 if (client.Character.IsMuted())
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123,
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 124,
                                                             (int) client.Character.GetMuteRemainingTime().TotalSeconds);
                 else
                 {

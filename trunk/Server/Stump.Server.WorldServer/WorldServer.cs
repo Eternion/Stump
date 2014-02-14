@@ -240,7 +240,9 @@ namespace Stump.Server.WorldServer
             if (!automatic && !string.IsNullOrEmpty(ScheduledShutdownReason))
                 message += " : " + ScheduledShutdownReason;
 
-            World.Instance.SendAnnounce(string.Format(message, time), Color.Red);
+            //World.Instance.SendAnnounce(string.Format(message, time), Color.Red);
+            World.Instance.SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 15, time);
+
             m_lastAnnouncedTime = time;
         }
 
