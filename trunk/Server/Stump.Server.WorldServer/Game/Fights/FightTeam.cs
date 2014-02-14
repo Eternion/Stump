@@ -259,6 +259,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 character.AlignmentSide != AlignmentSide)
                 return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
 
+            if (AlignmentSide != AlignmentSideEnum.ALIGNMENT_WITHOUT &&
+                !character.PvPEnabled)
+                return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
+
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
