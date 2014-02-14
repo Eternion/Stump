@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Npcs;
@@ -55,10 +54,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         public NpcTemplate GetNpcTemplate(int id)
         {
             NpcTemplate template;
-            if (m_npcsTemplates.TryGetValue(id, out template))
-                return template;
-
-            return template;
+            return m_npcsTemplates.TryGetValue(id, out template) ? template : template;
         }
 
         public NpcTemplate GetNpcTemplate(string name, bool ignorecase)
@@ -73,10 +69,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
         public NpcMessage GetNpcMessage(int id)
         {
             NpcMessage message;
-            if (m_npcsMessages.TryGetValue(id, out message))
-                return message;
-
-            return message;
+            return m_npcsMessages.TryGetValue(id, out message) ? message : message;
         }
 
         public List<NpcActionRecord> GetNpcActionsRecords(int id)

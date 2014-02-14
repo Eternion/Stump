@@ -198,7 +198,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public override void Initialize()
         {
             foreach (
-                ExperienceTableEntry record in Database.Query<ExperienceTableEntry>(ExperienceTableRelator.FetchQuery))
+                var record in Database.Query<ExperienceTableEntry>(ExperienceTableRelator.FetchQuery))
             {
                 if (record.Level > 200)
                     throw new Exception("Level cannot exceed 200 (protocol constraint)");
