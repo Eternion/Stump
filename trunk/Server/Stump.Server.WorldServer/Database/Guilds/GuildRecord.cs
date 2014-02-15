@@ -51,41 +51,41 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set;
         }
 
-        public short Boost
+        public uint Boost
         {
             get;
             set;
         }
 
-        public short Prospecting
+        public int Prospecting
         {
             get;
             set;
         }
 
-        public short Wisdom
+        public int Wisdom
         {
             get;
             set;
         }
 
-        public short Pods
+        public int Pods
         {
             get;
             set;
         }
 
-        public sbyte MaxTaxCollectors
+        public int MaxTaxCollectors
         {
             get;
             set;
         }
 
-        private List<sbyte> m_spells = new List<sbyte>();
+        private int[] m_spells;
         private string m_spellsCSV;
 
         [Ignore]
-        public List<sbyte> Spells
+        public int[] Spells
         {
             get
             {
@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Database.Guilds
             set
             {
                 m_spellsCSV = value;
-                m_spells = !string.IsNullOrEmpty(m_spellsCSV) ? m_spellsCSV.FromCSV<sbyte>(",").ToList() : new List<sbyte>();
+                m_spells = !string.IsNullOrEmpty(m_spellsCSV) ? m_spellsCSV.FromCSV<int>(",").ToArray() : new int[0];
             }
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -21,6 +22,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
     public class TaxCollectorNpc : NamedActor
     {
+        [Variable] public static int BaseAP = 6;
+        [Variable] public static int BaseMP = 5;
+        [Variable] public static int BaseHealth = 3000;
+        [Variable] public static int BaseResistance = 25;
+
         public const string TAXCOLLECTOR_LOOK = "{714|||140}"; //todo: Find correct Look
         
         private readonly WorldMapTaxCollectorRecord m_record;
@@ -122,23 +128,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
         }
 
-        public List<Spell> Spells
-        {
-            get
-            {
-                
-                return Guild.TAX_COLLECTOR_SPELLS.SelectMany(entry => Guild.Spells, (sT, sL) => new Spell(sT, (byte)sL)).ToList();
-            }
-        }
-
         public byte Level
         {
             get { return Guild.Level; }
-        }
-
-        public int GuildId
-        {
-            get { return m_record.GuildId; }
         }
 
         public Guild Guild
@@ -165,12 +157,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             {
                 return m_look ?? (m_look = ActorLook.Parse(TAXCOLLECTOR_LOOK));
             }
-        }
-
-        public TaxCollectorFightResult FightResult
-        {
-            get;
-            protected set;
         }
 
         public short FirstNameId
@@ -244,11 +230,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Guild.RemoveTaxCollector(this);
 
             //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
-            foreach (var client in Guild.Clients)
-            {
-                client.Send(new TaxCollectorMovementMessage(false, GetTaxCollectorBasicInformations(), dialog.Character.Name));
-                client.Send(new TaxCollectorMovementRemoveMessage(Id));
-            }
+            Guild.Clients.Send(new TaxCollectorMovementMessage(false, GetTaxCollectorBasicInformations(), dialog.Character.Name));
+            Guild.Clients.Send(new TaxCollectorMovementRemoveMessage(Id));
         }
 
         #region Network

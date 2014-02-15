@@ -11,11 +11,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private readonly StatsFields m_stats;
 
         public TaxCollectorFighter(FightTeam team, TaxCollectorNpc taxCollector)
-            : base(team, taxCollector.Spells, taxCollector.GlobalId)
+            : base(team, taxCollector.Guild.GetTaxCollectorSpells(), taxCollector.GlobalId)
         {
             TaxCollectorNpc = taxCollector;
 
             m_stats = new StatsFields(this);
+            m_stats.Initialize(TaxCollectorNpc);
         }
 
         public TaxCollectorNpc TaxCollectorNpc
@@ -46,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override string GetMapRunningFighterName()
         {
-            throw new NotImplementedException();
+            return TaxCollectorNpc.Name;
         }
     }
 }
