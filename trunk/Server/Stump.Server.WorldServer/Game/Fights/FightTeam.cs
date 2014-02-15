@@ -106,6 +106,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                     return TeamTypeEnum.TEAM_TYPE_PLAYER;
                 if (IsMonsterTeam())
                     return TeamTypeEnum.TEAM_TYPE_MONSTER;
+                if (IsDefenderTeam())
+                    return TeamTypeEnum.TEAM_TYPE_TAXCOLLECTOR;
 
                 return TeamTypeEnum.TEAM_TYPE_MONSTER;
             }
@@ -164,6 +166,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         public bool IsPlayerTeam()
         {
             return Leader is CharacterFighter;
+        }
+
+        public bool IsDefenderTeam()
+        {
+            return Leader is TaxCollectorFighter;
         }
 
         public bool ChangeLeader(FightActor leader)

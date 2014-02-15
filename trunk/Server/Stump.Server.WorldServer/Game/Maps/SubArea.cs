@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             private set;
         }
 
-        public int Id
+        public short Id
         {
             get { return Record.Id; }
         }

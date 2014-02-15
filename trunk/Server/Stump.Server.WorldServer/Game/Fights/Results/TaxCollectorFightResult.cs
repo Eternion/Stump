@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             get
             {
-                return TaxCollector.Guild.Prospecting;
+                return TaxCollector.Guild.TaxCollectorProspecting;
             }
         }
 
@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             get
             {
-                return TaxCollector.Guild.Wisdom;
+                return TaxCollector.Guild.TaxCollectorWisdom;
             }
         }
 

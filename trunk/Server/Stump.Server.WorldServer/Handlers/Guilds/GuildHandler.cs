@@ -26,13 +26,13 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             switch (message.infoType)
             {
                 case (sbyte)GuildInformationsTypeEnum.INFO_GENERAL:
-                    SendGuildInformationsGeneralMessage(client);
+                    SendGuildInformationsGeneralMessage(client, client.Character.Guild);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_MEMBERS:
-                    SendGuildInformationsMembersMessage(client);
+                    SendGuildInformationsMembersMessage(client, client.Character.Guild);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_BOOSTS:
-                    SendGuildInfosUpgradeMessage(client);
+                    SendGuildInfosUpgradeMessage(client, client.Character.Guild);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_PADDOCKS:
                     SendGuildInformationsPaddocksMessage(client);
@@ -60,20 +60,20 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             switch (message.charaTypeTarget)
             {
                 case 0: //Pods
-                    client.Character.Guild.UpgradePods();
+                    client.Character.Guild.UpgradeTaxCollectorPods();
                     break;
                 case 1: //Prospecting
-                    client.Character.Guild.UpgradeProspecting();
+                    client.Character.Guild.UpgradeTaxCollectorProspecting();
                     break;
                 case 2: //Wisdom
-                    client.Character.Guild.UpgradeWisdom();
+                    client.Character.Guild.UpgradeTaxCollectorWisdom();
                     break;
                 case 3: //MaxTaxCollectors
                     client.Character.Guild.UpgradeMaxTaxCollectors();
                     break;
             }
 
-            SendGuildInfosUpgradeMessage(client);
+            SendGuildInfosUpgradeMessage(client.Character.Guild.Clients, client.Character.Guild);
         }
 
         [WorldHandler(GuildSpellUpgradeRequestMessage.Id)]
@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 return;
 
             if (client.Character.Guild.UpgradeSpell(message.spellId))
-                SendGuildInfosUpgradeMessage(client);
+                SendGuildInfosUpgradeMessage(client.Character.Guild.Clients, client.Character.Guild);
         }
 
         [WorldHandler(GuildCreationValidMessage.Id)]
@@ -267,15 +267,15 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Send(new GuildMembershipMessage(member.Guild.GetGuildInformations(), (uint)member.Rights, true));
         }
 
-        public static void SendGuildInformationsGeneralMessage(WorldClient client)
+        public static void SendGuildInformationsGeneralMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildInformationsGeneralMessage(true, false, client.Character.Guild.Level, client.Character.Guild.ExperienceLevelFloor, client.Character.Guild.Experience,
-                client.Character.Guild.ExperienceNextLevelFloor, client.Character.Guild.CreationDate.GetUnixTimeStamp())); 
+            client.Send(new GuildInformationsGeneralMessage(true, false, guild.Level, guild.ExperienceLevelFloor, guild.Experience,
+                guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp())); 
         }
 
-        public static void SendGuildInformationsMembersMessage(WorldClient client)
+        public static void SendGuildInformationsMembersMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildInformationsMembersMessage(client.Character.Guild.Members.Select(x => x.GetNetworkGuildMember())));
+            client.Send(new GuildInformationsMembersMessage(guild.Members.Select(x => x.GetNetworkGuildMember())));
         }
 
         public static void SendGuildInformationsMemberUpdateMessage(IPacketReceiver client, GuildMember member)
@@ -283,9 +283,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Send(new GuildInformationsMemberUpdateMessage(member.GetNetworkGuildMember()));
         }
 
-        public static void SendGuildInfosUpgradeMessage(WorldClient client)
+        public static void SendGuildInfosUpgradeMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(client.Character.Guild.GetGuildInfosUpgrade());
+            client.Send(new GuildInfosUpgradeMessage((sbyte)guild.MaxTaxCollectors, (sbyte)guild.TaxCollectors.Count, (short)guild.TaxCollectorHealth, (short)guild.TaxCollectorDamageBonuses,
+                (short)guild.TaxCollectorPods, (short)guild.TaxCollectorProspecting, (short)guild.TaxCollectorWisdom, (short)guild.Boost,
+                Guild.TAX_COLLECTOR_SPELLS, guild.GetTaxCollectoSpellsLevels().Select(x => (sbyte)x)));
         }
 
         public static void SendGuildInformationsPaddocksMessage(IPacketReceiver client)
