@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Social
                     (sbyte)Character.AlignmentSide,
                     (sbyte)Character.Breed.Id,
                     Character.Sex == SexTypeEnum.SEX_FEMALE,
-                    Character.GuildMember == null ? null : Character.GuildMember.Guild.GetBasicGuildInformations(),
+                    Character.GuildMember == null ? new BasicGuildInformations() : Character.GuildMember.Guild.GetBasicGuildInformations(),
                     -1);
             }
 
