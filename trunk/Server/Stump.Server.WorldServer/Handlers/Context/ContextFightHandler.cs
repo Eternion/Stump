@@ -161,31 +161,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 client.Character.RequestBox.Cancel();
         }
 
-        [WorldHandler(GameRolePlayTaxCollectorFightRequestMessage.Id)]
-        public static void HandleGameRoleplayTaxCollectorFightRequestMessage(WorldClient client,
-            GameRolePlayTaxCollectorFightRequestMessage message)
-        {
-            var target = client.Character.Map.GetActor<TaxCollectorNpc>(message.taxCollectorId);
-            if (target == null)
-                return;
-
-            var reason = client.Character.CanAttack(target);
-
-            if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
-            {
-                SendChallengeFightJoinRefusedMessage(client, client.Character, reason);
-            }
-            else
-            {
-                var fight = Singleton<FightManager>.Instance.CreatePvMFight(client.Character.Map);
-
-                fight.RedTeam.AddFighter(client.Character.CreateFighter(fight.RedTeam));
-                fight.BlueTeam.AddFighter();
-
-                fight.StartPlacement();
-            }
-        }
-
         [WorldHandler(GameFightOptionToggleMessage.Id)]
         public static void HandleGameFightOptionToggleMessage(WorldClient client, GameFightOptionToggleMessage message)
         {

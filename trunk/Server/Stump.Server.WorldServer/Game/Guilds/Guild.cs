@@ -495,7 +495,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             return m_spells.Where(x => x != null).ToList().AsReadOnly();
         }
-        public int[] GetTaxCollectoSpellsLevels() // faster
+        public int[] GetTaxCollectorSpellsLevels() // faster
         {
             return m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
         }
@@ -650,7 +650,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void Save(ORM.Database database)
         {
-            Record.Spells = GetTaxCollectoSpellsLevels();
+            Record.Spells = GetTaxCollectorSpellsLevels();
 
             if (Record.IsNew)
                 database.Insert(Record);
@@ -737,8 +737,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (member.IsConnected)
             {
                 GuildHandler.SendGuildJoinedMessage(member.Character.Client, member);
-                GuildHandler.SendGuildInformationsMembersMessage(member.Character.Client);
-                GuildHandler.SendGuildInformationsGeneralMessage(member.Character.Client);
+                GuildHandler.SendGuildInformationsMembersMessage(member.Character.Client, this);
+                GuildHandler.SendGuildInformationsGeneralMessage(member.Character.Client, this);
                 member.Character.RefreshActor();
             }
 

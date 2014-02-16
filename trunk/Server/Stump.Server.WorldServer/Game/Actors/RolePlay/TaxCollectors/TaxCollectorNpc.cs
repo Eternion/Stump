@@ -10,8 +10,10 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
@@ -173,6 +175,52 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             protected set { m_record.LastNameId = value; m_name = null; }
         }
 
+        public TaxCollectorFighter Fighter
+        {
+            get;
+            private set;
+        }
+
+        public bool IsFighting
+        {
+            get
+            {
+                return Fighter != null;
+            }
+        }
+
+        public TaxCollectorFighter CreateFighter(FightTeam team)
+        {
+            if (IsFighting)
+                throw new Exception("Tax collector is already fighting !");
+
+            Fighter = new TaxCollectorFighter(team, this);
+
+            Map.Refresh(this); // get invisible
+
+            return Fighter;
+        }
+
+        public void RejoinMap()
+        {
+            if (!IsFighting)
+                return;
+
+            Fighter = null;
+
+            Map.Refresh(this);
+        }
+
+        public override bool CanBeSee(Maps.WorldObject byObj)
+        {
+            return base.CanBeSee(byObj) && !IsFighting;
+        }
+
+        public bool CanGatherLoots()
+        {
+            return !IsFighting;
+        }
+
         protected override void OnDisposed()
         {
             foreach (var dialog in OpenDialogs.ToArray())
@@ -243,6 +291,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
+            if (IsFighting && Fighter.Fight.State == FightState.Placement)
+            {
+                var fight = Fighter.Fight as FightPvT;
+
+                if (fight != null)
+                    return new TaxCollectorInformationsInWaitForHelpState(Id, FirstNameId, LastNameId,
+                        GetAdditionalTaxCollectorInformations(),
+                        (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
+                        (short) Position.Map.SubArea.Id, 1,
+                        Look.GetEntityLook(), 0, 0, 0, 0,
+                        new ProtectedEntityWaitingForHelpInfo(fight.GetTimeBeforeFight().Milliseconds/100,
+                            fight.GetDefendersWaitTimeForPlacement().Milliseconds/100, (sbyte)fight.GetDefendersLeftSlot()));
+            }
+
             return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
                 (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
         }
@@ -260,7 +322,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
             return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
-                (short)Position.Map.SubArea.Id, "", 0, Bag.Select(x => x.GetObjectItemQuantity()));
+                (short)Position.Map.SubArea.Id, Record.CallerName, 0, Bag.Select(x => x.GetObjectItemQuantity()));
         }
 
         public StorageInventoryContentMessage GetStorageInventoryContent()

@@ -45,7 +45,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendTaxCollectorDialogQuestionExtendedMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
         {
             client.Send(new NpcDialogCreationMessage(taxCollector.Map.Id, taxCollector.Id));
-            client.Send(new TaxCollectorDialogQuestionExtendedMessage(taxCollector.Guild.GetBasicGuildInformations(), taxCollector.Guild.TaxCollectorPods, taxCollector.Guild.TaxCollectorProspecting, taxCollector.Guild.TaxCollectorWisdom, (sbyte)taxCollector.Guild.TaxCollectors.Count, -1, 0, 0, 0, 0));
+            client.Send(new TaxCollectorDialogQuestionExtendedMessage(taxCollector.Guild.GetBasicGuildInformations(), (short) taxCollector.Guild.TaxCollectorPods,
+                (short) taxCollector.Guild.TaxCollectorProspecting, (short)taxCollector.Guild.TaxCollectorWisdom, (sbyte)taxCollector.Guild.TaxCollectors.Count, -1, 0, 0, 0, 0));
         }
     }
 }

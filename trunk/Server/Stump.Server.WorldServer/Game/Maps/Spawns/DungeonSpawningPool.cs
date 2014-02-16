@@ -119,7 +119,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             if (draw)
                 return;
 
-            if (!winners.IsPlayerTeam() || !losers.IsMonsterTeam())
+            // if players didn't win they don't get teleported
+            if (!(winners is FightPlayerTeam) || !(losers is FightMonsterTeam))
                 return;
 
             var group = ((MonsterFighter) losers.Leader).Monster.Group;

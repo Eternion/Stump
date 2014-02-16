@@ -1802,7 +1802,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor GetOneFighter(Cell cell)
         {
-            return Fighters.SingleOrDefault(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell));
+            return Fighters.SingleOrDefault(entry => entry.IsAlive() && Equals(entry.Cell, cell));
         }
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
