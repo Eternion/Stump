@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                     SendGuildHousesInformationMessage(client);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR:
-                    TaxCollectorHandler.SendTaxCollectorListMessage(client);
+                    TaxCollectorHandler.SendTaxCollectorListMessage(client, client.Character.Guild);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR_LEAVE:
                     break;
@@ -287,7 +287,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         {
             client.Send(new GuildInfosUpgradeMessage((sbyte)guild.MaxTaxCollectors, (sbyte)guild.TaxCollectors.Count, (short)guild.TaxCollectorHealth, (short)guild.TaxCollectorDamageBonuses,
                 (short)guild.TaxCollectorPods, (short)guild.TaxCollectorProspecting, (short)guild.TaxCollectorWisdom, (short)guild.Boost,
-                Guild.TAX_COLLECTOR_SPELLS, guild.GetTaxCollectoSpellsLevels().Select(x => (sbyte)x)));
+                Guild.TAX_COLLECTOR_SPELLS, guild.GetTaxCollectorSpellsLevels().Select(x => (sbyte)x)));
         }
 
         public static void SendGuildInformationsPaddocksMessage(IPacketReceiver client)

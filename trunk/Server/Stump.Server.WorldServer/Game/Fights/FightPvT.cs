@@ -143,6 +143,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             return false;
         }
 
+        public int GetDefendersLeftSlot()
+        {
+            return 8 - m_defendersQueue.Count > 0 ? 8 - m_defendersQueue.Count : 0;
+        }
 
         public override bool CanChangePosition(FightActor fighter, Cell cell)
         {
@@ -190,7 +194,18 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
+            if (actor is TaxCollectorFighter && actor.IsAlive())
+                (actor as TaxCollectorFighter).TaxCollectorNpc.RejoinMap();
+
             base.OnFighterRemoved(team, actor);
+        }
+
+        protected override void OnFightEnded()
+        {
+            if (Winners == DefendersTeam)
+                TaxCollector.TaxCollectorNpc.RejoinMap();
+
+            base.OnFightEnded();
         }
 
         protected override IEnumerable<IFightResult> GenerateResults()
@@ -212,6 +227,27 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected override bool CanCancelFight()
         {
             return false;
+        }
+
+        public TimeSpan GetTimeBeforeFight()
+        {
+            if (IsAttackersPlacementPhase)
+                return (m_placementTimer.NextTick - DateTime.Now) +
+                       TimeSpan.FromMilliseconds(PvTDefendersPlacementPhaseTime);
+            else if (IsDefendersPlacementPhase)
+                return (m_placementTimer.NextTick - DateTime.Now);
+            else
+                return TimeSpan.Zero;
+        }
+
+        public TimeSpan GetDefendersWaitTimeForPlacement()
+        {
+            if (IsDefendersPlacementPhase)
+                return TimeSpan.Zero;
+            else if (IsAttackersPlacementPhase)
+                return (m_placementTimer.NextTick - DateTime.Now);
+
+            return TimeSpan.Zero;
         }
 
         public int GetPlacementTimeLeft(FightActor fighter)

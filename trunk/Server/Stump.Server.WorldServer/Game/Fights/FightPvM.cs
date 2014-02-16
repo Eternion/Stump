@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.OnFighterAdded(team, actor);
 
-            if (!team.IsMonsterTeam() || m_ageBonusDefined)
+            if (!(team is FightMonsterTeam) || m_ageBonusDefined)
                 return;
 
             var monsterFighter = team.Leader as MonsterFighter;
@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var results = new List<IFightResult>();
             results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
 
-            if (Map.TaxCollector != null)
+            if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
                 results.Add(new TaxCollectorFightResult(Map.TaxCollector, this));
 
             foreach (var team in m_teams)

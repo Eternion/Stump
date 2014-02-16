@@ -335,9 +335,13 @@
     <Compile Include="Game\Fights\FightAgression.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
+    <Compile Include="Game\Fights\FightMonsterTeam.cs" />
+    <Compile Include="Game\Fights\FightPlayerTeam.cs" />
     <Compile Include="Game\Fights\FightPvM.cs" />
     <Compile Include="Game\Fights\FightPvT.cs" />
     <Compile Include="Game\Fights\FightSpectator.cs" />
+    <Compile Include="Game\Fights\FightTaxCollectorTeam.cs" />
+    <Compile Include="Game\Fights\FightTeamWithLeader.cs" />
     <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
     <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
