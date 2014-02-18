@@ -46,8 +46,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightPvT CreatePvTFight(Map map)
         {
-            var redTeam = new FightTaxCollectorTeam(0, map.GetRedFightPlacement());
-            var blueTeam = new FightPlayerTeam(1, map.GetBlueFightPlacement());
+            var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
+            var blueTeam = new FightTaxCollectorTeam(1, map.GetBlueFightPlacement());
 
             var fight = new FightPvT(m_idProvider.Pop(), map, blueTeam, redTeam);
 

@@ -2,7 +2,6 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -36,8 +35,8 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
 
             var fight = FightManager.Instance.CreatePvTFight(client.Character.Map);
 
-            fight.RedTeam.AddFighter(taxCollector.CreateFighter(fight.RedTeam));
-            fight.BlueTeam.AddFighter(client.Character.CreateFighter(fight.BlueTeam));
+            fight.RedTeam.AddFighter(client.Character.CreateFighter(fight.RedTeam));
+            fight.BlueTeam.AddFighter(taxCollector.CreateFighter(fight.BlueTeam));
 
             fight.StartPlacement();
         }
