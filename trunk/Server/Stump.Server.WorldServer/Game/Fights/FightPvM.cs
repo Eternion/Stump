@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Formulas;
-using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -87,22 +84,22 @@ namespace Stump.Server.WorldServer.Game.Fights
                         (looter as IExperienceResult).SetEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters(), droppers));
                     }
 
-                    if (looter is FightPlayerResult)
-                    {
-                        var document = new BsonDocument
-                        {
-                            {"PlayerId", (looter as FightPlayerResult).Character.Id},
-                            {"FightId", looter.Fight.Id},
-                            {"MapId", looter.Fight.Map.Id},
-                            {"FightersCount", looters.Count()},
-                            {"winXP", (looter as FightPlayerResult).ExperienceData.ExperienceFightDelta},
-                            {"winKamas", looter.Loot.Kamas},
-                            {"winItems", looter.Loot.FightItemsString()},
-                            {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
-                        };
+                    if (!(looter is FightPlayerResult))
+                        continue;
 
-                        MongoLogger.Instance.Insert("FightLoots", document);
-                    }
+                    var document = new BsonDocument
+                    {
+                        {"PlayerId", (looter as FightPlayerResult).Character.Id},
+                        {"FightId", looter.Fight.Id},
+                        {"MapId", looter.Fight.Map.Id},
+                        {"FightersCount", looters.Count()},
+                        {"winXP", (looter as FightPlayerResult).ExperienceData.ExperienceFightDelta},
+                        {"winKamas", looter.Loot.Kamas},
+                        {"winItems", looter.Loot.FightItemsString()},
+                        {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
+                    };
+
+                    MongoLogger.Instance.Insert("FightLoots", document);
                 }
             }
 

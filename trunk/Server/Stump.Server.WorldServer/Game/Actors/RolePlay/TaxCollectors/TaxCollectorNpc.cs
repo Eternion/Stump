@@ -291,19 +291,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
-            if (IsFighting && Fighter.Fight.State == FightState.Placement)
-            {
-                var fight = Fighter.Fight as FightPvT;
+            if (!IsFighting || Fighter.Fight.State != FightState.Placement)
+                return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
+                    (short) Position.Map.Position.X, (short) Position.Map.Position.Y, (short) Position.Map.SubArea.Id, 0,
+                    Look.GetEntityLook(), 0, 0, 0, 0);
+            var fight = Fighter.Fight as FightPvT;
 
-                if (fight != null)
-                    return new TaxCollectorInformationsInWaitForHelpState(Id, FirstNameId, LastNameId,
-                        GetAdditionalTaxCollectorInformations(),
-                        (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
-                        (short) Position.Map.SubArea.Id, 1,
-                        Look.GetEntityLook(), 0, 0, 0, 0,
-                        new ProtectedEntityWaitingForHelpInfo(fight.GetTimeBeforeFight().Milliseconds/100,
-                            fight.GetDefendersWaitTimeForPlacement().Milliseconds/100, (sbyte)fight.GetDefendersLeftSlot()));
-            }
+            if (fight != null)
+                return new TaxCollectorInformationsInWaitForHelpState(Id, FirstNameId, LastNameId,
+                    GetAdditionalTaxCollectorInformations(),
+                    (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
+                    (short) Position.Map.SubArea.Id, 1,
+                    Look.GetEntityLook(), 0, 0, 0, 0,
+                    new ProtectedEntityWaitingForHelpInfo(fight.GetTimeBeforeFight().Milliseconds / 100,
+                        fight.GetDefendersWaitTimeForPlacement().Milliseconds / 100, (sbyte)fight.GetDefendersLeftSlot()));
 
             return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
                 (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);

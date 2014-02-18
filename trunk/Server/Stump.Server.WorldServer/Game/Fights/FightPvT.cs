@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         [Variable] public static int PvTDefendersPlacementPhaseTime = 10000;
         private bool m_isAttackersPlacementPhase;
 
-        private List<Character> m_defendersQueue = new List<Character>();
+        private readonly List<Character> m_defendersQueue = new List<Character>();
 
         public FightPvT(int id, Map fightMap, FightTeam blueTeam, FightTeam redTeam)
             : base(id, fightMap, blueTeam, redTeam)
@@ -123,7 +123,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             m_defendersQueue.Add(character);
-
+              
             TaxCollectorHandler.SendGuildFightPlayersHelpersJoinMessage(character.Guild.Clients, this, character);
             TaxCollectorHandler.SendGuildFightPlayersHelpersJoinMessage(Clients, this, character);
 
@@ -132,15 +132,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public bool RemoveDefender(Character character)
         {
-            if (m_defendersQueue.Remove(character))
-            {
-                TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(character.Guild.Clients, this, character);
-                TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(Clients, this, character);
+            if (!m_defendersQueue.Remove(character))
+                return false;
 
-                return true;
-            }
+            TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(character.Guild.Clients, this, character);
+            TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(Clients, this, character);
 
-            return false;
+            return true;
         }
 
         public int GetDefendersLeftSlot()
@@ -202,6 +200,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void OnFightEnded()
         {
+            TaxCollectorHandler.SendTaxCollectorAttackedResultMessage(TaxCollector.TaxCollectorNpc.Guild.Clients,
+                Winners == DefendersTeam, TaxCollector.TaxCollectorNpc);
+
             if (Winners == DefendersTeam)
                 TaxCollector.TaxCollectorNpc.RejoinMap();
 
@@ -234,17 +235,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (IsAttackersPlacementPhase)
                 return (m_placementTimer.NextTick - DateTime.Now) +
                        TimeSpan.FromMilliseconds(PvTDefendersPlacementPhaseTime);
-            else if (IsDefendersPlacementPhase)
+            if (IsDefendersPlacementPhase)
                 return (m_placementTimer.NextTick - DateTime.Now);
-            else
-                return TimeSpan.Zero;
+
+            return TimeSpan.Zero;
         }
 
         public TimeSpan GetDefendersWaitTimeForPlacement()
         {
             if (IsDefendersPlacementPhase)
                 return TimeSpan.Zero;
-            else if (IsAttackersPlacementPhase)
+            if (IsAttackersPlacementPhase)
                 return (m_placementTimer.NextTick - DateTime.Now);
 
             return TimeSpan.Zero;
