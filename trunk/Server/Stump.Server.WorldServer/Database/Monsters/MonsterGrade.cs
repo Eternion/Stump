@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ServiceStack.Text;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
@@ -22,7 +23,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         private string m_statsJSON;
         private MonsterTemplate m_template;
         private int m_wisdom;
-        private List<Game.Spells.Spell> m_spells;
+        private List<Spell> m_spells;
 
         public MonsterGrade()
         {
@@ -201,11 +202,11 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get { return m_spellsTemplates ?? (m_spellsTemplates = MonsterManager.Instance.GetMonsterGradeSpells(Id)); }
         }
 
-        public List<Game.Spells.Spell> Spells
+        public List<Spell> Spells
         {
             get
             {
-                return m_spells ?? ( m_spells = SpellsTemplates.Select(entry => new Game.Spells.Spell(entry)).ToList());
+                return m_spells ?? ( m_spells = SpellsTemplates.Select(entry => new Spell(entry)).ToList());
             }
         }
 

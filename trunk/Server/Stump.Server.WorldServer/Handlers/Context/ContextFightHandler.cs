@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -8,6 +9,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
@@ -15,11 +17,10 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
-    public partial class ContextHandler : WorldHandlerContainer
+    public partial class ContextHandler
     {
         [WorldHandler(GameActionFightCastRequestMessage.Id)]
-        public static void HandleGameActionFightCastRequestMessage(WorldClient client,
-                                                                   GameActionFightCastRequestMessage message)
+        public static void HandleGameActionFightCastRequestMessage(WorldClient client, GameActionFightCastRequestMessage message)
         {
             if (!client.Character.IsFighting())
                 return;
@@ -134,7 +135,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 }
                 else
                 {
-                    var fight = FightManager.Instance.CreateAgressionFight(target.Map, 
+                    var fight = Singleton<FightManager>.Instance.CreateAgressionFight(target.Map, 
                         client.Character.AlignmentSide, target.AlignmentSide);
 
                     fight.RedTeam.AddFighter(client.Character.CreateFighter(fight.RedTeam));
@@ -181,7 +182,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (client.Character.IsFighting())
                 return;
 
-            var fight = FightManager.Instance.GetFight(message.fightId);
+            var fight = Singleton<FightManager>.Instance.GetFight(message.fightId);
 
             if (fight == null)
             {

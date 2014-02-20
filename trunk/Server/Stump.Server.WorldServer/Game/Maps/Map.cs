@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnFightCreated(Fight fight)
         {
-            var handler = FightCreated;
+            Action<Map, Fight> handler = FightCreated;
             if (handler != null)
                 handler(this, fight);
         }
@@ -461,7 +461,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (position.Map != this)
                 throw new Exception("Try to spawn a npc on the wrong map");
 
-            sbyte id = GetNextContextualId();
+            var id = GetNextContextualId();
 
             var npc = new Npc(id, template, position, look);
             template.OnNpcSpawned(npc);
@@ -478,7 +478,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (position.Map != this)
                 throw new Exception("Try to spawn a npc on the wrong map");
 
-            sbyte id = GetNextContextualId();
+            var id = GetNextContextualId();
 
             var npc = new Npc(id, spawn);
             spawn.Template.OnNpcSpawned(npc);
@@ -818,7 +818,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (position.Map != this)
                 throw new Exception("Try to spawn a monster group on the wrong map");
 
-            sbyte id = GetNextContextualId();
+            var id = GetNextContextualId();
 
             var group = new MonsterGroup(id, position);
 
@@ -1132,6 +1132,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnLeave(ContextActor actor)
         {
+            if (actor is TaxCollectorNpc)
+            {
+                TaxCollector = null;
+            }
+
             // if the actor will change of area we notify it
             if (actor.IsGonnaChangeZone())
                 Area.Leave(actor);
@@ -1145,7 +1150,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);
 
-            if (actor is MonsterGroup || actor is Npc)
+            if (actor is MonsterGroup || actor is Npc || actor is TaxCollectorNpc)
                 FreeContextualId((sbyte)actor.Id);
 
 
@@ -1221,14 +1226,20 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public sbyte GetNextContextualId()
+        public int GetNextContextualId()
         {
-            return (sbyte)m_contextualIds.Pop();
+            lock (m_contextualIds)
+            {
+                return m_contextualIds.Pop();
+            }
         }
 
-        public void FreeContextualId(sbyte id)
+        public void FreeContextualId(int id)
         {
-            m_contextualIds.Push(id);
+            lock (m_contextualIds)
+            {
+                m_contextualIds.Push(id);
+            }
         }
 
         public bool IsActor(int id)
@@ -1319,13 +1330,15 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             var rand = new AsyncRandom();
 
-            if (!actorFree)
-                return m_freeCells[rand.Next(0, m_freeCells.Length)];
+            if (actorFree)
+            {
+                var excludedCells = GetActors<RolePlayActor>().Select(entry => entry.Cell.Id);
+                var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
 
-            var excludedCells = GetActors<RolePlayActor>().Select(entry => entry.Cell.Id);
-            var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
+                return cells[rand.Next(0, cells.Length)];
+            }
 
-            return cells[rand.Next(0, cells.Length)];
+            return m_freeCells[rand.Next(0, m_freeCells.Length)];
         }
 
         public Cell GetRandomAdjacentFreeCell(MapPoint cell, bool actorFree = false)
