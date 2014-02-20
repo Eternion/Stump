@@ -206,26 +206,32 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
              var result = base.CanCastSpell(spell, cell);
 
-             if (result != SpellCastResult.OK)
-             {
-                 if (result == SpellCastResult.NO_LOS)
-                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 174);
-                 else if (result == SpellCastResult.HAS_NOT_SPELL)
-                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 169);
-                 else if (result == SpellCastResult.NOT_ENOUGH_AP)
-                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
-                 else if (result == SpellCastResult.CELL_NOT_FREE || result == SpellCastResult.UNWALKABLE_CELL)
-                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 172);
-                 else
-                 {
-                     // cannot cast spell msg
-                     BasicHandler.SendTextInformationMessage(Character.Client,
-                                                             TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
-                     Character.SendServerMessage("(" + result.ToString() + ")", Color.Red);
-                 }
-             }
+            if (result == SpellCastResult.OK)
+                return result;
 
-             return result;
+            switch (result)
+            {
+                case SpellCastResult.NO_LOS:
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 174);
+                    break;
+                case SpellCastResult.HAS_NOT_SPELL:
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 169);
+                    break;
+                case SpellCastResult.NOT_ENOUGH_AP:
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
+                    break;
+                case SpellCastResult.UNWALKABLE_CELL:
+                case SpellCastResult.CELL_NOT_FREE:
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 172);
+                    break;
+                default:
+                    BasicHandler.SendTextInformationMessage(Character.Client,
+                        TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
+                    Character.SendServerMessage("(" + result + ")", Color.Red);
+                    break;
+            }
+
+            return result;
         }
 
 
@@ -251,13 +257,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 point.DistanceToCell(Position.Point) < weapon.MinRange)
                 return false;
 
-            if (AP < weapon.ApCost)
-                return false;
-
-            if (!Fight.CanBeSeen(cell, Position.Cell))
-                return false;
-
-            return true;
+            return AP >= weapon.ApCost && Fight.CanBeSeen(cell, Position.Cell);
         }
 
         public override Spell GetSpell(int id)
@@ -274,7 +274,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var random = new AsyncRandom();
 
-            FightSpellCastCriticalEnum critical = FightSpellCastCriticalEnum.NORMAL;
+            var critical = FightSpellCastCriticalEnum.NORMAL;
 
             if (weapon.CriticalHitProbability != 0 && random.Next(weapon.CriticalFailureProbability) == 0)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
@@ -284,30 +284,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
-        }
-
-        public void SetEarnedExperience(int experience)
-        {
-            if (Character.GuildMember != null && Character.GuildMember.GivenPercent > 0)
-            {
-                var xp = (int)(experience*(Character.GuildMember.GivenPercent*0.01));
-                m_guildEarnedExp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
-
-                m_guildEarnedExp = m_guildEarnedExp > Guild.MaxGuildXP ? Guild.MaxGuildXP : m_guildEarnedExp;
-                experience -= m_guildEarnedExp;
-            }
-
-            m_earnedExp = experience;
-        }
-
-        public void SetEarnedHonor(short honor)
-        {
-            m_earnedHonor = honor;
-        }
-
-        public void SetEarnedDishonor(short dishonor)
-        {
-            m_earnedDishonor = dishonor;
         }
 
         public override void ResetFightProperties()
@@ -327,37 +303,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override IFightResult GetFightResult()
         {
-            var additionalDatas = new List<FightResultAdditionalData>();
-
-            if (m_earnedExp != 0)
-            {
-                additionalDatas.Add(new FightExperienceData(Character)
-                                        {
-                                            ExperienceFightDelta = m_earnedExp,
-                                            ExperienceForGuild = m_guildEarnedExp,
-                                            ShowExperienceForGuild = m_guildEarnedExp > 0,
-                                            ShowExperience = true,
-                                            ShowExperienceFightDelta = true,
-                                            ShowExperienceLevelFloor = true,
-                                            ShowExperienceNextLevelFloor = true,
-                                        });
-            }
-
-            if (m_earnedHonor != 0 || m_earnedDishonor != 0)
-            {
-                additionalDatas.Add(new FightPvpData(Character)
-                                        {
-                                            HonorDelta = m_earnedHonor,
-                                            DishonorDelta = m_earnedDishonor,
-                                            Honor = Character.Honor,
-                                            Dishonor = Character.Dishonor,
-                                            Grade = (byte) Character.AlignmentGrade,
-                                            MinHonorForGrade = Character.LowerBoundHonor,
-                                            MaxHonorForGrade = Character.UpperBoundHonor,
-                                        });
-            }
-
-            return new FightPlayerResult(this, GetFighterOutcome(), Loot, additionalDatas.ToArray());
+            return new FightPlayerResult(this, GetFighterOutcome(), Loot);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
@@ -387,58 +333,47 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #region God state
         public override bool UseAP(short amount)
         {
-            if (Character.GodMode)
-            {
-                base.UseAP(amount);
-                RegainAP(amount);
+            if (!Character.GodMode)
+                return base.UseAP(amount);
 
-                return true;
-            }
+            base.UseAP(amount);
+            RegainAP(amount);
 
-            return base.UseAP(amount);
+            return true;
         }
 
         public override bool UseMP(short amount)
         {
-            if (Character.GodMode)
-                return true;
-
-            return base.UseMP(amount);
+            return Character.GodMode || base.UseMP(amount);
         }
 
         public override bool LostAP(short amount)
         {
-            if (Character.GodMode)
-            {
-                base.LostAP(amount);
-                RegainAP(amount);
+            if (!Character.GodMode)
+                return base.LostAP(amount);
 
-                return true;
-            }
+            base.LostAP(amount);
+            RegainAP(amount);
 
-            return base.LostAP(amount);
+            return true;
         }
 
         public override bool LostMP(short amount)
         {
-            if (Character.GodMode)
-                return true;
-
-            return base.LostMP(amount);
+            return Character.GodMode || base.LostMP(amount);
         }
 
 
         public override int InflictDirectDamage(int damage, FightActor from)
         {
-            if (Character.GodMode)
-            {
-                TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
-                OnDamageReducted(from, damage);
-                TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
-                return 0;
-            }
+            if (!Character.GodMode)
+                return base.InflictDirectDamage(damage, @from);
 
-            return base.InflictDirectDamage(damage, from);
+            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
+            OnDamageReducted(@from, damage);
+            TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+
+            return 0;
         }
         #endregion
     }

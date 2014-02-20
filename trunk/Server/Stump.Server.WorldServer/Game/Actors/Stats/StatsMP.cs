@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         [Variable]
         public static int MPLimit = 6;
 
-        public StatsMP(IStatsOwner owner, short valueBase)
+        public StatsMP(IStatsOwner owner, int valueBase)
             : base(owner, PlayerFields.MP, valueBase)
         {
         }

@@ -78,11 +78,11 @@ namespace ArkalysPlugin.Npcs
             Message = NpcManager.Instance.GetNpcMessage(MessageId);
             RequieredItem = ItemManager.Instance.TryGetTemplate(RequiredItemId);
 
-            if (Message == null || RequieredItem == null)
-            {
-                Logger.Error("Message {0} not found, script is disabled", MessageId);
-                m_scriptDisabled = true;
-            }
+            if (Message != null && RequieredItem != null)
+                return;
+
+            Logger.Error("Message {0} not found, script is disabled", MessageId);
+            m_scriptDisabled = true;
         }
 
         [Initialization(typeof(OrbsManager), Silent = true)]

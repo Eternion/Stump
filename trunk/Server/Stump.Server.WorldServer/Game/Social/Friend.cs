@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Social
         {
             if (IsOnline())
             {
-                return new FriendOnlineInformations((int) Account.Id,
+                return new FriendOnlineInformations(Account.Id,
                     Account.Nickname,
                     (sbyte)( Character.IsFighting() ? PlayerStateEnum.GAME_TYPE_FIGHT : PlayerStateEnum.GAME_TYPE_ROLEPLAY ),
                     Account.LastConnectionTimeStamp,
@@ -70,12 +70,12 @@ namespace Stump.Server.WorldServer.Game.Social
                     (sbyte)Character.AlignmentSide,
                     (sbyte)Character.Breed.Id,
                     Character.Sex == SexTypeEnum.SEX_FEMALE,
-                    new BasicGuildInformations(0, ""),
+                    Character.GuildMember == null ? new BasicGuildInformations(0, "") : Character.GuildMember.Guild.GetBasicGuildInformations(),
                     -1);
             }
 
             return new FriendInformations(
-                (int)Account.Id,
+                Account.Id,
                 Account.Nickname,
                 (sbyte) PlayerStateEnum.NOT_CONNECTED,
                 Account.LastConnectionTimeStamp,
