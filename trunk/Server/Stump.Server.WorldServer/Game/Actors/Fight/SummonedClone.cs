@@ -14,10 +14,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             : base(id, caster.Team, new List<Spell>(), caster, cell)
         {
             Caster = caster;
-            Look = caster.Look;
+            Look = caster.Look.Clone();
             m_stats = new StatsFields(caster);
-            if (caster is CharacterFighter)
-                m_stats.Initialize(((CharacterFighter) caster).Character.Record);
+            var fighter = caster as CharacterFighter;
+            if (fighter != null)
+                m_stats.Initialize(fighter.Character.Record);
             else
                 m_stats.Initialize(((MonsterFighter) caster).Monster.Grade);
         }
@@ -45,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override string Name
         {
-            get { return (Caster is NamedFighter) ? ((NamedFighter)Caster).Name : "(no name)"; }
+            get { return (Caster is NamedFighter) ? ((NamedFighter)Caster).Name : "Unknown"; }
         }
 
         public override StatsFields Stats
