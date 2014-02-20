@@ -18,12 +18,14 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Guilds;
@@ -47,8 +49,7 @@ using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
-    public sealed class Character : Humanoid,
-                                    IStatsOwner, IInventoryOwner, ICommandsUser
+    public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
         private const int AURA_1_SKIN = 170;
         private const int AURA_2_SKIN = 171;
@@ -325,6 +326,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsInZaapDialog()
         {
             return Dialog is ZaapDialog;
+        }
+
+        public bool IsInMerchantDialog()
+        {
+            return Dialog is MerchantShopDialog;
+        }
+
+        public bool IsInTaxCollectorDialog()
+        {
+            return Dialog is TaxCollectorExchangeDialog;
         }
 
         #endregion
@@ -1008,10 +1019,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void AddHonor(ushort amount)
         {
-            if (amount < 0)
-                SubHonor((ushort) (-amount));
-            else
-                Honor += amount;
+            Honor += amount;
         }
 
         public void SubHonor(ushort amount)
@@ -1601,6 +1609,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (target.Client.IP == Client.IP)
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
+
+            return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
+        }
+
+        public FighterRefusedReasonEnum CanAttack(TaxCollectorNpc target)
+        {
+            if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
+                return FighterRefusedReasonEnum.WRONG_GUILD;
+
+            if (target.IsBusy())
+                return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
+
+            if (target.Map != Map)
+                return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }

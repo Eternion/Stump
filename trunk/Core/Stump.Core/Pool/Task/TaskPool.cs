@@ -25,7 +25,7 @@ namespace Stump.Core.Pool.Task
             // Execute Tasks
             do
             {
-                Action action = m_tasks.Dequeue();
+                var action = m_tasks.Dequeue();
 
                 try
                 {

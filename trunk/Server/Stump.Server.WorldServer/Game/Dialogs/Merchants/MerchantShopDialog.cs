@@ -22,7 +22,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
-using Stump.Server.WorldServer.Handlers.Dialogs;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
@@ -46,7 +45,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             get;
             private set;
         }
-
 
         public DialogTypeEnum DialogType
         {
@@ -82,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
 
             Merchant.Bag.RemoveItem(item, quantity);
 
-            BasePlayerItem newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, quantity,
+            var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, quantity,
                                                             item.Effects);
 
             Character.Inventory.AddItem(newItem);
@@ -100,10 +98,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
 
         public bool CanBuy(MerchantItem item, uint amount)
         {
-            if (Character.Inventory.Kamas < item.Price * amount && Merchant.CanBeSee(Character))
-                return false;
-
-            return true;
+            return Character.Inventory.Kamas >= item.Price * amount || !Merchant.CanBeSee(Character);
         }
 
         public bool SellItem(int id, uint quantity)

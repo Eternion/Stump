@@ -87,10 +87,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         public SpellTemplate GetSpellTemplate(int id)
         {
             SpellTemplate template;
-            if (m_spells.TryGetValue(id, out template))
-                return template;
-
-            return null;
+            return m_spells.TryGetValue(id, out template) ? template : null;
         }
 
         public SpellTemplate GetSpellTemplate(string name, bool ignorecase)

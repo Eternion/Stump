@@ -11,17 +11,17 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightTeam
+    public abstract class FightTeam
     {
         #region Events
 
         public event Action<FightTeam, FightActor> FighterAdded;
 
-        private void OnFightAdded(FightActor fighter)
+        protected virtual void OnFightAdded(FightActor fighter)
         {
         }
 
-        private void NotifyFighterAdded(FightActor fighter)
+        private void OnFighterAdded(FightActor fighter)
         {
             OnFightAdded(fighter);
 
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public event Action<FightTeam, FightOptionsEnum> TeamOptionsChanged;
 
-        private void NotifyTeamOptionsChanged(FightOptionsEnum option)
+        protected virtual void OnTeamOptionsChanged(FightOptionsEnum option)
         {
             Action<FightTeam, FightOptionsEnum> handler = TeamOptionsChanged;
             if (handler != null)
@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
         }
 
-        private void NotifyFighterRemoved(FightActor fighter)
+        protected virtual void OnFighterRemoved(FightActor fighter)
         {
             OnFightRemoved(fighter);
 
@@ -98,17 +98,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public TeamTypeEnum TeamType
+        public abstract TeamTypeEnum TeamType
         {
-            get
-            {
-                if (IsPlayerTeam())
-                    return TeamTypeEnum.TEAM_TYPE_PLAYER;
-                if (IsMonsterTeam())
-                    return TeamTypeEnum.TEAM_TYPE_MONSTER;
-
-                return TeamTypeEnum.TEAM_TYPE_MONSTER;
-            }
+            get;
         }
 
         public Fight Fight
@@ -117,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             internal set;
         }
 
-        public FightActor Leader
+        public virtual FightActor Leader
         {
             get { return m_fighters.Count > 0 ? m_fighters.First() : null; }
         }
@@ -156,23 +148,20 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return m_leavers.AsReadOnly(); }
         }
 
-        public bool IsMonsterTeam()
-        {
-            return Leader is MonsterFighter;
-        }
-
-        public bool IsPlayerTeam()
-        {
-            return Leader is CharacterFighter;
-        }
-
-        public bool ChangeLeader(FightActor leader)
+        public virtual bool ChangeLeader(FightActor leader)
         {
             if (!m_fighters.Contains(leader))
                 return false;
 
-            m_fighters.Remove(leader);
-            m_fighters.Insert(0, leader);
+            if (m_fighters.Count > 1)
+            {
+                m_fighters.Remove(leader);
+                m_fighters.Insert(0, leader);
+            }
+            else
+            {
+                m_fighters.Add(leader);
+            }
 
             return true;
         }
@@ -195,7 +184,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     break;
             }
 
-            NotifyTeamOptionsChanged(option);
+            OnTeamOptionsChanged(option);
         }
 
         public bool GetOptionState(FightOptionsEnum option)
@@ -230,11 +219,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             return Fight.State == FightState.Placement && m_fighters.Count > PlacementCells.Count();
         }
 
-        public FighterRefusedReasonEnum CanJoin(Character character)
+        public virtual FighterRefusedReasonEnum CanJoin(Character character)
         {
-            if (Leader is MonsterFighter)
-                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
-
             if (Fight.State != FightState.Placement)
                 return FighterRefusedReasonEnum.TOO_LATE;
 
@@ -246,14 +232,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (IsSecret)
                 return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
-
-            if (IsRestrictedToParty && Leader is CharacterFighter)
-            {
-                var leader = Leader as CharacterFighter;
-
-                if (!leader.Character.IsInParty() || !leader.Character.Party.IsInGroup(character))
-                    return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
-            }
 
             if (AlignmentSide != AlignmentSideEnum.ALIGNMENT_WITHOUT &&
                 character.AlignmentSide != AlignmentSide)
@@ -275,7 +253,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 m_fighters.Add(actor);
 
-                NotifyFighterAdded(actor);
+                OnFighterAdded(actor);
                 return true;
             }
         }
@@ -290,8 +268,19 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (!m_fighters.Remove(actor))
                     return false;
 
-                NotifyFighterRemoved(actor);
+                OnFighterRemoved(actor);
                 return true;
+            }
+        }
+
+        public void RemoveAllFighters()
+        {
+            lock (m_locker)
+            {
+                foreach (var fighter in m_fighters)
+                    OnFighterRemoved(fighter);
+
+                m_fighters.Clear();
             }
         }
 

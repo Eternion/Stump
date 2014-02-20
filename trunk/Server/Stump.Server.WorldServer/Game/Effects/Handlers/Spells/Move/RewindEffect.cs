@@ -35,6 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             buff.Target.Position.Cell = buff.Target.TurnStartPosition.Cell;
             ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(buff.Target.Fight.Clients, Caster, buff.Target, buff.Target.Position.Cell);
 
+            // todo : is it really necessary ?
             ContextHandler.SendGameActionFightSpellCastMessage(
                 buff.Target.Fight.Clients,
                 ActionsEnum.ACTION_FIGHT_CAST_SPELL,

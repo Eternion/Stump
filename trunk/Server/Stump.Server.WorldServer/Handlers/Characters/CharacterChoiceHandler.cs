@@ -12,7 +12,6 @@ using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -110,7 +109,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             {
                 var account = AccountManager.Instance.FindById(client.Account.Id) ??
                               AccountManager.Instance.CreateWorldAccount(client);
-
                 client.WorldAccount = account;
             }
 
