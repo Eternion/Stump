@@ -162,7 +162,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
             fight.RedTeam.AddFighter(character.CreateFighter(fight.RedTeam));
 
-            foreach (MonsterFighter monster in CreateFighters(fight.BlueTeam))
+            foreach (var monster in CreateFighters(fight.BlueTeam))
                 fight.BlueTeam.AddFighter(monster);
 
             Fight = fight;

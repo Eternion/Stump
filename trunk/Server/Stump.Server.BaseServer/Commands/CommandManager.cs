@@ -120,7 +120,7 @@ namespace Stump.Server.BaseServer.Commands
             m_registeredCommands.Add(command);
             m_registeredTypes.Add(commandType);
 
-            foreach (string alias in command.Aliases)
+            foreach (var alias in command.Aliases)
             {
                 CommandBase value;
                 if (!m_commandsByAlias.TryGetValue(alias, out value))

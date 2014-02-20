@@ -1,6 +1,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using FightLoot = Stump.Server.WorldServer.Game.Fights.Loots.FightLoot;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -29,6 +30,31 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         public int Id
         {
             get { return Fighter.Id; }
+        }
+
+        public int Prospecting
+        {
+            get { return Fighter.Stats[PlayerFields.Prospecting].Total; }
+        }
+
+        public int Wisdom
+        {
+            get { return Fighter.Stats[PlayerFields.Wisdom].Total; }
+        }
+
+        public int Level
+        {
+            get { return Fighter.Level; }
+        }
+
+        public virtual bool CanLoot(FightTeam team)
+        {
+            return false;
+        }
+
+        public Fight Fight
+        {
+            get { return Fighter.Fight; }
         }
 
         public FightLoot Loot
@@ -75,6 +101,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             get;
         }
 
+        int Prospecting
+        {
+            get;
+        }
+
+        int Wisdom
+        {
+            get;
+        }
+
+        int Level
+        {
+            get;
+        }
+
         FightLoot Loot
         {
             get;
@@ -84,6 +125,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             get;
         }
+
+        Fight Fight
+        {
+            get;
+        }
+
+        bool CanLoot(FightTeam looters);
 
         FightResultListEntry GetFightResultListEntry();
         void Apply();

@@ -13,10 +13,12 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
+using Stump.Server.WorldServer.Game.Items.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -114,6 +116,31 @@ namespace Stump.Server.WorldServer.Game.Items
                 new MerchantItem(item.Owner, guid, item.Template, item.Effects, quantity, price);
 
             return newitem;
+        }
+
+        public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, ItemTemplate template, uint amount)
+        {
+            var guid = TaxCollectorItemRecord.PopNextId();
+            var record = new TaxCollectorItemRecord // create the associated record
+                        {
+                            Id = guid,
+                            OwnerId = owner.Id,
+                            Template = template,
+                            Stack = amount,
+                            Effects = GenerateItemEffects(template),
+                            IsNew = true,
+                        };
+
+            return new TaxCollectorItem(record);
+        }
+        
+        public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, short id, uint amount)
+        {
+            if (!m_itemTemplates.ContainsKey(id))
+                throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
+
+            return CreateTaxCollectorItem(owner, m_itemTemplates[id], amount);
+
         }
 
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
@@ -256,6 +283,11 @@ namespace Stump.Server.WorldServer.Game.Items
         public List<PlayerMerchantItemRecord> FindPlayerMerchantItems(int ownerId)
         {
             return Database.Fetch<PlayerMerchantItemRecord>(string.Format(PlayerMerchantItemRelator.FetchByOwner, ownerId));
+        }
+
+        public List<TaxCollectorItemRecord> FindTaxCollectorItems(int ownerId)
+        {
+            return Database.Fetch<TaxCollectorItemRecord>(string.Format(TaxCollectorItemRelator.FetchByOwner, ownerId));
         }
 
         /// <summary>

@@ -8,6 +8,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Guilds;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
@@ -39,17 +40,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             return m_taxCollectorSpawns.Values.Where(x => x.GuildId == guildId).ToArray();
         }
 
-        public TaxCollectorSpawn GetMapTaxCollector(int mapId)
-        {
-            return m_taxCollectorSpawns.FirstOrDefault(x => x.Value.MapId == mapId).Value;
-        }
-
         public void AddTaxCollectorSpawn(Character character, bool lazySave = true)
         {
-            // todo temp disabled !
-            character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NO_RIGHTS));
-            return;
-
             if (!character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_HIRE_TAX_COLLECTOR))
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NO_RIGHTS));
@@ -62,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
-            if (GetMapTaxCollector(character.Position.Map.Id) != null)
+            if (character.Position.Map.TaxCollector != null)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
                 return;
@@ -74,31 +66,46 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
-            character.Inventory.SubKamas(character.Guild.HireCost);
+            if (!character.Position.Map.AllowCollector)
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_CANT_HIRE_HERE));
+                return;
+            }
 
-            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), character);
+            character.Inventory.SubKamas(character.Guild.HireCost);
+            var position = character.Position.Clone();
+
+            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), position.Map.GetNextContextualId(), position, character.Guild, character.Name);
 
             if (lazySave)
                 WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(taxCollectorNpc.Record));
             else
                 Database.Insert(taxCollectorNpc.Record);
 
-            m_taxCollectorSpawns.Add(taxCollectorNpc.Id, taxCollectorNpc.Record);
+            m_taxCollectorSpawns.Add(taxCollectorNpc.GlobalId, taxCollectorNpc.Record);
+            m_activeTaxCollectors.Add(taxCollectorNpc);
+
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
 
             //Le percepteur %1 a été posé en <b>%2</b> par <b>%3</b>.
+            foreach (var client in taxCollectorNpc.Guild.Clients)
+            {
+                client.Send(new TaxCollectorMovementMessage(true, taxCollectorNpc.GetTaxCollectorBasicInformations(), character.Name));
+                client.Send(new TaxCollectorMovementAddMessage(taxCollectorNpc.GetNetworkTaxCollector()));
+            }
         }
 
-        public void RemoveTaxCollectorSpawn(TaxCollectorSpawn spawn, bool lazySave = true)
+        public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)
         {
             if (lazySave)
-                WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Delete(spawn));
+                WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Delete(taxCollector.Record));
             else
-                Database.Delete(spawn);
+                Database.Delete(taxCollector.Record);
 
-            m_taxCollectorSpawns.Remove(spawn.Id);
+            m_taxCollectorSpawns.Remove(taxCollector.GlobalId);
+            m_activeTaxCollectors.Remove(taxCollector);
 
-            //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
+            taxCollector.Map.Leave(taxCollector);
         }
 
         public void Save()

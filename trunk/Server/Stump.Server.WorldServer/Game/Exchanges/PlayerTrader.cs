@@ -1,14 +1,8 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Items;
-using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
@@ -45,10 +39,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             if (amount == 0)
                 return false;
 
-            if (amount > 0)
-                return MoveItemToPanel(guid, (uint)amount);
-
-            return MoveItemToInventory(guid, (uint)( -amount ));
+            return amount > 0 ? MoveItemToPanel(guid, (uint)amount) : MoveItemToInventory(guid, (uint)( -amount ));
         }
 
         public bool MoveItemToPanel(int guid, uint amount)
@@ -122,10 +113,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         public override bool SetKamas(uint amount)
         {
-            if (amount > Character.Inventory.Kamas)
-                return false;
-
-            return base.SetKamas(amount);
+            return amount <= Character.Inventory.Kamas && base.SetKamas(amount);
         }
     }
 }

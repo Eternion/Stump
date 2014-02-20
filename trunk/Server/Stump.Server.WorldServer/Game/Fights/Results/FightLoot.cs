@@ -1,13 +1,18 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace Stump.Server.WorldServer.Game.Fights
+namespace Stump.Server.WorldServer.Game.Fights.Loots
 {
     public class FightLoot
     {
         private readonly Dictionary<short, DroppedItem> m_items = new Dictionary<short, DroppedItem>();
+
+        public IReadOnlyDictionary<short, DroppedItem> Items
+        {
+            get { return new ReadOnlyDictionary<short, DroppedItem>(m_items); }
+        }
 
         public int Kamas
         {
@@ -29,31 +34,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 m_items[item.ItemId].Amount += item.Amount;
             else
                 m_items.Add(item.ItemId, new DroppedItem(item.ItemId, item.Amount));
-        }
-
-        // todo : give loot to a inventory owner
-        public void GiveLoot(Character character)
-        {
-            character.Inventory.AddKamas(Kamas);
-
-            foreach (var drop in m_items.Values)
-            {
-                var template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
-
-                if (template.Effects.Count > 0)
-                {
-                    for (var i = 0; i < drop.Amount; i++)
-                    {
-                        var item = ItemManager.Instance.CreatePlayerItem(character, drop.ItemId, drop.Amount);
-                        character.Inventory.AddItem(item);
-                    }
-                }
-                else
-                {
-                    var item = ItemManager.Instance.CreatePlayerItem(character, drop.ItemId, drop.Amount);
-                    character.Inventory.AddItem(item);
-                }
-            }
         }
 
         public DofusProtocol.Types.FightLoot GetFightLoot()

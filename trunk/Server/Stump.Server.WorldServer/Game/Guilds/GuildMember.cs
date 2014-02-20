@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public short RankId
         {
-            get { return Record.RankId; }
+            get { return Record.RankId >= 0 && Record.RankId <= 35 ? Record.RankId : (short)0; }
             set
             {
                 Record.RankId = value;

@@ -34,8 +34,7 @@ namespace Uplauncher.Helpers.UI
                 y--;
             var pixels = new byte[4];
             source.CopyPixels(new Int32Rect(x, y, 1, 1), pixels, 4, 0);
-            if (pixels[3] < 1) return null;
-            return new PointHitTestResult(this, hitTestParameters.HitPoint);
+            return pixels[3] < 1 ? null : new PointHitTestResult(this, hitTestParameters.HitPoint);
         }
     }
 }
