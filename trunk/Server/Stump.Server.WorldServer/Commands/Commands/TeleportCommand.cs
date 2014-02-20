@@ -48,8 +48,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             else
             {
                 map = outdoorDefined ?
-                    World.Instance.GetMaps(reference, point.X, point.Y, outdoorDefined).FirstOrDefault() :
-                    World.Instance.GetMaps(reference, point.X, point.Y).ElementAtOrDefault(outdoor);
+                    World.Instance.GetMaps(reference, point.X, point.Y).ElementAtOrDefault(outdoor) :
+                    World.Instance.GetMaps(reference, point.X, point.Y, outdoorDefined).FirstOrDefault();
             }
 
             if (map == null)

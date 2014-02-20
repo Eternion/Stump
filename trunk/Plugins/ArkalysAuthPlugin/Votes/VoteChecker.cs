@@ -37,7 +37,6 @@ namespace ArkalysAuthPlugin.Votes
 
                 var send = group.Select(x => x.Id).ToArray();
                 world.IPCClient.Send(new VoteNotificationMessage(send));
-
             }
         }
     }

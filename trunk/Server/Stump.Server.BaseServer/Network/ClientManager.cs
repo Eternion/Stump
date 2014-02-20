@@ -7,11 +7,8 @@ using System.Net.Sockets;
 using System.Threading;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
-using Stump.Core.Pool;
 using Stump.Core.Pool.New;
 using Stump.Core.Reflection;
-using BufferManager = Stump.Core.Pool.BufferManager;
 
 namespace Stump.Server.BaseServer.Network
 {
@@ -56,7 +53,7 @@ namespace Stump.Server.BaseServer.Network
 
         private void NotifyClientConnected(BaseClient client)
         {
-            Action<BaseClient> handler = ClientConnected;
+            var handler = ClientConnected;
             if (handler != null) handler(client);
         }
 
@@ -64,7 +61,7 @@ namespace Stump.Server.BaseServer.Network
 
         private void NotifyClientDisconnected(BaseClient client)
         {
-            Action<BaseClient> handler = ClientDisconnected;
+            var handler = ClientDisconnected;
             if (handler != null) handler(client);
         } 
         #endregion
@@ -78,10 +75,10 @@ namespace Stump.Server.BaseServer.Network
 
         private readonly List<BaseClient> m_clients = new List<BaseClient>();
 
-        private SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs(); // async arg used on client connection
+        private readonly SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs(); // async arg used on client connection
         private SemaphoreSlim m_semaphore; // limit the number of threads accessing to a ressource
 
-        private AutoResetEvent m_resumeEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent m_resumeEvent = new AutoResetEvent(false);
 
         /// <summary>
         /// List of connected Clients

@@ -1,6 +1,5 @@
 
 using System;
-using Stump.Server.BaseServer.Commands.Commands;
 
 namespace Stump.Server.BaseServer.Commands
 {

@@ -2,7 +2,6 @@ using System;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -28,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
         protected virtual void OnTeleported(ObjectPosition position)
         {
-            Action<ContextActor, ObjectPosition> handler = Teleported;
+            var handler = Teleported;
             if (handler != null) handler(this, position);
         }
 
@@ -61,15 +60,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
         public virtual bool Teleport(Map map, Cell cell)
         {
-            return Teleport(new ObjectPosition(map, cell));
+            return Teleport(new ObjectPosition(map, cell), true);
         }
 
-        public virtual bool Teleport(ObjectPosition destination)
+        public virtual bool Teleport(ObjectPosition destination, bool performCheck = true)
         {
             if (IsMoving())
                 StopMove();
 
-            if (!CanChangeMap())
+            if (!CanChangeMap() && performCheck)
                 return false;
 
             if (Position.Map == destination.Map)

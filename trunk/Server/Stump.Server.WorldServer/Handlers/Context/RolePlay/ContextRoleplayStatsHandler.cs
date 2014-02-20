@@ -4,11 +4,10 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Handlers.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
-    public partial class ContextRoleplayHandler : WorldHandlerContainer
+    public partial class ContextRoleplayHandler
     {
         private readonly static Dictionary<StatsBoostTypeEnum, PlayerFields> m_statsEnumRelations = new Dictionary<StatsBoostTypeEnum, PlayerFields>
             {
@@ -50,8 +49,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             // while enough pts to boost once
             while (pts >= thresholds[index][1])
             {
-                short ptsUsed = 0;
-                short boost = 0;
+                short ptsUsed;
+                short boost;
                 // if not last threshold and enough pts to reach the next threshold we fill this first
                 if (index < thresholds.Length - 1 && (pts / (double)thresholds[index][1]) > (thresholds[index + 1][0] - actualPoints))
                 {

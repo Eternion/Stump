@@ -24,10 +24,7 @@ namespace Stump.Server.BaseServer.Commands
             get
             {
                 SubCommand command;
-                if (!TryGetSubCommand(name, out command))
-                    return null;
-
-                return command;
+                return !TryGetSubCommand(name, out command) ? null : command;
             }
         }
 
@@ -55,7 +52,7 @@ namespace Stump.Server.BaseServer.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            string str = trigger.Args.NextWord();
+            var str = trigger.Args.NextWord();
 
             SubCommand command;
             if (!TryGetSubCommand(IgnoreCommandCase ? str.ToLower() : str, out command) || command.RequiredRole > trigger.UserRole)

@@ -26,6 +26,7 @@ namespace Stump.Server.BaseServer.IPC.Messages
         {
             
         }
+
         [ProtoMember(2)]
         public int? AccountId
         {
@@ -61,5 +62,11 @@ namespace Stump.Server.BaseServer.IPC.Messages
             set;
         }
 
+        [ProtoMember(7)]
+        public int? Jailed
+        {
+            get;
+            set;
+        }
     }
 }

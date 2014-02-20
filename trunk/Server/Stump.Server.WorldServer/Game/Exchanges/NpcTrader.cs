@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 {
     public class NpcTrader : Trader
     {
-        private UniqueIdProvider m_idProvider = new UniqueIdProvider();
+        private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
 
         public NpcTrader(Npc npc, ITrade trade)
             : base(trade)

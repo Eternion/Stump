@@ -8,7 +8,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
-    public partial class CharacterHandler : WorldHandlerContainer
+    public partial class CharacterHandler
     {
         
         public static void SendLifePointsRegenBeginMessage(IPacketReceiver client, byte regenRate)

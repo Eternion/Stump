@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Spells;
 using SpellType = Stump.Server.WorldServer.Database.Spells.SpellType;
 
@@ -22,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
-            int counter = 1;
+            var counter = 1;
             ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
         }
 
@@ -33,9 +32,21 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             Template = SpellManager.Instance.GetSpellTemplate(Id);
             SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
-            int counter = 1;
+            var counter = 1;
+            ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
+        }        
+        
+        public Spell(SpellTemplate template, byte level)
+        {
+            m_id = template.Id;
+            m_level = level;
+
+            Template = template;
+            SpellType = SpellManager.Instance.GetSpellType(Template.TypeId);
+            var counter = 1;
             ByLevel = SpellManager.Instance.GetSpellLevels(Template).ToDictionary(entry => counter++);
         }
+
 
         #region Properties
 
@@ -96,6 +107,33 @@ namespace Stump.Server.WorldServer.Game.Spells
         }
 
         #endregion
+
+        public bool CanBoostSpell()
+        {
+            return ByLevel.ContainsKey(CurrentLevel + 1);
+        }
+
+        public bool BoostSpell()
+        {
+            if (!CanBoostSpell())
+                return false;
+
+            m_level++;
+            m_record.Level = m_level;
+            m_currentLevel = ByLevel[m_level];
+            return true;
+        }
+
+        public bool UnBoostSpell()
+        {
+            if (!ByLevel.ContainsKey(CurrentLevel - 1))
+                return false;
+
+            m_level--;
+            m_record.Level = m_level;
+            m_currentLevel = ByLevel[m_level];
+            return true;
+        }
 
         public SpellItem GetSpellItem()
         {

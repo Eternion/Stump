@@ -10,8 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public Fight CreateDuel(Map map)
         {
-            var redTeam = new FightTeam(0, map.GetRedFightPlacement());
-            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement());
+            var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
+            var blueTeam = new FightPlayerTeam(1, map.GetBlueFightPlacement());
 
             var fight = new FightDuel(m_idProvider.Pop(), map, blueTeam, redTeam);
 
@@ -22,8 +22,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public Fight CreatePvMFight(Map map)
         {
-            var redTeam = new FightTeam(0, map.GetRedFightPlacement());
-            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement());
+            var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
+            var blueTeam = new FightMonsterTeam(1, map.GetBlueFightPlacement());
 
             var fight = new FightPvM(m_idProvider.Pop(), map, blueTeam, redTeam);
 
@@ -34,10 +34,22 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public Fight CreateAgressionFight(Map map, AlignmentSideEnum redAlignment, AlignmentSideEnum blueAlignment)
         {
-            var redTeam = new FightTeam(0, map.GetRedFightPlacement(), redAlignment);
-            var blueTeam = new FightTeam(1, map.GetBlueFightPlacement(), blueAlignment);
+            var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement(), redAlignment);
+            var blueTeam = new FightPlayerTeam(1, map.GetBlueFightPlacement(), blueAlignment);
 
             var fight = new FightAgression(m_idProvider.Pop(), map, blueTeam, redTeam);
+
+            AddEntity(fight.Id, fight);
+
+            return fight;
+        }
+
+        public FightPvT CreatePvTFight(Map map)
+        {
+            var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
+            var blueTeam = new FightTaxCollectorTeam(1, map.GetBlueFightPlacement());
+
+            var fight = new FightPvT(m_idProvider.Pop(), map, blueTeam, redTeam);
 
             AddEntity(fight.Id, fight);
 

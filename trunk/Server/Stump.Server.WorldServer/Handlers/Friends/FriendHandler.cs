@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Social;
 
@@ -32,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
 
             if (character != null)
             {
-                if (character.Account.Role != RoleEnum.Player)
+                if (character.Account.Role == RoleEnum.Player)
                     client.Character.FriendsBook.AddFriend(character.Client.WorldAccount);
                 else
                     SendFriendAddFailureMessage(client, ListAddFailureEnum.LIST_ADD_FAILURE_NOT_FOUND);

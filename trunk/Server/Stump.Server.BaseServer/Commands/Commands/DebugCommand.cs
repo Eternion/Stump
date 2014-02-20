@@ -93,7 +93,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         }
     }
 
-    public class CommandRunCode : SubCommand
+    /*public class CommandRunCode : SubCommand
     {
         public CommandRunCode()
         {
@@ -132,5 +132,5 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
             trigger.Reply(ObjectDumper.Dump(eval()));
         }
-    }
+    }*/
 }

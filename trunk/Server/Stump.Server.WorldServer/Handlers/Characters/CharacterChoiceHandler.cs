@@ -7,14 +7,11 @@ using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -40,7 +37,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterSelectionMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionMessage(WorldClient client, CharacterSelectionMessage message)
         {
-            CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
+            var character = client.Characters.First(entry => entry.Id == message.id);
 
             /* Check null */
             if (character == null)
@@ -56,7 +53,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterSelectionWithRecolorMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionWithRecolorMessage(WorldClient client, CharacterSelectionWithRecolorMessage message)
         {
-            CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
+            var character = client.Characters.First(entry => entry.Id == message.id);
 
             /* Check null */
             if (character == null)
@@ -79,7 +76,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         [WorldHandler(CharacterSelectionWithRenameMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
         public static void HandleCharacterSelectionWithRenameMessage(WorldClient client, CharacterSelectionWithRenameMessage message)
         {
-            CharacterRecord character = client.Characters.First(entry => entry.Id == message.id);
+            var character = client.Characters.First(entry => entry.Id == message.id);
 
             /* Check null */
             if (character == null)
@@ -110,9 +107,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
-                var account = AccountManager.Instance.FindById(client.Account.Id);
-                if (account == null)
-                    account = AccountManager.Instance.CreateWorldAccount(client);
+                var account = AccountManager.Instance.FindById(client.Account.Id) ??
+                              AccountManager.Instance.CreateWorldAccount(client);
                 client.WorldAccount = account;
             }
 
@@ -131,7 +127,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             //ContextHandler.SendSpellForgottenMessage(client);
 
             ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 21).Select(entry => (sbyte)entry).ToList());
-            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 12, 13, 9, 10 }, new sbyte[] {8, 7});
+            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
 
             PvPHandler.SendAlignmentRankUpdateMessage(client);
             PvPHandler.SendAlignmentSubAreasListMessage(client);
@@ -151,7 +147,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             GuildHandler.SendGuildMemberWarnOnConnectionStateMessage(client, client.Character.WarnOnGuildConnection);
 
             client.Character.SendConnectionMessages();
-
 
             //InitializationHandler.SendOnConnectionEventMessage(client, 2);
 
@@ -192,7 +187,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharactersListMessage(WorldClient client)
         {
-            List<CharacterBaseInformations> characters = client.Characters.Select(
+            var characters = client.Characters.Select(
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
@@ -216,7 +211,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var charactersToRename = new List<int>();
             var unusableCharacters = new List<int>();
 
-            foreach (CharacterRecord characterRecord in client.Characters)
+            foreach (var characterRecord in client.Characters)
             {
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),

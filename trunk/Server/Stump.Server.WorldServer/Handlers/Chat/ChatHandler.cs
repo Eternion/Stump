@@ -26,33 +26,42 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
             if (chr != null)
             {
-                if (!chr.IsAway)
+                if (client.Character.IsMuted())
                 {
-                    if (client.Character.IsAway)
-                        client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
-
-                    // send a copy to sender
-                    SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                        message.content);
-
-                    // Send to receiver
-                    SendChatServerMessage(chr.Client, client.Character,
-                        ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                        message.content);
-
-                    var document = new BsonDocument
-                    {
-                        { "SenderId", client.Character.Id },
-                        { "ReceiverId", chr.Id },
-                        { "Message", message.content },
-                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-                    };
-
-                    MongoLogger.Instance.Insert("PrivateMSG", document);
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123,
+                        (int)client.Character.GetMuteRemainingTime().TotalSeconds);
                 }
                 else
                 {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, chr.Name);
+                    if (!chr.IsAway)
+                    {
+                        if (client.Character.IsAway)
+                            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
+
+                        // send a copy to sender
+                        SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                            message.content);
+
+                        // Send to receiver
+                        SendChatServerMessage(chr.Client, client.Character,
+                            ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                            message.content);
+
+                        var document = new BsonDocument
+                            {
+                                {"SenderId", client.Character.Id},
+                                {"ReceiverId", chr.Id},
+                                {"Message", message.content},
+                                {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
+                            };
+
+                        MongoLogger.Instance.Insert("PrivateMSG", document);
+                    }
+                    else
+                    {
+                        client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
+                            chr.Name);
+                    }
                 }
             }
             else
@@ -73,7 +82,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
             MongoLogger.Instance.Insert("MultiMessage", document);
 
-            ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum) message.channel, message.content);
+            ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum)message.channel, message.content);
         }
 
         public static void SendChatServerMessage(IPacketReceiver client, string message)
@@ -90,7 +99,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                  int timestamp, string fingerprint)
         {
             client.Send(new ChatServerMessage(
-                            (sbyte) channel,
+                            (sbyte)channel,
                             message,
                             timestamp,
                             fingerprint,
@@ -113,7 +122,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerMessage(
-                (sbyte) channel,
+                (sbyte)channel,
                 message,
                 timestamp,
                 fingerprint,
@@ -127,7 +136,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             if (!String.IsNullOrEmpty(message))
             {
                 client.Send(new ChatServerMessage(
-                                (sbyte) channel,
+                                (sbyte)channel,
                                 message,
                                 timestamp,
                                 fingerprint,
@@ -151,7 +160,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                        fingerprint,
                                        sender.Id,
                                        sender.Name,
-                                       (int) sender.Account.Id);
+                                       sender.Account.Id);
         }
 
         public static void SendChatAdminServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message,
@@ -160,7 +169,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         {
             if (!String.IsNullOrEmpty(message))
             {
-                client.Send(new ChatAdminServerMessage((sbyte) channel,
+                client.Send(new ChatAdminServerMessage((sbyte)channel,
                                                        message,
                                                        timestamp,
                                                        fingerprint,
@@ -184,7 +193,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerCopyMessage(
-                            (sbyte) channel,
+                            (sbyte)channel,
                             message,
                             timestamp,
                             fingerprint,
