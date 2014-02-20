@@ -1636,7 +1636,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
 
-                // avoid the trigger to trggier twice
+                // avoid the trigger to trigger twice
                 if (markTrigger is Trap)
                     RemoveTrigger(markTrigger); 
                     

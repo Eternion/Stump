@@ -21,9 +21,15 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                             ));
         }
 
+        /*
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedMonster summonedMonster)
         {
             client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summonedMonster.Summoner.Id, summonedMonster.GetGameFightFighterInformations()));
+        }
+         */
+        public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
+        {
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
         }
 
         public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)

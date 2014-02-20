@@ -228,6 +228,7 @@
     <Compile Include="Database\World\WorldMapTaxCollector.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
+    <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Look\ActorLook.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
@@ -299,6 +300,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\APStealNonFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPStealNonFix.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Summon\Double.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GiveKamas.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreHp.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Punishment.cs" />
