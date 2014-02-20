@@ -26,6 +26,8 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
         [WorldHandler(GameRolePlayTaxCollectorFightRequestMessage.Id)]
         public static void HandleGameRolePlayTaxCollectorFightRequestMessage(WorldClient client, GameRolePlayTaxCollectorFightRequestMessage message)
         {
+            client.Character.OpenPopup("Vous ne pouvez pas attaquer les Percepteurs pour le moment, une mise à jour arrivera bientôt !");
+            return;
             var taxCollector = client.Character.Map.GetActor<TaxCollectorNpc>(message.taxCollectorId);
 
             var result = client.Character.CanAttack(taxCollector);
