@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             OnFightAdded(fighter);
 
-            Action<FightTeam, FightActor> handler = FighterAdded;
+            var handler = FighterAdded;
             if (handler != null)
                 handler(this, fighter);
         }
@@ -34,14 +34,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnTeamOptionsChanged(FightOptionsEnum option)
         {
-            Action<FightTeam, FightOptionsEnum> handler = TeamOptionsChanged;
+            var handler = TeamOptionsChanged;
             if (handler != null)
                 handler(this, option);
         }
 
         public event Action<FightTeam, FightActor> FighterRemoved;
 
-        private void OnFightRemoved(FightActor fighter)
+        private static void OnFightRemoved(FightActor fighter)
         {
         }
 
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             OnFightRemoved(fighter);
 
-            Action<FightTeam, FightActor> handler = FighterRemoved;
+            var handler = FighterRemoved;
             if (handler != null)
                 handler(this, fighter);
         }
@@ -60,14 +60,14 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly List<FightActor> m_leavers = new List<FightActor>();
         private readonly object m_locker = new object();
 
-        public FightTeam(sbyte id, Cell[] placementCells)
+        protected FightTeam(sbyte id, Cell[] placementCells)
         {
             Id = id;
             PlacementCells = placementCells;
             AlignmentSide = AlignmentSideEnum.ALIGNMENT_WITHOUT;
         }
 
-        public FightTeam(sbyte id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
+        protected FightTeam(sbyte id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
         {
             Id = id;
             PlacementCells = placementCells;
