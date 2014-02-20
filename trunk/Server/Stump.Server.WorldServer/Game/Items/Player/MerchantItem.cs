@@ -44,6 +44,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         #endregion
 
         #region Functions
+
         public bool MustStackWith(MerchantItem compared)
         {
             return ( compared.Template.Id == Template.Id &&

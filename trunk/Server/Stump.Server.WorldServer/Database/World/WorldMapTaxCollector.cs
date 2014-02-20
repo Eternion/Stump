@@ -78,7 +78,13 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
-        public uint KamasEarned
+        public string CallerName
+        {
+            get;
+            set;
+        }
+
+        public int Date
         {
             get;
             set;

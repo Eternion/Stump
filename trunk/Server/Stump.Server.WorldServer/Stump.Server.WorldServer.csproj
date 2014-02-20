@@ -184,6 +184,7 @@
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
     <Compile Include="Database\Interactives\InteractiveSkillRecord.cs" />
     <Compile Include="Database\ISaveable.cs" />
+    <Compile Include="Database\Items\TaxCollectorItemRecord.cs" />
     <Compile Include="Database\Items\Templates\PetTemplate.cs" />
     <Compile Include="Database\Items\PlayerItemRecord.cs" />
     <Compile Include="Database\Items\Shops\ItemToSell.cs" />
@@ -228,6 +229,7 @@
     <Compile Include="Database\World\WorldMapTaxCollector.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
+    <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Look\ActorLook.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
@@ -282,6 +284,7 @@
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
+    <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorExchangeDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerMPUsed.cs" />
@@ -334,11 +337,19 @@
     <Compile Include="Game\Fights\FightAgression.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
+    <Compile Include="Game\Fights\FightMonsterTeam.cs" />
+    <Compile Include="Game\Fights\FightPlayerTeam.cs" />
     <Compile Include="Game\Fights\FightPvM.cs" />
+    <Compile Include="Game\Fights\FightPvT.cs" />
     <Compile Include="Game\Fights\FightSpectator.cs" />
+    <Compile Include="Game\Fights\FightTaxCollectorTeam.cs" />
+    <Compile Include="Game\Fights\FightTeamWithLeader.cs" />
     <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
     <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
+    <Compile Include="Game\Fights\Results\IExperienceResult.cs" />
+    <Compile Include="Game\Fights\Results\IPvpResult.cs" />
+    <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
     <Compile Include="Game\Fights\Triggers\FractionGlyph.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
@@ -361,6 +372,8 @@
     <Compile Include="Game\Items\Player\CharacterMerchantBag.cs" />
     <Compile Include="Game\Items\Player\MerchantItem.cs" />
     <Compile Include="Game\Items\Pet.cs" />
+    <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
+    <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Social\ChatEntry.cs" />
@@ -391,6 +404,7 @@
     <Compile Include="Handlers\Prism\PrismHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
+    <Compile Include="Handlers\TaxCollector\TaxCollectorHandler.cs" />
     <Compile Include="Handlers\Titles\TitleHandler.cs" />
     <Compile Include="Rates.cs" />
     <Compile Include="Database\Accounts\WorldAccount.cs" />
@@ -479,7 +493,6 @@
     <Compile Include="Game\Actors\Fight\MonsterFighter.cs" />
     <Compile Include="Game\Actors\Fight\MutantFighter.cs" />
     <Compile Include="Game\Actors\Fight\NamedFighter.cs" />
-    <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Interfaces\IInventoryOwner.cs" />
     <Compile Include="Game\Actors\Interfaces\IStatsOwner.cs" />
     <Compile Include="Game\Actors\RolePlay\Characters\Character.cs" />
@@ -559,7 +572,7 @@
     <Compile Include="Game\Exchanges\PlayerTrader.cs" />
     <Compile Include="Game\Exchanges\PlayerTradeRequest.cs" />
     <Compile Include="Game\Exchanges\TradeManager.cs" />
-    <Compile Include="Game\Fights\FightLoot.cs" />
+    <Compile Include="Game\Fights\Results\FightLoot.cs" />
     <Compile Include="Game\Fights\FightManager.cs" />
     <Compile Include="Game\Fights\FightRequest.cs" />
     <Compile Include="Game\Fights\FightState.cs" />

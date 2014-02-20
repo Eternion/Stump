@@ -14,6 +14,7 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
@@ -28,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Owner = owner;
         }
 
-        public MerchantBag(Merchant owner, CharacterMerchantBag merchantBag)
+        public MerchantBag(Merchant owner, IEnumerable<MerchantItem> merchantBag)
         {
             Owner = owner;
             Items = merchantBag.ToDictionary(entry => entry.Guid); // just to copy properly

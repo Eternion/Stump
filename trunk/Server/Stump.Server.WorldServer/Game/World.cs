@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using NLog;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
@@ -183,7 +184,7 @@ namespace Stump.Server.WorldServer.Game
                 }
             }
 
-            foreach (SubArea subArea in m_subAreas.Values)
+            foreach (var subArea in m_subAreas.Values)
             {
                 Area area;
                 if (m_areas.TryGetValue(subArea.Record.AreaId, out area))
@@ -192,7 +193,7 @@ namespace Stump.Server.WorldServer.Game
                 }
             }
 
-            foreach (Area area in m_areas.Values)
+            foreach (var area in m_areas.Values)
             {
                 SuperArea superArea;
                 if (m_superAreas.TryGetValue(area.Record.SuperAreaId, out superArea))
@@ -202,7 +203,7 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private void SpawnNpcs()
+        private static void SpawnNpcs()
         {
             foreach (var npcSpawn in NpcManager.Instance.GetNpcSpawns())
             {
@@ -261,7 +262,7 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private void SpawnCellTriggers()
+        private static void SpawnCellTriggers()
         {
             foreach (var trigger in CellTriggerManager.Instance.GetCellTriggers().Select(cellTrigger => cellTrigger.GenerateTrigger()))
             {
@@ -322,7 +323,8 @@ namespace Stump.Server.WorldServer.Game
 
         public void SpawnTaxCollectors()
         {
-            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null select new TaxCollectorNpc(spawn))
+            foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null
+                                         select new TaxCollectorNpc(spawn, spawn.Map.GetNextContextualId()))
             {
                 taxcollector.Map.Enter(taxcollector);
             }
@@ -552,6 +554,11 @@ namespace Stump.Server.WorldServer.Game
             WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendServerMessage(announce, color)));
         }
 
+        public void SendAnnounce(TextInformationTypeEnum type, short messageId, params object[] parameters)
+        {
+            WorldServer.Instance.IOTaskPool.AddMessage(() => ForEachCharacter(character => character.SendInformationMessage(type, messageId, parameters)));
+        }
+
         #endregion
 
         public void RegisterSaveableInstance(ISaveable instance)
@@ -564,6 +571,8 @@ namespace Stump.Server.WorldServer.Game
             lock (SaveLock)
             {
                 logger.Info("Saving world ...");
+                SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 164);
+
                 var sw = Stopwatch.StartNew();
 
                 var clients = ClientManager.Instance.FindAll<WorldClient>();
@@ -595,6 +604,7 @@ namespace Stump.Server.WorldServer.Game
                     }
                 }
 
+                SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 165);
                 logger.Info("World server saved ! ({0} ms)", sw.ElapsedMilliseconds);
             }
         }

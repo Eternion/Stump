@@ -192,7 +192,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             AddParameter("monster", "m", "Targetted monster", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("item", "item", converter: ParametersConverter.ItemTemplateConverter);
             AddParameter<double>("rate", "rate");
-            AddParameter("lock", "lock", "Prospecting lock", defaultValue: 100);
+            AddParameter("lock", "lock", "Prospecting lock", 100);
             AddParameter("limit", "limit", defaultValue: 0);
             AddParameter("rolls", "max", defaultValue: 1);
         }
@@ -200,7 +200,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public override void ExecuteAdd(TriggerBase trigger)
         {
             var monster = trigger.Get<MonsterTemplate>("monster");
-            var drop = new DroppableItem()
+            var drop = new DroppableItem
             {
                 ItemId = (short) trigger.Get<ItemTemplate>("item").Id,
                 ProspectingLock = trigger.Get<int>("lock"),

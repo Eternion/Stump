@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return false;
         }
 
-        public override bool Teleport(ObjectPosition destination)
+        public override bool Teleport(ObjectPosition destination, bool performCheck)
         {
             return false;
         }
@@ -162,7 +162,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
             fight.RedTeam.AddFighter(character.CreateFighter(fight.RedTeam));
 
-            foreach (MonsterFighter monster in CreateFighters(fight.BlueTeam))
+            foreach (var monster in CreateFighters(fight.BlueTeam))
                 fight.BlueTeam.AddFighter(monster);
 
             Fight = fight;

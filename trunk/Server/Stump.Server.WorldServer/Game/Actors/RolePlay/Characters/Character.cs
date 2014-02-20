@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using NLog;
+using Stump.Core.Cryptography;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -16,12 +18,14 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Guilds;
@@ -45,8 +49,7 @@ using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
-    public sealed class Character : Humanoid,
-                                    IStatsOwner, IInventoryOwner, ICommandsUser
+    public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
         private const int AURA_1_SKIN = 170;
         private const int AURA_2_SKIN = 171;
@@ -325,6 +328,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Dialog is ZaapDialog;
         }
 
+        public bool IsInMerchantDialog()
+        {
+            return Dialog is MerchantShopDialog;
+        }
+
+        public bool IsInTaxCollectorDialog()
+        {
+            return Dialog is TaxCollectorExchangeDialog;
+        }
+
         #endregion
 
         #region Party
@@ -586,6 +599,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (!IsInFight())
                 Map.Refresh(this);
+
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, toggle ? (short)236 : (short)237);
 
             return Invisible;
         }
@@ -1004,10 +1019,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void AddHonor(ushort amount)
         {
-            if (amount < 0)
-                SubHonor((ushort) (-amount));
-            else
-                Honor += amount;
+            Honor += amount;
         }
 
         public void SubHonor(ushort amount)
@@ -1265,44 +1277,74 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool StartMove(Path movementPath)
         {
-            if (IsFighting())
-                return Fighter.StartMove(movementPath);
-
-            return base.StartMove(movementPath);
+            return IsFighting() ? Fighter.StartMove(movementPath) : base.StartMove(movementPath);
         }
 
         public override bool StopMove()
         {
-            if (IsFighting())
-                return Fighter.StopMove();
-
-            return base.StopMove();
+            return IsFighting() ? Fighter.StopMove() : base.StopMove();
         }
 
         public override bool MoveInstant(ObjectPosition destination)
         {
-            if (IsFighting())
-                return Fighter.MoveInstant(destination);
-
-            return base.MoveInstant(destination);
+            return IsFighting() ? Fighter.MoveInstant(destination) : base.MoveInstant(destination);
         }
 
         public override bool StopMove(ObjectPosition currentObjectPosition)
         {
-            if (IsFighting())
-                return Fighter.StopMove(currentObjectPosition);
-
-            return base.StopMove(currentObjectPosition);
+            return IsFighting() ? Fighter.StopMove(currentObjectPosition) : base.StopMove(currentObjectPosition);
         }
 
         public override bool Teleport(MapNeighbour mapNeighbour)
         {
-            bool success = base.Teleport(mapNeighbour);
+            var success = base.Teleport(mapNeighbour);
 
             if (!success)
                 SendServerMessage("Unknown map transition");
 
             return success;
+        }
+
+        public bool TeleportToJail()
+        {
+            var random = new AsyncRandom();
+            var map = World.Instance.GetMap(105121026);
+            var cell = map.Cells[179];
+
+            switch (random.Next(1, 3))
+            {
+                case 1:
+                    map = World.Instance.GetMap(105121026);
+
+                    switch (random.Next(1, 4))
+                    {
+                        case 1:
+                            cell = map.Cells[179];
+                            break;
+                        case 2:
+                            cell = map.Cells[445];
+                            break;
+                        case 3:
+                            cell = map.Cells[184];
+                            break;
+                        case 4:
+                            cell = map.Cells[435];
+                            break;
+                    }
+                    break;
+                case 2:
+                    map = World.Instance.GetMap(105119744);
+                    cell = map.Cells[314];
+                    break;
+                case 3:
+                    map = World.Instance.GetMap(105120002);
+                    cell = map.Cells[300];
+                    break;
+            }
+
+            Teleport(new ObjectPosition(map, cell), false);
+
+            return true;
         }
 
         protected override void OnTeleported(ObjectPosition position)
@@ -1317,7 +1359,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanChangeMap()
         {
-            return base.CanChangeMap() && !IsFighting();
+            return base.CanChangeMap() && !IsFighting() && !Account.IsJailed;
         }
 
         #endregion
@@ -1513,13 +1555,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnFightEnded(CharacterFighter fighter)
         {
-            CharacterFightEndedHandler handler = FightEnded;
+            var handler = FightEnded;
             if (handler != null) handler(this, fighter);
         }
 
         private void OnCharacterContextChanged(bool inFight)
         {
-            CharacterContextChangedHandler handler = ContextChanged;
+            var handler = ContextChanged;
             if (handler != null) handler(this, inFight);
         }
 
@@ -1535,7 +1577,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target == this)
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
 
-            if (target.Map != Map)
+            if (target.Map != Map || Map.AllowFightChallenges)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
@@ -1562,11 +1604,25 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.AlignmentSide == AlignmentSide)
                 return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
 
-            if (target.Map != Map)
+            if (target.Map != Map || !Map.AllowAggression)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             if (target.Client.IP == Client.IP)
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
+
+            return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
+        }
+
+        public FighterRefusedReasonEnum CanAttack(TaxCollectorNpc target)
+        {
+            if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
+                return FighterRefusedReasonEnum.WRONG_GUILD;
+
+            if (target.IsBusy())
+                return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
+
+            if (target.Map != Map)
+                return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
@@ -1837,6 +1893,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 if (sendError)
                     SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 23);
+                return false;
+            }
+
+            if (!Map.AllowHumanVendor)
+            {
+                if (sendError)
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 237);
+
                 return false;
             }
 

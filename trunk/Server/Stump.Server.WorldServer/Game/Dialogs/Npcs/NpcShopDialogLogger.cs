@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
-using Stump.Server.BaseServer;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;

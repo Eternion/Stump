@@ -137,6 +137,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
+                guild.RemoveTaxCollectors();
+
                 m_guilds.Remove(guild.Id);
                 m_guildsToDelete.Push(guild);
 

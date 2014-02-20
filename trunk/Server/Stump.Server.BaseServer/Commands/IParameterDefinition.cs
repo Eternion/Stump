@@ -45,7 +45,7 @@ namespace Stump.Server.BaseServer.Commands
             get;
         }
 
-        new T DefaultValue
+         T DefaultValue
         {
             get;
         }

@@ -7,12 +7,16 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.Player;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -47,6 +51,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                     if (target.IsAway)
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
+                        return;
+                    }
+                    
+                    if (!client.Character.Map.AllowExchangesBetweenPlayers)
+                    {
+                        SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_IMPOSSIBLE);
                         return;
                     }
 
@@ -87,12 +97,31 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             if (client.Character.IsTrading())
                 client.Character.Trader.MoveItem(message.objectUID, message.quantity);
-            else if (message.quantity <= 0) // he is modifying his merchant bag and remove an item
+            else if (client.Character.IsInTaxCollectorDialog())
             {
-                var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
-                var result = client.Character.MerchantBag.MoveToInventory(merchantItem);
+                if (message.quantity <= 0)
+                {
+                    var taxCollector = (client.Character.Dialog as TaxCollectorExchangeDialog).TaxCollector;
+                    var taxCollectorItem = taxCollector.Bag.TryGetItem(message.objectUID);
+                    if (taxCollectorItem == null)
+                        return;
 
-                if (result)
+                    int[] objectUIDList = { message.objectUID };
+
+                    if (taxCollector.Bag.MoveToInventory(taxCollectorItem, client.Character))
+                        client.Send(new StorageObjectsRemoveMessage(objectUIDList));
+                }
+                else
+                    client.Character.SendSystemMessage(7, false);
+            }
+            else if (client.Character.IsInMerchantDialog() && message.quantity <= 0)
+            {
+                // he is modifying his merchant bag and remove an item
+                var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
+                if (merchantItem == null)
+                    return;
+
+                if (client.Character.MerchantBag.MoveToInventory(merchantItem))
                     client.Send(new ExchangeShopStockMovementRemovedMessage(message.objectUID));
             }
         }
@@ -146,7 +175,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (message.quantity <= 0 || message.price <= 0)
                 return;
 
-            BasePlayerItem item = client.Character.Inventory.TryGetItem(message.objectUID);
+            var item = client.Character.Inventory.TryGetItem(message.objectUID);
 
             if (item == null) 
                 return;
@@ -166,7 +195,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (message.price <= 0)
                 return;
 
-            MerchantItem merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
+            var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
 
             if (merchantItem == null)
                 return;
@@ -210,6 +239,26 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             shop.Open();
         }
 
+        [WorldHandler(ExchangeRequestOnTaxCollectorMessage.Id)]
+        public static void HandleExchangeRequestOnTaxCollectorMessage(WorldClient client, ExchangeRequestOnTaxCollectorMessage message)
+        {
+            if (client.Character.Guild == null)
+                return;
+
+            var taxCollectorNpc = GuildManager.Instance.FindTaxCollectorNpc(message.taxCollectorId);
+            if (taxCollectorNpc == null)
+                return;
+
+            if (taxCollectorNpc.Guild.Id != client.Character.Guild.Id)
+            {
+                client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_OWNED));
+                return;
+            }
+
+            var exchange = new TaxCollectorExchangeDialog(taxCollectorNpc, client.Character);
+            exchange.Open();
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
@@ -230,6 +279,16 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             playerTrade.SecondTrader.Character.Inventory.Weight,
                             (int)playerTrade.SecondTrader.Character.Inventory.WeightTotal
                             ));
+        }
+
+        public static void SendExchangeStartOkTaxCollectorMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
+        {
+            client.Send(new ExchangeStartOkTaxCollectorMessage(taxCollector.Id, taxCollector.Bag.Select(x => x.GetObjectItem()), 0));
+        }
+
+        public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)
+        {
+            client.Send(new ExchangeStartOkHumanVendorMessage(merchant.Id, merchant.Bag.Select(x => x.GetObjectItemToSellInHumanVendorShop())));
         }
 
         public static void SendExchangeStartOkNpcTradeMessage(IPacketReceiver client, NpcTrade trade)
@@ -276,11 +335,6 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(new ExchangeShopStockStartedMessage(
                             merchantBag.Select(x => x.GetObjectItemToSell())));
-        }
-
-        public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)
-        {
-            client.Send(new ExchangeStartOkHumanVendorMessage(merchant.Id, merchant.Bag.Select(x => x.GetObjectItemToSellInHumanVendorShop())));
         }
     }
 }
