@@ -32,11 +32,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
-
                 if (Effect.Duration > 0)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType, DamageBuffTrigger);
@@ -48,13 +43,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                     {
                         NotifySpellReflected(actor);
-                        Caster.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell);
+                        Caster.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), actor, Spell) {ReflectedDamages = true, MarkTrigger = MarkTrigger});
 
                         actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
-                        actor.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell);
+                        Caster.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell) {MarkTrigger = MarkTrigger});
                     }
                 }
             }
@@ -69,12 +64,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var integerEffect = buff.GenerateEffect();
+            var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
+            {
+                Buff = buff
+            };
 
-            if (integerEffect == null)
-                return;
+            buff.Target.InflictDamage(damages);
 
-            buff.Target.InflictDamage(integerEffect.Value, GetEffectSchool(integerEffect.EffectId), buff.Caster, buff.Target is CharacterFighter, buff.Spell);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
