@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -15,12 +16,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Caster = caster;
             Look = caster.Look.Clone();
-            m_stats = new StatsFields(caster);
-            var fighter = caster as CharacterFighter;
-            if (fighter != null)
-                m_stats.Initialize(fighter.Character.Record);
-            else
-                m_stats.Initialize(((MonsterFighter) caster).Monster.Grade);
+            m_stats = caster.Stats.CloneAndChangeOwner(this);
         }
 
         public FightActor Caster
@@ -52,6 +48,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override StatsFields Stats
         {
             get { return m_stats; }
+        }
+
+        public override GameFightFighterInformations GetGameFightFighterInformations()
+        {
+            var casterInfos = Caster.GetGameFightFighterInformations();
+            casterInfos.contextualId = Id;
+            return casterInfos;
+        }
+        public override FightTeamMemberInformations GetFightTeamMemberInformations()
+        {
+            var casterInfos = Caster.GetFightTeamMemberInformations();
+            casterInfos.id = Id;
+            return casterInfos;
         }
     }
 }
