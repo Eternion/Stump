@@ -25,32 +25,32 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
-
-
                 if (Effect.Duration > 0)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, DamageBuffTrigger);
                 }
                 else
                 {
-                    var damage = (short)( actor.MaxLifePoints * ( integerEffect.Value / 100d ) );
+                    var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell);
+                    damage.GenerateDamages();
+                    damage.Amount = (int)((actor.MaxLifePoints * (damage.Amount / 100d)));
+                    damage.IgnoreDamageBoost = true;
+                    damage.MarkTrigger = MarkTrigger;
 
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
                     if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                     {
                         NotifySpellReflected(actor);
-                        Caster.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, Caster is CharacterFighter, Spell, false);
+                        damage.Source = actor;
+                        damage.ReflectedDamages = true;
+                        Caster.InflictDamage(damage);
 
                         actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
-                        actor.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), Caster, actor is CharacterFighter, Spell, withBoost:false);
+                        actor.InflictDamage(damage);
                     }
                 }
             }
@@ -70,9 +70,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             if (integerEffect == null)
                 return;
 
-            var damage = (short)( buff.Target.MaxLifePoints * ( integerEffect.Value / 100d ) );
+            var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
+            {
+                Buff = buff,
+                
+            };
+            damage.GenerateDamages();
+            damage.Amount = (int)((buff.Target.MaxLifePoints * (damage.Amount / 100d)));
+            damage.IgnoreDamageBoost = true;
 
-            buff.Target.InflictDamage(damage, GetEffectSchool(integerEffect.EffectId), buff.Caster, buff.Target is CharacterFighter, buff.Spell);
+            buff.Target.InflictDamage(damage);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)

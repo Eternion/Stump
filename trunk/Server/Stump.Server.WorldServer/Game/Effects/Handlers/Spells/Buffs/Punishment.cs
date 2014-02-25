@@ -38,14 +38,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (currentBonus >= limit)
                 return;
 
-            var bonus = (short)(int)token;
+            var damages = (Fights.Damage)token;
+            var bonus = damages.Amount;
 
             if (bonus + currentBonus > limit)
                 bonus = (short) (limit - currentBonus);
 
             var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
-                Spell, bonus, caracteristic, false, true, (short)GetBuffEffectId(caracteristic)) 
+                Spell, (short)bonus, caracteristic, false, true, (short)GetBuffEffectId(caracteristic)) 
                 {Duration = Dice.Value};
 
             buff.Target.AddAndApplyBuff(statBuff);

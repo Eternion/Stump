@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     {
                         var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (integerEffect.Value - i);
 
-                        actor.InflictDamage((short) pushbackDamages, EffectSchoolEnum.Unknown, Caster);
+                        actor.InflictDirectDamage(pushbackDamages, Caster);
                         break;
                     }
 
