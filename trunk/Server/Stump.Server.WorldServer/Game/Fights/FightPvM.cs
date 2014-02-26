@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     if (!(looter is FightPlayerResult))
                         continue;
 
-                    var document = new BsonDocument
+                    /*var document = new BsonDocument
                     {
                         {"PlayerId", (looter as FightPlayerResult).Character.Id},
                         {"FightId", looter.Fight.Id},
@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                         {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
                     };
 
-                    MongoLogger.Instance.Insert("FightLoots", document);
+                    MongoLogger.Instance.Insert("FightLoots", document);*/
                 }
             }
 
