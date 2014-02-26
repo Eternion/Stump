@@ -295,10 +295,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount);
 
-                if (!item.OnAddItem())
-                    return null;
-
-                return AddItem(item);
+                return !item.OnAddItem() ? null : AddItem(item);
             }
 
             return item;
@@ -351,15 +348,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
 
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
-            if (item.Template is WeaponTemplate && item.Template.TwoHanded && shield != null)
-            {
-                if (send)
-                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
+            if (!(item.Template is WeaponTemplate) || !item.Template.TwoHanded || shield == null)
+                return true;
 
-                return false;
-            }            
-            
-            return true;
+            if (send)
+                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
+
+            return false;
         }
 
         public CharacterInventoryPositionEnum[] GetItemPossiblePositions(BasePlayerItem item)
