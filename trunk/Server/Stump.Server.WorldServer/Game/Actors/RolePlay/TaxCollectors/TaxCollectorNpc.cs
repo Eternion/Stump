@@ -14,11 +14,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
