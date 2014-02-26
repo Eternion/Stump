@@ -78,6 +78,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else
             {
+                message.Jailed = 0;
                 target.Client.Disconnect();
 
                 IPCAccessor.Instance.SendRequest(message,

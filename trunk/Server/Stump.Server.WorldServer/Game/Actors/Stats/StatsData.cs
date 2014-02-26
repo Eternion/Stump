@@ -162,5 +162,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             return string.Format("{0}({1}+{2}+{3})", Total, Base, Equiped, Context);
         }
+
+        public virtual StatsData Clone()
+        {
+            return (StatsData) MemberwiseClone();
+        }
+
+        public StatsData CloneAndChangeOwner(IStatsOwner owner)
+        {
+            var data = (StatsData)MemberwiseClone();
+            data.Owner = owner;
+
+            return data;
+        }
     }
 }

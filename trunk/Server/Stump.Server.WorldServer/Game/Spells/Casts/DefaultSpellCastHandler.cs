@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
             Handlers = handlers.ToArray();
             m_initialized = true;
-        }
+       } 
 
         public override void Execute()
         {

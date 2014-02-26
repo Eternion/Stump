@@ -8,7 +8,6 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Guilds;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors

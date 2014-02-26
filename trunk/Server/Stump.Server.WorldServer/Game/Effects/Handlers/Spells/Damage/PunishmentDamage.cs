@@ -19,10 +19,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
+                var damages = new Fights.Damage(Dice);
+                damages.MarkTrigger = MarkTrigger;
+                damages.GenerateDamages();
 
                 var damageRate = 0d;
                 var life = (double)Caster.LifePoints / Caster.MaxLifePoints;
@@ -32,20 +31,23 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 else if (life > 0.5)
                     damageRate = 1 + (life - 0.5) * -2;
 
-                var damages = (short)(Caster.LifePoints * damageRate * integerEffect.Value / 100d);
+                damages.Amount = (int)(Caster.LifePoints * damageRate * damages.Amount / 100d);
 
                // spell reflected
                 var buff = actor.GetBestReflectionBuff();
                 if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                 {
                     NotifySpellReflected(actor);
-                    Caster.InflictDamage(damages, EffectSchoolEnum.Neutral, Caster, actor is CharacterFighter, Spell, false);
+                    damages.Source = actor;
+                    damages.ReflectedDamages = true;
+                    damages.IgnoreDamageBoost = true;
+                    Caster.InflictDamage(damages);
 
                     actor.RemoveAndDispellBuff(buff);
                 }
                 else
                 {
-                    actor.InflictDirectDamage(damages, Caster);
+                    actor.InflictDamage(damages);
                 }
             }
 

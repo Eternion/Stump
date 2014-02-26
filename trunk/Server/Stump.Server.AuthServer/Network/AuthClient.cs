@@ -76,7 +76,7 @@ namespace Stump.Server.AuthServer.Network
 
         public void Save()
         {
-            AuthServer.Instance.IOTaskPool.AddMessage(() => SaveNow());
+            AuthServer.Instance.IOTaskPool.AddMessage(SaveNow);
         }
 
         public void SaveNow()

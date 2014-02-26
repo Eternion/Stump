@@ -57,11 +57,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 string.Format(GuildMemberRelator.FetchByGuildId, guildId)).Select(x => new GuildMember(x)).ToArray();
         }
 
-        public TaxCollectorNpc FindTaxCollectorNpc(int Id)
-        {
-            return m_guilds.Values.SelectMany(guild => guild.TaxCollectors.Where(taxCollector => taxCollector.Id == Id)).FirstOrDefault();
-        }
-
         public Guild TryGetGuild(int id)
         {
             lock (m_lock)

@@ -25,18 +25,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
             foreach (FightActor actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
-
                 if (Effect.Duration > 0)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, StealHpBuffTrigger);
                 }
                 else
                 {
-                    var damage = actor.InflictDamage(integerEffect.Value, GetEffectSchool(Effect.EffectId), Caster, actor is CharacterFighter);
+                    var damage = actor.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell));
 
                     if (damage / 2 > 0)
                         Caster.HealDirect((short)( damage / 2d ), actor);
