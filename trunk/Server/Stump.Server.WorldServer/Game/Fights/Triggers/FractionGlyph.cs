@@ -80,44 +80,35 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return (Duration--) <= 0;
         }
 
-        public int DispatchDamages(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false,
-            Spell spell = null, bool withBoost = true)
+        public int DispatchDamages(Damage damage)
         {
             FightActor[] actors = GetCells().Select(x => Fight.GetFirstFighter<FightActor>(x)).
                                              Where(x => x != null && !(x is SummonedFighter) && x.IsFriendlyWith(Caster)).ToArray();
 
-            if (spell != null)
-                damage += from.GetSpellBoost(spell);
+            damage.GenerateDamages();
 
-            if (withBoost)
-                damage = from.CalculateDamage(damage, school);
-
-            int percentResistance = GetAveragePercentResistance(actors, school, pvp);
-            int fixResistance = GetAverageFixResistance(actors, school, pvp);
-            damage = (int) ((1 - percentResistance/100d)*(damage - fixResistance));
-
-            int damagePerFighter = damage/actors.Length;
+            int percentResistance = GetAveragePercentResistance(actors, damage.School, damage.PvP);
+            int fixResistance = GetAverageFixResistance(actors, damage.School, damage.PvP);
+            damage.Amount = (int) ((1 - percentResistance/100d)*(damage.Amount - fixResistance));
+            damage.Amount = damage.Amount / actors.Length;
+            damage.IgnoreDamageReduction = true;
 
             foreach (FightActor actor in actors)
             {
-                if (from != actor)
+                var damagePerFighter = new Damage(damage.Amount)
                 {
-                    int reflected = actor.CalculateDamageReflection(damagePerFighter);
+                    Source = damage.Source,
+                    School = damage.School,
+                    Buff = damage.Buff,
+                    MarkTrigger = this,
+                    IgnoreDamageReduction = true,
+                    EffectGenerationType = damage.EffectGenerationType,
+                };
 
-                    if (reflected > 0)
-                    {
-                        from.InflictDirectDamage(reflected, actor);
-                        actor.OnDamageReflected(from, reflected);
-                    }
-                }
-
-                if (damagePerFighter <= 0)
-                    damagePerFighter = 0;
-
-                actor.InflictDirectDamage(damagePerFighter, from);
+                actor.InflictDamage(damagePerFighter);
             }
 
-            return damagePerFighter;
+            return damage.Amount;
         }
 
         private int GetAveragePercentResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)

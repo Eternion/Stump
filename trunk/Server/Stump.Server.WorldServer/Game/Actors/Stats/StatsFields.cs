@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -349,6 +350,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0));
             Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
             Fields.Add(PlayerFields.Erosion, new StatsData(Owner, PlayerFields.Erosion, 10));
+        }
+
+        public StatsFields CloneAndChangeOwner(IStatsOwner owner)
+        {
+            var fields = new StatsFields(owner)
+            {
+                Fields = Fields.ToDictionary(x => x.Key, x => x.Value.CloneAndChangeOwner(owner))
+            };
+
+            return fields;
         }
     }
 }

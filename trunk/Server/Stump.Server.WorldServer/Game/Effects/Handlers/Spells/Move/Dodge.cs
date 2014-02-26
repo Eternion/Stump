@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         public Dodge(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical) : base(effect, caster, spell, targetedCell, critical)
         {
         }
-
+        
         public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())

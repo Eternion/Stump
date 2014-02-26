@@ -32,13 +32,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var effect = buff.Dice.GenerateEffect(EffectGenerationContext.Spell) as EffectInteger;
+            var damages = new Fights.Damage(Dice)
+            {
+                Source = buff.Caster,
+                Buff = buff,
+                IgnoreDamageReduction = true,
+                School = GetEffectSchool(buff.Dice.EffectId),
+                MarkTrigger = MarkTrigger
+            };
 
-            if (effect == null)
-                return;
+            damages.BaseMaxDamages = buff.Target.UsedMP * damages.BaseMaxDamages; 
+            damages.BaseMinDamages = buff.Target.UsedMP * damages.BaseMinDamages;
 
-            buff.Target.InflictDamage(effect.Value*buff.Target.UsedAP, GetEffectSchool(Effect.EffectId), Caster,
-                Caster is CharacterFighter, Spell, true, false);
+            buff.Target.InflictDamage(damages);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)

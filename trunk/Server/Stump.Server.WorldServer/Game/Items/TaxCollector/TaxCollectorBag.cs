@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 {
@@ -65,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
                 quantity = item.Stack;
 
             RemoveItem(item, quantity);
-            BasePlayerItem newItem = ItemManager.Instance.CreatePlayerItem(character, item.Template, quantity,
+            var newItem = ItemManager.Instance.CreatePlayerItem(character, item.Template, quantity,
                                                                        item.Effects);
 
             character.Inventory.AddItem(newItem);

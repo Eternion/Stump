@@ -67,15 +67,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, delta, permanentDamages, from);
         }
 
+        public event Action<FightActor, Damage> BeforeDamageInflicted;
 
-        public event Action<FightActor, int, EffectSchoolEnum, FightActor> DamageInflicted;
+        protected virtual void OnBeforeDamageInflicted(Damage damage)
+        {
+            var handler = BeforeDamageInflicted;
 
-        protected virtual void OnDamageInflicted(int damage, EffectSchoolEnum school, FightActor from)
+            if (handler != null)
+                handler(this, damage);
+        }
+
+        public event Action<FightActor, Damage> DamageInflicted;
+
+        protected virtual void OnDamageInflicted(Damage damage)
         {
             var handler = DamageInflicted;
 
             if (handler != null)
-                handler(this, damage, school, from);
+                handler(this, damage);
         }
 
         public event Action<FightActor, FightActor, int> DamageReducted;
@@ -91,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected internal virtual void OnDamageReflected(FightActor target, int reflected)
         {
-            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, reflected);
+            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, (int)reflected);
 
             var handler = DamageReflected;
             if (handler != null)
@@ -323,7 +332,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public int LifePoints
         {
-            get { return Stats.Health.Total; }
+            get { return Stats.Health.TotalSafe; }
         }
 
         public int MaxLifePoints
@@ -332,12 +341,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 return Stats.Health.TotalMax;
             }
-        }
-
-        public int PermanentDamages
-        {
-            get;
-            set;
         }
 
         public int DamageTaken
@@ -705,39 +708,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void Die()
         {
-            DamageTaken += LifePoints;
+            DamageTaken += (int)LifePoints;
 
             OnDead(this);
         }
 
-        public virtual int InflictDirectDamage(int damage, FightActor from)
+        public int InflictDirectDamage(int damage, FightActor from)
         {
-            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
-
-            if (HasState((int)SpellStatesEnum.Invulnerable))
-            {
-                OnDamageReducted(from, damage);
-                TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
-                return 0;
-            }
-
-            if (LifePoints - damage < 0)
-                damage = (short)LifePoints;
-
-            var permanentDamages = CalculateErosionDamage(damage);
-            damage -= permanentDamages;
-            Stats.Health.DamageTaken += damage;
-            Stats.Health.PermanentDamages += permanentDamages;
-
-
-            OnLifePointsChanged(-(damage + permanentDamages), permanentDamages, from);
-
-            if (IsDead())
-                OnDead(from);
-
-            TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
-
-            return damage;
+            return InflictDamage(new Damage(damage) {Source = from, School = EffectSchoolEnum.Unknown, IgnoreDamageBoost = true, IgnoreDamageReduction = true});
         }
 
         public int InflictDirectDamage(int damage)
@@ -745,55 +723,84 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, this);
         }
 
-        public int InflictDamage(int damage, EffectSchoolEnum school, FightActor from, bool pvp = false, Spell spell = null, bool withBoost = true, bool reducted = true)
+        public virtual int InflictDamage(Damage damage)
         {
+            // a bit ugly
             var fractionGlyph = Fight.GetTriggers().FirstOrDefault(x => x is FractionGlyph && x.ContainsCell(Cell)) as FractionGlyph;
-            if (fractionGlyph != null)
-                return fractionGlyph.DispatchDamages(damage, school, from, pvp, spell, withBoost);
+            if (fractionGlyph != null && !(damage.MarkTrigger is FractionGlyph))
+                return fractionGlyph.DispatchDamages(damage);
 
-            if (spell != null)
-                damage += from.GetSpellBoost(spell);
+            OnBeforeDamageInflicted(damage);
+            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
 
-            if (withBoost)
-                damage = from.CalculateDamage(damage, school);
+            damage.GenerateDamages();
 
-            var minDamage = CalculateErosionDamage(damage);
-
-            if (reducted)
+            if (HasState((int)SpellStatesEnum.Invulnerable))
             {
-                damage = CalculateDamageResistance(damage, school, pvp);
+                OnDamageReducted(damage.Source, damage.Amount);
+                TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+                return 0;
+            }
 
-                int reduction = CalculateArmorReduction(school);
+            if (damage.Source != null && !damage.IgnoreDamageBoost)
+            {
+                if (damage.Spell != null)
+                    damage.Amount += damage.Source.GetSpellBoost(damage.Spell);
 
-                if (damage - reduction < minDamage)
+                damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School);
+            }
+
+            var minDamage = CalculateErosionDamage(damage.Amount);
+
+            if (!damage.IgnoreDamageReduction)
+            {
+                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.PvP);
+
+                int reduction = CalculateArmorReduction(damage.School);
+
+                if (damage.Amount - reduction < minDamage)
                 {
-                    reduction = damage - minDamage;
+                    reduction = damage.Amount - minDamage;
                 }
 
                 if (reduction > 0)
-                    OnDamageReducted(from, reduction);
+                    OnDamageReducted(damage.Source, reduction);
 
-                if (from != this)
+                if (damage.Source != null && !damage.ReflectedDamages)
                 {
-                    int reflected = CalculateDamageReflection(damage);
+                    var reflected = CalculateDamageReflection(damage.Amount);
 
                     if (reflected > 0)
                     {
-                        from.InflictDirectDamage(reflected, this);
-                        OnDamageReflected(from, reflected);
+                        damage.Source.InflictDirectDamage(reflected, this);
+                        OnDamageReflected(damage.Source, reflected);
                     }
                 }
 
                 if (reduction > 0)
-                    damage -= reduction;
+                    damage.Amount -= reduction;
             }
 
-            if (damage <= 0)
-                damage = 0;
+            if (damage.Amount <= 0)
+                damage.Amount = 0;
 
-            OnDamageInflicted(damage, school, from);
+            if (damage.Amount > LifePoints)
+                damage.Amount = LifePoints;
 
-            return InflictDirectDamage(damage, from);
+            var permanentDamages = CalculateErosionDamage(damage.Amount);
+            damage.Amount -= permanentDamages;
+            Stats.Health.DamageTaken += damage.Amount;
+            Stats.Health.PermanentDamages += permanentDamages;
+
+            OnLifePointsChanged(-(damage.Amount + permanentDamages), permanentDamages, damage.Source);
+
+            if (IsDead())
+                OnDead(damage.Source);
+
+            OnDamageInflicted(damage);
+            TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+
+            return damage.Amount;
         }
 
         public virtual int HealDirect(int healPoints, FightActor from)
@@ -807,15 +814,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (LifePoints + healPoints > MaxLifePoints)
                 healPoints = MaxLifePoints - LifePoints;
 
-            DamageTaken -= healPoints;
+            DamageTaken -= (int)healPoints;
 
-            OnLifePointsChanged(healPoints, 0, from);
+            OnLifePointsChanged((int)healPoints, 0, from);
 
             return healPoints;
         }
 
         public int Heal(int healPoints, FightActor from , bool withBoost = true)
         {
+            if (healPoints < 0)
+                healPoints = 0;
+
             if (withBoost)
                 healPoints = from.CalculateHeal(healPoints);
 
@@ -836,28 +846,31 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int CalculateDamage(int damage, EffectSchoolEnum type)
         {
+            // formulas :
+            // DAMAGE * [(100 + STATS + %BONUS + MULT*100)/100 + (BONUS + PHS/MGKBONUS + ELTBONUS)]
+
             switch (type)
             {
                 case EffectSchoolEnum.Neutral:
-                    return (short) (damage*
-                                    (100 + Stats[PlayerFields.Strength] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.PhysicalDamage].Total + Stats[PlayerFields.NeutralDamageBonus]));
+                    return (int) (damage*
+                                    (100 + Stats[PlayerFields.Strength].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe * 100) / 100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.PhysicalDamage].TotalSafe + Stats[PlayerFields.NeutralDamageBonus].TotalSafe));
                 case EffectSchoolEnum.Earth:
-                    return (short) (damage*
-                                    (100 + Stats[PlayerFields.Strength] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.PhysicalDamage].Total + Stats[PlayerFields.EarthDamageBonus]));
+                    return (int)(damage *
+                                    (100 + Stats[PlayerFields.Strength].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.PhysicalDamage].TotalSafe + Stats[PlayerFields.EarthDamageBonus].TotalSafe));
                 case EffectSchoolEnum.Air:
-                    return (short) (damage*
-                                    (100 + Stats[PlayerFields.Agility] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total + Stats[PlayerFields.AirDamageBonus]));
+                    return (int)(damage *
+                                    (100 + Stats[PlayerFields.Agility].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.MagicDamage].TotalSafe + Stats[PlayerFields.AirDamageBonus].TotalSafe));
                 case EffectSchoolEnum.Water:
-                    return (short) (damage*
-                                    (100 + Stats[PlayerFields.Chance] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total + Stats[PlayerFields.WaterDamageBonus]));
+                    return (int)(damage *
+                                    (100 + Stats[PlayerFields.Chance].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.MagicDamage].TotalSafe + Stats[PlayerFields.WaterDamageBonus].TotalSafe));
                 case EffectSchoolEnum.Fire:
-                    return (short) (damage*
-                                    (100 + Stats[PlayerFields.Intelligence] + Stats[PlayerFields.DamageBonusPercent] + Stats[PlayerFields.DamageMultiplicator].Total*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total + Stats[PlayerFields.MagicDamage].Total + Stats[PlayerFields.FireDamageBonus]));
+                    return (int)(damage *
+                                    (100 + Stats[PlayerFields.Intelligence].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.MagicDamage].TotalSafe + Stats[PlayerFields.FireDamageBonus].TotalSafe));
                 default:
                     return damage;
             }
@@ -900,8 +913,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual int CalculateDamageReflection(int damage)
         {
             // only spell damage reflection are mutlplied by wisdom
-            var reflectDamages = Stats[PlayerFields.DamageReflection].Context * ( 1 + ( Stats[PlayerFields.Wisdom].Total / 100 ) ) +
-                ( Stats[PlayerFields.DamageReflection].Total - Stats[PlayerFields.DamageReflection].Context );
+            var reflectDamages = Stats[PlayerFields.DamageReflection].Context * ( 1 + ( Stats[PlayerFields.Wisdom].TotalSafe / 100 ) ) +
+                (Stats[PlayerFields.DamageReflection].TotalSafe - Stats[PlayerFields.DamageReflection].Context);
 
             if (reflectDamages > damage / 2d)
                 return (int)( damage / 2d );
@@ -911,7 +924,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int CalculateHeal(int heal)
         {
-            return (int) (heal*(100 + Stats[PlayerFields.Intelligence].Total)/100d + Stats[PlayerFields.HealBonus].Total);
+            return (int)(heal * (100 + Stats[PlayerFields.Intelligence].TotalSafe) / 100d + Stats[PlayerFields.HealBonus].TotalSafe);
         }
 
         public virtual int CalculateArmorValue(int reduction)
@@ -935,19 +948,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             switch (damageType)
             {
                 case EffectSchoolEnum.Neutral:
-                    specificArmor = Stats[PlayerFields.NeutralDamageArmor].Total;
+                    specificArmor = Stats[PlayerFields.NeutralDamageArmor].TotalSafe;
                     break;
                 case EffectSchoolEnum.Earth:
-                    specificArmor = Stats[PlayerFields.EarthDamageArmor].Total;
+                    specificArmor = Stats[PlayerFields.EarthDamageArmor].TotalSafe;
                     break;
                 case EffectSchoolEnum.Air:
-                    specificArmor = Stats[PlayerFields.AirDamageArmor].Total;
+                    specificArmor = Stats[PlayerFields.AirDamageArmor].TotalSafe;
                     break;
                 case EffectSchoolEnum.Water:
-                    specificArmor = Stats[PlayerFields.WaterDamageArmor].Total;
+                    specificArmor = Stats[PlayerFields.WaterDamageArmor].TotalSafe;
                     break;
                 case EffectSchoolEnum.Fire:
-                    specificArmor = Stats[PlayerFields.FireDamageArmor].Total;
+                    specificArmor = Stats[PlayerFields.FireDamageArmor].TotalSafe;
                     break;
                 default:
                     return 0;
@@ -980,9 +993,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return critical;
         }
 
-        public virtual short CalculateReflectedDamageBonus(short spellBonus)
+        public virtual int CalculateReflectedDamageBonus(int spellBonus)
         {
-            return (short) (spellBonus*(1 + (Stats[PlayerFields.Wisdom].Total/100d)) + Stats[PlayerFields.DamageReflection].Total);
+            return (int)(spellBonus * (1 + (Stats[PlayerFields.Wisdom].TotalSafe / 100d)) + Stats[PlayerFields.DamageReflection].TotalSafe);
         }
 
         public virtual bool RollAPLose(FightActor from)

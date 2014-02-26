@@ -16,14 +16,11 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Results;
-using Stump.Server.WorldServer.Game.Fights.Results.Data;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
-using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Guilds;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -364,14 +361,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
 
-        public override int InflictDirectDamage(int damage, FightActor from)
+        public override int InflictDamage(Damage damage)
         {
             if (!Character.GodMode)
-                return base.InflictDirectDamage(damage, @from);
+                return base.InflictDamage(damage);
 
+            damage.GenerateDamages();
+            OnBeforeDamageInflicted(damage);
             TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
-            OnDamageReducted(@from, damage);
+            OnDamageReducted(damage.Source, damage.Amount);
             TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+            OnDamageInflicted(damage);
 
             return 0;
         }

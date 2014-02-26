@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -72,11 +73,12 @@ namespace Stump.Server.AuthServer.Managers
 
         private void TimerTick()
         {
-            var toRemove = (from keyPair in m_accountsCache where keyPair.Value.Item1 >= DateTime.Now select keyPair.Key).ToList();
+            var toRemove = (from keyPair in m_accountsCache where keyPair.Value.Item1 >= DateTime.Now select keyPair).ToList();
 
-            foreach (var id in toRemove)
+            foreach (var keyPair in toRemove)
             {
-                m_accountsCache.Remove(id);
+                m_accountsCache.Remove(keyPair.Key);
+                logger.Debug("Ticket {0} uncached (life time : {1} DateTime.Now={2})", keyPair.Key, keyPair.Value.Item1, DateTime.Now);
             }
         }
 
@@ -154,6 +156,7 @@ namespace Stump.Server.AuthServer.Managers
         public void UnCacheAccount(Account account)
         {
             m_accountsCache.Remove(account.Ticket);
+            logger.Debug("Uncache ticket {0}", account.Ticket);
         }
 
         public Account FindCachedAccountByTicket(string ticket)

@@ -16,7 +16,6 @@ using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.Player;
-using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -101,7 +100,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             {
                 if (message.quantity <= 0)
                 {
-                    var taxCollector = (client.Character.Dialog as TaxCollectorExchangeDialog).TaxCollector;
+                    var taxCollector = ((TaxCollectorExchangeDialog) client.Character.Dialog).TaxCollector;
                     var taxCollectorItem = taxCollector.Bag.TryGetItem(message.objectUID);
                     if (taxCollectorItem == null)
                         return;
@@ -245,11 +244,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (client.Character.Guild == null)
                 return;
 
-            var taxCollectorNpc = GuildManager.Instance.FindTaxCollectorNpc(message.taxCollectorId);
+            var taxCollectorNpc = client.Character.Map.TaxCollector;
             if (taxCollectorNpc == null)
                 return;
 
-            if (taxCollectorNpc.Guild.Id != client.Character.Guild.Id)
+            if (!taxCollectorNpc.IsTaxCollectorOwner(client.Character.GuildMember))
             {
                 client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_OWNED));
                 return;
