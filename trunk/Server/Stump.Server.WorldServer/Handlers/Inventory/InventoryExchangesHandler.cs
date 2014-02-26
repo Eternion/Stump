@@ -100,7 +100,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             {
                 if (message.quantity <= 0)
                 {
-                    var taxCollector = (client.Character.Dialog as TaxCollectorExchangeDialog).TaxCollector;
+                    var taxCollector = ((TaxCollectorExchangeDialog) client.Character.Dialog).TaxCollector;
                     var taxCollectorItem = taxCollector.Bag.TryGetItem(message.objectUID);
                     if (taxCollectorItem == null)
                         return;
@@ -244,7 +244,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (client.Character.Guild == null)
                 return;
 
-            var taxCollectorNpc = GuildManager.Instance.FindTaxCollectorNpc(message.taxCollectorId);
+            var taxCollectorNpc = client.Character.Map.TaxCollector;
             if (taxCollectorNpc == null)
                 return;
 
