@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
@@ -282,8 +283,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Guild.RemoveTaxCollector(this);
 
             //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
-            Guild.Clients.Send(new TaxCollectorMovementMessage(false, GetTaxCollectorBasicInformations(), dialog.Character.Name));
-            Guild.Clients.Send(new TaxCollectorMovementRemoveMessage(Id));
+            TaxCollectorHandler.SendTaxCollectorMovementMessage(Guild.Clients, false, this, dialog.Character.Name);
+            TaxCollectorHandler.SendTaxCollectorMovementRemoveMessage(Guild.Clients, this);
         }
 
         #region Network

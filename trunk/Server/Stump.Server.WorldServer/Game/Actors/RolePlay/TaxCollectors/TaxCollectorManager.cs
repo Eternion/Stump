@@ -8,6 +8,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
@@ -81,17 +82,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             else
                 Database.Insert(taxCollectorNpc.Record);
 
+            character.Guild.AddTaxCollector(taxCollectorNpc);
+
             m_taxCollectorSpawns.Add(taxCollectorNpc.GlobalId, taxCollectorNpc.Record);
             m_activeTaxCollectors.Add(taxCollectorNpc);
 
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
 
             //Le percepteur %1 a été posé en <b>%2</b> par <b>%3</b>.
-            foreach (var client in taxCollectorNpc.Guild.Clients)
-            {
-                client.Send(new TaxCollectorMovementMessage(true, taxCollectorNpc.GetTaxCollectorBasicInformations(), character.Name));
-                client.Send(new TaxCollectorMovementAddMessage(taxCollectorNpc.GetNetworkTaxCollector()));
-            }
+            TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Name);
+            TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollectorNpc.Guild.Clients, taxCollectorNpc);
         }
 
         public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)

@@ -67,6 +67,9 @@ namespace Stump.Server.WorldServer
         [Variable(true)]
         public static int AutoSaveInterval  = 3 * 60;
 
+        [Variable(true)]
+        public static bool SaveMessage = true;
+
         public WorldVirtualConsole VirtualConsoleInterface
         {
             get;
@@ -240,7 +243,8 @@ namespace Stump.Server.WorldServer
             if (!automatic && !string.IsNullOrEmpty(ScheduledShutdownReason))
                 message += " : " + ScheduledShutdownReason;
 
-            World.Instance.SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 15, time);
+            if (SaveMessage)
+                World.Instance.SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 15, time);
 
             m_lastAnnouncedTime = time;
         }
