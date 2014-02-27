@@ -99,10 +99,15 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightCloseCombatMessage(IPacketReceiver client, FightActor source, FightActor target, Cell cell, FightSpellCastCriticalEnum castCritical, bool silentCast, WeaponTemplate weapon)
         {
             var action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT;
-            if (castCritical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
-                action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT_CRITICAL_MISS;
-            else if (castCritical == FightSpellCastCriticalEnum.CRITICAL_HIT)
-                action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT_CRITICAL_HIT;
+            switch (castCritical)
+            {
+                case FightSpellCastCriticalEnum.CRITICAL_FAIL:
+                    action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT_CRITICAL_MISS;
+                    break;
+                case FightSpellCastCriticalEnum.CRITICAL_HIT:
+                    action = ActionsEnum.ACTION_FIGHT_CLOSE_COMBAT_CRITICAL_HIT;
+                    break;
+            }
 
             client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, weapon.Id));
         }

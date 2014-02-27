@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Social
             switch (channel)
             {
                 case ChatActivableChannelsEnum.CHANNEL_GLOBAL:
-                    return true;
+                    return (!character.Map.IsMuted || character.Account.Role >= AdministratorChatMinAccess);
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:
                     return character.IsFighting();
                 case ChatActivableChannelsEnum.CHANNEL_GUILD:
@@ -101,9 +101,9 @@ namespace Stump.Server.WorldServer.Game.Social
                 case ChatActivableChannelsEnum.CHANNEL_PARTY:
                     return character.IsInParty();
                 case ChatActivableChannelsEnum.CHANNEL_SALES:
-                    return true;
+                    return !character.IsMuted();
                 case ChatActivableChannelsEnum.CHANNEL_SEEK:
-                    return true;
+                    return !character.IsMuted();
                 case ChatActivableChannelsEnum.CHANNEL_NOOB:
                     return true;
                 case ChatActivableChannelsEnum.CHANNEL_ADMIN:
@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 case ChatActivableChannelsEnum.CHANNEL_ADS:
                     return !character.IsMuted();
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
-                    return true;
+                    return !character.IsMuted();
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO:
                     return false;
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_FIGHT_LOG:

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Drawing;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
+using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -41,6 +43,26 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             target.UnMute(); 
             trigger.Reply("{0} unmuted", target.Name);
+        }
+    }
+
+    public class MuteMapCommand : CommandBase
+    {
+        public MuteMapCommand()
+        {
+            Aliases = new[] { "mutemap" };
+            RequiredRole = RoleEnum.Moderator;
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var map = ((GameTrigger) trigger).Character.Map;
+            var mute = map.ToggleMute();
+
+            foreach (var character in map.GetAllCharacters())
+            {
+                character.SendServerMessage(mute ? "La map est maintenant réduite au silence !" : "La map n'est plus réduite au silence !", Color.Red);
+            }
         }
     }
 }
