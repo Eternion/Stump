@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     }
                     else
                     {
-                        Caster.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell) {MarkTrigger = MarkTrigger});
+                        actor.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell) {MarkTrigger = MarkTrigger});
                     }
                 }
             }

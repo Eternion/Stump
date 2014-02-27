@@ -756,7 +756,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.PvP);
 
-                int reduction = CalculateArmorReduction(damage.School);
+                var reduction = CalculateArmorReduction(damage.School);
 
                 if (damage.Amount - reduction < minDamage)
                 {
