@@ -631,7 +631,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void RefreshActor()
         {
             if (Map != null)
-                Map.Refresh(this);
+            {
+                Map.Area.AddMessage(() =>
+                    Map.Refresh(this)
+                );
+            }
         }
 
         #endregion
@@ -1990,7 +1994,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (IsInWorld)
                 return;
 
-            Map.Enter(this);
+            Map.Area.AddMessage(() =>
+                Map.Enter(this)
+            );
+
             World.Instance.Enter(this);
             m_inWorld = true;
 
