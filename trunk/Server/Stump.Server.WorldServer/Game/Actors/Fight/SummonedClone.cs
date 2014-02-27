@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override string Name
         {
-            get { return (Caster is NamedFighter) ? ((NamedFighter)Caster).Name : "Unknown"; }
+            get { return (Caster is NamedFighter) ? ((NamedFighter)Caster).Name : "(no name)"; }
         }
 
         public override StatsFields Stats
@@ -56,6 +56,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             casterInfos.contextualId = Id;
             return casterInfos;
         }
+
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
         {
             var casterInfos = Caster.GetFightTeamMemberInformations();
