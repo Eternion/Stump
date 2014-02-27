@@ -126,15 +126,21 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (Generated)
                 return;
 
-            if (EffectGenerationType == EffectGenerationType.MaxEffects)
-                Amount = BaseMaxDamages;
-            else if (EffectGenerationType == EffectGenerationType.MinEffects)
-                Amount = BaseMinDamages;
-            else
+            switch (EffectGenerationType)
             {
-                var rand = new AsyncRandom();
+                case EffectGenerationType.MaxEffects:
+                    Amount = BaseMaxDamages;
+                    break;
+                case EffectGenerationType.MinEffects:
+                    Amount = BaseMinDamages;
+                    break;
+                default:
+                {
+                    var rand = new AsyncRandom();
 
-                Amount = rand.Next(BaseMinDamages, BaseMaxDamages + 1);
+                    Amount = rand.Next(BaseMinDamages, BaseMaxDamages + 1);
+                }
+                    break;
             }
         }
     }
