@@ -59,10 +59,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var map = ((GameTrigger) trigger).Character.Map;
             var mute = map.ToggleMute();
 
-            foreach (var character in map.GetAllCharacters())
-            {
-                character.SendServerMessage(mute ? "La map est maintenant réduite au silence !" : "La map n'est plus réduite au silence !", Color.Red);
-            }
+            map.Area.AddMessage(() => map.ForEach(character => character.SendServerMessage(mute ?
+                "La map est maintenant réduite au silence !" :
+                "La map n'est plus réduite au silence !",
+                Color.Red)));
         }
     }
 }

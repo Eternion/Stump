@@ -1221,7 +1221,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public IEnumerable<Character> GetAllCharacters()
         {
-            return GetActors<Character>().ToArray();
+            return GetActors<Character>();
         }
 
         public void ForEach(Action<Character> action)

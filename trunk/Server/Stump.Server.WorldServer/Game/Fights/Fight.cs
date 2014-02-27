@@ -1733,10 +1733,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<Character> GetAllCharacters(bool withSpectators = false)
         {
-            if (withSpectators)
-                return Fighters.OfType<CharacterFighter>().Select(entry => entry.Character).Concat(Spectators.Select(entry => entry.Character));
-
-            return Fighters.OfType<CharacterFighter>().Select(entry => entry.Character);
+            return withSpectators ? Fighters.OfType<CharacterFighter>().Select(entry => entry.Character).Concat(Spectators.Select(entry => entry.Character)) : Fighters.OfType<CharacterFighter>().Select(entry => entry.Character);
         }
 
         public void ForEach(Action<Character> action)
