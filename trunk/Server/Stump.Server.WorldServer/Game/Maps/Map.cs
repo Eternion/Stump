@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnFightCreated(Fight fight)
         {
-            Action<Map, Fight> handler = FightCreated;
+            var handler = FightCreated;
             if (handler != null)
                 handler(this, fight);
         }
@@ -378,6 +378,12 @@ namespace Stump.Server.WorldServer.Game.Maps
         }
 
         public InteractiveObject Zaap
+        {
+            get;
+            private set;
+        }
+
+        public bool IsMuted
         {
             get;
             private set;
@@ -1215,7 +1221,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public IEnumerable<Character> GetAllCharacters()
         {
-            return GetActors<Character>();
+            return GetActors<Character>().ToArray();
         }
 
         public void ForEach(Action<Character> action)
@@ -1330,15 +1336,13 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             var rand = new AsyncRandom();
 
-            if (actorFree)
-            {
-                var excludedCells = GetActors<RolePlayActor>().Select(entry => entry.Cell.Id);
-                var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
+            if (!actorFree)
+                return m_freeCells[rand.Next(0, m_freeCells.Length)];
 
-                return cells[rand.Next(0, cells.Length)];
-            }
+            var excludedCells = GetActors<RolePlayActor>().Select(entry => entry.Cell.Id);
+            var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
 
-            return m_freeCells[rand.Next(0, m_freeCells.Length)];
+            return cells[rand.Next(0, cells.Length)];
         }
 
         public Cell GetRandomAdjacentFreeCell(MapPoint cell, bool actorFree = false)
@@ -1470,6 +1474,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         public bool IsMerchantLimitReached()
         {
             return m_actors.OfType<Merchant>().Count(x => !x.IsBagEmpty()) >= MaxMerchantsPerMap;
+        }
+
+        public bool ToggleMute()
+        {
+            return IsMuted = !IsMuted;
         }
     }
 
