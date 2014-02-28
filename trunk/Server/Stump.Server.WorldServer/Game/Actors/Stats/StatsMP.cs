@@ -6,24 +6,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 {
     public class StatsMP : StatsData
     {
-        [Variable]
-        public static int MPLimit = 6;
-
         public StatsMP(IStatsOwner owner, int valueBase)
             : base(owner, PlayerFields.MP, valueBase)
         {
         }
 
-        public StatsMP(IStatsOwner owner, int valueBase, bool limit)
-            : base(owner, PlayerFields.AP, valueBase)
+        public StatsMP(IStatsOwner owner, int valueBase, int limit)
+            : base(owner, PlayerFields.AP, valueBase, limit)
         {
-            Limit = limit;
-        }
-
-        public bool Limit
-        {
-            get;
-            set;
         }
 
         public short Used
@@ -36,12 +26,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                var totalNoBoost = Base + Equiped;
-
-                if (Limit && totalNoBoost > MPLimit)
-                    totalNoBoost = MPLimit;
-                
-                return totalNoBoost + Given + Context;
+                return base.Total;
             }
         }
 

@@ -12,11 +12,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         protected int ValueContext;
         protected int ValueEquiped;
         protected int ValueGiven;
+        private int? m_limit;
 
         public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, StatsFormulasHandler formulas = null)
         {
             ValueBase = valueBase;
             m_formulas = formulas;
+            Name = name;
+            Owner = owner;
+        }
+        public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, int limit)
+        {
+            ValueBase = valueBase;
+            m_limit = limit;
             Name = name;
             Owner = owner;
         }
@@ -80,9 +88,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                var result = Base + Equiped + Context + Given;
+                var totalNoBoost = Base + Equiped;
 
-                return result;
+                if (Limit != null && totalNoBoost > Limit.Value)
+                    totalNoBoost = Limit.Value;
+
+                return totalNoBoost + Given + Context;
             }
         }
 
@@ -96,6 +107,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                 var total = Total;
 
                 return total > 0 ? total : 0;
+            }
+        }
+
+        public virtual int? Limit
+        {
+            get { return m_limit; }
+            set
+            {
+                m_limit = value;
+                OnModified();
             }
         }
 
