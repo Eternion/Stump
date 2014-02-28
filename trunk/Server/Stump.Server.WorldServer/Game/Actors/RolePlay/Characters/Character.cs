@@ -632,7 +632,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (Map != null)
             {
-                Map.Area.AddMessage(() =>
+                Map.Area.ExecuteInContext(() =>
                     Map.Refresh(this)
                 );
             }

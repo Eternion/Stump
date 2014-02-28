@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -12,6 +13,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
     public class StatsFields
     {
+        [Variable]
+        public static int MPLimit = 6;
+
+        [Variable]
+        public static int APLimit = 12;
+
+        [Variable]
+        public static int RangeLimit = 6;
+
         #region Formulas
 
         private static readonly StatsFormulasHandler FormulasChanceDependant =
@@ -114,8 +124,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
             Fields.Add(PlayerFields.Initiative, new StatsInitiative(Owner, 0));
             Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, (short)record.Prospection, FormulasChanceDependant));
-            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short)record.AP, true));
-            Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short)record.MP, true));
+            Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short)record.AP, APLimit));
+            Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short)record.MP, MPLimit));
             Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));
             Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));
             Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short)record.BaseHealth, (short)record.DamageTaken));
@@ -123,7 +133,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance));
             Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility));
             Fields.Add(PlayerFields.Intelligence, new StatsData(Owner, PlayerFields.Intelligence, record.Intelligence));
-            Fields.Add(PlayerFields.Range, new StatsData(Owner, PlayerFields.Range, 0));
+            Fields.Add(PlayerFields.Range, new StatsData(Owner, PlayerFields.Range, 0, RangeLimit));
             Fields.Add(PlayerFields.SummonLimit, new StatsData(Owner, PlayerFields.SummonLimit, 1));
             Fields.Add(PlayerFields.DamageReflection, new StatsData(Owner, PlayerFields.DamageReflection, 0));
             Fields.Add(PlayerFields.CriticalHit, new StatsData(Owner, PlayerFields.CriticalHit, 0));
