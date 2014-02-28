@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
     public class MonsterManager : DataManager<MonsterManager>
     {
         private Dictionary<int, MonsterTemplate> m_monsterTemplates;
-        private Dictionary<int, MonsterSpell> m_monsterSpells;
+        private Dictionary<int, List<MonsterSpell>> m_monsterSpells;
         private Dictionary<int, MonsterSpawn> m_monsterSpawns;
         private Dictionary<int, MonsterDisableSpawn> m_monsterDisableSpawns; 
         private Dictionary<int, MonsterDungeonSpawn> m_monsterDungeonsSpawns;
@@ -28,7 +28,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             m_monsterTemplates = Database.Query<MonsterTemplate>(MonsterTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterGrades = Database.Query<MonsterGrade>(MonsterGradeRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_monsterSpells = Database.Query<MonsterSpell>(MonsterSpellRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_monsterSpells = new Dictionary<int, List<MonsterSpell>>();
+            foreach (var spell in Database.Query<MonsterSpell>(MonsterSpellRelator.FetchQuery))
+            {
+                List<MonsterSpell> list;
+                if (!m_monsterSpells.TryGetValue(spell.MonsterGradeId, out list))
+                    m_monsterSpells.Add(spell.MonsterGradeId, list = new List<MonsterSpell>());
+
+                list.Add(spell);
+            }
             m_monsterSpawns = Database.Query<MonsterSpawn>(MonsterSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterDisableSpawns = Database.Query<MonsterDisableSpawn>(MonsterDisableSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_monsterDungeonsSpawns = Database
@@ -64,7 +72,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public List<MonsterSpell> GetMonsterGradeSpells(int id)
         {
-            return m_monsterSpells.Where(entry => entry.Value.MonsterGradeId == id).Select(entry => entry.Value).ToList();
+            List<MonsterSpell> list;
+            return m_monsterSpells.TryGetValue(id, out list) ? list : new List<MonsterSpell>();
         }
 
         public List<DroppableItem> GetMonsterDroppableItems(int id)
@@ -98,15 +107,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                                                                                         : StringComparison.InvariantCulture));
         }
 
-        public MonsterSpell GetOneMonsterSpell(Predicate<MonsterSpell> predicate)
-        {
-            return m_monsterSpells.Values.SingleOrDefault(entry => predicate(entry));
-        }
-
         public void AddMonsterSpell(MonsterSpell spell)
         {
             Database.Insert(spell);
-            m_monsterSpells.Add(spell.Id, spell);
+            List<MonsterSpell> list;
+            if (!m_monsterSpells.TryGetValue(spell.MonsterGradeId, out list))
+                m_monsterSpells.Add(spell.MonsterGradeId, list = new List<MonsterSpell>());
+
+            list.Add(spell);
         }
 
         public void RemoveMonsterSpell(MonsterSpell spell)

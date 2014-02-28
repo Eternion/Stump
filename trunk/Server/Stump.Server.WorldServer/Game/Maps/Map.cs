@@ -1005,7 +1005,8 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void Enter(RolePlayActor actor)
         {
 #if DEBUG
-            Area.EnsureContext();
+            if (WorldServer.Instance.IsInitialized)
+                Area.EnsureContext();
 #endif
             if (m_actors.Contains(actor))
             {
