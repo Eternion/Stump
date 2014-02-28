@@ -5,6 +5,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -59,10 +60,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var map = ((GameTrigger) trigger).Character.Map;
             var mute = map.ToggleMute();
 
-            map.Area.AddMessage(() => map.ForEach(character => character.SendServerMessage(mute ?
-                "La map est maintenant réduite au silence !" :
-                "La map n'est plus réduite au silence !",
-                Color.Red)));
+            var message = mute
+                ? "La map est maintenant réduite au silence !"
+                : "La map n'est plus réduite au silence !";
+
+            BasicHandler.SendTextInformationMessage(map.Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 0,
+                string.Format("<font col" +
+                              "or=\"#{0}\">{1}</font>", Color.Red.ToArgb().ToString("X"), message));
         }
     }
 }

@@ -1613,6 +1613,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.Client.IP == Client.IP)
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
+            if (Level - target.Level > 20)
+                return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
+
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
