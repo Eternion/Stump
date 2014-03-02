@@ -10,8 +10,6 @@ using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -27,15 +25,14 @@ namespace Stump.Server.WorldServer.Game.Maps
         public static readonly int DefaultUpdateDelay = 50;
 
         public static int[] UpdatePriorityMillis =
-            new[]
-                {
-                    10000, // Inactive
-                    3000, // Background
-                    1000, // VeryLowPriority
-                    6000, // LowPriority
-                    300, // Active
-                    0 // HighPriority
-                };
+        {
+            10000, // Inactive
+            3000, // Background
+            1000, // VeryLowPriority
+            6000, // LowPriority
+            300, // Active
+            0 // HighPriority
+        };
 
         private readonly List<Character> m_characters = new List<Character>();
 
@@ -49,14 +46,12 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly Dictionary<Point, List<Map>> m_mapsByPoint = new Dictionary<Point, List<Map>>();
         private readonly PriorityQueueB<TimedTimerEntry> m_timers = new PriorityQueueB<TimedTimerEntry>(new TimedTimerComparer());
         private readonly List<TimedTimerEntry> m_pausedTimers = new List<TimedTimerEntry>();
-        private ManualResetEvent m_stoppedAsync = new ManualResetEvent(false);
+        private readonly ManualResetEvent m_stoppedAsync = new ManualResetEvent(false);
         protected internal AreaRecord Record;
-        private float m_avgUpdateTime;
         private int m_currentThreadId;
         private bool m_isUpdating;
         private DateTime m_lastUpdateTime;
         private bool m_running;
-        private int m_tickCount;
         private int m_updateDelay;
 
         public Area(AreaRecord record)
@@ -86,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         }
 
 
-        public Dictionary<System.Drawing.Point, List<Map>> MapsByPosition
+        public Dictionary<Point, List<Map>> MapsByPosition
         {
             get
             {
@@ -144,7 +139,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public int TickCount
         {
-            get { return m_tickCount; }
+            get;
+            private set;
         }
 
         public int UpdateDelay
@@ -165,7 +161,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public float AverageUpdateTime
         {
-            get { return m_avgUpdateTime; }
+            get;
+            private set;
         }
 
         public bool IsDisposed
@@ -339,11 +336,11 @@ namespace Stump.Server.WorldServer.Game.Maps
                 return;
             }
 
-            DateTime updateStart = DateTime.Now;
+            var updateStart = DateTime.Now;
             var updateDelta = (int) ((updateStart - m_lastUpdateTime).TotalMilliseconds);
             long messageProcessTime = 0;
             long timerProcessingTime = 0;
-            int timerProcessed = 0;
+            var timerProcessed = 0;
             try
             {
                 var sw = Stopwatch.StartNew();
@@ -364,10 +361,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 m_isUpdating = true;
 
-                foreach (var timer in m_pausedTimers)
+                foreach (var timer in m_pausedTimers.Where(timer => timer.Enabled))
                 {
-                    if (timer.Enabled)
-                        m_timers.Push(timer);
+                    m_timers.Push(timer);
                 }
 
                 sw = Stopwatch.StartNew();
@@ -409,15 +405,15 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                     // we updated the map, so set our last update time to now
                     m_lastUpdateTime = updateStart;
-                    m_tickCount++;
+                    TickCount++;
                     m_isUpdating = false;
 
                     // get the time, now that we've finished our update callback
-                    DateTime updateEnd = DateTime.Now;
-                    TimeSpan newUpdateDelta = updateEnd - updateStart;
+                    var updateEnd = DateTime.Now;
+                    var newUpdateDelta = updateEnd - updateStart;
 
                     // weigh old update-time 9 times and new update-time once
-                    m_avgUpdateTime = ((m_avgUpdateTime*9) + (float) (newUpdateDelta).TotalMilliseconds)/10;
+                    AverageUpdateTime = ((AverageUpdateTime*9) + (float) (newUpdateDelta).TotalMilliseconds)/10;
 
 
                     // make sure to unset the ID *before* enqueuing the task in the ThreadPool again
@@ -455,26 +451,26 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             m_objects.Add(obj);
 
-            if (obj is Character)
-            {
-                m_characters.Add((Character) obj);
+            if (!(obj is Character))
+                return;
 
-                if (!IsRunning)
-                    Start();
-            }
+            m_characters.Add((Character) obj);
+
+            if (!IsRunning)
+                Start();
         }
 
         public void Leave(WorldObject obj)
         {
             m_objects.Remove(obj);
 
-            if (obj is Character)
-            {
-                m_characters.Remove((Character) obj);
+            if (!(obj is Character))
+                return;
 
-                if (m_characters.Count <= 0 && IsRunning)
-                    Stop();
-            }
+            m_characters.Remove((Character) obj);
+
+            if (m_characters.Count <= 0 && IsRunning)
+                Stop();
         }
 
         public void SpawnMapsLater()
@@ -486,10 +482,9 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             EnsureContext();
 
-            foreach (var map in Maps)
+            foreach (var map in Maps.Where(map => !map.SpawnEnabled && map.MonsterSpawnsCount > 0))
             {
-                if (!map.SpawnEnabled && map.MonsterSpawnsCount > 0)
-                    map.EnableClassicalMonsterSpawns();
+                map.EnableClassicalMonsterSpawns();
             }
         }
 
@@ -497,7 +492,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             ExecuteInContext(() =>
                                  {
-                                     foreach (Character chr in m_characters)
+                                     foreach (var chr in m_characters)
                                      {
                                          action(chr);
                                      }
@@ -509,7 +504,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             m_subAreas.Add(subArea);
             m_maps.AddRange(subArea.Maps);
 
-            foreach (Map map in subArea.Maps)
+            foreach (var map in subArea.Maps)
             {
                 if (!m_mapsByPoint.ContainsKey(map.Position))
                     m_mapsByPoint.Add(map.Position, new List<Map>());
@@ -557,18 +552,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Map[] GetMaps(Point position)
         {
-            if (!m_mapsByPoint.ContainsKey(position))
-                return new Map[0];
-
-            return m_mapsByPoint[position].ToArray();
+            return !m_mapsByPoint.ContainsKey(position) ? new Map[0] : m_mapsByPoint[position].ToArray();
         }
 
         public Map[] GetMaps(Point position, bool outdoor)
         {
-            if (!m_mapsByPoint.ContainsKey(position))
-                return new Map[0];
-
-            return m_mapsByPoint[position].Where(entry => entry.Outdoor == outdoor).ToArray();
+            return !m_mapsByPoint.ContainsKey(position) ? new Map[0] : m_mapsByPoint[position].Where(entry => entry.Outdoor == outdoor).ToArray();
         }
 
 
@@ -602,20 +591,20 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void EnsureNoContext()
         {
-            if (Thread.CurrentThread.ManagedThreadId == m_currentThreadId)
-            {
-                Stop();
-                throw new InvalidOperationException(string.Format("Context prohibitted in Area '{0}'", this));
-            }
+            if (Thread.CurrentThread.ManagedThreadId != m_currentThreadId)
+                return;
+
+            Stop();
+            throw new InvalidOperationException(string.Format("Context prohibitted in Area '{0}'", this));
         }
 
         public void EnsureNotUpdating()
         {
-            if (m_isUpdating)
-            {
-                Stop();
-                throw new InvalidOperationException(string.Format("Area '{0}' is updating", this));
-            }
+            if (!m_isUpdating)
+                return;
+
+            Stop();
+            throw new InvalidOperationException(string.Format("Area '{0}' is updating", this));
         }
 
         public override string ToString()

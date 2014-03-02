@@ -903,7 +903,7 @@
         /// <summary>
         /// Learn the spell #3
         /// </summary>
-        Effect_604 = 604,
+        Effect_LearnSpell = 604,
         /// <summary>
         /// +#1{~1~2 to }#2 XP points
         /// </summary>
