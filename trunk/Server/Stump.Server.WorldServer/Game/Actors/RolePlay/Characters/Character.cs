@@ -2276,6 +2276,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Sex == SexTypeEnum.SEX_FEMALE);
         }
 
+        public CharacterMinimalPlusLookInformations GetCharacterMinimalPlusLookInformations()
+        {
+            return new CharacterMinimalPlusLookInformations(
+                Id,
+                Level,
+                Name,
+                Look.GetEntityLook());
+        }
+
         #endregion
 
         #region PartyMemberInformations

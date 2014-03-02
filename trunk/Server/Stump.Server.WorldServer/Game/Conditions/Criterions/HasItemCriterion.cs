@@ -19,10 +19,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             if (Operator == ComparaisonOperatorEnum.EQUALS)
                 return character.Inventory.Any(entry => entry.Template.Id == Item);
 
-             if (Operator == ComparaisonOperatorEnum.INEQUALS)
-                return !character.Inventory.Any(entry => entry.Template.Id == Item);
-
-            return true;
+             return Operator != ComparaisonOperatorEnum.INEQUALS || character.Inventory.All(entry => entry.Template.Id != Item);
         }
 
         public override void Build()
