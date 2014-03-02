@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -64,7 +65,6 @@ namespace DofusProtocolBuilder
                 Configuration = serializer.Deserialize(reader) as Configuration;
                 reader.Close();
             }
-
             var profiles =
             new ParsingProfile[]
                 {
@@ -78,14 +78,14 @@ namespace DofusProtocolBuilder
                 };
 
             Console.WriteLine("Profile to execute ?");
-            Console.WriteLine(string.Join(",", profiles.Select(x => x.OutPutPath)));
+            Console.WriteLine(string.Join(",", profiles.Where(x => x != null).Select(x => x.OutPutPath)));
             var anwser = Console.ReadLine();
 
             if (!string.IsNullOrEmpty(anwser) && anwser != "*")
             {
                 var split = anwser.Split(',');
 
-                profiles = profiles.Where(x => split.Any(y => x.OutPutPath.Contains(y))).ToArray();
+                profiles = profiles.Where(x => x != null && split.Any(y => x.OutPutPath.Contains(y))).ToArray();
             }
 
             foreach (ParsingProfile parsingProfile in profiles)

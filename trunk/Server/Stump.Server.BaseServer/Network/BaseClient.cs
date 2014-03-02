@@ -87,6 +87,19 @@ namespace Stump.Server.BaseServer.Network
 
         public virtual void Send(Message message)
         {
+            var stream = BufferManager.Default.CheckOutStream();
+
+            var writer = new BigEndianWriter(stream);
+            message.Pack(writer);
+
+            Send(stream);
+
+            OnMessageSent(message);
+        }
+        
+        // a bit dirty. only used by WorldClientCollection
+        public void Send(SegmentStream stream)
+        {   
             if (Socket == null || !Connected)
             {
                 return;
@@ -94,39 +107,30 @@ namespace Stump.Server.BaseServer.Network
 
             var args = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
             args.Completed += OnSendCompleted;
-
-            var stream = BufferManager.Default.CheckOutStream();
-            var writer = new BigEndianWriter(stream);
-            message.Pack(writer);
-
+            
             args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
-            args.UserToken = writer;
+            args.UserToken = stream;
 
             if (!Socket.SendAsync(args))
             {
                 args.Completed -= OnSendCompleted;
-                writer.Dispose();
+                stream.Dispose();
                 ObjectPoolMgr.ReleaseObject(args);
             }
-
-            if (LogPackets)
-                Console.WriteLine("(SEND) {0} : {1}", this, message);
-
             LastActivity = DateTime.Now;
-            OnMessageSended(message);
         }
 
         private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
         {
             args.Completed -= OnSendCompleted;
-            ((BigEndianWriter) args.UserToken).Dispose();
+            ((SegmentStream) args.UserToken).Dispose();
             ObjectPoolMgr.ReleaseObject(args);
         }
 
         #endregion
 
         public event Action<BaseClient, Message> MessageReceived;
-        public event Action<BaseClient, Message> MessageSended;
+        public event Action<BaseClient, Message> MessageSent;
 
         protected virtual void OnMessageReceived(Message message)
         {
@@ -134,10 +138,13 @@ namespace Stump.Server.BaseServer.Network
                 MessageReceived(this, message);
         }
 
-        protected virtual void OnMessageSended(Message message)
+        public virtual void OnMessageSent(Message message)
         {
-            if (MessageSended != null)
-                MessageSended(this, message);
+            if (LogPackets)
+                Console.WriteLine("(SEND) {0} : {1}", this, message);
+
+            if (MessageSent != null)
+                MessageSent(this, message);
         }
 
         public void BeginReceive()

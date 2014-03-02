@@ -35,7 +35,7 @@ namespace Stump.Core.Pool.New
             switch (origin)
             {
                 case SeekOrigin.Begin:
-                    m_position = (int)offset;
+                    m_position = m_segment.Offset + (int)offset;
                     break;
                 case SeekOrigin.Current:
                     m_position += (int)offset;
@@ -44,9 +44,9 @@ namespace Stump.Core.Pool.New
                     m_position = m_segment.Offset + m_segment.Length - (int)offset;
                     break;
             }
-            if (m_position > m_segment.Length)
+            if (Position > m_segment.Length)
             {
-                m_position = m_segment.Length;
+                Position = m_segment.Length;
             }
             return m_position;
         }

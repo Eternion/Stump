@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:32
+// Generated on 03/02/2014 20:42:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,22 +31,31 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)craftersSettings.Count());
+            var craftersSettings_before = writer.Position;
+            var craftersSettings_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in craftersSettings)
             {
                  entry.Serialize(writer);
+                 craftersSettings_count++;
             }
+            var craftersSettings_after = writer.Position;
+            writer.Seek((int)craftersSettings_before);
+            writer.WriteUShort((ushort)craftersSettings_count);
+            writer.Seek((int)craftersSettings_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            craftersSettings = new Types.JobCrafterDirectorySettings[limit];
+            var craftersSettings_ = new Types.JobCrafterDirectorySettings[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (craftersSettings as Types.JobCrafterDirectorySettings[])[i] = new Types.JobCrafterDirectorySettings();
-                 (craftersSettings as Types.JobCrafterDirectorySettings[])[i].Deserialize(reader);
+                 craftersSettings_[i] = new Types.JobCrafterDirectorySettings();
+                 craftersSettings_[i].Deserialize(reader);
             }
+            craftersSettings = craftersSettings_;
         }
         
         public override int GetSerializationSize()

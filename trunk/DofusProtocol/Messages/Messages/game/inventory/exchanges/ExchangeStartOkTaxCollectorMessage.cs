@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:58
+// Generated on 03/02/2014 20:42:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +36,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(collectorId);
-            writer.WriteUShort((ushort)objectsInfos.Count());
+            var objectsInfos_before = writer.Position;
+            var objectsInfos_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in objectsInfos)
             {
                  entry.Serialize(writer);
+                 objectsInfos_count++;
             }
+            var objectsInfos_after = writer.Position;
+            writer.Seek((int)objectsInfos_before);
+            writer.WriteUShort((ushort)objectsInfos_count);
+            writer.Seek((int)objectsInfos_after);
+
             writer.WriteInt(goldInfo);
         }
         
@@ -48,12 +56,13 @@ namespace Stump.DofusProtocol.Messages
         {
             collectorId = reader.ReadInt();
             var limit = reader.ReadUShort();
-            objectsInfos = new Types.ObjectItem[limit];
+            var objectsInfos_ = new Types.ObjectItem[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (objectsInfos as Types.ObjectItem[])[i] = new Types.ObjectItem();
-                 (objectsInfos as Types.ObjectItem[])[i].Deserialize(reader);
+                 objectsInfos_[i] = new Types.ObjectItem();
+                 objectsInfos_[i].Deserialize(reader);
             }
+            objectsInfos = objectsInfos_;
             goldInfo = reader.ReadInt();
             if (goldInfo < 0)
                 throw new Exception("Forbidden value on goldInfo = " + goldInfo + ", it doesn't respect the following condition : goldInfo < 0");

@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:18
+// Generated on 03/02/2014 20:43:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,35 +35,53 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(collectorId);
-            writer.WriteUShort((ushort)allyCharactersInformations.Count());
+            var allyCharactersInformations_before = writer.Position;
+            var allyCharactersInformations_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in allyCharactersInformations)
             {
                  entry.Serialize(writer);
+                 allyCharactersInformations_count++;
             }
-            writer.WriteUShort((ushort)enemyCharactersInformations.Count());
+            var allyCharactersInformations_after = writer.Position;
+            writer.Seek((int)allyCharactersInformations_before);
+            writer.WriteUShort((ushort)allyCharactersInformations_count);
+            writer.Seek((int)allyCharactersInformations_after);
+
+            var enemyCharactersInformations_before = writer.Position;
+            var enemyCharactersInformations_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in enemyCharactersInformations)
             {
                  entry.Serialize(writer);
+                 enemyCharactersInformations_count++;
             }
+            var enemyCharactersInformations_after = writer.Position;
+            writer.Seek((int)enemyCharactersInformations_before);
+            writer.WriteUShort((ushort)enemyCharactersInformations_count);
+            writer.Seek((int)enemyCharactersInformations_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
             collectorId = reader.ReadInt();
             var limit = reader.ReadUShort();
-            allyCharactersInformations = new Types.CharacterMinimalPlusLookInformations[limit];
+            var allyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (allyCharactersInformations as Types.CharacterMinimalPlusLookInformations[])[i] = new Types.CharacterMinimalPlusLookInformations();
-                 (allyCharactersInformations as Types.CharacterMinimalPlusLookInformations[])[i].Deserialize(reader);
+                 allyCharactersInformations_[i] = new Types.CharacterMinimalPlusLookInformations();
+                 allyCharactersInformations_[i].Deserialize(reader);
             }
+            allyCharactersInformations = allyCharactersInformations_;
             limit = reader.ReadUShort();
-            enemyCharactersInformations = new Types.CharacterMinimalPlusLookInformations[limit];
+            var enemyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (enemyCharactersInformations as Types.CharacterMinimalPlusLookInformations[])[i] = new Types.CharacterMinimalPlusLookInformations();
-                 (enemyCharactersInformations as Types.CharacterMinimalPlusLookInformations[])[i].Deserialize(reader);
+                 enemyCharactersInformations_[i] = new Types.CharacterMinimalPlusLookInformations();
+                 enemyCharactersInformations_[i].Deserialize(reader);
             }
+            enemyCharactersInformations = enemyCharactersInformations_;
         }
         
         public virtual int GetSerializationSize()

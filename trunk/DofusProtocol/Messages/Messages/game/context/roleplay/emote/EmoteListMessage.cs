@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:29
+// Generated on 03/02/2014 20:42:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,21 +31,30 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)emoteIds.Count());
+            var emoteIds_before = writer.Position;
+            var emoteIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in emoteIds)
             {
                  writer.WriteSByte(entry);
+                 emoteIds_count++;
             }
+            var emoteIds_after = writer.Position;
+            writer.Seek((int)emoteIds_before);
+            writer.WriteUShort((ushort)emoteIds_count);
+            writer.Seek((int)emoteIds_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            emoteIds = new sbyte[limit];
+            var emoteIds_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (emoteIds as sbyte[])[i] = reader.ReadSByte();
+                 emoteIds_[i] = reader.ReadSByte();
             }
+            emoteIds = emoteIds_;
         }
         
         public override int GetSerializationSize()

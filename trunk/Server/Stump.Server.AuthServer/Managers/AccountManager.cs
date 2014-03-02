@@ -73,7 +73,7 @@ namespace Stump.Server.AuthServer.Managers
 
         private void TimerTick()
         {
-            var toRemove = (from keyPair in m_accountsCache where keyPair.Value.Item1 >= DateTime.Now select keyPair).ToList();
+            var toRemove = (from keyPair in m_accountsCache where keyPair.Value.Item1 <= DateTime.Now select keyPair).ToList();
 
             foreach (var keyPair in toRemove)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:34
+// Generated on 03/02/2014 20:42:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,16 +36,32 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteShort(messageId);
-            writer.WriteUShort((ushort)dialogParams.Count());
+            var dialogParams_before = writer.Position;
+            var dialogParams_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in dialogParams)
             {
                  writer.WriteUTF(entry);
+                 dialogParams_count++;
             }
-            writer.WriteUShort((ushort)visibleReplies.Count());
+            var dialogParams_after = writer.Position;
+            writer.Seek((int)dialogParams_before);
+            writer.WriteUShort((ushort)dialogParams_count);
+            writer.Seek((int)dialogParams_after);
+
+            var visibleReplies_before = writer.Position;
+            var visibleReplies_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in visibleReplies)
             {
                  writer.WriteShort(entry);
+                 visibleReplies_count++;
             }
+            var visibleReplies_after = writer.Position;
+            writer.Seek((int)visibleReplies_before);
+            writer.WriteUShort((ushort)visibleReplies_count);
+            writer.Seek((int)visibleReplies_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -54,17 +70,19 @@ namespace Stump.DofusProtocol.Messages
             if (messageId < 0)
                 throw new Exception("Forbidden value on messageId = " + messageId + ", it doesn't respect the following condition : messageId < 0");
             var limit = reader.ReadUShort();
-            dialogParams = new string[limit];
+            var dialogParams_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (dialogParams as string[])[i] = reader.ReadUTF();
+                 dialogParams_[i] = reader.ReadUTF();
             }
+            dialogParams = dialogParams_;
             limit = reader.ReadUShort();
-            visibleReplies = new short[limit];
+            var visibleReplies_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (visibleReplies as short[])[i] = reader.ReadShort();
+                 visibleReplies_[i] = reader.ReadShort();
             }
+            visibleReplies = visibleReplies_;
         }
         
         public override int GetSerializationSize()

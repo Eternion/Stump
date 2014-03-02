@@ -192,7 +192,12 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 				if (serializeMethod)
 				{
                     if (Program.Configuration.UseIEnumerable)
-						WriteLine("writer.WriteUShort((ushort)" + name + ".Count());");
+                    {
+                        WriteLine("var " + name + "_before = writer.Position;");
+                        WriteLine("var " + name + "_count = 0;");
+                        WriteLine("writer.WriteUShort(0);");
+                    }
+
 					else
 						WriteLine("writer.WriteUShort((ushort)" + name + ".Length);");
 				}
@@ -202,14 +207,19 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 
 			if (!serializeMethod)
 			{
-                WriteLine(string.Format("{0} = new {1}[{2}];", name, GetRealType(type), limit));
+                if (Program.Configuration.UseIEnumerable)
+                {
+                    name = name + "_"; // temp name
+                    WriteLine(string.Format("var {0} = new {1}[{2}];", name, GetRealType(type), limit));
+                }
+                else
+                    WriteLine(string.Format("{0} = new {1}[{2}];", name, GetRealType(type), limit));
+
 				WriteLine("for (int i = 0; i < " + limit + "; i++)");
 				WriteLine("{");
 				PushIndent("     ");
 
-                name = Program.Configuration.UseIEnumerable ?
-                    string.Format("({0} as {1}[])[i]", name, GetRealType(type)) :
-					name + "[i]";
+                name = name + "[i]";
 			}
 			else
 			{
@@ -309,8 +319,22 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 
 		if (array)
 		{
+            if (serializeMethod && limit=="limit")
+                WriteLine(field.Name + "_count++;");
+
 			PopIndent();
             WriteLine("}");
+
+            if (!serializeMethod)
+                WriteLine("{0} = {1};", field.Name, name.Remove(name.Length - 3)); // removes [i]
+            else if (limit == "limit" && Program.Configuration.UseIEnumerable)
+			{
+                WriteLine("var " + field.Name + "_after = writer.Position;");
+                WriteLine("writer.Seek((int)" + field.Name + "_before);");
+                WriteLine("writer.WriteUShort((ushort)" + field.Name + "_count);");
+                WriteLine("writer.Seek((int)" + field.Name + "_after);");
+                WriteLine("");
+            }
 		}
     }
         

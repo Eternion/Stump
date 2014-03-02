@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:23
+// Generated on 03/02/2014 20:42:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,33 +35,51 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)positionsForChallengers.Count());
+            var positionsForChallengers_before = writer.Position;
+            var positionsForChallengers_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in positionsForChallengers)
             {
                  writer.WriteShort(entry);
+                 positionsForChallengers_count++;
             }
-            writer.WriteUShort((ushort)positionsForDefenders.Count());
+            var positionsForChallengers_after = writer.Position;
+            writer.Seek((int)positionsForChallengers_before);
+            writer.WriteUShort((ushort)positionsForChallengers_count);
+            writer.Seek((int)positionsForChallengers_after);
+
+            var positionsForDefenders_before = writer.Position;
+            var positionsForDefenders_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in positionsForDefenders)
             {
                  writer.WriteShort(entry);
+                 positionsForDefenders_count++;
             }
+            var positionsForDefenders_after = writer.Position;
+            writer.Seek((int)positionsForDefenders_before);
+            writer.WriteUShort((ushort)positionsForDefenders_count);
+            writer.Seek((int)positionsForDefenders_after);
+
             writer.WriteSByte(teamNumber);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            positionsForChallengers = new short[limit];
+            var positionsForChallengers_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (positionsForChallengers as short[])[i] = reader.ReadShort();
+                 positionsForChallengers_[i] = reader.ReadShort();
             }
+            positionsForChallengers = positionsForChallengers_;
             limit = reader.ReadUShort();
-            positionsForDefenders = new short[limit];
+            var positionsForDefenders_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (positionsForDefenders as short[])[i] = reader.ReadShort();
+                 positionsForDefenders_[i] = reader.ReadShort();
             }
+            positionsForDefenders = positionsForDefenders_;
             teamNumber = reader.ReadSByte();
             if (teamNumber < 0)
                 throw new Exception("Forbidden value on teamNumber = " + teamNumber + ", it doesn't respect the following condition : teamNumber < 0");

@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:18
+// Generated on 03/02/2014 20:43:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,18 +38,34 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteInt(elementId);
             writer.WriteInt(elementTypeId);
-            writer.WriteUShort((ushort)enabledSkills.Count());
+            var enabledSkills_before = writer.Position;
+            var enabledSkills_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in enabledSkills)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 enabledSkills_count++;
             }
-            writer.WriteUShort((ushort)disabledSkills.Count());
+            var enabledSkills_after = writer.Position;
+            writer.Seek((int)enabledSkills_before);
+            writer.WriteUShort((ushort)enabledSkills_count);
+            writer.Seek((int)enabledSkills_after);
+
+            var disabledSkills_before = writer.Position;
+            var disabledSkills_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in disabledSkills)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 disabledSkills_count++;
             }
+            var disabledSkills_after = writer.Position;
+            writer.Seek((int)disabledSkills_before);
+            writer.WriteUShort((ushort)disabledSkills_count);
+            writer.Seek((int)disabledSkills_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -59,19 +75,21 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on elementId = " + elementId + ", it doesn't respect the following condition : elementId < 0");
             elementTypeId = reader.ReadInt();
             var limit = reader.ReadUShort();
-            enabledSkills = new Types.InteractiveElementSkill[limit];
+            var enabledSkills_ = new Types.InteractiveElementSkill[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (enabledSkills as Types.InteractiveElementSkill[])[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
-                 (enabledSkills as Types.InteractiveElementSkill[])[i].Deserialize(reader);
+                 enabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
+                 enabledSkills_[i].Deserialize(reader);
             }
+            enabledSkills = enabledSkills_;
             limit = reader.ReadUShort();
-            disabledSkills = new Types.InteractiveElementSkill[limit];
+            var disabledSkills_ = new Types.InteractiveElementSkill[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (disabledSkills as Types.InteractiveElementSkill[])[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
-                 (disabledSkills as Types.InteractiveElementSkill[])[i].Deserialize(reader);
+                 disabledSkills_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
+                 disabledSkills_[i].Deserialize(reader);
             }
+            disabledSkills = disabledSkills_;
         }
         
         public virtual int GetSerializationSize()

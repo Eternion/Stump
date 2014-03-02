@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:38
+// Generated on 03/02/2014 20:42:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,17 +46,33 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(partyType);
             writer.WriteInt(partyLeaderId);
             writer.WriteSByte(maxParticipants);
-            writer.WriteUShort((ushort)members.Count());
+            var members_before = writer.Position;
+            var members_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in members)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 members_count++;
             }
-            writer.WriteUShort((ushort)guests.Count());
+            var members_after = writer.Position;
+            writer.Seek((int)members_before);
+            writer.WriteUShort((ushort)members_count);
+            writer.Seek((int)members_after);
+
+            var guests_before = writer.Position;
+            var guests_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in guests)
             {
                  entry.Serialize(writer);
+                 guests_count++;
             }
+            var guests_after = writer.Position;
+            writer.Seek((int)guests_before);
+            writer.WriteUShort((ushort)guests_count);
+            writer.Seek((int)guests_after);
+
             writer.WriteBoolean(restricted);
         }
         
@@ -73,19 +89,21 @@ namespace Stump.DofusProtocol.Messages
             if (maxParticipants < 0)
                 throw new Exception("Forbidden value on maxParticipants = " + maxParticipants + ", it doesn't respect the following condition : maxParticipants < 0");
             var limit = reader.ReadUShort();
-            members = new Types.PartyMemberInformations[limit];
+            var members_ = new Types.PartyMemberInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (members as Types.PartyMemberInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.PartyMemberInformations>(reader.ReadShort());
-                 (members as Types.PartyMemberInformations[])[i].Deserialize(reader);
+                 members_[i] = Types.ProtocolTypeManager.GetInstance<Types.PartyMemberInformations>(reader.ReadShort());
+                 members_[i].Deserialize(reader);
             }
+            members = members_;
             limit = reader.ReadUShort();
-            guests = new Types.PartyGuestInformations[limit];
+            var guests_ = new Types.PartyGuestInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (guests as Types.PartyGuestInformations[])[i] = new Types.PartyGuestInformations();
-                 (guests as Types.PartyGuestInformations[])[i].Deserialize(reader);
+                 guests_[i] = new Types.PartyGuestInformations();
+                 guests_[i].Deserialize(reader);
             }
+            guests = guests_;
             restricted = reader.ReadBoolean();
         }
         

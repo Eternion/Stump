@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:07
+// Generated on 03/02/2014 20:42:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,16 +37,32 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)titles.Count());
+            var titles_before = writer.Position;
+            var titles_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in titles)
             {
                  writer.WriteShort(entry);
+                 titles_count++;
             }
-            writer.WriteUShort((ushort)ornaments.Count());
+            var titles_after = writer.Position;
+            writer.Seek((int)titles_before);
+            writer.WriteUShort((ushort)titles_count);
+            writer.Seek((int)titles_after);
+
+            var ornaments_before = writer.Position;
+            var ornaments_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in ornaments)
             {
                  writer.WriteShort(entry);
+                 ornaments_count++;
             }
+            var ornaments_after = writer.Position;
+            writer.Seek((int)ornaments_before);
+            writer.WriteUShort((ushort)ornaments_count);
+            writer.Seek((int)ornaments_after);
+
             writer.WriteShort(activeTitle);
             writer.WriteShort(activeOrnament);
         }
@@ -54,17 +70,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            titles = new short[limit];
+            var titles_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (titles as short[])[i] = reader.ReadShort();
+                 titles_[i] = reader.ReadShort();
             }
+            titles = titles_;
             limit = reader.ReadUShort();
-            ornaments = new short[limit];
+            var ornaments_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (ornaments as short[])[i] = reader.ReadShort();
+                 ornaments_[i] = reader.ReadShort();
             }
+            ornaments = ornaments_;
             activeTitle = reader.ReadShort();
             if (activeTitle < 0)
                 throw new Exception("Forbidden value on activeTitle = " + activeTitle + ", it doesn't respect the following condition : activeTitle < 0");

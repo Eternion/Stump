@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:05
+// Generated on 03/02/2014 20:42:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,32 +33,50 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)angelsSubAreas.Count());
+            var angelsSubAreas_before = writer.Position;
+            var angelsSubAreas_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in angelsSubAreas)
             {
                  writer.WriteShort(entry);
+                 angelsSubAreas_count++;
             }
-            writer.WriteUShort((ushort)evilsSubAreas.Count());
+            var angelsSubAreas_after = writer.Position;
+            writer.Seek((int)angelsSubAreas_before);
+            writer.WriteUShort((ushort)angelsSubAreas_count);
+            writer.Seek((int)angelsSubAreas_after);
+
+            var evilsSubAreas_before = writer.Position;
+            var evilsSubAreas_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in evilsSubAreas)
             {
                  writer.WriteShort(entry);
+                 evilsSubAreas_count++;
             }
+            var evilsSubAreas_after = writer.Position;
+            writer.Seek((int)evilsSubAreas_before);
+            writer.WriteUShort((ushort)evilsSubAreas_count);
+            writer.Seek((int)evilsSubAreas_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            angelsSubAreas = new short[limit];
+            var angelsSubAreas_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (angelsSubAreas as short[])[i] = reader.ReadShort();
+                 angelsSubAreas_[i] = reader.ReadShort();
             }
+            angelsSubAreas = angelsSubAreas_;
             limit = reader.ReadUShort();
-            evilsSubAreas = new short[limit];
+            var evilsSubAreas_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (evilsSubAreas as short[])[i] = reader.ReadShort();
+                 evilsSubAreas_[i] = reader.ReadShort();
             }
+            evilsSubAreas = evilsSubAreas_;
         }
         
         public override int GetSerializationSize()

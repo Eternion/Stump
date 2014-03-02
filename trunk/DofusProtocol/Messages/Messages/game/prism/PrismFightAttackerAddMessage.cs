@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:03
+// Generated on 03/02/2014 20:42:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,23 +34,32 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteDouble(fightId);
-            writer.WriteUShort((ushort)charactersDescription.Count());
+            var charactersDescription_before = writer.Position;
+            var charactersDescription_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in charactersDescription)
             {
                  entry.Serialize(writer);
+                 charactersDescription_count++;
             }
+            var charactersDescription_after = writer.Position;
+            writer.Seek((int)charactersDescription_before);
+            writer.WriteUShort((ushort)charactersDescription_count);
+            writer.Seek((int)charactersDescription_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             fightId = reader.ReadDouble();
             var limit = reader.ReadUShort();
-            charactersDescription = new Types.CharacterMinimalPlusLookAndGradeInformations[limit];
+            var charactersDescription_ = new Types.CharacterMinimalPlusLookAndGradeInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (charactersDescription as Types.CharacterMinimalPlusLookAndGradeInformations[])[i] = new Types.CharacterMinimalPlusLookAndGradeInformations();
-                 (charactersDescription as Types.CharacterMinimalPlusLookAndGradeInformations[])[i].Deserialize(reader);
+                 charactersDescription_[i] = new Types.CharacterMinimalPlusLookAndGradeInformations();
+                 charactersDescription_[i].Deserialize(reader);
             }
+            charactersDescription = charactersDescription_;
         }
         
         public override int GetSerializationSize()

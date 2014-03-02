@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:04
+// Generated on 03/02/2014 20:42:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,35 +36,53 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteDouble(fightId);
-            writer.WriteUShort((ushort)mainFighters.Count());
+            var mainFighters_before = writer.Position;
+            var mainFighters_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in mainFighters)
             {
                  entry.Serialize(writer);
+                 mainFighters_count++;
             }
-            writer.WriteUShort((ushort)reserveFighters.Count());
+            var mainFighters_after = writer.Position;
+            writer.Seek((int)mainFighters_before);
+            writer.WriteUShort((ushort)mainFighters_count);
+            writer.Seek((int)mainFighters_after);
+
+            var reserveFighters_before = writer.Position;
+            var reserveFighters_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in reserveFighters)
             {
                  entry.Serialize(writer);
+                 reserveFighters_count++;
             }
+            var reserveFighters_after = writer.Position;
+            writer.Seek((int)reserveFighters_before);
+            writer.WriteUShort((ushort)reserveFighters_count);
+            writer.Seek((int)reserveFighters_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             fightId = reader.ReadDouble();
             var limit = reader.ReadUShort();
-            mainFighters = new Types.CharacterMinimalPlusLookAndGradeInformations[limit];
+            var mainFighters_ = new Types.CharacterMinimalPlusLookAndGradeInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (mainFighters as Types.CharacterMinimalPlusLookAndGradeInformations[])[i] = new Types.CharacterMinimalPlusLookAndGradeInformations();
-                 (mainFighters as Types.CharacterMinimalPlusLookAndGradeInformations[])[i].Deserialize(reader);
+                 mainFighters_[i] = new Types.CharacterMinimalPlusLookAndGradeInformations();
+                 mainFighters_[i].Deserialize(reader);
             }
+            mainFighters = mainFighters_;
             limit = reader.ReadUShort();
-            reserveFighters = new Types.CharacterMinimalPlusLookAndGradeInformations[limit];
+            var reserveFighters_ = new Types.CharacterMinimalPlusLookAndGradeInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (reserveFighters as Types.CharacterMinimalPlusLookAndGradeInformations[])[i] = new Types.CharacterMinimalPlusLookAndGradeInformations();
-                 (reserveFighters as Types.CharacterMinimalPlusLookAndGradeInformations[])[i].Deserialize(reader);
+                 reserveFighters_[i] = new Types.CharacterMinimalPlusLookAndGradeInformations();
+                 reserveFighters_[i].Deserialize(reader);
             }
+            reserveFighters = reserveFighters_;
         }
         
         public override int GetSerializationSize()

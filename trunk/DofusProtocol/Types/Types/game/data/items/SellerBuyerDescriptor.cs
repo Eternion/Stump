@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:17
+// Generated on 03/02/2014 20:43:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,16 +42,32 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)quantities.Count());
+            var quantities_before = writer.Position;
+            var quantities_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in quantities)
             {
                  writer.WriteInt(entry);
+                 quantities_count++;
             }
-            writer.WriteUShort((ushort)types.Count());
+            var quantities_after = writer.Position;
+            writer.Seek((int)quantities_before);
+            writer.WriteUShort((ushort)quantities_count);
+            writer.Seek((int)quantities_after);
+
+            var types_before = writer.Position;
+            var types_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in types)
             {
                  writer.WriteInt(entry);
+                 types_count++;
             }
+            var types_after = writer.Position;
+            writer.Seek((int)types_before);
+            writer.WriteUShort((ushort)types_count);
+            writer.Seek((int)types_after);
+
             writer.WriteFloat(taxPercentage);
             writer.WriteInt(maxItemLevel);
             writer.WriteInt(maxItemPerAccount);
@@ -62,17 +78,19 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            quantities = new int[limit];
+            var quantities_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (quantities as int[])[i] = reader.ReadInt();
+                 quantities_[i] = reader.ReadInt();
             }
+            quantities = quantities_;
             limit = reader.ReadUShort();
-            types = new int[limit];
+            var types_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (types as int[])[i] = reader.ReadInt();
+                 types_[i] = reader.ReadInt();
             }
+            types = types_;
             taxPercentage = reader.ReadFloat();
             maxItemLevel = reader.ReadInt();
             if (maxItemLevel < 0)

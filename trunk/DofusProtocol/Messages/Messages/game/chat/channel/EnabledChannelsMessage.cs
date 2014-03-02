@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:19
+// Generated on 03/02/2014 20:42:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,32 +33,50 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)channels.Count());
+            var channels_before = writer.Position;
+            var channels_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in channels)
             {
                  writer.WriteSByte(entry);
+                 channels_count++;
             }
-            writer.WriteUShort((ushort)disallowed.Count());
+            var channels_after = writer.Position;
+            writer.Seek((int)channels_before);
+            writer.WriteUShort((ushort)channels_count);
+            writer.Seek((int)channels_after);
+
+            var disallowed_before = writer.Position;
+            var disallowed_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in disallowed)
             {
                  writer.WriteSByte(entry);
+                 disallowed_count++;
             }
+            var disallowed_after = writer.Position;
+            writer.Seek((int)disallowed_before);
+            writer.WriteUShort((ushort)disallowed_count);
+            writer.Seek((int)disallowed_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            channels = new sbyte[limit];
+            var channels_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (channels as sbyte[])[i] = reader.ReadSByte();
+                 channels_[i] = reader.ReadSByte();
             }
+            channels = channels_;
             limit = reader.ReadUShort();
-            disallowed = new sbyte[limit];
+            var disallowed_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (disallowed as sbyte[])[i] = reader.ReadSByte();
+                 disallowed_[i] = reader.ReadSByte();
             }
+            disallowed = disallowed_;
         }
         
         public override int GetSerializationSize()

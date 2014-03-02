@@ -296,23 +296,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
-            if (!IsFighting || Fighter.Fight.State != FightState.Placement)
-                return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
-                    (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0,
-                    Look.GetEntityLook(), 0, 0, 0, 0);
+            if (IsFighting)
+            {
+                var fight = Fighter.Fight as FightPvT;
 
-            var fight = Fighter.Fight as FightPvT;
+                if (fight != null)
+                {
+                    if (fight.State == FightState.Placement)
+                        return new TaxCollectorInformationsInWaitForHelpState(GlobalId, FirstNameId, LastNameId,
+                            GetAdditionalTaxCollectorInformations(),
+                            (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
+                            (short) Position.Map.SubArea.Id, 1,
+                            Look.GetEntityLook(), 0, 0, 0, 0,
+                            new ProtectedEntityWaitingForHelpInfo(
+                                (int) (fight.GetTimeBeforeFight().TotalMilliseconds/100),
+                                (int) (fight.GetDefendersWaitTimeForPlacement().TotalMilliseconds/100), (sbyte) fight.GetDefendersLeftSlot()));
 
-            if (fight != null)
-                return new TaxCollectorInformationsInWaitForHelpState(Id, FirstNameId, LastNameId,
-                    GetAdditionalTaxCollectorInformations(),
-                    (short)Position.Map.Position.X, (short)Position.Map.Position.Y,
-                    (short)Position.Map.SubArea.Id, 1,
-                    Look.GetEntityLook(), 0, 0, 0, 0,
-                    new ProtectedEntityWaitingForHelpInfo(fight.GetTimeBeforeFight().Milliseconds / 100,
-                        fight.GetDefendersWaitTimeForPlacement().Milliseconds / 100, (sbyte)fight.GetDefendersLeftSlot()));
+                    return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
+                        GetAdditionalTaxCollectorInformations(),
+                        (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
+                        (short) Position.Map.SubArea.Id, 2,
+                        Look.GetEntityLook(), 0, 0, 0, 0);
+                }
+            }
 
-            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
+            return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
                 (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
         }
 

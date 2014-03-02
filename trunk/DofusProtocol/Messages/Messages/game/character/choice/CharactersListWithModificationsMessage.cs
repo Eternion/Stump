@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:16
+// Generated on 03/02/2014 20:42:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,57 +39,93 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUShort((ushort)charactersToRecolor.Count());
+            var charactersToRecolor_before = writer.Position;
+            var charactersToRecolor_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in charactersToRecolor)
             {
                  entry.Serialize(writer);
+                 charactersToRecolor_count++;
             }
-            writer.WriteUShort((ushort)charactersToRename.Count());
+            var charactersToRecolor_after = writer.Position;
+            writer.Seek((int)charactersToRecolor_before);
+            writer.WriteUShort((ushort)charactersToRecolor_count);
+            writer.Seek((int)charactersToRecolor_after);
+
+            var charactersToRename_before = writer.Position;
+            var charactersToRename_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in charactersToRename)
             {
                  writer.WriteInt(entry);
+                 charactersToRename_count++;
             }
-            writer.WriteUShort((ushort)unusableCharacters.Count());
+            var charactersToRename_after = writer.Position;
+            writer.Seek((int)charactersToRename_before);
+            writer.WriteUShort((ushort)charactersToRename_count);
+            writer.Seek((int)charactersToRename_after);
+
+            var unusableCharacters_before = writer.Position;
+            var unusableCharacters_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in unusableCharacters)
             {
                  writer.WriteInt(entry);
+                 unusableCharacters_count++;
             }
-            writer.WriteUShort((ushort)charactersToRelook.Count());
+            var unusableCharacters_after = writer.Position;
+            writer.Seek((int)unusableCharacters_before);
+            writer.WriteUShort((ushort)unusableCharacters_count);
+            writer.Seek((int)unusableCharacters_after);
+
+            var charactersToRelook_before = writer.Position;
+            var charactersToRelook_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in charactersToRelook)
             {
                  entry.Serialize(writer);
+                 charactersToRelook_count++;
             }
+            var charactersToRelook_after = writer.Position;
+            writer.Seek((int)charactersToRelook_before);
+            writer.WriteUShort((ushort)charactersToRelook_count);
+            writer.Seek((int)charactersToRelook_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            charactersToRecolor = new Types.CharacterToRecolorInformation[limit];
+            var charactersToRecolor_ = new Types.CharacterToRecolorInformation[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (charactersToRecolor as Types.CharacterToRecolorInformation[])[i] = new Types.CharacterToRecolorInformation();
-                 (charactersToRecolor as Types.CharacterToRecolorInformation[])[i].Deserialize(reader);
+                 charactersToRecolor_[i] = new Types.CharacterToRecolorInformation();
+                 charactersToRecolor_[i].Deserialize(reader);
             }
+            charactersToRecolor = charactersToRecolor_;
             limit = reader.ReadUShort();
-            charactersToRename = new int[limit];
+            var charactersToRename_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (charactersToRename as int[])[i] = reader.ReadInt();
+                 charactersToRename_[i] = reader.ReadInt();
             }
+            charactersToRename = charactersToRename_;
             limit = reader.ReadUShort();
-            unusableCharacters = new int[limit];
+            var unusableCharacters_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (unusableCharacters as int[])[i] = reader.ReadInt();
+                 unusableCharacters_[i] = reader.ReadInt();
             }
+            unusableCharacters = unusableCharacters_;
             limit = reader.ReadUShort();
-            charactersToRelook = new Types.CharacterToRelookInformation[limit];
+            var charactersToRelook_ = new Types.CharacterToRelookInformation[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (charactersToRelook as Types.CharacterToRelookInformation[])[i] = new Types.CharacterToRelookInformation();
-                 (charactersToRelook as Types.CharacterToRelookInformation[])[i].Deserialize(reader);
+                 charactersToRelook_[i] = new Types.CharacterToRelookInformation();
+                 charactersToRelook_[i].Deserialize(reader);
             }
+            charactersToRelook = charactersToRelook_;
         }
         
         public override int GetSerializationSize()
