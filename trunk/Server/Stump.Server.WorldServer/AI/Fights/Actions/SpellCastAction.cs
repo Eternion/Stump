@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (Fighter.CanCastSpell(Spell, Target) != SpellCastResult.OK)
                 return RunStatus.Failure;
 
-            int i = 0;
+            var i = 0;
             do
             {
                 if (!Fighter.CastSpell(Spell, Target))

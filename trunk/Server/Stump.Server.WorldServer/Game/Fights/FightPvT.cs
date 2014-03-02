@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using MySql.Data.MySqlClient;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -125,7 +124,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_defendersQueue.Add(character);
               
             TaxCollectorHandler.SendGuildFightPlayersHelpersJoinMessage(character.Guild.Clients, this, character);
-            TaxCollectorHandler.SendGuildFightPlayersHelpersJoinMessage(Clients, this, character);
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
@@ -136,7 +134,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return false;
 
             TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(character.Guild.Clients, this, character);
-            TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(Clients, this, character);
 
             return true;
         }

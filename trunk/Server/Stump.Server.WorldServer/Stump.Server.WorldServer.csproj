@@ -305,6 +305,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPStealNonFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Double.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GiveKamas.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\LearnSpell.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreHp.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Punishment.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellBoost.cs" />

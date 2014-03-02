@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         [Variable]
         public static int BaseResistance = 25;
 
-        public const string TAXCOLLECTOR_LOOK = "{714|||140}"; //todo: Find correct Look
+        public const string TAXCOLLECTOR_LOOK = "{714|||}"; //todo: Find correct Look
 
         private readonly WorldMapTaxCollectorRecord m_record;
         private readonly List<TaxCollectorExchangeDialog> m_openedDialogs = new List<TaxCollectorExchangeDialog>();
@@ -300,6 +300,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
                     (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0,
                     Look.GetEntityLook(), 0, 0, 0, 0);
+
             var fight = Fighter.Fight as FightPvT;
 
             if (fight != null)
