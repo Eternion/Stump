@@ -197,7 +197,10 @@ namespace Stump.Server.WorldServer.Game.Social
         public void SayParty(WorldClient client, string msg)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY))
+            {
+                ChatHandler.SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_NO_PARTY);
                 return;
+            }
 
             client.Character.Party.ForEach(entry => SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg));
         }
@@ -205,7 +208,10 @@ namespace Stump.Server.WorldServer.Game.Social
         public void SayGuild(WorldClient client, string msg)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD))
+            {
+                ChatHandler.SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_NO_GUILD);
                 return;
+            }
 
             client.Character.Guild.Clients.ForEach(entry => SendChatServerMessage(entry, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg));
         }
@@ -213,7 +219,10 @@ namespace Stump.Server.WorldServer.Game.Social
         public void SayTeam(WorldClient client, string msg)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_TEAM))
+            {
+                ChatHandler.SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_NO_TEAM);
                 return;
+            }
 
             foreach (var fighter in client.Character.Fighter.Team.GetAllFighters<CharacterFighter>())
             {
