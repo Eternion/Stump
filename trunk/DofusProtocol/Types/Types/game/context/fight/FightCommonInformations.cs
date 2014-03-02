@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:12
+// Generated on 03/02/2014 20:42:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,21 +40,45 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteInt(fightId);
             writer.WriteSByte(fightType);
-            writer.WriteUShort((ushort)fightTeams.Count());
+            var fightTeams_before = writer.Position;
+            var fightTeams_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in fightTeams)
             {
                  entry.Serialize(writer);
+                 fightTeams_count++;
             }
-            writer.WriteUShort((ushort)fightTeamsPositions.Count());
+            var fightTeams_after = writer.Position;
+            writer.Seek((int)fightTeams_before);
+            writer.WriteUShort((ushort)fightTeams_count);
+            writer.Seek((int)fightTeams_after);
+
+            var fightTeamsPositions_before = writer.Position;
+            var fightTeamsPositions_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in fightTeamsPositions)
             {
                  writer.WriteShort(entry);
+                 fightTeamsPositions_count++;
             }
-            writer.WriteUShort((ushort)fightTeamsOptions.Count());
+            var fightTeamsPositions_after = writer.Position;
+            writer.Seek((int)fightTeamsPositions_before);
+            writer.WriteUShort((ushort)fightTeamsPositions_count);
+            writer.Seek((int)fightTeamsPositions_after);
+
+            var fightTeamsOptions_before = writer.Position;
+            var fightTeamsOptions_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in fightTeamsOptions)
             {
                  entry.Serialize(writer);
+                 fightTeamsOptions_count++;
             }
+            var fightTeamsOptions_after = writer.Position;
+            writer.Seek((int)fightTeamsOptions_before);
+            writer.WriteUShort((ushort)fightTeamsOptions_count);
+            writer.Seek((int)fightTeamsOptions_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -64,25 +88,28 @@ namespace Stump.DofusProtocol.Types
             if (fightType < 0)
                 throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
             var limit = reader.ReadUShort();
-            fightTeams = new Types.FightTeamInformations[limit];
+            var fightTeams_ = new Types.FightTeamInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (fightTeams as Types.FightTeamInformations[])[i] = new Types.FightTeamInformations();
-                 (fightTeams as Types.FightTeamInformations[])[i].Deserialize(reader);
+                 fightTeams_[i] = new Types.FightTeamInformations();
+                 fightTeams_[i].Deserialize(reader);
             }
+            fightTeams = fightTeams_;
             limit = reader.ReadUShort();
-            fightTeamsPositions = new short[limit];
+            var fightTeamsPositions_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (fightTeamsPositions as short[])[i] = reader.ReadShort();
+                 fightTeamsPositions_[i] = reader.ReadShort();
             }
+            fightTeamsPositions = fightTeamsPositions_;
             limit = reader.ReadUShort();
-            fightTeamsOptions = new Types.FightOptionsInformations[limit];
+            var fightTeamsOptions_ = new Types.FightOptionsInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (fightTeamsOptions as Types.FightOptionsInformations[])[i] = new Types.FightOptionsInformations();
-                 (fightTeamsOptions as Types.FightOptionsInformations[])[i].Deserialize(reader);
+                 fightTeamsOptions_[i] = new Types.FightOptionsInformations();
+                 fightTeamsOptions_[i].Deserialize(reader);
             }
+            fightTeamsOptions = fightTeamsOptions_;
         }
         
         public virtual int GetSerializationSize()

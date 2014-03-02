@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:21
+// Generated on 03/02/2014 20:42:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,22 +33,31 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)keyMovements.Count());
+            var keyMovements_before = writer.Position;
+            var keyMovements_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in keyMovements)
             {
                  writer.WriteShort(entry);
+                 keyMovements_count++;
             }
+            var keyMovements_after = writer.Position;
+            writer.Seek((int)keyMovements_before);
+            writer.WriteUShort((ushort)keyMovements_count);
+            writer.Seek((int)keyMovements_after);
+
             writer.WriteInt(actorId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            keyMovements = new short[limit];
+            var keyMovements_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (keyMovements as short[])[i] = reader.ReadShort();
+                 keyMovements_[i] = reader.ReadShort();
             }
+            keyMovements = keyMovements_;
             actorId = reader.ReadInt();
         }
         

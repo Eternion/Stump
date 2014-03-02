@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:02
+// Generated on 03/02/2014 20:42:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +39,19 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(summonerId);
             writer.WriteInt(slaveId);
-            writer.WriteUShort((ushort)slaveSpells.Count());
+            var slaveSpells_before = writer.Position;
+            var slaveSpells_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in slaveSpells)
             {
                  entry.Serialize(writer);
+                 slaveSpells_count++;
             }
+            var slaveSpells_after = writer.Position;
+            writer.Seek((int)slaveSpells_before);
+            writer.WriteUShort((ushort)slaveSpells_count);
+            writer.Seek((int)slaveSpells_after);
+
             slaveStats.Serialize(writer);
         }
         
@@ -52,12 +60,13 @@ namespace Stump.DofusProtocol.Messages
             summonerId = reader.ReadInt();
             slaveId = reader.ReadInt();
             var limit = reader.ReadUShort();
-            slaveSpells = new Types.SpellItem[limit];
+            var slaveSpells_ = new Types.SpellItem[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (slaveSpells as Types.SpellItem[])[i] = new Types.SpellItem();
-                 (slaveSpells as Types.SpellItem[])[i].Deserialize(reader);
+                 slaveSpells_[i] = new Types.SpellItem();
+                 slaveSpells_[i].Deserialize(reader);
             }
+            slaveSpells = slaveSpells_;
             slaveStats = new Types.CharacterCharacteristicsInformations();
             slaveStats.Deserialize(reader);
         }

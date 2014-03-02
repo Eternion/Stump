@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:14
+// Generated on 03/02/2014 20:43:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,23 +33,32 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(playerCount);
-            writer.WriteUShort((ushort)monsters.Count());
+            var monsters_before = writer.Position;
+            var monsters_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in monsters)
             {
                  entry.Serialize(writer);
+                 monsters_count++;
             }
+            var monsters_after = writer.Position;
+            writer.Seek((int)monsters_before);
+            writer.WriteUShort((ushort)monsters_count);
+            writer.Seek((int)monsters_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
             playerCount = reader.ReadInt();
             var limit = reader.ReadUShort();
-            monsters = new Types.MonsterInGroupLightInformations[limit];
+            var monsters_ = new Types.MonsterInGroupLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (monsters as Types.MonsterInGroupLightInformations[])[i] = new Types.MonsterInGroupLightInformations();
-                 (monsters as Types.MonsterInGroupLightInformations[])[i].Deserialize(reader);
+                 monsters_[i] = new Types.MonsterInGroupLightInformations();
+                 monsters_[i].Deserialize(reader);
             }
+            monsters = monsters_;
         }
         
         public virtual int GetSerializationSize()

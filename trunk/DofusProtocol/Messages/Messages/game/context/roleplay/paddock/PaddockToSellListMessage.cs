@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:35
+// Generated on 03/02/2014 20:42:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +37,19 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteShort(pageIndex);
             writer.WriteShort(totalPage);
-            writer.WriteUShort((ushort)paddockList.Count());
+            var paddockList_before = writer.Position;
+            var paddockList_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in paddockList)
             {
                  entry.Serialize(writer);
+                 paddockList_count++;
             }
+            var paddockList_after = writer.Position;
+            writer.Seek((int)paddockList_before);
+            writer.WriteUShort((ushort)paddockList_count);
+            writer.Seek((int)paddockList_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -53,12 +61,13 @@ namespace Stump.DofusProtocol.Messages
             if (totalPage < 0)
                 throw new Exception("Forbidden value on totalPage = " + totalPage + ", it doesn't respect the following condition : totalPage < 0");
             var limit = reader.ReadUShort();
-            paddockList = new Types.PaddockInformationsForSell[limit];
+            var paddockList_ = new Types.PaddockInformationsForSell[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (paddockList as Types.PaddockInformationsForSell[])[i] = new Types.PaddockInformationsForSell();
-                 (paddockList as Types.PaddockInformationsForSell[])[i].Deserialize(reader);
+                 paddockList_[i] = new Types.PaddockInformationsForSell();
+                 paddockList_[i].Deserialize(reader);
             }
+            paddockList = paddockList_;
         }
         
         public override int GetSerializationSize()

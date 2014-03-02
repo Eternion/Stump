@@ -1,12 +1,11 @@
 
 
-// Generated on 08/11/2013 11:28:05
+// Generated on 03/02/2014 20:42:30
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Stump.Core.IO;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages

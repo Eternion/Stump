@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:12
+// Generated on 03/02/2014 20:42:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,23 +58,25 @@ namespace Stump.DofusProtocol.Types
             if (fightStart < 0)
                 throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");
             fightSpectatorLocked = reader.ReadBoolean();
-            fightTeams = new Types.FightTeamLightInformations[2];
+            var fightTeams_ = new Types.FightTeamLightInformations[2];
             for (int i = 0; i < 2; i++)
             {
-                 (fightTeams as Types.FightTeamLightInformations[])[i] = new Types.FightTeamLightInformations();
-                 (fightTeams as Types.FightTeamLightInformations[])[i].Deserialize(reader);
+                 fightTeams_[i] = new Types.FightTeamLightInformations();
+                 fightTeams_[i].Deserialize(reader);
             }
-            fightTeamsOptions = new Types.FightOptionsInformations[2];
+            fightTeams = fightTeams_;
+            var fightTeamsOptions_ = new Types.FightOptionsInformations[2];
             for (int i = 0; i < 2; i++)
             {
-                 (fightTeamsOptions as Types.FightOptionsInformations[])[i] = new Types.FightOptionsInformations();
-                 (fightTeamsOptions as Types.FightOptionsInformations[])[i].Deserialize(reader);
+                 fightTeamsOptions_[i] = new Types.FightOptionsInformations();
+                 fightTeamsOptions_[i].Deserialize(reader);
             }
+            fightTeamsOptions = fightTeamsOptions_;
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(bool)  + fightTeams.Sum(x => x.GetSerializationSize()) + fightTeamsOptions.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(int) + sizeof(bool) + sizeof(short) + fightTeams.Sum(x => x.GetSerializationSize()) + sizeof(short) + fightTeamsOptions.Sum(x => x.GetSerializationSize());
         }
         
     }

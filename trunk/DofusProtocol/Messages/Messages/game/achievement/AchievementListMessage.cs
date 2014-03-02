@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:06
+// Generated on 03/02/2014 20:42:30
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,33 +33,51 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)finishedAchievementsIds.Count());
+            var finishedAchievementsIds_before = writer.Position;
+            var finishedAchievementsIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in finishedAchievementsIds)
             {
                  writer.WriteShort(entry);
+                 finishedAchievementsIds_count++;
             }
-            writer.WriteUShort((ushort)rewardableAchievements.Count());
+            var finishedAchievementsIds_after = writer.Position;
+            writer.Seek((int)finishedAchievementsIds_before);
+            writer.WriteUShort((ushort)finishedAchievementsIds_count);
+            writer.Seek((int)finishedAchievementsIds_after);
+
+            var rewardableAchievements_before = writer.Position;
+            var rewardableAchievements_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in rewardableAchievements)
             {
                  entry.Serialize(writer);
+                 rewardableAchievements_count++;
             }
+            var rewardableAchievements_after = writer.Position;
+            writer.Seek((int)rewardableAchievements_before);
+            writer.WriteUShort((ushort)rewardableAchievements_count);
+            writer.Seek((int)rewardableAchievements_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            finishedAchievementsIds = new short[limit];
+            var finishedAchievementsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (finishedAchievementsIds as short[])[i] = reader.ReadShort();
+                 finishedAchievementsIds_[i] = reader.ReadShort();
             }
+            finishedAchievementsIds = finishedAchievementsIds_;
             limit = reader.ReadUShort();
-            rewardableAchievements = new Types.AchievementRewardable[limit];
+            var rewardableAchievements_ = new Types.AchievementRewardable[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (rewardableAchievements as Types.AchievementRewardable[])[i] = new Types.AchievementRewardable();
-                 (rewardableAchievements as Types.AchievementRewardable[])[i].Deserialize(reader);
+                 rewardableAchievements_[i] = new Types.AchievementRewardable();
+                 rewardableAchievements_[i].Deserialize(reader);
             }
+            rewardableAchievements = rewardableAchievements_;
         }
         
         public override int GetSerializationSize()

@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:15
+// Generated on 03/02/2014 20:43:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,23 +31,32 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUShort((ushort)followingCharactersLook.Count());
+            var followingCharactersLook_before = writer.Position;
+            var followingCharactersLook_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in followingCharactersLook)
             {
                  entry.Serialize(writer);
+                 followingCharactersLook_count++;
             }
+            var followingCharactersLook_after = writer.Position;
+            writer.Seek((int)followingCharactersLook_before);
+            writer.WriteUShort((ushort)followingCharactersLook_count);
+            writer.Seek((int)followingCharactersLook_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            followingCharactersLook = new Types.IndexedEntityLook[limit];
+            var followingCharactersLook_ = new Types.IndexedEntityLook[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (followingCharactersLook as Types.IndexedEntityLook[])[i] = new Types.IndexedEntityLook();
-                 (followingCharactersLook as Types.IndexedEntityLook[])[i].Deserialize(reader);
+                 followingCharactersLook_[i] = new Types.IndexedEntityLook();
+                 followingCharactersLook_[i].Deserialize(reader);
             }
+            followingCharactersLook = followingCharactersLook_;
         }
         
         public override int GetSerializationSize()

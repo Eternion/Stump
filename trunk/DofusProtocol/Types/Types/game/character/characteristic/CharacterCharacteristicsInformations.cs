@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:11
+// Generated on 03/02/2014 20:42:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -243,11 +243,19 @@ namespace Stump.DofusProtocol.Types
             pvpWaterElementReduction.Serialize(writer);
             pvpAirElementReduction.Serialize(writer);
             pvpFireElementReduction.Serialize(writer);
-            writer.WriteUShort((ushort)spellModifications.Count());
+            var spellModifications_before = writer.Position;
+            var spellModifications_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in spellModifications)
             {
                  entry.Serialize(writer);
+                 spellModifications_count++;
             }
+            var spellModifications_after = writer.Position;
+            writer.Seek((int)spellModifications_before);
+            writer.WriteUShort((ushort)spellModifications_count);
+            writer.Seek((int)spellModifications_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -404,12 +412,13 @@ namespace Stump.DofusProtocol.Types
             pvpFireElementReduction = new Types.CharacterBaseCharacteristic();
             pvpFireElementReduction.Deserialize(reader);
             var limit = reader.ReadUShort();
-            spellModifications = new Types.CharacterSpellModification[limit];
+            var spellModifications_ = new Types.CharacterSpellModification[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (spellModifications as Types.CharacterSpellModification[])[i] = new Types.CharacterSpellModification();
-                 (spellModifications as Types.CharacterSpellModification[])[i].Deserialize(reader);
+                 spellModifications_[i] = new Types.CharacterSpellModification();
+                 spellModifications_[i].Deserialize(reader);
             }
+            spellModifications = spellModifications_;
         }
         
         public virtual int GetSerializationSize()
