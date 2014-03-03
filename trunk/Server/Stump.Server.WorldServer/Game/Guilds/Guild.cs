@@ -579,9 +579,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
                     return false;
 
-                if (!KickMember(kickedMember, kickedMember.Id == kicker.GuildMember.Id))
-                    return false;
-
                 if (kicker.GuildMember.Id != kickedMember.Id)
                 {
                     // Vous avez banni <b>%1</b> de votre guilde.
@@ -589,7 +586,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                         kickedMember.Name);
                 }
 
-                return true;
+                return KickMember(kickedMember, kickedMember.Id == kicker.GuildMember.Id);
             }
         }
 
