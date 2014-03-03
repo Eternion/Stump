@@ -1753,8 +1753,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (regainedLife > 0)
             {
                 Stats.Health.DamageTaken -= (short) regainedLife;
-                CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife);
             }
+
+            CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife);
 
             RegenStartTime = null;
             RegenSpeed = 0;
@@ -2001,8 +2002,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
 
             Map.Area.AddMessage(() =>
-                Map.Enter(this)
-            );
+            {
+                Map.Enter(this);
+
+                StartRegen();
+            });
 
             World.Instance.Enter(this);
             m_inWorld = true;
