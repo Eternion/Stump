@@ -15,15 +15,12 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(NpcGenericActionRequestMessage.Id)]
         public static void HandleNpcGenericActionRequestMessage(WorldClient client, NpcGenericActionRequestMessage message)
         {
-            var npc = client.Character.Map.GetActor<RolePlayActor>(message.npcId);
+            var npc = client.Character.Map.GetActor<RolePlayActor>(message.npcId) as IInteractNpc;
 
             if (npc == null)
                 return;
 
-            if (npc is Npc)
-                (npc as Npc).InteractWith((NpcActionTypeEnum) message.npcActionId, client.Character);
-            else if (npc is TaxCollectorNpc)
-                SendTaxCollectorDialogQuestionExtendedMessage(client, (npc as TaxCollectorNpc));
+            npc.InteractWith((NpcActionTypeEnum) message.npcActionId, client.Character);
         }
 
         [WorldHandler(NpcDialogReplyMessage.Id)]
@@ -40,13 +37,6 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendNpcDialogQuestionMessage(IPacketReceiver client, NpcMessage message, IEnumerable<short> replies, params string[] parameters)
         {
             client.Send(new NpcDialogQuestionMessage((short)message.Id, parameters, replies));
-        }
-
-        public static void SendTaxCollectorDialogQuestionExtendedMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
-        {
-            client.Send(new NpcDialogCreationMessage(taxCollector.Map.Id, taxCollector.Id));
-            client.Send(new TaxCollectorDialogQuestionExtendedMessage(taxCollector.Guild.GetBasicGuildInformations(), (short) taxCollector.Guild.TaxCollectorPods,
-                (short) taxCollector.Guild.TaxCollectorProspecting, (short)taxCollector.Guild.TaxCollectorWisdom, (sbyte)taxCollector.Guild.TaxCollectors.Count, -1, 0, 0, 0, 0));
         }
     }
 }

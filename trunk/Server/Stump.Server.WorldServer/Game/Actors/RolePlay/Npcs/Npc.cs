@@ -12,7 +12,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
-    public sealed class Npc : RolePlayActor
+    public sealed class Npc : RolePlayActor, IInteractNpc
     {
         private readonly List<NpcAction> m_actions = new List<NpcAction>();
 

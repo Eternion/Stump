@@ -332,11 +332,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Dialog is MerchantShopDialog;
         }
 
-        public bool IsInTaxCollectorDialog()
-        {
-            return Dialog is TaxCollectorExchangeDialog;
-        }
-
         #endregion
 
         #region Party
@@ -375,9 +370,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return Trade as PlayerTrade; }
         }
 
-        public PlayerTrader Trader
+        public Trader Trader
         {
-            get { return Dialoger as PlayerTrader; }
+            get { return Dialoger as Trader; }
         }
 
         public bool IsTrading()
@@ -2195,7 +2190,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
 
             m_recordLoaded = false;
-            Dispose();
+            if (Area != null)
+                Area.ExecuteInContext(() => Dispose());
+            else
+                Dispose();
         }
 
         #endregion

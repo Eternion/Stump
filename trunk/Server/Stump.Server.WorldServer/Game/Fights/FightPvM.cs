@@ -78,25 +78,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                     if (looter is IExperienceResult)
                     {
-                        (looter as IExperienceResult).SetEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters(), droppers));
+                        (looter as IExperienceResult).AddEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters(), droppers));
                     }
-
-                    if (!(looter is FightPlayerResult))
-                        continue;
-
-                    /*var document = new BsonDocument
-                    {
-                        {"PlayerId", (looter as FightPlayerResult).Character.Id},
-                        {"FightId", looter.Fight.Id},
-                        {"MapId", looter.Fight.Map.Id},
-                        {"FightersCount", looters.Count()},
-                        {"winXP", (looter as FightPlayerResult).ExperienceData.ExperienceFightDelta},
-                        {"winKamas", looter.Loot.Kamas},
-                        {"winItems", looter.Loot.FightItemsString()},
-                        {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
-                    };
-
-                    MongoLogger.Instance.Insert("FightLoots", document);*/
                 }
             }
 

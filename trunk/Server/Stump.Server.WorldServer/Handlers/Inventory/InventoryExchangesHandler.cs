@@ -96,23 +96,6 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             if (client.Character.IsTrading())
                 client.Character.Trader.MoveItem(message.objectUID, message.quantity);
-            else if (client.Character.IsInTaxCollectorDialog())
-            {
-                if (message.quantity <= 0)
-                {
-                    var taxCollector = ((TaxCollectorExchangeDialog) client.Character.Dialog).TaxCollector;
-                    var taxCollectorItem = taxCollector.Bag.TryGetItem(message.objectUID);
-                    if (taxCollectorItem == null)
-                        return;
-
-                    int[] objectUIDList = { message.objectUID };
-
-                    if (taxCollector.Bag.MoveToInventory(taxCollectorItem, client.Character))
-                        client.Send(new StorageObjectsRemoveMessage(objectUIDList));
-                }
-                else
-                    client.Character.SendSystemMessage(7, false);
-            }
             else if (client.Character.IsInMerchantDialog() && message.quantity <= 0)
             {
                 // he is modifying his merchant bag and remove an item
@@ -254,7 +237,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            var exchange = new TaxCollectorExchangeDialog(taxCollectorNpc, client.Character);
+            var exchange = new TaxCollectorTrade(taxCollectorNpc, client.Character);
             exchange.Open();
         }
 

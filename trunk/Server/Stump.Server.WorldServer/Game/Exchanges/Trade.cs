@@ -25,11 +25,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         where TFirst : Trader
         where TSecond : Trader
     {
-        protected Trade(int id)
-        {
-            Id = id;
-        }
-
         public TFirst FirstTrader
         {
             get;
@@ -59,21 +54,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         #region ITrade Members
 
-        public int Id
-        {
-            get;
-            private set;
-        }
-
         public abstract ExchangeTypeEnum ExchangeType
         {
             get;
         }
 
-        public virtual void Open(TFirst firstTrader, TSecond secondTrader)
+        public virtual void Open()
         {
-            FirstTrader = firstTrader;
-            SecondTrader = secondTrader;
             FirstTrader.ItemMoved += OnTraderItemMoved;
             FirstTrader.KamasChanged += OnTraderKamasChanged;
             FirstTrader.ReadyStatusChanged += OnTraderReadyStatusChanged;

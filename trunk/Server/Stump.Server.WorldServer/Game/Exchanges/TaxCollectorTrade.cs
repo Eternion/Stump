@@ -2,15 +2,18 @@
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
 
-namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
+namespace Stump.Server.WorldServer.Game.Exchanges
 {
-    public class TaxCollectorExchangeDialog : IDialog
+    public class TaxCollectorTrade : Trade<CollectorTrader, EmptyTrader>
     {
-        public TaxCollectorExchangeDialog(TaxCollectorNpc taxCollector, Character character)
+        public TaxCollectorTrade(TaxCollectorNpc taxCollector, Character character)
         {
             TaxCollector = taxCollector;
             Character = character;
+            FirstTrader = new CollectorTrader(taxCollector, character, this);
+            SecondTrader = new EmptyTrader(taxCollector.Id, this);
         }
 
         public TaxCollectorNpc TaxCollector
@@ -24,20 +27,18 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
             get;
             private set;
         }
-
-        public DialogTypeEnum DialogType
+        public override ExchangeTypeEnum ExchangeType
         {
-            get
-            {
-                return DialogTypeEnum.DIALOG_EXCHANGE;
-            }
+            get { return ExchangeTypeEnum.TAXCOLLECTOR; }
         }
 
         #region IDialog Members
 
-        public void Open()
+        public override void Open()
         {
-            Character.SetDialog(this);
+            base.Open();
+
+            Character.SetDialoger(FirstTrader);
             TaxCollector.OnDialogOpened(this);
 
             InventoryHandler.SendStorageInventoryContentMessage(Character.Client, TaxCollector);
@@ -46,11 +47,24 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
             Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 139, 2);
         }
 
-        public void Close()
+
+        public override void Close()
         {
+            base.Close();
+
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
             TaxCollector.OnDialogClosed(this);
+
+            TaxCollector.Delete();
+
+            //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
+            TaxCollectorHandler.SendTaxCollectorMovementMessage(TaxCollector.Guild.Clients, false, TaxCollector, Character.Name);
+        }
+
+        protected override void Apply()
+        {
+            // nothing to do here
         }
 
         #endregion

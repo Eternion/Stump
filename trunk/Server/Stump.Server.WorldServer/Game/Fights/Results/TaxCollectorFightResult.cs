@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public bool CanLoot(FightTeam team)
         {
-            return true;
+            return team is FightPlayerTeam;
         }
 
 
@@ -120,11 +120,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             }
 
             TaxCollector.Guild.AddXP(Experience);
+            TaxCollector.GatheredExperience += Experience;
+            TaxCollector.GatheredKamas += Loot.Kamas;
         }
 
-        public void SetEarnedExperience(int experience)
+        public void AddEarnedExperience(int experience)
         {
-            Experience = (int) (experience * 0.1d); // own only a percent
+            Experience += (int) (experience * 0.1d); // own only a percent
         }
     }
 }

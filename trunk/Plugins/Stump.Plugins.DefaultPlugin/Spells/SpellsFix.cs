@@ -72,9 +72,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region ENUTROF
-            // living chest (60)
-            // kill effect -> removed
-            RemoveEffectOnAllLevels(60, EffectsEnum.Effect_Kill);
             #endregion
 
             #region OSAMODAS

@@ -326,6 +326,7 @@ namespace Stump.Server.WorldServer.Game
             foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null
                                          select new TaxCollectorNpc(spawn, spawn.Map.GetNextContextualId()))
             {
+                taxcollector.Guild.AddTaxCollector(taxcollector);
                 taxcollector.Map.Enter(taxcollector);
             }
         }

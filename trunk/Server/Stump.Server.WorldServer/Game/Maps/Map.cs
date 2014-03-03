@@ -1153,7 +1153,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnLeave(ContextActor actor)
         {
-            if (actor is TaxCollectorNpc)
+            if (actor == TaxCollector)
             {
                 TaxCollector = null;
             }

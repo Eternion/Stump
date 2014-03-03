@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             CharacterHandler.SendCharacterStatsListMessage(Character.Client);
         }
 
-        public void SetEarnedExperience(int experience)
+        public void AddEarnedExperience(int experience)
         {
             if (Fighter.HasLeft())
                 return;
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 if (guildXp > 0)
                 {
                     ExperienceData.ShowExperienceForGuild = true;
-                    ExperienceData.ExperienceForGuild = guildXp;
+                    ExperienceData.ExperienceForGuild += guildXp;
                 }
             }
 
@@ -121,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             ExperienceData.ShowExperience = true;
             ExperienceData.ShowExperienceLevelFloor = true;
             ExperienceData.ShowExperienceNextLevelFloor = true;
-            ExperienceData.ExperienceFightDelta = experience;
+            ExperienceData.ExperienceFightDelta += experience;
         }
 
         public void SetEarnedHonor(short honor, short dishonor)

@@ -24,15 +24,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         protected override void OnAccept()
         {
-            var trade = TradeManager.Instance.Create();
-
-            var firstTrader = new PlayerTrader(Source, trade);
-            Source.SetDialoger(firstTrader);
-
-            var secondTrader = new PlayerTrader(Target, trade);
-            Target.SetDialoger(secondTrader);
-
-            trade.Open(firstTrader, secondTrader);
+            var trade = new PlayerTrade(Source, Target);
+            trade.Open();
         }
 
         protected override void OnDeny()

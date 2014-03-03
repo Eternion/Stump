@@ -241,6 +241,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
+            // todo
             yield break;
         }
 
