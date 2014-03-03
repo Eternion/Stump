@@ -33,21 +33,23 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 }
                 else
                 {
-                    if (!chr.IsAway)
+                    if (client.Character != chr)
                     {
-                        if (client.Character.IsAway)
-                            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
+                        if (!chr.IsAway)
+                        {
+                            if (client.Character.IsAway)
+                                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
 
-                        // send a copy to sender
-                        SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                            message.content);
+                            // send a copy to sender
+                            SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                                message.content);
 
-                        // Send to receiver
-                        SendChatServerMessage(chr.Client, client.Character,
-                            ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                            message.content);
+                            // Send to receiver
+                            SendChatServerMessage(chr.Client, client.Character,
+                                ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                                message.content);
 
-                        var document = new BsonDocument
+                            var document = new BsonDocument
                             {
                                 {"SenderId", client.Character.Id},
                                 {"ReceiverId", chr.Id},
@@ -55,18 +57,23 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                 {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
                             };
 
-                        MongoLogger.Instance.Insert("PrivateMSG", document);
+                            MongoLogger.Instance.Insert("PrivateMSG", document);
+                        }
+                        else
+                        {
+                            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
+                                chr.Name);
+                        }
                     }
                     else
                     {
-                        client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                            chr.Name);
+                        SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
                     }
                 }
             }
             else
             {
-                client.Send(new ChatErrorMessage((sbyte)ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND));
+                SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND);
             }
         }
 
@@ -199,6 +206,11 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             fingerprint,
                             receiver.Id,
                             receiver.Name));
+        }
+
+        public static void SendChatErrorMessage(IPacketReceiver client, ChatErrorEnum error)
+        {
+            client.Send(new ChatErrorMessage((sbyte)error));
         }
     }
 }
