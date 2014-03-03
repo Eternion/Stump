@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (spell == null)
                 return;
 
-            client.Character.Fighter.CastSpell(spell, client.Character.Map.Cells[message.cellId]);
+            client.Character.Fighter.CastSpell(spell, client.Character.Fight.Map.Cells[message.cellId]);
         }
 
         [WorldHandler(GameActionFightCastOnTargetRequestMessage.Id)]
@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             if (client.Character.Fighter.Position.Cell.Id != message.cellId)
             {
-                client.Character.Fighter.ChangePrePlacement(client.Character.Map.Cells[message.cellId]);
+                client.Character.Fighter.ChangePrePlacement(client.Character.Fight.Map.Cells[message.cellId]);
             }
         }
 

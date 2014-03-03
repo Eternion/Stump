@@ -121,6 +121,15 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 SetBoss(member);
                 logger.Error("There is at no boss in guild {0} ({1}) -> Promote new Boss", Id, Name);
             }
+
+            // load spells
+            for (int i = 0; i < record.Spells.Length && i < TAX_COLLECTOR_SPELLS.Length; i++)
+            {
+                if (record.Spells[i] == 0)
+                    continue;
+                
+                m_spells[i] = new Spell(TAX_COLLECTOR_SPELLS[i], (byte)record.Spells[i]);
+            }
         }
 
         public ReadOnlyCollection<GuildMember> Members

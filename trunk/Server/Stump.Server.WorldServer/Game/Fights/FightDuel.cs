@@ -42,22 +42,22 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
         }
 
         protected override void SendGameFightJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
         }
 
-        public int GetPlacementTimeLeft()
+        public TimeSpan GetPlacementTimeLeft()
         {
-            double timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
+            var timeleft = TimeSpan.FromMilliseconds(PlacementPhaseTime) - ( DateTime.Now - CreationTime );
 
-            if (timeleft < 0)
-                timeleft = 0;
+            if (timeleft < TimeSpan.Zero)
+                timeleft = TimeSpan.Zero;
 
-            return (int)timeleft;
+            return timeleft;
         }
 
         protected override bool CanCancelFight()

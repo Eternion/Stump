@@ -1701,15 +1701,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextHandler.SendGameContextCreateMessage(Client, 1);
 
             RefreshStats();
-
-            LastMap = Map;
-            Map = NextMap;
-            NextMap.Enter(this);
-            LastMap = null;
-            NextMap = null;
-
+            
             OnCharacterContextChanged(false);
             StartRegen();
+
+            NextMap.Area.ExecuteInContext(() =>
+            {
+                LastMap = Map;
+                Map = NextMap;
+                NextMap.Enter(this);
+                LastMap = null;
+                NextMap = null;
+            });
         }
 
         #endregion

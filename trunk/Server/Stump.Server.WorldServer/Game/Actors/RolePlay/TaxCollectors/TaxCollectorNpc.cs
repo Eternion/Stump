@@ -309,7 +309,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                             (short) Position.Map.SubArea.Id, 1,
                             Look.GetEntityLook(), 0, 0, 0, 0,
                             new ProtectedEntityWaitingForHelpInfo(
-                                (int) (fight.GetTimeBeforeFight().TotalMilliseconds/100),
+                                (int) (fight.GetAttackersPlacementTimeLeft().TotalMilliseconds/100),
                                 (int) (fight.GetDefendersWaitTimeForPlacement().TotalMilliseconds/100), (sbyte) fight.GetDefendersLeftSlot()));
 
                     return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
