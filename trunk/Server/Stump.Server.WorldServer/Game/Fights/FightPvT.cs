@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Fights
@@ -103,13 +104,22 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 m_defendersMaps.Add(defender, defender.Map);
 
-                if (defender.Map != Map)
-                    defender.Teleport(Map, defender.Cell);
+                var defender1 = defender;
+                defender.Area.ExecuteInContext(() =>
+                {
+                    defender1.Teleport(Map, defender1.Cell);
+                    Map.Area.ExecuteInContext(() =>
+                    {
+                        DefendersTeam.AddFighter(defender.CreateFighter(DefendersTeam));
 
-                DefendersTeam.AddFighter(defender.CreateFighter(DefendersTeam));
+                        // if all defenders have been teleported we can launch the timer
+                        if (DefendersQueue.All(
+                                x => DefendersTeam.Fighters.OfType<CharacterFighter>().Any(y => y.Character == x)))
+                            m_placementTimer = Map.Area.CallDelayed(PvTDefendersPlacementPhaseTime, StartFighting);
+                    });
+                });
+                
             }
-
-            m_placementTimer = Map.Area.CallDelayed(PvTDefendersPlacementPhaseTime, StartFighting);
         }
 
         public override void StartFighting()
@@ -219,11 +229,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 TaxCollector.TaxCollectorNpc.RejoinMap();
 
-                foreach (var defender in m_defendersMaps)
+                foreach (var defender in m_defendersQueue)
                 {
-                    defender.Key.NextMap = defender.Value;
+                    defender.NextMap = m_defendersMaps[defender];
                 }
             }
+
 
             base.OnFightEnded();
         }
@@ -236,7 +247,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
             ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), 
-                (fighter.Team == AttackersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase), false, IsStarted, GetPlacementTimeLeft(fighter), FightType);
+                (fighter.Team == AttackersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase), false,
+                IsStarted, (int)GetPlacementTimeLeft(fighter).TotalMilliseconds, FightType);
         }
 
         protected override void SendGameFightJoinMessage(FightSpectator spectator)
@@ -249,28 +261,25 @@ namespace Stump.Server.WorldServer.Game.Fights
             return false;
         }
 
-        public TimeSpan GetTimeBeforeFight()
+        public TimeSpan GetAttackersPlacementTimeLeft()
         {
             if (IsAttackersPlacementPhase)
-                return (m_placementTimer.NextTick - DateTime.Now) +
-                       TimeSpan.FromMilliseconds(PvTDefendersPlacementPhaseTime);
-            if (IsDefendersPlacementPhase)
                 return (m_placementTimer.NextTick - DateTime.Now);
-
+           
             return TimeSpan.Zero;
         }
 
         public TimeSpan GetDefendersWaitTimeForPlacement()
         {
-            return TimeSpan.FromMilliseconds(PvTDefendersPlacementPhaseTime + PvTAttackersPlacementPhaseTime);
+            return TimeSpan.FromMilliseconds(PvTAttackersPlacementPhaseTime);
         }
 
-        public int GetPlacementTimeLeft(FightActor fighter)
+        public TimeSpan GetPlacementTimeLeft(FightActor fighter)
         {
             if ((fighter.Team == AttackersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase))
-                return (int)(m_placementTimer.NextTick - DateTime.Now).TotalMilliseconds;
+                return m_placementTimer.NextTick - DateTime.Now;
 
-            return 0;
+            return TimeSpan.Zero;
         }
 
     }

@@ -1028,6 +1028,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(RolePlayActor actor)
         {
+#if DEBUG
+            if (WorldServer.Instance.IsInitialized)
+                Area.EnsureContext();
+#endif
+
             if (!m_actors.Remove(actor))
                 return;
 
@@ -1044,6 +1049,10 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(int actorId)
         {
+#if DEBUG
+            if (WorldServer.Instance.IsInitialized)
+                Area.EnsureContext();
+#endif
             RolePlayActor removedActor;
             if (m_actorsMap.TryRemove(actorId, out removedActor) && m_actors.Remove(removedActor))
             {
@@ -1053,6 +1062,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Refresh(RolePlayActor actor)
         {
+#if DEBUG
+            if (WorldServer.Instance.IsInitialized)
+                Area.EnsureContext();
+#endif
+
             if (IsActor(actor))
                 ForEach(x =>
                 {
