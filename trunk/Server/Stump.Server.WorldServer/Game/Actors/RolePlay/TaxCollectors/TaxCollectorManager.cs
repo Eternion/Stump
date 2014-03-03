@@ -82,16 +82,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             else
                 Database.Insert(taxCollectorNpc.Record);
 
-            character.Guild.AddTaxCollector(taxCollectorNpc);
-
             m_taxCollectorSpawns.Add(taxCollectorNpc.GlobalId, taxCollectorNpc.Record);
             m_activeTaxCollectors.Add(taxCollectorNpc);
 
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
-
-            //Le percepteur %1 a été posé en <b>%2</b> par <b>%3</b>.
-            TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Name);
-            TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollectorNpc.Guild.Clients, taxCollectorNpc);
+            character.Guild.AddTaxCollector(taxCollectorNpc);
         }
 
         public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)
@@ -101,10 +96,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             else
                 Database.Delete(taxCollector.Record);
 
+            taxCollector.Bag.DeleteBag(lazySave);
+
             m_taxCollectorSpawns.Remove(taxCollector.GlobalId);
             m_activeTaxCollectors.Remove(taxCollector);
-
-            taxCollector.Map.Leave(taxCollector);
         }
 
         public void Save()

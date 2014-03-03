@@ -12,7 +12,10 @@ using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
+using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
@@ -21,7 +24,7 @@ using Stump.Server.WorldServer.Handlers.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
-    public class TaxCollectorNpc : NamedActor
+    public class TaxCollectorNpc : NamedActor, IInteractNpc
     {
         [Variable]
         public static int BaseAP = 6;
@@ -35,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public const string TAXCOLLECTOR_LOOK = "{714|||}"; //todo: Find correct Look
 
         private readonly WorldMapTaxCollectorRecord m_record;
-        private readonly List<TaxCollectorExchangeDialog> m_openedDialogs = new List<TaxCollectorExchangeDialog>();
+        private readonly List<IDialog> m_openedDialogs = new List<IDialog>();
         private string m_name;
         private ActorLook m_look;
         private readonly int m_contextId;
@@ -51,8 +54,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Position = position;
             Guild = guild;
             Bag = new TaxCollectorBag(this);
-            Guild.AddTaxCollector(this);
-
             m_record = new WorldMapTaxCollectorRecord
             {
                 Id = globalId,
@@ -88,7 +89,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
 
             Guild = GuildManager.Instance.TryGetGuild(Record.GuildId);
-            Guild.AddTaxCollector(this);
             LoadRecord();
         }
 
@@ -100,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
         }
 
-        public ReadOnlyCollection<TaxCollectorExchangeDialog> OpenDialogs
+        public ReadOnlyCollection<IDialog> OpenDialogs
         {
             get { return m_openedDialogs.AsReadOnly(); }
         }
@@ -180,6 +180,36 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             protected set { m_record.LastNameId = value; m_name = null; }
         }
 
+        public int GatheredExperience
+        {
+            get { return m_record.GatheredExperience; }
+            set
+            {
+                m_record.GatheredExperience = value;
+                IsRecordDirty = true;
+            }
+        }
+
+        public int GatheredKamas
+        {
+            get { return m_record.GatheredKamas; }
+            set
+            {
+                m_record.GatheredKamas = value;
+                IsRecordDirty = true;
+            }
+        }
+
+        public int AttacksCount
+        {
+            get { return m_record.AttacksCount; }
+            set
+            {
+                m_record.AttacksCount = value;
+                IsRecordDirty = true;
+            }
+        }
+
         public TaxCollectorFighter Fighter
         {
             get;
@@ -193,6 +223,30 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return Fighter != null;
             }
         }
+        
+        public void InteractWith(NpcActionTypeEnum actionType, Character dialoguer)
+        {
+            if (!CanInteractWith(actionType, dialoguer))
+                return;
+
+            var dialog = new TaxCollectorInfoDialog(dialoguer, this);
+            dialog.Open();
+        }
+
+        public bool CanInteractWith(NpcActionTypeEnum action, Character dialoguer)
+        {
+            return CanBeSee(dialoguer) && action == NpcActionTypeEnum.ACTION_TALK;
+        }
+
+        public void OnDialogOpened(IDialog dialog)
+        {
+            m_openedDialogs.Add(dialog);
+        }
+
+        public void OnDialogClosed(IDialog dialog)
+        {
+            m_openedDialogs.Remove(dialog);
+        }
 
         public TaxCollectorFighter CreateFighter(FightTeam team)
         {
@@ -202,6 +256,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Fighter = new TaxCollectorFighter(team, this);
 
             Map.Refresh(this); // get invisible
+            CloseAllDialogs();
 
             return Fighter;
         }
@@ -214,6 +269,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Fighter = null;
 
             Map.Refresh(this);
+            AttacksCount++;
         }
 
         public override bool CanBeSee(Maps.WorldObject byObj)
@@ -224,16 +280,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public bool CanGatherLoots()
         {
             return !IsFighting;
-        }
-
-        protected override void OnDisposed()
-        {
-            foreach (var dialog in OpenDialogs.ToArray())
-            {
-                dialog.Close();
-            }
-
-            base.OnDisposed();
         }
 
         public bool IsRecordDirty
@@ -269,29 +315,31 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public bool IsBusy()
         {
-            return OpenDialogs.Count != 0;
+            return OpenDialogs.Any(x => x is TaxCollectorTrade);
         }
 
-        public void OnDialogOpened(TaxCollectorExchangeDialog dialog)
+        public void CloseAllDialogs()
         {
-            m_openedDialogs.Add(dialog);
+            foreach (var dialog in OpenDialogs)
+            {
+                dialog.Close();
+            }
+
+            m_openedDialogs.Clear();
         }
 
-        public void OnDialogClosed(TaxCollectorExchangeDialog dialog)
+        protected override void OnDisposed()
         {
-            m_openedDialogs.Remove(dialog);
+            CloseAllDialogs();
             Guild.RemoveTaxCollector(this);
-
-            //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
-            TaxCollectorHandler.SendTaxCollectorMovementMessage(Guild.Clients, false, this, dialog.Character.Name);
-            TaxCollectorHandler.SendTaxCollectorMovementRemoveMessage(Guild.Clients, this);
+            base.OnDisposed();
         }
 
         #region Network
 
         public override GameContextActorInformations GetGameContextActorInformations()
         {
-            return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), FirstNameId, LastNameId, Guild.GetGuildInformations(), Guild.Level, 0);
+            return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), FirstNameId, LastNameId, Guild.GetGuildInformations(), Guild.Level, AttacksCount);
         }
 
         public TaxCollectorInformations GetNetworkTaxCollector()
@@ -307,7 +355,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                             GetAdditionalTaxCollectorInformations(),
                             (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
                             (short) Position.Map.SubArea.Id, 1,
-                            Look.GetEntityLook(), 0, 0, 0, 0,
+                            Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue,
                             new ProtectedEntityWaitingForHelpInfo(
                                 (int) (fight.GetAttackersPlacementTimeLeft().TotalMilliseconds/100),
                                 (int) (fight.GetDefendersWaitTimeForPlacement().TotalMilliseconds/100), (sbyte) fight.GetDefendersLeftSlot()));
@@ -316,12 +364,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                         GetAdditionalTaxCollectorInformations(),
                         (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
                         (short) Position.Map.SubArea.Id, 2,
-                        Look.GetEntityLook(), 0, 0, 0, 0);
+                        Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
                 }
             }
 
             return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
-                (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
+                (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
         }
 
         public AdditionalTaxCollectorInformations GetAdditionalTaxCollectorInformations()
@@ -337,14 +385,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
             return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
-                (short)Position.Map.SubArea.Id, Record.CallerName, 0, Bag.Select(x => x.GetObjectItemQuantity()));
+                (short)Position.Map.SubArea.Id, Record.CallerName, GatheredExperience, Bag.Select(x => x.GetObjectItemQuantity()));
         }
 
         public StorageInventoryContentMessage GetStorageInventoryContent()
         {
-            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), 0);
+            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), GatheredKamas);
         }
 
         #endregion
+
     }
 }

@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
 using GuildMemberNetwork = Stump.DofusProtocol.Types.GuildMember;
 using Stump.Server.WorldServer.Handlers.Guilds;
 
@@ -294,12 +295,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public void AddTaxCollector(TaxCollectorNpc taxCollector)
         {
             m_taxCollectors.Add(taxCollector);
+            TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
         public void RemoveTaxCollector(TaxCollectorNpc taxCollector)
         {
             m_taxCollectors.Remove(taxCollector);
             TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(taxCollector);
+            TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
         public void RemoveTaxCollectors()

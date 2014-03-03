@@ -17,11 +17,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
 {
-    public abstract class Trader
+    public abstract class Trader : IDialoger
     {
         public delegate void ItemMovedHandler(Trader trader, TradeItem item, bool modified, int difference);
 
@@ -69,6 +71,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             private set;
         }
 
+        public IDialog Dialog
+        {
+            get
+            {
+                return Trade;
+            }
+        }
+
         public ReadOnlyCollection<TradeItem> Items
         {
             get { return m_items.AsReadOnly(); }
@@ -109,6 +119,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         public void ToggleReady()
         {
             ToggleReady(!ReadyToApply);
+        }
+
+        public virtual bool MoveItem(int id, int quantity)
+        {
+            return false;  // do nothing :[
         }
 
         public virtual void ToggleReady(bool status)

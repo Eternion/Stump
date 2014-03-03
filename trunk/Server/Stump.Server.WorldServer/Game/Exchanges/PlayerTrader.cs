@@ -7,20 +7,12 @@ using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
 {
-    public class PlayerTrader : Trader, IDialoger
+    public class PlayerTrader : Trader
     {
         public PlayerTrader(Character character, ITrade trade)
              : base(trade)
         {
             Character = character;
-        }
-
-        public IDialog Dialog
-        {
-            get
-            {
-                return Trade;
-            }
         }
 
         public Character Character
@@ -34,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             get { return Character.Id; }
         }
 
-        public bool MoveItem(int guid, int amount)
+        public override bool MoveItem(int guid, int amount)
         {
             if (amount == 0)
                 return false;

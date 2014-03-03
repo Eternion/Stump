@@ -236,6 +236,7 @@
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
     <Compile Include="Game\Actors\Look\SubActorLook.cs" />
+    <Compile Include="Game\Actors\RolePlay\IInteractNpc.cs" />
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
     <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
@@ -285,7 +286,8 @@
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
-    <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorExchangeDialog.cs" />
+    <Compile Include="Game\Exchanges\TaxCollectorTrade.cs" />
+    <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerMPUsed.cs" />
@@ -324,6 +326,8 @@
     <Compile Include="Game\Effects\Handlers\Usables\StatBonus.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\UsableEffectHandler.cs" />
     <Compile Include="Game\Dialogs\Merchants\MerchantShopDialog.cs" />
+    <Compile Include="Game\Exchanges\CollectorTrader.cs" />
+    <Compile Include="Game\Exchanges\EmptyTrader.cs" />
     <Compile Include="Game\Exchanges\Items\NpcTradeItem.cs" />
     <Compile Include="Game\Exchanges\Items\PlayerTradeItem.cs" />
     <Compile Include="Game\Exchanges\ITrade.cs" />
@@ -576,7 +580,6 @@
     <Compile Include="Game\Exchanges\PlayerTrade.cs" />
     <Compile Include="Game\Exchanges\PlayerTrader.cs" />
     <Compile Include="Game\Exchanges\PlayerTradeRequest.cs" />
-    <Compile Include="Game\Exchanges\TradeManager.cs" />
     <Compile Include="Game\Fights\Results\FightLoot.cs" />
     <Compile Include="Game\Fights\FightManager.cs" />
     <Compile Include="Game\Fights\FightRequest.cs" />

@@ -89,5 +89,24 @@ namespace Stump.Server.WorldServer.Database.World
             get;
             set;
         }
+
+        public int GatheredExperience
+        {
+            get;
+            set;
+        }
+
+        public int GatheredKamas
+        {
+            get;
+            set;
+        }
+
+        public int AttacksCount
+        {
+            get;
+            set;
+        }
+    
     }
 }

@@ -99,35 +99,6 @@ namespace Stump.Server.WorldServer.Game.Items
 
         #endregion
 
-        /*public virtual T AddItem(int itemId, uint amount)
-        {
-            ItemTemplate itemTemplate = ItemManager.Instance.TryGetTemplate(itemId);
-
-            return itemTemplate != null ? AddItem(itemTemplate, amount) : null;
-        }
-
-        public virtual T AddItem(ItemTemplate template, uint amount, bool maxEffect = false)
-        {
-            List<EffectBase> effects = ItemManager.Instance.GenerateItemEffects(template, maxEffect);
-
-            PlayerItem stackableWith;
-            if (IsStackable(template, effects, out stackableWith))
-            {
-                StackItem(stackableWith, amount);
-
-                return stackableWith;
-            }
-
-            PlayerItem item = ItemManager.Instance.CreatePlayerItem(template, amount, effects);
-
-            lock (m_locker)
-                m_items.Add(item.Guid, item);
-
-            NotifyItemAdded(item);
-
-            return item;
-        }*/
-
         /// <summary>
         /// Add an item to the collection
         /// </summary>
@@ -246,28 +217,16 @@ namespace Stump.Server.WorldServer.Game.Items
                 NotifyItemStackChanged(item, (int)(-amount));
             }
         }
-        /*
-        /// <summary>
-        /// Cut an item into two parts
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="amount"></param>
-        /// <returns></returns>
-        public T CutItem(T item, uint amount)
+
+        public void DeleteAll(bool notify = true)
         {
-            if (amount >= item.Stack)
-                return item;
+            if (notify)
+                foreach(var item in this)
+                    NotifyItemRemoved(item);
 
-            UnStackItem(item, (int) amount);
-
-            var newitem = ItemManager.Instance.RegisterAnItemCopy(item, amount);
-
-            Items.Add(newitem.Guid, newitem);
-
-            NotifyItemAdded(newitem);
-
-            return newitem;
-        }*/
+            ItemsToDelete = new Queue<T>(ItemsToDelete.Concat(Items.Values));
+            Items.Clear();
+        }
 
         public virtual void Save()
         {

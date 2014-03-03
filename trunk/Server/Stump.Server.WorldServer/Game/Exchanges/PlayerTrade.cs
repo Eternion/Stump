@@ -4,6 +4,7 @@ using System.Linq;
 using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -11,9 +12,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 {
     public class PlayerTrade : Trade<PlayerTrader, PlayerTrader>
     {
-        public PlayerTrade(int id)
-            : base(id)
+        public PlayerTrade(Character first, Character second)
         {
+            FirstTrader = new PlayerTrader(first, this);
+            SecondTrader = new PlayerTrader(second, this);
         }
 
         public override ExchangeTypeEnum ExchangeType
@@ -24,9 +26,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             }
         }
 
-        public override void Open(PlayerTrader firstTrader, PlayerTrader secondTrader)
+        public override void Open()
         {
-            base.Open(firstTrader, secondTrader);
+            base.Open();
+            FirstTrader.Character.SetDialoger(FirstTrader);
+            SecondTrader.Character.SetDialoger(SecondTrader);
 
             InventoryHandler.SendExchangeStartedWithPodsMessage(FirstTrader.Character.Client, this);
             InventoryHandler.SendExchangeStartedWithPodsMessage(SecondTrader.Character.Client, this);
