@@ -110,7 +110,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #region SRAM
             // chakra concentration (62)
             // duration steal = 0
-            FixEffectOnAllLevels(62, 0, (level, effect, critical) => effect.Duration = 0);
+            FixEffectOnAllLevels(62, EffectsEnum.Effect_StealHPFire, (level, effect, critical) => effect.Duration = 0);
             #endregion
         }
 

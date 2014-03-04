@@ -219,7 +219,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return m_monsters.Count;
         }
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return new GameRolePlayGroupMonsterInformations(Id,
                                                             Leader.Look.GetEntityLook(),

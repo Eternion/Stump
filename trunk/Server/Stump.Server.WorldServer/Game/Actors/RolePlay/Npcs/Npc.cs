@@ -131,7 +131,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
                                                    Template.SpecialArtworkId);
         }
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return m_gameContextActorInformations;
         }

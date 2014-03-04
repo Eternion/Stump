@@ -10,7 +10,7 @@ using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Characters;
-using FightLoot = Stump.Server.WorldServer.Game.Fights.Loots.FightLoot;
+using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results

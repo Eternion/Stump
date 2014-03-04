@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
-using FightLoot = Stump.Server.WorldServer.Game.Fights.Loots.FightLoot;
+using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {

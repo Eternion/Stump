@@ -134,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Items
             return new TaxCollectorItem(record);
         }
         
-        public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, short id, uint amount)
+        public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, int id, uint amount)
         {
             if (!m_itemTemplates.ContainsKey(id))
                 throw new Exception(string.Format("Template id '{0}' doesn't exist", id));

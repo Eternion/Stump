@@ -337,9 +337,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         #region Network
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
-            return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), FirstNameId, LastNameId, Guild.GetGuildInformations(), Guild.Level, AttacksCount);
+            return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
+                FirstNameId, LastNameId, Guild.GetGuildInformations(), Guild.Level, 
+                character == null || character.CanAttack(this) == FighterRefusedReasonEnum.FIGHTER_ACCEPTED ? 0 : 1); // 0 = can attack 1 = cannot
         }
 
         public TaxCollectorInformations GetNetworkTaxCollector()

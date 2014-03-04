@@ -4,11 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -30,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly List<Character> m_defendersQueue = new List<Character>();
         private readonly Dictionary<Character, Map> m_defendersMaps = new Dictionary<Character, Map>(); 
 
-        public FightPvT(int id, Map fightMap, FightTeam blueTeam, FightTeam redTeam)
+        public FightPvT(int id, Map fightMap, FightTaxCollectorTeam blueTeam,  FightPlayerTeam redTeam)
             : base(id, fightMap, blueTeam, redTeam)
         {
         }
@@ -41,16 +43,20 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public FightTeam AttackersTeam
+        public FightPlayerTeam AttackersTeam
         {
-            get;
-            private set;
+            get
+            {
+                return (FightPlayerTeam) RedTeam;
+            }
         }
 
-        public FightTeam DefendersTeam
+        public FightTaxCollectorTeam DefendersTeam
         {
-            get;
-            private set;
+            get
+            {
+                return (FightTaxCollectorTeam) BlueTeam;
+            }
         }
 
         public ReadOnlyCollection<Character> DefendersQueue
@@ -108,6 +114,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 defender.Area.ExecuteInContext(() =>
                 {
                     defender1.Teleport(Map, defender1.Cell);
+                    defender1.ResetDefender();
                     Map.Area.ExecuteInContext(() =>
                     {
                         DefendersTeam.AddFighter(defender.CreateFighter(DefendersTeam));
@@ -131,6 +138,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FighterRefusedReasonEnum AddDefender(Character character)
         {
+            if (character.TaxCollectorDefendFight != null)
+                return FighterRefusedReasonEnum.IM_OCCUPIED;
+
             if (!IsAttackersPlacementPhase)
                 return FighterRefusedReasonEnum.TOO_LATE;
 
@@ -147,7 +157,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             m_defendersQueue.Add(character);
-              
+            character.SetDefender(this);  
+
             TaxCollectorHandler.SendGuildFightPlayersHelpersJoinMessage(character.Guild.Clients, this, character);
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
@@ -185,8 +196,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 else
                 {
                     TaxCollector = actor as TaxCollectorFighter;
-                    DefendersTeam = TaxCollector.Team;
-                    AttackersTeam = TaxCollector.OpposedTeam;
                 }
             }
 
@@ -220,29 +229,63 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.OnFighterRemoved(team, actor);
         }
 
-        protected override void OnFightEnded()
+        protected override void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
         {
             TaxCollectorHandler.SendTaxCollectorAttackedResultMessage(TaxCollector.TaxCollectorNpc.Guild.Clients,
-                Winners == DefendersTeam, TaxCollector.TaxCollectorNpc);
+                Winners != DefendersTeam && !draw, TaxCollector.TaxCollectorNpc);
 
-            if (Winners == DefendersTeam)
+            if (Winners == DefendersTeam || draw)
             {
                 TaxCollector.TaxCollectorNpc.RejoinMap();
 
                 foreach (var defender in m_defendersQueue)
                 {
-                    defender.NextMap = m_defendersMaps[defender];
+                    if (m_defendersMaps.ContainsKey(defender))
+                        defender.NextMap = m_defendersMaps[defender];
                 }
             }
-
-
-            base.OnFightEnded();
+            else
+            {
+                TaxCollector.Delete();
+            }
+            
+            base.OnWinnersDetermined(winners, losers, draw);
         }
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            // todo
-            yield break;
+            if (Winners == DefendersTeam || Draw)
+                return Enumerable.Empty<IFightResult>();
+
+            var results = new List<IFightResult>();
+            results.AddRange(AttackersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()));
+
+            IOrderedEnumerable<IFightResult> looters = results.OrderByDescending(entry => entry.Prospecting);
+            int teamPP = AttackersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            int kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
+
+            foreach (IFightResult looter in looters)
+            {
+                looter.Loot.Kamas = FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas);
+            }
+
+            int i = 0;
+            // dispatch loots
+            List<int> items =
+                TaxCollector.TaxCollectorNpc.Bag.SelectMany(x => Enumerable.Repeat(x.Template.Id, (int) x.Stack))
+                            .Shuffle()
+                            .ToList();
+            foreach (IFightResult looter in looters)
+            {
+                var count = (int) Math.Ceiling(items.Count*((double) looter.Prospecting/teamPP));
+                for (; i < count && i < items.Count; i++)
+                {
+                    looter.Loot.AddItem(items[i]);
+                }
+            }
+
+
+            return results;
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
