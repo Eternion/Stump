@@ -89,6 +89,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null)
                 GuildMember.OnCharacterDisconnected(this);
 
+            if (TaxCollectorDefendFight != null)
+                TaxCollectorDefendFight.RemoveDefender(this);
+
             var handler = LoggedOut;
             if (handler != null) handler(this);
         }
@@ -1105,6 +1108,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public FightPvT TaxCollectorDefendFight
+        {
+            get;
+            private set;
+        }
+
         public Fights.Fight Fight
         {
             get { return Fighter == null ? (Spectator != null ? Spectator.Fight : null) : Fighter.Fight; }
@@ -1128,6 +1137,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsFighting()
         {
             return Fighter != null;
+        }
+
+        public void SetDefender(FightPvT fight)
+        {
+            TaxCollectorDefendFight = fight;
+        }
+
+        public void ResetDefender()
+        {
+            TaxCollectorDefendFight = null;
         }
 
         #endregion
@@ -2221,7 +2240,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region GameRolePlayCharacterInformations
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return new GameRolePlayCharacterInformations(
                 Id,

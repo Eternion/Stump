@@ -2,6 +2,7 @@ using System;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
@@ -59,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Actors
 
         #region GameContextActorInformations
 
-        public virtual GameContextActorInformations GetGameContextActorInformations()
+        public virtual GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return new GameContextActorInformations(
                 Id,

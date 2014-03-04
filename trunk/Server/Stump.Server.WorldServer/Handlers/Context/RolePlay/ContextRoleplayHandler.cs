@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Basic;
 
@@ -88,9 +89,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.Send(client.Character.Map.GetMapComplementaryInformationsDataMessage(client.Character));
         }
 
-        public static void SendGameRolePlayShowActorMessage(IPacketReceiver client, RolePlayActor actor)
+        public static void SendGameRolePlayShowActorMessage(IPacketReceiver client, Character character, RolePlayActor actor)
         {
-            client.Send(new GameRolePlayShowActorMessage(actor.GetGameContextActorInformations() as GameRolePlayActorInformations));
+            client.Send(new GameRolePlayShowActorMessage(actor.GetGameContextActorInformations(character) as GameRolePlayActorInformations));
         }
     }
 }

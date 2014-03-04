@@ -74,11 +74,11 @@ namespace DBSynchroniser
         {
             Tuple.Create<string, Action>("Set Dofus Path (empty = default)", SetDofusPath),
             Tuple.Create<string, Action>("Set languages (empty = all)", SetLanguages),
-            Tuple.Create<string, Action>("Create database", CreateDatabase),
-            Tuple.Create<string, Action>("Load langs", LoadLangsWithWarning),
-            Tuple.Create<string, Action>("Load icons files", LoadIconsWithWarnings),
-            Tuple.Create<string, Action>("Generate client files", GenerateFiles),
-            Tuple.Create<string, Action>("Synchronise world database", SyncDatabases)
+            Tuple.Create<string, Action>("Create database (stump_data)", CreateDatabase),
+            Tuple.Create<string, Action>("Load langs (on stump_data)", LoadLangsWithWarning),
+            Tuple.Create<string, Action>("Load icons files (on stump_data)", LoadIconsWithWarnings),
+            Tuple.Create<string, Action>("Generate client files (from stump_data)", GenerateFiles),
+            Tuple.Create<string, Action>("Synchronise world database (stump_data->stump_world)", SyncDatabases)
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();

@@ -1071,7 +1071,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 ForEach(x =>
                 {
                     if (actor.CanBeSee(x))
-                        ContextRoleplayHandler.SendGameRolePlayShowActorMessage(x.Client, actor);
+                        ContextRoleplayHandler.SendGameRolePlayShowActorMessage(x.Client, x, actor);
                     else
                         ContextHandler.SendGameContextRemoveElementMessage(x.Client, actor);
                 });
@@ -1105,7 +1105,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             ForEach(x =>
             {
                 if (actor.CanBeSee(x))
-                    ContextRoleplayHandler.SendGameRolePlayShowActorMessage(x.Client, actor);
+                    ContextRoleplayHandler.SendGameRolePlayShowActorMessage(x.Client, x, actor);
             });
 
             if (character != null)
@@ -1475,7 +1475,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 Id,
                 0,
                 new HouseInformations[0],
-                m_actors.Where(entry => entry.CanBeSee(character)).Select(entry => entry.GetGameContextActorInformations() as GameRolePlayActorInformations),
+                m_actors.Where(entry => entry.CanBeSee(character)).Select(entry => entry.GetGameContextActorInformations(character) as GameRolePlayActorInformations),
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
                 new StatedElement[0],
                 new MapObstacle[0],

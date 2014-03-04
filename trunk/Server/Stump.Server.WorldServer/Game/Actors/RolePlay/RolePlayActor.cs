@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
@@ -12,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
     {
         #region Network
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return new GameRolePlayActorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations());
         }

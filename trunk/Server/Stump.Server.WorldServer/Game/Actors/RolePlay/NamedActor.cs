@@ -1,6 +1,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay
@@ -15,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             protected set;
         }
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return new GameRolePlayNamedActorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), Name);
         }
