@@ -144,7 +144,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var target = GetTarget(trigger);
             var to = ((GameTrigger) trigger).Character;
 
-            target.Teleport(to.Position);
+            target.Area.ExecuteInContext(() =>
+                target.Teleport(to.Position));
         }
     }
 }

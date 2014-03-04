@@ -2067,7 +2067,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     if (IsInParty())
                         LeaveParty();
 
-                    if (Map != null && !IsFighting())
+                    if (Map != null && Map.IsActor(this))
                         Map.Leave(this);
 
                     if (Map != null && m_merchantToSpawn != null)
