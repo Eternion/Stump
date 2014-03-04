@@ -381,12 +381,6 @@ namespace DBSynchroniser
                     (int) ((i/(double) count)*100d));
             }
             Console.WriteLine();
-
-            foreach (var record in records.Values)
-                Database.Database.Insert(record);
-
-            foreach (var record in uiRecords.Values)
-                Database.Database.Insert(record);
         }
 
         private static void LoadLangsWithWarning()
