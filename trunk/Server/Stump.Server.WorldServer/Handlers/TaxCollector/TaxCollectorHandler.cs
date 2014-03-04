@@ -104,24 +104,24 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
                 taxCollector.Map.Id, (short)taxCollector.Map.SubArea.Id));
         }
 
-        public static void SendGuildFightPlayersHelpersJoinMessage(IPacketReceiver client, Fight fight, Character character)
+        public static void SendGuildFightPlayersHelpersJoinMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, Character character)
         {
-            client.Send(new GuildFightPlayersHelpersJoinMessage(fight.Id, character.GetCharacterBaseInformations()));
+            client.Send(new GuildFightPlayersHelpersJoinMessage(taxCollector.GlobalId, character.GetCharacterBaseInformations()));
         }
 
-        public static void SendGuildFightPlayersHelpersLeaveMessage(IPacketReceiver client, Fight fight, Character character)
+        public static void SendGuildFightPlayersHelpersLeaveMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, Character character)
         {
-            client.Send(new GuildFightPlayersHelpersLeaveMessage(fight.Id, character.Id));
+            client.Send(new GuildFightPlayersHelpersLeaveMessage(taxCollector.GlobalId, character.Id));
         }
 
-        public static void SendGuildFightPlayersEnemyRemoveMessage(IPacketReceiver client, Fight fight, Character character)
+        public static void SendGuildFightPlayersEnemyRemoveMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, Character character)
         {
-            client.Send(new GuildFightPlayersEnemyRemoveMessage(fight.Id, character.Id));
+            client.Send(new GuildFightPlayersEnemyRemoveMessage(taxCollector.GlobalId, character.Id));
         }
 
-        public static void SendGuildFightPlayersEnemiesListMessage(IPacketReceiver client, Fight fight, IEnumerable<Character> characters)
+        public static void SendGuildFightPlayersEnemiesListMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, IEnumerable<Character> characters)
         {
-            client.Send(new GuildFightPlayersEnemiesListMessage(fight.Id, characters.Select(x => x.GetCharacterBaseInformations())));
+            client.Send(new GuildFightPlayersEnemiesListMessage(taxCollector.GlobalId, characters.Select(x => x.GetCharacterBaseInformations())));
         }
 
         public static void SendTaxCollectorAttackedResultMessage(IPacketReceiver client, bool deadOrAlive, TaxCollectorNpc taxCollector)
