@@ -159,7 +159,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_defendersQueue.Add(character);
             character.SetDefender(this);  
 
-            TaxCollectorHandler.SendGuildFightPlayersHelpersJoinMessage(character.Guild.Clients, this, character);
+            TaxCollectorHandler.SendGuildFightPlayersHelpersJoinMessage(character.Guild.Clients, TaxCollector.TaxCollectorNpc, character);
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
@@ -169,7 +169,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!m_defendersQueue.Remove(character))
                 return false;
 
-            TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(character.Guild.Clients, this, character);
+            TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(character.Guild.Clients, TaxCollector.TaxCollectorNpc, character);
 
             return true;
         }
@@ -204,7 +204,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (team == AttackersTeam)
                 {
                     TaxCollectorHandler.SendGuildFightPlayersEnemiesListMessage(
-                        TaxCollector.TaxCollectorNpc.Guild.Clients, this,
+                        TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc,
                         AttackersTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character));
                 }
             }
@@ -219,7 +219,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (team == AttackersTeam && actor is CharacterFighter)
                 {
                     TaxCollectorHandler.SendGuildFightPlayersEnemyRemoveMessage(
-                        TaxCollector.TaxCollectorNpc.Guild.Clients, this, (actor as CharacterFighter).Character);
+                        TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc, (actor as CharacterFighter).Character);
                 }
             }
 
