@@ -67,10 +67,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var allies = Fight.State == FightState.Placement && Fight is FightPvT
                 ? (Fight as FightPvT).DefendersQueue.Select(x => x.GetCharacterBaseInformations())
-                : Team.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterMinimalPlusLookInformations());
+                : Team.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterBaseInformations());
 
             return new TaxCollectorFightersInformation(TaxCollectorNpc.GlobalId, allies,
-                OpposedTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterMinimalPlusLookInformations()));
+                OpposedTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterBaseInformations()));
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

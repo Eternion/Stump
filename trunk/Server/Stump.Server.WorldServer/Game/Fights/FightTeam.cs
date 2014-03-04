@@ -17,14 +17,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public event Action<FightTeam, FightActor> FighterAdded;
 
-        protected virtual void OnFightAdded(FightActor fighter)
+        protected virtual void OnFighterAdded(FightActor fighter)
         {
-        }
-
-        private void OnFighterAdded(FightActor fighter)
-        {
-            OnFightAdded(fighter);
-
             var handler = FighterAdded;
             if (handler != null)
                 handler(this, fighter);
@@ -41,14 +35,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public event Action<FightTeam, FightActor> FighterRemoved;
 
-        private static void OnFightRemoved(FightActor fighter)
-        {
-        }
-
         protected virtual void OnFighterRemoved(FightActor fighter)
         {
-            OnFightRemoved(fighter);
-
             var handler = FighterRemoved;
             if (handler != null)
                 handler(this, fighter);

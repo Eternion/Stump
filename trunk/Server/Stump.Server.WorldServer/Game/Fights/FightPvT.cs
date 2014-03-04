@@ -69,13 +69,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public bool IsAttackersPlacementPhase
         {
-            get { return m_isAttackersPlacementPhase && State == FightState.Placement; }
+            get { return m_isAttackersPlacementPhase && (State == FightState.Placement ||State == FightState.NotStarted); }
             private set { m_isAttackersPlacementPhase = value; }
         }
 
         public bool IsDefendersPlacementPhase
         {
-            get { return !m_isAttackersPlacementPhase && State == FightState.Placement; }            
+            get { return !m_isAttackersPlacementPhase && (State == FightState.Placement ||State == FightState.NotStarted); }            
             private set { m_isAttackersPlacementPhase = !value; }
         }
 
