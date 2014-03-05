@@ -23,6 +23,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace ArkalysPlugin
@@ -80,6 +81,11 @@ namespace ArkalysPlugin
 
                 if (orbs > 0)
                     player.Loot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
+            }
+
+            if (fight.Map.TaxCollector != null)
+            {
+
             }
         }
 

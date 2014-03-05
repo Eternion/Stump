@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -25,6 +26,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
+using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using TriggerType = Stump.Server.WorldServer.Game.Fights.Triggers.TriggerType;
 
@@ -85,6 +87,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             RedTeam.FighterRemoved += OnFighterRemoved;
 
             CreationTime = DateTime.Now;
+            TaxCollectorLoot = new FightLoot();
         }
 
         #endregion
@@ -244,6 +247,12 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         public bool BladesVisible
+        {
+            get;
+            private set;
+        }
+
+        public FightLoot TaxCollectorLoot
         {
             get;
             private set;
