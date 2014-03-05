@@ -113,6 +113,7 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +160,10 @@
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\TitleCommands.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
+    <Compile Include="Commands\Matching\BaseCriteria.cs" />
+    <Compile Include="Commands\Matching\BaseMatching.cs" />
+    <Compile Include="Commands\Matching\Characters\CharacterMatching.cs" />
+    <Compile Include="Commands\Matching\Characters\MapCriteria.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\Trigger\GameTrigger.cs" />
     <Compile Include="Commands\Trigger\TriggerChat.cs" />

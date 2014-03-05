@@ -28,9 +28,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-
-            target.ChangeAlignementSide(trigger.Get<AlignmentSideEnum>("side"));
+            foreach(var target in GetTargets(trigger))
+                target.ChangeAlignementSide(trigger.Get<AlignmentSideEnum>("side"));
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Web;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
@@ -135,7 +137,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 ( message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix )) // ignore processing command whenever there is the preffix twice
             {
                 message = message.Remove(0, CommandPrefix.Length); // remove our prefix
-                WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(message),
+                WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(UnescapeChatCommand(message)),
                                                                                   client.Character));
             }
             else
@@ -149,6 +151,11 @@ namespace Stump.Server.WorldServer.Game.Social
                         ChatHandlers[channel](client, message);
                 }
             }
+        }
+
+        private static string UnescapeChatCommand(string command)
+        {
+            return HttpUtility.HtmlDecode(command);
         }
 
         private static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)

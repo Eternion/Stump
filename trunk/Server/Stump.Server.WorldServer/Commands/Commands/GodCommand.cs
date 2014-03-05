@@ -29,10 +29,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
+            foreach (var target in GetTargets(trigger))
+            {
 
-            target.ToggleGodMode(true);
-            trigger.Reply("You are god !");
+                target.ToggleGodMode(true);
+                trigger.Reply("You are god !");
+            }
         }
     }
     public class GodOffCommand : TargetSubCommand
@@ -48,10 +50,11 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-
-            target.ToggleGodMode(false);
-            trigger.Reply("You'r not god more");
+            foreach (var target in GetTargets(trigger))
+            {
+                target.ToggleGodMode(false);
+                trigger.Reply("You'r not god more");
+            }
         }
     }
 
@@ -68,27 +71,29 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-            byte delta;
-
-            var amount = trigger.Get<short>("amount");
-            if (amount > 0 && amount <= byte.MaxValue)
+            foreach (var target in GetTargets(trigger))
             {
-                delta = (byte) (amount);
-                target.LevelUp(delta);
-                trigger.Reply("Added " + trigger.Bold("{0}") + " levels to '{1}'.", delta, target.Name);
+                byte delta;
 
-            }
-            else if (amount < 0 && -amount <= byte.MaxValue)
-            {
-                delta = (byte)( -amount );
-                target.LevelDown(delta);
-                trigger.Reply("Removed " + trigger.Bold("{0}") + " levels from '{1}'.", delta, target.Name);
+                var amount = trigger.Get<short>("amount");
+                if (amount > 0 && amount <= byte.MaxValue)
+                {
+                    delta = (byte) (amount);
+                    target.LevelUp(delta);
+                    trigger.Reply("Added " + trigger.Bold("{0}") + " levels to '{1}'.", delta, target.Name);
 
-            }
-            else
-            {
-                trigger.ReplyError("Invalid level given. Must be greater then -255 and lesser than 255");
+                }
+                else if (amount < 0 && -amount <= byte.MaxValue)
+                {
+                    delta = (byte) (-amount);
+                    target.LevelDown(delta);
+                    trigger.Reply("Removed " + trigger.Bold("{0}") + " levels from '{1}'.", delta, target.Name);
+
+                }
+                else
+                {
+                    trigger.ReplyError("Invalid level given. Must be greater then -255 and lesser than 255");
+                }
             }
         }
     }
@@ -106,11 +111,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-            var kamas = trigger.Get<int>("amount");
+            foreach (var target in GetTargets(trigger))
+            {
+                var kamas = trigger.Get<int>("amount");
 
-            target.Inventory.SetKamas(kamas);
-            trigger.ReplyBold("{0} has now {1} kamas", target, kamas);
+                target.Inventory.SetKamas(kamas);
+                trigger.ReplyBold("{0} has now {1} kamas", target, kamas);
+            }
         }
     }
 
@@ -127,12 +134,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-            var statsPoints = trigger.Get<ushort>("amount");
+            foreach (var target in GetTargets(trigger))
+            {
+                var statsPoints = trigger.Get<ushort>("amount");
 
-            target.StatsPoints = statsPoints;
-            target.RefreshStats();
-            trigger.Reply("{0} has now {1} stats points", target, statsPoints);
+                target.StatsPoints = statsPoints;
+                target.RefreshStats();
+                trigger.Reply("{0} has now {1} stats points", target, statsPoints);
+            }
+
         }
     }
 
@@ -148,9 +158,11 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
+            foreach (var target in GetTargets(trigger))
+            {
 
-            trigger.Reply(target.ToggleInvisibility() ? "{0} is now invisible" : "{0} is now visible", target);
+                trigger.Reply(target.ToggleInvisibility() ? "{0} is now invisible" : "{0} is now visible", target);
+            }
         }
     }
 }

@@ -48,20 +48,21 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-
-            if (!target.IsInFight())
-                trigger.ReplyError("{0} is not fighting", target);
-
-            else
+            foreach (var target in GetTargets(trigger))
             {
-                var fight = target.Fight;
-                if (target.IsFighting())
-                    target.Fighter.LeaveFight();
-                if (target.IsSpectator())
-                    target.Spectator.Leave();
+                if (!target.IsInFight())
+                    trigger.ReplyError("{0} is not fighting", target);
 
-                trigger.ReplyBold("{0} get kicked from fight {1}", target, fight.Id);
+                else
+                {
+                    var fight = target.Fight;
+                    if (target.IsFighting())
+                        target.Fighter.LeaveFight();
+                    if (target.IsSpectator())
+                        target.Spectator.Leave();
+
+                    trigger.ReplyBold("{0} get kicked from fight {1}", target, fight.Id);
+                }
             }
         }
     }
