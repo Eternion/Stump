@@ -345,13 +345,14 @@
     <Compile Include="Game\Fights\FightAgression.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
-    <Compile Include="Game\Fights\FightMonsterTeam.cs" />
-    <Compile Include="Game\Fights\FightPlayerTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightMonsterTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightPlayerTeam.cs" />
     <Compile Include="Game\Fights\FightPvM.cs" />
     <Compile Include="Game\Fights\FightPvT.cs" />
     <Compile Include="Game\Fights\FightSpectator.cs" />
-    <Compile Include="Game\Fights\FightTaxCollectorTeam.cs" />
-    <Compile Include="Game\Fights\FightTeamWithLeader.cs" />
+    <Compile Include="Game\Fights\Teams\FightTaxCollectorAttackersTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightTaxCollectorDefenderTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightTeamWithLeader.cs" />
     <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
     <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
@@ -584,7 +585,7 @@
     <Compile Include="Game\Fights\FightManager.cs" />
     <Compile Include="Game\Fights\FightRequest.cs" />
     <Compile Include="Game\Fights\FightState.cs" />
-    <Compile Include="Game\Fights\FightTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightTeam.cs" />
     <Compile Include="Game\Fights\Results\Data\FightExperienceData.cs" />
     <Compile Include="Game\Fights\Results\FightPlayerResult.cs" />
     <Compile Include="Game\Fights\Results\Data\FightPvpData.cs" />

@@ -10,6 +10,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -32,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly List<Character> m_defendersQueue = new List<Character>();
         private readonly Dictionary<Character, Map> m_defendersMaps = new Dictionary<Character, Map>(); 
 
-        public FightPvT(int id, Map fightMap, FightTaxCollectorTeam blueTeam,  FightPlayerTeam redTeam)
+        public FightPvT(int id, Map fightMap, FightTaxCollectorDefenderTeam blueTeam,  FightTaxCollectorAttackersTeam redTeam)
             : base(id, fightMap, blueTeam, redTeam)
         {
         }
@@ -43,19 +44,19 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public FightPlayerTeam AttackersTeam
+        public FightTaxCollectorAttackersTeam AttackersTeam
         {
             get
             {
-                return (FightPlayerTeam) RedTeam;
+                return (FightTaxCollectorAttackersTeam) RedTeam;
             }
         }
 
-        public FightTaxCollectorTeam DefendersTeam
+        public FightTaxCollectorDefenderTeam DefendersTeam
         {
             get
             {
-                return (FightTaxCollectorTeam) BlueTeam;
+                return (FightTaxCollectorDefenderTeam) BlueTeam;
             }
         }
 
@@ -88,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public override void StartPlacement()
         {
             base.StartPlacement();
-
+            
             m_isAttackersPlacementPhase = true;
             m_placementTimer = Map.Area.CallDelayed(PvTAttackersPlacementPhaseTime, StartDefendersPlacement);
 
@@ -105,6 +106,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_placementTimer.Dispose();
 
             m_isAttackersPlacementPhase = false;
+
+            if (DefendersQueue.Count == 0)
+                StartFighting();
 
             foreach (var defender in DefendersQueue)
             {
@@ -290,9 +294,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
+            var timer = (int) GetPlacementTimeLeft(fighter).TotalMilliseconds;
             ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), 
                 (fighter.Team == AttackersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase), false,
-                IsStarted, (int)GetPlacementTimeLeft(fighter).TotalMilliseconds, FightType);
+                IsStarted, timer, FightType);
         }
 
         protected override void SendGameFightJoinMessage(FightSpectator spectator)
@@ -320,7 +325,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public TimeSpan GetPlacementTimeLeft(FightActor fighter)
         {
-            if ((fighter.Team == AttackersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase))
+            if ((fighter.Team == AttackersTeam && (IsAttackersPlacementPhase || State == FightState.NotStarted)) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase))
                 return m_placementTimer.NextTick - DateTime.Now;
 
             return TimeSpan.Zero;

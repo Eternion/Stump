@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
-            if (character.Position.Map.TaxCollector != null)
+            if (character.Position.Map.TaxCollector != null || character.Guild.TaxCollectors.Any(x => x.SubArea == character.SubArea))
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
                 return;

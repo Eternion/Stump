@@ -9,7 +9,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
-namespace Stump.Server.WorldServer.Game.Fights
+namespace Stump.Server.WorldServer.Game.Fights.Teams
 {
     public abstract class FightTeam
     {

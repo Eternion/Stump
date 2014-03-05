@@ -52,10 +52,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         {
             base.Close();
 
+            
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
             TaxCollector.OnDialogClosed(this);
-
+            
+            TaxCollector.Guild.AddXP(TaxCollector.GatheredExperience);
             //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
             TaxCollectorHandler.SendTaxCollectorMovementMessage(TaxCollector.Guild.Clients, false, TaxCollector, Character.Name);
 

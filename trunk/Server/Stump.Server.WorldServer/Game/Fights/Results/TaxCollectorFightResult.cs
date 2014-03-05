@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
@@ -119,7 +120,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 }
             }
 
-            TaxCollector.Guild.AddXP(Experience);
             TaxCollector.GatheredExperience += Experience;
             TaxCollector.GatheredKamas += Loot.Kamas;
         }
