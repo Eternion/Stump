@@ -525,6 +525,10 @@ namespace Stump.Server.WorldServer.Game
             return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
                 Select(entry => entry.Character).SingleOrDefault();
         }
+        public IEnumerable<Character> GetCharacters()
+        {
+            return m_charactersById.Values;
+        }
 
         /// <summary>
         /// Get a spell by a search pattern. * = caller, *account = current spell used by account, name = spell by his name.

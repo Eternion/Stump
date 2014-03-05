@@ -2,6 +2,7 @@
 using System;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.WorldServer.Commands.Matching.Characters;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items;
@@ -55,6 +56,14 @@ namespace Stump.Server.WorldServer.Commands
                 throw new ConverterException(string.Format("'{0}' is not found or not connected", entry));
 
             return target;
+        };        
+        
+        public static ConverterHandler<Character[]> CharactersConverter = (entry, trigger) =>
+        {
+            var matching = new CharacterMatching(entry,
+                trigger is GameTrigger ? (trigger as GameTrigger).Character : null);
+
+            return matching.FindMatchs();
         };
 
         public static ConverterHandler<ItemTemplate> ItemTemplateConverter = (entry, trigger) =>

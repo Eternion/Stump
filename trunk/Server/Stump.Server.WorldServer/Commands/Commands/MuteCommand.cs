@@ -21,11 +21,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-            var time = trigger.Get<int>("time") > 720 ? 720 : trigger.Get<int>("time");
+            foreach (var target in GetTargets(trigger))
+            {
+                var time = trigger.Get<int>("time") > 720 ? 720 : trigger.Get<int>("time");
 
-            target.Mute(TimeSpan.FromMinutes(time), trigger.User as Character);
-            trigger.Reply("{0} muted", target.Name);
+                target.Mute(TimeSpan.FromMinutes(time), trigger.User as Character);
+                trigger.Reply("{0} muted", target.Name);
+                target.OpenPopup(string.Format("Vous avez été muté pendant {0} minutes", time));
+            }
         }
     }
 
@@ -40,10 +43,11 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-
-            target.UnMute(); 
-            trigger.Reply("{0} unmuted", target.Name);
+            foreach (var target in GetTargets(trigger))
+            {
+                target.UnMute();
+                trigger.Reply("{0} unmuted", target.Name);
+            }
         }
     }
 
