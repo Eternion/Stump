@@ -325,7 +325,14 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public TimeSpan GetPlacementTimeLeft(FightActor fighter)
         {
-            if ((fighter.Team == AttackersTeam && (IsAttackersPlacementPhase || State == FightState.NotStarted)) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase))
+            if (State == FightState.NotStarted && fighter.Team == AttackersTeam)
+                return TimeSpan.FromMilliseconds(PvTAttackersPlacementPhaseTime);
+
+            if (fighter.Team == DefendersTeam && IsAttackersPlacementPhase)
+                return TimeSpan.FromMilliseconds(PvTDefendersPlacementPhaseTime);
+
+            if ((fighter.Team == AttackersTeam && IsAttackersPlacementPhase) ||
+                (fighter.Team == DefendersTeam && IsDefendersPlacementPhase))
                 return m_placementTimer.NextTick - DateTime.Now;
 
             return TimeSpan.Zero;
