@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:34
+// Generated on 03/05/2014 20:34:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +37,19 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(houseId);
-            writer.WriteUShort((ushort)doorsOnMap.Count());
+            var doorsOnMap_before = writer.Position;
+            var doorsOnMap_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in doorsOnMap)
             {
                  writer.WriteInt(entry);
+                 doorsOnMap_count++;
             }
+            var doorsOnMap_after = writer.Position;
+            writer.Seek((int)doorsOnMap_before);
+            writer.WriteUShort((ushort)doorsOnMap_count);
+            writer.Seek((int)doorsOnMap_after);
+
             writer.WriteUTF(ownerName);
             writer.WriteShort(modelId);
         }
@@ -52,11 +60,12 @@ namespace Stump.DofusProtocol.Types
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
             var limit = reader.ReadUShort();
-            doorsOnMap = new int[limit];
+            var doorsOnMap_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (doorsOnMap as int[])[i] = reader.ReadInt();
+                 doorsOnMap_[i] = reader.ReadInt();
             }
+            doorsOnMap = doorsOnMap_;
             ownerName = reader.ReadUTF();
             modelId = reader.ReadShort();
             if (modelId < 0)

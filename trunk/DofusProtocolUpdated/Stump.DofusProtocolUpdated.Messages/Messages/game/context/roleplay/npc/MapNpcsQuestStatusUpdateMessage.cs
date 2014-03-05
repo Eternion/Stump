@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:03
+// Generated on 03/05/2014 20:34:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,45 +38,72 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(mapId);
-            writer.WriteUShort((ushort)npcsIdsWithQuest.Count());
+            var npcsIdsWithQuest_before = writer.Position;
+            var npcsIdsWithQuest_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in npcsIdsWithQuest)
             {
                  writer.WriteInt(entry);
+                 npcsIdsWithQuest_count++;
             }
-            writer.WriteUShort((ushort)questFlags.Count());
+            var npcsIdsWithQuest_after = writer.Position;
+            writer.Seek((int)npcsIdsWithQuest_before);
+            writer.WriteUShort((ushort)npcsIdsWithQuest_count);
+            writer.Seek((int)npcsIdsWithQuest_after);
+
+            var questFlags_before = writer.Position;
+            var questFlags_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in questFlags)
             {
                  entry.Serialize(writer);
+                 questFlags_count++;
             }
-            writer.WriteUShort((ushort)npcsIdsWithoutQuest.Count());
+            var questFlags_after = writer.Position;
+            writer.Seek((int)questFlags_before);
+            writer.WriteUShort((ushort)questFlags_count);
+            writer.Seek((int)questFlags_after);
+
+            var npcsIdsWithoutQuest_before = writer.Position;
+            var npcsIdsWithoutQuest_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in npcsIdsWithoutQuest)
             {
                  writer.WriteInt(entry);
+                 npcsIdsWithoutQuest_count++;
             }
+            var npcsIdsWithoutQuest_after = writer.Position;
+            writer.Seek((int)npcsIdsWithoutQuest_before);
+            writer.WriteUShort((ushort)npcsIdsWithoutQuest_count);
+            writer.Seek((int)npcsIdsWithoutQuest_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             mapId = reader.ReadInt();
             var limit = reader.ReadUShort();
-            npcsIdsWithQuest = new int[limit];
+            var npcsIdsWithQuest_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (npcsIdsWithQuest as int[])[i] = reader.ReadInt();
+                 npcsIdsWithQuest_[i] = reader.ReadInt();
             }
+            npcsIdsWithQuest = npcsIdsWithQuest_;
             limit = reader.ReadUShort();
-            questFlags = new Types.GameRolePlayNpcQuestFlag[limit];
+            var questFlags_ = new Types.GameRolePlayNpcQuestFlag[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (questFlags as Types.GameRolePlayNpcQuestFlag[])[i] = new Types.GameRolePlayNpcQuestFlag();
-                 (questFlags as Types.GameRolePlayNpcQuestFlag[])[i].Deserialize(reader);
+                 questFlags_[i] = new Types.GameRolePlayNpcQuestFlag();
+                 questFlags_[i].Deserialize(reader);
             }
+            questFlags = questFlags_;
             limit = reader.ReadUShort();
-            npcsIdsWithoutQuest = new int[limit];
+            var npcsIdsWithoutQuest_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (npcsIdsWithoutQuest as int[])[i] = reader.ReadInt();
+                 npcsIdsWithoutQuest_[i] = reader.ReadInt();
             }
+            npcsIdsWithoutQuest = npcsIdsWithoutQuest_;
         }
         
         public override int GetSerializationSize()

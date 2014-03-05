@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:32
+// Generated on 03/05/2014 20:34:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +33,20 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
-            writer.WriteUShort((ushort)skills.Count());
+            var skills_before = writer.Position;
+            var skills_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in skills)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 skills_count++;
             }
+            var skills_after = writer.Position;
+            writer.Seek((int)skills_before);
+            writer.WriteUShort((ushort)skills_count);
+            writer.Seek((int)skills_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -47,12 +55,13 @@ namespace Stump.DofusProtocol.Types
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
             var limit = reader.ReadUShort();
-            skills = new Types.SkillActionDescription[limit];
+            var skills_ = new Types.SkillActionDescription[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (skills as Types.SkillActionDescription[])[i] = Types.ProtocolTypeManager.GetInstance<Types.SkillActionDescription>(reader.ReadShort());
-                 (skills as Types.SkillActionDescription[])[i].Deserialize(reader);
+                 skills_[i] = Types.ProtocolTypeManager.GetInstance<Types.SkillActionDescription>(reader.ReadShort());
+                 skills_[i].Deserialize(reader);
             }
+            skills = skills_;
         }
         
         public virtual int GetSerializationSize()

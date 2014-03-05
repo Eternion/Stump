@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:34
+// Generated on 03/05/2014 20:34:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +39,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(presetId);
             writer.WriteSByte(symbolId);
             writer.WriteBoolean(mount);
-            writer.WriteUShort((ushort)objects.Count());
+            var objects_before = writer.Position;
+            var objects_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in objects)
             {
                  entry.Serialize(writer);
+                 objects_count++;
             }
+            var objects_after = writer.Position;
+            writer.Seek((int)objects_before);
+            writer.WriteUShort((ushort)objects_count);
+            writer.Seek((int)objects_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -56,12 +64,13 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on symbolId = " + symbolId + ", it doesn't respect the following condition : symbolId < 0");
             mount = reader.ReadBoolean();
             var limit = reader.ReadUShort();
-            objects = new Types.PresetItem[limit];
+            var objects_ = new Types.PresetItem[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (objects as Types.PresetItem[])[i] = new Types.PresetItem();
-                 (objects as Types.PresetItem[])[i].Deserialize(reader);
+                 objects_[i] = new Types.PresetItem();
+                 objects_[i].Deserialize(reader);
             }
+            objects = objects_;
         }
         
         public virtual int GetSerializationSize()

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:10
+// Generated on 03/05/2014 20:34:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +44,19 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(creationDate);
             writer.WriteShort(nbTaxCollectors);
             writer.WriteBoolean(enabled);
-            writer.WriteUShort((ushort)members.Count());
+            var members_before = writer.Position;
+            var members_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in members)
             {
                  entry.Serialize(writer);
+                 members_count++;
             }
+            var members_after = writer.Position;
+            writer.Seek((int)members_before);
+            writer.WriteUShort((ushort)members_count);
+            writer.Seek((int)members_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -63,12 +71,13 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on nbTaxCollectors = " + nbTaxCollectors + ", it doesn't respect the following condition : nbTaxCollectors < 0");
             enabled = reader.ReadBoolean();
             var limit = reader.ReadUShort();
-            members = new Types.CharacterMinimalInformations[limit];
+            var members_ = new Types.CharacterMinimalInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (members as Types.CharacterMinimalInformations[])[i] = new Types.CharacterMinimalInformations();
-                 (members as Types.CharacterMinimalInformations[])[i].Deserialize(reader);
+                 members_[i] = new Types.CharacterMinimalInformations();
+                 members_[i].Deserialize(reader);
             }
+            members = members_;
         }
         
         public override int GetSerializationSize()

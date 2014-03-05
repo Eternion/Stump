@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:15
+// Generated on 03/05/2014 20:34:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,11 +52,19 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(subAreaId);
             writer.WriteUTF(userName);
             writer.WriteDouble(experience);
-            writer.WriteUShort((ushort)objectsInfos.Count());
+            var objectsInfos_before = writer.Position;
+            var objectsInfos_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in objectsInfos)
             {
                  entry.Serialize(writer);
+                 objectsInfos_count++;
             }
+            var objectsInfos_after = writer.Position;
+            writer.Seek((int)objectsInfos_before);
+            writer.WriteUShort((ushort)objectsInfos_count);
+            writer.Seek((int)objectsInfos_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -75,12 +83,13 @@ namespace Stump.DofusProtocol.Messages
             userName = reader.ReadUTF();
             experience = reader.ReadDouble();
             var limit = reader.ReadUShort();
-            objectsInfos = new Types.ObjectItemQuantity[limit];
+            var objectsInfos_ = new Types.ObjectItemQuantity[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (objectsInfos as Types.ObjectItemQuantity[])[i] = new Types.ObjectItemQuantity();
-                 (objectsInfos as Types.ObjectItemQuantity[])[i].Deserialize(reader);
+                 objectsInfos_[i] = new Types.ObjectItemQuantity();
+                 objectsInfos_[i].Deserialize(reader);
             }
+            objectsInfos = objectsInfos_;
         }
         
         public override int GetSerializationSize()

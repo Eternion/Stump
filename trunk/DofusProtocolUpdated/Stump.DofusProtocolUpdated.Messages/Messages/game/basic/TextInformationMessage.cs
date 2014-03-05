@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:51
+// Generated on 03/05/2014 20:34:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +37,19 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteSByte(msgType);
             writer.WriteShort(msgId);
-            writer.WriteUShort((ushort)parameters.Count());
+            var parameters_before = writer.Position;
+            var parameters_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in parameters)
             {
                  writer.WriteUTF(entry);
+                 parameters_count++;
             }
+            var parameters_after = writer.Position;
+            writer.Seek((int)parameters_before);
+            writer.WriteUShort((ushort)parameters_count);
+            writer.Seek((int)parameters_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -53,11 +61,12 @@ namespace Stump.DofusProtocol.Messages
             if (msgId < 0)
                 throw new Exception("Forbidden value on msgId = " + msgId + ", it doesn't respect the following condition : msgId < 0");
             var limit = reader.ReadUShort();
-            parameters = new string[limit];
+            var parameters_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (parameters as string[])[i] = reader.ReadUTF();
+                 parameters_[i] = reader.ReadUTF();
             }
+            parameters = parameters_;
         }
         
         public override int GetSerializationSize()

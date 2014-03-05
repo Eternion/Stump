@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:13
+// Generated on 03/05/2014 20:34:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,26 +40,58 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(teleporterType);
-            writer.WriteUShort((ushort)mapIds.Count());
+            var mapIds_before = writer.Position;
+            var mapIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in mapIds)
             {
                  writer.WriteInt(entry);
+                 mapIds_count++;
             }
-            writer.WriteUShort((ushort)subAreaIds.Count());
+            var mapIds_after = writer.Position;
+            writer.Seek((int)mapIds_before);
+            writer.WriteUShort((ushort)mapIds_count);
+            writer.Seek((int)mapIds_after);
+
+            var subAreaIds_before = writer.Position;
+            var subAreaIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in subAreaIds)
             {
                  writer.WriteShort(entry);
+                 subAreaIds_count++;
             }
-            writer.WriteUShort((ushort)costs.Count());
+            var subAreaIds_after = writer.Position;
+            writer.Seek((int)subAreaIds_before);
+            writer.WriteUShort((ushort)subAreaIds_count);
+            writer.Seek((int)subAreaIds_after);
+
+            var costs_before = writer.Position;
+            var costs_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in costs)
             {
                  writer.WriteShort(entry);
+                 costs_count++;
             }
-            writer.WriteUShort((ushort)destTeleporterType.Count());
+            var costs_after = writer.Position;
+            writer.Seek((int)costs_before);
+            writer.WriteUShort((ushort)costs_count);
+            writer.Seek((int)costs_after);
+
+            var destTeleporterType_before = writer.Position;
+            var destTeleporterType_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in destTeleporterType)
             {
                  writer.WriteSByte(entry);
+                 destTeleporterType_count++;
             }
+            var destTeleporterType_after = writer.Position;
+            writer.Seek((int)destTeleporterType_before);
+            writer.WriteUShort((ushort)destTeleporterType_count);
+            writer.Seek((int)destTeleporterType_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -68,29 +100,33 @@ namespace Stump.DofusProtocol.Messages
             if (teleporterType < 0)
                 throw new Exception("Forbidden value on teleporterType = " + teleporterType + ", it doesn't respect the following condition : teleporterType < 0");
             var limit = reader.ReadUShort();
-            mapIds = new int[limit];
+            var mapIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (mapIds as int[])[i] = reader.ReadInt();
+                 mapIds_[i] = reader.ReadInt();
             }
+            mapIds = mapIds_;
             limit = reader.ReadUShort();
-            subAreaIds = new short[limit];
+            var subAreaIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (subAreaIds as short[])[i] = reader.ReadShort();
+                 subAreaIds_[i] = reader.ReadShort();
             }
+            subAreaIds = subAreaIds_;
             limit = reader.ReadUShort();
-            costs = new short[limit];
+            var costs_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (costs as short[])[i] = reader.ReadShort();
+                 costs_[i] = reader.ReadShort();
             }
+            costs = costs_;
             limit = reader.ReadUShort();
-            destTeleporterType = new sbyte[limit];
+            var destTeleporterType_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (destTeleporterType as sbyte[])[i] = reader.ReadSByte();
+                 destTeleporterType_[i] = reader.ReadSByte();
             }
+            destTeleporterType = destTeleporterType_;
         }
         
         public override int GetSerializationSize()

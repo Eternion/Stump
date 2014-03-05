@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:00
+// Generated on 03/05/2014 20:34:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,22 +33,31 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUShort((ushort)actorIds.Count());
+            var actorIds_before = writer.Position;
+            var actorIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in actorIds)
             {
                  writer.WriteInt(entry);
+                 actorIds_count++;
             }
+            var actorIds_after = writer.Position;
+            writer.Seek((int)actorIds_before);
+            writer.WriteUShort((ushort)actorIds_count);
+            writer.Seek((int)actorIds_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            actorIds = new int[limit];
+            var actorIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (actorIds as int[])[i] = reader.ReadInt();
+                 actorIds_[i] = reader.ReadInt();
             }
+            actorIds = actorIds_;
         }
         
         public override int GetSerializationSize()

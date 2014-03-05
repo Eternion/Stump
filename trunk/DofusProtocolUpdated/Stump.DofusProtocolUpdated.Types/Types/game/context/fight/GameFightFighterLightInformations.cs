@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:30
+// Generated on 03/05/2014 20:34:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,6 @@ namespace Stump.DofusProtocol.Types
         }
         
         public int id;
-        public string name;
         public short level;
         public sbyte breed;
         
@@ -26,10 +25,9 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterLightInformations(int id, string name, short level, sbyte breed)
+        public GameFightFighterLightInformations(int id, short level, sbyte breed)
         {
             this.id = id;
-            this.name = name;
             this.level = level;
             this.breed = breed;
         }
@@ -37,7 +35,6 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(id);
-            writer.WriteUTF(name);
             writer.WriteShort(level);
             writer.WriteSByte(breed);
         }
@@ -45,7 +42,6 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             id = reader.ReadInt();
-            name = reader.ReadUTF();
             level = reader.ReadShort();
             if (level < 0)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
@@ -54,7 +50,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(short) + sizeof(sbyte);
+            return sizeof(int) + sizeof(short) + sizeof(sbyte);
         }
         
     }
