@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:29
+// Generated on 03/05/2014 20:34:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,12 +35,20 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteByte(level);
-            writer.WriteUShort((ushort)additional.Count());
+            var additional_before = writer.Position;
+            var additional_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in additional)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 additional_count++;
             }
+            var additional_after = writer.Position;
+            writer.Seek((int)additional_before);
+            writer.WriteUShort((ushort)additional_count);
+            writer.Seek((int)additional_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -50,12 +58,13 @@ namespace Stump.DofusProtocol.Types
             if (level < 1 || level > 200)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
             var limit = reader.ReadUShort();
-            additional = new Types.FightResultAdditionalData[limit];
+            var additional_ = new Types.FightResultAdditionalData[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (additional as Types.FightResultAdditionalData[])[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultAdditionalData>(reader.ReadShort());
-                 (additional as Types.FightResultAdditionalData[])[i].Deserialize(reader);
+                 additional_[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultAdditionalData>(reader.ReadShort());
+                 additional_[i].Deserialize(reader);
             }
+            additional = additional_;
         }
         
         public override int GetSerializationSize()

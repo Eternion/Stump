@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:44
+// Generated on 03/05/2014 20:34:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,22 +34,31 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(color);
-            writer.WriteUShort((ushort)cells.Count());
+            var cells_before = writer.Position;
+            var cells_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in cells)
             {
                  writer.WriteShort(entry);
+                 cells_count++;
             }
+            var cells_after = writer.Position;
+            writer.Seek((int)cells_before);
+            writer.WriteUShort((ushort)cells_count);
+            writer.Seek((int)cells_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             color = reader.ReadInt();
             var limit = reader.ReadUShort();
-            cells = new short[limit];
+            var cells_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (cells as short[])[i] = reader.ReadShort();
+                 cells_[i] = reader.ReadShort();
             }
+            cells = cells_;
         }
         
         public override int GetSerializationSize()

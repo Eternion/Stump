@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:27
+// Generated on 03/05/2014 20:34:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,16 +35,32 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(id);
-            writer.WriteUShort((ushort)finishedObjective.Count());
+            var finishedObjective_before = writer.Position;
+            var finishedObjective_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in finishedObjective)
             {
                  entry.Serialize(writer);
+                 finishedObjective_count++;
             }
-            writer.WriteUShort((ushort)startedObjectives.Count());
+            var finishedObjective_after = writer.Position;
+            writer.Seek((int)finishedObjective_before);
+            writer.WriteUShort((ushort)finishedObjective_count);
+            writer.Seek((int)finishedObjective_after);
+
+            var startedObjectives_before = writer.Position;
+            var startedObjectives_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in startedObjectives)
             {
                  entry.Serialize(writer);
+                 startedObjectives_count++;
             }
+            var startedObjectives_after = writer.Position;
+            writer.Seek((int)startedObjectives_before);
+            writer.WriteUShort((ushort)startedObjectives_count);
+            writer.Seek((int)startedObjectives_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -53,19 +69,21 @@ namespace Stump.DofusProtocol.Types
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
             var limit = reader.ReadUShort();
-            finishedObjective = new Types.AchievementObjective[limit];
+            var finishedObjective_ = new Types.AchievementObjective[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (finishedObjective as Types.AchievementObjective[])[i] = new Types.AchievementObjective();
-                 (finishedObjective as Types.AchievementObjective[])[i].Deserialize(reader);
+                 finishedObjective_[i] = new Types.AchievementObjective();
+                 finishedObjective_[i].Deserialize(reader);
             }
+            finishedObjective = finishedObjective_;
             limit = reader.ReadUShort();
-            startedObjectives = new Types.AchievementStartedObjective[limit];
+            var startedObjectives_ = new Types.AchievementStartedObjective[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (startedObjectives as Types.AchievementStartedObjective[])[i] = new Types.AchievementStartedObjective();
-                 (startedObjectives as Types.AchievementStartedObjective[])[i].Deserialize(reader);
+                 startedObjectives_[i] = new Types.AchievementStartedObjective();
+                 startedObjectives_[i].Deserialize(reader);
             }
+            startedObjectives = startedObjectives_;
         }
         
         public virtual int GetSerializationSize()

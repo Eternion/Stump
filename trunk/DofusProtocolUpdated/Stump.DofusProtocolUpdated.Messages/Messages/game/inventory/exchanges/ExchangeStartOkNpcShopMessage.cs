@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:18
+// Generated on 03/05/2014 20:34:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +37,19 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(npcSellerId);
             writer.WriteInt(tokenId);
-            writer.WriteUShort((ushort)objectsInfos.Count());
+            var objectsInfos_before = writer.Position;
+            var objectsInfos_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in objectsInfos)
             {
                  entry.Serialize(writer);
+                 objectsInfos_count++;
             }
+            var objectsInfos_after = writer.Position;
+            writer.Seek((int)objectsInfos_before);
+            writer.WriteUShort((ushort)objectsInfos_count);
+            writer.Seek((int)objectsInfos_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -51,12 +59,13 @@ namespace Stump.DofusProtocol.Messages
             if (tokenId < 0)
                 throw new Exception("Forbidden value on tokenId = " + tokenId + ", it doesn't respect the following condition : tokenId < 0");
             var limit = reader.ReadUShort();
-            objectsInfos = new Types.ObjectItemToSellInNpcShop[limit];
+            var objectsInfos_ = new Types.ObjectItemToSellInNpcShop[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (objectsInfos as Types.ObjectItemToSellInNpcShop[])[i] = new Types.ObjectItemToSellInNpcShop();
-                 (objectsInfos as Types.ObjectItemToSellInNpcShop[])[i].Deserialize(reader);
+                 objectsInfos_[i] = new Types.ObjectItemToSellInNpcShop();
+                 objectsInfos_[i].Deserialize(reader);
             }
+            objectsInfos = objectsInfos_;
         }
         
         public override int GetSerializationSize()

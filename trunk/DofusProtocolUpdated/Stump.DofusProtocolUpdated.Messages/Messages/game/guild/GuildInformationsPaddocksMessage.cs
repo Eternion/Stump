@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:10
+// Generated on 03/05/2014 20:34:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +34,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(nbPaddockMax);
-            writer.WriteUShort((ushort)paddocksInformations.Count());
+            var paddocksInformations_before = writer.Position;
+            var paddocksInformations_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in paddocksInformations)
             {
                  entry.Serialize(writer);
+                 paddocksInformations_count++;
             }
+            var paddocksInformations_after = writer.Position;
+            writer.Seek((int)paddocksInformations_before);
+            writer.WriteUShort((ushort)paddocksInformations_count);
+            writer.Seek((int)paddocksInformations_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -47,12 +55,13 @@ namespace Stump.DofusProtocol.Messages
             if (nbPaddockMax < 0)
                 throw new Exception("Forbidden value on nbPaddockMax = " + nbPaddockMax + ", it doesn't respect the following condition : nbPaddockMax < 0");
             var limit = reader.ReadUShort();
-            paddocksInformations = new Types.PaddockContentInformations[limit];
+            var paddocksInformations_ = new Types.PaddockContentInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (paddocksInformations as Types.PaddockContentInformations[])[i] = new Types.PaddockContentInformations();
-                 (paddocksInformations as Types.PaddockContentInformations[])[i].Deserialize(reader);
+                 paddocksInformations_[i] = new Types.PaddockContentInformations();
+                 paddocksInformations_[i].Deserialize(reader);
             }
+            paddocksInformations = paddocksInformations_;
         }
         
         public override int GetSerializationSize()

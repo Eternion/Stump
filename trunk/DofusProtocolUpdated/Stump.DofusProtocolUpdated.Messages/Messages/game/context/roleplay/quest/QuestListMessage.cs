@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:07
+// Generated on 03/05/2014 20:34:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,45 +35,72 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)finishedQuestsIds.Count());
+            var finishedQuestsIds_before = writer.Position;
+            var finishedQuestsIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in finishedQuestsIds)
             {
                  writer.WriteShort(entry);
+                 finishedQuestsIds_count++;
             }
-            writer.WriteUShort((ushort)finishedQuestsCounts.Count());
+            var finishedQuestsIds_after = writer.Position;
+            writer.Seek((int)finishedQuestsIds_before);
+            writer.WriteUShort((ushort)finishedQuestsIds_count);
+            writer.Seek((int)finishedQuestsIds_after);
+
+            var finishedQuestsCounts_before = writer.Position;
+            var finishedQuestsCounts_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in finishedQuestsCounts)
             {
                  writer.WriteShort(entry);
+                 finishedQuestsCounts_count++;
             }
-            writer.WriteUShort((ushort)activeQuests.Count());
+            var finishedQuestsCounts_after = writer.Position;
+            writer.Seek((int)finishedQuestsCounts_before);
+            writer.WriteUShort((ushort)finishedQuestsCounts_count);
+            writer.Seek((int)finishedQuestsCounts_after);
+
+            var activeQuests_before = writer.Position;
+            var activeQuests_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in activeQuests)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 activeQuests_count++;
             }
+            var activeQuests_after = writer.Position;
+            writer.Seek((int)activeQuests_before);
+            writer.WriteUShort((ushort)activeQuests_count);
+            writer.Seek((int)activeQuests_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            finishedQuestsIds = new short[limit];
+            var finishedQuestsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (finishedQuestsIds as short[])[i] = reader.ReadShort();
+                 finishedQuestsIds_[i] = reader.ReadShort();
             }
+            finishedQuestsIds = finishedQuestsIds_;
             limit = reader.ReadUShort();
-            finishedQuestsCounts = new short[limit];
+            var finishedQuestsCounts_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (finishedQuestsCounts as short[])[i] = reader.ReadShort();
+                 finishedQuestsCounts_[i] = reader.ReadShort();
             }
+            finishedQuestsCounts = finishedQuestsCounts_;
             limit = reader.ReadUShort();
-            activeQuests = new Types.QuestActiveInformations[limit];
+            var activeQuests_ = new Types.QuestActiveInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (activeQuests as Types.QuestActiveInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestActiveInformations>(reader.ReadShort());
-                 (activeQuests as Types.QuestActiveInformations[])[i].Deserialize(reader);
+                 activeQuests_[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestActiveInformations>(reader.ReadShort());
+                 activeQuests_[i].Deserialize(reader);
             }
+            activeQuests = activeQuests_;
         }
         
         public override int GetSerializationSize()

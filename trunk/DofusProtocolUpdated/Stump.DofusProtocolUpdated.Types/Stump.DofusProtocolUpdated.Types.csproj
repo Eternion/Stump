@@ -127,9 +127,13 @@
     <Compile Include="Types\game\context\fight\GameFightAIInformations.cs" />
     <Compile Include="Types\game\context\fight\GameFightCharacterInformations.cs" />
     <Compile Include="Types\game\context\fight\GameFightCompanionInformations.cs" />
+    <Compile Include="Types\game\context\fight\GameFightFighterCompanionLightInformations.cs" />
     <Compile Include="Types\game\context\fight\GameFightFighterInformations.cs" />
     <Compile Include="Types\game\context\fight\GameFightFighterLightInformations.cs" />
+    <Compile Include="Types\game\context\fight\GameFightFighterMonsterLightInformations.cs" />
     <Compile Include="Types\game\context\fight\GameFightFighterNamedInformations.cs" />
+    <Compile Include="Types\game\context\fight\GameFightFighterNamedLightInformations.cs" />
+    <Compile Include="Types\game\context\fight\GameFightFighterTaxCollectorLightInformations.cs" />
     <Compile Include="Types\game\context\fight\GameFightMinimalStats.cs" />
     <Compile Include="Types\game\context\fight\GameFightMinimalStatsPreparation.cs" />
     <Compile Include="Types\game\context\fight\GameFightMonsterInformations.cs" />

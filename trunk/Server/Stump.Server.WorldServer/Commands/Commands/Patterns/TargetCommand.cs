@@ -12,6 +12,11 @@ namespace Stump.Server.WorldServer.Commands.Commands.Patterns
             AddParameter("target", "t", description, isOptional: optional, converter: ParametersConverter.CharacterConverter);
         }
 
+        public Character[] GetTargets(TriggerBase trigger)
+        {
+            
+        }
+
         public Character GetTarget(TriggerBase trigger)
         {
             Character target = null;

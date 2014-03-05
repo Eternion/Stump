@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:34
+// Generated on 03/05/2014 20:34:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,12 +57,20 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(subAreaId);
             writer.WriteSByte(state);
             look.Serialize(writer);
-            writer.WriteUShort((ushort)complements.Count());
+            var complements_before = writer.Position;
+            var complements_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in complements)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 complements_count++;
             }
+            var complements_after = writer.Position;
+            writer.Seek((int)complements_before);
+            writer.WriteUShort((ushort)complements_count);
+            writer.Seek((int)complements_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -86,15 +94,18 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             state = reader.ReadSByte();
+            if (state < 0)
+                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
             look = new Types.EntityLook();
             look.Deserialize(reader);
             var limit = reader.ReadUShort();
-            complements = new Types.TaxCollectorComplementaryInformations[limit];
+            var complements_ = new Types.TaxCollectorComplementaryInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (complements as Types.TaxCollectorComplementaryInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorComplementaryInformations>(reader.ReadShort());
-                 (complements as Types.TaxCollectorComplementaryInformations[])[i].Deserialize(reader);
+                 complements_[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorComplementaryInformations>(reader.ReadShort());
+                 complements_[i].Deserialize(reader);
             }
+            complements = complements_;
         }
         
         public virtual int GetSerializationSize()

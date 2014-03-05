@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:05
+// Generated on 03/05/2014 20:34:31
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +36,19 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteShort(dungeonId);
-            writer.WriteUShort((ushort)playersDungeonReady.Count());
+            var playersDungeonReady_before = writer.Position;
+            var playersDungeonReady_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in playersDungeonReady)
             {
                  writer.WriteBoolean(entry);
+                 playersDungeonReady_count++;
             }
+            var playersDungeonReady_after = writer.Position;
+            writer.Seek((int)playersDungeonReady_before);
+            writer.WriteUShort((ushort)playersDungeonReady_count);
+            writer.Seek((int)playersDungeonReady_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -50,11 +58,12 @@ namespace Stump.DofusProtocol.Messages
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
             var limit = reader.ReadUShort();
-            playersDungeonReady = new bool[limit];
+            var playersDungeonReady_ = new bool[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (playersDungeonReady as bool[])[i] = reader.ReadBoolean();
+                 playersDungeonReady_[i] = reader.ReadBoolean();
             }
+            playersDungeonReady = playersDungeonReady_;
         }
         
         public override int GetSerializationSize()

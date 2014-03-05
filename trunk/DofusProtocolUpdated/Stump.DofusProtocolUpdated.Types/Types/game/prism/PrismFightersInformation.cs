@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:35
+// Generated on 03/05/2014 20:34:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,18 +38,34 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteShort(subAreaId);
             waitingForHelpInfo.Serialize(writer);
-            writer.WriteUShort((ushort)allyCharactersInformations.Count());
+            var allyCharactersInformations_before = writer.Position;
+            var allyCharactersInformations_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in allyCharactersInformations)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 allyCharactersInformations_count++;
             }
-            writer.WriteUShort((ushort)enemyCharactersInformations.Count());
+            var allyCharactersInformations_after = writer.Position;
+            writer.Seek((int)allyCharactersInformations_before);
+            writer.WriteUShort((ushort)allyCharactersInformations_count);
+            writer.Seek((int)allyCharactersInformations_after);
+
+            var enemyCharactersInformations_before = writer.Position;
+            var enemyCharactersInformations_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in enemyCharactersInformations)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 enemyCharactersInformations_count++;
             }
+            var enemyCharactersInformations_after = writer.Position;
+            writer.Seek((int)enemyCharactersInformations_before);
+            writer.WriteUShort((ushort)enemyCharactersInformations_count);
+            writer.Seek((int)enemyCharactersInformations_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -60,19 +76,21 @@ namespace Stump.DofusProtocol.Types
             waitingForHelpInfo = new Types.ProtectedEntityWaitingForHelpInfo();
             waitingForHelpInfo.Deserialize(reader);
             var limit = reader.ReadUShort();
-            allyCharactersInformations = new Types.CharacterMinimalPlusLookInformations[limit];
+            var allyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (allyCharactersInformations as Types.CharacterMinimalPlusLookInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
-                 (allyCharactersInformations as Types.CharacterMinimalPlusLookInformations[])[i].Deserialize(reader);
+                 allyCharactersInformations_[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
+                 allyCharactersInformations_[i].Deserialize(reader);
             }
+            allyCharactersInformations = allyCharactersInformations_;
             limit = reader.ReadUShort();
-            enemyCharactersInformations = new Types.CharacterMinimalPlusLookInformations[limit];
+            var enemyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (enemyCharactersInformations as Types.CharacterMinimalPlusLookInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
-                 (enemyCharactersInformations as Types.CharacterMinimalPlusLookInformations[])[i].Deserialize(reader);
+                 enemyCharactersInformations_[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
+                 enemyCharactersInformations_[i].Deserialize(reader);
             }
+            enemyCharactersInformations = enemyCharactersInformations_;
         }
         
         public virtual int GetSerializationSize()

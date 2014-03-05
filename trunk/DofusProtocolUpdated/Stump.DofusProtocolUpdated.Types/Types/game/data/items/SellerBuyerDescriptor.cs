@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:33
+// Generated on 03/05/2014 20:34:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +20,7 @@ namespace Stump.DofusProtocol.Types
         public IEnumerable<int> quantities;
         public IEnumerable<int> types;
         public float taxPercentage;
+        public float taxModificationPercentage;
         public int maxItemLevel;
         public int maxItemPerAccount;
         public int npcContextualId;
@@ -29,11 +30,12 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public SellerBuyerDescriptor(IEnumerable<int> quantities, IEnumerable<int> types, float taxPercentage, int maxItemLevel, int maxItemPerAccount, int npcContextualId, short unsoldDelay)
+        public SellerBuyerDescriptor(IEnumerable<int> quantities, IEnumerable<int> types, float taxPercentage, float taxModificationPercentage, int maxItemLevel, int maxItemPerAccount, int npcContextualId, short unsoldDelay)
         {
             this.quantities = quantities;
             this.types = types;
             this.taxPercentage = taxPercentage;
+            this.taxModificationPercentage = taxModificationPercentage;
             this.maxItemLevel = maxItemLevel;
             this.maxItemPerAccount = maxItemPerAccount;
             this.npcContextualId = npcContextualId;
@@ -42,17 +44,34 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)quantities.Count());
+            var quantities_before = writer.Position;
+            var quantities_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in quantities)
             {
                  writer.WriteInt(entry);
+                 quantities_count++;
             }
-            writer.WriteUShort((ushort)types.Count());
+            var quantities_after = writer.Position;
+            writer.Seek((int)quantities_before);
+            writer.WriteUShort((ushort)quantities_count);
+            writer.Seek((int)quantities_after);
+
+            var types_before = writer.Position;
+            var types_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in types)
             {
                  writer.WriteInt(entry);
+                 types_count++;
             }
+            var types_after = writer.Position;
+            writer.Seek((int)types_before);
+            writer.WriteUShort((ushort)types_count);
+            writer.Seek((int)types_after);
+
             writer.WriteFloat(taxPercentage);
+            writer.WriteFloat(taxModificationPercentage);
             writer.WriteInt(maxItemLevel);
             writer.WriteInt(maxItemPerAccount);
             writer.WriteInt(npcContextualId);
@@ -62,18 +81,21 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            quantities = new int[limit];
+            var quantities_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (quantities as int[])[i] = reader.ReadInt();
+                 quantities_[i] = reader.ReadInt();
             }
+            quantities = quantities_;
             limit = reader.ReadUShort();
-            types = new int[limit];
+            var types_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (types as int[])[i] = reader.ReadInt();
+                 types_[i] = reader.ReadInt();
             }
+            types = types_;
             taxPercentage = reader.ReadFloat();
+            taxModificationPercentage = reader.ReadFloat();
             maxItemLevel = reader.ReadInt();
             if (maxItemLevel < 0)
                 throw new Exception("Forbidden value on maxItemLevel = " + maxItemLevel + ", it doesn't respect the following condition : maxItemLevel < 0");
@@ -88,7 +110,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(short) + quantities.Sum(x => sizeof(int)) + sizeof(short) + types.Sum(x => sizeof(int)) + sizeof(float) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short);
+            return sizeof(short) + quantities.Sum(x => sizeof(int)) + sizeof(short) + types.Sum(x => sizeof(int)) + sizeof(float) + sizeof(float) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short);
         }
         
     }

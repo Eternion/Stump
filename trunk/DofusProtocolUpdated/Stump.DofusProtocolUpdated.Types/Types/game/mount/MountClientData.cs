@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:35
+// Generated on 03/05/2014 20:34:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,16 +86,32 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteDouble(id);
             writer.WriteInt(model);
-            writer.WriteUShort((ushort)ancestor.Count());
+            var ancestor_before = writer.Position;
+            var ancestor_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in ancestor)
             {
                  writer.WriteInt(entry);
+                 ancestor_count++;
             }
-            writer.WriteUShort((ushort)behaviors.Count());
+            var ancestor_after = writer.Position;
+            writer.Seek((int)ancestor_before);
+            writer.WriteUShort((ushort)ancestor_count);
+            writer.Seek((int)ancestor_after);
+
+            var behaviors_before = writer.Position;
+            var behaviors_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in behaviors)
             {
                  writer.WriteInt(entry);
+                 behaviors_count++;
             }
+            var behaviors_after = writer.Position;
+            writer.Seek((int)behaviors_before);
+            writer.WriteUShort((ushort)behaviors_count);
+            writer.Seek((int)behaviors_after);
+
             writer.WriteUTF(name);
             writer.WriteInt(ownerId);
             writer.WriteDouble(experience);
@@ -119,11 +135,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteDouble(boostMax);
             writer.WriteInt(reproductionCount);
             writer.WriteInt(reproductionCountMax);
-            writer.WriteUShort((ushort)effectList.Count());
+            var effectList_before = writer.Position;
+            var effectList_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in effectList)
             {
                  entry.Serialize(writer);
+                 effectList_count++;
             }
+            var effectList_after = writer.Position;
+            writer.Seek((int)effectList_before);
+            writer.WriteUShort((ushort)effectList_count);
+            writer.Seek((int)effectList_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -133,17 +157,19 @@ namespace Stump.DofusProtocol.Types
             if (model < 0)
                 throw new Exception("Forbidden value on model = " + model + ", it doesn't respect the following condition : model < 0");
             var limit = reader.ReadUShort();
-            ancestor = new int[limit];
+            var ancestor_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (ancestor as int[])[i] = reader.ReadInt();
+                 ancestor_[i] = reader.ReadInt();
             }
+            ancestor = ancestor_;
             limit = reader.ReadUShort();
-            behaviors = new int[limit];
+            var behaviors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (behaviors as int[])[i] = reader.ReadInt();
+                 behaviors_[i] = reader.ReadInt();
             }
+            behaviors = behaviors_;
             name = reader.ReadUTF();
             ownerId = reader.ReadInt();
             if (ownerId < 0)
@@ -196,12 +222,13 @@ namespace Stump.DofusProtocol.Types
             if (reproductionCountMax < 0)
                 throw new Exception("Forbidden value on reproductionCountMax = " + reproductionCountMax + ", it doesn't respect the following condition : reproductionCountMax < 0");
             limit = reader.ReadUShort();
-            effectList = new Types.ObjectEffectInteger[limit];
+            var effectList_ = new Types.ObjectEffectInteger[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (effectList as Types.ObjectEffectInteger[])[i] = new Types.ObjectEffectInteger();
-                 (effectList as Types.ObjectEffectInteger[])[i].Deserialize(reader);
+                 effectList_[i] = new Types.ObjectEffectInteger();
+                 effectList_[i].Deserialize(reader);
             }
+            effectList = effectList_;
         }
         
         public virtual int GetSerializationSize()

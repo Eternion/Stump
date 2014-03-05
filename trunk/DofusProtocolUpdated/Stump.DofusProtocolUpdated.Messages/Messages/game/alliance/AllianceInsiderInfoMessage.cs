@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:49
+// Generated on 03/05/2014 20:34:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,17 +36,33 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             allianceInfos.Serialize(writer);
-            writer.WriteUShort((ushort)guilds.Count());
+            var guilds_before = writer.Position;
+            var guilds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in guilds)
             {
                  entry.Serialize(writer);
+                 guilds_count++;
             }
-            writer.WriteUShort((ushort)prisms.Count());
+            var guilds_after = writer.Position;
+            writer.Seek((int)guilds_before);
+            writer.WriteUShort((ushort)guilds_count);
+            writer.Seek((int)guilds_after);
+
+            var prisms_before = writer.Position;
+            var prisms_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in prisms)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 prisms_count++;
             }
+            var prisms_after = writer.Position;
+            writer.Seek((int)prisms_before);
+            writer.WriteUShort((ushort)prisms_count);
+            writer.Seek((int)prisms_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -54,19 +70,21 @@ namespace Stump.DofusProtocol.Messages
             allianceInfos = new Types.AllianceFactSheetInformations();
             allianceInfos.Deserialize(reader);
             var limit = reader.ReadUShort();
-            guilds = new Types.GuildInsiderFactSheetInformations[limit];
+            var guilds_ = new Types.GuildInsiderFactSheetInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (guilds as Types.GuildInsiderFactSheetInformations[])[i] = new Types.GuildInsiderFactSheetInformations();
-                 (guilds as Types.GuildInsiderFactSheetInformations[])[i].Deserialize(reader);
+                 guilds_[i] = new Types.GuildInsiderFactSheetInformations();
+                 guilds_[i].Deserialize(reader);
             }
+            guilds = guilds_;
             limit = reader.ReadUShort();
-            prisms = new Types.PrismSubareaEmptyInfo[limit];
+            var prisms_ = new Types.PrismSubareaEmptyInfo[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (prisms as Types.PrismSubareaEmptyInfo[])[i] = Types.ProtocolTypeManager.GetInstance<Types.PrismSubareaEmptyInfo>(reader.ReadShort());
-                 (prisms as Types.PrismSubareaEmptyInfo[])[i].Deserialize(reader);
+                 prisms_[i] = Types.ProtocolTypeManager.GetInstance<Types.PrismSubareaEmptyInfo>(reader.ReadShort());
+                 prisms_[i].Deserialize(reader);
             }
+            prisms = prisms_;
         }
         
         public override int GetSerializationSize()

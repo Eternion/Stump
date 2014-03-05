@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:20
+// Generated on 03/05/2014 20:34:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +36,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteShort(msgId);
-            writer.WriteUShort((ushort)parameters.Count());
+            var parameters_before = writer.Position;
+            var parameters_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in parameters)
             {
                  writer.WriteUTF(entry);
+                 parameters_count++;
             }
+            var parameters_after = writer.Position;
+            writer.Seek((int)parameters_before);
+            writer.WriteUShort((ushort)parameters_count);
+            writer.Seek((int)parameters_after);
+
             writer.WriteUInt(livingObject);
         }
         
@@ -50,11 +58,12 @@ namespace Stump.DofusProtocol.Messages
             if (msgId < 0)
                 throw new Exception("Forbidden value on msgId = " + msgId + ", it doesn't respect the following condition : msgId < 0");
             var limit = reader.ReadUShort();
-            parameters = new string[limit];
+            var parameters_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (parameters as string[])[i] = reader.ReadUTF();
+                 parameters_[i] = reader.ReadUTF();
             }
+            parameters = parameters_;
             livingObject = reader.ReadUInt();
             if (livingObject < 0 || livingObject > 4.294967295E9)
                 throw new Exception("Forbidden value on livingObject = " + livingObject + ", it doesn't respect the following condition : livingObject < 0 || livingObject > 4.294967295E9");

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:35
+// Generated on 03/05/2014 20:34:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,11 +50,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
             writer.WriteBoolean(abandonned);
-            writer.WriteUShort((ushort)mountsInformations.Count());
+            var mountsInformations_before = writer.Position;
+            var mountsInformations_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in mountsInformations)
             {
                  entry.Serialize(writer);
+                 mountsInformations_count++;
             }
+            var mountsInformations_after = writer.Position;
+            writer.Seek((int)mountsInformations_before);
+            writer.WriteUShort((ushort)mountsInformations_count);
+            writer.Seek((int)mountsInformations_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -73,12 +81,13 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             abandonned = reader.ReadBoolean();
             var limit = reader.ReadUShort();
-            mountsInformations = new Types.MountInformationsForPaddock[limit];
+            var mountsInformations_ = new Types.MountInformationsForPaddock[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (mountsInformations as Types.MountInformationsForPaddock[])[i] = new Types.MountInformationsForPaddock();
-                 (mountsInformations as Types.MountInformationsForPaddock[])[i].Deserialize(reader);
+                 mountsInformations_[i] = new Types.MountInformationsForPaddock();
+                 mountsInformations_[i].Deserialize(reader);
             }
+            mountsInformations = mountsInformations_;
         }
         
         public override int GetSerializationSize()
