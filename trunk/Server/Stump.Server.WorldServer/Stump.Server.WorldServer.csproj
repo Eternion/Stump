@@ -139,6 +139,7 @@
     <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
+    <Compile Include="Commands\CommandInfo.cs" />
     <Compile Include="Commands\Commands\AlignmentCommands.cs" />
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
     <Compile Include="Database\Breeds\Head.cs" />
+    <Compile Include="Database\Guilds\EmblemRecord.cs" />
     <Compile Include="Database\Guilds\GuildMemberRecord.cs" />
     <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />

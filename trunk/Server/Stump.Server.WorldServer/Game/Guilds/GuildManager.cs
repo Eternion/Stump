@@ -21,6 +21,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
     {
         private UniqueIdProvider m_idProvider;
         private Dictionary<int, Guild> m_guilds;
+        private Dictionary<int, EmblemRecord> m_emblems;
         private Dictionary<int, GuildMember> m_guildsMembers;
         private readonly Stack<Guild> m_guildsToDelete = new Stack<Guild>();
 
@@ -28,7 +29,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
-        {
+        {            
+            m_emblems = Database.Query<EmblemRecord>(EmblemRelator.FetchQuery).ToDictionary(x => x.Id);
             m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
             m_guildsMembers = m_guilds.Values.SelectMany(x => x.Members).ToDictionary(x => x.Id);
             m_idProvider = m_guilds.Any() ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max()) : new UniqueIdProvider(1);
@@ -72,6 +74,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
             {
                 return m_guilds.FirstOrDefault(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase)).Value;
             }
+        }
+
+        public EmblemRecord TryGetEmblem(int id)
+        {
+            EmblemRecord record;
+            return m_emblems.TryGetValue(id, out record) ? record : null;
         }
 
         public GuildMember TryGetGuildMember(int characterId)

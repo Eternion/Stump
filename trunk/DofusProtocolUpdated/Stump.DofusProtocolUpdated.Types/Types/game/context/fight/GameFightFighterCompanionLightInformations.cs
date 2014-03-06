@@ -1,6 +1,6 @@
 
 
-// Generated on 03/05/2014 20:34:47
+// Generated on 03/06/2014 18:50:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterCompanionLightInformations(int id, short level, sbyte breed, int companionId, int masterId)
-         : base(id, level, breed)
+        public GameFightFighterCompanionLightInformations(bool sex, bool alive, int id, short level, sbyte breed, int companionId, int masterId)
+         : base(sex, alive, id, level, breed)
         {
             this.companionId = companionId;
             this.masterId = masterId;

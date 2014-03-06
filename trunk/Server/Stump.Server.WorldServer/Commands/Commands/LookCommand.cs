@@ -23,14 +23,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                if (trigger is GameTrigger && (trigger as GameTrigger).Character.IsGameMaster())
+                /*if (trigger is GameTrigger && (trigger as GameTrigger).Character.IsGameMaster())
                 {
                     target.CustomLook = ActorLook.Parse("{705}");
                     target.CustomLookActivated = true;
 
                     target.RefreshActor();
                     return;
-                }
+                }*/
 
                 if (trigger.IsArgumentDefined("demorph"))
                 {
