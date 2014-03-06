@@ -1,6 +1,6 @@
 
 
-// Generated on 03/05/2014 20:34:48
+// Generated on 03/06/2014 18:50:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,9 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
+        public bool keyRingBonus;
+        public bool hasHardcoreDrop;
+        public bool hasAVARewardToken;
         public Types.GroupMonsterStaticInformations staticInfos;
         public short ageBonus;
         public sbyte lootShare;
@@ -26,9 +29,12 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameRolePlayGroupMonsterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, Types.GroupMonsterStaticInformations staticInfos, short ageBonus, sbyte lootShare, sbyte alignmentSide)
+        public GameRolePlayGroupMonsterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, bool keyRingBonus, bool hasHardcoreDrop, bool hasAVARewardToken, Types.GroupMonsterStaticInformations staticInfos, short ageBonus, sbyte lootShare, sbyte alignmentSide)
          : base(contextualId, look, disposition)
         {
+            this.keyRingBonus = keyRingBonus;
+            this.hasHardcoreDrop = hasHardcoreDrop;
+            this.hasAVARewardToken = hasAVARewardToken;
             this.staticInfos = staticInfos;
             this.ageBonus = ageBonus;
             this.lootShare = lootShare;
@@ -38,6 +44,11 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, keyRingBonus);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, hasHardcoreDrop);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, hasAVARewardToken);
+            writer.WriteByte(flag1);
             writer.WriteShort(staticInfos.TypeId);
             staticInfos.Serialize(writer);
             writer.WriteShort(ageBonus);
@@ -48,6 +59,10 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
+            byte flag1 = reader.ReadByte();
+            keyRingBonus = BooleanByteWrapper.GetFlag(flag1, 0);
+            hasHardcoreDrop = BooleanByteWrapper.GetFlag(flag1, 1);
+            hasAVARewardToken = BooleanByteWrapper.GetFlag(flag1, 2);
             staticInfos = Types.ProtocolTypeManager.GetInstance<Types.GroupMonsterStaticInformations>(reader.ReadShort());
             staticInfos.Deserialize(reader);
             ageBonus = reader.ReadShort();
@@ -61,7 +76,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + staticInfos.GetSerializationSize() + sizeof(short) + sizeof(sbyte) + sizeof(sbyte);
+            return base.GetSerializationSize() + sizeof(bool) + 0 + 0 + sizeof(short) + staticInfos.GetSerializationSize() + sizeof(short) + sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

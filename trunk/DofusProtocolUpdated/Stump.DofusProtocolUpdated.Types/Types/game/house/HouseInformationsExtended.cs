@@ -1,6 +1,6 @@
 
 
-// Generated on 03/05/2014 20:34:50
+// Generated on 03/06/2014 18:50:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public HouseInformationsExtended(int houseId, IEnumerable<int> doorsOnMap, string ownerName, short modelId, Types.GuildInformations guildInfo)
-         : base(houseId, doorsOnMap, ownerName, modelId)
+        public HouseInformationsExtended(bool isOnSale, bool isSaleLocked, int houseId, IEnumerable<int> doorsOnMap, string ownerName, short modelId, Types.GuildInformations guildInfo)
+         : base(isOnSale, isSaleLocked, houseId, doorsOnMap, ownerName, modelId)
         {
             this.guildInfo = guildInfo;
         }

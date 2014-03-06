@@ -1,6 +1,6 @@
 
 
-// Generated on 03/05/2014 20:34:47
+// Generated on 03/06/2014 18:50:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterMonsterLightInformations(int id, short level, sbyte breed, short creatureGenericId)
-         : base(id, level, breed)
+        public GameFightFighterMonsterLightInformations(bool sex, bool alive, int id, short level, sbyte breed, short creatureGenericId)
+         : base(sex, alive, id, level, breed)
         {
             this.creatureGenericId = creatureGenericId;
         }

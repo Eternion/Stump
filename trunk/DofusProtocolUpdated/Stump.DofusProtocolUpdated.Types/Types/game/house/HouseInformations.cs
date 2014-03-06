@@ -1,6 +1,6 @@
 
 
-// Generated on 03/05/2014 20:34:50
+// Generated on 03/06/2014 18:50:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,8 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
+        public bool isOnSale;
+        public bool isSaleLocked;
         public int houseId;
         public IEnumerable<int> doorsOnMap;
         public string ownerName;
@@ -26,8 +28,10 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public HouseInformations(int houseId, IEnumerable<int> doorsOnMap, string ownerName, short modelId)
+        public HouseInformations(bool isOnSale, bool isSaleLocked, int houseId, IEnumerable<int> doorsOnMap, string ownerName, short modelId)
         {
+            this.isOnSale = isOnSale;
+            this.isSaleLocked = isSaleLocked;
             this.houseId = houseId;
             this.doorsOnMap = doorsOnMap;
             this.ownerName = ownerName;
@@ -36,6 +40,10 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, isOnSale);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, isSaleLocked);
+            writer.WriteByte(flag1);
             writer.WriteInt(houseId);
             var doorsOnMap_before = writer.Position;
             var doorsOnMap_count = 0;
@@ -56,6 +64,9 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            isOnSale = BooleanByteWrapper.GetFlag(flag1, 0);
+            isSaleLocked = BooleanByteWrapper.GetFlag(flag1, 1);
             houseId = reader.ReadInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
@@ -74,7 +85,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + doorsOnMap.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short);
+            return sizeof(bool) + 0 + sizeof(int) + sizeof(short) + doorsOnMap.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short);
         }
         
     }

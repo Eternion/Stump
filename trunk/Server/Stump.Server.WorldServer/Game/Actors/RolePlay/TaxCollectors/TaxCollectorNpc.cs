@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         [Variable]
         public static int BaseResistance = 25;
 
-        public const string TAXCOLLECTOR_LOOK = "{714|||}"; //todo: Find correct Look
+        public const int TAXCOLLECTOR_BONES = 714;
 
         private readonly WorldMapTaxCollectorRecord m_record;
         private readonly List<IDialog> m_openedDialogs = new List<IDialog>();
@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         {
             get
             {
-                return m_look ?? (m_look = ActorLook.Parse(TAXCOLLECTOR_LOOK));
+                return m_look ?? RefreshLook();
             }
         }
 
@@ -224,7 +224,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return Fighter != null;
             }
         }
-        
+
+        public ActorLook RefreshLook()
+        {
+            m_look = new ActorLook()
+                {BonesID = TAXCOLLECTOR_BONES};
+            m_look.AddSkin((short)Guild.Emblem.Template.SkinId);
+            m_look.AddColor(8, Guild.Emblem.SymbolColor);
+            m_look.AddColor(7, Guild.Emblem.BackgroundColor);
+
+            return m_look;
+        }
+
         public void InteractWith(NpcActionTypeEnum actionType, Character dialoguer)
         {
             if (!CanInteractWith(actionType, dialoguer))

@@ -1,6 +1,6 @@
 
 
-// Generated on 03/05/2014 20:34:47
+// Generated on 03/06/2014 18:50:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,8 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
+        public bool sex;
+        public bool alive;
         public int id;
         public short level;
         public sbyte breed;
@@ -25,8 +27,10 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterLightInformations(int id, short level, sbyte breed)
+        public GameFightFighterLightInformations(bool sex, bool alive, int id, short level, sbyte breed)
         {
+            this.sex = sex;
+            this.alive = alive;
             this.id = id;
             this.level = level;
             this.breed = breed;
@@ -34,6 +38,10 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, sex);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, alive);
+            writer.WriteByte(flag1);
             writer.WriteInt(id);
             writer.WriteShort(level);
             writer.WriteSByte(breed);
@@ -41,6 +49,9 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            sex = BooleanByteWrapper.GetFlag(flag1, 0);
+            alive = BooleanByteWrapper.GetFlag(flag1, 1);
             id = reader.ReadInt();
             level = reader.ReadShort();
             if (level < 0)
@@ -50,7 +61,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + sizeof(sbyte);
+            return sizeof(bool) + 0 + sizeof(int) + sizeof(short) + sizeof(sbyte);
         }
         
     }
