@@ -139,7 +139,6 @@
     <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
-    <Compile Include="Commands\CommandInfo.cs" />
     <Compile Include="Commands\Commands\AlignmentCommands.cs" />
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
