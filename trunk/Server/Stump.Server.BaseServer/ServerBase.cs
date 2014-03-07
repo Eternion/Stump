@@ -40,6 +40,8 @@ namespace Stump.Server.BaseServer
         [Variable]
         public static int AutomaticShutdownTimer = 6*60;
 
+        [Variable] public static string CommandsInfoFilePath = "./commands.xml";
+
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -239,6 +241,8 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
+
+            CommandManager.LoadOrCreateCommandsInfo(CommandsInfoFilePath);
         }
 
         public virtual void UpdateConfigFiles()

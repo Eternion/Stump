@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 using NLog;
 using Stump.Core.Reflection;
+using Stump.Core.Xml;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands
@@ -16,12 +19,14 @@ namespace Stump.Server.BaseServer.Commands
         private IDictionary<string, CommandBase> m_commandsByAlias;
         private readonly List<CommandBase> m_registeredCommands;
         private readonly List<Type> m_registeredTypes;
+        private readonly List<CommandInfo> m_commandsInfos; 
 
         private CommandManager()
         {
             m_commandsByAlias = new Dictionary<string, CommandBase>();
             m_registeredCommands = new List<CommandBase>();
             m_registeredTypes = new List<Type>();
+            m_commandsInfos = new List<CommandInfo>();
         }
 
         /// <summary>
@@ -35,11 +40,11 @@ namespace Stump.Server.BaseServer.Commands
         /// <summary>
         /// Regroup all CommandBases, SubCommandContainers and SubCommands
         /// </summary>
-        public IEnumerable<CommandBase> AvailableCommands
+        public IReadOnlyCollection<CommandBase> AvailableCommands
         {
             get
             {
-                return m_registeredCommands;
+                return m_registeredCommands.AsReadOnly();
             }
         }
 
@@ -76,6 +81,32 @@ namespace Stump.Server.BaseServer.Commands
             }
 
             SortCommands();
+        }
+
+        public void LoadOrCreateCommandsInfo(string xmlFile)
+        {
+            if (!File.Exists(xmlFile))
+            {
+                XmlUtils.Serialize(xmlFile, m_commandsInfos);
+            }
+            else
+            {
+                var infos = XmlUtils.Deserialize<CommandInfo[]>(xmlFile);
+                LoadCommandsInfo(infos);
+            }
+        }
+
+        public void LoadCommandsInfo(CommandInfo[] infos)
+        {
+            foreach (CommandInfo info in infos)
+            {
+                if (m_commandsInfos.RemoveAll(x => x.Name == info.Name) > 0)
+                    m_commandsInfos.Add(info);
+
+                CommandBase command = AvailableCommands.FirstOrDefault(x => x.GetType().Name == info.Name);
+                if (command != null)
+                    info.ModifyCommandInfo(command);
+            }
         }
 
         public void RegisterCommand(Type commandType)
@@ -118,6 +149,7 @@ namespace Stump.Server.BaseServer.Commands
             }
 
             m_registeredCommands.Add(command);
+            m_commandsInfos.Add(new CommandInfo(command));
             m_registeredTypes.Add(commandType);
 
             foreach (var alias in command.Aliases)
@@ -155,6 +187,7 @@ namespace Stump.Server.BaseServer.Commands
             }
 
             m_registeredCommands.Add(command);
+            m_commandsInfos.Add(new CommandInfo(command));
             m_registeredTypes.Add(commandType);
             foreach (string alias in command.Aliases)
             {
@@ -207,6 +240,7 @@ namespace Stump.Server.BaseServer.Commands
 
             parentCommand.AddSubCommand(subcommand);
             m_registeredCommands.Add(subcommand);
+            m_commandsInfos.Add(new CommandInfo(subcommand));
             m_registeredTypes.Add(commandType);
         }
 
@@ -234,6 +268,7 @@ namespace Stump.Server.BaseServer.Commands
             foreach (var alias in command.Aliases)
             {
                 m_commandsByAlias.Remove(alias);
+                m_commandsInfos.RemoveAll(x => x.Name == alias);
             }
 
             m_registeredTypes.Remove(commandType);

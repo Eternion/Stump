@@ -630,21 +630,21 @@ namespace DBSynchroniser
                     ExecutePatch(filePath, worldDatabase.Database);
                 }
             }
-
-            Console.WriteLine("Synchronise langs ...");
-
-            var langs = Database.Database.Fetch<LangText>("SELECT * FROM langs");
-            var langsUi = Database.Database.Fetch<LangTextUi>("SELECT * FROM langs_ui");
-
-            worldDatabase.Database.Execute("DELETE FROM langs");
-            worldDatabase.Database.Execute("ALTER TABLE langs AUTO_INCREMENT=1");
-
-            worldDatabase.Database.Execute("DELETE FROM langs_ui");
-            worldDatabase.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
-                
+            
             var count = 0;
             if (tables.Length == 0 || tables.Any(x => "langs".Contains(x)))
             {
+                Console.WriteLine("Synchronise langs ...");
+
+                var langs = Database.Database.Fetch<LangText>("SELECT * FROM langs");
+                var langsUi = Database.Database.Fetch<LangTextUi>("SELECT * FROM langs_ui");
+
+                worldDatabase.Database.Execute("DELETE FROM langs");
+                worldDatabase.Database.Execute("ALTER TABLE langs AUTO_INCREMENT=1");
+
+                worldDatabase.Database.Execute("DELETE FROM langs_ui");
+                worldDatabase.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
+
                 Console.WriteLine("Build table 'langs' ...");
 
                 InitializeCounter();
@@ -655,20 +655,17 @@ namespace DBSynchroniser
                     UpdateCounter(count, langs.Count);
                 }
                 EndCounter();
-            }
 
-            if (tables.Length != 0 && !tables.Any(x => "langs_ui".Contains(x)))
-                return;
-
-            Console.WriteLine("Build table 'langs_ui' ...");
-            count = 0;
-            foreach (var lang in langsUi)
-            {
-                worldDatabase.Database.Insert(lang);
-                count++;
-                UpdateCounter(count, langsUi.Count);
+                Console.WriteLine("Build table 'langs_ui' ...");
+                count = 0;
+                foreach (var lang in langsUi)
+                {
+                    worldDatabase.Database.Insert(lang);
+                    count++;
+                    UpdateCounter(count, langsUi.Count);
+                }
+                EndCounter();
             }
-            EndCounter();
         }
 
         private static void ExecutePatch(string file, Database database)
