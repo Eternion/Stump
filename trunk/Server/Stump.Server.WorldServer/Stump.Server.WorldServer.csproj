@@ -238,7 +238,8 @@
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
-    <Compile Include="Game\Actors\Interfaces\IContextId.cs" />
+    <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
+    <Compile Include="Game\Actors\Interfaces\IContextDependant.cs" />
     <Compile Include="Game\Actors\Look\ActorLook.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />

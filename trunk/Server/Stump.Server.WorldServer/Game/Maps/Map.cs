@@ -9,6 +9,7 @@ using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
+using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -18,6 +19,7 @@ using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -50,6 +52,12 @@ namespace Stump.Server.WorldServer.Game.Maps
     {
         [Variable(true)]
         public static int MaxMerchantsPerMap = 5;
+
+        [Variable(true)]
+        public static int AutoMoveActorMaxInverval = 40;
+
+        [Variable(true)]
+        public static int AutoMoveActorMinInverval = 20;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -202,6 +210,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly Dictionary<int, MapNeighbour> m_clientMapsAround = new Dictionary<int, MapNeighbour>();
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
         private readonly List<MonsterSpawn> m_monsterSpawns = new List<MonsterSpawn>();
+        private TimedTimerEntry m_autoMoveTimer;
 
         private Map m_bottomNeighbour;
         private Map m_leftNeighbour;
@@ -227,14 +236,18 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return Record.Cells; }
         }
 
-        protected override IEnumerable<WorldObject> Objects
+        protected override IReadOnlyCollection<WorldObject> Objects
         {
             get
             {
-                return m_actors;
+                return Actors;
             }
         }
 
+        public IReadOnlyCollection<RolePlayActor> Actors
+        {
+            get { return m_actors.AsReadOnly(); }
+        }
         public MapCellsInformationProvider CellsInfoProvider
         {
             get;
@@ -875,23 +888,29 @@ namespace Stump.Server.WorldServer.Game.Maps
             return SubArea.SpawnsLimit;
         }
 
-        private void MoveRandomlyMonsterGroup(MonsterGroup group)
+        private void MoveRandomlyActors()
         {
-            var circle = new Lozenge(1, 4);
-            var dest = circle.GetCells(group.Cell, this).Where(entry => entry.Walkable && !entry.NonWalkableDuringRP && entry.MapChangeData == 0).RandomElementOrDefault();
+            foreach(var actor in Actors.Where(x => x is IAutoMovedEntity && (x as IAutoMovedEntity).NextMoveDate <= DateTime.Now))
+            {
+                var circle = new Lozenge(1, 4);
+                var dest = circle.GetCells(actor.Cell, this).
+                    Where(entry => entry.Walkable && !entry.NonWalkableDuringRP && entry.MapChangeData == 0).RandomElementOrDefault();
 
-            // no possible move :/
-            if (dest == null)
-                return;
+                // no possible move :/
+                if (dest == null)
+                    return;
 
-            var pathfinder = new Pathfinder(CellsInfoProvider);
-            var path = pathfinder.FindPath(group.Cell.Id, dest.Id, false);
+                var pathfinder = new Pathfinder(CellsInfoProvider);
+                var path = pathfinder.FindPath(actor.Cell.Id, dest.Id, false);
 
-            if (!path.IsEmpty())
-                group.StartMove(path);
+                if (!path.IsEmpty())
+                    actor.StartMove(path);
 
-            group.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
-                () => MoveRandomlyMonsterGroup(group));
+                (actor as IAutoMovedEntity).NextMoveDate =
+                    DateTime.Now + TimeSpan.FromSeconds(new AsyncRandom().Next(AutoMoveActorMinInverval,
+                        AutoMoveActorMaxInverval + 1));
+            }
+           
         }
         #endregion
 
@@ -1101,6 +1120,17 @@ namespace Stump.Server.WorldServer.Game.Maps
                 }
                 TaxCollector = actor as TaxCollectorNpc;
             }
+            if (actor is IAutoMovedEntity)
+            {
+                (actor as IAutoMovedEntity).NextMoveDate =
+                    DateTime.Now + TimeSpan.FromSeconds(new AsyncRandom().Next(AutoMoveActorMinInverval,
+                        AutoMoveActorMaxInverval + 1));
+
+                // if the timer wasn't active (=no actors)
+                if (m_autoMoveTimer == null) // call every (max+min)/2/10 to have an average 5% accuracy
+                    m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval)/20,
+                        MoveRandomlyActors);
+            }
 
             ForEach(x =>
             {
@@ -1109,48 +1139,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             });
 
             actor.OnEnterMap(this);
-
-            if (character != null)
-            {
-                ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
-
-                if (m_fights.Count > 0)
-                    ContextRoleplayHandler.SendMapFightCountMessage(character.Client, (short)m_fights.Count);
-
-                SendActorsActions(character);
-                BasicHandler.SendBasicTimeMessage(character.Client);
-
-                if (Zaap != null && !character.KnownZaaps.Contains(this))
-                    character.DiscoverZaap(this);
-            }
-
-            var monsterGroup = actor as MonsterGroup;
-            if (monsterGroup != null)
-            {
-                monsterGroup.MoveTimer = Area.CallDelayed(new Random().Next(MonsterGroup.MinMoveInterval, MonsterGroup.MaxMoveInterval + 1) * 1000,
-                    () => MoveRandomlyMonsterGroup(monsterGroup));
-            }
-
-            if (character == null)
-                return;
-
-            if (character.Account.IsJailed)
-                character.TeleportToJail();
-        }
-
-        private void SendActorsActions(Character character)
-        {
-            foreach (var actor in m_actors)
-            {
-                if (!actor.IsMoving())
-                    continue;
-
-                var moveKeys = actor.MovementPath.GetServerPathKeys();
-                var actorMoving = actor;
-
-                ContextHandler.SendGameMapMovementMessage(character.Client, moveKeys, actorMoving);
-                BasicHandler.SendBasicNoOperationMessage(character.Client);
-            }
         }
 
         private void OnLeave(RolePlayActor actor)
@@ -1173,19 +1161,16 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);
 
-            if (actor is MonsterGroup || actor is Npc || actor is TaxCollectorNpc)
+            if (actor is IContextDependant)
                 FreeContextualId((sbyte)actor.Id);
 
-            
+            if (m_autoMoveTimer != null && !Actors.OfType<IAutoMovedEntity>().Any())
+            {
+                m_autoMoveTimer.Dispose();
+                m_autoMoveTimer = null;
+            }
+
             actor.OnLeaveMap(this);
-
-
-            var monsterGroup = actor as MonsterGroup;
-            if (monsterGroup == null)
-                return;
-
-            monsterGroup.MoveTimer.Dispose();
-            monsterGroup.MoveTimer = null;
         }
 
         #endregion

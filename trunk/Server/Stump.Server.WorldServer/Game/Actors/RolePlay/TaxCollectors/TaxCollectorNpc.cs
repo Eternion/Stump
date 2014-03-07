@@ -22,11 +22,13 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
-    public class TaxCollectorNpc : NamedActor, IInteractNpc, IContextId
+    public class TaxCollectorNpc : NamedActor, IInteractNpc, IContextDependant, IAutoMovedEntity
     {
         [Variable]
         public static int BaseAP = 6;
@@ -94,6 +96,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             LoadRecord();
         }
 
+        #region Properties
         public WorldMapTaxCollectorRecord Record
         {
             get
@@ -226,16 +229,25 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
         }
 
+        #endregion
+
+        #region Look
+
         public ActorLook RefreshLook()
         {
             m_look = new ActorLook()
                 {BonesID = TAXCOLLECTOR_BONES};
-            m_look.AddSkin((short)Guild.Emblem.Template.SkinId);
+            if (Guild.Emblem.Template != null)
+                m_look.AddSkin((short)Guild.Emblem.Template.SkinId);
             m_look.AddColor(8, Guild.Emblem.SymbolColor);
             m_look.AddColor(7, Guild.Emblem.BackgroundColor);
 
             return m_look;
         }
+
+        #endregion
+
+        #region Dialogs
 
         public void InteractWith(NpcActionTypeEnum actionType, Character dialoguer)
         {
@@ -261,6 +273,49 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             m_openedDialogs.Remove(dialog);
         }
 
+        public void CloseAllDialogs()
+        {
+            foreach (var dialog in OpenDialogs)
+            {
+                dialog.Close();
+            }
+
+            m_openedDialogs.Clear();
+        }
+        #endregion
+
+        #region Movement
+
+        public DateTime NextMoveDate
+        {
+            get;
+            set;
+        }
+        public DateTime LastMoveDate
+        {
+            get;
+            private set;
+        }
+
+        public override bool StartMove(Path movementPath)
+        {
+         if (!CanMove() || movementPath.IsEmpty())
+                return false;
+
+            Position = movementPath.EndPathPosition;
+            var keys = movementPath.GetServerPathKeys();
+
+            Map.ForEach(entry => ContextHandler.SendGameMapMovementMessage(entry.Client, keys, this));
+
+            StopMove();
+            LastMoveDate = DateTime.Now;
+
+            return true;        
+        }
+
+        #endregion
+
+        #region Fight
         public TaxCollectorFighter CreateFighter(FightTeam team)
         {
             if (IsFighting)
@@ -284,26 +339,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Map.Refresh(this);
             AttacksCount++;
         }
-
+        
         public override bool CanBeSee(Maps.WorldObject byObj)
         {
             return base.CanBeSee(byObj) && !IsFighting;
         }
-
         public bool CanGatherLoots()
         {
             return !IsFighting;
         }
 
+        #endregion
+
+
+        #region Database
         public bool IsRecordDirty
         {
             get;
             private set;
-        }
-
-        public bool IsBagEmpty()
-        {
-            return Bag.Count == 0;
         }
 
         public void LoadRecord()
@@ -320,6 +373,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             WorldServer.Instance.DBAccessor.Database.Update(m_record);
         }
+        #endregion
+        
+        public bool IsBagEmpty()
+        {
+            return Bag.Count == 0;
+        }
 
         public bool IsTaxCollectorOwner(Guilds.GuildMember member)
         {
@@ -329,16 +388,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public bool IsBusy()
         {
             return OpenDialogs.Any(x => x is TaxCollectorTrade);
-        }
-
-        public void CloseAllDialogs()
-        {
-            foreach (var dialog in OpenDialogs)
-            {
-                dialog.Close();
-            }
-
-            m_openedDialogs.Clear();
         }
 
         protected override void OnDisposed()
@@ -409,6 +458,5 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         }
 
         #endregion
-
     }
 }

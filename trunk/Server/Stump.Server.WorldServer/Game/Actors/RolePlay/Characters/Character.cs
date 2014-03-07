@@ -1288,6 +1288,36 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Move
 
+        public override void OnEnterMap(Map map)
+        {
+            ContextRoleplayHandler.SendCurrentMapMessage(Client, map.Id);
+
+            if (map.Fights.Count > 0)
+                ContextRoleplayHandler.SendMapFightCountMessage(Client, (short) map.Fights.Count);
+
+            // send actor actions     
+            foreach (var actor in map.Actors)
+            {
+                if (!actor.IsMoving())
+                    continue;
+
+                var moveKeys = actor.MovementPath.GetServerPathKeys();
+                var actorMoving = actor;
+
+                ContextHandler.SendGameMapMovementMessage(Client, moveKeys, actorMoving);
+                BasicHandler.SendBasicNoOperationMessage(Client);
+            }
+
+            BasicHandler.SendBasicTimeMessage(Client);
+
+            if (map.Zaap != null && !KnownZaaps.Contains(map))
+                DiscoverZaap(map);
+
+            if (Account.IsJailed)
+                TeleportToJail();
+
+            base.OnEnterMap(map);
+        }
         public override bool CanMove()
         {
             return base.CanMove() && !IsDialoging();

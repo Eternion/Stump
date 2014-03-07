@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 {
     public abstract class WorldObjectsContext
     {
-        protected abstract IEnumerable<WorldObject> Objects
+        protected abstract IReadOnlyCollection<WorldObject> Objects
         {
             get;
         }

@@ -127,11 +127,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        protected override IEnumerable<WorldObject> Objects
+        protected override IReadOnlyCollection<WorldObject> Objects
         {
             get
             {
-                return Fighters;
+                return Fighters.AsReadOnly();
             }
         }
 
