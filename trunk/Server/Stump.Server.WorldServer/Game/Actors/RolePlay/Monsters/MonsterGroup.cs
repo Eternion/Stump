@@ -5,6 +5,7 @@ using Stump.Core.Attributes;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
@@ -14,7 +15,7 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {
-    public sealed class MonsterGroup : RolePlayActor
+    public sealed class MonsterGroup : RolePlayActor, IContextId
     {
         [Variable(true)]
         public static int MinMoveInterval = 20;

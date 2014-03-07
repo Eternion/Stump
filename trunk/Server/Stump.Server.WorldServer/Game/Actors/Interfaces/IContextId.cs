@@ -2,6 +2,9 @@
 {
     public interface IContextId
     {
-         
+        int Id
+        {
+            get;
+        }
     }
 }
