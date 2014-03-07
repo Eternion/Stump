@@ -1,6 +1,6 @@
 ﻿namespace Stump.Server.WorldServer.Game.Actors.Interfaces
 {
-    public interface IContextId
+    public interface IContextDependant
     {
         int Id
         {

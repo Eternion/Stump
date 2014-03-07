@@ -15,14 +15,8 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 {
-    public sealed class MonsterGroup : RolePlayActor, IContextId
+    public sealed class MonsterGroup : RolePlayActor, IContextDependant, IAutoMovedEntity
     {
-        [Variable(true)]
-        public static int MinMoveInterval = 20;
-
-        [Variable(true)]
-        public static int MaxMoveInterval = 40;
-
         [Variable(true)]
         public static int StarsBonusInterval = 300;
 
@@ -81,8 +75,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 return (short) bonus;
             }
         }
+        
+        public DateTime NextMoveDate
+        {
+            get;
+            set;
+        }
 
-        public DateTime LastMoveTime
+        public DateTime LastMoveDate
         {
             get;
             private set;
@@ -93,13 +93,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             get;
             private set;
         }
-
-        internal TimedTimerEntry MoveTimer
-        {
-            get;
-            set;
-        }
-
         public override bool CanMove()
         {
             return true;
@@ -122,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
             // monsters movements are instants
             StopMove();
-            LastMoveTime = DateTime.Now;
+            LastMoveDate = DateTime.Now;
 
             return true;
         }
