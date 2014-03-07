@@ -6,13 +6,14 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
-    public sealed class Npc : RolePlayActor, IInteractNpc
+    public sealed class Npc : RolePlayActor, IInteractNpc, IContextId
     {
         private readonly List<NpcAction> m_actions = new List<NpcAction>();
 

@@ -1108,6 +1108,8 @@ namespace Stump.Server.WorldServer.Game.Maps
                     ContextRoleplayHandler.SendGameRolePlayShowActorMessage(x.Client, x, actor);
             });
 
+            actor.OnEnterMap(this);
+
             if (character != null)
             {
                 ContextRoleplayHandler.SendCurrentMapMessage(character.Client, Id);
@@ -1151,7 +1153,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        private void OnLeave(ContextActor actor)
+        private void OnLeave(RolePlayActor actor)
         {
             if (actor == TaxCollector)
             {
@@ -1173,6 +1175,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (actor is MonsterGroup || actor is Npc || actor is TaxCollectorNpc)
                 FreeContextualId((sbyte)actor.Id);
+
+            
+            actor.OnLeaveMap(this);
 
 
             var monsterGroup = actor as MonsterGroup;

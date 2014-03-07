@@ -11,6 +11,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 {
     public abstract class RolePlayActor : ContextActor
     {
+        public event Action<RolePlayActor, Map> EnterMap;
+
+        public virtual void OnEnterMap(Map map)
+        {
+            Action<RolePlayActor, Map> handler = EnterMap;
+            if (handler != null) handler(this, map);
+        }
+
+        public event Action<RolePlayActor, Map> LeaveMap;
+        public virtual void OnLeaveMap(Map map)
+        {
+            Action<RolePlayActor, Map> handler = LeaveMap;
+            if (handler != null) handler(this, map);
+        }
+
         #region Network
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)

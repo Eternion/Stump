@@ -11,6 +11,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs;
@@ -25,7 +26,7 @@ using Stump.Server.WorldServer.Handlers.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
-    public class TaxCollectorNpc : NamedActor, IInteractNpc
+    public class TaxCollectorNpc : NamedActor, IInteractNpc, IContextId
     {
         [Variable]
         public static int BaseAP = 6;
