@@ -13,6 +13,7 @@ using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
@@ -141,6 +142,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         private bool m_inWorld;
+
         public override bool IsInWorld
         {
             get
@@ -209,6 +211,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return Map;
             }
         }
+
         #endregion
 
         #region Dialog
@@ -486,7 +489,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (result)
                 TitleHandler.SendTitlesAndOrnamentsListMessage(Client, this);
-            
+
             return result;
         }
 
@@ -598,7 +601,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsInFight())
                 Map.Refresh(this);
 
-            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, toggle ? (short)236 : (short)237);
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, toggle ? (short) 236 : (short) 237);
 
             return Invisible;
         }
@@ -633,7 +636,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 Map.Area.ExecuteInContext(() =>
                     Map.Refresh(this)
-                );
+                    );
             }
         }
 
@@ -644,6 +647,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Delegates
 
         public delegate void LevelChangedHandler(Character character, byte currentLevel, int difference);
+
         public delegate void GradeChangedHandler(Character character, sbyte currentGrade, int difference);
 
         #endregion
@@ -687,7 +691,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 level = (byte) (levelAdded + Level);
 
             var experience = ExperienceManager.Instance.GetCharacterLevelExperience(level);
-            
+
             Experience = experience;
         }
 
@@ -698,7 +702,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Level - levelRemoved < 1)
                 level = 1;
             else
-                level = (byte)( Level - levelRemoved );
+                level = (byte) (Level - levelRemoved);
 
             var experience = ExperienceManager.Instance.GetCharacterLevelExperience(level);
 
@@ -717,7 +721,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void AddExperience(double amount)
         {
-            Experience += (long)amount;
+            Experience += (long) amount;
         }
 
         #endregion
@@ -842,7 +846,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 StatsPoints += (ushort) (difference*5);
             }
 
-            Stats.Health.Base += (short)( difference * 5 );
+            Stats.Health.Base += (short) (difference*5);
             Stats.Health.DamageTaken = 0;
 
             if (currentLevel >= 100 && currentLevel - difference < 100)
@@ -962,7 +966,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_record.Honor; }
             set
             {
-                m_record.Honor = value > 17500 ? (ushort)17500 : value;
+                m_record.Honor = value > 17500 ? (ushort) 17500 : value;
                 if (value < UpperBoundHonor || AlignmentGrade >= ExperienceManager.Instance.HighestGrade)
                     return;
 
@@ -1313,11 +1317,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (map.Zaap != null && !KnownZaaps.Contains(map))
                 DiscoverZaap(map);
 
-            if (Account.IsJailed)
+            if (MustBeJailed() && !IsInJail())
                 TeleportToJail();
+            else if (!MustBeJailed() && IsInJail())
+                Teleport(Breed.GetStartPosition());
 
             base.OnEnterMap(map);
         }
+
         public override bool CanMove()
         {
             return base.CanMove() && !IsDialoging();
@@ -1325,6 +1332,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool StartMove(Path movementPath)
         {
+            if (!IsFighting() && !MustBeJailed() && IsInJail())
+            {
+                Teleport(Breed.GetStartPosition());
+                return false;
+            }
+
             return IsFighting() ? Fighter.StartMove(movementPath) : base.StartMove(movementPath);
         }
 
@@ -1353,48 +1366,44 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return success;
         }
 
+        #region Jail
+
+        private readonly int[] JAILS_MAPS = {105121026, 105119744, 105120002};
+        private readonly int[][] JAILS_CELLS = {new[] {179, 445, 184, 435}, new[] {314}, new[] {300}};
+
         public bool TeleportToJail()
         {
             var random = new AsyncRandom();
-            var map = World.Instance.GetMap(105121026);
-            var cell = map.Cells[179];
 
-            switch (random.Next(1, 3))
+            var mapIndex = random.Next(0, JAILS_MAPS.Length);
+            var cellIndex = random.Next(0, JAILS_CELLS[mapIndex].Length);
+
+            var map = World.Instance.GetMap(JAILS_MAPS[mapIndex]);
+
+            if (map == null)
             {
-                case 1:
-                    map = World.Instance.GetMap(105121026);
-
-                    switch (random.Next(1, 4))
-                    {
-                        case 1:
-                            cell = map.Cells[179];
-                            break;
-                        case 2:
-                            cell = map.Cells[445];
-                            break;
-                        case 3:
-                            cell = map.Cells[184];
-                            break;
-                        case 4:
-                            cell = map.Cells[435];
-                            break;
-                    }
-                    break;
-                case 2:
-                    map = World.Instance.GetMap(105119744);
-                    cell = map.Cells[314];
-                    break;
-                case 3:
-                    map = World.Instance.GetMap(105120002);
-                    cell = map.Cells[300];
-                    break;
+                logger.Error("Cannot find jail map {0}", JAILS_MAPS[mapIndex]);
+                return false;
             }
+
+            var cell = map.Cells[JAILS_CELLS[mapIndex][cellIndex]];
 
             Teleport(new ObjectPosition(map, cell), false);
 
             return true;
         }
 
+        public bool MustBeJailed()
+        {
+            return Client.Account.IsJailed && (Client.Account.BanEndDate == null || Client.Account.BanEndDate > DateTime.Now);
+        }
+
+        public bool IsInJail()
+        {
+            return JAILS_MAPS.Contains(Map.Id);
+        }
+
+        #endregion
         protected override void OnTeleported(ObjectPosition position)
         {
             base.OnTeleported(position);

@@ -117,6 +117,12 @@ namespace Stump.Server.AuthServer.Managers
                 AccountRelator.FindAccountByNickname, nickname).SingleOrDefault();
         }
 
+        public Account FindAccountByCharacterId(int characterId)
+        {
+            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
+                string.Format(AccountRelator.FindAccountByCharacterId, characterId)).SingleOrDefault();
+        }
+
         public IpBan FindIpBan(string ip)
         {
             lock (m_ipBans)

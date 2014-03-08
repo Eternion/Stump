@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             }
 
             logger.Debug("Client request ticket {0}", message.ticket);
-            IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage(message.ticket), 
+            IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage() { Ticket = message.ticket }, 
                 msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnAccountReceived(msg, client)), error => client.Disconnect());
         }
 

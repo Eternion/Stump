@@ -118,14 +118,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
             }
 
-            if (account.IsBanned)
+            if (account.BanEndDate < DateTime.Now)
             {
                 account.IsBanned = false;
-                account.BanEndDate = null;
-            }
-
-            if (account.IsJailed && account.BanEndDate < DateTime.Now)
-            {
                 account.IsJailed = false;
                 account.BanEndDate = null;
             }
@@ -175,7 +170,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.Account.Id,
                 0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                 client.Account.SecretQuestion,
-                client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStamp() : 0,
+                client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStampLong() : 0,
                 (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
 
             client.LookingOfServers = true;
@@ -200,7 +195,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationFailedBannedMessage(AuthClient client, DateTime date)
         {
             client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED,
-                date.GetUnixTimeStamp()));
+                date.GetUnixTimeStampLong()));
         }
 
         public static void SendQueueStatusMessage(IPacketReceiver client, ushort position, ushort total)

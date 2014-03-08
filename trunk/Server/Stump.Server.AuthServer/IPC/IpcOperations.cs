@@ -137,9 +137,46 @@ namespace Stump.Server.AuthServer.IPC
 
                 Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
             }
+            else if (!string.IsNullOrEmpty(message.Login))
+            {
+                Account account = AccountManager.FindAccountByLogin(message.Login);
+
+                if (account == null)
+                {
+                    Client.SendError(string.Format("Account not found with login {0}", message.Login), message);
+                    return;
+                }
+
+                Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
+            }
+            else if (message.Id.HasValue)
+            {
+                Account account = AccountManager.FindAccountById(message.Id.Value);
+                
+                if (account == null)
+                {
+                    Client.SendError(string.Format("Account not found with id {0}", message.Id), message);
+                    return;
+                }
+
+                Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
+            }
+            else if (message.CharacterId.HasValue)
+            {
+                Account account = AccountManager.FindAccountByCharacterId(message.CharacterId.Value);
+                
+                if (account == null)
+                {
+                    Client.SendError(string.Format("Account not found with character id {0}", message.CharacterId), message);
+                    return;
+                }
+
+                Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
+
+            }
             else
             {
-                Client.SendError("Ticket and Nickname null or empty", message);
+                Client.SendError("Ticket, Nickname, Login, CharacterId and Id null or empty", message);
             }
         }
 
@@ -298,16 +335,8 @@ namespace Stump.Server.AuthServer.IPC
                 return;
             }
 
-            if (message.Jailed == 0)
-            {
-                victimAccount.IsBanned = true;
-                victimAccount.IsJailed = false;
-            }
-            else
-            {
-                victimAccount.IsBanned = false;
-                victimAccount.IsJailed = true;
-            }
+            victimAccount.IsBanned = !message.Jailed;
+            victimAccount.IsJailed = message.Jailed;
 
             victimAccount.BanReason = message.BanReason;
             victimAccount.BanEndDate = message.BanEndDate;
