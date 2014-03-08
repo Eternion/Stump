@@ -46,16 +46,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             base.OnDead(killedBy);
 
             Fight.TimeLine.RemoveFighter(this);
-            Delete();
+            Summoner.RemoveSummon(this);
 
             ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
-        }
-
-        protected override void OnDisposed()
-        {
-            base.OnDisposed();
-
-            Summoner.RemoveSummon(this);
         }
     }
 }

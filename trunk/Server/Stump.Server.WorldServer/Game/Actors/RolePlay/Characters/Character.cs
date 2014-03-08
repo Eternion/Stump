@@ -2430,15 +2430,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return base.CanBeSee(byObj) && (byObj == this || !Invisible);
         }
 
-        public override void Dispose()
-        {
+        protected override void OnDisposed()
+        {            
             if (FriendsBook != null)
                 FriendsBook.Dispose();
 
             if (Inventory != null)
                 Inventory.Dispose();
 
-            base.Dispose();
+            base.OnDisposed();
         }
 
         public override string ToString()

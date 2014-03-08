@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             m_placementTimer.Dispose();
-
+            m_placementTimer = null;
             m_isAttackersPlacementPhase = false;
 
             if (DefendersQueue.Count == 0)
@@ -173,6 +173,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!m_defendersQueue.Remove(character))
                 return false;
 
+            character.ResetDefender();
             TaxCollectorHandler.SendGuildFightPlayersHelpersLeaveMessage(character.Guild.Clients, TaxCollector.TaxCollectorNpc, character);
 
             return true;
@@ -250,7 +251,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
             else
             {
-                TaxCollector.Delete();
+                TaxCollector.TaxCollectorNpc.Delete();
             }
             
             base.OnWinnersDetermined(winners, losers, draw);
@@ -328,7 +329,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State == FightState.NotStarted && fighter.Team == AttackersTeam)
                 return TimeSpan.FromMilliseconds(PvTAttackersPlacementPhaseTime);
 
-            if (fighter.Team == DefendersTeam && IsAttackersPlacementPhase)
+            if (fighter.Team == DefendersTeam && m_placementTimer == null)
                 return TimeSpan.FromMilliseconds(PvTDefendersPlacementPhaseTime);
 
             if ((fighter.Team == AttackersTeam && IsAttackersPlacementPhase) ||
