@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 LastNameId = (short)random.Next(1, 253),
                 GuildId = guild.Id,
                 CallerName = callerName,
-                Date = DateTime.Now.GetUnixTimeStamp()
+                Date = DateTime.Now
             };
 
             IsRecordDirty = true;
@@ -438,7 +438,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public AdditionalTaxCollectorInformations GetAdditionalTaxCollectorInformations()
         {
-            return new AdditionalTaxCollectorInformations(Record.CallerName, Record.Date);
+            return new AdditionalTaxCollectorInformations(Record.CallerName, Record.Date.GetUnixTimeStamp());
         }
 
         public TaxCollectorBasicInformations GetTaxCollectorBasicInformations()
