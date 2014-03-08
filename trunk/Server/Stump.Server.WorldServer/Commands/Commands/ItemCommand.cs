@@ -38,20 +38,25 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
 
         public override void Execute(TriggerBase trigger)
-        {
+        {                
             var itemTemplate = trigger.Get<ItemTemplate>("template");
-            var target = GetTarget(trigger);
 
-            var item = ItemManager.Instance.CreatePlayerItem(target, itemTemplate, trigger.Get<uint>("amount"), trigger.IsArgumentDefined("max"));
+            foreach (var target in GetTargets(trigger))
+            {
+                var item = ItemManager.Instance.CreatePlayerItem(target, itemTemplate, trigger.Get<uint>("amount"),
+                    trigger.IsArgumentDefined("max"));
 
-            target.Inventory.AddItem(item);
+                target.Inventory.AddItem(item);
 
-            if (item == null)
-                trigger.ReplyError("Item '{0}'({1}) can't be add for an unknown reason", itemTemplate.Name, itemTemplate.Id);
-            else if (trigger is GameTrigger && (trigger as GameTrigger).Character.Id == target.Id)
-                trigger.Reply("Added '{0}'({1}) to your inventory.", itemTemplate.Name, itemTemplate.Id);
-            else
-                trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", itemTemplate.Name, itemTemplate.Id, target.Name);
+                if (item == null)
+                    trigger.ReplyError("Item '{0}'({1}) can't be add for an unknown reason", itemTemplate.Name,
+                        itemTemplate.Id);
+                else if (trigger is GameTrigger && (trigger as GameTrigger).Character.Id == target.Id)
+                    trigger.Reply("Added '{0}'({1}) to your inventory.", itemTemplate.Name, itemTemplate.Id);
+                else
+                    trigger.Reply("Added '{0}'({1}) to '{2}' inventory.", itemTemplate.Name, itemTemplate.Id,
+                        target.Name);
+            }
         }
     }
 
@@ -72,27 +77,29 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var itemTemplate = trigger.Get<ItemTemplate>("template");
-            var target = GetTarget(trigger);
-
-            var item = target.Inventory.TryGetItem(itemTemplate);
-
-            if (item != null)
+        {
+            foreach (var target in GetTargets(trigger))
             {
-                if (trigger.IsArgumentDefined("amount"))
+                var item = target.Inventory.TryGetItem(itemTemplate);
+
+                if (item != null)
                 {
-                    target.Inventory.RemoveItem(item, trigger.Get<uint>("amount"));
-                    trigger.ReplyBold("'{0}'x{1} removed from {1}'s inventory", itemTemplate.Name,
-                                      trigger.Get<uint>("amount"), target);
+                    if (trigger.IsArgumentDefined("amount"))
+                    {
+                        target.Inventory.RemoveItem(item, trigger.Get<uint>("amount"));
+                        trigger.ReplyBold("'{0}'x{1} removed from {1}'s inventory", itemTemplate.Name,
+                            trigger.Get<uint>("amount"), target);
+                    }
+                    else
+                    {
+                        target.Inventory.RemoveItem(item);
+                        trigger.ReplyBold("Item {0} removed from {1}'s inventory", itemTemplate.Name, target);
+                    }
                 }
                 else
                 {
-                    target.Inventory.RemoveItem(item);
-                    trigger.ReplyBold("Item {0} removed from {1}'s inventory", itemTemplate.Name, target);
+                    trigger.ReplyError("{0} hasn't item {1}");
                 }
-            }
-            else
-            {
-                trigger.ReplyError("{0} hasn't item {1}");
             }
         }
     }
