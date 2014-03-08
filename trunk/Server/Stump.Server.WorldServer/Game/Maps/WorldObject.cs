@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region IDisposable Members
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             if (IsDisposed)
                 return;
