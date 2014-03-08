@@ -410,7 +410,7 @@ namespace Uplauncher
             long bytesComputed = 0;
             int filesChecked = 0;
             // process in parallel each file but the last
-            Parallel.ForEach(files.Take(files.Count - 1), (file) =>
+            foreach(var file in files.Take(files.Count - 1))
             {
                 var relativePath = file.Substring(path.Length + 1);
                 var pathBytes = Encoding.UTF8.GetBytes(relativePath.ToLower());
@@ -425,7 +425,7 @@ namespace Uplauncher
 
                 var percentProgress = (filesChecked*100)/files.Count;
                 m_MD5Worker.ReportProgress(percentProgress, bytesComputed/(DateTime.Now - startDate).TotalSeconds);
-            });
+            }
 
             if (files.Count > 0)
             {
@@ -510,7 +510,11 @@ namespace Uplauncher
         private void OnUpdateEnded(bool success)
         {
             if (success)
+            {
                 SetState(string.Format("Le jeu est à jour"), Colors.Green);
+                LocalChecksum = m_metaFile.FolderChecksum;
+                File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
+            }
 
             IsUpToDate = success;
             IsUpdating = false;
