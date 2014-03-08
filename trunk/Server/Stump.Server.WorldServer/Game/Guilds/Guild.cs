@@ -302,7 +302,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             m_taxCollectors.Remove(taxCollector);
             TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(taxCollector);
-            TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
+            TaxCollectorHandler.SendTaxCollectorMovementRemoveMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
         public void RemoveTaxCollectors()
