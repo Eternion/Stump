@@ -304,7 +304,7 @@ namespace Stump.Server.BaseServer.Commands
 
             CommandBase cmd = this[cmdstring];
 
-            if (cmd != null && trigger.UserRole >= cmd.RequiredRole)
+            if (cmd != null && trigger.CanAccessCommand(cmd))
             {
                 try
                 {

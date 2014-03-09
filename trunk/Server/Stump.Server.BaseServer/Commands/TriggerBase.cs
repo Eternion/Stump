@@ -44,13 +44,13 @@ namespace Stump.Server.BaseServer.Commands
             private set;
         }
 
-        public RoleEnum UserRole
+        public virtual RoleEnum UserRole
         {
             get;
             private set;
         }
 
-        public CommandBase BindedCommand
+        public CommandBase BoundCommand
         {
             get;
             private set;
@@ -71,6 +71,11 @@ namespace Stump.Server.BaseServer.Commands
         {
             get;
             private set;
+        }
+
+        public virtual bool CanAccessCommand(CommandBase command)
+        {
+            return command.RequiredRole <= UserRole;
         }
 
         /// <summary>
@@ -196,13 +201,13 @@ namespace Stump.Server.BaseServer.Commands
         /// </summary>
         public bool BindToCommand(CommandBase command)
         {
-            BindedCommand = command;
+            BoundCommand = command;
 
             if (command is SubCommandContainer) // SubCommandContainer has no params
                 return true;
 
             var definedParam = new List<IParameter>();
-            var paramToDefine = new List<IParameterDefinition>(BindedCommand.Parameters);
+            var paramToDefine = new List<IParameterDefinition>(BoundCommand.Parameters);
 
             // command has only a string parameter -> then we can assign the entire string to this parameter
             if (paramToDefine.Count == 1 && paramToDefine[0].ValueType == typeof(string) && !paramToDefine[0].IsOptional)
@@ -215,12 +220,12 @@ namespace Stump.Server.BaseServer.Commands
                 paramToDefine.Remove(paramToDefine[0]);
             }
 
-            if (BindedCommand.Parameters.Count == 0)
+            if (BoundCommand.Parameters.Count == 0)
                 return true;
 
             var word = Args.NextWord();
             var definedOnly = false;
-            while (!string.IsNullOrEmpty(word) && definedParam.Count < BindedCommand.Parameters.Count)
+            while (!string.IsNullOrEmpty(word) && definedParam.Count < BoundCommand.Parameters.Count)
             {
                 if (word.StartsWith("\"") && word.EndsWith("\""))
                     word = word.Remove(word.Length - 1, 1).Remove(0, 1);
