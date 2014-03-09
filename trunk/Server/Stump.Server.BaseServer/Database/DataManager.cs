@@ -76,32 +76,25 @@ namespace Stump.Server.BaseServer.Database
         }
     }
 
-    internal static class DataManagerAllocator
+    public static class DataManagerAllocator
     {
+        public static Assembly Assembly;
+
         [Initialization(InitializationPass.First, "Initialize DataManagers")]
         public static void Initialize()
         {
-            foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (var type in Assembly.GetTypes())
             {
                 if (type.IsAbstract || !type.IsSubclassOfGeneric(typeof (DataManager<>)) ||
                     type == typeof (DataManager<>)) continue;
-                var baseType = type.BaseType;
 
-                while (baseType != null && baseType.GetGenericTypeDefinition() != typeof(DataManager<>))
-                {
-                    baseType = baseType.BaseType;
-                }
-
-                if (baseType == null)
-                    continue;
-
-                var method = baseType.GetMethod("Initialize", BindingFlags.Default | BindingFlags.FlattenHierarchy);
+                var method = type.GetMethod("Initialize", BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Instance);
 
                 // if the method is already managed we don't call it
-                if (method.GetCustomAttribute<InitializationAttribute>() != null)
+                if (method.GetCustomAttribute<InitializationAttribute>(true) != null)
                     continue;
 
-                object instance = baseType.GetProperty("Instance", BindingFlags.Default | BindingFlags.FlattenHierarchy).
+                object instance = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Static).
                     GetValue(null, new object[0]);
                 method.Invoke(instance, new object[0]);
             }

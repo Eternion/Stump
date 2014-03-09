@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
         [WorldHandler(AdminQuietCommandMessage.Id)]
         public static void HandleAdminQuietCommandMessage(WorldClient client, AdminQuietCommandMessage message)
         {
-            if (client.Account.Role < RoleEnum.GameMaster_Padawan)
+            if (client.UserGroup.Role < RoleEnum.GameMaster_Padawan)
                 return;
 
             var data = message.content.Split(' ');
@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
         [WorldHandler(AdminCommandMessage.Id)]
         public static void HandleAdminCommandMessage(WorldClient client, AdminCommandMessage message)
         {
-            if (client.Account.Role < RoleEnum.GameMaster_Padawan)
+            if (client.UserGroup.Role < RoleEnum.GameMaster_Padawan)
                 return;
 
             if (client.Character == null)

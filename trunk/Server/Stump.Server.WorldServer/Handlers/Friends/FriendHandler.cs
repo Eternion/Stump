@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
 
             if (character != null)
             {
-                if (character.Account.Role == RoleEnum.Player)
+                if (character.UserGroup.Role == RoleEnum.Player)
                     client.Character.FriendsBook.AddFriend(character.Client.WorldAccount);
                 else
                     SendFriendAddFailureMessage(client, ListAddFailureEnum.LIST_ADD_FAILURE_NOT_FOUND);
@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
 
             if (character != null)
             {
-                if (character.Account.Role != RoleEnum.Player)
+                if (character.UserGroup.Role == RoleEnum.Player)
                     client.Character.FriendsBook.AddIgnored(character.Client.WorldAccount, message.session);
                 else
                     SendFriendAddFailureMessage(client, ListAddFailureEnum.LIST_ADD_FAILURE_NOT_FOUND);

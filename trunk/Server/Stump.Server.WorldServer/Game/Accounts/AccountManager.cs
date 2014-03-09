@@ -1,4 +1,14 @@
-﻿using Stump.Server.BaseServer.Database;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
+using Stump.Server.BaseServer.Initialization;
+using Stump.Server.BaseServer.IPC;
+using Stump.Server.BaseServer.IPC.Messages;
+using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 
@@ -6,6 +16,55 @@ namespace Stump.Server.WorldServer.Game.Accounts
 {
     public class AccountManager : DataManager<AccountManager>
     {
+        public static UserGroup DefaultUserGroup = new UserGroup(new UserGroupData() { Id = 0, IsGameMaster = false, Name = "Default", Role = RoleEnum.Player}, new UserGroupCommand[0]);
+
+        private Dictionary<int, UserGroup> m_userGroups;
+
+        public override void Initialize()
+        {
+            IPCAccessor.Instance.Granted += accessor =>
+            {
+                if (m_userGroups == null)
+                    WorldServer.Instance.IOTaskPool.ExecuteInContext(LoadUserGroups);
+            };
+
+            base.Initialize();
+        }
+
+        public void LoadUserGroups()
+        {
+            if (!IPCAccessor.Instance.IsConnected)
+            {
+                throw new Exception("IPC not connected");
+            }
+
+            var ev = new ManualResetEvent(false);
+            IList<UserGroupData> groups = null;
+            IPCErrorMessage errorMsg = null;
+            IPCAccessor.Instance.SendRequest<GroupsListMessage>(new GroupsRequestMessage(), reply =>
+            {
+                groups = reply.Groups;
+                ev.Set();
+            }, error =>
+            {
+                errorMsg = error;
+                ev.Set();
+            });
+            ev.WaitOne();
+
+            if (groups == null)
+                throw new Exception(string.Format("Cannot load groups : {0}", errorMsg.Message));
+
+            m_userGroups = groups.Select(x => new UserGroup(x, Database.Query<UserGroupCommand>(string.Format(UserGroupCommandRelator.FetchById, x.Id)).ToArray()))
+                .ToDictionary(x => x.Id, x => x);
+        }
+
+        public UserGroup GetGroupOrDefault(int id)
+        {
+            UserGroup group;
+            return m_userGroups.TryGetValue(id, out group) ? group : DefaultUserGroup;
+        }
+
         public WorldAccount CreateWorldAccount(WorldClient client)
         {
             /* Create WorldAccount */

@@ -125,7 +125,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             if (String.IsNullOrEmpty(message))
                 return;
 
-            if (sender.Account.Role <= RoleEnum.Moderator)
+            if (sender.UserGroup.Role <= RoleEnum.Moderator)
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerMessage(
@@ -196,7 +196,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                      string message,
                                                      int timestamp, string fingerprint)
         {
-            if (sender.Account.Role <= RoleEnum.Moderator)
+            if (sender.UserGroup.Role <= RoleEnum.Moderator)
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerCopyMessage(

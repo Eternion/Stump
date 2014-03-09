@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+using NLog;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Accounts.Startup;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Approach;
@@ -16,6 +18,8 @@ namespace Stump.Server.WorldServer.Core.Network
 {
     public sealed class WorldClient : BaseClient
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public WorldClient(Socket socket)
             : base(socket)
         {
@@ -39,7 +43,7 @@ namespace Stump.Server.WorldServer.Core.Network
         public AccountData Account
         {
             get;
-            internal set;
+            private set;
         }
 
         public DateTime InQueueUntil
@@ -62,7 +66,6 @@ namespace Stump.Server.WorldServer.Core.Network
             internal set
             {
                 m_worldAccount = value;
-                //StartupActions = m_worldAccount != null ? value.GetStartupActions().ToList() : new List<StartupAction>();
             }
         }
 
@@ -84,30 +87,27 @@ namespace Stump.Server.WorldServer.Core.Network
             internal set;
         }
 
-        public bool DebugLag
+        public UserGroup UserGroup
         {
             get;
-            set;
+            private set;
         }
 
-        public void ToggleDebugLag(bool state)
+        public void SetCurrentAccount(AccountData account)
         {
-            DebugLag = state;
-        }
+            if (Account != null)
+                throw new Exception("Account already set");
 
-        public override void Send(Message message)
-        {
-            if (DebugLag)
-                Thread.Sleep(new Random().Next(50, 250));
+            Account = account;
+            Characters = CharacterManager.Instance.GetCharactersByAccount(this);
+            UserGroup = AccountManager.Instance.GetGroupOrDefault(account.UserGroupId);
 
-            base.Send(message);
+            if (UserGroup == AccountManager.DefaultUserGroup)
+                logger.Error("Group {0} not found. Use default group instead !", account.UserGroupId);
         }
 
         protected override void OnMessageReceived(Message message)
         {
-            if (DebugLag)
-                Thread.Sleep(new Random().Next(50, 250));
-
             WorldPacketHandler.Instance.Dispatch(this, message);
 
             base.OnMessageReceived(message);

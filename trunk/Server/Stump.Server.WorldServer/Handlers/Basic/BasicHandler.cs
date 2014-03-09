@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             var character = client.Character;
 
             /* Send informations about it */
-            client.Send(new BasicWhoIsMessage(true, (sbyte) character.Account.Role,
+            client.Send(new BasicWhoIsMessage(true, (sbyte) character.UserGroup.Role,
                                               character.Client.WorldAccount.Nickname, character.Name, (short) character.Map.SubArea.Id));
         }
 
@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             else
             {
                 client.Send(new BasicWhoIsMessage(message.search == client.Character.Name,
-                                                  (sbyte) character.Account.Role,
+                                                  (sbyte) character.UserGroup.Role,
                                                   character.Client.WorldAccount.Nickname, character.Name,
                                                   (short) character.Map.SubArea.Id));
             }

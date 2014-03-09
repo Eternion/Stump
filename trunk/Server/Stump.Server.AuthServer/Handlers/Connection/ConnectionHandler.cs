@@ -141,6 +141,14 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
                 /* Bind Account to Client */
                 client.Account = account;
+                client.UserGroup = AccountManager.Instance.FindUserGroup(account.UserGroupId);
+
+                if (client.UserGroup == null)
+                {
+                    SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.UNKNOWN_AUTH_ERROR);
+                    logger.Error("User group {0} doesn't exist !", client.Account.UserGroupId);
+                    return;
+                }
 
                 /* Propose at client to give a nickname */
                 if (client.Account.Nickname == string.Empty)
@@ -163,7 +171,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
             client.Send(new IdentificationSuccessMessage(
-                client.Account.Role >= RoleEnum.Moderator,
+                client.UserGroup.Role >= RoleEnum.Moderator,
                 wasAlreadyConnected,
                 client.Account.Login,
                 client.Account.Nickname,
@@ -237,7 +245,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* not the rights */
-            if (world.RequiredRole > client.Account.Role)
+            if (world.RequiredRole > client.UserGroup.Role && !client.UserGroup.AvailableServers.Contains(world.Id))
             {
                 SendSelectServerRefusedMessage(client, world,
                     ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_ACCOUNT_RESTRICTED);
@@ -269,7 +277,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 (short) world.Id,
                 world.Address,
                 world.Port,
-                (client.Account.Role >= world.RequiredRole),
+                (client.UserGroup.Role >= world.RequiredRole || client.UserGroup.AvailableServers.Contains(world.Id)),
                 client.Account.Ticket));
 
             client.Disconnect();

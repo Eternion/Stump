@@ -1,6 +1,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
+using Stump.Server.WorldServer.Commands.Trigger;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -31,7 +32,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-
                 target.ToggleGodMode(true);
                 trigger.Reply("You are god !");
             }
@@ -55,6 +55,23 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 target.ToggleGodMode(false);
                 trigger.Reply("You'r not god more");
             }
+        }
+    }
+
+    public class AdminChatCommand : InGameCommand
+    {
+        public AdminChatCommand()
+        {
+            Aliases = new[] { "admin" };
+            RequiredRole = RoleEnum.Moderator;
+            Description = "Enable/disable admin chat mode";
+        }
+        public override void Execute(GameTrigger trigger)
+        {
+            trigger.Reply("Admin chat mode is : {0}", trigger.Bold(
+                (trigger.Character.AdminMessagesEnabled = !trigger.Character.AdminMessagesEnabled)
+                    ? "Enabled"
+                    : "Disabled"));
         }
     }
 

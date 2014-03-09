@@ -46,6 +46,12 @@ namespace Stump.Server.AuthServer.Network
             set;
         }
 
+        public UserGroupRecord UserGroup
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         ///   True when the client is choising a server
         /// </summary>
