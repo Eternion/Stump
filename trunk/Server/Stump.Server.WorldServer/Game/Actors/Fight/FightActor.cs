@@ -319,6 +319,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             internal set;
         }
 
+        public ObjectPosition FightStartPosition
+        {
+            get;
+            internal set;
+        }
+
         public override bool BlockSight
         {
             get { return !IsDead(); }

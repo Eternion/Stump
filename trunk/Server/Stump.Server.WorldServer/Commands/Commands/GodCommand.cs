@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "god" };
             RequiredRole = RoleEnum.GameMaster;
-            Description = "Just to be all powerfull.";
+            Description = "Just to be all powerful.";
         }
     }
 
@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             foreach (var target in GetTargets(trigger))
             {
                 target.ToggleGodMode(false);
-                trigger.Reply("You'r not god more");
+                trigger.Reply("You're not god anymore");
             }
         }
     }

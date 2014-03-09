@@ -310,6 +310,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightStartMessage(Clients);
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
+            OnFightStarted();
 
             StartTurn();
         }
@@ -372,6 +373,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
+        }
+
+        protected virtual void OnFightStarted()
+        {
+            foreach (var fighter in Fighters)
+            {
+                fighter.FightStartPosition = fighter.Position.Clone();
+            }
         }
 
         protected virtual void OnFightEnded()
