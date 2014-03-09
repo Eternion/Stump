@@ -297,6 +297,7 @@
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Rollback.cs" />
     <Compile Include="Game\Exchanges\TaxCollectorTrade.cs" />
     <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
@@ -312,7 +313,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Heal\RestoreHpPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Marks\DamageSharing.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Move\RewindEffect.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Rewind.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\APStealNonFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPStealNonFix.cs" />

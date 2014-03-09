@@ -1197,7 +1197,7 @@
         /// <summary>
         /// Return to original position
         /// </summary>
-        Effect_784 = 784,
+        Effect_Rollback = 784,
         Effect_785 = 785,
         /*  */
         /// <summary>
@@ -1227,7 +1227,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_793 = 793,
+        Effect_Rewind = 793,
         /// <summary>
         /// Hunting Weapon
         /// </summary>
