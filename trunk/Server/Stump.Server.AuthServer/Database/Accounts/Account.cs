@@ -97,7 +97,7 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        public RoleEnum Role
+        public int UserGroupId
         {
             get;
             set;
@@ -292,7 +292,7 @@ namespace Stump.Server.AuthServer.Database
                            Login = Login,
                            PasswordHash = PasswordHash,
                            Nickname = Nickname,
-                           Role = Role,
+                           UserGroupId = UserGroupId,
                            AvailableBreeds = AvailableBreeds,
                            Ticket = Ticket,
                            SecretQuestion = SecretQuestion,

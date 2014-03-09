@@ -120,8 +120,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             }
 
             /* Bind Account & Characters */
-            client.Account = ticketAccount;
-            client.Characters = CharacterManager.Instance.GetCharactersByAccount(client);
+            client.SetCurrentAccount(ticketAccount);
 
             /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
@@ -131,7 +130,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             client.Send(new TrustStatusMessage(true)); // usage -> ?
 
             /* Just to get console AutoCompletion */
-            if (client.Account.Role >= RoleEnum.Moderator)
+            if (client.UserGroup.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client);
 
             var characterInFight = FindCharacterFightReconnection(client);
@@ -162,7 +161,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                             false,
                             (short)client.Account.BreedFlags,
                             (short)BreedManager.Instance.AvailableBreedsFlags,
-                            (sbyte) client.Account.Role));
+                            (sbyte) client.UserGroup.Role));
         }
 
         public static void SendConsoleCommandsListMessage(IPacketReceiver client)

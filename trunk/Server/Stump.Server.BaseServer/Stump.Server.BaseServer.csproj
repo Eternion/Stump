@@ -259,6 +259,8 @@
     <Compile Include="IPC\Messages\DeleteCharacterMessage.cs" />
     <Compile Include="IPC\Messages\DisconnectClientMessage.cs" />
     <Compile Include="IPC\Messages\DisconnectedClientMessage.cs" />
+    <Compile Include="IPC\Messages\GroupsListMessage.cs" />
+    <Compile Include="IPC\Messages\GroupsRequestMessage.cs" />
     <Compile Include="IPC\Messages\HandshakeMessage.cs" />
     <Compile Include="IPC\IPCErrorMessage.cs" />
     <Compile Include="IPC\Messages\CommonOKMessage.cs" />
@@ -268,6 +270,7 @@
     <Compile Include="IPC\IPCMessageSerializer.cs" />
     <Compile Include="IPC\Messages\UpdateAccountMessage.cs" />
     <Compile Include="IPC\Objects\AccountData.cs" />
+    <Compile Include="IPC\Objects\UserGroupData.cs" />
     <Compile Include="IPC\Objects\WorldCharacterData.cs" />
     <Compile Include="Logging\MongoLogger.cs" />
     <Compile Include="Network\BaseClient.cs" />

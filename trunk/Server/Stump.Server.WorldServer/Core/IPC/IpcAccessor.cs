@@ -128,6 +128,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         public event Action<IPCAccessor, IPCMessage> MessageSent;
         public event Action<IPCAccessor> Connected;
         public event Action<IPCAccessor> Disconnected;
+        public event Action<IPCAccessor> Granted;
 
         private void OnMessageReceived(IPCMessage message)
         {
@@ -160,7 +161,8 @@ namespace Stump.Server.WorldServer.Core.IPC
             Action<IPCAccessor> handler = Disconnected;
             if (handler != null)
                 handler(this);
-        }
+        }        
+
 
         public void Start()
         {
@@ -200,7 +202,12 @@ namespace Stump.Server.WorldServer.Core.IPC
         {
             m_requestingAccess = false;
             AccessGranted = true;
+
             logger.Info("Access to auth. server granted");
+
+            Action<IPCAccessor> handler = Granted;
+            if (handler != null)
+                handler(this);
         }
 
         private void OnAccessDenied(IPCErrorMessage error)

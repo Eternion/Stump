@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NLog;
 using Stump.Core.Reflection;
@@ -24,6 +25,7 @@ using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
+using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.IPC
@@ -222,7 +224,7 @@ namespace Stump.Server.AuthServer.IPC
                 Login = accountData.Login,
                 PasswordHash = accountData.PasswordHash,
                 Nickname = accountData.Nickname,
-                Role = accountData.Role,
+                UserGroupId = accountData.UserGroupId,
                 AvailableBreeds = accountData.AvailableBreeds,
                 Ticket = accountData.Ticket,
                 SecretQuestion = accountData.SecretQuestion,
@@ -250,7 +252,7 @@ namespace Stump.Server.AuthServer.IPC
             account.PasswordHash = message.Account.PasswordHash;
             account.SecretQuestion = message.Account.SecretQuestion;
             account.SecretAnswer = message.Account.SecretAnswer;
-            account.Role = message.Account.Role;
+            account.UserGroupId = message.Account.UserGroupId;
             account.Tokens = message.Account.Tokens;
 
             Database.Update(account);
@@ -418,6 +420,15 @@ namespace Stump.Server.AuthServer.IPC
                 Database.Delete(ipBan);
                 Client.ReplyRequest(new CommonOKMessage(), message);
             }
+        }
+
+
+        private void Handle(GroupsRequestMessage message)
+        {
+            Client.ReplyRequest(
+                new GroupsListMessage(
+                    Database.Query<UserGroupRecord>(UserGroupRelator.FetchQuery).Select(x => x.GetGroupData()).ToList()),
+                message);
         }
 
         public void Dispose()

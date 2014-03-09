@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Social
             switch (channel)
             {
                 case ChatActivableChannelsEnum.CHANNEL_GLOBAL:
-                    return (!character.Map.IsMuted || character.Account.Role >= AdministratorChatMinAccess);
+                    return (!character.Map.IsMuted || character.UserGroup.Role >= AdministratorChatMinAccess);
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:
                     return character.IsFighting();
                 case ChatActivableChannelsEnum.CHANNEL_GUILD:
@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 case ChatActivableChannelsEnum.CHANNEL_NOOB:
                     return true;
                 case ChatActivableChannelsEnum.CHANNEL_ADMIN:
-                    return character.Account.Role >= AdministratorChatMinAccess;
+                    return character.UserGroup.Role >= AdministratorChatMinAccess;
                 case ChatActivableChannelsEnum.CHANNEL_ADS:
                     return !character.IsMuted();
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
@@ -160,7 +160,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         private static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
         {
-            if (sender.Account.Role >= AdministratorChatMinAccess)
+            if (sender.AdminMessagesEnabled)
                 ChatHandler.SendChatAdminServerMessage(client, sender, channel, message);
             else
                 ChatHandler.SendChatServerMessage(client, sender, channel, message);
@@ -191,7 +191,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public void SayAdministrators(WorldClient client, string msg)
         {
-            if (client.Account.Role < AdministratorChatMinAccess)
+            if (client.UserGroup.Role < AdministratorChatMinAccess)
                 return;
 
             World.Instance.ForEachCharacter(entry =>

@@ -43,7 +43,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         }
 
         [ProtoMember(5)]
-        public RoleEnum Role
+        public int UserGroupId
         {
             get;
             set;

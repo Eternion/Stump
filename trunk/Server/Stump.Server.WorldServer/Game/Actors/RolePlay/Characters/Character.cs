@@ -11,6 +11,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.World;
@@ -127,6 +128,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public AccountData Account
         {
             get { return Client.Account; }
+        }
+
+        public UserGroup UserGroup
+        {
+            get
+            {
+                return Client.UserGroup;
+            }
         }
 
         public object SaveSync
@@ -908,7 +917,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool IsGameMaster()
         {
-            return Account.Role >= RoleEnum.Moderator;
+            return UserGroup.IsGameMaster;
         }
 
         #endregion
@@ -1237,6 +1246,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         #region Actions
 
         #region Chat
+
+        public bool AdminMessagesEnabled
+        {
+            get;
+            set;
+        }
 
         public void SendConnectionMessages()
         {

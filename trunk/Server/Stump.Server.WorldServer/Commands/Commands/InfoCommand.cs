@@ -121,7 +121,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 trigger.ReplyBold("{0} ({1})", character.Name, character.Id);
                 trigger.ReplyBold("Account : {0}/{1} ({2}) - {3}", character.Account.Login, character.Account.Nickname,
-                    character.Account.Id, character.Account.Role);
+                    character.Account.Id, character.UserGroup.Name);
                 trigger.ReplyBold("Ip : {0}", character.Client.IP);
                 trigger.ReplyBold("Level : {0}", character.Level);
                 trigger.ReplyBold("Map : {0}, Cell : {1}, Direction : {2}", character.Map.Id, character.Cell.Id,
