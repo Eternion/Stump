@@ -24,7 +24,6 @@ using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Handlers.Context;
-using Stump.Server.WorldServer.Handlers.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
@@ -275,7 +274,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public void CloseAllDialogs()
         {
-            foreach (var dialog in OpenDialogs)
+            foreach (var dialog in OpenDialogs.ToArray())
             {
                 dialog.Close();
             }
@@ -350,7 +349,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         }
 
         #endregion
-
 
         #region Database
         public bool IsRecordDirty

@@ -52,7 +52,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         {
             base.Close();
 
-            
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
             TaxCollector.OnDialogClosed(this);

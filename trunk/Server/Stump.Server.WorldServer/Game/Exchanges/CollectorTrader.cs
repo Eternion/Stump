@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
             quantity = -quantity;
 
-            TaxCollectorItem taxCollectorItem = TaxCollector.Bag.TryGetItem(id);
+            var taxCollectorItem = TaxCollector.Bag.TryGetItem(id);
             if (taxCollectorItem == null)
                 return false;
 
