@@ -102,11 +102,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             if (ExperienceData == null)
                 ExperienceData = new FightExperienceData(Character);
 
-            var guildXp = 0;
             if (Character.GuildMember != null && Character.GuildMember.GivenPercent > 0)
             {
                 var xp = (int)(experience*(Character.GuildMember.GivenPercent*0.01));
-                guildXp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
+                var guildXp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
 
                 guildXp = guildXp > Guild.MaxGuildXP ? Guild.MaxGuildXP : guildXp;
                 experience -= guildXp;

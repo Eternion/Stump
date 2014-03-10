@@ -8,7 +8,6 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Handlers.TaxCollector;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
@@ -54,11 +53,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
-            if (character.Position.Map.TaxCollector != null || character.Guild.TaxCollectors.Any(x => x.SubArea == character.SubArea))
+            if (character.Position.Map.TaxCollector != null)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
                 return;
             }
+
+            /* */
+            /*if (character.Guild.TaxCollectors.Any(x => x.SubArea == character.SubArea))
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
+                return;
+            }*/
 
             if (character.Inventory.Kamas < character.Guild.HireCost)
             {
@@ -69,6 +75,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             if (!character.Position.Map.AllowCollector)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_CANT_HIRE_HERE));
+                return;
+            }
+
+            if (character.IsInFight())
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ERROR_UNKNOWN));
                 return;
             }
 
