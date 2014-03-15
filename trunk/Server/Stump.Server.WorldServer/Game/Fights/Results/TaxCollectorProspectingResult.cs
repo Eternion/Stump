@@ -6,9 +6,9 @@ using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
-    public class TaxCollectorFightResult : IFightResult, IExperienceResult
+    public class TaxCollectorProspectingResult : IFightResult, IExperienceResult
     {
-        public TaxCollectorFightResult(TaxCollectorNpc taxCollector, Fight fight)
+        public TaxCollectorProspectingResult(TaxCollectorNpc taxCollector, Fight fight)
         {
             TaxCollector = taxCollector;
             Fight = fight;
