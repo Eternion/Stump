@@ -170,7 +170,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override string Name
         {
-            get { return UserGroup.Role < RoleEnum.Moderator ? m_record.Name : string.Format("[{0}]", m_record.Name); }
+            get { return m_record.Name; }
             protected set
             {
                 m_record.Name = value;
