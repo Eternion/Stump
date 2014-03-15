@@ -30,7 +30,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         private bool m_isAttackersPlacementPhase;
 
         private readonly List<Character> m_defendersQueue = new List<Character>();
-        private readonly Dictionary<Character, Map> m_defendersMaps = new Dictionary<Character, Map>(); 
+        private readonly Dictionary<Character, Map> m_defendersMaps = new Dictionary<Character, Map>();
+        private readonly Dictionary<Character, int> m_defendersLife = new Dictionary<Character, int>(); 
 
         public FightPvT(int id, Map fightMap, FightTaxCollectorDefenderTeam blueTeam,  FightTaxCollectorAttackersTeam redTeam)
             : base(id, fightMap, blueTeam, redTeam)
@@ -112,6 +113,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (var defender in DefendersQueue)
             {
                 m_defendersMaps.Add(defender, defender.Map);
+                m_defendersLife.Add(defender, defender.Stats.Health.DamageTaken);
 
                 var defender1 = defender;
                 defender.Area.ExecuteInContext(() =>
@@ -142,7 +144,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FighterRefusedReasonEnum AddDefender(Character character)
         {
-            if (character.TaxCollectorDefendFight != null)
+            if (character.TaxCollectorDefendFight != null || character.IsBusy() || character.IsInFight())
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (!IsAttackersPlacementPhase)
@@ -240,19 +242,21 @@ namespace Stump.Server.WorldServer.Game.Fights
                 Winners != DefendersTeam && !draw, TaxCollector.TaxCollectorNpc);
 
             if (Winners == DefendersTeam || draw)
-            {
                 TaxCollector.TaxCollectorNpc.RejoinMap();
-
-                foreach (var defender in m_defendersQueue.Where(defender => m_defendersMaps.ContainsKey(defender)))
-                {
-                    defender.NextMap = m_defendersMaps[defender];
-                }
-            }
             else
-            {
                 TaxCollector.TaxCollectorNpc.Delete();
+
+            foreach (var defender in m_defendersQueue.Where(defender => m_defendersMaps.ContainsKey(defender)))
+            {
+                defender.NextMap = m_defendersMaps[defender];
             }
-            
+
+            foreach (var defender in m_defendersQueue.Where(defender => m_defendersLife.ContainsKey(defender)))
+            {
+                defender.Stats.Health.DamageTaken = m_defendersLife[defender];
+                defender.RefreshStats();
+            }
+
             base.OnWinnersDetermined(winners, losers, draw);
         }
 
