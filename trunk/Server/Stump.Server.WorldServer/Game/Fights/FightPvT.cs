@@ -134,7 +134,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public override void StartFighting()
         {
-            m_placementTimer.Dispose();
+            if (m_placementTimer != null)
+                m_placementTimer.Dispose();
 
             base.StartFighting();
         }
@@ -257,13 +258,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            if (Winners == DefendersTeam || Draw)
-                return Enumerable.Empty<IFightResult>();
-
             var results = new List<IFightResult>();
-            results.AddRange(AttackersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()));
 
-            var looters = results.OrderByDescending(entry => entry.Prospecting);
+            var looters = AttackersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
+            
+            results.AddRange(looters);
+            results.AddRange(DefendersTeam.Fighters.Select(entry => entry.GetFightResult()));
+            
             var teamPP = AttackersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
             var kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
 
