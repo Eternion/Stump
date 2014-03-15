@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Xml.Serialization;
 using NLog;
 using Stump.Core.Reflection;
 using Stump.Core.Xml;
@@ -74,10 +72,9 @@ namespace Stump.Server.BaseServer.Commands
 
             var callTypes = assembly.GetTypes().Where(entry => !entry.IsAbstract);
 
-            foreach (Type type in callTypes)
+            foreach (var type in callTypes.Where(type => !IsCommandRegister(type)))
             {
-                if (!IsCommandRegister(type))
-                    RegisterCommand(type);
+                RegisterCommand(type);
             }
 
             SortCommands();
@@ -98,12 +95,12 @@ namespace Stump.Server.BaseServer.Commands
 
         public void LoadCommandsInfo(CommandInfo[] infos)
         {
-            foreach (CommandInfo info in infos)
+            foreach (var info in infos)
             {
                 if (m_commandsInfos.RemoveAll(x => x.Name == info.Name) > 0)
                     m_commandsInfos.Add(info);
 
-                CommandBase command = AvailableCommands.FirstOrDefault(x => x.GetType().Name == info.Name);
+                var command = AvailableCommands.FirstOrDefault(x => x.GetType().Name == info.Name);
                 if (command != null)
                     info.ModifyCommandInfo(command);
             }
@@ -189,12 +186,12 @@ namespace Stump.Server.BaseServer.Commands
             m_registeredCommands.Add(command);
             m_commandsInfos.Add(new CommandInfo(command));
             m_registeredTypes.Add(commandType);
-            foreach (string alias in command.Aliases)
+            foreach (var alias in command.Aliases)
             {
                 CommandBase value;
                 if (!m_commandsByAlias.TryGetValue(alias, out value))
                 {
-                    m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command as CommandBase;
+                    m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command;
 
                 }
                 else
@@ -233,7 +230,7 @@ namespace Stump.Server.BaseServer.Commands
             if (!IsCommandRegister(subcommand.ParentCommand))
                 RegisterCommand(subcommand.ParentCommand);
 
-            var parentCommand = AvailableCommands.Where(entry => entry.GetType() == subcommand.ParentCommand).SingleOrDefault() as SubCommandContainer;
+            var parentCommand = AvailableCommands.SingleOrDefault(entry => entry.GetType() == subcommand.ParentCommand) as SubCommandContainer;
 
             if (parentCommand == null)
                 throw new Exception(string.Format("Cannot found declaration of command '{0}'", subcommand.ParentCommand));
@@ -251,10 +248,9 @@ namespace Stump.Server.BaseServer.Commands
 
             var callTypes = assembly.GetTypes().Where(entry => !entry.IsAbstract);
 
-            foreach (Type type in callTypes)
+            foreach (var type in callTypes.Where(IsCommandRegister))
             {
-                if (IsCommandRegister(type))
-                    UnRegisterCommand(type);
+                UnRegisterCommand(type);
             }
         }
 
@@ -297,12 +293,12 @@ namespace Stump.Server.BaseServer.Commands
 
         public void HandleCommand(TriggerBase trigger)
         {
-            string cmdstring = trigger.Args.NextWord();
+            var cmdstring = trigger.Args.NextWord();
 
             if (CommandBase.IgnoreCommandCase)
                 cmdstring = cmdstring.ToLower();
 
-            CommandBase cmd = this[cmdstring];
+            var cmd = this[cmdstring];
 
             if (cmd != null && trigger.CanAccessCommand(cmd))
             {

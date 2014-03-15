@@ -406,32 +406,35 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
-            if (IsFighting)
-            {
-                var fight = Fighter.Fight as FightPvT;
+            if (!IsFighting)
+                return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
+                    GetAdditionalTaxCollectorInformations(),
+                    (short) Position.Map.Position.X, (short) Position.Map.Position.Y, (short) Position.Map.SubArea.Id, 0,
+                    Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
 
-                if (fight != null)
-                {
-                    if (fight.State == FightState.Placement)
-                        return new TaxCollectorInformationsInWaitForHelpState(GlobalId, FirstNameId, LastNameId,
-                            GetAdditionalTaxCollectorInformations(),
-                            (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
-                            (short) Position.Map.SubArea.Id, 1,
-                            Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue,
-                            new ProtectedEntityWaitingForHelpInfo(
-                                (int) (fight.GetAttackersPlacementTimeLeft().TotalMilliseconds/100),
-                                (int) (fight.GetDefendersWaitTimeForPlacement().TotalMilliseconds/100), (sbyte) fight.GetDefendersLeftSlot()));
+            var fight = Fighter.Fight as FightPvT;
 
-                    return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
-                        GetAdditionalTaxCollectorInformations(),
-                        (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
-                        (short) Position.Map.SubArea.Id, 2,
-                        Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
-                }
-            }
+            if (fight == null)
+                return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
+                    GetAdditionalTaxCollectorInformations(),
+                    (short) Position.Map.Position.X, (short) Position.Map.Position.Y, (short) Position.Map.SubArea.Id, 0,
+                    Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
 
-            return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
-                (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
+            if (fight.State == FightState.Placement)
+                return new TaxCollectorInformationsInWaitForHelpState(GlobalId, FirstNameId, LastNameId,
+                    GetAdditionalTaxCollectorInformations(),
+                    (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
+                    (short) Position.Map.SubArea.Id, 1,
+                    Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue,
+                    new ProtectedEntityWaitingForHelpInfo(
+                        (int) (fight.GetAttackersPlacementTimeLeft().TotalMilliseconds/100),
+                        (int) (fight.GetDefendersWaitTimeForPlacement().TotalMilliseconds/100), (sbyte) fight.GetDefendersLeftSlot()));
+
+            return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
+                GetAdditionalTaxCollectorInformations(),
+                (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
+                (short) Position.Map.SubArea.Id, 2,
+                Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
         }
 
         public AdditionalTaxCollectorInformations GetAdditionalTaxCollectorInformations()

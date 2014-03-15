@@ -14,7 +14,6 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
-using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Fights
@@ -243,10 +242,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 TaxCollector.TaxCollectorNpc.RejoinMap();
 
-                foreach (var defender in m_defendersQueue)
+                foreach (var defender in m_defendersQueue.Where(defender => m_defendersMaps.ContainsKey(defender)))
                 {
-                    if (m_defendersMaps.ContainsKey(defender))
-                        defender.NextMap = m_defendersMaps[defender];
+                    defender.NextMap = m_defendersMaps[defender];
                 }
             }
             else
@@ -265,22 +263,22 @@ namespace Stump.Server.WorldServer.Game.Fights
             var results = new List<IFightResult>();
             results.AddRange(AttackersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()));
 
-            IOrderedEnumerable<IFightResult> looters = results.OrderByDescending(entry => entry.Prospecting);
-            int teamPP = AttackersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-            int kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
+            var looters = results.OrderByDescending(entry => entry.Prospecting);
+            var teamPP = AttackersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            var kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
 
-            foreach (IFightResult looter in looters)
+            foreach (var looter in looters)
             {
                 looter.Loot.Kamas = FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas);
             }
 
-            int i = 0;
+            var i = 0;
             // dispatch loots
-            List<int> items =
+            var items =
                 TaxCollector.TaxCollectorNpc.Bag.SelectMany(x => Enumerable.Repeat(x.Template.Id, (int) x.Stack))
                             .Shuffle()
                             .ToList();
-            foreach (IFightResult looter in looters)
+            foreach (var looter in looters)
             {
                 var count = (int) Math.Ceiling(items.Count*((double) looter.Prospecting/teamPP));
                 for (; i < count && i < items.Count; i++)

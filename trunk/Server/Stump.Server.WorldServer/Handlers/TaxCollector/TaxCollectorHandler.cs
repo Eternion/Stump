@@ -47,8 +47,7 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
             if (client.Character.Guild == null)
                 return;
 
-            var taxCollector =
-                client.Character.Guild.TaxCollectors.FirstOrDefault(x => x.GlobalId == message.taxCollectorId);
+            var taxCollector = client.Character.Guild.TaxCollectors.FirstOrDefault(x => x.GlobalId == message.taxCollectorId);
 
             if (taxCollector == null || !taxCollector.IsFighting)
                 return;

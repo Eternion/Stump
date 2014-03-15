@@ -160,6 +160,7 @@ namespace Stump.Tools.Sniffer
             m_thread.Abort();
             m_running = false;
             m_initialized = false;
+            IdentifiedClient.OnNewMessage -= IdentifiedClient_OnNewMessage;
         }
 
         private void StartSniffing()
