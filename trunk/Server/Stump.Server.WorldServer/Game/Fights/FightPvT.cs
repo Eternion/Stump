@@ -264,7 +264,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             
             results.AddRange(looters);
             results.AddRange(DefendersTeam.Fighters.Select(entry => entry.GetFightResult()));
-            
+
+            if (Winners != AttackersTeam)
+                return results;
+
             var teamPP = AttackersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
             var kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
 

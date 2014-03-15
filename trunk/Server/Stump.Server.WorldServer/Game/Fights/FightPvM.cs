@@ -59,12 +59,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
 
             if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
-                results.Add(new TaxCollectorFightResult(Map.TaxCollector, this));
+                results.Add(new TaxCollectorProspectingResult(Map.TaxCollector, this));
 
             foreach (var team in m_teams)
             {
                 IEnumerable<FightActor> droppers = ( team == RedTeam ? BlueTeam : RedTeam ).GetAllFighters(entry => entry.IsDead()).ToList();
-                var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorFightResult ? -1 : entry.Prospecting); // tax collector loots at the end
+                var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
                 var teamPP = team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
 
