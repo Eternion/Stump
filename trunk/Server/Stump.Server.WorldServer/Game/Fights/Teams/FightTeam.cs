@@ -229,10 +229,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 !character.PvPEnabled)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
-            if ((Fight is FightPvT) && 
-                (Fight as FightPvT).TaxCollector.TaxCollectorNpc.Guild.Id == character.Guild.Id)
-                return FighterRefusedReasonEnum.WRONG_GUILD;
-
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
