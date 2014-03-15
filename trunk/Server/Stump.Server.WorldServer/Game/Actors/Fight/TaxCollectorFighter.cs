@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override IFightResult GetFightResult()
         {
-            return new TaxCollectorFightResult(this, GetFighterOutcome(), Loot);
+            return new TaxCollectorFightResult(TaxCollectorNpc, Fight);
         }
 
         public TaxCollectorFightersInformation GetTaxCollectorFightersInformation()
