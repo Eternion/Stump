@@ -117,7 +117,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 AddParameter("pattern", "p", "Search pattern (see docs)", "*");
                 AddParameter("target", "t", "Where items will be search",
                     converter: ParametersConverter.CharacterConverter, isOptional: true);
-                AddParameter("page", "page", "Page number of the list (starts at 0)", 0, isOptional: true);
+                AddParameter("page", "page", "Page number of the list (starts at 0)", 0, true);
             }
 
             public override void Execute(TriggerBase trigger)

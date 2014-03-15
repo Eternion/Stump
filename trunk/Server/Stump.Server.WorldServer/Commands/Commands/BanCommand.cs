@@ -7,9 +7,7 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game;
-using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -237,17 +235,18 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
 
-        private void OnReply(TriggerBase trigger, AccountAnswerMessage reply)
+        private static void OnReply(TriggerBase trigger, AccountAnswerMessage reply)
         {
              trigger.Reply("Account : {0} ({1})", trigger.Bold(reply.Account.Login),
                     trigger.Bold(reply.Account.Id));
                 trigger.Reply("Banned : {0}", trigger.Bold(reply.Account.IsBanned));
                 trigger.Reply("Jailed : {0}", trigger.Bold(reply.Account.IsJailed));
-                if (reply.Account.IsBanned)
-                {
-                    trigger.Reply("Reason : {0}", trigger.Bold(reply.Account.BanReason));
-                    trigger.Reply("Until : {0}", trigger.Bold(reply.Account.BanEndDate));
-                }
+
+            if (!reply.Account.IsBanned)
+                return;
+
+            trigger.Reply("Reason : {0}", trigger.Bold(reply.Account.BanReason));
+            trigger.Reply("Until : {0}", trigger.Bold(reply.Account.BanEndDate));
         }
     }
 
@@ -326,7 +325,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             if (player == null)
                 WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
                 {
-                    CharacterRecord character =
+                    var character =
                         CharacterManager.Instance.GetCharacterByName(trigger.Get<string>("player"));
 
                     if (character == null)
@@ -351,15 +350,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     error =>
                         trigger.ReplyError("Account {0} not unbanned : {1}", player.Account.Login, error.Message));
 
-                if (player.Account.IsJailed)
-                {
-                    player.Account.IsJailed = false;
-                    player.Account.BanEndDate = null;
+                if (!player.Account.IsJailed)
+                    return;
 
-                    player.Teleport(player.Breed.GetStartPosition());
+                player.Account.IsJailed = false;
+                player.Account.BanEndDate = null;
 
-                    player.SendServerMessage("Vous avez été libéré de prison.", Color.Red);
-                }
+                player.Teleport(player.Breed.GetStartPosition());
+
+                player.SendServerMessage("Vous avez été libéré de prison.", Color.Red);
             }
         }
     }
