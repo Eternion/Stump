@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
@@ -132,6 +133,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
             character.Guild.AddTaxCollector(taxCollectorNpc);
+
+            TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Name);
         }
 
         public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)
