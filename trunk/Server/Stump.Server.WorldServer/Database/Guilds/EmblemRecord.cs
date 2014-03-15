@@ -21,26 +21,31 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get;
             set;
         }
+
         public int IconId
         {
             get;
             set;
         }
+
         public int SkinId
         {
             get;
             set;
         }
+
         public int Order
         {
             get;
             set;
         }
+
         public int CategoryId
         {
             get;
             set;
         }
+
         public Boolean Colorizable
         {
             get;

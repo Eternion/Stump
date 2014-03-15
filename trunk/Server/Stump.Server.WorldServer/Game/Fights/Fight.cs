@@ -1113,7 +1113,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void UnBindFightersEvents()
         {
-            foreach (FightActor fighter in Fighters)
+            foreach (var fighter in Fighters)
             {
                 UnBindFighterEvents(fighter);
             }
@@ -1149,7 +1149,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void BindFightersEvents()
         {
-            foreach (FightActor fighter in Fighters)
+            foreach (var fighter in Fighters)
             {
                 BindFighterEvents(fighter);
             }

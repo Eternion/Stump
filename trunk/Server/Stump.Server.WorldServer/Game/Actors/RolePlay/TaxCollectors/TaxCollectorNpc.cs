@@ -4,11 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
-using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -51,8 +49,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         /// </summary>
         public TaxCollectorNpc(int globalId, int contextId, ObjectPosition position, Guild guild, string callerName)
         {
-            var random = new AsyncRandom();
-
             m_contextId = contextId;
             Position = position;
             Guild = guild;
@@ -62,9 +58,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 Id = globalId,
                 Map = Position.Map,
                 Cell = Position.Cell.Id,
-                Direction = (int)Position.Direction,
-                FirstNameId = (short)random.Next(1, 154),
-                LastNameId = (short)random.Next(1, 253),
+                Direction = (int) Position.Direction,
+                FirstNameId = (short) TaxCollectorManager.Instance.GetRandomTaxCollectorFirstname(),
+                LastNameId = (short) TaxCollectorManager.Instance.GetRandomTaxCollectorName(),
                 GuildId = guild.Id,
                 CallerName = callerName,
                 Date = DateTime.Now
@@ -133,7 +129,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         {
             get
             {
-                return m_name ?? (m_name = string.Format("{0} {1}", TextManager.Instance.GetText(FirstNameId), TextManager.Instance.GetText(LastNameId)));
+                return m_name ?? (m_name = string.Format("{0} {1}", TaxCollectorManager.Instance.GetTaxCollectorFirstName(FirstNameId), TaxCollectorManager.Instance.GetTaxCollectorName(LastNameId)));
             }
         }
 

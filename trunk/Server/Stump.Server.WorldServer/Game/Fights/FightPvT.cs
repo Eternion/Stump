@@ -148,7 +148,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!IsAttackersPlacementPhase)
                 return FighterRefusedReasonEnum.TOO_LATE;
 
-            if (character.Guild == null || character.Guild != TaxCollector.TaxCollectorNpc.Guild)
+            if (character.Guild == null || character.Guild.Id != TaxCollector.TaxCollectorNpc.Guild.Id)
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
             if (m_defendersQueue.Count >= 7)
