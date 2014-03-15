@@ -11,10 +11,8 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
-using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
-using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
@@ -231,9 +229,18 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (taxCollectorNpc == null)
                 return;
 
-            if (!taxCollectorNpc.IsTaxCollectorOwner(client.Character.GuildMember))
+            var guildMember = client.Character.GuildMember;
+
+            if (!taxCollectorNpc.IsTaxCollectorOwner(guildMember))
             {
                 client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_OWNED));
+                return;
+            }
+
+            if (!((string.Equals(taxCollectorNpc.Record.CallerName, client.Character.Name) &&
+                              guildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_COLLECT_MY_TAX_COLLECTOR)) || guildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_COLLECT)))
+            {
+                client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NO_RIGHTS));
                 return;
             }
 

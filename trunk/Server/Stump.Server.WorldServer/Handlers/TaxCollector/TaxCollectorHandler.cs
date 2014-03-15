@@ -98,7 +98,7 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
 
         public static void SendGuildFightPlayersHelpersJoinMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, Character character)
         {
-            client.Send(new GuildFightPlayersHelpersJoinMessage(taxCollector.GlobalId, character.GetCharacterBaseInformations()));
+            client.Send(new GuildFightPlayersHelpersJoinMessage(taxCollector.GlobalId, character.GetCharacterMinimalPlusLookInformations()));
         }
 
         public static void SendGuildFightPlayersHelpersLeaveMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, Character character)
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
 
         public static void SendGuildFightPlayersEnemiesListMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, IEnumerable<Character> characters)
         {
-            client.Send(new GuildFightPlayersEnemiesListMessage(taxCollector.GlobalId, characters.Select(x => x.GetCharacterBaseInformations())));
+            client.Send(new GuildFightPlayersEnemiesListMessage(taxCollector.GlobalId, characters.Select(x => x.GetCharacterMinimalPlusLookInformations())));
         }
 
         public static void SendTaxCollectorAttackedResultMessage(IPacketReceiver client, bool deadOrAlive, TaxCollectorNpc taxCollector)
@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
 
         public static void SendTaxCollectorMovementRemoveMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
         {
-            client.Send(new TaxCollectorMovementRemoveMessage(taxCollector.Id));
+            client.Send(new TaxCollectorMovementRemoveMessage(taxCollector.GlobalId));
         }
     }
 }

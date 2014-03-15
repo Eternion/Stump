@@ -23,7 +23,7 @@ namespace Stump.Tools.Sniffer
         /// <summary>
         /// local port for to sniff
         /// </summary>
-        public static int DefaultPortToSniff = 3467;
+        public static int DefaultPortToSniff = 5555;
 
         /// <summary>
         /// Folder containing modules
@@ -32,7 +32,7 @@ namespace Stump.Tools.Sniffer
 
         private readonly FormMain m_form;
 
-        private ModuleProvider<PacketHandlerModule> _moduleProvider = new ModuleProvider<PacketHandlerModule>(ModulesFolder);
+        private readonly ModuleProvider<PacketHandlerModule> _moduleProvider = new ModuleProvider<PacketHandlerModule>(ModulesFolder);
 
         private PacketDevice m_selectedDevice;
         private PacketCommunicator m_communicator;
