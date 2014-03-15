@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using PcapDotNet.Analysis;
@@ -24,7 +23,7 @@ namespace Stump.Tools.Sniffer
         /// <summary>
         /// local port for to sniff
         /// </summary>
-        public static int DefaultPortToSniff = 5555;
+        public static int DefaultPortToSniff = 3467;
 
         /// <summary>
         /// Folder containing modules
