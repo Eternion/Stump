@@ -185,6 +185,8 @@
     <Compile Include="Database\Guilds\EmblemRecord.cs" />
     <Compile Include="Database\Guilds\GuildMemberRecord.cs" />
     <Compile Include="Database\Guilds\GuildRecord.cs" />
+    <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
+    <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />

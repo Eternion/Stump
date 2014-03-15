@@ -7,7 +7,6 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using Stump.Core.Attributes;
-using Stump.Core.Extensions;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -24,7 +23,6 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using ServiceStack.Text;
-using Stump.Server.WorldServer.Game.Accounts;
 using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.WorldServer
