@@ -14,7 +14,6 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
-using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
 
 namespace Stump.Server.WorldServer.Game.Fights
@@ -31,7 +30,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         private bool m_isAttackersPlacementPhase;
 
         private readonly List<Character> m_defendersQueue = new List<Character>();
-        private readonly Dictionary<Character, Map> m_defendersMaps = new Dictionary<Character, Map>(); 
+        private readonly Dictionary<Character, Map> m_defendersMaps = new Dictionary<Character, Map>();
+        private readonly Dictionary<Character, int> m_defendersLife = new Dictionary<Character, int>(); 
 
         public FightPvT(int id, Map fightMap, FightTaxCollectorDefenderTeam blueTeam,  FightTaxCollectorAttackersTeam redTeam)
             : base(id, fightMap, blueTeam, redTeam)
@@ -113,6 +113,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (var defender in DefendersQueue)
             {
                 m_defendersMaps.Add(defender, defender.Map);
+                m_defendersLife.Add(defender, defender.Stats.Health.DamageTaken);
 
                 var defender1 = defender;
                 defender.Area.ExecuteInContext(() =>
@@ -135,20 +136,21 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public override void StartFighting()
         {
-            m_placementTimer.Dispose();
+            if (m_placementTimer != null)
+                m_placementTimer.Dispose();
 
             base.StartFighting();
         }
 
         public FighterRefusedReasonEnum AddDefender(Character character)
         {
-            if (character.TaxCollectorDefendFight != null)
+            if (character.TaxCollectorDefendFight != null || character.IsBusy() || character.IsInFight())
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (!IsAttackersPlacementPhase)
                 return FighterRefusedReasonEnum.TOO_LATE;
 
-            if (character.Guild == null || character.Guild != TaxCollector.TaxCollectorNpc.Guild)
+            if (character.Guild == null || character.Guild.Id != TaxCollector.TaxCollectorNpc.Guild.Id)
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
             if (m_defendersQueue.Count >= 7)
@@ -240,47 +242,51 @@ namespace Stump.Server.WorldServer.Game.Fights
                 Winners != DefendersTeam && !draw, TaxCollector.TaxCollectorNpc);
 
             if (Winners == DefendersTeam || draw)
-            {
                 TaxCollector.TaxCollectorNpc.RejoinMap();
-
-                foreach (var defender in m_defendersQueue)
-                {
-                    if (m_defendersMaps.ContainsKey(defender))
-                        defender.NextMap = m_defendersMaps[defender];
-                }
-            }
             else
-            {
                 TaxCollector.TaxCollectorNpc.Delete();
+
+            foreach (var defender in m_defendersQueue.Where(defender => m_defendersMaps.ContainsKey(defender)))
+            {
+                defender.NextMap = m_defendersMaps[defender];
             }
-            
+
+            foreach (var defender in m_defendersQueue.Where(defender => m_defendersLife.ContainsKey(defender)))
+            {
+                defender.Stats.Health.DamageTaken = m_defendersLife[defender];
+                defender.RefreshStats();
+            }
+
             base.OnWinnersDetermined(winners, losers, draw);
         }
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            if (Winners == DefendersTeam || Draw)
-                return Enumerable.Empty<IFightResult>();
-
             var results = new List<IFightResult>();
-            results.AddRange(AttackersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()));
 
-            IOrderedEnumerable<IFightResult> looters = results.OrderByDescending(entry => entry.Prospecting);
-            int teamPP = AttackersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-            int kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
+            var looters = AttackersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
+            
+            results.AddRange(looters);
+            results.AddRange(DefendersTeam.Fighters.Select(entry => entry.GetFightResult()));
 
-            foreach (IFightResult looter in looters)
+            if (Winners != AttackersTeam)
+                return results;
+
+            var teamPP = AttackersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            var kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
+
+            foreach (var looter in looters)
             {
                 looter.Loot.Kamas = FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas);
             }
 
-            int i = 0;
+            var i = 0;
             // dispatch loots
-            List<int> items =
+            var items =
                 TaxCollector.TaxCollectorNpc.Bag.SelectMany(x => Enumerable.Repeat(x.Template.Id, (int) x.Stack))
                             .Shuffle()
                             .ToList();
-            foreach (IFightResult looter in looters)
+            foreach (var looter in looters)
             {
                 var count = (int) Math.Ceiling(items.Count*((double) looter.Prospecting/teamPP));
                 for (; i < count && i < items.Count; i++)

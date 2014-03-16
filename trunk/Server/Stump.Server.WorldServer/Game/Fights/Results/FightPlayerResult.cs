@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -11,8 +10,6 @@ using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Characters;
-using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
-using FightResultAdditionalData = Stump.Server.WorldServer.Game.Fights.Results.Data.FightResultAdditionalData;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -69,19 +66,19 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             Character.Inventory.AddKamas(Loot.Kamas);
 
-            foreach (DroppedItem drop in Loot.Items.Values)
+            foreach (var drop in Loot.Items.Values)
             {
-                ItemTemplate template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
+                var template = ItemManager.Instance.TryGetTemplate(drop.ItemId);
 
                 if (template.Effects.Count > 0)
-                    for (int i = 0; i < drop.Amount; i++)
+                    for (var i = 0; i < drop.Amount; i++)
                     {
-                        BasePlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, 1);
+                        var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, 1);
                         Character.Inventory.AddItem(item);
                     }
                 else
                 {
-                    BasePlayerItem item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, drop.Amount);
+                    var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, drop.Amount);
                     Character.Inventory.AddItem(item);
                 }
             }
@@ -102,11 +99,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             if (ExperienceData == null)
                 ExperienceData = new FightExperienceData(Character);
 
-            var guildXp = 0;
             if (Character.GuildMember != null && Character.GuildMember.GivenPercent > 0)
             {
                 var xp = (int)(experience*(Character.GuildMember.GivenPercent*0.01));
-                guildXp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
+                var guildXp = (int)Character.Guild.AdjustGivenExperience(Character, xp);
 
                 guildXp = guildXp > Guild.MaxGuildXP ? Guild.MaxGuildXP : guildXp;
                 experience -= guildXp;

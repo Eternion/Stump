@@ -47,10 +47,7 @@ namespace Stump.Server.WorldServer.Database.I18n
         public string GetText(uint id, Languages lang)
         {
             LangText record;
-            if (!m_texts.TryGetValue(id, out record))
-                return "(not found)";
-
-            return GetText(record, lang);
+            return !m_texts.TryGetValue(id, out record) ? "(not found)" : GetText(record, lang);
         }
 
         public string GetText(LangText record)

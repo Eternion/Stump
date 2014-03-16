@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public bool AddFriend(WorldAccount friendAccount)
         {
-            ListAddFailureEnum? result = CanAddFriend(friendAccount);
+            var result = CanAddFriend(friendAccount);
 
             if (result != null)
             {
@@ -110,13 +110,14 @@ namespace Stump.Server.WorldServer.Game.Social
                 return value;
             });
 
-            bool success = false;
+            bool success;
             if (friendAccount.ConnectedCharacter.HasValue)
             {
-                Character character = World.Instance.GetCharacter(friendAccount.ConnectedCharacter.Value);
+                var character = World.Instance.GetCharacter(friendAccount.ConnectedCharacter.Value);
                 var friend = new Friend(relation, friendAccount, character);
+                success = m_friends.TryAdd(friendAccount.Id, friend);
 
-                if (success = m_friends.TryAdd(friendAccount.Id, friend))
+                if (success)
                     OnFriendOnline(friend);
             }
             else
@@ -162,7 +163,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public bool AddIgnored(WorldAccount ignoredAccount, bool session = false)
         {
-            ListAddFailureEnum? result = CanAddIgnored(ignoredAccount);
+            var result = CanAddIgnored(ignoredAccount);
 
             if (result != null)
             {
@@ -184,10 +185,10 @@ namespace Stump.Server.WorldServer.Game.Social
                     return value;
                 });
 
-            bool success = false;
+            bool success;
             if (ignoredAccount.ConnectedCharacter.HasValue)
             {
-                Character character = World.Instance.GetCharacter(ignoredAccount.ConnectedCharacter.Value);
+                var character = World.Instance.GetCharacter(ignoredAccount.ConnectedCharacter.Value);
 
                 success = m_ignoreds.TryAdd(ignoredAccount.Id, new Ignored(relation, ignoredAccount, session, character));
             }
@@ -245,7 +246,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         private void OnContextChanged(Character character, bool infight)
         {
-            Friend friend = TryGetFriend(character);
+            var friend = TryGetFriend(character);
 
             if (friend == null)
             {
@@ -258,7 +259,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         private void OnLevelChanged(Character character, byte currentlevel, int difference)
         {
-            Friend friend = TryGetFriend(character);
+            var friend = TryGetFriend(character);
 
             if (friend == null)
             {
@@ -268,14 +269,16 @@ namespace Stump.Server.WorldServer.Game.Social
 
             FriendHandler.SendFriendUpdateMessage(Owner.Client, friend);
 
-            if (WarnOnLevel)
-                if (character.Map != Owner.Map)
-                    CharacterHandler.SendCharacterLevelUpInformationMessage(Owner.Client, character, character.Level);
+            if (!WarnOnLevel)
+                return;
+
+            if (character.Map != Owner.Map)
+                CharacterHandler.SendCharacterLevelUpInformationMessage(Owner.Client, character, character.Level);
         }
 
         private void OnCharacterLogout(Character character)
         {
-            Friend friend = TryGetFriend(character);
+            var friend = TryGetFriend(character);
 
             if (friend == null)
                 logger.Error("Sad, friend bound with character {0} is not found :(", character);
@@ -297,12 +300,10 @@ namespace Stump.Server.WorldServer.Game.Social
                                                                                   Owner.Account.Id))
                                                                           .ToDictionary(x => x.AccountId, x => x));
 
-            foreach (AccountRelation relation in m_relations.Values)
+            foreach (var relation in m_relations.Values)
             {
-                WorldAccount account = World.Instance.GetConnectedAccount(relation.TargetId);
-
-                if (account == null)
-                    account = AccountManager.Instance.FindById(relation.TargetId);
+                var account = World.Instance.GetConnectedAccount(relation.TargetId) ??
+                              AccountManager.Instance.FindById(relation.TargetId);
 
                 // doesn't exist anymore, so we delete it
                 if (account == null)
@@ -311,24 +312,29 @@ namespace Stump.Server.WorldServer.Game.Social
                     continue;
                 }
 
-                if (relation.Type == AccountRelationType.Friend)
-                    if (account.ConnectedCharacter.HasValue)
-                    {
-                        Character character = World.Instance.GetCharacter(account.ConnectedCharacter.Value);
+                switch (relation.Type)
+                {
+                    case AccountRelationType.Friend:
+                        if (account.ConnectedCharacter.HasValue)
+                        {
+                            var character = World.Instance.GetCharacter(account.ConnectedCharacter.Value);
 
-                        m_friends.TryAdd(account.Id, new Friend(relation, account, character));
-                    }
-                    else
-                        m_friends.TryAdd(account.Id, new Friend(relation, account));
-                else if (relation.Type == AccountRelationType.Ignored)
-                    if (account.ConnectedCharacter.HasValue)
-                    {
-                        Character character = World.Instance.GetCharacter(account.ConnectedCharacter.Value);
+                            m_friends.TryAdd(account.Id, new Friend(relation, account, character));
+                        }
+                        else
+                            m_friends.TryAdd(account.Id, new Friend(relation, account));
+                        break;
+                    case AccountRelationType.Ignored:
+                        if (account.ConnectedCharacter.HasValue)
+                        {
+                            var character = World.Instance.GetCharacter(account.ConnectedCharacter.Value);
 
-                        m_ignoreds.TryAdd(account.Id, new Ignored(relation, account, false, character));
-                    }
-                    else
-                        m_ignoreds.TryAdd(account.Id, new Ignored(relation, account, false));
+                            m_ignoreds.TryAdd(account.Id, new Ignored(relation, account, false, character));
+                        }
+                        else
+                            m_ignoreds.TryAdd(account.Id, new Ignored(relation, account, false));
+                        break;
+                }
             }
 
             World.Instance.CharacterJoined += OnCharacterLogIn;
@@ -336,7 +342,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public void Save()
         {
-            ORM.Database database = WorldServer.Instance.DBAccessor.Database;
+            var database = WorldServer.Instance.DBAccessor.Database;
             foreach (var relation in m_relations)
             {
                 database.Save(relation);

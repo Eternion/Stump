@@ -14,13 +14,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool OnEquipItem(bool unequip)
         {
-            if (unequip)
-            {
-                Owner.Inventory.RemoveItem(this);
-                return false;
-            }
+            if (!unequip)
+                return base.OnEquipItem(false);
 
-            return base.OnEquipItem(false);
+            Owner.Inventory.RemoveItem(this);
+            return false;
         }
     }
 }
