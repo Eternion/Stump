@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             get
             {
-                return TaxCollector.Id;
+                return TaxCollector.GlobalId;
             }
         }
 

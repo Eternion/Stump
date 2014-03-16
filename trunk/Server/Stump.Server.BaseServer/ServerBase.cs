@@ -241,8 +241,6 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
-
-            CommandManager.LoadOrCreateCommandsInfo(CommandsInfoFilePath);
         }
 
         public virtual void UpdateConfigFiles()
