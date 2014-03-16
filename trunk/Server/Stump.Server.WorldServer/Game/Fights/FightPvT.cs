@@ -203,6 +203,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 else
                 {
                     TaxCollector = actor as TaxCollectorFighter;
+                    TaxCollector.Dead += OnTaxCollectorDeath;
                 }
             }
 
@@ -217,6 +218,21 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             base.OnFighterAdded(team, actor);
+        }
+
+        private void OnTaxCollectorDeath(FightActor fighter, FightActor killedBy)
+        {
+            if (fighter != TaxCollector)
+                return;
+
+            EndFight();
+        }
+
+        protected override void DeterminsWinners()
+        {
+            Winners = TaxCollector.IsDead() ? (FightTeam)AttackersTeam : DefendersTeam;
+            Losers = TaxCollector.IsDead() ? (FightTeam)DefendersTeam : AttackersTeam;
+            Draw = false;
         }
 
         protected override void OnFighterRemoved(FightTeam team, FightActor actor)

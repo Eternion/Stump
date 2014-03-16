@@ -77,8 +77,10 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return m_level;
             }
             set
-            {
-                m_record.Level = value;
+            {            
+                if (m_record != null)
+                    m_record.Level = value;
+
                 m_level = value;
                 m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[1] : ByLevel[CurrentLevel];
             }
@@ -119,7 +121,8 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return false;
 
             m_level++;
-            m_record.Level = m_level;
+            if (m_record != null)
+                m_record.Level = m_level;
             m_currentLevel = ByLevel[m_level];
             return true;
         }
@@ -130,7 +133,8 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return false;
 
             m_level--;
-            m_record.Level = m_level;
+            if (m_record != null)
+                m_record.Level = m_level;
             m_currentLevel = ByLevel[m_level];
             return true;
         }
