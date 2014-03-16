@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Web;
 using Stump.Core.Attributes;
 using Stump.Core.IO;

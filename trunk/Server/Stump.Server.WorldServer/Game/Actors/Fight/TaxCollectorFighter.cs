@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
@@ -18,6 +18,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public TaxCollectorFighter(FightTeam team, TaxCollectorNpc taxCollector)
             : base(team, taxCollector.Guild.GetTaxCollectorSpells(), taxCollector.GlobalId)
         {
+            Id = Fight.GetNextContextualId();
             TaxCollectorNpc = taxCollector;
             Look = TaxCollectorNpc.Look.Clone();
 
@@ -32,6 +33,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Position = new ObjectPosition(TaxCollectorNpc.Map, cell, TaxCollectorNpc.Direction);
 
         }
+
+      
 
         public TaxCollectorNpc TaxCollectorNpc
         {
@@ -62,6 +65,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override string GetMapRunningFighterName()
         {
             return TaxCollectorNpc.Name;
+        }
+
+        public override IFightResult GetFightResult()
+        {
+            return new TaxCollectorFightResult(this, GetFighterOutcome(), Loot);
         }
 
         public TaxCollectorFightersInformation GetTaxCollectorFightersInformation()

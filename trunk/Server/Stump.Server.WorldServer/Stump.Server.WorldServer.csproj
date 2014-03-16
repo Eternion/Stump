@@ -185,6 +185,8 @@
     <Compile Include="Database\Guilds\EmblemRecord.cs" />
     <Compile Include="Database\Guilds\GuildMemberRecord.cs" />
     <Compile Include="Database\Guilds\GuildRecord.cs" />
+    <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
+    <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
@@ -357,6 +359,7 @@
     <Compile Include="Game\Fights\FightAgression.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
+    <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
     <Compile Include="Game\Fights\Teams\FightMonsterTeam.cs" />
     <Compile Include="Game\Fights\Teams\FightPlayerTeam.cs" />
     <Compile Include="Game\Fights\FightPvM.cs" />
@@ -370,7 +373,7 @@
     <Compile Include="Game\Fights\ReadyChecker.cs" />
     <Compile Include="Game\Fights\Results\IExperienceResult.cs" />
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
-    <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
+    <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
     <Compile Include="Game\Fights\Triggers\FractionGlyph.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />

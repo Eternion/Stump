@@ -44,6 +44,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                     TaxCollectorHandler.SendTaxCollectorListMessage(client, client.Character.Guild);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR_LEAVE:
+                    TaxCollectorHandler.SendTaxCollectorListMessage(client, client.Character.Guild);
                     break;
             }
         }
