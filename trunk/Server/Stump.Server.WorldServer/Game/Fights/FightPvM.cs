@@ -72,9 +72,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 {
                     looter.Loot.Kamas = FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas);
 
-                    foreach (var item in droppers.SelectMany(dropper => dropper.RollLoot(looter)))
+                    if (team == Winners)
                     {
-                        looter.Loot.AddItem(item);
+                        foreach (var item in droppers.SelectMany(dropper => dropper.RollLoot(looter)))
+                        {
+                            looter.Loot.AddItem(item);
+                        }
                     }
 
                     if (looter is IExperienceResult)
