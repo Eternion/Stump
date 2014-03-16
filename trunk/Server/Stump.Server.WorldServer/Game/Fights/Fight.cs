@@ -185,19 +185,19 @@ namespace Stump.Server.WorldServer.Game.Fights
         public FightTeam Winners
         {
             get;
-            private set;
+            protected set;
         }
 
         public FightTeam Losers
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool Draw
         {
             get;
-            private set;
+            protected set;
         }
 
         public TimeLine TimeLine
