@@ -23,10 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public override FighterRefusedReasonEnum CanJoin(Character character)
         {
-            if (!character.IsGameMaster() && character.Guild != Leader.TaxCollectorNpc.Guild)
-                return FighterRefusedReasonEnum.WRONG_GUILD;
-
-            return base.CanJoin(character);
+            return character.Guild != Leader.TaxCollectorNpc.Guild ? FighterRefusedReasonEnum.WRONG_GUILD : base.CanJoin(character);
         }
     }
 }
