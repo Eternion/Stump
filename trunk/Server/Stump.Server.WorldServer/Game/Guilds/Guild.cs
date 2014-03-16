@@ -295,7 +295,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public void AddTaxCollector(TaxCollectorNpc taxCollector)
         {
             m_taxCollectors.Add(taxCollector);
-            TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
+            //TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
         public void RemoveTaxCollector(TaxCollectorNpc taxCollector)

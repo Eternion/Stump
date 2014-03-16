@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public override FighterRefusedReasonEnum CanJoin(Character character)
         {
-            if (!character.IsGameMaster() && (Fight is FightPvT && character.Guild == (Fight as FightPvT).TaxCollector.TaxCollectorNpc.Guild))
+            if (Fight is FightPvT && character.Guild == (Fight as FightPvT).TaxCollector.TaxCollectorNpc.Guild)
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
             return base.CanJoin(character);
