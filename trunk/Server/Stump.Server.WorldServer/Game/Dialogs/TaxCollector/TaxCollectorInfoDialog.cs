@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
@@ -50,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.TaxCollector
                 new TaxCollectorDialogQuestionExtendedMessage(TaxCollector.Guild.GetBasicGuildInformations(),
                     (short) TaxCollector.Guild.TaxCollectorPods,
                     (short) TaxCollector.Guild.TaxCollectorProspecting, (short) TaxCollector.Guild.TaxCollectorWisdom,
-                    (sbyte) TaxCollector.Guild.TaxCollectors.Count, TaxCollector.AttacksCount, TaxCollector.GatheredKamas, TaxCollector.GatheredExperience,
+                    (sbyte) TaxCollector.Guild.TaxCollectors.Count, 0, TaxCollector.GatheredKamas, TaxCollector.GatheredExperience,
                     TaxCollector.Bag.BagWeight, TaxCollector.Bag.BagValue));
         }
     }

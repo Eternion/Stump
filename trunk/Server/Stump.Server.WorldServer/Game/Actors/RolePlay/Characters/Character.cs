@@ -1691,7 +1691,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
-            if (target.IsBusy())
+            if (target.IsBusy() || target.IsFighting)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
             if (target.Map != Map)
