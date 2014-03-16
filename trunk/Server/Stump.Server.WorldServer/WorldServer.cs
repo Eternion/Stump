@@ -117,6 +117,7 @@ namespace Stump.Server.WorldServer
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
 
             InitializationManager.InitializeAll();
+            CommandManager.LoadOrCreateCommandsInfo(CommandsInfoFilePath);
             IsInitialized = true;
         }
 
