@@ -72,6 +72,14 @@ namespace Uplauncher.Patcher
             bool isUplauncherExeFile = fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath),
                 StringComparison.InvariantCultureIgnoreCase);
 
+#if DEBUG
+            if (isUplauncherExeFile)
+            {
+                OnApplied();
+                return;
+            }
+#endif
+
 
             uplauncher.SetState(string.Format("Check if {0} already exists ...", RelativeURL));
 

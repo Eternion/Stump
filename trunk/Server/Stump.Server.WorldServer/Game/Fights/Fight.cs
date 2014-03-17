@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -25,6 +26,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
+using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using TriggerType = Stump.Server.WorldServer.Game.Fights.Triggers.TriggerType;
 
@@ -85,6 +87,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             RedTeam.FighterRemoved += OnFighterRemoved;
 
             CreationTime = DateTime.Now;
+            TaxCollectorLoot = new FightLoot();
         }
 
         #endregion
@@ -124,11 +127,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        protected override IEnumerable<WorldObject> Objects
+        protected override IReadOnlyCollection<WorldObject> Objects
         {
             get
             {
-                return Fighters;
+                return Fighters.AsReadOnly();
             }
         }
 
@@ -182,19 +185,19 @@ namespace Stump.Server.WorldServer.Game.Fights
         public FightTeam Winners
         {
             get;
-            private set;
+            protected set;
         }
 
         public FightTeam Losers
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool Draw
         {
             get;
-            private set;
+            protected set;
         }
 
         public TimeLine TimeLine
@@ -244,6 +247,12 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         public bool BladesVisible
+        {
+            get;
+            private set;
+        }
+
+        public FightLoot TaxCollectorLoot
         {
             get;
             private set;
@@ -301,6 +310,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightStartMessage(Clients);
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
+            OnFightStarted();
 
             StartTurn();
         }
@@ -365,6 +375,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
         }
 
+        protected virtual void OnFightStarted()
+        {
+            foreach (var fighter in Fighters)
+            {
+                fighter.FightStartPosition = fighter.Position.Clone();
+            }
+        }
+
         protected virtual void OnFightEnded()
         {
             ReadyChecker = null;
@@ -390,7 +408,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
         {
-            FightWinnersDelegate handler = WinnersDetermined;
+            var handler = WinnersDetermined;
             if (handler != null) handler(this, winners, losers, draw);
         }
 
@@ -1095,7 +1113,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void UnBindFightersEvents()
         {
-            foreach (FightActor fighter in Fighters)
+            foreach (var fighter in Fighters)
             {
                 UnBindFighterEvents(fighter);
             }
@@ -1131,7 +1149,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void BindFightersEvents()
         {
-            foreach (FightActor fighter in Fighters)
+            foreach (var fighter in Fighters)
             {
                 BindFighterEvents(fighter);
             }
@@ -1733,10 +1751,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<Character> GetAllCharacters(bool withSpectators = false)
         {
-            if (withSpectators)
-                return Fighters.OfType<CharacterFighter>().Select(entry => entry.Character).Concat(Spectators.Select(entry => entry.Character));
-
-            return Fighters.OfType<CharacterFighter>().Select(entry => entry.Character);
+            return withSpectators ? Fighters.OfType<CharacterFighter>().Select(entry => entry.Character).Concat(Spectators.Select(entry => entry.Character)) : Fighters.OfType<CharacterFighter>().Select(entry => entry.Character);
         }
 
         public void ForEach(Action<Character> action)

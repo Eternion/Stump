@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
@@ -91,7 +92,7 @@ namespace Stump.Server.WorldServer.Game.Social
             switch (channel)
             {
                 case ChatActivableChannelsEnum.CHANNEL_GLOBAL:
-                    return true;
+                    return (!character.Map.IsMuted || character.UserGroup.Role >= AdministratorChatMinAccess);
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:
                     return character.IsFighting();
                 case ChatActivableChannelsEnum.CHANNEL_GUILD:
@@ -101,17 +102,17 @@ namespace Stump.Server.WorldServer.Game.Social
                 case ChatActivableChannelsEnum.CHANNEL_PARTY:
                     return character.IsInParty();
                 case ChatActivableChannelsEnum.CHANNEL_SALES:
-                    return true;
+                    return !character.IsMuted();
                 case ChatActivableChannelsEnum.CHANNEL_SEEK:
-                    return true;
+                    return !character.IsMuted();
                 case ChatActivableChannelsEnum.CHANNEL_NOOB:
                     return true;
                 case ChatActivableChannelsEnum.CHANNEL_ADMIN:
-                    return character.Account.Role >= AdministratorChatMinAccess;
+                    return character.UserGroup.Role >= AdministratorChatMinAccess;
                 case ChatActivableChannelsEnum.CHANNEL_ADS:
                     return !character.IsMuted();
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
-                    return true;
+                    return !character.IsMuted();
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO:
                     return false;
                 case ChatActivableChannelsEnum.PSEUDO_CHANNEL_FIGHT_LOG:
@@ -135,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 ( message.Length < CommandPrefix.Length * 2 || message.Substring(CommandPrefix.Length, CommandPrefix.Length) != CommandPrefix )) // ignore processing command whenever there is the preffix twice
             {
                 message = message.Remove(0, CommandPrefix.Length); // remove our prefix
-                WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(message),
+                WorldServer.Instance.CommandManager.HandleCommand(new TriggerChat(new StringStream(UnescapeChatCommand(message)),
                                                                                   client.Character));
             }
             else
@@ -151,9 +152,14 @@ namespace Stump.Server.WorldServer.Game.Social
             }
         }
 
+        private static string UnescapeChatCommand(string command)
+        {
+            return HttpUtility.HtmlDecode(command);
+        }
+
         private static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)
         {
-            if (sender.Account.Role >= AdministratorChatMinAccess)
+            if (sender.AdminMessagesEnabled)
                 ChatHandler.SendChatAdminServerMessage(client, sender, channel, message);
             else
                 ChatHandler.SendChatServerMessage(client, sender, channel, message);
@@ -184,7 +190,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public void SayAdministrators(WorldClient client, string msg)
         {
-            if (client.Account.Role < AdministratorChatMinAccess)
+            if (client.UserGroup.Role < AdministratorChatMinAccess)
                 return;
 
             World.Instance.ForEachCharacter(entry =>
@@ -197,7 +203,10 @@ namespace Stump.Server.WorldServer.Game.Social
         public void SayParty(WorldClient client, string msg)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY))
+            {
+                ChatHandler.SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_NO_PARTY);
                 return;
+            }
 
             client.Character.Party.ForEach(entry => SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg));
         }
@@ -205,7 +214,10 @@ namespace Stump.Server.WorldServer.Game.Social
         public void SayGuild(WorldClient client, string msg)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD))
+            {
+                ChatHandler.SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_NO_GUILD);
                 return;
+            }
 
             client.Character.Guild.Clients.ForEach(entry => SendChatServerMessage(entry, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg));
         }
@@ -213,7 +225,10 @@ namespace Stump.Server.WorldServer.Game.Social
         public void SayTeam(WorldClient client, string msg)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_TEAM))
+            {
+                ChatHandler.SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_NO_TEAM);
                 return;
+            }
 
             foreach (var fighter in client.Character.Fighter.Team.GetAllFighters<CharacterFighter>())
             {

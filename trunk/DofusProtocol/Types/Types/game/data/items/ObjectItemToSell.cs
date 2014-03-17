@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:17
+// Generated on 03/02/2014 20:43:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,12 +46,20 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(objectGID);
             writer.WriteShort(powerRate);
             writer.WriteBoolean(overMax);
-            writer.WriteUShort((ushort)effects.Count());
+            var effects_before = writer.Position;
+            var effects_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in effects)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 effects_count++;
             }
+            var effects_after = writer.Position;
+            writer.Seek((int)effects_before);
+            writer.WriteUShort((ushort)effects_count);
+            writer.Seek((int)effects_after);
+
             writer.WriteInt(objectUID);
             writer.WriteInt(quantity);
             writer.WriteInt(objectPrice);
@@ -66,12 +74,13 @@ namespace Stump.DofusProtocol.Types
             powerRate = reader.ReadShort();
             overMax = reader.ReadBoolean();
             var limit = reader.ReadUShort();
-            effects = new Types.ObjectEffect[limit];
+            var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (effects as Types.ObjectEffect[])[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
-                 (effects as Types.ObjectEffect[])[i].Deserialize(reader);
+                 effects_[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
+                 effects_[i].Deserialize(reader);
             }
+            effects = effects_;
             objectUID = reader.ReadInt();
             if (objectUID < 0)
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");

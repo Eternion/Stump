@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:56
+// Generated on 03/06/2014 18:50:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,12 +40,20 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(duration);
             writer.WriteShort(ageBonus);
             writer.WriteShort(lootShareLimitMalus);
-            writer.WriteUShort((ushort)results.Count());
+            var results_before = writer.Position;
+            var results_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in results)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 results_count++;
             }
+            var results_after = writer.Position;
+            writer.Seek((int)results_before);
+            writer.WriteUShort((ushort)results_count);
+            writer.Seek((int)results_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -56,12 +64,13 @@ namespace Stump.DofusProtocol.Messages
             ageBonus = reader.ReadShort();
             lootShareLimitMalus = reader.ReadShort();
             var limit = reader.ReadUShort();
-            results = new Types.FightResultListEntry[limit];
+            var results_ = new Types.FightResultListEntry[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (results as Types.FightResultListEntry[])[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultListEntry>(reader.ReadShort());
-                 (results as Types.FightResultListEntry[])[i].Deserialize(reader);
+                 results_[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultListEntry>(reader.ReadShort());
+                 results_[i].Deserialize(reader);
             }
+            results = results_;
         }
         
         public override int GetSerializationSize()

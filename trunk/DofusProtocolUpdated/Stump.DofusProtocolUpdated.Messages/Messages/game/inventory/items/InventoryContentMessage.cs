@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:19
+// Generated on 03/06/2014 18:50:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,23 +33,32 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)objects.Count());
+            var objects_before = writer.Position;
+            var objects_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in objects)
             {
                  entry.Serialize(writer);
+                 objects_count++;
             }
+            var objects_after = writer.Position;
+            writer.Seek((int)objects_before);
+            writer.WriteUShort((ushort)objects_count);
+            writer.Seek((int)objects_after);
+
             writer.WriteInt(kamas);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            objects = new Types.ObjectItem[limit];
+            var objects_ = new Types.ObjectItem[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (objects as Types.ObjectItem[])[i] = new Types.ObjectItem();
-                 (objects as Types.ObjectItem[])[i].Deserialize(reader);
+                 objects_[i] = new Types.ObjectItem();
+                 objects_[i].Deserialize(reader);
             }
+            objects = objects_;
             kamas = reader.ReadInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");

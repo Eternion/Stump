@@ -20,6 +20,8 @@ using System.Linq;
 using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
@@ -27,9 +29,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 {
     public class NpcTrade : Trade<PlayerTrader, NpcTrader>
     {
-        public NpcTrade() 
-            : base(0)
+        public NpcTrade(Character character, Npc npc)
         {
+            FirstTrader = new PlayerTrader(character, this);
+            SecondTrader = new NpcTrader(npc, this);
         }
 
         public override ExchangeTypeEnum ExchangeType
@@ -37,9 +40,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             get { return ExchangeTypeEnum.NPC_TRADE; }
         }
 
-        public override void Open(PlayerTrader firstTrader, NpcTrader secondTrader)
+        public override void Open()
         {
-            base.Open(firstTrader, secondTrader);
+            base.Open();
+            FirstTrader.Character.SetDialoger(FirstTrader);
 
             InventoryHandler.SendExchangeStartOkNpcTradeMessage(FirstTrader.Character.Client, this);
         }

@@ -31,39 +31,43 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var point = new Point(trigger.Get<int>("x"), trigger.Get<int>("y"));
-            var target = GetTarget(trigger);
-            var reference = target.Map;
             bool outdoorDefined = trigger.IsArgumentDefined("outdoor");
             int outdoor = trigger.Get<int>("outdoor");
             Map map;
 
-            if (trigger.IsArgumentDefined("superarea"))
-            {
-                var superArea = trigger.Get<SuperArea>("superarea");
+            foreach (var target in GetTargets(trigger))
+            {                
+                var reference = target.Map;
 
-                map = outdoorDefined ?
-                    superArea.GetMaps(point, outdoorDefined).FirstOrDefault() :
-                    superArea.GetMaps(point).ElementAtOrDefault(outdoor);
-            }
-            else
-            {
-                map = outdoorDefined ?
-                    World.Instance.GetMaps(reference, point.X, point.Y).ElementAtOrDefault(outdoor) :
-                    World.Instance.GetMaps(reference, point.X, point.Y, outdoorDefined).FirstOrDefault();
-            }
+                if (trigger.IsArgumentDefined("superarea"))
+                {
+                    var superArea = trigger.Get<SuperArea>("superarea");
 
-            if (map == null)
-            {
-                trigger.ReplyError("Map x:{0} y:{1} not found", point.X, point.Y);
-            }
-            else
-            {
-                Cell cell = trigger.IsArgumentDefined("cell") ?
-                    map.Cells[trigger.Get<short>("cell")] : target.Cell;
+                    map = outdoorDefined
+                        ? superArea.GetMaps(point, outdoorDefined).FirstOrDefault()
+                        : superArea.GetMaps(point).ElementAtOrDefault(outdoor);
+                }
+                else
+                {
+                    map = outdoorDefined
+                        ? World.Instance.GetMaps(reference, point.X, point.Y).ElementAtOrDefault(outdoor)
+                        : World.Instance.GetMaps(reference, point.X, point.Y, outdoorDefined).FirstOrDefault();
+                }
 
-                target.Teleport(new ObjectPosition(map, cell, target.Direction));
+                if (map == null)
+                {
+                    trigger.ReplyError("Map x:{0} y:{1} not found", point.X, point.Y);
+                }
+                else
+                {
+                    Cell cell = trigger.IsArgumentDefined("cell")
+                        ? map.Cells[trigger.Get<short>("cell")]
+                        : target.Cell;
 
-                trigger.Reply("Teleported to {0} {1} ({2}).", point.X, point.Y, map.Id);
+                    target.Teleport(new ObjectPosition(map, cell, target.Direction));
+
+                    trigger.Reply("Teleported to {0} {1} ({2}).", point.X, point.Y, map.Id);
+                }
             }
         }
     }
@@ -82,20 +86,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-            Map map = trigger.Get<Map>("map");
-
-            if (map == null)
+            foreach (var target in GetTargets(trigger))
             {
-                trigger.ReplyError("Map '{0}' doesn't exist", trigger.Get<int>("mapid"));
-            }
-            else
-            {
-                Cell cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
+                Map map = trigger.Get<Map>("map");
 
-                target.Teleport(new ObjectPosition(map, cell, target.Direction));
+                if (map == null)
+                {
+                    trigger.ReplyError("Map '{0}' doesn't exist", trigger.Get<int>("mapid"));
+                }
+                else
+                {
+                    Cell cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
 
-                trigger.Reply("Teleported.");
+                    target.Teleport(new ObjectPosition(map, cell, target.Direction));
+
+                    trigger.Reply("Teleported.");
+                }
             }
         }
     }
@@ -141,10 +147,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-            var to = ((GameTrigger) trigger).Character;
+            foreach (var target in GetTargets(trigger))
+            {
+                var to = ((GameTrigger) trigger).Character;
 
-            target.Teleport(to.Position);
+                Character target1 = target;
+                target.Area.ExecuteInContext(() =>
+                    target1.Teleport(to.Position));
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:29
+// Generated on 03/06/2014 18:50:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,16 +44,32 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(fightType);
             writer.WriteInt(fightStart);
             writer.WriteBoolean(fightSpectatorLocked);
-            writer.WriteUShort((ushort)fightTeams.Count());
+            var fightTeams_before = writer.Position;
+            var fightTeams_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in fightTeams)
             {
                  entry.Serialize(writer);
+                 fightTeams_count++;
             }
-            writer.WriteUShort((ushort)fightTeamsOptions.Count());
+            var fightTeams_after = writer.Position;
+            writer.Seek((int)fightTeams_before);
+            writer.WriteUShort((ushort)fightTeams_count);
+            writer.Seek((int)fightTeams_after);
+
+            var fightTeamsOptions_before = writer.Position;
+            var fightTeamsOptions_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in fightTeamsOptions)
             {
                  entry.Serialize(writer);
+                 fightTeamsOptions_count++;
             }
+            var fightTeamsOptions_after = writer.Position;
+            writer.Seek((int)fightTeamsOptions_before);
+            writer.WriteUShort((ushort)fightTeamsOptions_count);
+            writer.Seek((int)fightTeamsOptions_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -67,19 +83,21 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");
             fightSpectatorLocked = reader.ReadBoolean();
             var limit = reader.ReadUShort();
-            fightTeams = new Types.FightTeamLightInformations[limit];
+            var fightTeams_ = new Types.FightTeamLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (fightTeams as Types.FightTeamLightInformations[])[i] = new Types.FightTeamLightInformations();
-                 (fightTeams as Types.FightTeamLightInformations[])[i].Deserialize(reader);
+                 fightTeams_[i] = new Types.FightTeamLightInformations();
+                 fightTeams_[i].Deserialize(reader);
             }
+            fightTeams = fightTeams_;
             limit = reader.ReadUShort();
-            fightTeamsOptions = new Types.FightOptionsInformations[limit];
+            var fightTeamsOptions_ = new Types.FightOptionsInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (fightTeamsOptions as Types.FightOptionsInformations[])[i] = new Types.FightOptionsInformations();
-                 (fightTeamsOptions as Types.FightOptionsInformations[])[i].Deserialize(reader);
+                 fightTeamsOptions_[i] = new Types.FightOptionsInformations();
+                 fightTeamsOptions_[i].Deserialize(reader);
             }
+            fightTeamsOptions = fightTeamsOptions_;
         }
         
         public virtual int GetSerializationSize()

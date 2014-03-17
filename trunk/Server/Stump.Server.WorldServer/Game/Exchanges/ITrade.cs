@@ -5,8 +5,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 {
     public interface ITrade : IDialog
     {
-        int Id { get; }
-
         ExchangeTypeEnum ExchangeType
         {
             get;

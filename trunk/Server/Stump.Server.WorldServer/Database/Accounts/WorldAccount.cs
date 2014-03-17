@@ -57,21 +57,9 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
-        /*[Ignore]
-        public virtual ICollection<StartupAction> StartupActions
-        {
-            get;
-            set;
-        }*/
-
         public int LastConnectionTimeStamp
         {
             get { return LastConnection.HasValue ? (int) (DateTime.Now - LastConnection.Value).TotalHours : 0; }
         }
-
-        /*public StartupAction[] GetStartupActions()
-        {
-            return StartupActions.Select(entry => new StartupAction(entry)).ToArray();
-        }*/
     }
 }

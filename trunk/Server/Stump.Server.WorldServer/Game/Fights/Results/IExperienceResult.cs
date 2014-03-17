@@ -2,6 +2,6 @@
 {
     public interface IExperienceResult
     {
-        void SetEarnedExperience(int experience);
+        void AddEarnedExperience(int experience);
     }
 }

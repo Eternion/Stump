@@ -9,7 +9,6 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
-using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Chat;
@@ -170,7 +169,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             if (client.Account != null && client.Account.Login != "")
             {
-                SendCharactersListMessage(client);
+                SendCharactersListWithModificationsMessage(client);
 
 
                 if (client.WorldAccount != null && client.StartupActions.Count > 0)
@@ -233,10 +232,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     charactersToRelook.Add(new CharacterToRelookInformation(characterRecord.Id, characterRecord.Head));
                 }
 
-                if (!(characterRecord.Recolor && characterRecord.Rename))
+                /*if (!(characterRecord.Recolor && characterRecord.Rename))
                 {
                     unusableCharacters.Add(characterRecord.Id);
-                }
+                }*/
             }
             client.Send(new CharactersListWithModificationsMessage(false,
                                                                    characterBaseInformations,

@@ -74,11 +74,11 @@ namespace DBSynchroniser
         {
             Tuple.Create<string, Action>("Set Dofus Path (empty = default)", SetDofusPath),
             Tuple.Create<string, Action>("Set languages (empty = all)", SetLanguages),
-            Tuple.Create<string, Action>("Create database", CreateDatabase),
-            Tuple.Create<string, Action>("Load langs", LoadLangsWithWarning),
-            Tuple.Create<string, Action>("Load icons files", LoadIconsWithWarnings),
-            Tuple.Create<string, Action>("Generate client files", GenerateFiles),
-            Tuple.Create<string, Action>("Synchronise world database", SyncDatabases)
+            Tuple.Create<string, Action>("Create database (stump_data)", CreateDatabase),
+            Tuple.Create<string, Action>("Load langs (on stump_data)", LoadLangsWithWarning),
+            Tuple.Create<string, Action>("Load icons files (on stump_data)", LoadIconsWithWarnings),
+            Tuple.Create<string, Action>("Generate client files (from stump_data)", GenerateFiles),
+            Tuple.Create<string, Action>("Synchronise world database (stump_data->stump_world)", SyncDatabases)
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -381,12 +381,6 @@ namespace DBSynchroniser
                     (int) ((i/(double) count)*100d));
             }
             Console.WriteLine();
-
-            foreach (var record in records.Values)
-                Database.Database.Insert(record);
-
-            foreach (var record in uiRecords.Values)
-                Database.Database.Insert(record);
         }
 
         private static void LoadLangsWithWarning()
@@ -636,21 +630,21 @@ namespace DBSynchroniser
                     ExecutePatch(filePath, worldDatabase.Database);
                 }
             }
-
-            Console.WriteLine("Synchronise langs ...");
-
-            var langs = Database.Database.Fetch<LangText>("SELECT * FROM langs");
-            var langsUi = Database.Database.Fetch<LangTextUi>("SELECT * FROM langs_ui");
-
-            worldDatabase.Database.Execute("DELETE FROM langs");
-            worldDatabase.Database.Execute("ALTER TABLE langs AUTO_INCREMENT=1");
-
-            worldDatabase.Database.Execute("DELETE FROM langs_ui");
-            worldDatabase.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
-                
+            
             var count = 0;
             if (tables.Length == 0 || tables.Any(x => "langs".Contains(x)))
             {
+                Console.WriteLine("Synchronise langs ...");
+
+                var langs = Database.Database.Fetch<LangText>("SELECT * FROM langs");
+                var langsUi = Database.Database.Fetch<LangTextUi>("SELECT * FROM langs_ui");
+
+                worldDatabase.Database.Execute("DELETE FROM langs");
+                worldDatabase.Database.Execute("ALTER TABLE langs AUTO_INCREMENT=1");
+
+                worldDatabase.Database.Execute("DELETE FROM langs_ui");
+                worldDatabase.Database.Execute("ALTER TABLE langs_ui AUTO_INCREMENT=1");
+
                 Console.WriteLine("Build table 'langs' ...");
 
                 InitializeCounter();
@@ -661,20 +655,17 @@ namespace DBSynchroniser
                     UpdateCounter(count, langs.Count);
                 }
                 EndCounter();
-            }
 
-            if (tables.Length != 0 && !tables.Any(x => "langs_ui".Contains(x)))
-                return;
-
-            Console.WriteLine("Build table 'langs_ui' ...");
-            count = 0;
-            foreach (var lang in langsUi)
-            {
-                worldDatabase.Database.Insert(lang);
-                count++;
-                UpdateCounter(count, langsUi.Count);
+                Console.WriteLine("Build table 'langs_ui' ...");
+                count = 0;
+                foreach (var lang in langsUi)
+                {
+                    worldDatabase.Database.Insert(lang);
+                    count++;
+                    UpdateCounter(count, langsUi.Count);
+                }
+                EndCounter();
             }
-            EndCounter();
         }
 
         private static void ExecutePatch(string file, Database database)

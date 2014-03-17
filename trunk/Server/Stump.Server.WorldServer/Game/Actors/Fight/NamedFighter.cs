@@ -1,6 +1,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Handlers.Chat;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight

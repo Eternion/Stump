@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:56
+// Generated on 03/06/2014 18:50:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +37,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUShort((ushort)spellCooldowns.Count());
+            var spellCooldowns_before = writer.Position;
+            var spellCooldowns_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in spellCooldowns)
             {
                  entry.Serialize(writer);
+                 spellCooldowns_count++;
             }
+            var spellCooldowns_after = writer.Position;
+            writer.Seek((int)spellCooldowns_before);
+            writer.WriteUShort((ushort)spellCooldowns_count);
+            writer.Seek((int)spellCooldowns_after);
+
             writer.WriteSByte(summonCount);
             writer.WriteSByte(bombCount);
         }
@@ -50,12 +58,13 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            spellCooldowns = new Types.GameFightSpellCooldown[limit];
+            var spellCooldowns_ = new Types.GameFightSpellCooldown[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (spellCooldowns as Types.GameFightSpellCooldown[])[i] = new Types.GameFightSpellCooldown();
-                 (spellCooldowns as Types.GameFightSpellCooldown[])[i].Deserialize(reader);
+                 spellCooldowns_[i] = new Types.GameFightSpellCooldown();
+                 spellCooldowns_[i].Deserialize(reader);
             }
+            spellCooldowns = spellCooldowns_;
             summonCount = reader.ReadSByte();
             if (summonCount < 0)
                 throw new Exception("Forbidden value on summonCount = " + summonCount + ", it doesn't respect the following condition : summonCount < 0");

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -61,12 +59,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
 
             if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
-                results.Add(new TaxCollectorFightResult(Map.TaxCollector, this));
+                results.Add(new TaxCollectorProspectingResult(Map.TaxCollector, this));
 
             foreach (var team in m_teams)
             {
                 IEnumerable<FightActor> droppers = ( team == RedTeam ? BlueTeam : RedTeam ).GetAllFighters(entry => entry.IsDead()).ToList();
-                var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorFightResult ? -1 : entry.Prospecting); // tax collector loots at the end
+                var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
                 var teamPP = team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
 
@@ -74,32 +72,18 @@ namespace Stump.Server.WorldServer.Game.Fights
                 {
                     looter.Loot.Kamas = FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas);
 
-                    foreach (var item in droppers.SelectMany(dropper => dropper.RollLoot(looter)))
+                    if (team == Winners)
                     {
-                        looter.Loot.AddItem(item);
+                        foreach (var item in droppers.SelectMany(dropper => dropper.RollLoot(looter)))
+                        {
+                            looter.Loot.AddItem(item);
+                        }
                     }
 
                     if (looter is IExperienceResult)
                     {
-                        (looter as IExperienceResult).SetEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters(), droppers));
+                        (looter as IExperienceResult).AddEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters(), droppers));
                     }
-
-                    if (!(looter is FightPlayerResult))
-                        continue;
-
-                    /*var document = new BsonDocument
-                    {
-                        {"PlayerId", (looter as FightPlayerResult).Character.Id},
-                        {"FightId", looter.Fight.Id},
-                        {"MapId", looter.Fight.Map.Id},
-                        {"FightersCount", looters.Count()},
-                        {"winXP", (looter as FightPlayerResult).ExperienceData.ExperienceFightDelta},
-                        {"winKamas", looter.Loot.Kamas},
-                        {"winItems", looter.Loot.FightItemsString()},
-                        {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
-                    };
-
-                    MongoLogger.Instance.Insert("FightLoots", document);*/
                 }
             }
 

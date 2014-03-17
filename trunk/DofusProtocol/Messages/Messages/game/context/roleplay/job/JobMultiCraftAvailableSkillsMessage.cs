@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:33
+// Generated on 03/02/2014 20:42:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +36,19 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteInt(playerId);
-            writer.WriteUShort((ushort)skills.Count());
+            var skills_before = writer.Position;
+            var skills_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in skills)
             {
                  writer.WriteShort(entry);
+                 skills_count++;
             }
+            var skills_after = writer.Position;
+            writer.Seek((int)skills_before);
+            writer.WriteUShort((ushort)skills_count);
+            writer.Seek((int)skills_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -50,11 +58,12 @@ namespace Stump.DofusProtocol.Messages
             if (playerId < 0)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             var limit = reader.ReadUShort();
-            skills = new short[limit];
+            var skills_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (skills as short[])[i] = reader.ReadShort();
+                 skills_[i] = reader.ReadShort();
             }
+            skills = skills_;
         }
         
         public override int GetSerializationSize()

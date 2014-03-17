@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Guilds;
+using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
 using TaxCollectorSpawn = Stump.Server.WorldServer.Database.World.WorldMapTaxCollectorRecord;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
@@ -17,13 +21,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         private UniqueIdProvider m_idProvider;
         private Dictionary<int, TaxCollectorSpawn> m_taxCollectorSpawns;
         private readonly List<TaxCollectorNpc> m_activeTaxCollectors = new List<TaxCollectorNpc>();
-
-
+        private Dictionary<int, TaxCollectorNamesRecord> m_taxCollectorNames;
+        private Dictionary<int, TaxCollectorFirstnamesRecord> m_taxCollectorFirstnames;
+        
         [Initialization(InitializationPass.Eighth)]
         public override void Initialize()
         {
             m_taxCollectorSpawns = Database.Query<TaxCollectorSpawn>(WorldMapTaxCollectorRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_idProvider = m_taxCollectorSpawns.Any() ? new UniqueIdProvider(m_taxCollectorSpawns.Select(x => x.Value.Id).Max()) : new UniqueIdProvider(1);
+            m_taxCollectorNames = Database.Query<TaxCollectorNamesRecord>(TaxCollectorNamesRelator.FetchQuery).ToDictionary(x => x.Id);
+            m_taxCollectorFirstnames = Database.Query<TaxCollectorFirstnamesRecord>(TaxCollectorFirstnamesRelator.FetchQuery).ToDictionary(x => x.Id);
+
             World.Instance.RegisterSaveableInstance(this);
 
             World.Instance.SpawnTaxCollectors();
@@ -37,6 +45,32 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public TaxCollectorSpawn[] GetTaxCollectorSpawns(int guildId)
         {
             return m_taxCollectorSpawns.Values.Where(x => x.GuildId == guildId).ToArray();
+        }
+
+        public int GetRandomTaxCollectorFirstname()
+        {
+            return m_taxCollectorFirstnames.RandomElementOrDefault().Key;
+        }
+
+        public int GetRandomTaxCollectorName()
+        {
+            return m_taxCollectorNames.RandomElementOrDefault().Key;
+        }
+
+        public string GetTaxCollectorFirstName(int Id)
+        {
+            TaxCollectorFirstnamesRecord record;
+            m_taxCollectorFirstnames.TryGetValue(Id, out record);
+
+            return record == null ? "(no name)" : TextManager.Instance.GetText(record.FirstnameId);
+        }
+
+        public string GetTaxCollectorName(int Id)
+        {
+            TaxCollectorNamesRecord record;
+            m_taxCollectorNames.TryGetValue(Id, out record);
+
+            return record == null ? "(no name)" : TextManager.Instance.GetText(record.NameId);
         }
 
         public void AddTaxCollectorSpawn(Character character, bool lazySave = true)
@@ -59,6 +93,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
+            /* */
+            /*if (character.Guild.TaxCollectors.Any(x => x.SubArea == character.SubArea))
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
+                return;
+            }*/
+
             if (character.Inventory.Kamas < character.Guild.HireCost)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_ENOUGH_KAMAS));
@@ -68,6 +109,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             if (!character.Position.Map.AllowCollector)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_CANT_HIRE_HERE));
+                return;
+            }
+
+            if (character.IsInFight())
+            {
+                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ERROR_UNKNOWN));
                 return;
             }
 
@@ -85,13 +132,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             m_activeTaxCollectors.Add(taxCollectorNpc);
 
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
+            character.Guild.AddTaxCollector(taxCollectorNpc);
 
-            //Le percepteur %1 a été posé en <b>%2</b> par <b>%3</b>.
-            foreach (var client in taxCollectorNpc.Guild.Clients)
-            {
-                client.Send(new TaxCollectorMovementMessage(true, taxCollectorNpc.GetTaxCollectorBasicInformations(), character.Name));
-                client.Send(new TaxCollectorMovementAddMessage(taxCollectorNpc.GetNetworkTaxCollector()));
-            }
+            TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Name);
         }
 
         public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)
@@ -101,10 +144,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             else
                 Database.Delete(taxCollector.Record);
 
+            taxCollector.Bag.DeleteBag(lazySave);
+
             m_taxCollectorSpawns.Remove(taxCollector.GlobalId);
             m_activeTaxCollectors.Remove(taxCollector);
-
-            taxCollector.Map.Leave(taxCollector);
         }
 
         public void Save()

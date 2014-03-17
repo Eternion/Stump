@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:18
+// Generated on 03/06/2014 18:50:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +34,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(sellerId);
-            writer.WriteUShort((ushort)objectsInfos.Count());
+            var objectsInfos_before = writer.Position;
+            var objectsInfos_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in objectsInfos)
             {
                  entry.Serialize(writer);
+                 objectsInfos_count++;
             }
+            var objectsInfos_after = writer.Position;
+            writer.Seek((int)objectsInfos_before);
+            writer.WriteUShort((ushort)objectsInfos_count);
+            writer.Seek((int)objectsInfos_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -47,12 +55,13 @@ namespace Stump.DofusProtocol.Messages
             if (sellerId < 0)
                 throw new Exception("Forbidden value on sellerId = " + sellerId + ", it doesn't respect the following condition : sellerId < 0");
             var limit = reader.ReadUShort();
-            objectsInfos = new Types.ObjectItemToSellInHumanVendorShop[limit];
+            var objectsInfos_ = new Types.ObjectItemToSellInHumanVendorShop[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (objectsInfos as Types.ObjectItemToSellInHumanVendorShop[])[i] = new Types.ObjectItemToSellInHumanVendorShop();
-                 (objectsInfos as Types.ObjectItemToSellInHumanVendorShop[])[i].Deserialize(reader);
+                 objectsInfos_[i] = new Types.ObjectItemToSellInHumanVendorShop();
+                 objectsInfos_[i].Deserialize(reader);
             }
+            objectsInfos = objectsInfos_;
         }
         
         public override int GetSerializationSize()

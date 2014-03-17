@@ -42,7 +42,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                     if (type == "bytes")
                         type = "byte[]";
 
-                    Match match = Regex.Match(name, @"^([\w\d]+)\[.+\]$");
+                    Match match = Regex.Match(name, @"^([_\w\d]+)\[.+\]$");
                     if (match.Success)
                     {
                         IEnumerable<string> limitLinq = from entry in Parser.Constructors[0].Statements
@@ -120,13 +120,13 @@ namespace DofusProtocolBuilder.XmlPatterns
                     {
                         var substatement = ( (AssignationStatement)deserializeAsMethod.Statements[i - 1] );
                         var name = substatement.Name;
-                        Match match = Regex.Match(substatement.Value, @"new ([\d\w]+)");
+                        Match match = Regex.Match(substatement.Value, @"new ([_\d\w]+)");
 
                         if (match.Success)
                         {
                             type = "Types." + match.Groups[1].Value;
 
-                            Match arrayMatch = Regex.Match(name, @"^([\w\d]+)\[.+\]$");
+                            Match arrayMatch = Regex.Match(name, @"^([_\w\d]+)\[.+\]$");
                             if (arrayMatch.Success)
                             {
                                 IEnumerable<string> limitLinq = from entry in Parser.Constructors[0].Statements
@@ -179,7 +179,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                     var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Name);
 
-                    var match = Regex.Match(statement.Value, @"getFlag\([\w\d]+, (\d+)\)");
+                    var match = Regex.Match(statement.Value, @"getFlag\([_\w\d]+,(\d+)\)");
 
                     if (match.Success)
                     {

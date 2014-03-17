@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:19
+// Generated on 03/06/2014 18:50:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,24 +34,33 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteDouble(rideId);
-            writer.WriteUShort((ushort)boostToUpdateList.Count());
+            var boostToUpdateList_before = writer.Position;
+            var boostToUpdateList_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in boostToUpdateList)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 boostToUpdateList_count++;
             }
+            var boostToUpdateList_after = writer.Position;
+            writer.Seek((int)boostToUpdateList_before);
+            writer.WriteUShort((ushort)boostToUpdateList_count);
+            writer.Seek((int)boostToUpdateList_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             rideId = reader.ReadDouble();
             var limit = reader.ReadUShort();
-            boostToUpdateList = new Types.UpdateMountBoost[limit];
+            var boostToUpdateList_ = new Types.UpdateMountBoost[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (boostToUpdateList as Types.UpdateMountBoost[])[i] = Types.ProtocolTypeManager.GetInstance<Types.UpdateMountBoost>(reader.ReadShort());
-                 (boostToUpdateList as Types.UpdateMountBoost[])[i].Deserialize(reader);
+                 boostToUpdateList_[i] = Types.ProtocolTypeManager.GetInstance<Types.UpdateMountBoost>(reader.ReadShort());
+                 boostToUpdateList_[i].Deserialize(reader);
             }
+            boostToUpdateList = boostToUpdateList_;
         }
         
         public override int GetSerializationSize()

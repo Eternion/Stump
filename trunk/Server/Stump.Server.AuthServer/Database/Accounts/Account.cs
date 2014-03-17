@@ -23,6 +23,12 @@ namespace Stump.Server.AuthServer.Database
         /// Use SQL parameter
         /// </summary>
         public static string FindAccountByNickname = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE accounts.Nickname = @0";
+                /// <summary>
+        /// Use string.Format
+        /// </summary>
+        public static string FindAccountByCharacterId = "SELECT * FROM accounts LEFT JOIN worlds_characters ON worlds_characters.AccountId = accounts.Id WHERE worlds_characters.CharacterId = {0}";
+
+
 
         private Account m_current;
         public Account Map(Account account, WorldCharacter character)
@@ -91,7 +97,7 @@ namespace Stump.Server.AuthServer.Database
             set;
         }
 
-        public RoleEnum Role
+        public int UserGroupId
         {
             get;
             set;
@@ -286,7 +292,7 @@ namespace Stump.Server.AuthServer.Database
                            Login = Login,
                            PasswordHash = PasswordHash,
                            Nickname = Nickname,
-                           Role = Role,
+                           UserGroupId = UserGroupId,
                            AvailableBreeds = AvailableBreeds,
                            Ticket = Ticket,
                            SecretQuestion = SecretQuestion,
@@ -295,6 +301,7 @@ namespace Stump.Server.AuthServer.Database
                            Email = Email,
                            CreationDate = CreationDate,
                            IsJailed = IsJailed,
+                           IsBanned = IsBanned,
                            BanEndDate = BanEndDate,
                            BanReason = BanReason,
                            LastConnection = m_loadedLastConnection,

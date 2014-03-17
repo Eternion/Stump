@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:57
+// Generated on 03/06/2014 18:50:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,32 +33,50 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)ids.Count());
+            var ids_before = writer.Position;
+            var ids_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in ids)
             {
                  writer.WriteInt(entry);
+                 ids_count++;
             }
-            writer.WriteUShort((ushort)deadsIds.Count());
+            var ids_after = writer.Position;
+            writer.Seek((int)ids_before);
+            writer.WriteUShort((ushort)ids_count);
+            writer.Seek((int)ids_after);
+
+            var deadsIds_before = writer.Position;
+            var deadsIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in deadsIds)
             {
                  writer.WriteInt(entry);
+                 deadsIds_count++;
             }
+            var deadsIds_after = writer.Position;
+            writer.Seek((int)deadsIds_before);
+            writer.WriteUShort((ushort)deadsIds_count);
+            writer.Seek((int)deadsIds_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            ids = new int[limit];
+            var ids_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (ids as int[])[i] = reader.ReadInt();
+                 ids_[i] = reader.ReadInt();
             }
+            ids = ids_;
             limit = reader.ReadUShort();
-            deadsIds = new int[limit];
+            var deadsIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (deadsIds as int[])[i] = reader.ReadInt();
+                 deadsIds_[i] = reader.ReadInt();
             }
+            deadsIds = deadsIds_;
         }
         
         public override int GetSerializationSize()

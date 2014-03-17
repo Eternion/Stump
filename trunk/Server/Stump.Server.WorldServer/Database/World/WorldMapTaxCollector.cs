@@ -1,4 +1,5 @@
-﻿using Stump.ORM;
+﻿using System;
+using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Maps;
 
@@ -84,10 +85,29 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
-        public int Date
+        public DateTime Date
         {
             get;
             set;
         }
+
+        public int GatheredExperience
+        {
+            get;
+            set;
+        }
+
+        public int GatheredKamas
+        {
+            get;
+            set;
+        }
+
+        public int AttacksCount
+        {
+            get;
+            set;
+        }
+    
     }
 }

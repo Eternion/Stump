@@ -11,18 +11,27 @@ namespace Stump.Server.WorldServer.Game.Guilds
 {
     public class GuildEmblem
     {
-        private Color m_backgroundColor;
-        private Color m_foregroundColor;
+        private Color? m_backgroundColor;
+        private Color? m_foregroundColor;
 
         public GuildEmblem(GuildRecord record)
         {
             Record = record;
+
+            if (SymbolShape != 0)
+                Template = GuildManager.Instance.TryGetEmblem(SymbolShape);
         }
 
         public GuildRecord Record
         {
             get;
-            set;
+            private set;
+        }
+
+        public EmblemRecord Template
+        {
+            get;
+            private set;
         }
 
         public short BackgroundShape
@@ -37,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public Color BackgroundColor
         {
-            get { return m_backgroundColor; }
+            get { return m_backgroundColor ?? (m_backgroundColor = Color.FromArgb(Record.EmblemBackgroundColor)).Value; }
             set
             {
                 m_backgroundColor = value;
@@ -52,13 +61,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
             set
             {
                 Record.EmblemForegroundShape = value;
+                Template = GuildManager.Instance.TryGetEmblem(SymbolShape);
                 IsDirty = true;
             }
         }
 
         public Color SymbolColor
         {
-            get { return m_foregroundColor; }
+            get { return m_foregroundColor ?? (m_foregroundColor = Color.FromArgb(Record.EmblemForegroundColor)).Value; }
             set
             {
                 m_foregroundColor = value;

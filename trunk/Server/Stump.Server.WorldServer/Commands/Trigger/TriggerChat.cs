@@ -38,12 +38,12 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         }
 
         public TriggerChat(StringStream args, Character character)
-            : base(args, character == null ? RoleEnum.Administrator : character.Account.Role, character)
+            : base(args, character)
         {
         }
 
         public TriggerChat(string args, Character character)
-            : base(args, character == null ? RoleEnum.Administrator : character.Account.Role, character)
+            : base(args, character)
         {
         }
 

@@ -11,10 +11,8 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
-using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
-using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
@@ -96,23 +94,6 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             if (client.Character.IsTrading())
                 client.Character.Trader.MoveItem(message.objectUID, message.quantity);
-            else if (client.Character.IsInTaxCollectorDialog())
-            {
-                if (message.quantity <= 0)
-                {
-                    var taxCollector = ((TaxCollectorExchangeDialog) client.Character.Dialog).TaxCollector;
-                    var taxCollectorItem = taxCollector.Bag.TryGetItem(message.objectUID);
-                    if (taxCollectorItem == null)
-                        return;
-
-                    int[] objectUIDList = { message.objectUID };
-
-                    if (taxCollector.Bag.MoveToInventory(taxCollectorItem, client.Character))
-                        client.Send(new StorageObjectsRemoveMessage(objectUIDList));
-                }
-                else
-                    client.Character.SendSystemMessage(7, false);
-            }
             else if (client.Character.IsInMerchantDialog() && message.quantity <= 0)
             {
                 // he is modifying his merchant bag and remove an item
@@ -248,13 +229,22 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (taxCollectorNpc == null)
                 return;
 
-            if (!taxCollectorNpc.IsTaxCollectorOwner(client.Character.GuildMember))
+            var guildMember = client.Character.GuildMember;
+
+            if (!taxCollectorNpc.IsTaxCollectorOwner(guildMember))
             {
                 client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_OWNED));
                 return;
             }
 
-            var exchange = new TaxCollectorExchangeDialog(taxCollectorNpc, client.Character);
+            if (!((string.Equals(taxCollectorNpc.Record.CallerName, client.Character.Name) &&
+                              guildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_COLLECT_MY_TAX_COLLECTOR)) || guildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_COLLECT)))
+            {
+                client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NO_RIGHTS));
+                return;
+            }
+
+            var exchange = new TaxCollectorTrade(taxCollectorNpc, client.Character);
             exchange.Open();
         }
 

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:56
+// Generated on 03/06/2014 18:50:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,35 +35,53 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)effects.Count());
+            var effects_before = writer.Position;
+            var effects_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in effects)
             {
                  entry.Serialize(writer);
+                 effects_count++;
             }
-            writer.WriteUShort((ushort)marks.Count());
+            var effects_after = writer.Position;
+            writer.Seek((int)effects_before);
+            writer.WriteUShort((ushort)effects_count);
+            writer.Seek((int)effects_after);
+
+            var marks_before = writer.Position;
+            var marks_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in marks)
             {
                  entry.Serialize(writer);
+                 marks_count++;
             }
+            var marks_after = writer.Position;
+            writer.Seek((int)marks_before);
+            writer.WriteUShort((ushort)marks_count);
+            writer.Seek((int)marks_after);
+
             writer.WriteShort(gameTurn);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            effects = new Types.FightDispellableEffectExtendedInformations[limit];
+            var effects_ = new Types.FightDispellableEffectExtendedInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (effects as Types.FightDispellableEffectExtendedInformations[])[i] = new Types.FightDispellableEffectExtendedInformations();
-                 (effects as Types.FightDispellableEffectExtendedInformations[])[i].Deserialize(reader);
+                 effects_[i] = new Types.FightDispellableEffectExtendedInformations();
+                 effects_[i].Deserialize(reader);
             }
+            effects = effects_;
             limit = reader.ReadUShort();
-            marks = new Types.GameActionMark[limit];
+            var marks_ = new Types.GameActionMark[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (marks as Types.GameActionMark[])[i] = new Types.GameActionMark();
-                 (marks as Types.GameActionMark[])[i].Deserialize(reader);
+                 marks_[i] = new Types.GameActionMark();
+                 marks_[i].Deserialize(reader);
             }
+            marks = marks_;
             gameTurn = reader.ReadShort();
             if (gameTurn < 0)
                 throw new Exception("Forbidden value on gameTurn = " + gameTurn + ", it doesn't respect the following condition : gameTurn < 0");

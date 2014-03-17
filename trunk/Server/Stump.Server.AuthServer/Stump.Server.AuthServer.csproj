@@ -184,6 +184,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\Accounts\UserGroupRecord.cs" />
+    <Compile Include="Database\Accounts\UserGroupServer.cs" />
     <Compile Include="Database\I18n\LangTextUI.cs" />
     <Compile Include="Database\I18n\LangText.cs" />
     <Compile Include="Handlers\Connection\PingHandler.cs" />

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:32
+// Generated on 03/06/2014 18:50:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,32 +32,50 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)questsToValidId.Count());
+            var questsToValidId_before = writer.Position;
+            var questsToValidId_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in questsToValidId)
             {
                  writer.WriteShort(entry);
+                 questsToValidId_count++;
             }
-            writer.WriteUShort((ushort)questsToStartId.Count());
+            var questsToValidId_after = writer.Position;
+            writer.Seek((int)questsToValidId_before);
+            writer.WriteUShort((ushort)questsToValidId_count);
+            writer.Seek((int)questsToValidId_after);
+
+            var questsToStartId_before = writer.Position;
+            var questsToStartId_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in questsToStartId)
             {
                  writer.WriteShort(entry);
+                 questsToStartId_count++;
             }
+            var questsToStartId_after = writer.Position;
+            writer.Seek((int)questsToStartId_before);
+            writer.WriteUShort((ushort)questsToStartId_count);
+            writer.Seek((int)questsToStartId_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            questsToValidId = new short[limit];
+            var questsToValidId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (questsToValidId as short[])[i] = reader.ReadShort();
+                 questsToValidId_[i] = reader.ReadShort();
             }
+            questsToValidId = questsToValidId_;
             limit = reader.ReadUShort();
-            questsToStartId = new short[limit];
+            var questsToStartId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (questsToStartId as short[])[i] = reader.ReadShort();
+                 questsToStartId_[i] = reader.ReadShort();
             }
+            questsToStartId = questsToStartId_;
         }
         
         public virtual int GetSerializationSize()

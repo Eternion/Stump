@@ -72,9 +72,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region ENUTROF
-            // living chest (60)
-            // kill effect -> removed
-            RemoveEffectOnAllLevels(60, EffectsEnum.Effect_Kill);
             #endregion
 
             #region OSAMODAS
@@ -108,6 +105,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #endregion
+
+            #region SRAM
+            // chakra concentration (62)
+            // duration steal = 0
+            FixEffectOnAllLevels(62, EffectsEnum.Effect_StealHPFire, (level, effect, critical) => effect.Duration = 0);
             #endregion
         }
 

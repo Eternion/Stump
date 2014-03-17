@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Game.Fights.History;
 using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
@@ -28,7 +29,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
-using FightLoot = Stump.Server.WorldServer.Game.Fights.Loots.FightLoot;
+using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
@@ -313,6 +314,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public ObjectPosition TurnStartPosition
+        {
+            get;
+            internal set;
+        }
+
+        public ObjectPosition FightStartPosition
         {
             get;
             internal set;
@@ -708,7 +715,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void Die()
         {
-            DamageTaken += (int)LifePoints;
+            DamageTaken += LifePoints;
 
             OnDead(this);
         }
@@ -814,9 +821,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (LifePoints + healPoints > MaxLifePoints)
                 healPoints = MaxLifePoints - LifePoints;
 
-            DamageTaken -= (int)healPoints;
+            DamageTaken -= healPoints;
 
-            OnLifePointsChanged((int)healPoints, 0, from);
+            OnLifePointsChanged(healPoints, 0, from);
 
             return healPoints;
         }
@@ -1688,7 +1695,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 GetGameFightMinimalStats(client));
         }
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return GetGameFightFighterInformations();
         }

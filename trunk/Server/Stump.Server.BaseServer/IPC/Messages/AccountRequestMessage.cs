@@ -25,13 +25,6 @@ namespace Stump.Server.BaseServer.IPC.Messages
         {
             
         }
-        public AccountRequestMessage(string ticketOrNickname, bool byNickname = false)
-        {
-            if (byNickname)
-                Nickname = ticketOrNickname;
-            else
-                Ticket = ticketOrNickname;
-        }
 
         [ProtoMember(2)]
         public string Ticket
@@ -42,6 +35,27 @@ namespace Stump.Server.BaseServer.IPC.Messages
 
         [ProtoMember(3)]
         public string Nickname
+        {
+            get;
+            set;
+        }
+        
+        [ProtoMember(4)]
+        public string Login
+        {
+            get;
+            set;
+        }
+        
+        [ProtoMember(5)]
+        public int? Id
+        {
+            get;
+            set;
+        }
+
+        [ProtoMember(6)]
+        public int? CharacterId
         {
             get;
             set;

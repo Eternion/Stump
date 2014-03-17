@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:56
+// Generated on 03/06/2014 18:50:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,23 +31,32 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)fighters.Count());
+            var fighters_before = writer.Position;
+            var fighters_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in fighters)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 fighters_count++;
             }
+            var fighters_after = writer.Position;
+            writer.Seek((int)fighters_before);
+            writer.WriteUShort((ushort)fighters_count);
+            writer.Seek((int)fighters_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            fighters = new Types.GameFightFighterInformations[limit];
+            var fighters_ = new Types.GameFightFighterInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (fighters as Types.GameFightFighterInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterInformations>(reader.ReadShort());
-                 (fighters as Types.GameFightFighterInformations[])[i].Deserialize(reader);
+                 fighters_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterInformations>(reader.ReadShort());
+                 fighters_[i].Deserialize(reader);
             }
+            fighters = fighters_;
         }
         
         public override int GetSerializationSize()

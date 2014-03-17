@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:44
+// Generated on 03/06/2014 18:49:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,11 +41,19 @@ namespace Stump.DofusProtocol.Messages
         {
             version.Serialize(writer);
             writer.WriteUTF(lang);
-            writer.WriteUShort((ushort)credentials.Count());
+            var credentials_before = writer.Position;
+            var credentials_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in credentials)
             {
                  writer.WriteSByte(entry);
+                 credentials_count++;
             }
+            var credentials_after = writer.Position;
+            writer.Seek((int)credentials_before);
+            writer.WriteUShort((ushort)credentials_count);
+            writer.Seek((int)credentials_after);
+
             writer.WriteShort(serverId);
             writer.WriteDouble(sessionOptionalSalt);
         }
@@ -56,11 +64,12 @@ namespace Stump.DofusProtocol.Messages
             version.Deserialize(reader);
             lang = reader.ReadUTF();
             var limit = reader.ReadUShort();
-            credentials = new sbyte[limit];
+            var credentials_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (credentials as sbyte[])[i] = reader.ReadSByte();
+                 credentials_[i] = reader.ReadSByte();
             }
+            credentials = credentials_;
             serverId = reader.ReadShort();
             sessionOptionalSalt = reader.ReadDouble();
         }

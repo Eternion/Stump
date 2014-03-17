@@ -72,19 +72,15 @@ namespace ArkalysPlugin.Npcs
 
         public override void Execute(Npc npc, Character character)
         {
-            var dialog = new NpcExchangeDialog(OrbsManager.OrbsExchangeRate);
-            var first = new PlayerTrader(character, dialog);
-            var second = new NpcTrader(npc, dialog);
-
-            character.SetDialoger(first);
-
-            dialog.Open(first, second);
+            var dialog = new NpcExchangeDialog(OrbsManager.OrbsExchangeRate, character, npc);
+            dialog.Open();
         }
     }
 
     public class NpcExchangeDialog : NpcTrade
     {
-        public NpcExchangeDialog(double rate)
+        public NpcExchangeDialog(double rate, Character character, Npc npc)
+             : base(character, npc)
         {
             OrbToKamasRate = rate;
         }

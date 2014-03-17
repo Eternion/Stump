@@ -24,8 +24,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             UsedItems = NumberOfUses;
             Target.Inventory.AddKamas(kamasAmount);
 
-            //BasicHandler.SendTextInformationMessage(Target.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 1, heal);
-
             return true;
         }
     }

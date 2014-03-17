@@ -43,9 +43,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private static readonly Regex m_nameCheckerRegex = new Regex(
             "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
 
-        public CharacterRecord GetCharacterById(int Id)
+        public CharacterRecord GetCharacterById(int id)
         {
-            return Database.Query<CharacterRecord>(string.Format(CharacterRelator.FetchById, Id)).FirstOrDefault();
+            return Database.Query<CharacterRecord>(string.Format(CharacterRelator.FetchById, id)).FirstOrDefault();
+        }
+        public CharacterRecord GetCharacterByName(string name)
+        {
+            return Database.Query<CharacterRecord>(CharacterRelator.FetchByName, name).FirstOrDefault();
         }
 
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
@@ -90,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
                                                            IEnumerable<int> colors, int headId, Action successCallback, Action<CharacterCreationResultEnum> failCallback)
         {
-            if (client.Characters.Count >= MaxCharacterSlot && client.Account.Role <= RoleEnum.Player)
+            if (client.Characters.Count >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
             {
                 failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
                 return;

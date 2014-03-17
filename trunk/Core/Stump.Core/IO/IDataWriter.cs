@@ -1,11 +1,17 @@
 
 using System;
+using System.IO;
 
 namespace Stump.Core.IO
 {
     public interface IDataWriter
     {
         byte[] Data
+        {
+            get;
+        }
+
+        long Position
         {
             get;
         }
@@ -101,5 +107,6 @@ namespace Stump.Core.IO
         void WriteBytes(byte[] data);
 
         void Clear();
+        void Seek(int offset);
     }
 }

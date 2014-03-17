@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using MongoDB.Driver.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
@@ -20,6 +21,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
@@ -326,6 +328,7 @@ namespace Stump.Server.WorldServer.Game
             foreach (var taxcollector in from spawn in TaxCollectorManager.Instance.GetTaxCollectorSpawns() where spawn.Map != null
                                          select new TaxCollectorNpc(spawn, spawn.Map.GetNextContextualId()))
             {
+                taxcollector.Guild.AddTaxCollector(taxcollector);
                 taxcollector.Map.Enter(taxcollector);
             }
         }
@@ -522,6 +525,10 @@ namespace Stump.Server.WorldServer.Game
             return ClientManager.Instance.FindAll<WorldClient>(entry => entry.Account.Login == name).
                 Select(entry => entry.Character).SingleOrDefault();
         }
+        public IEnumerable<Character> GetCharacters()
+        {
+            return m_charactersById.Values;
+        }
 
         /// <summary>
         /// Get a spell by a search pattern. * = caller, *account = current spell used by account, name = spell by his name.
@@ -571,7 +578,8 @@ namespace Stump.Server.WorldServer.Game
             lock (SaveLock)
             {
                 logger.Info("Saving world ...");
-                SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 164);
+                if (WorldServer.SaveMessage)
+                    SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 164);
 
                 var sw = Stopwatch.StartNew();
 
@@ -604,7 +612,9 @@ namespace Stump.Server.WorldServer.Game
                     }
                 }
 
-                SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 165);
+                if (WorldServer.SaveMessage)
+                    SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 165);
+
                 logger.Info("World server saved ! ({0} ms)", sw.ElapsedMilliseconds);
             }
         }

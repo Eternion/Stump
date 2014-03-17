@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:59
+// Generated on 03/06/2014 18:50:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,39 +47,87 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteShort(subAreaId);
             writer.WriteInt(mapId);
-            writer.WriteUShort((ushort)houses.Count());
+            var houses_before = writer.Position;
+            var houses_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in houses)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 houses_count++;
             }
-            writer.WriteUShort((ushort)actors.Count());
+            var houses_after = writer.Position;
+            writer.Seek((int)houses_before);
+            writer.WriteUShort((ushort)houses_count);
+            writer.Seek((int)houses_after);
+
+            var actors_before = writer.Position;
+            var actors_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in actors)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 actors_count++;
             }
-            writer.WriteUShort((ushort)interactiveElements.Count());
+            var actors_after = writer.Position;
+            writer.Seek((int)actors_before);
+            writer.WriteUShort((ushort)actors_count);
+            writer.Seek((int)actors_after);
+
+            var interactiveElements_before = writer.Position;
+            var interactiveElements_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in interactiveElements)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 interactiveElements_count++;
             }
-            writer.WriteUShort((ushort)statedElements.Count());
+            var interactiveElements_after = writer.Position;
+            writer.Seek((int)interactiveElements_before);
+            writer.WriteUShort((ushort)interactiveElements_count);
+            writer.Seek((int)interactiveElements_after);
+
+            var statedElements_before = writer.Position;
+            var statedElements_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in statedElements)
             {
                  entry.Serialize(writer);
+                 statedElements_count++;
             }
-            writer.WriteUShort((ushort)obstacles.Count());
+            var statedElements_after = writer.Position;
+            writer.Seek((int)statedElements_before);
+            writer.WriteUShort((ushort)statedElements_count);
+            writer.Seek((int)statedElements_after);
+
+            var obstacles_before = writer.Position;
+            var obstacles_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in obstacles)
             {
                  entry.Serialize(writer);
+                 obstacles_count++;
             }
-            writer.WriteUShort((ushort)fights.Count());
+            var obstacles_after = writer.Position;
+            writer.Seek((int)obstacles_before);
+            writer.WriteUShort((ushort)obstacles_count);
+            writer.Seek((int)obstacles_after);
+
+            var fights_before = writer.Position;
+            var fights_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in fights)
             {
                  entry.Serialize(writer);
+                 fights_count++;
             }
+            var fights_after = writer.Position;
+            writer.Seek((int)fights_before);
+            writer.WriteUShort((ushort)fights_count);
+            writer.Seek((int)fights_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -91,47 +139,53 @@ namespace Stump.DofusProtocol.Messages
             if (mapId < 0)
                 throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
             var limit = reader.ReadUShort();
-            houses = new Types.HouseInformations[limit];
+            var houses_ = new Types.HouseInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (houses as Types.HouseInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.HouseInformations>(reader.ReadShort());
-                 (houses as Types.HouseInformations[])[i].Deserialize(reader);
+                 houses_[i] = Types.ProtocolTypeManager.GetInstance<Types.HouseInformations>(reader.ReadShort());
+                 houses_[i].Deserialize(reader);
             }
+            houses = houses_;
             limit = reader.ReadUShort();
-            actors = new Types.GameRolePlayActorInformations[limit];
+            var actors_ = new Types.GameRolePlayActorInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (actors as Types.GameRolePlayActorInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.GameRolePlayActorInformations>(reader.ReadShort());
-                 (actors as Types.GameRolePlayActorInformations[])[i].Deserialize(reader);
+                 actors_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameRolePlayActorInformations>(reader.ReadShort());
+                 actors_[i].Deserialize(reader);
             }
+            actors = actors_;
             limit = reader.ReadUShort();
-            interactiveElements = new Types.InteractiveElement[limit];
+            var interactiveElements_ = new Types.InteractiveElement[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (interactiveElements as Types.InteractiveElement[])[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElement>(reader.ReadShort());
-                 (interactiveElements as Types.InteractiveElement[])[i].Deserialize(reader);
+                 interactiveElements_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElement>(reader.ReadShort());
+                 interactiveElements_[i].Deserialize(reader);
             }
+            interactiveElements = interactiveElements_;
             limit = reader.ReadUShort();
-            statedElements = new Types.StatedElement[limit];
+            var statedElements_ = new Types.StatedElement[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (statedElements as Types.StatedElement[])[i] = new Types.StatedElement();
-                 (statedElements as Types.StatedElement[])[i].Deserialize(reader);
+                 statedElements_[i] = new Types.StatedElement();
+                 statedElements_[i].Deserialize(reader);
             }
+            statedElements = statedElements_;
             limit = reader.ReadUShort();
-            obstacles = new Types.MapObstacle[limit];
+            var obstacles_ = new Types.MapObstacle[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (obstacles as Types.MapObstacle[])[i] = new Types.MapObstacle();
-                 (obstacles as Types.MapObstacle[])[i].Deserialize(reader);
+                 obstacles_[i] = new Types.MapObstacle();
+                 obstacles_[i].Deserialize(reader);
             }
+            obstacles = obstacles_;
             limit = reader.ReadUShort();
-            fights = new Types.FightCommonInformations[limit];
+            var fights_ = new Types.FightCommonInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (fights as Types.FightCommonInformations[])[i] = new Types.FightCommonInformations();
-                 (fights as Types.FightCommonInformations[])[i].Deserialize(reader);
+                 fights_[i] = new Types.FightCommonInformations();
+                 fights_[i].Deserialize(reader);
             }
+            fights = fights_;
         }
         
         public override int GetSerializationSize()

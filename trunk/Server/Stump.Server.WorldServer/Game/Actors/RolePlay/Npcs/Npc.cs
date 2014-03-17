@@ -6,13 +6,14 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 {
-    public sealed class Npc : RolePlayActor
+    public sealed class Npc : RolePlayActor, IInteractNpc, IContextDependant
     {
         private readonly List<NpcAction> m_actions = new List<NpcAction>();
 
@@ -131,7 +132,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
                                                    Template.SpecialArtworkId);
         }
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return m_gameContextActorInformations;
         }

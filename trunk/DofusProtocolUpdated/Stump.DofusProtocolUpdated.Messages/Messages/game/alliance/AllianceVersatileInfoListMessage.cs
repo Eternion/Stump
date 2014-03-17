@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:49
+// Generated on 03/06/2014 18:50:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,22 +31,31 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)alliances.Count());
+            var alliances_before = writer.Position;
+            var alliances_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in alliances)
             {
                  entry.Serialize(writer);
+                 alliances_count++;
             }
+            var alliances_after = writer.Position;
+            writer.Seek((int)alliances_before);
+            writer.WriteUShort((ushort)alliances_count);
+            writer.Seek((int)alliances_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            alliances = new Types.AllianceVersatileInformations[limit];
+            var alliances_ = new Types.AllianceVersatileInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (alliances as Types.AllianceVersatileInformations[])[i] = new Types.AllianceVersatileInformations();
-                 (alliances as Types.AllianceVersatileInformations[])[i].Deserialize(reader);
+                 alliances_[i] = new Types.AllianceVersatileInformations();
+                 alliances_[i].Deserialize(reader);
             }
+            alliances = alliances_;
         }
         
         public override int GetSerializationSize()

@@ -9,7 +9,7 @@ using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
-    public partial class CharacterHandler : WorldHandlerContainer
+    public partial class CharacterHandler
     {
         [Variable]
         public static bool EnableNameSuggestion = true;
@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             SendCharacterCreationResultMessage(client, CharacterCreationResultEnum.OK);
             BasicHandler.SendBasicNoOperationMessage(client);
-            SendCharactersListMessage(client);
+            SendCharactersListWithModificationsMessage(client);
         }
 
         private static void OnCharacterCreationFailed(WorldClient client, CharacterCreationResultEnum result)

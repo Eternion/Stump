@@ -12,12 +12,12 @@ namespace Stump.Server.WorldServer.Commands.Trigger
     public class TriggerConsole : GameTrigger
     {
         public TriggerConsole(StringStream args, Character character)
-            : base(args, character.Account.Role, character)
+            : base(args, character)
         {
         }
 
         public TriggerConsole(string args, Character character)
-            : base(args, character.Account.Role, character)
+            : base(args, character)
         {
         }
 

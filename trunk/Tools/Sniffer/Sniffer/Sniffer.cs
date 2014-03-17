@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using PcapDotNet.Analysis;
@@ -33,7 +32,7 @@ namespace Stump.Tools.Sniffer
 
         private readonly FormMain m_form;
 
-        private ModuleProvider<PacketHandlerModule> _moduleProvider = new ModuleProvider<PacketHandlerModule>(ModulesFolder);
+        private readonly ModuleProvider<PacketHandlerModule> _moduleProvider = new ModuleProvider<PacketHandlerModule>(ModulesFolder);
 
         private PacketDevice m_selectedDevice;
         private PacketCommunicator m_communicator;
@@ -160,6 +159,7 @@ namespace Stump.Tools.Sniffer
             m_thread.Abort();
             m_running = false;
             m_initialized = false;
+            IdentifiedClient.OnNewMessage -= IdentifiedClient_OnNewMessage;
         }
 
         private void StartSniffing()

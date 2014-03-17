@@ -113,6 +113,7 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +147,7 @@
     <Compile Include="Commands\Commands\GuildCommand.cs" />
     <Compile Include="Commands\Commands\InfoCommand.cs" />
     <Compile Include="Commands\Commands\ItemCommand.cs" />
+    <Compile Include="Commands\Commands\JailCommands.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
     <Compile Include="Commands\Commands\LookCommand.cs" />
     <Compile Include="Commands\Commands\MonsterCommands.cs" />
@@ -159,6 +161,10 @@
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\TitleCommands.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
+    <Compile Include="Commands\Matching\BaseCriteria.cs" />
+    <Compile Include="Commands\Matching\BaseMatching.cs" />
+    <Compile Include="Commands\Matching\Characters\CharacterMatching.cs" />
+    <Compile Include="Commands\Matching\Characters\MapCriteria.cs" />
     <Compile Include="Commands\ParametersConverter.cs" />
     <Compile Include="Commands\Trigger\GameTrigger.cs" />
     <Compile Include="Commands\Trigger\TriggerChat.cs" />
@@ -171,11 +177,16 @@
     <Compile Include="Core\Network\WorldClientCollection.cs" />
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\Accounts\AccountRelation.cs" />
+    <Compile Include="Database\Accounts\UserGroup.cs" />
+    <Compile Include="Database\Accounts\UserGroupCommand.cs" />
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
     <Compile Include="Database\Breeds\Head.cs" />
+    <Compile Include="Database\Guilds\EmblemRecord.cs" />
     <Compile Include="Database\Guilds\GuildMemberRecord.cs" />
     <Compile Include="Database\Guilds\GuildRecord.cs" />
+    <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
+    <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
@@ -231,11 +242,14 @@
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
+    <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
+    <Compile Include="Game\Actors\Interfaces\IContextDependant.cs" />
     <Compile Include="Game\Actors\Look\ActorLook.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
     <Compile Include="Game\Actors\Look\SubActorLook.cs" />
+    <Compile Include="Game\Actors\Interfaces\IInteractNpc.cs" />
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
     <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
@@ -285,7 +299,9 @@
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
-    <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorExchangeDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Rollback.cs" />
+    <Compile Include="Game\Exchanges\TaxCollectorTrade.cs" />
+    <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerMPUsed.cs" />
@@ -299,12 +315,13 @@
     <Compile Include="Game\Effects\Handlers\Spells\Heal\RestoreHpPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Marks\DamageSharing.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Move\RewindEffect.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Rewind.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\APStealNonFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\MPStealNonFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Double.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\GiveKamas.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\LearnSpell.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreHp.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Punishment.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellBoost.cs" />
@@ -323,6 +340,8 @@
     <Compile Include="Game\Effects\Handlers\Usables\StatBonus.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\UsableEffectHandler.cs" />
     <Compile Include="Game\Dialogs\Merchants\MerchantShopDialog.cs" />
+    <Compile Include="Game\Exchanges\CollectorTrader.cs" />
+    <Compile Include="Game\Exchanges\EmptyTrader.cs" />
     <Compile Include="Game\Exchanges\Items\NpcTradeItem.cs" />
     <Compile Include="Game\Exchanges\Items\PlayerTradeItem.cs" />
     <Compile Include="Game\Exchanges\ITrade.cs" />
@@ -340,19 +359,21 @@
     <Compile Include="Game\Fights\FightAgression.cs" />
     <Compile Include="Game\Fights\FightCellsInformationProvider.cs" />
     <Compile Include="Game\Fights\FightDuel.cs" />
-    <Compile Include="Game\Fights\FightMonsterTeam.cs" />
-    <Compile Include="Game\Fights\FightPlayerTeam.cs" />
+    <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
+    <Compile Include="Game\Fights\Teams\FightMonsterTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightPlayerTeam.cs" />
     <Compile Include="Game\Fights\FightPvM.cs" />
     <Compile Include="Game\Fights\FightPvT.cs" />
     <Compile Include="Game\Fights\FightSpectator.cs" />
-    <Compile Include="Game\Fights\FightTaxCollectorTeam.cs" />
-    <Compile Include="Game\Fights\FightTeamWithLeader.cs" />
+    <Compile Include="Game\Fights\Teams\FightTaxCollectorAttackersTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightTaxCollectorDefenderTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightTeamWithLeader.cs" />
     <Compile Include="Game\Fights\History\SpellHistoryEntry.cs" />
     <Compile Include="Game\Fights\History\SpellHistory.cs" />
     <Compile Include="Game\Fights\ReadyChecker.cs" />
     <Compile Include="Game\Fights\Results\IExperienceResult.cs" />
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
-    <Compile Include="Game\Fights\Results\TaxCollectorFightResult.cs" />
+    <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
     <Compile Include="Game\Fights\Triggers\FractionGlyph.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
@@ -384,6 +405,7 @@
     <Compile Include="Game\Social\Friend.cs" />
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
+    <Compile Include="Game\Spells\Casts\ChakraConcentrationCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\FelineSpiritCastHandler.cs" />
@@ -574,12 +596,11 @@
     <Compile Include="Game\Exchanges\PlayerTrade.cs" />
     <Compile Include="Game\Exchanges\PlayerTrader.cs" />
     <Compile Include="Game\Exchanges\PlayerTradeRequest.cs" />
-    <Compile Include="Game\Exchanges\TradeManager.cs" />
     <Compile Include="Game\Fights\Results\FightLoot.cs" />
     <Compile Include="Game\Fights\FightManager.cs" />
     <Compile Include="Game\Fights\FightRequest.cs" />
     <Compile Include="Game\Fights\FightState.cs" />
-    <Compile Include="Game\Fights\FightTeam.cs" />
+    <Compile Include="Game\Fights\Teams\FightTeam.cs" />
     <Compile Include="Game\Fights\Results\Data\FightExperienceData.cs" />
     <Compile Include="Game\Fights\Results\FightPlayerResult.cs" />
     <Compile Include="Game\Fights\Results\Data\FightPvpData.cs" />
@@ -690,7 +711,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Commands\Matching\Items\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

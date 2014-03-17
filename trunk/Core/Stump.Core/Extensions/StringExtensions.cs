@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -55,7 +56,14 @@ namespace Stump.Core.Extensions
             return SplitAdvanced(expression, delimiter, qualifier, false);
         }
 
+
         public static string[] SplitAdvanced(this string expression, string delimiter,
+            string qualifier, bool ignoreCase)
+        {
+            return SplitAdvanced(expression, new []{delimiter}, qualifier, false);
+        }
+
+        public static string[] SplitAdvanced(this string expression, string[] delimiters,
                                      string qualifier, bool ignoreCase)
         {
             bool qualifierState = false;
@@ -70,9 +78,9 @@ namespace Stump.Core.Extensions
                     {
                         qualifierState = !( qualifierState );
                     }
-                    else if (!( qualifierState ) & ( delimiter != null )
-                             & ( string.Compare(expression.Substring
-                                                   (charIndex, delimiter.Length), delimiter, ignoreCase) == 0 ))
+                    else if (!( qualifierState )
+                             && ( delimiters.Any(x => string.Compare(expression.Substring
+                                                   (charIndex, x.Length), x, ignoreCase) == 0 )))
                     {
                         values.Add(expression.Substring
                                        (startIndex, charIndex - startIndex));

@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.IO;
+using Stump.Core.Pool.New;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 
@@ -41,11 +44,19 @@ namespace Stump.Server.WorldServer.Core.Network
             {
                 lock (this)
                 {
+                    SegmentStream stream = BufferManager.Default.CheckOutStream();
+
+                    var writer = new BigEndianWriter(stream);
+                    message.Pack(writer);
+
                     var disconnectedClients = new List<WorldClient>();
                     foreach (var worldClient in m_underlyingList)
                     {
                         if (worldClient != null)
-                            worldClient.Send(message);
+                        {
+                            worldClient.Send(stream);
+                            worldClient.OnMessageSent(message);
+                        }
 
                         if (worldClient == null || !worldClient.Connected)
                             disconnectedClients.Add(worldClient);

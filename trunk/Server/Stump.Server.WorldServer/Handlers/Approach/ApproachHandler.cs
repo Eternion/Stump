@@ -7,7 +7,6 @@ using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Messages;
-using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
@@ -15,7 +14,6 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Characters;
@@ -82,7 +80,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             }
 
             logger.Debug("Client request ticket {0}", message.ticket);
-            IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage(message.ticket), 
+            IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage() { Ticket = message.ticket }, 
                 msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnAccountReceived(msg, client)), error => client.Disconnect());
         }
 
@@ -120,8 +118,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             }
 
             /* Bind Account & Characters */
-            client.Account = ticketAccount;
-            client.Characters = CharacterManager.Instance.GetCharactersByAccount(client);
+            client.SetCurrentAccount(ticketAccount);
 
             /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
@@ -131,7 +128,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             client.Send(new TrustStatusMessage(true)); // usage -> ?
 
             /* Just to get console AutoCompletion */
-            if (client.Account.Role >= RoleEnum.Moderator)
+            if (client.UserGroup.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client);
 
             var characterInFight = FindCharacterFightReconnection(client);
@@ -162,7 +159,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                             false,
                             (short)client.Account.BreedFlags,
                             (short)BreedManager.Instance.AvailableBreedsFlags,
-                            (sbyte) client.Account.Role));
+                            (sbyte) client.UserGroup.Role));
         }
 
         public static void SendConsoleCommandsListMessage(IPacketReceiver client)

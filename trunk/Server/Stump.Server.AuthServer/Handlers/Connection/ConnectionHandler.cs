@@ -118,14 +118,9 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
             }
 
-            if (account.IsBanned)
+            if (account.BanEndDate < DateTime.Now)
             {
                 account.IsBanned = false;
-                account.BanEndDate = null;
-            }
-
-            if (account.IsJailed && account.BanEndDate < DateTime.Now)
-            {
                 account.IsJailed = false;
                 account.BanEndDate = null;
             }
@@ -146,6 +141,14 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
                 /* Bind Account to Client */
                 client.Account = account;
+                client.UserGroup = AccountManager.Instance.FindUserGroup(account.UserGroupId);
+
+                if (client.UserGroup == null)
+                {
+                    SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.UNKNOWN_AUTH_ERROR);
+                    logger.Error("User group {0} doesn't exist !", client.Account.UserGroupId);
+                    return;
+                }
 
                 /* Propose at client to give a nickname */
                 if (client.Account.Nickname == string.Empty)
@@ -168,14 +171,14 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
             client.Send(new IdentificationSuccessMessage(
-                client.Account.Role >= RoleEnum.Moderator,
+                client.UserGroup.Role >= RoleEnum.Moderator,
                 wasAlreadyConnected,
                 client.Account.Login,
                 client.Account.Nickname,
                 client.Account.Id,
                 0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
                 client.Account.SecretQuestion,
-                client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStamp() : 0,
+                client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStampLong() : 0,
                 (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
 
             client.LookingOfServers = true;
@@ -200,7 +203,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationFailedBannedMessage(AuthClient client, DateTime date)
         {
             client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED,
-                date.GetUnixTimeStamp()));
+                date.GetUnixTimeStampLong()));
         }
 
         public static void SendQueueStatusMessage(IPacketReceiver client, ushort position, ushort total)
@@ -242,7 +245,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             }
 
             /* not the rights */
-            if (world.RequiredRole > client.Account.Role)
+            if (world.RequiredRole > client.UserGroup.Role && !client.UserGroup.AvailableServers.Contains(world.Id))
             {
                 SendSelectServerRefusedMessage(client, world,
                     ServerConnectionErrorEnum.SERVER_CONNECTION_ERROR_ACCOUNT_RESTRICTED);
@@ -274,7 +277,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 (short) world.Id,
                 world.Address,
                 world.Port,
-                (client.Account.Role >= world.RequiredRole),
+                (client.UserGroup.Role >= world.RequiredRole || client.UserGroup.AvailableServers.Contains(world.Id)),
                 client.Account.Ticket));
 
             client.Disconnect();

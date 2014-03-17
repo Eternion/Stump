@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:06
+// Generated on 03/06/2014 18:50:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,23 +33,32 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUShort((ushort)geopositions.Count());
+            var geopositions_before = writer.Position;
+            var geopositions_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in geopositions)
             {
                  entry.Serialize(writer);
+                 geopositions_count++;
             }
+            var geopositions_after = writer.Position;
+            writer.Seek((int)geopositions_before);
+            writer.WriteUShort((ushort)geopositions_count);
+            writer.Seek((int)geopositions_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            geopositions = new Types.PartyMemberGeoPosition[limit];
+            var geopositions_ = new Types.PartyMemberGeoPosition[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (geopositions as Types.PartyMemberGeoPosition[])[i] = new Types.PartyMemberGeoPosition();
-                 (geopositions as Types.PartyMemberGeoPosition[])[i].Deserialize(reader);
+                 geopositions_[i] = new Types.PartyMemberGeoPosition();
+                 geopositions_[i].Deserialize(reader);
             }
+            geopositions = geopositions_;
         }
         
         public override int GetSerializationSize()

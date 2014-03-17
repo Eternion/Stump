@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:30
+// Generated on 03/02/2014 20:42:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +36,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(fightId);
-            writer.WriteUShort((ushort)alliesId.Count());
+            var alliesId_before = writer.Position;
+            var alliesId_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in alliesId)
             {
                  writer.WriteInt(entry);
+                 alliesId_count++;
             }
+            var alliesId_after = writer.Position;
+            writer.Seek((int)alliesId_before);
+            writer.WriteUShort((ushort)alliesId_count);
+            writer.Seek((int)alliesId_after);
+
             writer.WriteShort(duration);
         }
         
@@ -50,11 +58,12 @@ namespace Stump.DofusProtocol.Messages
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             var limit = reader.ReadUShort();
-            alliesId = new int[limit];
+            var alliesId_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (alliesId as int[])[i] = reader.ReadInt();
+                 alliesId_[i] = reader.ReadInt();
             }
+            alliesId = alliesId_;
             duration = reader.ReadShort();
             if (duration < 0)
                 throw new Exception("Forbidden value on duration = " + duration + ", it doesn't respect the following condition : duration < 0");

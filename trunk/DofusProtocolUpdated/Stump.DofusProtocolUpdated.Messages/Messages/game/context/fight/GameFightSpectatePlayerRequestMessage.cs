@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:57
+// Generated on 03/06/2014 18:50:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,41 +10,38 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class GameFightTurnStartSlaveMessage : GameFightTurnStartMessage
+    public class GameFightSpectatePlayerRequestMessage : Message
     {
-        public const uint Id = 6213;
+        public const uint Id = 6474;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public int idSummoner;
+        public int playerId;
         
-        public GameFightTurnStartSlaveMessage()
+        public GameFightSpectatePlayerRequestMessage()
         {
         }
         
-        public GameFightTurnStartSlaveMessage(int id, int waitTime, int idSummoner)
-         : base(id, waitTime)
+        public GameFightSpectatePlayerRequestMessage(int playerId)
         {
-            this.idSummoner = idSummoner;
+            this.playerId = playerId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            base.Serialize(writer);
-            writer.WriteInt(idSummoner);
+            writer.WriteInt(playerId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            base.Deserialize(reader);
-            idSummoner = reader.ReadInt();
+            playerId = reader.ReadInt();
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int);
+            return sizeof(int);
         }
         
     }

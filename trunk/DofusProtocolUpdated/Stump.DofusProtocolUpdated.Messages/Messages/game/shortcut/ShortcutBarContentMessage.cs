@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:23
+// Generated on 03/06/2014 18:50:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,12 +34,20 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(barType);
-            writer.WriteUShort((ushort)shortcuts.Count());
+            var shortcuts_before = writer.Position;
+            var shortcuts_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in shortcuts)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 shortcuts_count++;
             }
+            var shortcuts_after = writer.Position;
+            writer.Seek((int)shortcuts_before);
+            writer.WriteUShort((ushort)shortcuts_count);
+            writer.Seek((int)shortcuts_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,12 +56,13 @@ namespace Stump.DofusProtocol.Messages
             if (barType < 0)
                 throw new Exception("Forbidden value on barType = " + barType + ", it doesn't respect the following condition : barType < 0");
             var limit = reader.ReadUShort();
-            shortcuts = new Types.Shortcut[limit];
+            var shortcuts_ = new Types.Shortcut[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (shortcuts as Types.Shortcut[])[i] = Types.ProtocolTypeManager.GetInstance<Types.Shortcut>(reader.ReadShort());
-                 (shortcuts as Types.Shortcut[])[i].Deserialize(reader);
+                 shortcuts_[i] = Types.ProtocolTypeManager.GetInstance<Types.Shortcut>(reader.ReadShort());
+                 shortcuts_[i].Deserialize(reader);
             }
+            shortcuts = shortcuts_;
         }
         
         public override int GetSerializationSize()

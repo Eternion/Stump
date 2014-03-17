@@ -19,6 +19,7 @@ using Stump.Core.Pool;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Items;
+using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Game.Exchanges
 {
@@ -41,6 +42,18 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         public override int Id
         {
             get { return Npc.Id; }
+        }
+
+        public override bool MoveItem(int id, int quantity)
+        {
+            var template = ItemManager.Instance.TryGetTemplate(id);
+
+            if (template == null || quantity <= 0)
+                return false;
+
+            AddItem(template, (uint)quantity);
+
+            return true;
         }
 
         public void AddItem(ItemTemplate template, uint amount)

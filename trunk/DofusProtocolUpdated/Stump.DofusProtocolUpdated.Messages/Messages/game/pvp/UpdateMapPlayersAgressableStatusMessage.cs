@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:23
+// Generated on 03/06/2014 18:50:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,32 +33,50 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)playerIds.Count());
+            var playerIds_before = writer.Position;
+            var playerIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in playerIds)
             {
                  writer.WriteInt(entry);
+                 playerIds_count++;
             }
-            writer.WriteUShort((ushort)enable.Count());
+            var playerIds_after = writer.Position;
+            writer.Seek((int)playerIds_before);
+            writer.WriteUShort((ushort)playerIds_count);
+            writer.Seek((int)playerIds_after);
+
+            var enable_before = writer.Position;
+            var enable_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in enable)
             {
                  writer.WriteSByte(entry);
+                 enable_count++;
             }
+            var enable_after = writer.Position;
+            writer.Seek((int)enable_before);
+            writer.WriteUShort((ushort)enable_count);
+            writer.Seek((int)enable_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            playerIds = new int[limit];
+            var playerIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (playerIds as int[])[i] = reader.ReadInt();
+                 playerIds_[i] = reader.ReadInt();
             }
+            playerIds = playerIds_;
             limit = reader.ReadUShort();
-            enable = new sbyte[limit];
+            var enable_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (enable as sbyte[])[i] = reader.ReadSByte();
+                 enable_[i] = reader.ReadSByte();
             }
+            enable = enable_;
         }
         
         public override int GetSerializationSize()

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:14
+// Generated on 03/06/2014 18:50:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +36,19 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteBoolean(allIdentical);
-            writer.WriteUShort((ushort)minimalPrices.Count());
+            var minimalPrices_before = writer.Position;
+            var minimalPrices_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in minimalPrices)
             {
                  writer.WriteInt(entry);
+                 minimalPrices_count++;
             }
+            var minimalPrices_after = writer.Position;
+            writer.Seek((int)minimalPrices_before);
+            writer.WriteUShort((ushort)minimalPrices_count);
+            writer.Seek((int)minimalPrices_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,11 +56,12 @@ namespace Stump.DofusProtocol.Messages
             base.Deserialize(reader);
             allIdentical = reader.ReadBoolean();
             var limit = reader.ReadUShort();
-            minimalPrices = new int[limit];
+            var minimalPrices_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (minimalPrices as int[])[i] = reader.ReadInt();
+                 minimalPrices_[i] = reader.ReadInt();
             }
+            minimalPrices = minimalPrices_;
         }
         
         public override int GetSerializationSize()

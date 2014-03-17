@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using NLog;
 using Stump.Core.Reflection;
+using Stump.Core.Xml;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands
@@ -16,12 +17,14 @@ namespace Stump.Server.BaseServer.Commands
         private IDictionary<string, CommandBase> m_commandsByAlias;
         private readonly List<CommandBase> m_registeredCommands;
         private readonly List<Type> m_registeredTypes;
+        private readonly List<CommandInfo> m_commandsInfos; 
 
         private CommandManager()
         {
             m_commandsByAlias = new Dictionary<string, CommandBase>();
             m_registeredCommands = new List<CommandBase>();
             m_registeredTypes = new List<Type>();
+            m_commandsInfos = new List<CommandInfo>();
         }
 
         /// <summary>
@@ -35,11 +38,11 @@ namespace Stump.Server.BaseServer.Commands
         /// <summary>
         /// Regroup all CommandBases, SubCommandContainers and SubCommands
         /// </summary>
-        public IEnumerable<CommandBase> AvailableCommands
+        public IReadOnlyCollection<CommandBase> AvailableCommands
         {
             get
             {
-                return m_registeredCommands;
+                return m_registeredCommands.AsReadOnly();
             }
         }
 
@@ -69,13 +72,38 @@ namespace Stump.Server.BaseServer.Commands
 
             var callTypes = assembly.GetTypes().Where(entry => !entry.IsAbstract);
 
-            foreach (Type type in callTypes)
+            foreach (var type in callTypes.Where(type => !IsCommandRegister(type)))
             {
-                if (!IsCommandRegister(type))
-                    RegisterCommand(type);
+                RegisterCommand(type);
             }
 
             SortCommands();
+        }
+
+        public void LoadOrCreateCommandsInfo(string xmlFile)
+        {
+            if (!File.Exists(xmlFile))
+            {
+                XmlUtils.Serialize(xmlFile, m_commandsInfos);
+            }
+            else
+            {
+                var infos = XmlUtils.Deserialize<CommandInfo[]>(xmlFile);
+                LoadCommandsInfo(infos);
+            }
+        }
+
+        public void LoadCommandsInfo(CommandInfo[] infos)
+        {
+            foreach (var info in infos)
+            {
+                if (m_commandsInfos.RemoveAll(x => x.Name == info.Name) > 0)
+                    m_commandsInfos.Add(info);
+
+                var command = AvailableCommands.FirstOrDefault(x => x.GetType().Name == info.Name);
+                if (command != null)
+                    info.ModifyCommandInfo(command);
+            }
         }
 
         public void RegisterCommand(Type commandType)
@@ -118,6 +146,7 @@ namespace Stump.Server.BaseServer.Commands
             }
 
             m_registeredCommands.Add(command);
+            m_commandsInfos.Add(new CommandInfo(command));
             m_registeredTypes.Add(commandType);
 
             foreach (var alias in command.Aliases)
@@ -155,13 +184,14 @@ namespace Stump.Server.BaseServer.Commands
             }
 
             m_registeredCommands.Add(command);
+            m_commandsInfos.Add(new CommandInfo(command));
             m_registeredTypes.Add(commandType);
-            foreach (string alias in command.Aliases)
+            foreach (var alias in command.Aliases)
             {
                 CommandBase value;
                 if (!m_commandsByAlias.TryGetValue(alias, out value))
                 {
-                    m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command as CommandBase;
+                    m_commandsByAlias[CommandBase.IgnoreCommandCase ? alias.ToLower() : alias] = command;
 
                 }
                 else
@@ -200,13 +230,14 @@ namespace Stump.Server.BaseServer.Commands
             if (!IsCommandRegister(subcommand.ParentCommand))
                 RegisterCommand(subcommand.ParentCommand);
 
-            var parentCommand = AvailableCommands.Where(entry => entry.GetType() == subcommand.ParentCommand).SingleOrDefault() as SubCommandContainer;
+            var parentCommand = AvailableCommands.SingleOrDefault(entry => entry.GetType() == subcommand.ParentCommand) as SubCommandContainer;
 
             if (parentCommand == null)
                 throw new Exception(string.Format("Cannot found declaration of command '{0}'", subcommand.ParentCommand));
 
             parentCommand.AddSubCommand(subcommand);
             m_registeredCommands.Add(subcommand);
+            m_commandsInfos.Add(new CommandInfo(subcommand));
             m_registeredTypes.Add(commandType);
         }
 
@@ -217,10 +248,9 @@ namespace Stump.Server.BaseServer.Commands
 
             var callTypes = assembly.GetTypes().Where(entry => !entry.IsAbstract);
 
-            foreach (Type type in callTypes)
+            foreach (var type in callTypes.Where(IsCommandRegister))
             {
-                if (IsCommandRegister(type))
-                    UnRegisterCommand(type);
+                UnRegisterCommand(type);
             }
         }
 
@@ -234,6 +264,7 @@ namespace Stump.Server.BaseServer.Commands
             foreach (var alias in command.Aliases)
             {
                 m_commandsByAlias.Remove(alias);
+                m_commandsInfos.RemoveAll(x => x.Name == alias);
             }
 
             m_registeredTypes.Remove(commandType);
@@ -262,14 +293,14 @@ namespace Stump.Server.BaseServer.Commands
 
         public void HandleCommand(TriggerBase trigger)
         {
-            string cmdstring = trigger.Args.NextWord();
+            var cmdstring = trigger.Args.NextWord();
 
             if (CommandBase.IgnoreCommandCase)
                 cmdstring = cmdstring.ToLower();
 
-            CommandBase cmd = this[cmdstring];
+            var cmd = this[cmdstring];
 
-            if (cmd != null && trigger.UserRole >= cmd.RequiredRole)
+            if (cmd != null && trigger.CanAccessCommand(cmd))
             {
                 try
                 {
