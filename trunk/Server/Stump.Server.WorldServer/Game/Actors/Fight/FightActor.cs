@@ -715,7 +715,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void Die()
         {
-            DamageTaken += (int)LifePoints;
+            DamageTaken += LifePoints;
 
             OnDead(this);
         }
@@ -821,9 +821,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (LifePoints + healPoints > MaxLifePoints)
                 healPoints = MaxLifePoints - LifePoints;
 
-            DamageTaken -= (int)healPoints;
+            DamageTaken -= healPoints;
 
-            OnLifePointsChanged((int)healPoints, 0, from);
+            OnLifePointsChanged(healPoints, 0, from);
 
             return healPoints;
         }

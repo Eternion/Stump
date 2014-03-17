@@ -578,7 +578,8 @@ namespace Stump.Server.WorldServer.Game
             lock (SaveLock)
             {
                 logger.Info("Saving world ...");
-                SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 164);
+                if (WorldServer.SaveMessage)
+                    SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 164);
 
                 var sw = Stopwatch.StartNew();
 
@@ -611,7 +612,9 @@ namespace Stump.Server.WorldServer.Game
                     }
                 }
 
-                SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 165);
+                if (WorldServer.SaveMessage)
+                    SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 165);
+
                 logger.Info("World server saved ! ({0} ms)", sw.ElapsedMilliseconds);
             }
         }

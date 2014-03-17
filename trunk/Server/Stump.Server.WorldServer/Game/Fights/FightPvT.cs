@@ -30,8 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         private bool m_isAttackersPlacementPhase;
 
         private readonly List<Character> m_defendersQueue = new List<Character>();
-        private readonly Dictionary<Character, Map> m_defendersMaps = new Dictionary<Character, Map>();
-        private readonly Dictionary<Character, int> m_defendersLife = new Dictionary<Character, int>(); 
+        private readonly Dictionary<FightActor, Map> m_defendersMaps = new Dictionary<FightActor, Map>();
 
         public FightPvT(int id, Map fightMap, FightTaxCollectorDefenderTeam blueTeam,  FightTaxCollectorAttackersTeam redTeam)
             : base(id, fightMap, blueTeam, redTeam)
@@ -112,9 +111,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             foreach (var defender in DefendersQueue)
             {
-                m_defendersMaps.Add(defender, defender.Map);
-                m_defendersLife.Add(defender, defender.Stats.Health.DamageTaken);
-
                 var defender1 = defender;
                 defender.Area.ExecuteInContext(() =>
                 {
@@ -122,7 +118,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                     defender1.ResetDefender();
                     Map.Area.ExecuteInContext(() =>
                     {
-                        DefendersTeam.AddFighter(defender.CreateFighter(DefendersTeam));
+                        var fighter = defender.CreateFighter(DefendersTeam);
+
+                        m_defendersMaps.Add(fighter, defender.Map);
+                        DefendersTeam.AddFighter(fighter);
 
                         // if all defenders have been teleported we can launch the timer
                         if (DefendersQueue.All(
@@ -225,6 +224,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != TaxCollector)
                 return;
 
+            foreach (var player in DefendersTeam.Fighters.Where(player => player.IsAlive()))
+            {
+                player.Die();
+            }
+
             EndFight();
         }
 
@@ -233,6 +237,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             Winners = TaxCollector.IsDead() ? (FightTeam)AttackersTeam : DefendersTeam;
             Losers = TaxCollector.IsDead() ? (FightTeam)DefendersTeam : AttackersTeam;
             Draw = false;
+
+            OnWinnersDetermined(Winners, Losers, Draw);
         }
 
         protected override void OnFighterRemoved(FightTeam team, FightActor actor)
@@ -262,15 +268,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             else
                 TaxCollector.TaxCollectorNpc.Delete();
 
-            foreach (var defender in m_defendersQueue.Where(defender => m_defendersMaps.ContainsKey(defender)))
+            foreach (var defender in DefendersTeam.Fighters.Where(defender => m_defendersMaps.ContainsKey(defender)))
             {
                 defender.NextMap = m_defendersMaps[defender];
-            }
-
-            foreach (var defender in m_defendersQueue.Where(defender => m_defendersLife.ContainsKey(defender)))
-            {
-                defender.Stats.Health.DamageTaken = m_defendersLife[defender];
-                defender.RefreshStats();
             }
 
             base.OnWinnersDetermined(winners, losers, draw);
