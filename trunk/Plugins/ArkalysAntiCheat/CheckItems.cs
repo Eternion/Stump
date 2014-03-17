@@ -1,8 +1,11 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using NLog;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace ArkalysAntiCheat
@@ -11,10 +14,18 @@ namespace ArkalysAntiCheat
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        [Initialization(InitializationPass.Fourth)]
+        [Initialization(InitializationPass.Last)]
         public static void Initialize()
         {
-            var allItems = World.Instance.Database.Fetch<PlayerItemRecord>(string.Format(PlayerItemRelator.FetchQuery));
+            var members = World.Instance.Database.Fetch<GuildMemberRecord>(string.Format(GuildMemberRelator.FetchQuery));
+            var guilds = World.Instance.Database.Fetch<GuildRecord>(string.Format(GuildRelator.FetchQuery));
+
+            foreach (var member in members.Where(member => GuildManager.Instance.TryGetGuild(member.GuildId) == null))
+            {
+                Logger.Info("Delete member {0}", member.CharacterId);
+                World.Instance.Database.Delete(member);
+            }
+            /*var allItems = World.Instance.Database.Fetch<PlayerItemRecord>(string.Format(PlayerItemRelator.FetchQuery));
 
             foreach (var item in allItems.Where(x => x.ItemId == 20368 || x.ItemId == 20386 || x.ItemId == 20387 || x.ItemId == 20156
                 || x.ItemId == 20160 || x.ItemId == 20382 || x.ItemId == 20383 || x.ItemId == 20384 || x.ItemId == 20385 || x.ItemId == 20379
@@ -29,8 +40,7 @@ namespace ArkalysAntiCheat
                 item.Effects = ItemManager.Instance.GenerateItemEffects(item.Template);
                 World.Instance.Database.Update(item);
 
-                Logger.Info("Update Item {0}", item.ItemId);
-            }
+                Logger.Info("Update Item {0}", item.ItemId);*/
         }
     }
 }
