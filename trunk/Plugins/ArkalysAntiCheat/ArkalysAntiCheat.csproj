@@ -88,6 +88,11 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF NOT EXIST "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\" mkdir "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\"
+copy "$(TargetPath)" "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\$(TargetFileName)"
+copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)Run\$(ConfigurationName)\WorldServer\plugins\$(TargetName).pdb"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

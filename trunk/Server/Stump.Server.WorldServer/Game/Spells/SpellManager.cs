@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using NLog;
 using Stump.Core.Reflection;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Characters;
@@ -88,6 +89,12 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             SpellTemplate template;
             return m_spells.TryGetValue(id, out template) ? template : null;
+        }
+
+        public SpellLevelTemplate GetSpellTemplate(uint spellLevelId)
+        {
+            SpellLevelTemplate template;
+            return m_spellsLevels.TryGetValue(spellLevelId, out template) ? template : null;
         }
 
         public SpellTemplate GetSpellTemplate(string name, bool ignorecase)

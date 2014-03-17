@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Security.Cryptography;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Messages;
@@ -93,22 +92,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var target in GetTargets(trigger))
             {
-                Character target1 = target;
+                var target1 = target;
                 IPCAccessor.Instance.SendRequest(new UnBanAccountMessage(target.Account.Login),
                     ok => trigger.Reply("Account {0} unjailed", target1.Account.Login),
                     error =>
                         trigger.ReplyError("Account {0} not unjailed : {1}", target1.Account.Login, error.Message));
 
-                if (target.Account.IsJailed)
-                {
-                    target.Account.IsJailed = false;
-                    target.Account.BanEndDate = null;
+                if (!target.Account.IsJailed)
+                    continue;
 
-                    Character target2 = target;
-                    target.Area.ExecuteInContext(() => target2.Teleport(target2.Breed.GetStartPosition()));
+                target.Account.IsJailed = false;
+                target.Account.BanEndDate = null;
 
-                    target.SendServerMessage("Vous avez été libéré de prison.", Color.Red);
-                }
+                var target2 = target;
+                target.Area.ExecuteInContext(() => target2.Teleport(target2.Breed.GetStartPosition()));
+
+                target.SendServerMessage("Vous avez été libéré de prison.", Color.Red);
             }
         }
     }

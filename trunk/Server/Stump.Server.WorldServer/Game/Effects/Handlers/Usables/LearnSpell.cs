@@ -2,6 +2,7 @@
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
@@ -21,7 +22,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
                 return false;
 
             UsedItems = NumberOfUses;
-            Target.Spells.LearnSpell(integerEffect.Value);
+
+            var template = SpellManager.Instance.GetSpellTemplate((uint) integerEffect.Value).Spell;
+            Target.Spells.LearnSpell(template);
 
             return true;
         }

@@ -185,19 +185,19 @@ namespace Stump.Server.WorldServer.Game.Fights
         public FightTeam Winners
         {
             get;
-            private set;
+            protected set;
         }
 
         public FightTeam Losers
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool Draw
         {
             get;
-            private set;
+            protected set;
         }
 
         public TimeLine TimeLine
@@ -408,7 +408,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
         {
-            FightWinnersDelegate handler = WinnersDetermined;
+            var handler = WinnersDetermined;
             if (handler != null) handler(this, winners, losers, draw);
         }
 

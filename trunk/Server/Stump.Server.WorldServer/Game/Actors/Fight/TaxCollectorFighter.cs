@@ -34,8 +34,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         }
 
-      
-
         public TaxCollectorNpc TaxCollectorNpc
         {
             get;
