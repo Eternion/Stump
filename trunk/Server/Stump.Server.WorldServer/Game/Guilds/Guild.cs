@@ -311,8 +311,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             foreach (var taxCollector in m_taxCollectors.ToArray())
             {
-                m_taxCollectors.Remove(taxCollector);
-                TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(taxCollector);
+                RemoveTaxCollector(taxCollector);
             }
         }
 

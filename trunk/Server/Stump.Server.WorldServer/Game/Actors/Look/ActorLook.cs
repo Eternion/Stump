@@ -149,7 +149,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
                 throw new ArgumentException("indexes.Length != colors.Length");
 
             m_colors.Clear();
-            for (int i = 0; i < indexes.Length; i++)
+            for (var i = 0; i < indexes.Length; i++)
             {
                 m_colors.Add(indexes[i], colors[i]);
             }
