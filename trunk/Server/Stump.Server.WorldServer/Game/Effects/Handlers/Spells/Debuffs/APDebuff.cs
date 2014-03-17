@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_SubAP)]
+    [EffectHandler(EffectsEnum.Effect_SubAP_1079)]
     public class APDebuff: SpellEffectHandler
     {
         public APDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
