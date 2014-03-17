@@ -224,11 +224,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != TaxCollector)
                 return;
 
-            foreach (var player in DefendersTeam.Fighters.Where(player => player.IsAlive()))
-            {
-                player.Die();
-            }
-
             EndFight();
         }
 
