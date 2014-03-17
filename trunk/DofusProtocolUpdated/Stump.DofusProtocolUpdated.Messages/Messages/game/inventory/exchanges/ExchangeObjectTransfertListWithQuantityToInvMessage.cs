@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:16
+// Generated on 03/06/2014 18:50:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,32 +33,50 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)ids.Count());
+            var ids_before = writer.Position;
+            var ids_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in ids)
             {
                  writer.WriteInt(entry);
+                 ids_count++;
             }
-            writer.WriteUShort((ushort)qtys.Count());
+            var ids_after = writer.Position;
+            writer.Seek((int)ids_before);
+            writer.WriteUShort((ushort)ids_count);
+            writer.Seek((int)ids_after);
+
+            var qtys_before = writer.Position;
+            var qtys_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in qtys)
             {
                  writer.WriteInt(entry);
+                 qtys_count++;
             }
+            var qtys_after = writer.Position;
+            writer.Seek((int)qtys_before);
+            writer.WriteUShort((ushort)qtys_count);
+            writer.Seek((int)qtys_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            ids = new int[limit];
+            var ids_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (ids as int[])[i] = reader.ReadInt();
+                 ids_[i] = reader.ReadInt();
             }
+            ids = ids_;
             limit = reader.ReadUShort();
-            qtys = new int[limit];
+            var qtys_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (qtys as int[])[i] = reader.ReadInt();
+                 qtys_[i] = reader.ReadInt();
             }
+            qtys = qtys_;
         }
         
         public override int GetSerializationSize()

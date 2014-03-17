@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:13
+// Generated on 03/06/2014 18:50:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +37,19 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteShort(dungeonId);
             writer.WriteInt(inviterId);
-            writer.WriteUShort((ushort)invalidBuddiesIds.Count());
+            var invalidBuddiesIds_before = writer.Position;
+            var invalidBuddiesIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in invalidBuddiesIds)
             {
                  writer.WriteInt(entry);
+                 invalidBuddiesIds_count++;
             }
+            var invalidBuddiesIds_after = writer.Position;
+            writer.Seek((int)invalidBuddiesIds_before);
+            writer.WriteUShort((ushort)invalidBuddiesIds_count);
+            writer.Seek((int)invalidBuddiesIds_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -53,11 +61,12 @@ namespace Stump.DofusProtocol.Messages
             if (inviterId < 0)
                 throw new Exception("Forbidden value on inviterId = " + inviterId + ", it doesn't respect the following condition : inviterId < 0");
             var limit = reader.ReadUShort();
-            invalidBuddiesIds = new int[limit];
+            var invalidBuddiesIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (invalidBuddiesIds as int[])[i] = reader.ReadInt();
+                 invalidBuddiesIds_[i] = reader.ReadInt();
             }
+            invalidBuddiesIds = invalidBuddiesIds_;
         }
         
         public override int GetSerializationSize()

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:51
+// Generated on 03/06/2014 18:50:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,12 +51,20 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(playerName);
             writer.WriteInt(playerId);
             writer.WriteShort(areaId);
-            writer.WriteUShort((ushort)socialGroups.Count());
+            var socialGroups_before = writer.Position;
+            var socialGroups_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in socialGroups)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 socialGroups_count++;
             }
+            var socialGroups_after = writer.Position;
+            writer.Seek((int)socialGroups_before);
+            writer.WriteUShort((ushort)socialGroups_count);
+            writer.Seek((int)socialGroups_after);
+
             writer.WriteSByte(playerState);
         }
         
@@ -73,12 +81,13 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             areaId = reader.ReadShort();
             var limit = reader.ReadUShort();
-            socialGroups = new Types.AbstractSocialGroupInfos[limit];
+            var socialGroups_ = new Types.AbstractSocialGroupInfos[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (socialGroups as Types.AbstractSocialGroupInfos[])[i] = Types.ProtocolTypeManager.GetInstance<Types.AbstractSocialGroupInfos>(reader.ReadShort());
-                 (socialGroups as Types.AbstractSocialGroupInfos[])[i].Deserialize(reader);
+                 socialGroups_[i] = Types.ProtocolTypeManager.GetInstance<Types.AbstractSocialGroupInfos>(reader.ReadShort());
+                 socialGroups_[i].Deserialize(reader);
             }
+            socialGroups = socialGroups_;
             playerState = reader.ReadSByte();
             if (playerState < 0)
                 throw new Exception("Forbidden value on playerState = " + playerState + ", it doesn't respect the following condition : playerState < 0");

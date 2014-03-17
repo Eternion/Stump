@@ -258,6 +258,11 @@ namespace Stump.Core.IO
             m_writer.Write(data);
         }
 
+        
+        public void Seek(int offset)
+        {
+            Seek(offset, SeekOrigin.Begin);
+        }
 
         public void Seek(int offset, SeekOrigin seekOrigin)
         {

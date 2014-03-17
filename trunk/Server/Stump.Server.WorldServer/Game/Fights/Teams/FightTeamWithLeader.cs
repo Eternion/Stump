@@ -3,7 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
-namespace Stump.Server.WorldServer.Game.Fights
+namespace Stump.Server.WorldServer.Game.Fights.Teams
 {
     public abstract class FightTeamWithLeader<T> : FightTeam 
         where T : FightActor
@@ -29,13 +29,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             return base.ChangeLeader(leader);
         }
 
-        protected override void OnFightAdded(FightActor fighter)
+        protected override void OnFighterAdded(FightActor fighter)
         {
             if (Fighters.Count == 1 && !(Fighters[0] is T))
                 throw new Exception(string.Format("Leader of a FightPlayerTeam must be a {0} not {1}", typeof(T), Fighters[0].GetType()));
 
 
-            base.OnFightAdded(fighter);
+            base.OnFighterAdded(fighter);
         }
     }
 }

@@ -28,19 +28,19 @@ namespace Stump.Server.BaseServer.Commands
         public string Usage
         {
             get;
-            protected set;
+            set;
         }
 
         public string Description
         {
             get;
-            protected set;
+            set;
         }
 
         public RoleEnum RequiredRole
         {
             get;
-            protected set;
+            set;
         }
 
         public List<IParameterDefinition> Parameters

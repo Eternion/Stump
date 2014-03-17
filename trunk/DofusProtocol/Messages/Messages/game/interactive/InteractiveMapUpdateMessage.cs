@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:49
+// Generated on 03/02/2014 20:42:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,23 +31,32 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)interactiveElements.Count());
+            var interactiveElements_before = writer.Position;
+            var interactiveElements_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in interactiveElements)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 interactiveElements_count++;
             }
+            var interactiveElements_after = writer.Position;
+            writer.Seek((int)interactiveElements_before);
+            writer.WriteUShort((ushort)interactiveElements_count);
+            writer.Seek((int)interactiveElements_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            interactiveElements = new Types.InteractiveElement[limit];
+            var interactiveElements_ = new Types.InteractiveElement[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (interactiveElements as Types.InteractiveElement[])[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElement>(reader.ReadShort());
-                 (interactiveElements as Types.InteractiveElement[])[i].Deserialize(reader);
+                 interactiveElements_[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElement>(reader.ReadShort());
+                 interactiveElements_[i].Deserialize(reader);
             }
+            interactiveElements = interactiveElements_;
         }
         
         public override int GetSerializationSize()

@@ -24,6 +24,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
     /// </summary>
     public sealed class Inventory : ItemsStorage<BasePlayerItem>, IDisposable
     {
+        [Variable(true)]
+        private const int MaxInventoryKamas = 150000000;
+
         [Variable]
         public static readonly bool ActiveTokens = true;
 
@@ -280,6 +283,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #endregion
 
+        public override void SetKamas(int amount)
+        {
+            if (amount >= MaxInventoryKamas)
+            {
+                Kamas = MaxInventoryKamas;            
+                //344	Vous avez atteint le seuil maximum de kamas dans votre inventaire.
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 344);
+            }
+
+            base.SetKamas(amount);
+        }
+
         public BasePlayerItem AddItem(ItemTemplate template, uint amount = 1)
         {
             var item = TryGetItem(template);
@@ -348,13 +363,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
 
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
-            if (!(item.Template is WeaponTemplate) || !item.Template.TwoHanded || shield == null)
-                return true;
+            if (item.Template is WeaponTemplate && item.Template.TwoHanded && shield != null)
+            {
+                if (send)
+                    BasicHandler.SendTextInformationMessage(Owner.Client,
+                        TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
 
-            if (send)
-                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
+                return false;
+            }
 
-            return false;
+            return true;
         }
 
         public CharacterInventoryPositionEnum[] GetItemPossiblePositions(BasePlayerItem item)

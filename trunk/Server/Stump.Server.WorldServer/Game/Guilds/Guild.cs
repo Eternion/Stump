@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
+using Stump.Server.WorldServer.Handlers.TaxCollector;
 using GuildMemberNetwork = Stump.DofusProtocol.Types.GuildMember;
 using Stump.Server.WorldServer.Handlers.Guilds;
 
@@ -97,12 +98,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Emblem = new GuildEmblem(Record);
 
+            if (m_members.Count == 0)
+            {
+                logger.Error("Guild {0} ({1}) is empty", Id, Name);
+                return;
+            }
+
             foreach (var member in m_members)
             {
                 if (member.IsBoss)
                 {
                     if (Boss != null)
+                    {
                         logger.Error("There is at least two boss in guild {0} ({1})", Id, Name);
+                    }
 
                     Boss = member;
                 }
@@ -111,15 +120,18 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 member.BindGuild(this);
             }
 
-            if (m_members.Count == 0)
+            if (Boss == null)
             {
-                logger.Error("Guild {0} ({1}) is empty", Id, Name);
-            }
-            else if (Boss == null)
-            {
-                var member = m_members.First();
-                SetBoss(member);
                 logger.Error("There is at no boss in guild {0} ({1}) -> Promote new Boss", Id, Name);
+            }
+
+            // load spells
+            for (var i = 0; i < record.Spells.Length && i < TAX_COLLECTOR_SPELLS.Length; i++)
+            {
+                if (record.Spells[i] == 0)
+                    continue;
+                
+                m_spells[i] = new Spell(TAX_COLLECTOR_SPELLS[i], (byte)record.Spells[i]);
             }
         }
 
@@ -285,12 +297,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public void AddTaxCollector(TaxCollectorNpc taxCollector)
         {
             m_taxCollectors.Add(taxCollector);
+            //TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
         public void RemoveTaxCollector(TaxCollectorNpc taxCollector)
         {
             m_taxCollectors.Remove(taxCollector);
             TaxCollectorManager.Instance.RemoveTaxCollectorSpawn(taxCollector);
+            TaxCollectorHandler.SendTaxCollectorMovementRemoveMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
         public void RemoveTaxCollectors()
@@ -567,9 +581,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     (!kicker.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_BAN_MEMBERS) || kickedMember.IsBoss))
                     return false;
 
-                if (!KickMember(kickedMember, kickedMember.Id == kicker.GuildMember.Id))
-                    return false;
-
                 if (kicker.GuildMember.Id != kickedMember.Id)
                 {
                     // Vous avez banni <b>%1</b> de votre guilde.
@@ -577,7 +588,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                         kickedMember.Name);
                 }
 
-                return true;
+                return KickMember(kickedMember, kickedMember.Id == kicker.GuildMember.Id);
             }
         }
 

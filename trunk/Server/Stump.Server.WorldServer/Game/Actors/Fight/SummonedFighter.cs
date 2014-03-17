@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Handlers.Context;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -45,16 +46,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             base.OnDead(killedBy);
 
             Fight.TimeLine.RemoveFighter(this);
-            Delete();
+            Summoner.RemoveSummon(this);
 
             ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
-        }
-
-        protected override void OnDisposed()
-        {
-            base.OnDisposed();
-
-            Summoner.RemoveSummon(this);
         }
     }
 }

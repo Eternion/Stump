@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:47
+// Generated on 03/02/2014 20:42:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +34,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteDouble(fightId);
-            writer.WriteUShort((ushort)playerInfo.Count());
+            var playerInfo_before = writer.Position;
+            var playerInfo_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in playerInfo)
             {
                  entry.Serialize(writer);
+                 playerInfo_count++;
             }
+            var playerInfo_after = writer.Position;
+            writer.Seek((int)playerInfo_before);
+            writer.WriteUShort((ushort)playerInfo_count);
+            writer.Seek((int)playerInfo_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -47,12 +55,13 @@ namespace Stump.DofusProtocol.Messages
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             var limit = reader.ReadUShort();
-            playerInfo = new Types.CharacterMinimalPlusLookInformations[limit];
+            var playerInfo_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (playerInfo as Types.CharacterMinimalPlusLookInformations[])[i] = new Types.CharacterMinimalPlusLookInformations();
-                 (playerInfo as Types.CharacterMinimalPlusLookInformations[])[i].Deserialize(reader);
+                 playerInfo_[i] = new Types.CharacterMinimalPlusLookInformations();
+                 playerInfo_[i].Deserialize(reader);
             }
+            playerInfo = playerInfo_;
         }
         
         public override int GetSerializationSize()

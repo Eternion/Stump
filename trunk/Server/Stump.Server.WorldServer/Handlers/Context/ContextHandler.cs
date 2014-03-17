@@ -36,7 +36,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Character.RefreshStats();
 
             client.Character.LogIn();
-            client.Character.StartRegen();
         }
 
         [WorldHandler(GameMapChangeOrientationRequestMessage.Id)]

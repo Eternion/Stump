@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:21
+// Generated on 03/06/2014 18:50:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,16 +39,32 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteSByte(presetId);
             writer.WriteSByte(symbolId);
-            writer.WriteUShort((ushort)itemsPositions.Count());
+            var itemsPositions_before = writer.Position;
+            var itemsPositions_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in itemsPositions)
             {
                  writer.WriteByte(entry);
+                 itemsPositions_count++;
             }
-            writer.WriteUShort((ushort)itemsUids.Count());
+            var itemsPositions_after = writer.Position;
+            writer.Seek((int)itemsPositions_before);
+            writer.WriteUShort((ushort)itemsPositions_count);
+            writer.Seek((int)itemsPositions_after);
+
+            var itemsUids_before = writer.Position;
+            var itemsUids_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in itemsUids)
             {
                  writer.WriteInt(entry);
+                 itemsUids_count++;
             }
+            var itemsUids_after = writer.Position;
+            writer.Seek((int)itemsUids_before);
+            writer.WriteUShort((ushort)itemsUids_count);
+            writer.Seek((int)itemsUids_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -60,17 +76,19 @@ namespace Stump.DofusProtocol.Messages
             if (symbolId < 0)
                 throw new Exception("Forbidden value on symbolId = " + symbolId + ", it doesn't respect the following condition : symbolId < 0");
             var limit = reader.ReadUShort();
-            itemsPositions = new byte[limit];
+            var itemsPositions_ = new byte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (itemsPositions as byte[])[i] = reader.ReadByte();
+                 itemsPositions_[i] = reader.ReadByte();
             }
+            itemsPositions = itemsPositions_;
             limit = reader.ReadUShort();
-            itemsUids = new int[limit];
+            var itemsUids_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (itemsUids as int[])[i] = reader.ReadInt();
+                 itemsUids_[i] = reader.ReadInt();
             }
+            itemsUids = itemsUids_;
         }
         
         public override int GetSerializationSize()

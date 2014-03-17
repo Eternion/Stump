@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:59
+// Generated on 03/06/2014 18:50:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,16 +36,34 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(fightId);
-            writer.WriteUShort((ushort)attackers.Count());
+            var attackers_before = writer.Position;
+            var attackers_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in attackers)
             {
+                 writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 attackers_count++;
             }
-            writer.WriteUShort((ushort)defenders.Count());
+            var attackers_after = writer.Position;
+            writer.Seek((int)attackers_before);
+            writer.WriteUShort((ushort)attackers_count);
+            writer.Seek((int)attackers_after);
+
+            var defenders_before = writer.Position;
+            var defenders_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in defenders)
             {
+                 writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 defenders_count++;
             }
+            var defenders_after = writer.Position;
+            writer.Seek((int)defenders_before);
+            writer.WriteUShort((ushort)defenders_count);
+            writer.Seek((int)defenders_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -54,24 +72,26 @@ namespace Stump.DofusProtocol.Messages
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             var limit = reader.ReadUShort();
-            attackers = new Types.GameFightFighterLightInformations[limit];
+            var attackers_ = new Types.GameFightFighterLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (attackers as Types.GameFightFighterLightInformations[])[i] = new Types.GameFightFighterLightInformations();
-                 (attackers as Types.GameFightFighterLightInformations[])[i].Deserialize(reader);
+                 attackers_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterLightInformations>(reader.ReadShort());
+                 attackers_[i].Deserialize(reader);
             }
+            attackers = attackers_;
             limit = reader.ReadUShort();
-            defenders = new Types.GameFightFighterLightInformations[limit];
+            var defenders_ = new Types.GameFightFighterLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (defenders as Types.GameFightFighterLightInformations[])[i] = new Types.GameFightFighterLightInformations();
-                 (defenders as Types.GameFightFighterLightInformations[])[i].Deserialize(reader);
+                 defenders_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterLightInformations>(reader.ReadShort());
+                 defenders_[i].Deserialize(reader);
             }
+            defenders = defenders_;
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + attackers.Sum(x => x.GetSerializationSize()) + sizeof(short) + defenders.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(short) + attackers.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + defenders.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

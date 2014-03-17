@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:12
+// Generated on 03/06/2014 18:50:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,17 +36,33 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(nbcollectorMax);
-            writer.WriteUShort((ushort)informations.Count());
+            var informations_before = writer.Position;
+            var informations_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in informations)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 informations_count++;
             }
-            writer.WriteUShort((ushort)fightersInformations.Count());
+            var informations_after = writer.Position;
+            writer.Seek((int)informations_before);
+            writer.WriteUShort((ushort)informations_count);
+            writer.Seek((int)informations_after);
+
+            var fightersInformations_before = writer.Position;
+            var fightersInformations_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in fightersInformations)
             {
                  entry.Serialize(writer);
+                 fightersInformations_count++;
             }
+            var fightersInformations_after = writer.Position;
+            writer.Seek((int)fightersInformations_before);
+            writer.WriteUShort((ushort)fightersInformations_count);
+            writer.Seek((int)fightersInformations_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -55,19 +71,21 @@ namespace Stump.DofusProtocol.Messages
             if (nbcollectorMax < 0)
                 throw new Exception("Forbidden value on nbcollectorMax = " + nbcollectorMax + ", it doesn't respect the following condition : nbcollectorMax < 0");
             var limit = reader.ReadUShort();
-            informations = new Types.TaxCollectorInformations[limit];
+            var informations_ = new Types.TaxCollectorInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (informations as Types.TaxCollectorInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorInformations>(reader.ReadShort());
-                 (informations as Types.TaxCollectorInformations[])[i].Deserialize(reader);
+                 informations_[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorInformations>(reader.ReadShort());
+                 informations_[i].Deserialize(reader);
             }
+            informations = informations_;
             limit = reader.ReadUShort();
-            fightersInformations = new Types.TaxCollectorFightersInformation[limit];
+            var fightersInformations_ = new Types.TaxCollectorFightersInformation[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (fightersInformations as Types.TaxCollectorFightersInformation[])[i] = new Types.TaxCollectorFightersInformation();
-                 (fightersInformations as Types.TaxCollectorFightersInformation[])[i].Deserialize(reader);
+                 fightersInformations_[i] = new Types.TaxCollectorFightersInformation();
+                 fightersInformations_[i].Deserialize(reader);
             }
+            fightersInformations = fightersInformations_;
         }
         
         public override int GetSerializationSize()

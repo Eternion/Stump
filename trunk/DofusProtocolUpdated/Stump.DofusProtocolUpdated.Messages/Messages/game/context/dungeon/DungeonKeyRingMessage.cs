@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:55
+// Generated on 03/06/2014 18:50:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,32 +33,50 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)availables.Count());
+            var availables_before = writer.Position;
+            var availables_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in availables)
             {
                  writer.WriteShort(entry);
+                 availables_count++;
             }
-            writer.WriteUShort((ushort)unavailables.Count());
+            var availables_after = writer.Position;
+            writer.Seek((int)availables_before);
+            writer.WriteUShort((ushort)availables_count);
+            writer.Seek((int)availables_after);
+
+            var unavailables_before = writer.Position;
+            var unavailables_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in unavailables)
             {
                  writer.WriteShort(entry);
+                 unavailables_count++;
             }
+            var unavailables_after = writer.Position;
+            writer.Seek((int)unavailables_before);
+            writer.WriteUShort((ushort)unavailables_count);
+            writer.Seek((int)unavailables_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            availables = new short[limit];
+            var availables_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (availables as short[])[i] = reader.ReadShort();
+                 availables_[i] = reader.ReadShort();
             }
+            availables = availables_;
             limit = reader.ReadUShort();
-            unavailables = new short[limit];
+            var unavailables_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (unavailables as short[])[i] = reader.ReadShort();
+                 unavailables_[i] = reader.ReadShort();
             }
+            unavailables = unavailables_;
         }
         
         public override int GetSerializationSize()

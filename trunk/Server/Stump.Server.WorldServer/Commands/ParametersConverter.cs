@@ -2,6 +2,7 @@
 using System;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.WorldServer.Commands.Matching.Characters;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Items;
@@ -55,6 +56,14 @@ namespace Stump.Server.WorldServer.Commands
                 throw new ConverterException(string.Format("'{0}' is not found or not connected", entry));
 
             return target;
+        };        
+        
+        public static ConverterHandler<Character[]> CharactersConverter = (entry, trigger) =>
+        {
+            var matching = new CharacterMatching(entry,
+                trigger is GameTrigger ? (trigger as GameTrigger).Character : null);
+
+            return matching.FindMatchs();
         };
 
         public static ConverterHandler<ItemTemplate> ItemTemplateConverter = (entry, trigger) =>
@@ -62,7 +71,7 @@ namespace Stump.Server.WorldServer.Commands
             int outvalue;
             if (int.TryParse(entry, out outvalue))
             {
-                ItemTemplate itemById = ItemManager.Instance.TryGetTemplate(outvalue);
+                var itemById = ItemManager.Instance.TryGetTemplate(outvalue);
 
                 if (itemById == null)
                     throw new ConverterException(string.Format("'{0}' is not a valid item", entry));
@@ -70,7 +79,7 @@ namespace Stump.Server.WorldServer.Commands
                 return itemById;
             }
 
-            ItemTemplate itemByName = ItemManager.Instance.TryGetTemplate(entry, CommandBase.IgnoreCommandCase);
+            var itemByName = ItemManager.Instance.TryGetTemplate(entry, CommandBase.IgnoreCommandCase);
 
             if (itemByName == null)
                 throw new ConverterException(string.Format("'{0}' is not a valid item", entry));
@@ -83,7 +92,7 @@ namespace Stump.Server.WorldServer.Commands
             uint outvalue;
             if (uint.TryParse(entry, out outvalue))
             {
-                ItemSetTemplate itemById = ItemManager.Instance.TryGetItemSetTemplate(outvalue);
+                var itemById = ItemManager.Instance.TryGetItemSetTemplate(outvalue);
 
                 if (itemById == null)
                     throw new ConverterException(string.Format("'{0}' is not a valid item set", entry));
@@ -91,7 +100,7 @@ namespace Stump.Server.WorldServer.Commands
                 return itemById;
             }
 
-            ItemSetTemplate itemByName = ItemManager.Instance.TryGetItemSetTemplate(entry, CommandBase.IgnoreCommandCase);
+            var itemByName = ItemManager.Instance.TryGetItemSetTemplate(entry, CommandBase.IgnoreCommandCase);
 
             if (itemByName == null)
                 throw new ConverterException(string.Format("'{0}' is not a valid item set", entry));
@@ -104,7 +113,7 @@ namespace Stump.Server.WorldServer.Commands
             int outvalue;
             if (int.TryParse(entry, out outvalue))
             {
-                SpellTemplate spellById = SpellManager.Instance.GetSpellTemplate(outvalue);
+                var spellById = SpellManager.Instance.GetSpellTemplate(outvalue);
 
                 if (spellById == null)
                     throw new ConverterException(string.Format("'{0}' is not a valid spell", entry));
@@ -112,7 +121,7 @@ namespace Stump.Server.WorldServer.Commands
                 return spellById;
             }
 
-            SpellTemplate spellByName = SpellManager.Instance.GetSpellTemplate(entry, CommandBase.IgnoreCommandCase);
+            var spellByName = SpellManager.Instance.GetSpellTemplate(entry, CommandBase.IgnoreCommandCase);
 
             if (spellByName == null)
                 throw new ConverterException(string.Format("'{0}' is not a valid spell", entry));

@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:44
+// Generated on 03/02/2014 20:42:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,23 +31,32 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)ignoredList.Count());
+            var ignoredList_before = writer.Position;
+            var ignoredList_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in ignoredList)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 ignoredList_count++;
             }
+            var ignoredList_after = writer.Position;
+            writer.Seek((int)ignoredList_before);
+            writer.WriteUShort((ushort)ignoredList_count);
+            writer.Seek((int)ignoredList_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            ignoredList = new Types.IgnoredInformations[limit];
+            var ignoredList_ = new Types.IgnoredInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (ignoredList as Types.IgnoredInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.IgnoredInformations>(reader.ReadShort());
-                 (ignoredList as Types.IgnoredInformations[])[i].Deserialize(reader);
+                 ignoredList_[i] = Types.ProtocolTypeManager.GetInstance<Types.IgnoredInformations>(reader.ReadShort());
+                 ignoredList_[i].Deserialize(reader);
             }
+            ignoredList = ignoredList_;
         }
         
         public override int GetSerializationSize()

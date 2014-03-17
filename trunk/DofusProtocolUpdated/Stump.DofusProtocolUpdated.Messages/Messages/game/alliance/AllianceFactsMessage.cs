@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:49
+// Generated on 03/06/2014 18:50:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,16 +37,32 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteShort(infos.TypeId);
             infos.Serialize(writer);
-            writer.WriteUShort((ushort)guilds.Count());
+            var guilds_before = writer.Position;
+            var guilds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in guilds)
             {
                  entry.Serialize(writer);
+                 guilds_count++;
             }
-            writer.WriteUShort((ushort)controlledSubareaIds.Count());
+            var guilds_after = writer.Position;
+            writer.Seek((int)guilds_before);
+            writer.WriteUShort((ushort)guilds_count);
+            writer.Seek((int)guilds_after);
+
+            var controlledSubareaIds_before = writer.Position;
+            var controlledSubareaIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in controlledSubareaIds)
             {
                  writer.WriteShort(entry);
+                 controlledSubareaIds_count++;
             }
+            var controlledSubareaIds_after = writer.Position;
+            writer.Seek((int)controlledSubareaIds_before);
+            writer.WriteUShort((ushort)controlledSubareaIds_count);
+            writer.Seek((int)controlledSubareaIds_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -54,18 +70,20 @@ namespace Stump.DofusProtocol.Messages
             infos = Types.ProtocolTypeManager.GetInstance<Types.AllianceFactSheetInformations>(reader.ReadShort());
             infos.Deserialize(reader);
             var limit = reader.ReadUShort();
-            guilds = new Types.GuildInAllianceInformations[limit];
+            var guilds_ = new Types.GuildInAllianceInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (guilds as Types.GuildInAllianceInformations[])[i] = new Types.GuildInAllianceInformations();
-                 (guilds as Types.GuildInAllianceInformations[])[i].Deserialize(reader);
+                 guilds_[i] = new Types.GuildInAllianceInformations();
+                 guilds_[i].Deserialize(reader);
             }
+            guilds = guilds_;
             limit = reader.ReadUShort();
-            controlledSubareaIds = new short[limit];
+            var controlledSubareaIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (controlledSubareaIds as short[])[i] = reader.ReadShort();
+                 controlledSubareaIds_[i] = reader.ReadShort();
             }
+            controlledSubareaIds = controlledSubareaIds_;
         }
         
         public override int GetSerializationSize()

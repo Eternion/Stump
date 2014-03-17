@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:46
+// Generated on 03/02/2014 20:42:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,16 +57,32 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(taxCollectorProspecting);
             writer.WriteShort(taxCollectorWisdom);
             writer.WriteShort(boostPoints);
-            writer.WriteUShort((ushort)spellId.Count());
+            var spellId_before = writer.Position;
+            var spellId_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in spellId)
             {
                  writer.WriteShort(entry);
+                 spellId_count++;
             }
-            writer.WriteUShort((ushort)spellLevel.Count());
+            var spellId_after = writer.Position;
+            writer.Seek((int)spellId_before);
+            writer.WriteUShort((ushort)spellId_count);
+            writer.Seek((int)spellId_after);
+
+            var spellLevel_before = writer.Position;
+            var spellLevel_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in spellLevel)
             {
                  writer.WriteSByte(entry);
+                 spellLevel_count++;
             }
+            var spellLevel_after = writer.Position;
+            writer.Seek((int)spellLevel_before);
+            writer.WriteUShort((ushort)spellLevel_count);
+            writer.Seek((int)spellLevel_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -96,17 +112,19 @@ namespace Stump.DofusProtocol.Messages
             if (boostPoints < 0)
                 throw new Exception("Forbidden value on boostPoints = " + boostPoints + ", it doesn't respect the following condition : boostPoints < 0");
             var limit = reader.ReadUShort();
-            spellId = new short[limit];
+            var spellId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (spellId as short[])[i] = reader.ReadShort();
+                 spellId_[i] = reader.ReadShort();
             }
+            spellId = spellId_;
             limit = reader.ReadUShort();
-            spellLevel = new sbyte[limit];
+            var spellLevel_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (spellLevel as sbyte[])[i] = reader.ReadSByte();
+                 spellLevel_[i] = reader.ReadSByte();
             }
+            spellLevel = spellLevel_;
         }
         
         public override int GetSerializationSize()

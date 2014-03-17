@@ -45,7 +45,6 @@ namespace Stump.Server.AuthServer.Managers
         [Variable]
         public static int IpBanRefreshTime = 60;
 
-
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
         private List<IpBan> m_ipBans = new List<IpBan>(); 
@@ -73,7 +72,7 @@ namespace Stump.Server.AuthServer.Managers
 
         private void TimerTick()
         {
-            var toRemove = (from keyPair in m_accountsCache where keyPair.Value.Item1 >= DateTime.Now select keyPair).ToList();
+            var toRemove = (from keyPair in m_accountsCache where keyPair.Value.Item1 <= DateTime.Now select keyPair).ToList();
 
             foreach (var keyPair in toRemove)
             {
@@ -117,6 +116,12 @@ namespace Stump.Server.AuthServer.Managers
                 AccountRelator.FindAccountByNickname, nickname).SingleOrDefault();
         }
 
+        public Account FindAccountByCharacterId(int characterId)
+        {
+            return Database.Query<Account, WorldCharacter, Account>(new AccountRelator().Map,
+                string.Format(AccountRelator.FindAccountByCharacterId, characterId)).SingleOrDefault();
+        }
+
         public IpBan FindIpBan(string ip)
         {
             lock (m_ipBans)
@@ -134,6 +139,11 @@ namespace Stump.Server.AuthServer.Managers
 
                 return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
             }
+        }
+
+        public UserGroupRecord FindUserGroup(int id)
+        {
+            return Database.Query<UserGroupRecord>(string.Format(UserGroupRelator.FindUserById, id)).SingleOrDefault();
         }
 
         public void CacheAccount(Account account)

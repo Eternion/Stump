@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:10
+// Generated on 03/02/2014 20:42:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +42,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(markSpellId);
             writer.WriteShort(markId);
             writer.WriteSByte(markType);
-            writer.WriteUShort((ushort)cells.Count());
+            var cells_before = writer.Position;
+            var cells_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in cells)
             {
                  entry.Serialize(writer);
+                 cells_count++;
             }
+            var cells_after = writer.Position;
+            writer.Seek((int)cells_before);
+            writer.WriteUShort((ushort)cells_count);
+            writer.Seek((int)cells_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -58,12 +66,13 @@ namespace Stump.DofusProtocol.Types
             markId = reader.ReadShort();
             markType = reader.ReadSByte();
             var limit = reader.ReadUShort();
-            cells = new Types.GameActionMarkedCell[limit];
+            var cells_ = new Types.GameActionMarkedCell[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (cells as Types.GameActionMarkedCell[])[i] = new Types.GameActionMarkedCell();
-                 (cells as Types.GameActionMarkedCell[])[i].Deserialize(reader);
+                 cells_[i] = new Types.GameActionMarkedCell();
+                 cells_[i].Deserialize(reader);
             }
+            cells = cells_;
         }
         
         public virtual int GetSerializationSize()

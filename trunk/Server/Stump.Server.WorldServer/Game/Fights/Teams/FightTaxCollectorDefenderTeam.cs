@@ -3,15 +3,15 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
-namespace Stump.Server.WorldServer.Game.Fights
+namespace Stump.Server.WorldServer.Game.Fights.Teams
 {
-    public class FightTaxCollectorTeam : FightTeamWithLeader<TaxCollectorFighter>
+    public class FightTaxCollectorDefenderTeam : FightTeamWithLeader<TaxCollectorFighter>
     {
-        public FightTaxCollectorTeam(sbyte id, Cell[] placementCells) : base(id, placementCells)
+        public FightTaxCollectorDefenderTeam(sbyte id, Cell[] placementCells) : base(id, placementCells)
         {
         }
 
-        public FightTaxCollectorTeam(sbyte id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
+        public FightTaxCollectorDefenderTeam(sbyte id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
             : base(id, placementCells, alignmentSide)
         {
         }
@@ -23,10 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public override FighterRefusedReasonEnum CanJoin(Character character)
         {
-            if (!character.IsGameMaster() && character.Guild != Leader.TaxCollectorNpc.Guild)
-                return FighterRefusedReasonEnum.WRONG_GUILD;
-
-            return base.CanJoin(character);
+            return character.Guild != Leader.TaxCollectorNpc.Guild ? FighterRefusedReasonEnum.WRONG_GUILD : base.CanJoin(character);
         }
     }
 }

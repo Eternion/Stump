@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:34
+// Generated on 03/02/2014 20:43:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,26 +39,58 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(bonesId);
-            writer.WriteUShort((ushort)skins.Count());
+            var skins_before = writer.Position;
+            var skins_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in skins)
             {
                  writer.WriteShort(entry);
+                 skins_count++;
             }
-            writer.WriteUShort((ushort)indexedColors.Count());
+            var skins_after = writer.Position;
+            writer.Seek((int)skins_before);
+            writer.WriteUShort((ushort)skins_count);
+            writer.Seek((int)skins_after);
+
+            var indexedColors_before = writer.Position;
+            var indexedColors_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in indexedColors)
             {
                  writer.WriteInt(entry);
+                 indexedColors_count++;
             }
-            writer.WriteUShort((ushort)scales.Count());
+            var indexedColors_after = writer.Position;
+            writer.Seek((int)indexedColors_before);
+            writer.WriteUShort((ushort)indexedColors_count);
+            writer.Seek((int)indexedColors_after);
+
+            var scales_before = writer.Position;
+            var scales_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in scales)
             {
                  writer.WriteShort(entry);
+                 scales_count++;
             }
-            writer.WriteUShort((ushort)subentities.Count());
+            var scales_after = writer.Position;
+            writer.Seek((int)scales_before);
+            writer.WriteUShort((ushort)scales_count);
+            writer.Seek((int)scales_after);
+
+            var subentities_before = writer.Position;
+            var subentities_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in subentities)
             {
                  entry.Serialize(writer);
+                 subentities_count++;
             }
+            var subentities_after = writer.Position;
+            writer.Seek((int)subentities_before);
+            writer.WriteUShort((ushort)subentities_count);
+            writer.Seek((int)subentities_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -67,30 +99,34 @@ namespace Stump.DofusProtocol.Types
             if (bonesId < 0)
                 throw new Exception("Forbidden value on bonesId = " + bonesId + ", it doesn't respect the following condition : bonesId < 0");
             var limit = reader.ReadUShort();
-            skins = new short[limit];
+            var skins_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (skins as short[])[i] = reader.ReadShort();
+                 skins_[i] = reader.ReadShort();
             }
+            skins = skins_;
             limit = reader.ReadUShort();
-            indexedColors = new int[limit];
+            var indexedColors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (indexedColors as int[])[i] = reader.ReadInt();
+                 indexedColors_[i] = reader.ReadInt();
             }
+            indexedColors = indexedColors_;
             limit = reader.ReadUShort();
-            scales = new short[limit];
+            var scales_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (scales as short[])[i] = reader.ReadShort();
+                 scales_[i] = reader.ReadShort();
             }
+            scales = scales_;
             limit = reader.ReadUShort();
-            subentities = new Types.SubEntity[limit];
+            var subentities_ = new Types.SubEntity[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (subentities as Types.SubEntity[])[i] = new Types.SubEntity();
-                 (subentities as Types.SubEntity[])[i].Deserialize(reader);
+                 subentities_[i] = new Types.SubEntity();
+                 subentities_[i].Deserialize(reader);
             }
+            subentities = subentities_;
         }
         
         public virtual int GetSerializationSize()

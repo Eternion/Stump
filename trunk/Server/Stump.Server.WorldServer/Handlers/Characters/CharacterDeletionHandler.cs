@@ -10,7 +10,7 @@ using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
-    public partial class CharacterHandler : WorldHandlerContainer
+    public partial class CharacterHandler
     {
         [Variable]
         public static int MaxDayCharacterDeletion = 5;
@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 CharacterManager.Instance.DeleteCharacterOnAccount(character, client);
 
-                SendCharactersListMessage(client);
+                SendCharactersListWithModificationsMessage(client);
                 BasicHandler.SendBasicNoOperationMessage(client);
             }
             else

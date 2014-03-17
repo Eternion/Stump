@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:11
+// Generated on 03/02/2014 20:42:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,22 +32,31 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUShort((ushort)colors.Count());
+            var colors_before = writer.Position;
+            var colors_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in colors)
             {
                  writer.WriteInt(entry);
+                 colors_count++;
             }
+            var colors_after = writer.Position;
+            writer.Seek((int)colors_before);
+            writer.WriteUShort((ushort)colors_count);
+            writer.Seek((int)colors_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            colors = new int[limit];
+            var colors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (colors as int[])[i] = reader.ReadInt();
+                 colors_[i] = reader.ReadInt();
             }
+            colors = colors_;
         }
         
         public override int GetSerializationSize()

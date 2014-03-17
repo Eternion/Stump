@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:36
+// Generated on 03/06/2014 18:50:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,11 +45,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUTF(text);
             writer.WriteUTF(descUrl);
             writer.WriteUTF(pictureUrl);
-            writer.WriteUShort((ushort)items.Count());
+            var items_before = writer.Position;
+            var items_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in items)
             {
                  entry.Serialize(writer);
+                 items_count++;
             }
+            var items_after = writer.Position;
+            writer.Seek((int)items_before);
+            writer.WriteUShort((ushort)items_count);
+            writer.Seek((int)items_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -62,12 +70,13 @@ namespace Stump.DofusProtocol.Types
             descUrl = reader.ReadUTF();
             pictureUrl = reader.ReadUTF();
             var limit = reader.ReadUShort();
-            items = new Types.ObjectItemInformationWithQuantity[limit];
+            var items_ = new Types.ObjectItemInformationWithQuantity[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (items as Types.ObjectItemInformationWithQuantity[])[i] = new Types.ObjectItemInformationWithQuantity();
-                 (items as Types.ObjectItemInformationWithQuantity[])[i].Deserialize(reader);
+                 items_[i] = new Types.ObjectItemInformationWithQuantity();
+                 items_[i].Deserialize(reader);
             }
+            items = items_;
         }
         
         public virtual int GetSerializationSize()

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.AuthServer.Database;
@@ -189,15 +190,28 @@ namespace Stump.Server.AuthServer.Managers
 
         public bool CanAccessToWorld(AuthClient client, WorldServer world)
         {
-            return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole && world.CharsCount < world.CharCapacity &&
-                   (!world.RequireSubscription || (client.Account.SubscriptionEnd <= DateTime.Now));
+            if (world == null)
+                return false;
+
+            if (world.Status != ServerStatusEnum.ONLINE)
+                return false;
+
+            if (!client.UserGroup.CanAccessWorld(world))
+                return false;
+
+            if (world.CharsCount >= world.CharCapacity)
+                return false;
+
+            if (world.RequireSubscription && (client.Account.SubscriptionEnd < DateTime.Now))
+                return false;
+
+            return true;
         }
 
         public bool CanAccessToWorld(AuthClient client, int worldId)
         {
             var world = GetServerById(worldId);
-            return world != null && world.Status == ServerStatusEnum.ONLINE && client.Account.Role >= world.RequiredRole && world.CharsCount < world.CharCapacity &&
-                   ( !world.RequireSubscription || ( client.Account.SubscriptionEnd <= DateTime.Now ) );
+            return CanAccessToWorld(client, world);
         }
 
         public void ChangeWorldState(WorldServer server, ServerStatusEnum state, bool save = true)
@@ -209,10 +223,10 @@ namespace Stump.Server.AuthServer.Managers
                 Database.Update(server);
         }
 
-        public IEnumerable<GameServerInformations> GetServersInformationArray(AuthClient client)
+        public GameServerInformations[] GetServersInformationArray(AuthClient client)
         {
-            return m_realmlist.Values.Where(x => client.Account.Role >= x.RequiredRole).Select(
-                world => GetServerInformation(client, world));
+            return m_realmlist.Values.Where(x => client.UserGroup.CanAccessWorld(x)).Select(
+                world => GetServerInformation(client, world)).ToArray();
         }
 
         public GameServerInformations GetServerInformation(AuthClient client, WorldServer world)
@@ -221,7 +235,7 @@ namespace Stump.Server.AuthServer.Managers
                                               (sbyte) world.Completion,
                                               world.ServerSelectable,
                                               client.Account.GetCharactersCountByWorld(world.Id),
-                                              DateTime.Now.Ticks);
+                                              DateTime.Now.GetUnixTimeStampLong());
         }
 
         /// <summary>

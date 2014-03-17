@@ -43,7 +43,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         }
 
         [ProtoMember(5)]
-        public RoleEnum Role
+        public int UserGroupId
         {
             get;
             set;
@@ -169,10 +169,12 @@ namespace Stump.Server.BaseServer.IPC.Objects
             get;
             set;
         }
-
+        
+        [ProtoMember(24)]
         public bool IsBanned
         {
-            get { return BanEndDate > DateTime.Now; }
+            get;
+            set;
         }
 
         [ProtoMember(20)]

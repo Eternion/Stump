@@ -1,11 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Results;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -17,6 +18,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public TaxCollectorFighter(FightTeam team, TaxCollectorNpc taxCollector)
             : base(team, taxCollector.Guild.GetTaxCollectorSpells(), taxCollector.GlobalId)
         {
+            Id = Fight.GetNextContextualId();
             TaxCollectorNpc = taxCollector;
             Look = TaxCollectorNpc.Look.Clone();
 
@@ -63,14 +65,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return TaxCollectorNpc.Name;
         }
 
+        public override IFightResult GetFightResult()
+        {
+            return new TaxCollectorFightResult(this, GetFighterOutcome(), Loot);
+        }
+
         public TaxCollectorFightersInformation GetTaxCollectorFightersInformation()
         {
             var allies = Fight.State == FightState.Placement && Fight is FightPvT
-                ? (Fight as FightPvT).DefendersQueue.Select(x => x.GetCharacterBaseInformations())
-                : Team.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterBaseInformations());
+                ? (Fight as FightPvT).DefendersQueue.Select(x => x.GetCharacterMinimalPlusLookInformations())
+                : Team.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterMinimalPlusLookInformations());
 
             return new TaxCollectorFightersInformation(TaxCollectorNpc.GlobalId, allies,
-                OpposedTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterBaseInformations()));
+                OpposedTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterMinimalPlusLookInformations()));
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

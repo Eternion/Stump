@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:18
+// Generated on 03/06/2014 18:50:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +34,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             sellerDescriptor.Serialize(writer);
-            writer.WriteUShort((ushort)objectsInfos.Count());
+            var objectsInfos_before = writer.Position;
+            var objectsInfos_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in objectsInfos)
             {
                  entry.Serialize(writer);
+                 objectsInfos_count++;
             }
+            var objectsInfos_after = writer.Position;
+            writer.Seek((int)objectsInfos_before);
+            writer.WriteUShort((ushort)objectsInfos_count);
+            writer.Seek((int)objectsInfos_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -46,12 +54,13 @@ namespace Stump.DofusProtocol.Messages
             sellerDescriptor = new Types.SellerBuyerDescriptor();
             sellerDescriptor.Deserialize(reader);
             var limit = reader.ReadUShort();
-            objectsInfos = new Types.ObjectItemToSellInBid[limit];
+            var objectsInfos_ = new Types.ObjectItemToSellInBid[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (objectsInfos as Types.ObjectItemToSellInBid[])[i] = new Types.ObjectItemToSellInBid();
-                 (objectsInfos as Types.ObjectItemToSellInBid[])[i].Deserialize(reader);
+                 objectsInfos_[i] = new Types.ObjectItemToSellInBid();
+                 objectsInfos_[i].Deserialize(reader);
             }
+            objectsInfos = objectsInfos_;
         }
         
         public override int GetSerializationSize()

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:21
+// Generated on 03/06/2014 18:50:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +37,19 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteSByte(presetId);
             writer.WriteSByte(code);
-            writer.WriteUShort((ushort)unlinkedPosition.Count());
+            var unlinkedPosition_before = writer.Position;
+            var unlinkedPosition_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in unlinkedPosition)
             {
                  writer.WriteByte(entry);
+                 unlinkedPosition_count++;
             }
+            var unlinkedPosition_after = writer.Position;
+            writer.Seek((int)unlinkedPosition_before);
+            writer.WriteUShort((ushort)unlinkedPosition_count);
+            writer.Seek((int)unlinkedPosition_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -53,11 +61,12 @@ namespace Stump.DofusProtocol.Messages
             if (code < 0)
                 throw new Exception("Forbidden value on code = " + code + ", it doesn't respect the following condition : code < 0");
             var limit = reader.ReadUShort();
-            unlinkedPosition = new byte[limit];
+            var unlinkedPosition_ = new byte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (unlinkedPosition as byte[])[i] = reader.ReadByte();
+                 unlinkedPosition_[i] = reader.ReadByte();
             }
+            unlinkedPosition = unlinkedPosition_;
         }
         
         public override int GetSerializationSize()

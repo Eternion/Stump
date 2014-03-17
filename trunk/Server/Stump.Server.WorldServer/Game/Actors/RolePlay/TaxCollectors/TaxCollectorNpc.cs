@@ -4,23 +4,28 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
-using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
+using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.TaxCollector;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 {
-    public class TaxCollectorNpc : NamedActor
+    public class TaxCollectorNpc : NamedActor, IInteractNpc, IContextDependant, IAutoMovedEntity
     {
         [Variable]
         public static int BaseAP = 6;
@@ -31,10 +36,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         [Variable]
         public static int BaseResistance = 25;
 
-        public const string TAXCOLLECTOR_LOOK = "{714|||140}"; //todo: Find correct Look
+        public const int TAXCOLLECTOR_BONES = 714;
 
         private readonly WorldMapTaxCollectorRecord m_record;
-        private readonly List<TaxCollectorExchangeDialog> m_openedDialogs = new List<TaxCollectorExchangeDialog>();
+        private readonly List<IDialog> m_openedDialogs = new List<IDialog>();
         private string m_name;
         private ActorLook m_look;
         private readonly int m_contextId;
@@ -44,25 +49,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         /// </summary>
         public TaxCollectorNpc(int globalId, int contextId, ObjectPosition position, Guild guild, string callerName)
         {
-            var random = new AsyncRandom();
-
             m_contextId = contextId;
             Position = position;
             Guild = guild;
             Bag = new TaxCollectorBag(this);
-            Guild.AddTaxCollector(this);
-
             m_record = new WorldMapTaxCollectorRecord
             {
                 Id = globalId,
                 Map = Position.Map,
                 Cell = Position.Cell.Id,
-                Direction = (int)Position.Direction,
-                FirstNameId = (short)random.Next(1, 154),
-                LastNameId = (short)random.Next(1, 253),
+                Direction = (int) Position.Direction,
+                FirstNameId = (short) TaxCollectorManager.Instance.GetRandomTaxCollectorFirstname(),
+                LastNameId = (short) TaxCollectorManager.Instance.GetRandomTaxCollectorName(),
                 GuildId = guild.Id,
                 CallerName = callerName,
-                Date = DateTime.Now.GetUnixTimeStamp()
+                Date = DateTime.Now
             };
 
             IsRecordDirty = true;
@@ -87,10 +88,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
 
             Guild = GuildManager.Instance.TryGetGuild(Record.GuildId);
-            Guild.AddTaxCollector(this);
             LoadRecord();
         }
 
+        #region Properties
         public WorldMapTaxCollectorRecord Record
         {
             get
@@ -99,7 +100,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
         }
 
-        public ReadOnlyCollection<TaxCollectorExchangeDialog> OpenDialogs
+        public ReadOnlyCollection<IDialog> OpenDialogs
         {
             get { return m_openedDialogs.AsReadOnly(); }
         }
@@ -128,7 +129,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         {
             get
             {
-                return m_name ?? (m_name = string.Format("{0} {1}", TextManager.Instance.GetText(FirstNameId), TextManager.Instance.GetText(LastNameId)));
+                return m_name ?? (m_name = string.Format("{0} {1}", TaxCollectorManager.Instance.GetTaxCollectorFirstName(FirstNameId), TaxCollectorManager.Instance.GetTaxCollectorName(LastNameId)));
             }
         }
 
@@ -159,7 +160,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         {
             get
             {
-                return m_look ?? (m_look = ActorLook.Parse(TAXCOLLECTOR_LOOK));
+                return m_look ?? RefreshLook();
             }
         }
 
@@ -179,6 +180,36 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             protected set { m_record.LastNameId = value; m_name = null; }
         }
 
+        public int GatheredExperience
+        {
+            get { return m_record.GatheredExperience; }
+            set
+            {
+                m_record.GatheredExperience = value;
+                IsRecordDirty = true;
+            }
+        }
+
+        public int GatheredKamas
+        {
+            get { return m_record.GatheredKamas; }
+            set
+            {
+                m_record.GatheredKamas = value;
+                IsRecordDirty = true;
+            }
+        }
+
+        public int AttacksCount
+        {
+            get { return m_record.AttacksCount; }
+            set
+            {
+                m_record.AttacksCount = value;
+                IsRecordDirty = true;
+            }
+        }
+
         public TaxCollectorFighter Fighter
         {
             get;
@@ -193,6 +224,93 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
         }
 
+        #endregion
+
+        #region Look
+
+        public ActorLook RefreshLook()
+        {
+            m_look = new ActorLook()
+                {BonesID = TAXCOLLECTOR_BONES};
+            if (Guild.Emblem.Template != null)
+                m_look.AddSkin((short)Guild.Emblem.Template.SkinId);
+            m_look.AddColor(8, Guild.Emblem.SymbolColor);
+            m_look.AddColor(7, Guild.Emblem.BackgroundColor);
+
+            return m_look;
+        }
+
+        #endregion
+
+        #region Dialogs
+
+        public void InteractWith(NpcActionTypeEnum actionType, Character dialoguer)
+        {
+            if (!CanInteractWith(actionType, dialoguer))
+                return;
+
+            var dialog = new TaxCollectorInfoDialog(dialoguer, this);
+            dialog.Open();
+        }
+
+        public bool CanInteractWith(NpcActionTypeEnum action, Character dialoguer)
+        {
+            return CanBeSee(dialoguer) && action == NpcActionTypeEnum.ACTION_TALK;
+        }
+
+        public void OnDialogOpened(IDialog dialog)
+        {
+            m_openedDialogs.Add(dialog);
+        }
+
+        public void OnDialogClosed(IDialog dialog)
+        {
+            m_openedDialogs.Remove(dialog);
+        }
+
+        public void CloseAllDialogs()
+        {
+            foreach (var dialog in OpenDialogs.ToArray())
+            {
+                dialog.Close();
+            }
+
+            m_openedDialogs.Clear();
+        }
+        #endregion
+
+        #region Movement
+
+        public DateTime NextMoveDate
+        {
+            get;
+            set;
+        }
+        public DateTime LastMoveDate
+        {
+            get;
+            private set;
+        }
+
+        public override bool StartMove(Path movementPath)
+        {
+         if (!CanMove() || movementPath.IsEmpty())
+                return false;
+
+            Position = movementPath.EndPathPosition;
+            var keys = movementPath.GetServerPathKeys();
+
+            Map.ForEach(entry => ContextHandler.SendGameMapMovementMessage(entry.Client, keys, this));
+
+            StopMove();
+            LastMoveDate = DateTime.Now;
+
+            return true;        
+        }
+
+        #endregion
+
+        #region Fight
         public TaxCollectorFighter CreateFighter(FightTeam team)
         {
             if (IsFighting)
@@ -201,6 +319,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Fighter = new TaxCollectorFighter(team, this);
 
             Map.Refresh(this); // get invisible
+            CloseAllDialogs();
 
             return Fighter;
         }
@@ -213,37 +332,25 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             Fighter = null;
 
             Map.Refresh(this);
+            AttacksCount++;
         }
-
+        
         public override bool CanBeSee(Maps.WorldObject byObj)
         {
             return base.CanBeSee(byObj) && !IsFighting;
         }
-
         public bool CanGatherLoots()
         {
             return !IsFighting;
         }
 
-        protected override void OnDisposed()
-        {
-            foreach (var dialog in OpenDialogs.ToArray())
-            {
-                dialog.Close();
-            }
+        #endregion
 
-            base.OnDisposed();
-        }
-
+        #region Database
         public bool IsRecordDirty
         {
             get;
             private set;
-        }
-
-        public bool IsBagEmpty()
-        {
-            return Bag.Count == 0;
         }
 
         public void LoadRecord()
@@ -260,6 +367,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             WorldServer.Instance.DBAccessor.Database.Update(m_record);
         }
+        #endregion
+        
+        public bool IsBagEmpty()
+        {
+            return Bag.Count == 0;
+        }
 
         public bool IsTaxCollectorOwner(Guilds.GuildMember member)
         {
@@ -268,55 +381,61 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public bool IsBusy()
         {
-            return OpenDialogs.Count != 0;
+            return OpenDialogs.Any(x => x is TaxCollectorTrade);
         }
 
-        public void OnDialogOpened(TaxCollectorExchangeDialog dialog)
+        protected override void OnDisposed()
         {
-            m_openedDialogs.Add(dialog);
-        }
-
-        public void OnDialogClosed(TaxCollectorExchangeDialog dialog)
-        {
-            m_openedDialogs.Remove(dialog);
+            CloseAllDialogs();
             Guild.RemoveTaxCollector(this);
-
-            //<b>%3</b> a relevé la collecte sur le percepteur %1 en <b>%2</b> et recolté : %4
-            Guild.Clients.Send(new TaxCollectorMovementMessage(false, GetTaxCollectorBasicInformations(), dialog.Character.Name));
-            Guild.Clients.Send(new TaxCollectorMovementRemoveMessage(Id));
+            base.OnDisposed();
         }
 
         #region Network
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
-            return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), FirstNameId, LastNameId, Guild.GetGuildInformations(), Guild.Level, 0);
+            return new GameRolePlayTaxCollectorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
+                FirstNameId, LastNameId, Guild.GetGuildInformations(), Guild.Level, 
+                character == null || character.CanAttack(this) == FighterRefusedReasonEnum.FIGHTER_ACCEPTED ? 0 : 1); // 0 = can attack 1 = cannot
         }
 
         public TaxCollectorInformations GetNetworkTaxCollector()
         {
-            if (!IsFighting || Fighter.Fight.State != FightState.Placement)
-                return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
-                    (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0,
-                    Look.GetEntityLook(), 0, 0, 0, 0);
+            if (!IsFighting)
+                return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
+                    GetAdditionalTaxCollectorInformations(),
+                    (short) Position.Map.Position.X, (short) Position.Map.Position.Y, (short) Position.Map.SubArea.Id, 0,
+                    Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
+
             var fight = Fighter.Fight as FightPvT;
 
-            if (fight != null)
-                return new TaxCollectorInformationsInWaitForHelpState(Id, FirstNameId, LastNameId,
+            if (fight == null)
+                return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
                     GetAdditionalTaxCollectorInformations(),
-                    (short)Position.Map.Position.X, (short)Position.Map.Position.Y,
-                    (short)Position.Map.SubArea.Id, 1,
-                    Look.GetEntityLook(), 0, 0, 0, 0,
-                    new ProtectedEntityWaitingForHelpInfo(fight.GetTimeBeforeFight().Milliseconds / 100,
-                        fight.GetDefendersWaitTimeForPlacement().Milliseconds / 100, (sbyte)fight.GetDefendersLeftSlot()));
+                    (short) Position.Map.Position.X, (short) Position.Map.Position.Y, (short) Position.Map.SubArea.Id, 0,
+                    Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
 
-            return new TaxCollectorInformations(Id, FirstNameId, LastNameId, GetAdditionalTaxCollectorInformations(),
-                (short)Position.Map.Position.X, (short)Position.Map.Position.Y, (short)Position.Map.SubArea.Id, 0, Look.GetEntityLook(), 0, 0, 0, 0);
+            if (fight.State == FightState.Placement)
+                return new TaxCollectorInformationsInWaitForHelpState(GlobalId, FirstNameId, LastNameId,
+                    GetAdditionalTaxCollectorInformations(),
+                    (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
+                    (short) Position.Map.SubArea.Id, 1,
+                    Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue,
+                    new ProtectedEntityWaitingForHelpInfo(
+                        (int) (fight.GetAttackersPlacementTimeLeft().TotalMilliseconds/100),
+                        (int) (fight.GetDefendersWaitTimeForPlacement().TotalMilliseconds/100), (sbyte) fight.GetDefendersLeftSlot()));
+
+            return new TaxCollectorInformations(GlobalId, FirstNameId, LastNameId,
+                GetAdditionalTaxCollectorInformations(),
+                (short) Position.Map.Position.X, (short) Position.Map.Position.Y,
+                (short) Position.Map.SubArea.Id, 2,
+                Look.GetEntityLook(), GatheredKamas, GatheredExperience, Bag.BagWeight, Bag.BagValue);
         }
 
         public AdditionalTaxCollectorInformations GetAdditionalTaxCollectorInformations()
         {
-            return new AdditionalTaxCollectorInformations(Record.CallerName, Record.Date);
+            return new AdditionalTaxCollectorInformations(Record.CallerName, Record.Date.GetUnixTimeStamp());
         }
 
         public TaxCollectorBasicInformations GetTaxCollectorBasicInformations()
@@ -327,12 +446,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
             return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
-                (short)Position.Map.SubArea.Id, Record.CallerName, 0, Bag.Select(x => x.GetObjectItemQuantity()));
+                (short)Position.Map.SubArea.Id, Record.CallerName, GatheredExperience, Bag.Select(x => x.GetObjectItemQuantity()));
         }
 
         public StorageInventoryContentMessage GetStorageInventoryContent()
         {
-            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), 0);
+            return new StorageInventoryContentMessage(Bag.Select(x => x.GetObjectItem()), GatheredKamas);
         }
 
         #endregion

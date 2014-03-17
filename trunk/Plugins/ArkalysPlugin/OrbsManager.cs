@@ -23,6 +23,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace ArkalysPlugin
@@ -74,12 +75,31 @@ namespace ArkalysPlugin
             var totalOrbs = (uint) monsters.Sum(x => GetMonsterDroppedOrbs(x));
 
             foreach (var player in players)
-            {
+            {                
                 var teamPP = player.Team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var orbs = (uint) (((double)player.Stats[PlayerFields.Prospecting].Total/teamPP)*totalOrbs);
 
                 if (orbs > 0)
                     player.Loot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
+            }
+
+            if (fight.Map.TaxCollector != null)
+            {
+                var item = fight.Map.TaxCollector.Bag.TryGetItem(OrbItemTemplate);
+                int limit = fight.Map.TaxCollector.Guild.TaxCollectorPods;
+
+                if (item != null)
+                {
+                    limit -= (int)item.Stack;
+                }
+
+                var orbs = (uint) (((double)fight.Map.TaxCollector.Guild.TaxCollectorProspecting/
+                    players.Sum(entry => entry.Stats[PlayerFields.Prospecting].Total))*totalOrbs*0.05);
+
+                if (orbs > limit)
+                    orbs = (uint)limit;
+
+                fight.TaxCollectorLoot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
             }
         }
 

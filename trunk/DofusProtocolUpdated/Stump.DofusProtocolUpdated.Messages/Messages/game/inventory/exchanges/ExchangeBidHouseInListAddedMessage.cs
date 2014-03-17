@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:14
+// Generated on 03/06/2014 18:50:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,17 +39,33 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(itemUID);
             writer.WriteInt(objGenericId);
-            writer.WriteUShort((ushort)effects.Count());
+            var effects_before = writer.Position;
+            var effects_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in effects)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 effects_count++;
             }
-            writer.WriteUShort((ushort)prices.Count());
+            var effects_after = writer.Position;
+            writer.Seek((int)effects_before);
+            writer.WriteUShort((ushort)effects_count);
+            writer.Seek((int)effects_after);
+
+            var prices_before = writer.Position;
+            var prices_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in prices)
             {
                  writer.WriteInt(entry);
+                 prices_count++;
             }
+            var prices_after = writer.Position;
+            writer.Seek((int)prices_before);
+            writer.WriteUShort((ushort)prices_count);
+            writer.Seek((int)prices_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -57,18 +73,20 @@ namespace Stump.DofusProtocol.Messages
             itemUID = reader.ReadInt();
             objGenericId = reader.ReadInt();
             var limit = reader.ReadUShort();
-            effects = new Types.ObjectEffect[limit];
+            var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (effects as Types.ObjectEffect[])[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
-                 (effects as Types.ObjectEffect[])[i].Deserialize(reader);
+                 effects_[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
+                 effects_[i].Deserialize(reader);
             }
+            effects = effects_;
             limit = reader.ReadUShort();
-            prices = new int[limit];
+            var prices_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (prices as int[])[i] = reader.ReadInt();
+                 prices_[i] = reader.ReadInt();
             }
+            prices = prices_;
         }
         
         public override int GetSerializationSize()

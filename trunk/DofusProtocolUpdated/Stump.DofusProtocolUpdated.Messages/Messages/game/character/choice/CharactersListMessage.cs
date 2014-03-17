@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:56:52
+// Generated on 03/06/2014 18:50:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class CharactersListMessage : Message
+    public class CharactersListMessage : BasicCharactersListMessage
     {
         public const uint Id = 151;
         public override uint MessageId
@@ -19,44 +19,32 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public bool hasStartupActions;
-        public IEnumerable<Types.CharacterBaseInformations> characters;
         
         public CharactersListMessage()
         {
         }
         
-        public CharactersListMessage(bool hasStartupActions, IEnumerable<Types.CharacterBaseInformations> characters)
+        public CharactersListMessage(IEnumerable<Types.CharacterBaseInformations> characters, bool hasStartupActions)
+         : base(characters)
         {
             this.hasStartupActions = hasStartupActions;
-            this.characters = characters;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            base.Serialize(writer);
             writer.WriteBoolean(hasStartupActions);
-            writer.WriteUShort((ushort)characters.Count());
-            foreach (var entry in characters)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            base.Deserialize(reader);
             hasStartupActions = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
-            characters = new Types.CharacterBaseInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 (characters as Types.CharacterBaseInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterBaseInformations>(reader.ReadShort());
-                 (characters as Types.CharacterBaseInformations[])[i].Deserialize(reader);
-            }
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(bool) + sizeof(short) + characters.Sum(x => sizeof(short) + x.GetSerializationSize());
+            return base.GetSerializationSize() + sizeof(bool);
         }
         
     }

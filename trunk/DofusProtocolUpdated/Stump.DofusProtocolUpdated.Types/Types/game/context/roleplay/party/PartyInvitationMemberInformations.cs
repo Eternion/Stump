@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:32
+// Generated on 03/06/2014 18:50:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +44,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
-            writer.WriteUShort((ushort)companions.Count());
+            var companions_before = writer.Position;
+            var companions_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in companions)
             {
                  entry.Serialize(writer);
+                 companions_count++;
             }
+            var companions_after = writer.Position;
+            writer.Seek((int)companions_before);
+            writer.WriteUShort((ushort)companions_count);
+            writer.Seek((int)companions_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -65,12 +73,13 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             var limit = reader.ReadUShort();
-            companions = new Types.PartyCompanionBaseInformations[limit];
+            var companions_ = new Types.PartyCompanionBaseInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (companions as Types.PartyCompanionBaseInformations[])[i] = new Types.PartyCompanionBaseInformations();
-                 (companions as Types.PartyCompanionBaseInformations[])[i].Deserialize(reader);
+                 companions_[i] = new Types.PartyCompanionBaseInformations();
+                 companions_[i].Deserialize(reader);
             }
+            companions = companions_;
         }
         
         public override int GetSerializationSize()

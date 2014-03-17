@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:29
+// Generated on 03/06/2014 18:50:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,22 +33,31 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(id);
-            writer.WriteUShort((ushort)steps.Count());
+            var steps_before = writer.Position;
+            var steps_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in steps)
             {
                  writer.WriteSByte(entry);
+                 steps_count++;
             }
+            var steps_after = writer.Position;
+            writer.Seek((int)steps_before);
+            writer.WriteUShort((ushort)steps_count);
+            writer.Seek((int)steps_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
             id = reader.ReadInt();
             var limit = reader.ReadUShort();
-            steps = new sbyte[limit];
+            var steps_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (steps as sbyte[])[i] = reader.ReadSByte();
+                 steps_[i] = reader.ReadSByte();
             }
+            steps = steps_;
         }
         
         public virtual int GetSerializationSize()

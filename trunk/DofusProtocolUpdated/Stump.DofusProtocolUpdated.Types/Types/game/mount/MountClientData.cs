@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:35
+// Generated on 03/06/2014 18:50:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,10 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
+        public bool sex;
+        public bool isRideable;
+        public bool isWild;
+        public bool isFecondationReady;
         public double id;
         public int model;
         public IEnumerable<int> ancestor;
@@ -50,8 +54,12 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public MountClientData(double id, int model, IEnumerable<int> ancestor, IEnumerable<int> behaviors, string name, int ownerId, double experience, double experienceForLevel, double experienceForNextLevel, sbyte level, int maxPods, int stamina, int staminaMax, int maturity, int maturityForAdult, int energy, int energyMax, int serenity, int aggressivityMax, int serenityMax, int love, int loveMax, int fecondationTime, int boostLimiter, double boostMax, int reproductionCount, int reproductionCountMax, IEnumerable<Types.ObjectEffectInteger> effectList)
+        public MountClientData(bool sex, bool isRideable, bool isWild, bool isFecondationReady, double id, int model, IEnumerable<int> ancestor, IEnumerable<int> behaviors, string name, int ownerId, double experience, double experienceForLevel, double experienceForNextLevel, sbyte level, int maxPods, int stamina, int staminaMax, int maturity, int maturityForAdult, int energy, int energyMax, int serenity, int aggressivityMax, int serenityMax, int love, int loveMax, int fecondationTime, int boostLimiter, double boostMax, int reproductionCount, int reproductionCountMax, IEnumerable<Types.ObjectEffectInteger> effectList)
         {
+            this.sex = sex;
+            this.isRideable = isRideable;
+            this.isWild = isWild;
+            this.isFecondationReady = isFecondationReady;
             this.id = id;
             this.model = model;
             this.ancestor = ancestor;
@@ -84,18 +92,40 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, sex);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, isRideable);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, isWild);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 3, isFecondationReady);
+            writer.WriteByte(flag1);
             writer.WriteDouble(id);
             writer.WriteInt(model);
-            writer.WriteUShort((ushort)ancestor.Count());
+            var ancestor_before = writer.Position;
+            var ancestor_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in ancestor)
             {
                  writer.WriteInt(entry);
+                 ancestor_count++;
             }
-            writer.WriteUShort((ushort)behaviors.Count());
+            var ancestor_after = writer.Position;
+            writer.Seek((int)ancestor_before);
+            writer.WriteUShort((ushort)ancestor_count);
+            writer.Seek((int)ancestor_after);
+
+            var behaviors_before = writer.Position;
+            var behaviors_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in behaviors)
             {
                  writer.WriteInt(entry);
+                 behaviors_count++;
             }
+            var behaviors_after = writer.Position;
+            writer.Seek((int)behaviors_before);
+            writer.WriteUShort((ushort)behaviors_count);
+            writer.Seek((int)behaviors_after);
+
             writer.WriteUTF(name);
             writer.WriteInt(ownerId);
             writer.WriteDouble(experience);
@@ -119,31 +149,46 @@ namespace Stump.DofusProtocol.Types
             writer.WriteDouble(boostMax);
             writer.WriteInt(reproductionCount);
             writer.WriteInt(reproductionCountMax);
-            writer.WriteUShort((ushort)effectList.Count());
+            var effectList_before = writer.Position;
+            var effectList_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in effectList)
             {
                  entry.Serialize(writer);
+                 effectList_count++;
             }
+            var effectList_after = writer.Position;
+            writer.Seek((int)effectList_before);
+            writer.WriteUShort((ushort)effectList_count);
+            writer.Seek((int)effectList_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            sex = BooleanByteWrapper.GetFlag(flag1, 0);
+            isRideable = BooleanByteWrapper.GetFlag(flag1, 1);
+            isWild = BooleanByteWrapper.GetFlag(flag1, 2);
+            isFecondationReady = BooleanByteWrapper.GetFlag(flag1, 3);
             id = reader.ReadDouble();
             model = reader.ReadInt();
             if (model < 0)
                 throw new Exception("Forbidden value on model = " + model + ", it doesn't respect the following condition : model < 0");
             var limit = reader.ReadUShort();
-            ancestor = new int[limit];
+            var ancestor_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (ancestor as int[])[i] = reader.ReadInt();
+                 ancestor_[i] = reader.ReadInt();
             }
+            ancestor = ancestor_;
             limit = reader.ReadUShort();
-            behaviors = new int[limit];
+            var behaviors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (behaviors as int[])[i] = reader.ReadInt();
+                 behaviors_[i] = reader.ReadInt();
             }
+            behaviors = behaviors_;
             name = reader.ReadUTF();
             ownerId = reader.ReadInt();
             if (ownerId < 0)
@@ -196,17 +241,18 @@ namespace Stump.DofusProtocol.Types
             if (reproductionCountMax < 0)
                 throw new Exception("Forbidden value on reproductionCountMax = " + reproductionCountMax + ", it doesn't respect the following condition : reproductionCountMax < 0");
             limit = reader.ReadUShort();
-            effectList = new Types.ObjectEffectInteger[limit];
+            var effectList_ = new Types.ObjectEffectInteger[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (effectList as Types.ObjectEffectInteger[])[i] = new Types.ObjectEffectInteger();
-                 (effectList as Types.ObjectEffectInteger[])[i].Deserialize(reader);
+                 effectList_[i] = new Types.ObjectEffectInteger();
+                 effectList_[i].Deserialize(reader);
             }
+            effectList = effectList_;
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(double) + sizeof(int) + sizeof(short) + ancestor.Sum(x => sizeof(int)) + sizeof(short) + behaviors.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(int) + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(short) + effectList.Sum(x => x.GetSerializationSize());
+            return sizeof(bool) + 0 + 0 + 0 + sizeof(double) + sizeof(int) + sizeof(short) + ancestor.Sum(x => sizeof(int)) + sizeof(short) + behaviors.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(int) + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(short) + effectList.Sum(x => x.GetSerializationSize());
         }
         
     }

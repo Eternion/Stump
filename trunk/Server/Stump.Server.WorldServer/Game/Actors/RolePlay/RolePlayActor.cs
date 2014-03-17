@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
@@ -10,9 +11,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 {
     public abstract class RolePlayActor : ContextActor
     {
+        public event Action<RolePlayActor, Map> EnterMap;
+
+        public virtual void OnEnterMap(Map map)
+        {
+            Action<RolePlayActor, Map> handler = EnterMap;
+            if (handler != null) handler(this, map);
+        }
+
+        public event Action<RolePlayActor, Map> LeaveMap;
+        public virtual void OnLeaveMap(Map map)
+        {
+            Action<RolePlayActor, Map> handler = LeaveMap;
+            if (handler != null) handler(this, map);
+        }
+
         #region Network
 
-        public override GameContextActorInformations GetGameContextActorInformations()
+        public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
             return new GameRolePlayActorInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations());
         }
@@ -79,30 +95,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
             Position.Map.Leave(this);
             
-            // must execute this is a different thread
-            if (NextMap.Area != Area)
-            {
-                NextMap.Area.AddMessage(() =>
-                    {
-                        Position = destination.Clone();
-                        Position.Map.Enter(this);
+            NextMap.Area.ExecuteInContext(() =>
+                {
+                    Position = destination.Clone();
+                    Position.Map.Enter(this);
 
-                        NextMap = null;
-                        LastMap = null;
+                    NextMap = null;
+                    LastMap = null;
 
-                        OnTeleported(Position);
-                    });
-            }
-            else
-            {
-                Position = destination.Clone();
-                Position.Map.Enter(this);
-
-                NextMap = null;
-                LastMap = null;
-
-                OnTeleported(Position);
-            }
+                    OnTeleported(Position);
+                });
 
             return true;
         }
@@ -119,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
         protected override void OnDisposed()
         {
             if (Map != null && Map.IsActor(this))
-                Map.Leave(this);
+                Map.Area.ExecuteInContext(() => Map.Leave(this));
 
             base.OnDisposed();
 

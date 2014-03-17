@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Stump.ORM.SubSonic.Query;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
@@ -15,6 +16,16 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         {
             get;
             private set;
+        }
+
+        public int BagWeight
+        {
+            get { return (int) this.Sum(x => x.Template.RealWeight*x.Stack); }
+        }
+
+        public int BagValue
+        {
+            get { return (int) this.Sum(x => x.Template.Price*x.Stack); }
         }
 
         /// <summary>
@@ -74,12 +85,28 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 
         public void LoadRecord()
         {
+            if (WorldServer.Instance.IsInitialized)
+                WorldServer.Instance.IOTaskPool.EnsureContext();
+
             var records = ItemManager.Instance.FindTaxCollectorItems(Owner.Id);
             Items = records.Select(entry => new TaxCollectorItem(entry)).ToDictionary(entry => entry.Guid);
         }
 
-        public override void Save()
+        public void DeleteBag(bool lazySave = true)
         {
+            DeleteAll(false);
+
+            if (lazySave)
+                WorldServer.Instance.IOTaskPool.AddMessage(() => Save());
+            else
+                Save();
+        }
+
+        public override void Save()
+        {        
+            if (WorldServer.Instance.IsInitialized)    
+                WorldServer.Instance.IOTaskPool.EnsureContext();
+
             base.Save();
 
             IsDirty = false;

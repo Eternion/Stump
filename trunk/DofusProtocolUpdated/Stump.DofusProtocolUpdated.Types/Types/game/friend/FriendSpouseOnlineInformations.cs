@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:34
+// Generated on 03/06/2014 18:50:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,8 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
+        public bool inFight;
+        public bool followSpouse;
         public int mapId;
         public short subAreaId;
         
@@ -24,9 +26,11 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FriendSpouseOnlineInformations(int spouseAccountId, int spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide, int mapId, short subAreaId)
+        public FriendSpouseOnlineInformations(int spouseAccountId, int spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide, bool inFight, bool followSpouse, int mapId, short subAreaId)
          : base(spouseAccountId, spouseId, spouseName, spouseLevel, breed, sex, spouseEntityLook, guildInfo, alignmentSide)
         {
+            this.inFight = inFight;
+            this.followSpouse = followSpouse;
             this.mapId = mapId;
             this.subAreaId = subAreaId;
         }
@@ -34,6 +38,10 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, inFight);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, followSpouse);
+            writer.WriteByte(flag1);
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
         }
@@ -41,6 +49,9 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
+            byte flag1 = reader.ReadByte();
+            inFight = BooleanByteWrapper.GetFlag(flag1, 0);
+            followSpouse = BooleanByteWrapper.GetFlag(flag1, 1);
             mapId = reader.ReadInt();
             if (mapId < 0)
                 throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
@@ -51,7 +62,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(bool) + 0 + sizeof(int) + sizeof(short);
         }
         
     }

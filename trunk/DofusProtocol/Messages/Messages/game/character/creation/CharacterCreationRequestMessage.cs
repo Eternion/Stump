@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:16
+// Generated on 03/02/2014 20:42:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,11 +56,12 @@ namespace Stump.DofusProtocol.Messages
             if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Steamer)
                 throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Steamer");
             sex = reader.ReadBoolean();
-            colors = new int[5];
+            var colors_ = new int[5];
             for (int i = 0; i < 5; i++)
             {
-                 (colors as int[])[i] = reader.ReadInt();
+                 colors_[i] = reader.ReadInt();
             }
+            colors = colors_;
             cosmeticId = reader.ReadInt();
             if (cosmeticId < 0)
                 throw new Exception("Forbidden value on cosmeticId = " + cosmeticId + ", it doesn't respect the following condition : cosmeticId < 0");
@@ -68,7 +69,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(sbyte) + sizeof(bool) + colors.Sum(x => sizeof(int)) + sizeof(int);
+            return sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(sbyte) + sizeof(bool) + sizeof(short) + colors.Sum(x => sizeof(int)) + sizeof(int);
         }
         
     }

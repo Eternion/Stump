@@ -15,13 +15,11 @@
 #endregion
 
 using System;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 
@@ -50,20 +48,21 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var target = GetTarget(trigger);
-
-            if (!target.IsInFight())
-                trigger.ReplyError("{0} is not fighting", target);
-
-            else
+            foreach (var target in GetTargets(trigger))
             {
-                var fight = target.Fight;
-                if (target.IsFighting())
-                    target.Fighter.LeaveFight();
-                if (target.IsSpectator())
-                    target.Spectator.Leave();
+                if (!target.IsInFight())
+                    trigger.ReplyError("{0} is not fighting", target);
 
-                trigger.ReplyBold("{0} get kicked from fight {1}", target, fight.Id);
+                else
+                {
+                    var fight = target.Fight;
+                    if (target.IsFighting())
+                        target.Fighter.LeaveFight();
+                    if (target.IsSpectator())
+                        target.Spectator.Leave();
+
+                    trigger.ReplyBold("{0} get kicked from fight {1}", target, fight.Id);
+                }
             }
         }
     }

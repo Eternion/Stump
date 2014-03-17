@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:58
+// Generated on 03/02/2014 20:42:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,22 +31,31 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)stabledMountsDescription.Count());
+            var stabledMountsDescription_before = writer.Position;
+            var stabledMountsDescription_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in stabledMountsDescription)
             {
                  entry.Serialize(writer);
+                 stabledMountsDescription_count++;
             }
+            var stabledMountsDescription_after = writer.Position;
+            writer.Seek((int)stabledMountsDescription_before);
+            writer.WriteUShort((ushort)stabledMountsDescription_count);
+            writer.Seek((int)stabledMountsDescription_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            stabledMountsDescription = new Types.MountClientData[limit];
+            var stabledMountsDescription_ = new Types.MountClientData[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (stabledMountsDescription as Types.MountClientData[])[i] = new Types.MountClientData();
-                 (stabledMountsDescription as Types.MountClientData[])[i].Deserialize(reader);
+                 stabledMountsDescription_[i] = new Types.MountClientData();
+                 stabledMountsDescription_[i].Deserialize(reader);
             }
+            stabledMountsDescription = stabledMountsDescription_;
         }
         
         public override int GetSerializationSize()

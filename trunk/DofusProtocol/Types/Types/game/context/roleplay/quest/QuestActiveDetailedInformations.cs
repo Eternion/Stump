@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:29:16
+// Generated on 03/02/2014 20:43:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,12 +35,20 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteShort(stepId);
-            writer.WriteUShort((ushort)objectives.Count());
+            var objectives_before = writer.Position;
+            var objectives_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in objectives)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 objectives_count++;
             }
+            var objectives_after = writer.Position;
+            writer.Seek((int)objectives_before);
+            writer.WriteUShort((ushort)objectives_count);
+            writer.Seek((int)objectives_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -50,12 +58,13 @@ namespace Stump.DofusProtocol.Types
             if (stepId < 0)
                 throw new Exception("Forbidden value on stepId = " + stepId + ", it doesn't respect the following condition : stepId < 0");
             var limit = reader.ReadUShort();
-            objectives = new Types.QuestObjectiveInformations[limit];
+            var objectives_ = new Types.QuestObjectiveInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (objectives as Types.QuestObjectiveInformations[])[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestObjectiveInformations>(reader.ReadShort());
-                 (objectives as Types.QuestObjectiveInformations[])[i].Deserialize(reader);
+                 objectives_[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestObjectiveInformations>(reader.ReadShort());
+                 objectives_[i].Deserialize(reader);
             }
+            objectives = objectives_;
         }
         
         public override int GetSerializationSize()

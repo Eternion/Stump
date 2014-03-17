@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NLog;
 using Stump.Core.Reflection;
@@ -24,6 +25,7 @@ using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
+using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.IPC
@@ -137,9 +139,46 @@ namespace Stump.Server.AuthServer.IPC
 
                 Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
             }
+            else if (!string.IsNullOrEmpty(message.Login))
+            {
+                Account account = AccountManager.FindAccountByLogin(message.Login);
+
+                if (account == null)
+                {
+                    Client.SendError(string.Format("Account not found with login {0}", message.Login), message);
+                    return;
+                }
+
+                Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
+            }
+            else if (message.Id.HasValue)
+            {
+                Account account = AccountManager.FindAccountById(message.Id.Value);
+                
+                if (account == null)
+                {
+                    Client.SendError(string.Format("Account not found with id {0}", message.Id), message);
+                    return;
+                }
+
+                Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
+            }
+            else if (message.CharacterId.HasValue)
+            {
+                Account account = AccountManager.FindAccountByCharacterId(message.CharacterId.Value);
+                
+                if (account == null)
+                {
+                    Client.SendError(string.Format("Account not found with character id {0}", message.CharacterId), message);
+                    return;
+                }
+
+                Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
+
+            }
             else
             {
-                Client.SendError("Ticket and Nickname null or empty", message);
+                Client.SendError("Ticket, Nickname, Login, CharacterId and Id null or empty", message);
             }
         }
 
@@ -185,7 +224,7 @@ namespace Stump.Server.AuthServer.IPC
                 Login = accountData.Login,
                 PasswordHash = accountData.PasswordHash,
                 Nickname = accountData.Nickname,
-                Role = accountData.Role,
+                UserGroupId = accountData.UserGroupId,
                 AvailableBreeds = accountData.AvailableBreeds,
                 Ticket = accountData.Ticket,
                 SecretQuestion = accountData.SecretQuestion,
@@ -213,7 +252,7 @@ namespace Stump.Server.AuthServer.IPC
             account.PasswordHash = message.Account.PasswordHash;
             account.SecretQuestion = message.Account.SecretQuestion;
             account.SecretAnswer = message.Account.SecretAnswer;
-            account.Role = message.Account.Role;
+            account.UserGroupId = message.Account.UserGroupId;
             account.Tokens = message.Account.Tokens;
 
             Database.Update(account);
@@ -298,16 +337,8 @@ namespace Stump.Server.AuthServer.IPC
                 return;
             }
 
-            if (message.Jailed == 0)
-            {
-                victimAccount.IsBanned = true;
-                victimAccount.IsJailed = false;
-            }
-            else
-            {
-                victimAccount.IsBanned = false;
-                victimAccount.IsJailed = true;
-            }
+            victimAccount.IsBanned = !message.Jailed;
+            victimAccount.IsJailed = message.Jailed;
 
             victimAccount.BanReason = message.BanReason;
             victimAccount.BanEndDate = message.BanEndDate;
@@ -389,6 +420,15 @@ namespace Stump.Server.AuthServer.IPC
                 Database.Delete(ipBan);
                 Client.ReplyRequest(new CommonOKMessage(), message);
             }
+        }
+
+
+        private void Handle(GroupsRequestMessage message)
+        {
+            Client.ReplyRequest(
+                new GroupsListMessage(
+                    Database.Query<UserGroupRecord>(UserGroupRelator.FetchQuery).Select(x => x.GetGroupData()).ToList()),
+                message);
         }
 
         public void Dispose()

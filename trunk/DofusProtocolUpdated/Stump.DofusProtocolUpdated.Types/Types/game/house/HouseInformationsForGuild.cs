@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:34
+// Generated on 03/06/2014 18:50:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,11 +53,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
-            writer.WriteUShort((ushort)skillListIds.Count());
+            var skillListIds_before = writer.Position;
+            var skillListIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in skillListIds)
             {
                  writer.WriteInt(entry);
+                 skillListIds_count++;
             }
+            var skillListIds_after = writer.Position;
+            writer.Seek((int)skillListIds_before);
+            writer.WriteUShort((ushort)skillListIds_count);
+            writer.Seek((int)skillListIds_after);
+
             writer.WriteUInt(guildshareParams);
         }
         
@@ -81,11 +89,12 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             var limit = reader.ReadUShort();
-            skillListIds = new int[limit];
+            var skillListIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (skillListIds as int[])[i] = reader.ReadInt();
+                 skillListIds_[i] = reader.ReadInt();
             }
+            skillListIds = skillListIds_;
             guildshareParams = reader.ReadUInt();
             if (guildshareParams < 0 || guildshareParams > 4.294967295E9)
                 throw new Exception("Forbidden value on guildshareParams = " + guildshareParams + ", it doesn't respect the following condition : guildshareParams < 0 || guildshareParams > 4.294967295E9");

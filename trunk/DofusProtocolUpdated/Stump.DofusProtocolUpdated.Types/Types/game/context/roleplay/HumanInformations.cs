@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:31
+// Generated on 03/06/2014 18:50:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,12 +36,20 @@ namespace Stump.DofusProtocol.Types
         {
             restrictions.Serialize(writer);
             writer.WriteBoolean(sex);
-            writer.WriteUShort((ushort)options.Count());
+            var options_before = writer.Position;
+            var options_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in options)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 options_count++;
             }
+            var options_after = writer.Position;
+            writer.Seek((int)options_before);
+            writer.WriteUShort((ushort)options_count);
+            writer.Seek((int)options_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -50,12 +58,13 @@ namespace Stump.DofusProtocol.Types
             restrictions.Deserialize(reader);
             sex = reader.ReadBoolean();
             var limit = reader.ReadUShort();
-            options = new Types.HumanOption[limit];
+            var options_ = new Types.HumanOption[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (options as Types.HumanOption[])[i] = Types.ProtocolTypeManager.GetInstance<Types.HumanOption>(reader.ReadShort());
-                 (options as Types.HumanOption[])[i].Deserialize(reader);
+                 options_[i] = Types.ProtocolTypeManager.GetInstance<Types.HumanOption>(reader.ReadShort());
+                 options_[i].Deserialize(reader);
             }
+            options = options_;
         }
         
         public virtual int GetSerializationSize()

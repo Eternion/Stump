@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:31
+// Generated on 03/06/2014 18:50:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,11 +33,19 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             mainCreatureLightInfos.Serialize(writer);
-            writer.WriteUShort((ushort)underlings.Count());
+            var underlings_before = writer.Position;
+            var underlings_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in underlings)
             {
                  entry.Serialize(writer);
+                 underlings_count++;
             }
+            var underlings_after = writer.Position;
+            writer.Seek((int)underlings_before);
+            writer.WriteUShort((ushort)underlings_count);
+            writer.Seek((int)underlings_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -45,12 +53,13 @@ namespace Stump.DofusProtocol.Types
             mainCreatureLightInfos = new Types.MonsterInGroupLightInformations();
             mainCreatureLightInfos.Deserialize(reader);
             var limit = reader.ReadUShort();
-            underlings = new Types.MonsterInGroupInformations[limit];
+            var underlings_ = new Types.MonsterInGroupInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (underlings as Types.MonsterInGroupInformations[])[i] = new Types.MonsterInGroupInformations();
-                 (underlings as Types.MonsterInGroupInformations[])[i].Deserialize(reader);
+                 underlings_[i] = new Types.MonsterInGroupInformations();
+                 underlings_[i].Deserialize(reader);
             }
+            underlings = underlings_;
         }
         
         public virtual int GetSerializationSize()

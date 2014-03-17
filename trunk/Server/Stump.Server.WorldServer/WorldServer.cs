@@ -67,6 +67,9 @@ namespace Stump.Server.WorldServer
         [Variable(true)]
         public static int AutoSaveInterval  = 3 * 60;
 
+        [Variable(true)]
+        public static bool SaveMessage = true;
+
         public WorldVirtualConsole VirtualConsoleInterface
         {
             get;
@@ -100,6 +103,7 @@ namespace Stump.Server.WorldServer
             logger.Info("Opening Database..."); 
             DBAccessor.OpenConnection();
             DataManager.DefaultDatabase = DBAccessor.Database;
+            DataManagerAllocator.Assembly = Assembly.GetExecutingAssembly();
 
             logger.Info("Register Messages...");
             MessageReceiver.Initialize();
@@ -113,6 +117,7 @@ namespace Stump.Server.WorldServer
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
 
             InitializationManager.InitializeAll();
+            CommandManager.LoadOrCreateCommandsInfo(CommandsInfoFilePath);
             IsInitialized = true;
         }
 

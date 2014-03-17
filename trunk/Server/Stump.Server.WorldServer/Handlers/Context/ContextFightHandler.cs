@@ -9,9 +9,9 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (spell == null)
                 return;
 
-            client.Character.Fighter.CastSpell(spell, client.Character.Map.Cells[message.cellId]);
+            client.Character.Fighter.CastSpell(spell, client.Character.Fight.Map.Cells[message.cellId]);
         }
 
         [WorldHandler(GameActionFightCastOnTargetRequestMessage.Id)]
@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             if (client.Character.Fighter.Position.Cell.Id != message.cellId)
             {
-                client.Character.Fighter.ChangePrePlacement(client.Character.Map.Cells[message.cellId]);
+                client.Character.Fighter.ChangePrePlacement(client.Character.Fight.Map.Cells[message.cellId]);
             }
         }
 

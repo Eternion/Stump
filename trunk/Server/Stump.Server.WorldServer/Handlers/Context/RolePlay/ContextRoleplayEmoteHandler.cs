@@ -18,15 +18,13 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void HandleEmotePlayRequestMessage(WorldClient client, EmotePlayRequestMessage message)
         {
             client.Character.PlayEmote((EmotesEnum) message.emoteId);
-            var GameContextActorInfos = client.Character.GetGameContextActorInformations() as GameRolePlayActorInformations;
-            client.Send(new GameRolePlayShowActorMessage(GameContextActorInfos));
         }
 
         public static void SendEmotePlayMessage(IPacketReceiver client, Character character, EmotesEnum emote)
         {
             client.Send(new EmotePlayMessage(
                             (sbyte) emote,
-                            DateTime.Now.GetUnixTimeStamp(),
+                            DateTime.Now.GetUnixTimeStampLong(),
                             character.Id,
                             (int) character.Account.Id
                             ));
@@ -36,7 +34,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         {
             client.Send(new EmotePlayMessage(
                             (sbyte) emote,
-                            DateTime.Now.GetUnixTimeStamp(),
+                            DateTime.Now.GetUnixTimeStampLong(),
                             actor.Id,
                             0
                             ));

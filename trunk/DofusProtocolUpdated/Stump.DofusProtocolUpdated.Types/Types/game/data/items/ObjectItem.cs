@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:33
+// Generated on 03/06/2014 18:50:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,12 +41,20 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteByte(position);
             writer.WriteShort(objectGID);
-            writer.WriteUShort((ushort)effects.Count());
+            var effects_before = writer.Position;
+            var effects_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in effects)
             {
                  writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
+                 effects_count++;
             }
+            var effects_after = writer.Position;
+            writer.Seek((int)effects_before);
+            writer.WriteUShort((ushort)effects_count);
+            writer.Seek((int)effects_after);
+
             writer.WriteInt(objectUID);
             writer.WriteInt(quantity);
         }
@@ -61,12 +69,13 @@ namespace Stump.DofusProtocol.Types
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
             var limit = reader.ReadUShort();
-            effects = new Types.ObjectEffect[limit];
+            var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (effects as Types.ObjectEffect[])[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
-                 (effects as Types.ObjectEffect[])[i].Deserialize(reader);
+                 effects_[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
+                 effects_[i].Deserialize(reader);
             }
+            effects = effects_;
             objectUID = reader.ReadInt();
             if (objectUID < 0)
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");

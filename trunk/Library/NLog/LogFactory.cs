@@ -61,7 +61,7 @@ namespace NLog
 
         private readonly Dictionary<LoggerCacheKey, WeakReference> loggerCache = new Dictionary<LoggerCacheKey, WeakReference>();
 
-        private static TimeSpan defaultFlushTimeout = TimeSpan.FromSeconds(15);
+        private static TimeSpan defaultFlushTimeout = TimeSpan.FromSeconds(60);
 
 #if !NET_CF && !SILVERLIGHT
         private Timer reloadTimer;

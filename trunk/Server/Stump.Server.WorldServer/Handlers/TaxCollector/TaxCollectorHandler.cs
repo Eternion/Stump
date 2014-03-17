@@ -26,8 +26,6 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
         [WorldHandler(GameRolePlayTaxCollectorFightRequestMessage.Id)]
         public static void HandleGameRolePlayTaxCollectorFightRequestMessage(WorldClient client, GameRolePlayTaxCollectorFightRequestMessage message)
         {
-            client.Character.OpenPopup("Vous ne pouvez pas attaquer les Percepteurs pour le moment, une mise à jour arrivera bientôt !");
-            return;
             var taxCollector = client.Character.Map.GetActor<TaxCollectorNpc>(message.taxCollectorId);
 
             var result = client.Character.CanAttack(taxCollector);
@@ -49,8 +47,7 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
             if (client.Character.Guild == null)
                 return;
 
-            var taxCollector =
-                client.Character.Guild.TaxCollectors.FirstOrDefault(x => x.GlobalId == message.taxCollectorId);
+            var taxCollector = client.Character.Guild.TaxCollectors.FirstOrDefault(x => x.GlobalId == message.taxCollectorId);
 
             if (taxCollector == null || !taxCollector.IsFighting)
                 return;
@@ -99,29 +96,49 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
                 taxCollector.Map.Id, (short)taxCollector.Map.SubArea.Id));
         }
 
-        public static void SendGuildFightPlayersHelpersJoinMessage(IPacketReceiver client, Fight fight, Character character)
+        public static void SendGuildFightPlayersHelpersJoinMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, Character character)
         {
-            client.Send(new GuildFightPlayersHelpersJoinMessage(fight.Id, character.GetCharacterBaseInformations()));
+            client.Send(new GuildFightPlayersHelpersJoinMessage(taxCollector.GlobalId, character.GetCharacterMinimalPlusLookInformations()));
         }
 
-        public static void SendGuildFightPlayersHelpersLeaveMessage(IPacketReceiver client, Fight fight, Character character)
+        public static void SendGuildFightPlayersHelpersLeaveMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, Character character)
         {
-            client.Send(new GuildFightPlayersHelpersLeaveMessage(fight.Id, character.Id));
+            client.Send(new GuildFightPlayersHelpersLeaveMessage(taxCollector.GlobalId, character.Id));
         }
 
-        public static void SendGuildFightPlayersEnemyRemoveMessage(IPacketReceiver client, Fight fight, Character character)
+        public static void SendGuildFightPlayersEnemyRemoveMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, Character character)
         {
-            client.Send(new GuildFightPlayersEnemyRemoveMessage(fight.Id, character.Id));
+            client.Send(new GuildFightPlayersEnemyRemoveMessage(taxCollector.GlobalId, character.Id));
         }
 
-        public static void SendGuildFightPlayersEnemiesListMessage(IPacketReceiver client, Fight fight, IEnumerable<Character> characters)
+        public static void SendGuildFightPlayersEnemiesListMessage(IPacketReceiver client, TaxCollectorNpc taxCollector, IEnumerable<Character> characters)
         {
-            client.Send(new GuildFightPlayersEnemiesListMessage(fight.Id, characters.Select(x => x.GetCharacterBaseInformations())));
+            client.Send(new GuildFightPlayersEnemiesListMessage(taxCollector.GlobalId, characters.Select(x => x.GetCharacterMinimalPlusLookInformations())));
         }
 
         public static void SendTaxCollectorAttackedResultMessage(IPacketReceiver client, bool deadOrAlive, TaxCollectorNpc taxCollector)
         {
             client.Send(new TaxCollectorAttackedResultMessage(deadOrAlive, taxCollector.GetTaxCollectorBasicInformations()));
+        }
+
+        public static void SendGetExchangeGuildTaxCollectorMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
+        {
+            client.Send(taxCollector.GetExchangeGuildTaxCollector());
+        }
+
+        public static void SendTaxCollectorMovementMessage(IPacketReceiver client, bool hireOrFire, TaxCollectorNpc taxCollector, string name)
+        {
+            client.Send(new TaxCollectorMovementMessage(hireOrFire, taxCollector.GetTaxCollectorBasicInformations(), name));
+        }
+
+        public static void SendTaxCollectorMovementAddMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
+        {
+            client.Send(new TaxCollectorMovementAddMessage(taxCollector.GetNetworkTaxCollector()));
+        }
+
+        public static void SendTaxCollectorMovementRemoveMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
+        {
+            client.Send(new TaxCollectorMovementRemoveMessage(taxCollector.GlobalId));
         }
     }
 }

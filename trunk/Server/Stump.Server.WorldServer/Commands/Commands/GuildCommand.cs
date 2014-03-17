@@ -1,6 +1,8 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
 using Stump.Server.WorldServer.Game.Guilds;
 
@@ -16,7 +18,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class GuildCreateCommand : SubCommand
+    public class GuildCreateCommand : InGameSubCommand
     {
         public GuildCreateCommand()
         {
@@ -25,79 +27,63 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommand = typeof (GuildCommand);
         }
 
-        public override void Execute(TriggerBase trigger)
+
+        public override void Execute(GameTrigger trigger)
         {
-            if (trigger is GameTrigger)
-            {
-                var panel = new GuildCreationPanel((trigger as GameTrigger).Character);
-                panel.Open();
-            }
-            else
-                trigger.ReplyError("Only in game");
+            var panel = new GuildCreationPanel(trigger.Character);
+            panel.Open();
         }
     }
 
-    public class GuildJoinCommand : SubCommand
+    public class GuildJoinCommand : InGameSubCommand
     {
         public GuildJoinCommand()
         {
-            Aliases = new[] { "join" };
+            Aliases = new[] {"join"};
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommand = typeof(GuildCommand);
+            ParentCommand = typeof (GuildCommand);
 
             AddParameter<string>("guildname", "guild", "The name of the guild");
         }
 
-        public override void Execute(TriggerBase trigger)
+        public override void Execute(GameTrigger trigger)
         {
-            if (trigger is GameTrigger)
+            Character character = trigger.Character;
+
+            if (character.GuildMember == null)
             {
-                var character = (trigger as GameTrigger).Character;
+                var guildName = trigger.Get<string>("guildname");
+                Guild guild = GuildManager.Instance.TryGetGuild(guildName);
 
-                if (character.GuildMember == null)
-                {
-                    var guildName = trigger.Get<string>("guildname");
-                    var guild = GuildManager.Instance.TryGetGuild(guildName);
+                GuildMember guildMember;
+                guild.TryAddMember(character, out guildMember);
 
-                    GuildMember guildMember;
-                    guild.TryAddMember(character, out guildMember);
+                character.GuildMember = guildMember;
 
-                    character.GuildMember = guildMember;
-
-                    trigger.Reply(string.Format("You have join Guild: {0}", guild.Name));
-                }
-                else
-                    trigger.ReplyError("You must leave your Guild before join another");
+                trigger.Reply(string.Format("You have join Guild: {0}", guild.Name));
             }
             else
-                trigger.ReplyError("Only in game");
+                trigger.ReplyError("You must leave your Guild before join another");
         }
     }
 
-    public class GuildBossCommand : SubCommand
+    public class GuildBossCommand : InGameSubCommand
     {
         public GuildBossCommand()
         {
-            Aliases = new[] { "boss" };
+            Aliases = new[] {"boss"};
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommand = typeof(GuildCommand);
+            ParentCommand = typeof (GuildCommand);
         }
 
-        public override void Execute(TriggerBase trigger)
+        public override void Execute(GameTrigger trigger)
         {
-            if (trigger is GameTrigger)
-            {
-                var character = (trigger as GameTrigger).Character;
+            Character character = trigger.Character;
 
-                if (character.GuildMember != null)
-                {
-                    character.Guild.SetBoss(character.GuildMember);
-                }
-                else
-                    trigger.ReplyError("You must be in a guild to do that !");
-            }
+            if (character.GuildMember != null)
+                character.Guild.SetBoss(character.GuildMember);
             else
-                trigger.ReplyError("Only in game");
+                trigger.ReplyError("You must be in a guild to do that !");
         }
     }
 }

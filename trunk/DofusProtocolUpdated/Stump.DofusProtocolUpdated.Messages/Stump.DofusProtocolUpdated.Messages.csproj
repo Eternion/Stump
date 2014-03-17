@@ -211,6 +211,7 @@
     <Compile Include="Messages\game\basic\SequenceNumberMessage.cs" />
     <Compile Include="Messages\game\basic\SequenceNumberRequestMessage.cs" />
     <Compile Include="Messages\game\basic\TextInformationMessage.cs" />
+    <Compile Include="Messages\game\character\choice\BasicCharactersListMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterFirstSelectionMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectedErrorMessage.cs" />
     <Compile Include="Messages\game\character\choice\CharacterSelectedErrorMissingMapPackMessage.cs" />
@@ -299,6 +300,7 @@
     <Compile Include="Messages\game\context\fight\GameFightResumeMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightResumeWithSlavesMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightSpectateMessage.cs" />
+    <Compile Include="Messages\game\context\fight\GameFightSpectatePlayerRequestMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightStartingMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightStartMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightSynchronizeMessage.cs" />
@@ -308,11 +310,10 @@
     <Compile Include="Messages\game\context\fight\GameFightTurnReadyMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnReadyRequestMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnResumeMessage.cs" />
-    <Compile Include="Messages\game\context\fight\GameFightTurnResumeSlaveMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnStartMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightTurnStartPlayingMessage.cs" />
-    <Compile Include="Messages\game\context\fight\GameFightTurnStartSlaveMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightUpdateTeamMessage.cs" />
+    <Compile Include="Messages\game\context\fight\SlaveSwitchContextMessage.cs" />
     <Compile Include="Messages\game\context\GameContextCreateErrorMessage.cs" />
     <Compile Include="Messages\game\context\GameContextCreateMessage.cs" />
     <Compile Include="Messages\game\context\GameContextCreateRequestMessage.cs" />
@@ -832,7 +833,6 @@
     <Compile Include="Messages\game\inventory\preset\InventoryPresetUpdateMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetUseMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetUseResultMessage.cs" />
-    <Compile Include="Messages\game\inventory\spells\SlaveSwitchContextMessage.cs" />
     <Compile Include="Messages\game\inventory\spells\SpellListMessage.cs" />
     <Compile Include="Messages\game\inventory\storage\StorageInventoryContentMessage.cs" />
     <Compile Include="Messages\game\inventory\storage\StorageKamasUpdateMessage.cs" />

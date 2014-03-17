@@ -1,6 +1,6 @@
 
 
-// Generated on 08/11/2013 11:28:24
+// Generated on 03/02/2014 20:42:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,32 +33,50 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort((ushort)targetIds.Count());
+            var targetIds_before = writer.Position;
+            var targetIds_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in targetIds)
             {
                  writer.WriteInt(entry);
+                 targetIds_count++;
             }
-            writer.WriteUShort((ushort)targetCells.Count());
+            var targetIds_after = writer.Position;
+            writer.Seek((int)targetIds_before);
+            writer.WriteUShort((ushort)targetIds_count);
+            writer.Seek((int)targetIds_after);
+
+            var targetCells_before = writer.Position;
+            var targetCells_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in targetCells)
             {
                  writer.WriteShort(entry);
+                 targetCells_count++;
             }
+            var targetCells_after = writer.Position;
+            writer.Seek((int)targetCells_before);
+            writer.WriteUShort((ushort)targetCells_count);
+            writer.Seek((int)targetCells_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            targetIds = new int[limit];
+            var targetIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (targetIds as int[])[i] = reader.ReadInt();
+                 targetIds_[i] = reader.ReadInt();
             }
+            targetIds = targetIds_;
             limit = reader.ReadUShort();
-            targetCells = new short[limit];
+            var targetCells_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (targetCells as short[])[i] = reader.ReadShort();
+                 targetCells_[i] = reader.ReadShort();
             }
+            targetCells = targetCells_;
         }
         
         public override int GetSerializationSize()

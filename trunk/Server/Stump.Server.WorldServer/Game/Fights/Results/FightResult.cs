@@ -1,7 +1,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using FightLoot = Stump.Server.WorldServer.Game.Fights.Loots.FightLoot;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {

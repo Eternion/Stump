@@ -75,17 +75,17 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public SubArea SubArea
         {
-            get { return Position != null ? Position.Map.SubArea : null; }
+            get { return Position != null && Position.Map != null ? Position.Map.SubArea : null; }
         }
 
         public Area Area
         {
-            get { return Position != null ? Position.Map.Area : null; }
+            get { return Position != null && Position.Map != null? Position.Map.Area : null; }
         }
 
         public SuperArea SuperArea
         {
-            get { return Position != null ? Position.Map.SuperArea : null; }
+            get { return Position != null && Position.Map != null ? Position.Map.SuperArea : null; }
         }
 
         public virtual bool IsInWorld
@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region IDisposable Members
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             if (IsDisposed)
                 return;

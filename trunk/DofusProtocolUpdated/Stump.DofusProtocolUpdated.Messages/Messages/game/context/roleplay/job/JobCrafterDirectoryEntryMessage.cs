@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:02
+// Generated on 03/06/2014 18:50:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,11 +36,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             playerInfo.Serialize(writer);
-            writer.WriteUShort((ushort)jobInfoList.Count());
+            var jobInfoList_before = writer.Position;
+            var jobInfoList_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in jobInfoList)
             {
                  entry.Serialize(writer);
+                 jobInfoList_count++;
             }
+            var jobInfoList_after = writer.Position;
+            writer.Seek((int)jobInfoList_before);
+            writer.WriteUShort((ushort)jobInfoList_count);
+            writer.Seek((int)jobInfoList_after);
+
             playerLook.Serialize(writer);
         }
         
@@ -49,12 +57,13 @@ namespace Stump.DofusProtocol.Messages
             playerInfo = new Types.JobCrafterDirectoryEntryPlayerInfo();
             playerInfo.Deserialize(reader);
             var limit = reader.ReadUShort();
-            jobInfoList = new Types.JobCrafterDirectoryEntryJobInfo[limit];
+            var jobInfoList_ = new Types.JobCrafterDirectoryEntryJobInfo[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (jobInfoList as Types.JobCrafterDirectoryEntryJobInfo[])[i] = new Types.JobCrafterDirectoryEntryJobInfo();
-                 (jobInfoList as Types.JobCrafterDirectoryEntryJobInfo[])[i].Deserialize(reader);
+                 jobInfoList_[i] = new Types.JobCrafterDirectoryEntryJobInfo();
+                 jobInfoList_[i].Deserialize(reader);
             }
+            jobInfoList = jobInfoList_;
             playerLook = new Types.EntityLook();
             playerLook.Deserialize(reader);
         }

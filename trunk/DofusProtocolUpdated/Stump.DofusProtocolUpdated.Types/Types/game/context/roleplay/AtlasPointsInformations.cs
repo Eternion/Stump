@@ -1,6 +1,6 @@
 
 
-// Generated on 12/12/2013 16:57:30
+// Generated on 03/06/2014 18:50:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,11 +33,19 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(type);
-            writer.WriteUShort((ushort)coords.Count());
+            var coords_before = writer.Position;
+            var coords_count = 0;
+            writer.WriteUShort(0);
             foreach (var entry in coords)
             {
                  entry.Serialize(writer);
+                 coords_count++;
             }
+            var coords_after = writer.Position;
+            writer.Seek((int)coords_before);
+            writer.WriteUShort((ushort)coords_count);
+            writer.Seek((int)coords_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -46,12 +54,13 @@ namespace Stump.DofusProtocol.Types
             if (type < 0)
                 throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
             var limit = reader.ReadUShort();
-            coords = new Types.MapCoordinatesExtended[limit];
+            var coords_ = new Types.MapCoordinatesExtended[limit];
             for (int i = 0; i < limit; i++)
             {
-                 (coords as Types.MapCoordinatesExtended[])[i] = new Types.MapCoordinatesExtended();
-                 (coords as Types.MapCoordinatesExtended[])[i].Deserialize(reader);
+                 coords_[i] = new Types.MapCoordinatesExtended();
+                 coords_[i].Deserialize(reader);
             }
+            coords = coords_;
         }
         
         public virtual int GetSerializationSize()

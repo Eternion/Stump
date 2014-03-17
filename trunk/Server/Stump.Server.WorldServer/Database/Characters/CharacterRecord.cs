@@ -18,6 +18,12 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         public static string FetchById =
             "SELECT * FROM characters WHERE Id = {0}";
+
+        /// <summary>
+        /// Use SQL parameters
+        /// </summary>
+        public static string FetchByName =
+            "SELECT * FROM characters WHERE Name = @0";
         /// <summary>
         /// Use string.Format(ToCSV(","))
         /// </summary>

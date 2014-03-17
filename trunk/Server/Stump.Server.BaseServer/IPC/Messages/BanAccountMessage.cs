@@ -63,7 +63,7 @@ namespace Stump.Server.BaseServer.IPC.Messages
         }
 
         [ProtoMember(7)]
-        public int? Jailed
+        public bool Jailed
         {
             get;
             set;

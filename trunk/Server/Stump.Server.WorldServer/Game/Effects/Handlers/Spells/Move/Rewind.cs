@@ -9,13 +9,10 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
-    [EffectHandler(EffectsEnum.Effect_793)]
-    public class RewindEffect : SpellEffectHandler
+    [EffectHandler(EffectsEnum.Effect_Rewind)]
+    public class Rewind : SpellEffectHandler
     {
-        private const int BOBBIN_SPELL_ID = 3181;
-
-
-        public RewindEffect(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public Rewind(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
@@ -34,17 +31,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
             buff.Target.Position.Cell = buff.Target.TurnStartPosition.Cell;
             ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(buff.Target.Fight.Clients, Caster, buff.Target, buff.Target.Position.Cell);
-
-            // todo : is it really necessary ?
-            ContextHandler.SendGameActionFightSpellCastMessage(
-                buff.Target.Fight.Clients,
-                ActionsEnum.ACTION_FIGHT_CAST_SPELL,
-                buff.Target,
-                buff.Target,
-                buff.Target.Position.Cell,
-                FightSpellCastCriticalEnum.NORMAL,
-                true,
-                BOBBIN_SPELL_ID, 1);
         }
     }
 }
