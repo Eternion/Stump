@@ -121,6 +121,11 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
             client.Send(new TaxCollectorAttackedResultMessage(deadOrAlive, taxCollector.GetTaxCollectorBasicInformations()));
         }
 
+        public static void SendGetExchangeGuildTaxCollectorMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
+        {
+            client.Send(taxCollector.GetExchangeGuildTaxCollector());
+        }
+
         public static void SendTaxCollectorMovementMessage(IPacketReceiver client, bool hireOrFire, TaxCollectorNpc taxCollector, string name)
         {
             client.Send(new TaxCollectorMovementMessage(hireOrFire, taxCollector.GetTaxCollectorBasicInformations(), name));

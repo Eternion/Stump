@@ -298,7 +298,7 @@ namespace Stump.Server.WorldServer.Game.Social
                                                                               string.Format(
                                                                                   AccountRelationRelator.FetchByAccount,
                                                                                   Owner.Account.Id))
-                                                                          .ToDictionary(x => x.AccountId, x => x));
+                                                                          .ToDictionary(x => x.Id, x => x));
 
             foreach (var relation in m_relations.Values)
             {

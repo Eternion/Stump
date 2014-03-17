@@ -98,12 +98,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
             Emblem = new GuildEmblem(Record);
 
+            if (m_members.Count == 0)
+            {
+                logger.Error("Guild {0} ({1}) is empty", Id, Name);
+                return;
+            }
+
             foreach (var member in m_members)
             {
                 if (member.IsBoss)
                 {
                     if (Boss != null)
+                    {
                         logger.Error("There is at least two boss in guild {0} ({1})", Id, Name);
+                    }
 
                     Boss = member;
                 }
@@ -112,19 +120,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 member.BindGuild(this);
             }
 
-            if (m_members.Count == 0)
+            if (Boss == null)
             {
-                logger.Error("Guild {0} ({1}) is empty", Id, Name);
-            }
-            else if (Boss == null)
-            {
-                var member = m_members.First();
-                SetBoss(member);
                 logger.Error("There is at no boss in guild {0} ({1}) -> Promote new Boss", Id, Name);
             }
 
             // load spells
-            for (int i = 0; i < record.Spells.Length && i < TAX_COLLECTOR_SPELLS.Length; i++)
+            for (var i = 0; i < record.Spells.Length && i < TAX_COLLECTOR_SPELLS.Length; i++)
             {
                 if (record.Spells[i] == 0)
                     continue;
@@ -295,7 +297,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public void AddTaxCollector(TaxCollectorNpc taxCollector)
         {
             m_taxCollectors.Add(taxCollector);
-            TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
+            //TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
         public void RemoveTaxCollector(TaxCollectorNpc taxCollector)

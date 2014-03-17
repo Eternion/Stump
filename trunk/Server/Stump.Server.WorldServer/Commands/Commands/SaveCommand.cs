@@ -16,15 +16,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            string str = trigger.Args.PeekNextWord();
+            var str = trigger.Args.PeekNextWord();
 
             if (string.IsNullOrEmpty(str))
             {
-                if (trigger is GameTrigger)
-                {
-                    ( trigger as GameTrigger ).Character.SaveLater();
-                    trigger.Reply("Player saved");
-                }
+                if (!(trigger is GameTrigger))
+                    return;
+
+                (trigger as GameTrigger).Character.SaveLater();
+                trigger.Reply("Player saved");
             }
             else
             {
