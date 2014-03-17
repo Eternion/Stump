@@ -1741,8 +1741,9 @@
         Effect_AddVitalityPercent = 1078,
         /// <summary>
         /// -#1{~1~2 to -}#2 AP
+        /// See Effect_SubAP
         /// </summary>
-        Effect_1079 = 1079,
+        Effect_SubAP_1079 = 1079,
         /// <summary>
         /// -#1{~1~2 to -}#2 MP
         /// </summary>
