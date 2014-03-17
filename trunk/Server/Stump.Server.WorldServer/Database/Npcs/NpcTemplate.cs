@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
 
         #endregion
 
-        private List<Actions.NpcActionDatabase> m_actions;
+        private List<NpcActionDatabase> m_actions;
         private string m_actionsIdsCSV;
         private string m_dialogMessagesIdCSV;
         private string m_dialogRepliesIdCSV;

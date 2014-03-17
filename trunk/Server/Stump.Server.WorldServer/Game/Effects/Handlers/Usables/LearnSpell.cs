@@ -21,10 +21,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (integerEffect == null)
                 return false;
 
-            UsedItems = NumberOfUses;
-
             var template = SpellManager.Instance.GetSpellTemplate((uint) integerEffect.Value).Spell;
-            Target.Spells.LearnSpell(template);
+            if (template == null)
+                return false;
+
+            UsedItems = NumberOfUses;
+            Target.Spells.LearnSpell(template.Id);
 
             return true;
         }

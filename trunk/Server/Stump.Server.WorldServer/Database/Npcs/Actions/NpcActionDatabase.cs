@@ -1,5 +1,4 @@
-﻿using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Conditions;
 
@@ -7,7 +6,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
     public abstract class NpcActionDatabase : NpcAction
     {
-        public NpcActionDatabase(NpcActionRecord record)
+        protected NpcActionDatabase(NpcActionRecord record)
         {
             Record = record;
         }

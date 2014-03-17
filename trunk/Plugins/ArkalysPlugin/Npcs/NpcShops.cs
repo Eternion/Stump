@@ -6,7 +6,6 @@ using Stump.Core.Collections;
 using Stump.Core.Sql;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 
@@ -73,107 +72,107 @@ namespace ArkalysPlugin.Npcs
 
         [Variable] public static string PatchName = "npcs_shops.sql";
 
-        [Variable] public static int[] IgnoredItems = new[]
-            {
-                12655,
-                12656,
-                12657,
-                12658,
-                11088,
-                11089,
-                11091,
-                11092,
-                9418,
-                9451,
-                9452,
-                9453,
-                11418,
-                11419,
-                11420,
-                11421,
-                9660,
-                9662,
-                9663,
-                9667,
-                9652,
-                9654,
-                9655,
-                9658,
-                13483,
-                13484,
-                13485,
-                13486,
-                12502,
-                12503,
-                12504,
-                12505,
-                11055,
-                11056,
-                11057,
-                11058,
-                10554,
-                10556,
-                10558,
-                10560,
-                10562,
-                11376,
-                11377,
-                11378,
-                11379,
-                10180,
-                10181,
-                10182,
-                10183,
-                9410,
-                9411,
-                9412,
-                9413,
-                10987,
-                10988,
-                10989,
-                10990,
-                9725,
-                9728,
-                9727,
-                9724,
-                9726,
-                12203,
-                9729,
-                9736,
-                9731,
-                9735,
-                9730,
-                9751,
-                9754,
-                9753,
-                9750,
-                9752,
-                9709,
-                11041,
-                9707,
-                9708,
-                9706,
-                9713,
-                9717,
-                9711,
-                9712,
-                9716,
-                9755,
-                9759,
-                9757,
-                9758,
-                9756,
-                9747,
-                9749,
-                9745,
-                9746,
-                9748,
-                9741,
-                9744,
-                9743,
-                9742,
-                9739
-            };
+        [Variable] public static int[] IgnoredItems =
+        {
+            12655,
+            12656,
+            12657,
+            12658,
+            11088,
+            11089,
+            11091,
+            11092,
+            9418,
+            9451,
+            9452,
+            9453,
+            11418,
+            11419,
+            11420,
+            11421,
+            9660,
+            9662,
+            9663,
+            9667,
+            9652,
+            9654,
+            9655,
+            9658,
+            13483,
+            13484,
+            13485,
+            13486,
+            12502,
+            12503,
+            12504,
+            12505,
+            11055,
+            11056,
+            11057,
+            11058,
+            10554,
+            10556,
+            10558,
+            10560,
+            10562,
+            11376,
+            11377,
+            11378,
+            11379,
+            10180,
+            10181,
+            10182,
+            10183,
+            9410,
+            9411,
+            9412,
+            9413,
+            10987,
+            10988,
+            10989,
+            10990,
+            9725,
+            9728,
+            9727,
+            9724,
+            9726,
+            12203,
+            9729,
+            9736,
+            9731,
+            9735,
+            9730,
+            9751,
+            9754,
+            9753,
+            9750,
+            9752,
+            9709,
+            11041,
+            9707,
+            9708,
+            9706,
+            9713,
+            9717,
+            9711,
+            9712,
+            9716,
+            9755,
+            9759,
+            9757,
+            9758,
+            9756,
+            9747,
+            9749,
+            9745,
+            9746,
+            9748,
+            9741,
+            9744,
+            9743,
+            9742,
+            9739
+        };
 
         private static string m_patchPath;
 
@@ -214,7 +213,7 @@ namespace ArkalysPlugin.Npcs
                 AppendQuery(SqlBuilder.BuildInsert(npcAction));
                 AppendQuery("SET @shopid=(SELECT LAST_INSERT_ID())");
 
-                IOrderedEnumerable<ItemTemplate> selector = (from entry in ItemManager.Instance.GetTemplates()
+                var selector = (from entry in ItemManager.Instance.GetTemplates()
                                                              where
                                                                  Array.IndexOf(seller.Value, (ItemTypeEnum) entry.TypeId) !=
                                                                  -1 && entry.Level >= MinItemLevel &&
@@ -222,12 +221,12 @@ namespace ArkalysPlugin.Npcs
                                                              orderby entry.Level ascending
                                                              select entry);
 
-                foreach (ItemTemplate template in selector)
+                foreach (var template in selector)
                 {
                     if (IgnoredItems.Contains(template.Id))
                         continue;
 
-                    int price = Prices.First(entry => template.Level <= entry.Key).Value;
+                    var price = Prices.First(entry => template.Level <= entry.Key).Value;
 
                     if (template.TypeId == (int) ItemTypeEnum.BREAD)
                     {
@@ -250,7 +249,7 @@ namespace ArkalysPlugin.Npcs
 
                     if (price > 0)
                     {
-                        int orbPrice = OrbsPrices.First(entry => template.Level <= entry.Key).Value;
+                        var orbPrice = OrbsPrices.First(entry => template.Level <= entry.Key).Value;
 
                         var perfectItemQuery = new KeyValueListBase("npcs_items");
                         perfectItemQuery.AddPair("ItemId", template.Id);
@@ -261,13 +260,13 @@ namespace ArkalysPlugin.Npcs
                         AppendQuery(SqlBuilder.BuildInsert(perfectItemQuery));
                     }
 
-                    if (price == 0)
-                    {
-                        var updatePrice = new UpdateKeyValueList("items_templates");
-                        updatePrice.AddPair("Price", 0);
-                        updatePrice.AddWherePair("Id", template.Id);
-                        AppendQuery(SqlBuilder.BuildUpdate(updatePrice));
-                    }
+                    if (price != 0)
+                        continue;
+
+                    var updatePrice = new UpdateKeyValueList("items_templates");
+                    updatePrice.AddPair("Price", 0);
+                    updatePrice.AddWherePair("Id", template.Id);
+                    AppendQuery(SqlBuilder.BuildUpdate(updatePrice));
                 }
             }
         }
