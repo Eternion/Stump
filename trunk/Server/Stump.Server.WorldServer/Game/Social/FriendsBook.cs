@@ -298,7 +298,7 @@ namespace Stump.Server.WorldServer.Game.Social
                                                                               string.Format(
                                                                                   AccountRelationRelator.FetchByAccount,
                                                                                   Owner.Account.Id))
-                                                                          .ToDictionary(x => x.Id, x => x));
+                                                                          .ToDictionary(x => x.TargetId, x => x));
 
             foreach (var relation in m_relations.Values)
             {
@@ -345,7 +345,7 @@ namespace Stump.Server.WorldServer.Game.Social
             var database = WorldServer.Instance.DBAccessor.Database;
             foreach (var relation in m_relations)
             {
-                database.Save(relation);
+                database.Save(relation.Value);
             }
             while (m_relationsToRemove.Count != 0)
             {
