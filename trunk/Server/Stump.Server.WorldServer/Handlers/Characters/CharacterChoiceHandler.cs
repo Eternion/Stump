@@ -66,10 +66,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var colors = message.indexedColor.Select(x => Color.FromArgb(x | 0xFFFFFF)).ToArray();
 
             character.EntityLook.SetColors(indexes, colors);
+            character.Recolor = false;
+
             WorldServer.Instance.DBAccessor.Database.Update(character);
 
-            /* Common selection */
-            CommonCharacterSelection(client, character);
+            /* Characters List */
+            SendCharactersListWithModificationsMessage(client);
         }
 
         [WorldHandler(CharacterSelectionWithRenameMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
@@ -94,10 +96,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             /* Set new name */
             character.Name = message.name.ToLower().FirstLetterUpper();
+            character.Rename = false;
+
             WorldServer.Instance.DBAccessor.Database.Update(character);
 
-            /* Common selection */
-            CommonCharacterSelection(client, character);
+            /* Characters List */
+            SendCharactersListWithModificationsMessage(client);
         }
 
         public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)

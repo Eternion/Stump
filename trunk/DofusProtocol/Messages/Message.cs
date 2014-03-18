@@ -6,7 +6,7 @@ namespace Stump.DofusProtocol.Messages
 {
     public abstract class Message
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private const byte BIT_RIGHT_SHIFT_LEN_PACKET_ID = 2;
         private const byte BIT_MASK = 3;
@@ -23,26 +23,25 @@ namespace Stump.DofusProtocol.Messages
 
         public void Pack(IDataWriter writer)
         {
-            byte typeLen = 3;
+            var len = GetSerializationSize();
+            byte typeLen = ComputeTypeLen(len);
             var header = (short)SubComputeStaticHeader(MessageId, typeLen);
 
             writer.WriteShort(header);
 
             for (int i = typeLen - 1; i >= 0; i--)
             {
-                writer.WriteByte(0);
+                writer.WriteByte((byte)(len >> 8 * i & 255));
             }
-
             Serialize(writer);
-            var len = writer.Position - 5;
-            writer.Seek(2);
 
-            for (int i = typeLen - 1; i >= 0; i--)
+#if DEBUG
+            if (writer is BigEndianWriter && ((BigEndianWriter)writer).Position - (2 + typeLen) != len)
             {
-                writer.WriteByte((byte)(len >> 8*i & 255));
+                logger.Error("{0} message length is diffent from the estimated one (real = {1} ; estimated = {2})", this,
+                             ((BigEndianWriter)writer).Position - (2 + typeLen), len);
             }
-
-            writer.Seek((int)len + 5);
+#endif
         }
 
         public abstract void Serialize(IDataWriter writer);

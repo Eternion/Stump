@@ -1015,7 +1015,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             TurnStartTime = DateTime.Now;
             m_turnTimer = Map.Area.CallDelayed(TurnTime, StopTurn);
 
-            Action<Fight, FightActor> evnt = TurnStarted;
+            var evnt = TurnStarted;
             if (evnt != null)
                 evnt(this, FighterPlaying);
         }
@@ -1212,10 +1212,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             EndSequence(SequenceTypeEnum.SEQUENCE_CHARACTER_DEATH);
 
-            foreach (var trigger in m_triggers.ToArray())
+            foreach (var trigger in m_triggers.ToArray().Where(trigger => trigger.Caster == fighter))
             {
-                if (trigger.Caster == fighter)
-                    RemoveTrigger(trigger);
+                RemoveTrigger(trigger);
             }
         }
 
@@ -1284,7 +1283,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
-            IEnumerable<short> movementsKeys = path.GetServerPathKeys();
+            var movementsKeys = path.GetServerPathKeys();
 
             ForEach(entry =>
                         {
@@ -1561,7 +1560,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
                 else
                 {
-                    bool isfighterTurn = fighter.IsFighterTurn();
+                    var isfighterTurn = fighter.IsFighterTurn();
 
                     ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
 
@@ -1580,11 +1579,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnPlayerReadyToLeave(CharacterFighter fighter)
         {
             fighter.PersonalReadyChecker = null;
-            bool isfighterTurn = fighter.IsFighterTurn();
+            var isfighterTurn = fighter.IsFighterTurn();
 
             ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
 
-            bool fightend = CheckFightEnd();
+            var fightend = CheckFightEnd();
 
             if (!fightend && isfighterTurn)
                 StopTurn();
