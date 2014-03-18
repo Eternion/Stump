@@ -15,14 +15,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
         public virtual void OnEnterMap(Map map)
         {
-            Action<RolePlayActor, Map> handler = EnterMap;
+            var handler = EnterMap;
             if (handler != null) handler(this, map);
         }
 
         public event Action<RolePlayActor, Map> LeaveMap;
         public virtual void OnLeaveMap(Map map)
         {
-            Action<RolePlayActor, Map> handler = LeaveMap;
+            var handler = LeaveMap;
             if (handler != null) handler(this, map);
         }
 
