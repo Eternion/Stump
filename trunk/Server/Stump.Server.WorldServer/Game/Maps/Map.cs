@@ -1128,7 +1128,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 // if the timer wasn't active (=no actors)
                 if (m_autoMoveTimer == null) // call every (max+min)/2/10 to have an average 5% accuracy
-                    m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval)/20,
+                    m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval)/20*1000,
                         MoveRandomlyActors);
             }
 

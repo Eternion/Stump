@@ -64,10 +64,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             var template = SpellManager.Instance.GetSpellTemplate(id);
 
-            if (template == null)
-                return null;
-
-            return LearnSpell(template);
+            return template == null ? null : LearnSpell(template);
         }
 
         public CharacterSpell LearnSpell(SpellTemplate template)
