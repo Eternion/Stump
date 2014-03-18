@@ -25,8 +25,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (template == null)
                 return false;
 
+            if (Target.Spells.HasSpell(template.Id))
+            {
+                Target.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 7, template.Id);
+                return false;
+            }
+
             UsedItems = NumberOfUses;
+
             Target.Spells.LearnSpell(template.Id);
+            Target.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 3, template.Id);
 
             return true;
         }

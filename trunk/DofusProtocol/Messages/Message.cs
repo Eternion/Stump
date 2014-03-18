@@ -23,25 +23,26 @@ namespace Stump.DofusProtocol.Messages
 
         public void Pack(IDataWriter writer)
         {
-            var len = GetSerializationSize();
-            byte typeLen = ComputeTypeLen(len);
+            byte typeLen = 3;
             var header = (short)SubComputeStaticHeader(MessageId, typeLen);
 
             writer.WriteShort(header);
 
             for (int i = typeLen - 1; i >= 0; i--)
             {
+                writer.WriteByte(0);
+            }
+
+            Serialize(writer);
+            var len = writer.Position - 5;
+            writer.Seek(2);
+
+            for (int i = typeLen - 1; i >= 0; i--)
+            {
                 writer.WriteByte((byte)(len >> 8 * i & 255));
             }
-            Serialize(writer);
 
-#if DEBUG
-            if (writer is BigEndianWriter && ((BigEndianWriter)writer).Position - (2 + typeLen) != len)
-            {
-                logger.Error("{0} message length is diffent from the estimated one (real = {1} ; estimated = {2})", this,
-                             ((BigEndianWriter)writer).Position - (2 + typeLen), len);
-            }
-#endif
+            writer.Seek((int)len + 5);
         }
 
         public abstract void Serialize(IDataWriter writer);

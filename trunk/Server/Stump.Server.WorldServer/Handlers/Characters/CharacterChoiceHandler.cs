@@ -70,8 +70,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             WorldServer.Instance.DBAccessor.Database.Update(character);
 
-            /* Characters List */
-            SendCharactersListWithModificationsMessage(client);
+            /* Common selection */
+            CommonCharacterSelection(client, character);
         }
 
         [WorldHandler(CharacterSelectionWithRenameMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
@@ -100,8 +100,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             WorldServer.Instance.DBAccessor.Database.Update(character);
 
-            /* Characters List */
-            SendCharactersListWithModificationsMessage(client);
+            /* Common selection */
+            CommonCharacterSelection(client, character);
         }
 
         public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)
