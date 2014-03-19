@@ -62,6 +62,8 @@ namespace Stump.Server.WorldServer.Core.Network
                             disconnectedClients.Add(worldClient);
                     }
 
+                    stream.Dispose();
+
                     foreach (var client in disconnectedClients)
                     {
                         Remove(client);

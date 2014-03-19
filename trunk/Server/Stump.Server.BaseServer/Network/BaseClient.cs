@@ -98,7 +98,7 @@ namespace Stump.Server.BaseServer.Network
         }
         
         // a bit dirty. only used by WorldClientCollection
-        public void Send(SegmentStream stream)
+        public void Send(SegmentStream stream, bool dispose = true)
         {   
             if (Socket == null || !Connected)
             {
@@ -109,7 +109,8 @@ namespace Stump.Server.BaseServer.Network
             args.Completed += OnSendCompleted;
             
             args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
-            args.UserToken = stream;
+            if (dispose)
+                args.UserToken = stream;
 
             if (!Socket.SendAsync(args))
             {
@@ -123,7 +124,8 @@ namespace Stump.Server.BaseServer.Network
         private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
         {
             args.Completed -= OnSendCompleted;
-            ((SegmentStream) args.UserToken).Dispose();
+            if (args.UserToken is SegmentStream)
+                ((SegmentStream) args.UserToken).Dispose();
             ObjectPoolMgr.ReleaseObject(args);
         }
 
