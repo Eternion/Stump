@@ -672,12 +672,17 @@ namespace Stump.Server.WorldServer.Game.Fights
             return fighter.Position.Point.OrientationTo(new MapPoint(closerCell.Item1), false);
         }
 
-        public bool KickFighter(FightActor fighter)
+        protected virtual bool CanKickFighter(FightActor kicker, FightActor kicked)
+        {
+            return State == FightState.Placement && kicker.IsTeamLeader() && kicked.Team == kicker.Team;
+        }
+
+        public bool KickFighter(FightActor kicker, FightActor fighter)
         {
             if (!Fighters.Contains(fighter))
                 return false;
 
-            if (State != FightState.Placement)
+            if (!CanKickFighter(kicker, fighter))
                 return false;
 
             fighter.Team.RemoveFighter(fighter);
