@@ -133,6 +133,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
+        protected override bool CanKickFighter(FightActor kicker, FightActor kicked)
+        {
+            return false;
+        }
+
         public override void StartFighting()
         {
             if (m_placementTimer != null)

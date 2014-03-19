@@ -54,13 +54,15 @@ namespace Stump.Server.WorldServer.Core.Network
                     {
                         if (worldClient != null)
                         {
-                            worldClient.Send(stream);
+                            worldClient.Send(stream, false);
                             worldClient.OnMessageSent(message);
                         }
 
                         if (worldClient == null || !worldClient.Connected)
                             disconnectedClients.Add(worldClient);
                     }
+
+                    stream.Dispose();
 
                     foreach (var client in disconnectedClients)
                     {
