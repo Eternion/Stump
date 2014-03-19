@@ -1122,14 +1122,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
             if (actor is IAutoMovedEntity)
             {
-                (actor as IAutoMovedEntity).NextMoveDate =
+                /*(actor as IAutoMovedEntity).NextMoveDate =
                     DateTime.Now + TimeSpan.FromSeconds(new AsyncRandom().Next(AutoMoveActorMinInverval,
                         AutoMoveActorMaxInverval + 1));
 
                 // if the timer wasn't active (=no actors)
                 if (m_autoMoveTimer == null) // call every (max+min)/2/10 to have an average 5% accuracy
                     m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval)/20*1000,
-                        MoveRandomlyActors);
+                        MoveRandomlyActors);*/
             }
 
             ForEach(x =>
