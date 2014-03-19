@@ -86,9 +86,15 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
+            /* Check if name is valid */
+            if (!Regex.IsMatch(message.name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            {
+                client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_INVALID_NAME));
+                return;
+            }
+
             /* Check if name is free */
-            if (CharacterManager.Instance.DoesNameExist(message.name) || !Regex.IsMatch(message.name.ToLower().FirstLetterUpper(),
-                                                                               "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            if (CharacterManager.Instance.DoesNameExist(message.name))
             {
                 client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
                 return;

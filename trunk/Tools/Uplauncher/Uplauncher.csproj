@@ -77,6 +77,9 @@
     <StartupObject>Uplauncher.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
