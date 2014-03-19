@@ -410,6 +410,7 @@
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\FelineSpiritCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\LivingChestCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\LuckSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
