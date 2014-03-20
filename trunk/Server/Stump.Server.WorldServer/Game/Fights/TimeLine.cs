@@ -96,8 +96,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return false;
             }
 
-            int counter = 0;
-            int index = ( Index + 1 ) < Fighters.Count ? Index + 1 : 0;
+            var counter = 0;
+            var index = ( Index + 1 ) < Fighters.Count ? Index + 1 : 0;
 
             if (index == 0)
             {

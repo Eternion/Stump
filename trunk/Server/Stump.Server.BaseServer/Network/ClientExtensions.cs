@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Network
 {

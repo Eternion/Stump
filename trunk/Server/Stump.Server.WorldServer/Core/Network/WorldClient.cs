@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Threading;
 using NLog;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
@@ -58,15 +57,10 @@ namespace Stump.Server.WorldServer.Core.Network
             set;
         }
 
-        private WorldAccount m_worldAccount;
-
         public WorldAccount WorldAccount
         {
-            get { return m_worldAccount; }
-            internal set
-            {
-                m_worldAccount = value;
-            }
+            get;
+            internal set;
         }
 
         public List<StartupAction> StartupActions
@@ -129,11 +123,11 @@ namespace Stump.Server.WorldServer.Core.Network
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                if (WorldAccount != null)
-                {
-                    WorldAccount.ConnectedCharacter = null;
-                    WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
-                }
+                if (WorldAccount == null)
+                    return;
+
+                WorldAccount.ConnectedCharacter = null;
+                WorldServer.Instance.DBAccessor.Database.Update(WorldAccount);
             });
 
             base.OnDisconnect();

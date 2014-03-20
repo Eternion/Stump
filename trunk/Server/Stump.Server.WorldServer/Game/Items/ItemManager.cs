@@ -242,6 +242,11 @@ namespace Stump.Server.WorldServer.Game.Items
             return !m_itemTemplates.ContainsKey(id) ? null : m_itemTemplates[id];
         }
 
+        public ItemTemplate TryGetTemplate(ItemIdEnum id)
+        {
+            return !m_itemTemplates.ContainsKey((int)id) ? null : m_itemTemplates[(int)id];
+        }
+
         public ItemTemplate TryGetTemplate(string name, bool ignorecase)
         {
             return

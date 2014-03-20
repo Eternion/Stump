@@ -21,11 +21,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (integerEffect == null)
                 return false;
 
-            var template = SpellManager.Instance.GetSpellTemplate((uint) integerEffect.Value).Spell;
+            var template = SpellManager.Instance.GetSpellTemplate((uint) integerEffect.Value);
             if (template == null)
                 return false;
 
-            if (Target.Spells.HasSpell(template.Id))
+            if (Target.Spells.HasSpell(template.Spell.Id))
             {
                 Target.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 7, template.Id);
                 return false;
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 
             UsedItems = NumberOfUses;
 
-            Target.Spells.LearnSpell(template.Id);
+            Target.Spells.LearnSpell(template.Spell.Id);
             Target.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 3, template.Id);
 
             return true;

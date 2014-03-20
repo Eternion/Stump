@@ -62,10 +62,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Set Colors */
-            var indexes = message.indexedColor.Select(x => x >> 24).ToArray();
-            var colors = message.indexedColor.Select(x => Color.FromArgb(x | 0xFFFFFF)).ToArray();
+            var colors = message.indexedColor.Select(x => Color.FromArgb(x & 0xFFFFFF)).ToArray();
 
-            character.EntityLook.SetColors(indexes, colors);
+            character.EntityLook.SetColors(colors);
             character.Recolor = false;
 
             WorldServer.Instance.DBAccessor.Database.Update(character);
@@ -101,7 +100,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             /* Set new name */
-            character.Name = message.name.ToLower().FirstLetterUpper();
             character.Rename = false;
 
             WorldServer.Instance.DBAccessor.Database.Update(character);

@@ -36,12 +36,12 @@ namespace Stump.Server.BaseServer.Benchmark
                 m_entries.Add(entry);
             }
 
-            if (m_entries.Count >= EntriesLimit)
+            if (m_entries.Count < EntriesLimit)
+                return;
+
+            lock (m_entries)
             {
-                lock (m_entries)
-                {
-                    m_entries.RemoveRange(0, EntriesLimit / 4);
-                }
+                m_entries.RemoveRange(0, EntriesLimit / 4);
             }
         }
 

@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
         public PlayerItemRecord GenerateItemRecord(CharacterRecord character)
         {
-            ItemTemplate template = ItemManager.Instance.TryGetTemplate(ItemId);
+            var template = ItemManager.Instance.TryGetTemplate(ItemId);
 
             if (template == null)
             {

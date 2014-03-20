@@ -23,7 +23,7 @@ namespace Stump.Server.BaseServer.Plugins
 
         private void InvokePluginAdded(PluginContext pluginContext)
         {
-            PluginContextHandler handler = PluginAdded;
+            var handler = PluginAdded;
             if (handler != null) handler(pluginContext);
         }
 
@@ -31,7 +31,7 @@ namespace Stump.Server.BaseServer.Plugins
 
         private void InvokePluginRemoved(PluginContext pluginContext)
         {
-            PluginContextHandler handler = PluginRemoved;
+            var handler = PluginRemoved;
             if (handler != null) handler(pluginContext);
         }
 
@@ -74,12 +74,12 @@ namespace Stump.Server.BaseServer.Plugins
 
             var asmData = File.ReadAllBytes(libPath);
 
-            Assembly pluginAssembly = Assembly.Load(asmData);
+            var pluginAssembly = Assembly.Load(asmData);
             var pluginContext = new PluginContext(libPath, pluginAssembly);
             var initialized = false;
 
             // search the entry point (the class that implements IPlugin)
-            foreach (Type pluginType in pluginAssembly.GetTypes().Where(pluginType => pluginType.IsPublic && !pluginType.IsAbstract).Where(pluginType => pluginType.HasInterface(typeof (IPlugin))))
+            foreach (var pluginType in pluginAssembly.GetTypes().Where(pluginType => pluginType.IsPublic && !pluginType.IsAbstract).Where(pluginType => pluginType.HasInterface(typeof (IPlugin))))
             {
                 if (initialized)
                     throw new PluginLoadException("Found 2 classes that implements IPlugin. A plugin can contains only one");
