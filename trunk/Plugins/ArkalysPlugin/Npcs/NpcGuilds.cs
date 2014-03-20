@@ -33,7 +33,7 @@ namespace ArkalysPlugin.Npcs
 
         //Guildalogemme
         [Variable]
-        public static ItemIdEnum RequiredItemId = ItemIdEnum.Guildalogem;
+        public static int RequiredItemId = (int)ItemIdEnum.Guildalogem;
 
         internal static ItemTemplate RequieredItem;
 

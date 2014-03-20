@@ -12,7 +12,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         [AuthHandler(NicknameChoiceRequestMessage.Id)]
         public static void HandleNicknameChoiceRequestMessage(AuthClient client, NicknameChoiceRequestMessage message)
         {
-            string nickname = message.nickname;
+            var nickname = message.nickname;
 
             /* Check the Username */
             if (!CheckNickName(nickname))
