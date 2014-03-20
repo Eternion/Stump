@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
@@ -12,7 +11,7 @@ namespace Stump.Server.WorldServer.Core.Network
     public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>
     {
         private WorldClient m_singleClient; // avoid new object allocation
-        private List<WorldClient> m_underlyingList = new List<WorldClient>();
+        private readonly List<WorldClient> m_underlyingList = new List<WorldClient>();
 
         public WorldClientCollection()
         {
@@ -44,7 +43,7 @@ namespace Stump.Server.WorldServer.Core.Network
             {
                 lock (this)
                 {
-                    SegmentStream stream = BufferManager.Default.CheckOutStream();
+                    var stream = BufferManager.Default.CheckOutStream();
 
                     var writer = new BigEndianWriter(stream);
                     message.Pack(writer);
@@ -102,11 +101,8 @@ namespace Stump.Server.WorldServer.Core.Network
 
         public IEnumerator<WorldClient> GetEnumerator()
         {
-            if (m_singleClient != null)
-                return new[] { m_singleClient }.AsEnumerable().GetEnumerator();
-
             // not thread safe
-            return m_underlyingList.GetEnumerator();
+            return m_singleClient != null ? new[] { m_singleClient }.AsEnumerable().GetEnumerator() : m_underlyingList.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -59,7 +58,7 @@ namespace Stump.Server.BaseServer.Handler
         public void RegisterAll(Assembly asm)
         {
             // Register all the packet handlers in the given assembly
-            foreach (Type asmType in asm.GetTypes())
+            foreach (var asmType in asm.GetTypes())
             {
                 Register(asmType);
             }
@@ -74,7 +73,7 @@ namespace Stump.Server.BaseServer.Handler
             if (type.IsAbstract || !(type.GetInterfaces().Contains(typeof(TContainer)) || type.IsSubclassOf(typeof(TContainer))))
                 return;
             
-            MethodInfo[] methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public);
+            var methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public);
 
             TContainer handlerContainer;
 
@@ -88,7 +87,7 @@ namespace Stump.Server.BaseServer.Handler
                                     ".\n " + e.Message);
             }
 
-            foreach (MethodInfo method in methods)
+            foreach (var method in methods)
             {
                 var attributes = method.GetCustomAttributes(typeof(TAttribute), false) as TAttribute[];
 
@@ -113,7 +112,7 @@ namespace Stump.Server.BaseServer.Handler
                 }
                 catch (Exception e)
                 {
-                    string handlerStr = type.FullName + "." + method.Name;
+                    var handlerStr = type.FullName + "." + method.Name;
                     throw new Exception("Unable to register PacketHandler " + handlerStr +
                                         ".\n Make sure its arguments are: " + typeof(TClient).FullName + ", " +
                                         typeof (Message).FullName +

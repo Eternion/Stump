@@ -48,12 +48,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(GameTrigger trigger)
         {
-            Character character = trigger.Character;
+            var character = trigger.Character;
 
             if (character.GuildMember == null)
             {
                 var guildName = trigger.Get<string>("guildname");
-                Guild guild = GuildManager.Instance.TryGetGuild(guildName);
+                var guild = GuildManager.Instance.TryGetGuild(guildName);
 
                 GuildMember guildMember;
                 guild.TryAddMember(character, out guildMember);

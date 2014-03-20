@@ -44,7 +44,7 @@ namespace Stump.Server.BaseServer.Benchmark
 
         public static BenchmarkEntry Create(TimeSpan timestamp, Message message)
         {
-            return new BenchmarkEntry()
+            return new BenchmarkEntry
             {
                 BenchmarkingType = BenchmarkManager.BenchmarkingType,
                 Date = DateTime.Now,

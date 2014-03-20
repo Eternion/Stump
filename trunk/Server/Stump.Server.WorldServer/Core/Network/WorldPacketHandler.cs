@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Core.Network
             List<MessageHandler> handlers;
             if (m_handlers.TryGetValue(message.MessageId, out handlers))
             {
-                foreach (MessageHandler handler in handlers)
+                foreach (var handler in handlers)
                 {
                     if (!handler.Container.CanHandleMessage(client, message.MessageId))
                     {
@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Core.Network
                         break;
                     }
 
-                    IContextHandler context = GetContextHandler(handler.Attribute, client, message);
+                    var context = GetContextHandler(handler.Attribute, client, message);
                     if (context != null)
                         context.AddMessage(new HandledMessage<WorldClient>(handler.Action, client, message));
                 }
@@ -81,14 +81,12 @@ namespace Stump.Server.WorldServer.Core.Network
                 return null;
             }
 
-            if (client.Character.Area == null)
-            {
-                m_logger.Warn("Client {0} sent {1} while not in world", client, message);
-                client.Disconnect();
-                return null;
-            }
+            if (client.Character.Area != null)
+                return client.Character.Area;
 
-            return client.Character.Area;
+            m_logger.Warn("Client {0} sent {1} while not in world", client, message);
+            client.Disconnect();
+            return null;
         }
     }
 }
