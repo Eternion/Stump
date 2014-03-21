@@ -9,7 +9,6 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay

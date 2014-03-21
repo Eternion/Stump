@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -12,11 +13,13 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Guilds;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
-using GuildMemberNetwork = Stump.DofusProtocol.Types.GuildMember;
 using Stump.Server.WorldServer.Handlers.Guilds;
+using GuildMemberNetwork = Stump.DofusProtocol.Types.GuildMember;
+using NetworkGuildEmblem = Stump.DofusProtocol.Types.GuildEmblem;
 
 namespace Stump.Server.WorldServer.Game.Guilds
 {
@@ -511,6 +514,52 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public int[] GetTaxCollectorSpellsLevels() // faster
         {
             return m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
+        }
+
+        public GuildCreationResultEnum SetGuildName(Character character, string name)
+        {
+            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GuildNameChangePotion));
+            if (potion == null)
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
+
+            if (!Regex.IsMatch(name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            {
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_INVALID;
+            }
+
+            if (GuildManager.Instance.DoesNameExist(name))
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
+
+            Name = name;
+
+            foreach (var member in Members)
+            {
+                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 383);
+            }
+
+            return GuildCreationResultEnum.GUILD_CREATE_OK;
+        }
+
+        public GuildCreationResultEnum SetGuildEmblem(Character character, NetworkGuildEmblem emblem)
+        {
+            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GuildEmblemChangePotion));
+            if (potion == null)
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
+
+            if (GuildManager.Instance.DoesEmblemExist(emblem))
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
+
+            character.Inventory.RemoveItem(potion, 1);
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, potion.Template.Id);
+
+            Emblem.ChangeEmblem(emblem);
+
+            foreach (var member in Members)
+            {
+                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 382);
+            }
+
+            return GuildCreationResultEnum.GUILD_CREATE_OK;
         }
 
         public void SetBoss(GuildMember guildMember)
