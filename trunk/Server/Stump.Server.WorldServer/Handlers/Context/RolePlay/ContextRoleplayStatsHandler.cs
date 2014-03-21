@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
     public partial class ContextRoleplayHandler
     {
         private readonly static Dictionary<StatsBoostTypeEnum, PlayerFields> m_statsEnumRelations = new Dictionary<StatsBoostTypeEnum, PlayerFields>
-            {
+        {
                 {StatsBoostTypeEnum.Strength, PlayerFields.Strength},
                 {StatsBoostTypeEnum.Agility, PlayerFields.Agility},
                 {StatsBoostTypeEnum.Chance, PlayerFields.Chance},

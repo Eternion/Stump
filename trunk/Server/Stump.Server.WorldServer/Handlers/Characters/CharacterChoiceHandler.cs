@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -11,6 +10,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -61,14 +61,49 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            /* Set Colors */
-            var indexes = message.indexedColor.Select(x => x >> 24).ToArray();
-            var colors = message.indexedColor.Select(x => Color.FromArgb(x | 0xFFFFFF)).ToArray();
+            if (character.Recolor)
+            {
+                /* Set Colors */
+                var colors = message.indexedColor.Select(x => Color.FromArgb(x & 0xFFFFFF)).ToArray();
 
-            character.EntityLook.SetColors(indexes, colors);
-            character.Recolor = false;
+                character.EntityLook.SetColors(colors);
+                character.Recolor = false;
 
-            WorldServer.Instance.DBAccessor.Database.Update(character);
+                WorldServer.Instance.DBAccessor.Database.Update(character);
+            }
+
+            /* Common selection */
+            CommonCharacterSelection(client, character);
+        }
+
+        [WorldHandler(CharacterSelectionWithRelookMessage.Id, ShouldBeLogged = false, IsGamePacket = false)]
+        public static void HandleCharacterSelectionWithRelookMessage(WorldClient client, CharacterSelectionWithRelookMessage message)
+        {
+            var character = client.Characters.First(entry => entry.Id == message.id);
+
+            /* Check null */
+            if (character == null)
+            {
+                client.Send(new CharacterSelectedErrorMessage());
+                return;
+            }
+
+            if (character.Relook)
+            {
+                /* Set Look */
+                var head = BreedManager.Instance.GetHead(message.cosmeticId);
+
+                if (head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
+                {
+                    client.Send(new CharacterSelectedErrorMessage());
+                    return;
+                }
+
+                character.Head = head.Id;
+                character.Relook = false;
+
+                WorldServer.Instance.DBAccessor.Database.Update(character);
+            }
 
             /* Common selection */
             CommonCharacterSelection(client, character);
@@ -86,25 +121,28 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            /* Check if name is valid */
-            if (!Regex.IsMatch(message.name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            if (character.Rename)
             {
-                client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_INVALID_NAME));
-                return;
+                /* Check if name is valid */
+                if (!Regex.IsMatch(message.name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+                {
+                    client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_INVALID_NAME));
+                    return;
+                }
+
+                /* Check if name is free */
+                if (CharacterManager.Instance.DoesNameExist(message.name))
+                {
+                    client.Send(new CharacterCreationResultMessage((int)CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
+                    return;
+                }
+
+                /* Set new name */
+                character.Name = message.name;
+                character.Rename = false;
+
+                WorldServer.Instance.DBAccessor.Database.Update(character);
             }
-
-            /* Check if name is free */
-            if (CharacterManager.Instance.DoesNameExist(message.name))
-            {
-                client.Send(new CharacterCreationResultMessage((int) CharacterCreationResultEnum.ERR_NAME_ALREADY_EXISTS));
-                return;
-            }
-
-            /* Set new name */
-            character.Name = message.name.ToLower().FirstLetterUpper();
-            character.Rename = false;
-
-            WorldServer.Instance.DBAccessor.Database.Update(character);
 
             /* Common selection */
             CommonCharacterSelection(client, character);

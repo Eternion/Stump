@@ -7,14 +7,12 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
-    public partial class InventoryHandler : WorldHandlerContainer
+    public partial class InventoryHandler
     {
         [WorldHandler(ObjectSetPositionMessage.Id)]
         public static void HandleObjectSetPositionMessage(WorldClient client, ObjectSetPositionMessage message)
