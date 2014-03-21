@@ -138,7 +138,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
         public void SetColors(params Color[] colors)
         {
-            int index = 1;
+            var index = 1;
             m_colors = colors.ToDictionary(x => index++);
             m_entityLook.Invalidate();
         }
@@ -249,7 +249,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
         public ActorLook Clone()
         {
-            return new ActorLook()
+            return new ActorLook
                 {
                     BonesID = m_bonesID,
                     m_colors = m_colors.ToDictionary(x => x.Key, x => x.Value),
@@ -267,7 +267,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
             result.Append("{");
 
-            int missingBars = 0;
+            var missingBars = 0;
 
             result.Append(BonesID);
 
@@ -317,8 +317,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             if (string.IsNullOrEmpty(str) || str[0] != '{')
                 throw new Exception("Incorrect EntityLook format : " + str);
 
-            int cursorPos = 1;
-            int separatorPos = str.IndexOf('|');
+            var cursorPos = 1;
+            var separatorPos = str.IndexOf('|');
 
             if (separatorPos == -1)
             {
@@ -358,23 +358,27 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             var subEntities = new List<SubActorLook>();
             while (cursorPos < str.Length)
             {
-                int atSeparatorIndex = str.IndexOf('@', cursorPos, 3); // max size of a byte = 255, so 3 characters
-                int equalsSeparatorIndex = str.IndexOf('=', atSeparatorIndex + 1, 3); // max size of a byte = 255, so 3 characters
-                byte category = byte.Parse(str.Substring(cursorPos, atSeparatorIndex - cursorPos));
-                byte index = byte.Parse(str.Substring(atSeparatorIndex + 1, equalsSeparatorIndex - ( atSeparatorIndex + 1 )));
+                var atSeparatorIndex = str.IndexOf('@', cursorPos, 3); // max size of a byte = 255, so 3 characters
+                var equalsSeparatorIndex = str.IndexOf('=', atSeparatorIndex + 1, 3); // max size of a byte = 255, so 3 characters
+                var category = byte.Parse(str.Substring(cursorPos, atSeparatorIndex - cursorPos));
+                var index = byte.Parse(str.Substring(atSeparatorIndex + 1, equalsSeparatorIndex - ( atSeparatorIndex + 1 )));
 
-                int hookDepth = 0;
-                int i = equalsSeparatorIndex + 1;
+                var hookDepth = 0;
+                var i = equalsSeparatorIndex + 1;
                 var subEntity = new StringBuilder();
                 do
                 {
                     subEntity.Append(str[i]);
 
-                    if (str[i] == '{')
-                        hookDepth++;
-
-                    else if (str[i] == '}')
-                        hookDepth--;
+                    switch (str[i])
+                    {
+                        case '{':
+                            hookDepth++;
+                            break;
+                        case '}':
+                            hookDepth--;
+                            break;
+                    }
 
                     i++;
                 } while (hookDepth > 0);
@@ -389,11 +393,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
         private static Tuple<int, int> ParseIndexedColor(string str)
         {
-            int signPos = str.IndexOf("=");
-            bool hexNumber = str[signPos + 1] == '#';
+            var signPos = str.IndexOf("=");
+            var hexNumber = str[signPos + 1] == '#';
 
-            int index = int.Parse(str.Substring(0, signPos));
-            int color = int.Parse(str.Substring(signPos + ( hexNumber ? 2 : 1 ), str.Length - ( signPos + ( hexNumber ? 2 : 1 ) )),
+            var index = int.Parse(str.Substring(0, signPos));
+            var color = int.Parse(str.Substring(signPos + ( hexNumber ? 2 : 1 ), str.Length - ( signPos + ( hexNumber ? 2 : 1 ) )),
                                   hexNumber ? NumberStyles.HexNumber : NumberStyles.Integer);
 
             return Tuple.Create(index, color);

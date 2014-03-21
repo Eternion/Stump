@@ -1,13 +1,10 @@
-﻿using System;
-using NLog;
+﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
-using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
@@ -36,7 +33,7 @@ namespace ArkalysPlugin.Npcs
 
         //Guildalogemme
         [Variable]
-        public static int RequiredItemId = 1575;
+        public static int RequiredItemId = (int)ItemIdEnum.Guildalogem;
 
         internal static ItemTemplate RequieredItem;
 

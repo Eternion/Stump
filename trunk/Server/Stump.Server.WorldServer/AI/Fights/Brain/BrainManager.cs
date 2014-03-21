@@ -35,7 +35,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         public void RegisterBrain(Type brain)
         {
             var brainIdentifierAttributes = (brain.GetCustomAttributes(typeof (BrainIdentifierAttribute))) as IEnumerable<BrainIdentifierAttribute>;
-            if (brainIdentifierAttributes != null)
+            if (brainIdentifierAttributes == null)
+                return;
+
             foreach (var identifier in from brainIdentifierAttribute in brainIdentifierAttributes select brainIdentifierAttribute.Identifiers into identifiers from identifier in identifiers where !m_brains.ContainsKey(identifier) select identifier)
             {
                 m_brains.Add(identifier, brain);

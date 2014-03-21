@@ -49,6 +49,7 @@ namespace Stump.Server.BaseServer.Network
         #endregion
 
         #region Events
+
         public event Action<BaseClient> ClientConnected;
 
         private void NotifyClientConnected(BaseClient client)
@@ -64,6 +65,7 @@ namespace Stump.Server.BaseServer.Network
             var handler = ClientDisconnected;
             if (handler != null) handler(client);
         } 
+
         #endregion
 
         public delegate BaseClient CreateClientHandler(Socket clientSocket);
@@ -300,12 +302,12 @@ namespace Stump.Server.BaseServer.Network
             lock (m_clients)
                 removed = m_clients.Remove(client);
 
-            if (removed)
-            {
-                NotifyClientDisconnected(client);
+            if (!removed)
+                return;
 
-                m_semaphore.Release();
-            }
+            NotifyClientDisconnected(client);
+
+            m_semaphore.Release();
         }
 
         public SocketAsyncEventArgs PopSocketArg()

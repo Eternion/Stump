@@ -1,54 +1,38 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 using Stump.Core.Pool.New;
-using Stump.Core.Pool.Task;
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Network
 {
     public abstract class BaseClient : IPacketReceiver, IDisposable
     {
-        private readonly ClientManager m_clientManager;
-
         [Variable(DefinableRunning = true)]
         public static bool LogPackets = false;
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly BigEndianReader m_buffer = new BigEndianReader();
-        private readonly object m_lock = new object();
         private MessagePart m_currentMessage;
         private bool m_disconnecting;
 
-        private bool m_onDisconnectCalled = false;
+        private bool m_onDisconnectCalled;
         private int m_offset;
         private int m_remainingLength;
         private BufferSegment m_bufferSegment;
-        private long m_bytesReceived;
         private long m_totalBytesReceived;
 
-        protected BaseClient(Socket socket, ClientManager clientManager)
+        protected BaseClient(Socket socket)
         {
             Socket = socket;
             IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
-            m_clientManager = clientManager;
             m_bufferSegment = BufferManager.Default.CheckOut();
-        }
-
-        protected BaseClient(Socket socket)
-            : this (socket, ClientManager.Instance)
-        {
         }
 
         public Socket Socket
@@ -121,11 +105,13 @@ namespace Stump.Server.BaseServer.Network
             LastActivity = DateTime.Now;
         }
 
-        private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
+        private static void OnSendCompleted(object sender, SocketAsyncEventArgs args)
         {
             args.Completed -= OnSendCompleted;
-            if (args.UserToken is SegmentStream)
-                ((SegmentStream) args.UserToken).Dispose();
+            var stream = args.UserToken as SegmentStream;
+            if (stream != null)
+                stream.Dispose();
+
             ObjectPoolMgr.ReleaseObject(args);
         }
 
@@ -159,19 +145,19 @@ namespace Stump.Server.BaseServer.Network
 
         private void ResumeReceive()
         {
-            if (Socket != null && Socket.Connected)
+            if (Socket == null || !Socket.Connected)
+                return;
+
+            var socketArgs = ClientManager.Instance.PopSocketArg();
+
+            socketArgs.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_offset, ClientManager.BufferSize - m_offset);
+            socketArgs.UserToken = this;
+            socketArgs.Completed += ProcessReceive;
+
+            var willRaiseEvent = Socket.ReceiveAsync(socketArgs);
+            if (!willRaiseEvent)
             {
-                var socketArgs = ClientManager.Instance.PopSocketArg();
-
-                socketArgs.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_offset, ClientManager.BufferSize - m_offset);
-                socketArgs.UserToken = this;
-                socketArgs.Completed += ProcessReceive;
-
-                var willRaiseEvent = Socket.ReceiveAsync(socketArgs);
-                if (!willRaiseEvent)
-                {
-                    ProcessReceive(this, socketArgs);
-                }
+                ProcessReceive(this, socketArgs);
             }
         }
 
@@ -187,12 +173,6 @@ namespace Stump.Server.BaseServer.Network
                 }
                 else
                 {
-                    // increment our counters
-                    unchecked
-                    {
-                        m_bytesReceived += (uint)bytesReceived;
-                    }
-
                     Interlocked.Add(ref m_totalBytesReceived, bytesReceived);
 
                     m_remainingLength += bytesReceived;
@@ -275,16 +255,11 @@ namespace Stump.Server.BaseServer.Network
                 m_offset = (int)reader.Position - buffer.Offset;
                 m_currentMessage = null;
 
-                if (m_remainingLength > 0)
-                    return BuildMessage(buffer); // there is maybe a second message in the buffer
-                else
-                    return true;
+                return m_remainingLength <= 0 || BuildMessage(buffer);
             }
-            else
-            {
-                m_offset = (int) reader.Position;
-                m_remainingLength = (int) (reader.MaxPosition - m_offset);
-            }
+
+            m_offset = (int) reader.Position;
+            m_remainingLength = (int) (reader.MaxPosition - m_offset);
 
             return false;
         }
@@ -294,7 +269,7 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         protected void EnsureBuffer()
         {
-            BufferSegment newSegment = BufferManager.Default.CheckOut();
+            var newSegment = BufferManager.Default.CheckOut();
             Array.Copy(m_bufferSegment.Buffer.Array,
                        m_bufferSegment.Offset + m_offset,
                        newSegment.Buffer.Array,

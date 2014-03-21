@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ServiceStack.Text;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
@@ -119,7 +118,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
 
         public EffectBase[] GetEffects(int itemsCount)
         {
-            int index = itemsCount - 1;
+            var index = itemsCount - 1;
 
             if (Effects == null || Effects.Count <= index || index < 0)
                 return new EffectBase[0];
@@ -128,14 +127,14 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
         }
 
 
-        private string SerializeItems(int[] templateIds)
+        private static string SerializeItems(IEnumerable<int> templateIds)
         {
             return templateIds.ToCSV(",");
         }
 
-        private ItemTemplate[] DeserializeItems(string serialized)
+        private static ItemTemplate[] DeserializeItems(string serialized)
         {
-            int[] ids = serialized.FromCSV<int>(",");
+            var ids = serialized.FromCSV<int>(",");
 
             return ids.Select(x => ItemManager.Instance.TryGetTemplate(x)).ToArray();
         }

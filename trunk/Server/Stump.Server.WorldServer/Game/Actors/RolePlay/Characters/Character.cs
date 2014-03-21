@@ -1613,7 +1613,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             // use nextmap to update correctly the areas changements
             NextMap = dest.Map;
-            Cell = dest.Cell;
+            Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
             Direction = dest.Direction;
 
             // energy lost go here
