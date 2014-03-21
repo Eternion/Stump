@@ -13,7 +13,7 @@ using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 
 namespace Stump.Server.WorldServer.Handlers.Context
 {
-    public partial class ContextHandler : WorldHandlerContainer
+    public partial class ContextHandler
     {
         private ContextHandler()
         {
@@ -21,8 +21,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         [WorldHandler(GameContextCreateRequestMessage.Id)]
-        public static void HandleGameContextCreateRequestMessage(WorldClient client,
-                                                                 GameContextCreateRequestMessage message)
+        public static void HandleGameContextCreateRequestMessage(WorldClient client, GameContextCreateRequestMessage message)
         {
             if (client.Character.IsInWorld)
             {
@@ -39,8 +38,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         [WorldHandler(GameMapChangeOrientationRequestMessage.Id)]
-        public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client,
-                                                                        GameMapChangeOrientationRequestMessage message)
+        public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client, GameMapChangeOrientationRequestMessage message)
         {
             client.Character.Direction = (DirectionsEnum) message.direction;
             SendGameMapChangeOrientationMessage(client.Character.CharacterContainer.Clients, client.Character);
@@ -97,8 +95,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameMapChangeOrientationMessage(IPacketReceiver client, ContextActor actor)
         {
-            client.Send(
-                new GameMapChangeOrientationMessage(new ActorOrientation(actor.Id,
+            client.Send(new GameMapChangeOrientationMessage(new ActorOrientation(actor.Id,
                                                                          (sbyte) actor.Position.Direction)));
         }
 
@@ -127,11 +124,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameMapMovementMessage(movementsKey, actor.Id));
         }
 
-        public static void SendGameEntitiesDispositionMessage(IPacketReceiver client,
-                                                              IEnumerable<ContextActor> actors)
+        public static void SendGameEntitiesDispositionMessage(IPacketReceiver client, IEnumerable<ContextActor> actors)
         {
-            client.Send(
-                new GameEntitiesDispositionMessage(
+            client.Send(new GameEntitiesDispositionMessage(
                     actors.Select(entry => entry.GetIdentifiedEntityDispositionInformations())));
         }
     }

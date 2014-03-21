@@ -1451,7 +1451,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Network
 
-        private void InitializeValidators()
+        private static void InitializeValidators()
         {
             // for later
         }
