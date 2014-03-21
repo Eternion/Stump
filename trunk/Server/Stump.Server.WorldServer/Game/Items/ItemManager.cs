@@ -34,6 +34,9 @@ namespace Stump.Server.WorldServer.Game.Items
         private Dictionary<int, ItemTypeRecord> m_itemTypes = new Dictionary<int, ItemTypeRecord>();
         private Dictionary<int, NpcItem> m_npcShopItems = new Dictionary<int, NpcItem>();
 
+        private readonly Dictionary<ItemIdEnum, PlayerItemConstructor> m_itemCtorById =
+            new Dictionary<ItemIdEnum, PlayerItemConstructor>();
+
         private readonly Dictionary<ItemTypeEnum, PlayerItemConstructor> m_itemCtorByTypes =
             new Dictionary<ItemTypeEnum, PlayerItemConstructor>();
         
@@ -101,6 +104,11 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             PlayerItemConstructor ctor = null;
             if (record.Effects.Any(effect => m_itemCtorByEffects.TryGetValue(effect.EffectId, out ctor)))
+            {
+                return ctor(character, record);
+            }
+
+            if (m_itemCtorById.TryGetValue((ItemIdEnum) record.ItemId, out ctor))
             {
                 return ctor(character, record);
             }
@@ -173,9 +181,23 @@ namespace Stump.Server.WorldServer.Game.Items
 
         private void InitializeItemCtors()
         {
-            foreach (var type in
-                    Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof (BasePlayerItem).IsAssignableFrom(x)))
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof (BasePlayerItem).IsAssignableFrom(x)))
             {
+                var idAttr = type.GetCustomAttribute<ItemIdAttribute>();
+
+                if (idAttr != null)
+                {
+                    if (m_itemCtorById.ContainsKey(idAttr.ItemId))
+                    {
+                        logger.Error("Item Constructor with ID {0} defined twice or more !", idAttr.ItemId);
+                        continue;
+                    }
+
+                    m_itemCtorById.Add(idAttr.ItemId,
+                        type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                            .CreateDelegate<PlayerItemConstructor>());
+                }
+
                 var typeAttr = type.GetCustomAttribute<ItemTypeAttribute>();
 
                 if (typeAttr != null)
@@ -187,7 +209,7 @@ namespace Stump.Server.WorldServer.Game.Items
                     }
 
                     m_itemCtorByTypes.Add(typeAttr.ItemType,
-                        type.GetConstructor(new[] {typeof (Character), typeof (PlayerItemRecord)})
+                        type.GetConstructor(new[] { typeof (Character), typeof (PlayerItemRecord) })
                             .CreateDelegate<PlayerItemConstructor>());
                 }
 

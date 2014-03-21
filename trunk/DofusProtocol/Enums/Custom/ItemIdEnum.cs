@@ -20470,6 +20470,8 @@
         BanditHideoutKey = 9997,
         // Item [Level : 1]
         CopyoftheBanditHideoutKey = 9999,
+        // Item [Level : 1]
+        LookChangePotion = 13518,
         End,
     }
 }
