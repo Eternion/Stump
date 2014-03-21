@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnCreatingCharacter(CharacterRecord record)
         {
-            Action<CharacterRecord> handler = CreatingCharacter;
+            var handler = CreatingCharacter;
             if (handler != null) handler(record);
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -138,7 +139,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 }
 
                 /* Set new name */
-                character.Name = message.name;
                 character.Rename = false;
 
                 WorldServer.Instance.DBAccessor.Database.Update(character);

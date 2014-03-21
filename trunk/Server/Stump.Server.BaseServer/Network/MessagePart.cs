@@ -1,22 +1,19 @@
 using System;
-using System.Diagnostics;
-using Stump.Core.Extensions;
 using Stump.Core.IO;
-using System.Linq;
 
 namespace Stump.Server.BaseServer.Network
 {
     public class MessagePart
     {
         private readonly bool m_readData;
-        private long m_availableBytes = 0;
+        private long m_availableBytes;
 
         public MessagePart(bool readData)
         {
             m_readData = readData;
         }
 
-        private bool m_dataMissing = false;
+        private bool m_dataMissing;
 
         /// <summary>
         /// Set to true when the message is whole
@@ -113,7 +110,7 @@ namespace Stump.Server.BaseServer.Network
                 Length = 0;
                 
                 // 3..0 or 2..0 or 1..0
-                for (int i = LengthBytesCount.Value - 1; i >= 0; i--)
+                for (var i = LengthBytesCount.Value - 1; i >= 0; i--)
                 {
                     Length |= reader.ReadByte() << (i * 8);
                 }
@@ -139,55 +136,57 @@ namespace Stump.Server.BaseServer.Network
 
                     return true;
                 }
-                // not enough bytes, so we read what we can
-                else if (Length > reader.BytesAvailable)
-                {
-                    if (ReadData)
-                        Data = reader.ReadBytes((int) reader.BytesAvailable);
-                    else
-                        m_availableBytes = reader.BytesAvailable;
 
-                    m_dataMissing = true;
-                    return false;
-                }
+                // not enough bytes, so we read what we can
+                if (!(Length > reader.BytesAvailable))
+                    return IsValid;
+
+                if (ReadData)
+                    Data = reader.ReadBytes((int) reader.BytesAvailable);
+                else
+                    m_availableBytes = reader.BytesAvailable;
+
+                m_dataMissing = true;
+                return false;
             }
 
             //second case : the message was split and it missed some bytes
-            else if (Length.HasValue && m_dataMissing)
+            if (!Length.HasValue || !m_dataMissing)
+                return IsValid;
+
+            // still miss some bytes ...
+            if ((ReadData ? Data.Length : 0) + reader.BytesAvailable < Length)
             {
-                // still miss some bytes ...
-                if ((ReadData ? Data.Length : 0) + reader.BytesAvailable < Length)
+                if (ReadData)
                 {
-                    if (ReadData)
-                    {
-                        int lastLength = m_data.Length;
-                        Array.Resize(ref m_data, (int) (Data.Length + reader.BytesAvailable));
-                        var array = reader.ReadBytes((int) reader.BytesAvailable);
+                    var lastLength = m_data.Length;
+                    Array.Resize(ref m_data, (int) (Data.Length + reader.BytesAvailable));
+                    var array = reader.ReadBytes((int) reader.BytesAvailable);
 
-                        Array.Copy(array, 0, Data, lastLength, array.Length);
-                    }
-                    else
-                        m_availableBytes = reader.BytesAvailable;
-
-                    m_dataMissing = true;
+                    Array.Copy(array, 0, Data, lastLength, array.Length);
                 }
-                // there is enough bytes in the buffer to complete the message :)
-                if ((ReadData ? Data.Length : 0) + reader.BytesAvailable >= Length)
-                {
-                    if (ReadData)
-                    {
-                        int bytesToRead = Length.Value - Data.Length;
+                else
+                    m_availableBytes = reader.BytesAvailable;
 
-
-                        Array.Resize(ref m_data, Data.Length + bytesToRead);
-                        var array = reader.ReadBytes(bytesToRead);
-
-                        Array.Copy(array, 0, Data, Data.Length - bytesToRead, bytesToRead);
-                    }
-                    else
-                        m_availableBytes = reader.BytesAvailable;
-                }
+                m_dataMissing = true;
             }
+
+            // there is enough bytes in the buffer to complete the message :)
+            if (!((ReadData ? Data.Length : 0) + reader.BytesAvailable >= Length))
+                return IsValid;
+
+            if (ReadData)
+            {
+                var bytesToRead = Length.Value - Data.Length;
+
+
+                Array.Resize(ref m_data, Data.Length + bytesToRead);
+                var array = reader.ReadBytes(bytesToRead);
+
+                Array.Copy(array, 0, Data, Data.Length - bytesToRead, bytesToRead);
+            }
+            else
+                m_availableBytes = reader.BytesAvailable;
 
             return IsValid;
         }

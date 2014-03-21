@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.ORM;
-using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -56,7 +55,7 @@ namespace Stump.Server.WorldServer.Database.Items
         private byte[] m_serializedEffects;
         private ItemTemplate m_template;
 
-        public ItemRecord()
+        protected ItemRecord()
         {
             m_serializedEffects = new byte[0];
         }

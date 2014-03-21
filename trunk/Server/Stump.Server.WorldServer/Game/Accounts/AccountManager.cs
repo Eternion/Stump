@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.IPC.Objects;

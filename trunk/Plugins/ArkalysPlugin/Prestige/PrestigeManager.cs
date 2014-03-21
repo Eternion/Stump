@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
@@ -212,9 +211,8 @@ namespace ArkalysPlugin.Prestige
             if (item == null)
                 return;
 
-            foreach (var effect in item.Effects)
+            foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, character, item)))
             {
-                var handler = EffectManager.Instance.GetItemEffectHandler(effect, character, item);
                 handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
 
                 handler.Apply();

@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Stump.Core.IO;
 
 namespace Stump.Server.BaseServer.IPC
 {
@@ -65,7 +64,7 @@ namespace Stump.Server.BaseServer.IPC
             {
                 Length = 0;
 
-                for (int i = LengthBytesCount.Value - 1; i >= 0; i--)
+                for (var i = LengthBytesCount.Value - 1; i >= 0; i--)
                 {
                     Length |= reader.ReadByte() << (i*8);
                 }
@@ -87,42 +86,44 @@ namespace Stump.Server.BaseServer.IPC
 
                     return true;
                 }
-                    // not enough bytes, so we read what we can
-                if (Length > count)
-                {
-                    Data = reader.ReadBytes((int) count);
 
-                    m_dataMissing = true;
-                    return false;
-                }
+                // not enough bytes, so we read what we can
+                if (!(Length > count))
+                    return IsValid;
+
+                Data = reader.ReadBytes((int) count);
+
+                m_dataMissing = true;
+                return false;
             }
 
-                //second case : the message was split and it missed some bytes
-            else if (Length.HasValue && m_dataMissing)
+            //second case : the message was split and it missed some bytes
+            if (!Length.HasValue || !m_dataMissing)
+                return IsValid;
+
+            // still miss some bytes ...
+            if (Data.Length + count < Length)
             {
-                // still miss some bytes ...
-                if (Data.Length + count < Length)
-                {
-                    int lastLength = m_data.Length;
-                    Array.Resize(ref m_data, (int) (Data.Length + count));
-                    byte[] array = reader.ReadBytes((int) count);
+                var lastLength = m_data.Length;
+                Array.Resize(ref m_data, (int) (Data.Length + count));
+                var array = reader.ReadBytes((int) count);
 
-                    Array.Copy(array, 0, Data, lastLength, array.Length);
+                Array.Copy(array, 0, Data, lastLength, array.Length);
 
-                    m_dataMissing = true;
-                    return false;
-                }
-                // there is enough bytes in the buffer to complete the message :)
-                if (Data.Length + count >= Length)
-                {
-                    int bytesToRead = Length.Value - Data.Length;
+                m_dataMissing = true;
+                return false;
+            }
+
+            // there is enough bytes in the buffer to complete the message :)
+            if (Data.Length + count >= Length)
+            {
+                var bytesToRead = Length.Value - Data.Length;
 
 
-                    Array.Resize(ref m_data, Data.Length + bytesToRead);
-                    byte[] array = reader.ReadBytes(bytesToRead);
+                Array.Resize(ref m_data, Data.Length + bytesToRead);
+                var array = reader.ReadBytes(bytesToRead);
 
-                    Array.Copy(array, 0, Data, Data.Length - bytesToRead, bytesToRead);
-                }
+                Array.Copy(array, 0, Data, Data.Length - bytesToRead, bytesToRead);
             }
 
             return IsValid;

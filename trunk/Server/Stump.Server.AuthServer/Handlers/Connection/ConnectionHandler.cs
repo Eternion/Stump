@@ -159,7 +159,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
                 SendIdentificationSuccessMessage(client, false);
 
-                //todo: Fix connection bug if Last World isn't ONLINE
                 /* If autoconnect, send to the lastServer */
                 if (message.autoconnect && client.Account.LastConnectionWorld != null && WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
                     SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));

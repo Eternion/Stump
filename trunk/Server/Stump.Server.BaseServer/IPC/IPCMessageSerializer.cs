@@ -18,11 +18,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ProtoBuf;
 using ProtoBuf.Meta;
-using Stump.Core.IO;
 using Stump.Core.Reflection;
-using Stump.Server.BaseServer.IPC.Objects;
 
 namespace Stump.Server.BaseServer.IPC
 {
@@ -46,11 +43,8 @@ namespace Stump.Server.BaseServer.IPC
 
         public void RegisterMessages(Assembly assembly)
         {
-            foreach (var messageType in assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(IPCMessage))))
+            foreach (var messageType in assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(IPCMessage))).Where(messageType => messageType != typeof(IPCMessage)))
             {
-                if (messageType == typeof(IPCMessage))
-                    continue;
-
                 Model[typeof(IPCMessage)].AddSubType(m_idCounter++, messageType);
             }
         }
@@ -100,7 +94,7 @@ namespace Stump.Server.BaseServer.IPC
 
             var msgStream = new MemoryStream();
             msgStream.WriteByte(lenSize);
-            for (int i = lenSize - 1; i >= 0; i--)
+            for (var i = lenSize - 1; i >= 0; i--)
             {
                 msgStream.WriteByte((byte)(len >> 8*i & 255));
             }

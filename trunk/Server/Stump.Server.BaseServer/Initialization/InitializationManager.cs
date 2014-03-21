@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using NLog;
@@ -14,7 +13,7 @@ namespace Stump.Server.BaseServer.Initialization
 
         private void OnProcessInitialization(string text)
         {
-            Action<string> handler = ProcessInitialization;
+            var handler = ProcessInitialization;
             if (handler != null) handler(text);
         }
 
@@ -123,21 +122,21 @@ namespace Stump.Server.BaseServer.Initialization
                 if (!m_initializedTypes.Contains(method.Method.DeclaringType))
                     m_initializedTypes.Add(method.Method.DeclaringType);
 
-                if (m_dependances.ContainsKey(method.Method.DeclaringType))
-                {
-                    foreach (var dependance in m_dependances[method.Method.DeclaringType])
-                    {
-                        ExecuteInitializationMethod(dependance);
-                    }
+                if (!m_dependances.ContainsKey(method.Method.DeclaringType))
+                    return;
 
-                    m_dependances.Remove(method.Method.DeclaringType);
+                foreach (var dependance in m_dependances[method.Method.DeclaringType])
+                {
+                    ExecuteInitializationMethod(dependance);
                 }
+
+                m_dependances.Remove(method.Method.DeclaringType);
             }
         }
 
         public void InitializeAll()
         {
-            foreach (InitializationPass pass in Enum.GetValues(typeof(InitializationPass)).Cast<InitializationPass>().Where(pass => pass != InitializationPass.Database))
+            foreach (var pass in Enum.GetValues(typeof(InitializationPass)).Cast<InitializationPass>().Where(pass => pass != InitializationPass.Database))
             {
                 Initialize(pass);
             }

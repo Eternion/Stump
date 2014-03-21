@@ -319,14 +319,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public bool CheckFightEnd()
         {
-            if (RedTeam.AreAllDead() || BlueTeam.AreAllDead() ||
-                Clients.Count <= 0)
-            {
-                EndFight();
-                return true;
-            }
+            if (!RedTeam.AreAllDead() && !BlueTeam.AreAllDead() && Clients.Count > 0)
+                return false;
 
-            return false;
+            EndFight();
+            return true;
         }
 
         public void CancelFight()
@@ -513,7 +510,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
             else
             {
-                Cell cell = Map.GetRandomAdjacentFreeCell(RedTeam.Leader.MapPosition.Point);
+                var cell = Map.GetRandomAdjacentFreeCell(RedTeam.Leader.MapPosition.Point);
 
                 // if cell not found we superpose both blades
                 if (cell == null)
@@ -522,7 +519,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
                 else // else we take an adjacent cell
                 {
-                    ObjectPosition pos = RedTeam.Leader.MapPosition.Clone();
+                    var pos = RedTeam.Leader.MapPosition.Clone();
                     pos.Cell = cell;
                     RedTeam.BladePosition = pos;
                 }
@@ -581,7 +578,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public bool FindRandomFreeCell(FightActor fighter, out Cell cell, bool placement = true)
         {
-            Cell[] availableCells = fighter.Team.PlacementCells.Where(entry => GetOneFighter(entry) == null || GetOneFighter(entry) == fighter).ToArray();
+            var availableCells = fighter.Team.PlacementCells.Where(entry => GetOneFighter(entry) == null || GetOneFighter(entry) == fighter).ToArray();
 
             var random = new Random();
 
@@ -594,8 +591,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             // if not in placement phase, get a random free cell on the map
             if (availableCells.Length == 0 && !placement)
             {
-                List<int> cells = Enumerable.Range(0, (int) MapPoint.MapSize).ToList();
-                foreach (FightActor actor in GetAllFighters(actor => cells.Contains(actor.Cell.Id)))
+                var cells = Enumerable.Range(0, (int) MapPoint.MapSize).ToList();
+                foreach (var actor in GetAllFighters(actor => cells.Contains(actor.Cell.Id)))
                 {
                     cells.Remove(actor.Cell.Id);
                 }
@@ -632,9 +629,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State != FightState.Placement)
                 throw new Exception("State != Placement, cannot random placement position");
 
-            IEnumerable<Cell> shuffledCells = team.PlacementCells.Shuffle();
-            IEnumerator<Cell> enumerator = shuffledCells.GetEnumerator();
-            foreach (FightActor fighter in team.GetAllFighters())
+            var shuffledCells = team.PlacementCells.Shuffle();
+            var enumerator = shuffledCells.GetEnumerator();
+            foreach (var fighter in team.GetAllFighters())
             {
                 enumerator.MoveNext();
 
@@ -648,7 +645,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State != FightState.Placement)
                 throw new Exception("State != Placement, cannot give placement direction");
 
-            FightTeam team = fighter.Team == RedTeam ? BlueTeam : RedTeam;
+            var team = fighter.Team == RedTeam ? BlueTeam : RedTeam;
 
             Tuple<Cell, uint> closerCell = null;
             foreach (var opposant in team.GetAllFighters())
@@ -666,10 +663,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
-            if (closerCell == null)
-                return fighter.Position.Direction;
-
-            return fighter.Position.Point.OrientationTo(new MapPoint(closerCell.Item1), false);
+            return closerCell == null ? fighter.Position.Direction : fighter.Position.Point.OrientationTo(new MapPoint(closerCell.Item1), false);
         }
 
         protected virtual bool CanKickFighter(FightActor kicker, FightActor kicked)
@@ -721,7 +715,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         /// <returns>If change is possible</returns>
         public virtual bool CanChangePosition(FightActor fighter, Cell cell)
         {
-            FightActor figtherOnCell = GetOneFighter(cell);
+            var figtherOnCell = GetOneFighter(cell);
 
             return State == FightState.Placement &&
                    fighter.Team.PlacementCells.Contains(cell) &&
@@ -1816,12 +1810,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor GetOneFighter(int id)
         {
-            return Fighters.SingleOrDefault(entry => entry.Id == id);
+            return Fighters.FirstOrDefault(entry => entry.Id == id);
         }
 
         public FightActor GetOneFighter(Cell cell)
         {
-            return Fighters.SingleOrDefault(entry => entry.IsAlive() && Equals(entry.Cell, cell));
+            return Fighters.FirstOrDefault(entry => entry.IsAlive() && Equals(entry.Cell, cell));
         }
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
@@ -1829,22 +1823,22 @@ namespace Stump.Server.WorldServer.Game.Fights
             var entries = Fighters.Where(entry => predicate(entry));
 
             var fightActors = entries as FightActor[] ?? entries.ToArray();
-            return fightActors.Count() != 0 ? null : fightActors.SingleOrDefault();
+            return fightActors.Count() != 0 ? null : fightActors.FirstOrDefault();
         }
 
         public T GetOneFighter<T>(int id) where T : FightActor
         {
-            return Fighters.OfType<T>().SingleOrDefault(entry => entry.Id == id);
+            return Fighters.OfType<T>().FirstOrDefault(entry => entry.Id == id);
         }
 
         public T GetOneFighter<T>(Cell cell) where T : FightActor
         {
-            return Fighters.OfType<T>().SingleOrDefault(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell));
+            return Fighters.OfType<T>().FirstOrDefault(entry => entry.IsAlive() && Equals(entry.Position.Cell, cell));
         }
 
         public T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor
         {
-            return Fighters.OfType<T>().SingleOrDefault(entry => predicate(entry));
+            return Fighters.OfType<T>().FirstOrDefault(entry => predicate(entry));
         }
 
         public T GetFirstFighter<T>(int id) where T : FightActor
@@ -1874,7 +1868,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public CharacterFighter GetLeaver(int characterId)
         {
-            return Leavers.OfType<CharacterFighter>().SingleOrDefault(x => x.Id == characterId);
+            return Leavers.OfType<CharacterFighter>().FirstOrDefault(x => x.Id == characterId);
         }
 
         public ReadOnlyCollection<FightSpectator> GetSpectators()

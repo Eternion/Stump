@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Stump.DofusProtocol.Messages;
+﻿using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Network
 {
