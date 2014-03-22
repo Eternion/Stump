@@ -4,7 +4,7 @@ using Stump.Core.Collections;
 
 // all credits goes to WCell dev team
 
-namespace Stump.Core.Pool.New
+namespace Stump.Core.Pool
 {
     /// <summary>
     /// Interface for an object pool.

@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Pool.New;
+using Stump.Core.Pool;
 using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Network

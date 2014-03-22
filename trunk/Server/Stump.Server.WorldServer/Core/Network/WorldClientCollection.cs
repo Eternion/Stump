@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
-using Stump.Core.Pool.New;
+using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 
