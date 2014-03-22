@@ -1,6 +1,5 @@
 ﻿using System;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Commands.Matching.Characters;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 

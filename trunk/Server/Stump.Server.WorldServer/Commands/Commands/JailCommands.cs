@@ -18,8 +18,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.Moderator;
             Description = "Jail a character";
             AddTargetParameter();
-            AddParameter("time", "time", "Ban duration (in minutes)", 30);
-            AddParameter("reason", "r", "Reason of ban", "No reason");
+            AddParameter("time", "time", "Jail duration (in minutes)", 30);
+            AddParameter("reason", "r", "Reason of jail", "No reason");
         }
 
         public override void Execute(TriggerBase trigger)
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            foreach (Character target in GetTargets(trigger))
+            foreach (var target in GetTargets(trigger))
             {
                 var message = new BanAccountMessage
                 {
