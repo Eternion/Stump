@@ -7,7 +7,7 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
-using Stump.Core.Pool.New;
+using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Network
