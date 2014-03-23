@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -10,6 +11,7 @@ using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
+using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -341,19 +343,27 @@ namespace Stump.Server.WorldServer.Game.Maps
             long messageProcessTime = 0;
             long timerProcessingTime = 0;
             var timerProcessed = 0;
+            var processedMessages = new List<BenchmarkEntry>();
             try
             {
                 var sw = Stopwatch.StartNew();
                 IMessage msg;
                 while (m_messageQueue.TryDequeue(out msg))
                 {
+                    var swMsg = Stopwatch.StartNew();
                     try
                     {
                         msg.Execute();
+                        swMsg.Stop();
+                        if (BenchmarkManager.Enable)
+                            processedMessages.Add(BenchmarkEntry.Create(msg.ToString(), swMsg.Elapsed, "area", Id));
                     }
                     catch (Exception ex)
                     {
+                        swMsg.Stop();
                         logger.Error("Exception raised when processing Message in {0} : {1}.", this, ex);
+                        if (BenchmarkManager.Enable)
+                            processedMessages.Add(BenchmarkEntry.Create(msg.ToString(), swMsg.Elapsed, "area", Id, "exception", ex));
                     }
                 }
                 sw.Stop();
@@ -425,6 +435,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                         callbackTimeout = 0;
                         logger.Debug("Area '{0}' update lagged ({1}ms) (msg:{2}ms, timers:{3}ms, timerProc:{4}/{5})",
                             this, (int) newUpdateDelta.TotalMilliseconds, messageProcessTime, timerProcessingTime, timerProcessed, m_timers.Count);
+                        BenchmarkManager.Instance.AddRange(processedMessages);
                     }
 
                     if (!IsRunning)

@@ -1,4 +1,5 @@
-﻿using Stump.Core.Pool;
+﻿using Stump.Core.Extensions;
+using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.BaseServer.Commands.Commands
@@ -26,7 +27,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             trigger.Reply("- {0} ({1}):", name, manager.SegmentSize);
             trigger.Reply("\tInUse : " + manager.InUse);
-            trigger.Reply("\tTotalAllocatedMemory : " + manager.TotalAllocatedMemory);
+            trigger.Reply("\tTotalAllocatedMemory : " + manager.TotalAllocatedMemory.ToString(new FileSizeFormatProvider()));
             trigger.Reply("\tAvailableSegmentsCount : " + manager.AvailableSegmentsCount);
             trigger.Reply("\tUsedSegmentCount : " + manager.UsedSegmentCount);
             trigger.Reply("\tTotalSegmentCount : " + manager.TotalSegmentCount);

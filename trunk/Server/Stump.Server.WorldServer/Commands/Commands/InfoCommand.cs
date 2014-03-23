@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
@@ -100,6 +101,20 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.ReplyBold("Is Updating : {0}", area.IsUpdating);
             trigger.ReplyBold("Is Disposed : {0}", area.IsDisposed);
             trigger.ReplyBold("Current Thread : {0}", area.CurrentThreadId);
+
+            var entries =
+                BenchmarkManager.Instance.Entries.Where(
+                    x => x.AdditionalProperties.ContainsKey("area") && x.AdditionalProperties["area"].Equals(area.Id));
+
+            var groups = entries.GroupBy(x => x.MessageType);
+
+            foreach (var group in groups.Take(5))
+            {
+                var average = group.Average(x => x.Timestamp.TotalMilliseconds);
+                var errors = group.Where(x => x.AdditionalProperties.ContainsKey("exception"));
+
+                trigger.ReplyBold("- {0} {1} ms {2} entries {3} errors", group.Key, average, group.Count(), errors.Count());
+            }
         }
     }
 

@@ -23,7 +23,8 @@ namespace Stump.Server.BaseServer.Network
         private bool m_disconnecting;
 
         private bool m_onDisconnectCalled;
-        private int m_offset;
+        private int m_writeOffset;
+        private int m_readOffset;
         private int m_remainingLength;
         private BufferSegment m_bufferSegment;
         private long m_totalBytesReceived;
@@ -32,7 +33,7 @@ namespace Stump.Server.BaseServer.Network
         {
             Socket = socket;
             IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
-            m_bufferSegment = BufferManager.Default.CheckOut();
+            m_bufferSegment = BufferManager.GetSegment(ClientManager.BufferSize);
         }
 
         public Socket Socket
@@ -71,7 +72,7 @@ namespace Stump.Server.BaseServer.Network
 
         public virtual void Send(Message message)
         {
-            var stream = BufferManager.Default.CheckOutStream();
+            var stream = BufferManager.GetSegmentStream(ClientManager.BufferSize);
 
             var writer = new BigEndianWriter(stream);
             message.Pack(writer);
@@ -148,7 +149,7 @@ namespace Stump.Server.BaseServer.Network
 
             var socketArgs = ClientManager.Instance.PopSocketArg();
 
-            socketArgs.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_offset, ClientManager.BufferSize - m_offset);
+            socketArgs.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_writeOffset, m_bufferSegment.Length - m_writeOffset);
             socketArgs.UserToken = this;
             socketArgs.Completed += ProcessReceive;
 
@@ -176,11 +177,12 @@ namespace Stump.Server.BaseServer.Network
                     m_remainingLength += bytesReceived;
                     if (BuildMessage(m_bufferSegment))
                     {
-                        m_offset = 0;
-                    }
-                    else
-                    {
-                        EnsureBuffer();
+                        m_writeOffset = m_readOffset = 0;
+                        if (m_bufferSegment.Length != ClientManager.BufferSize)
+                        {
+                            m_bufferSegment.DecrementUsage();
+                            m_bufferSegment = BufferManager.GetSegment(ClientManager.BufferSize);
+                        }
                     }
 
                     ResumeReceive();
@@ -206,22 +208,15 @@ namespace Stump.Server.BaseServer.Network
 
             var reader = new FastBigEndianReader(buffer)
                 {
-                    Position = buffer.Offset + m_offset,
-                    MaxPosition = buffer.Offset + m_offset + m_remainingLength,
+                    Position = buffer.Offset + m_readOffset,
+                    MaxPosition = buffer.Offset + m_readOffset + m_remainingLength,
                 };
             // if message is complete
             if (m_currentMessage.Build(reader))
             {
                 var dataPos = reader.Position;
-                if (m_currentMessage.ExceedBufferSize)
-                {
-                    reader = new FastBigEndianReader(m_currentMessage.Data);
-                }
-                else
-                {
-                    // prevent to read above
-                    reader.MaxPosition = buffer.Offset + dataPos + m_currentMessage.Length.Value;
-                }
+                // prevent to read above
+                reader.MaxPosition = dataPos + m_currentMessage.Length.Value;
 
                 Message message;
                 try
@@ -247,30 +242,46 @@ namespace Stump.Server.BaseServer.Network
 
                 OnMessageReceived(message);
 
-                m_remainingLength -= (int)reader.Position - buffer.Offset - m_offset;
-                m_offset = (int)reader.Position - buffer.Offset;
+                m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+                m_writeOffset = m_readOffset = (int)reader.Position - buffer.Offset;
                 m_currentMessage = null;
 
                 return m_remainingLength <= 0 || BuildMessage(buffer);
             }
 
-            m_offset = (int) reader.Position;
-            m_remainingLength = (int) (reader.MaxPosition - m_offset);
+            m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+            m_readOffset = (int)reader.Position - buffer.Offset;
+            m_writeOffset = m_readOffset + m_remainingLength;
+
+            EnsureBuffer(m_currentMessage.Length.HasValue ? m_currentMessage.Length.Value : 3);
 
             return false;
         }
 
         /// <summary>
-        ///     Makes sure the underlying buffer is big enough (but will never exceed BufferSize)
+        ///     Makes sure the underlying buffer is big enough
         /// </summary>
-        protected void EnsureBuffer()
+        protected bool EnsureBuffer(int length)
         {
-            Array.Copy(m_bufferSegment.Buffer.Array,
-                       m_bufferSegment.Offset + m_offset,
-                       m_bufferSegment.Buffer.Array,
-                       m_bufferSegment.Offset,
-                       m_remainingLength);
-            m_offset = m_remainingLength;
+            if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
+            {
+                var newSegment = BufferManager.GetSegment(length + m_remainingLength);
+
+                Array.Copy(m_bufferSegment.Buffer.Array,
+                           m_bufferSegment.Offset + m_readOffset,
+                           newSegment.Buffer.Array,
+                           newSegment.Offset,
+                           m_remainingLength);
+
+                m_bufferSegment.DecrementUsage();
+                m_bufferSegment = newSegment;
+                m_writeOffset = m_remainingLength;
+                m_readOffset = 0;
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

@@ -23,13 +23,7 @@ namespace Stump.Server.BaseServer.Network
         {
             try
             {
-                var sw = Stopwatch.StartNew();
-
                 base.Execute();
-                sw.Stop();
-
-                if (BenchmarkManager.Enable)
-                    BenchmarkManager.Instance.RegisterEntry(BenchmarkEntry.Create(sw.Elapsed, Parameter3));
             }
             catch (Exception ex)
             {
@@ -37,6 +31,11 @@ namespace Stump.Server.BaseServer.Network
                 Parameter2.Disconnect();
                 ExceptionManager.Instance.RegisterException(ex);
             }
+        }
+
+        public override string ToString()
+        {
+            return Parameter3.ToString();
         }
     }
 }

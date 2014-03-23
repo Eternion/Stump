@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 
 /*
@@ -77,7 +78,13 @@ namespace Stump.Core.Threading
 
         public override string ToString()
         {
-            return Callback.ToString();
+            var sb = new StringBuilder();
+            Delegate[] actions = Callback.GetInvocationList();
+            foreach ( Delegate del in actions )
+            {
+                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+            }
+            return sb.ToString();
         }
     }
 
@@ -189,6 +196,16 @@ namespace Stump.Core.Threading
         {
             return new Message1<T1>(dele);
         }
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            Delegate[] actions = Callback.GetInvocationList();
+            foreach ( Delegate del in actions )
+            {
+                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+            }
+            return sb.ToString();
+        }
     }
     #endregion
 
@@ -278,6 +295,16 @@ namespace Stump.Core.Threading
         {
             return new Message2<T1, T2>(dele);
         }
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            Delegate[] actions = Callback.GetInvocationList();
+            foreach ( Delegate del in actions )
+            {
+                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+            }
+            return sb.ToString();
+        }
     }
     #endregion
 
@@ -366,6 +393,16 @@ namespace Stump.Core.Threading
         public static explicit operator Message3<T1, T2, T3>(Action<T1, T2, T3> dele)
         {
             return new Message3<T1, T2, T3>(dele);
+        }
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            Delegate[] actions = Callback.GetInvocationList();
+            foreach ( Delegate del in actions )
+            {
+                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+            }
+            return sb.ToString();
         }
     }
     #endregion
@@ -466,6 +503,16 @@ namespace Stump.Core.Threading
         public static explicit operator Message4<T1, T2, T3, T4>(Action<T1, T2, T3, T4> callback)
         {
             return new Message4<T1, T2, T3, T4>(callback);
+        }
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            Delegate[] actions = Callback.GetInvocationList();
+            foreach ( Delegate del in actions )
+            {
+                sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
+            }
+            return sb.ToString();
         }
     }
     #endregion
