@@ -165,7 +165,7 @@ namespace Stump.Core.Pool
         /// <summary>
         ///     Default BufferManager for default-sized buffers (usually up to 8kb)
         /// </summary>
-        public static readonly BufferManager Default = new BufferManager(128, 8196);
+        public static readonly BufferManager Default = new BufferManager(128, 8192);
 
         /// <summary>
         ///     Large BufferManager for buffers up to 64kb size

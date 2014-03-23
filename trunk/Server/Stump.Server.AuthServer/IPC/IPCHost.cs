@@ -34,7 +34,7 @@ namespace Stump.Server.AuthServer.IPC
         public static readonly int ServersMaxCount = 10;
 
         [Variable]
-        public static int BufferSize = 8192;
+        public static int BufferSize = 8196;
 
         #region Events
         public event Action<IPCHost, IPCClient> ClientConnected;

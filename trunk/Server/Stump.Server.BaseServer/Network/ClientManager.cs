@@ -45,7 +45,7 @@ namespace Stump.Server.BaseServer.Network
         /// Buffer size /!\ Advanced users only /!\
         /// </summary>
         [Variable]
-        public static int BufferSize = 8196; 
+        public static int BufferSize = 8192; 
         #endregion
 
         #region Events

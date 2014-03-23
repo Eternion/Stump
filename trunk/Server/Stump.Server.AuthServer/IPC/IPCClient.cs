@@ -21,7 +21,6 @@ using System.Net.Sockets;
 using System.Threading;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
@@ -96,29 +95,25 @@ namespace Stump.Server.AuthServer.IPC
 
         public override void Send(IPCMessage message)
         {
-         if (!IsConnected)
+            if (!IsConnected)
+            {
                 return;
+            }
 
             var args = new SocketAsyncEventArgs();
-            var stream = BufferManager.Default.CheckOutStream();
             args.Completed += OnSendCompleted;
+            var stream = new MemoryStream();
             IPCMessageSerializer.Instance.SerializeWithLength(message, stream);
 
-            // serialize stuff
+            var data = stream.ToArray();
+            args.SetBuffer(data, 0, data.Length);
+            Socket.SendAsync(args);
 
-            args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
-            args.UserToken = stream;
-            if (Socket.SendAsync(args))
-            {
-                stream.Segment.DecrementUsage();
-                args.Dispose();
-            }
             // is it necessarily ?
             LastActivity = DateTime.Now;}
 
         private static void OnSendCompleted(object sender, SocketAsyncEventArgs e)
         {
-            ((SegmentStream)e.UserToken).Segment.DecrementUsage();
             e.Dispose();
         }
 
