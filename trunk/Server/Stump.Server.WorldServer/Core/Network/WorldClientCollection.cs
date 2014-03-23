@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
@@ -48,23 +49,34 @@ namespace Stump.Server.WorldServer.Core.Network
 
                     var disconnectedClients = new List<WorldClient>();
                     SegmentStream stream = BufferManager.Default.CheckOutStream();
-                    var writer = new BigEndianWriter(stream);
-                    message.Pack(writer);
-                    stream.Segment.Uses = m_underlyingList.Count(x => x.Connected);
-
-                    if (stream.Segment.Uses == 0)
-                        stream.Dispose();
-
-                    foreach (WorldClient worldClient in m_underlyingList)
+                    try
                     {
-                        if (worldClient != null)
-                        {
-                            worldClient.Send(stream);
-                            worldClient.OnMessageSent(message);
-                        }
+                        var writer = new BigEndianWriter(stream);
+                        message.Pack(writer);
+                        stream.Segment.Uses = m_underlyingList.Count(x => x.Connected);
 
-                        if (worldClient == null || !worldClient.Connected)
-                            disconnectedClients.Add(worldClient);
+                        if (stream.Segment.Uses == 0)
+                            stream.Dispose();
+
+                        foreach (WorldClient worldClient in m_underlyingList)
+                        {
+                            if (worldClient != null)
+                            {
+                                worldClient.Send(stream);
+                                worldClient.OnMessageSent(message);
+                            }
+
+                            if (worldClient == null || !worldClient.Connected)
+                                disconnectedClients.Add(worldClient);
+                        }
+                    }
+                    finally
+                    {
+                        if (stream.Segment.Uses > 0)
+                        {
+                            stream.Segment.Uses = 0;
+                            BufferManager.Default.CheckIn(stream.Segment);
+                        }
                     }
 
                     foreach (var client in disconnectedClients)

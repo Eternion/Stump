@@ -393,7 +393,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
 
             m_remainingLength = (int) (reader.BaseStream.Length - reader.BaseStream.Position);
-            m_offset = (int) reader.BaseStream.Position;
+            m_offset = (int) reader.BaseStream.Position - m_bufferSegment.Offset;
 
             if (m_remainingLength > 0) // still some bytes in the buffer
             {

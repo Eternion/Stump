@@ -23,7 +23,7 @@ namespace Stump.Server.BaseServer.Network
             get
             {
                 return Header.HasValue && Length.HasValue && (!ReadData || Data != null) &&
-                    Length == (ReadData ? Data.Length : m_availableBytes);
+                    Length <= (ReadData ? Data.Length : m_availableBytes);
             }
         }
 
@@ -72,14 +72,9 @@ namespace Stump.Server.BaseServer.Network
             private set { m_data = value; }
         }
 
-        public bool ExceedBufferSize
-        {
-            get { return Length.HasValue && Length.Value > (ClientManager.BufferSize - 2 - LengthBytesCount.Value); }
-        }
-
         public bool ReadData
         {
-            get { return m_readData || ExceedBufferSize; }
+            get { return m_readData; }
         }
 
         /// <summary>

@@ -6,13 +6,7 @@ namespace Stump.Server.BaseServer.Benchmark
 {
     public class BenchmarkEntry
     {
-        public Type MessageType
-        {
-            get;
-            set;
-        }
-
-        public Message Message
+        public string MessageType
         {
             get;
             set;
@@ -42,15 +36,35 @@ namespace Stump.Server.BaseServer.Benchmark
             set;
         }
 
-        public static BenchmarkEntry Create(TimeSpan timestamp, Message message)
+        public static BenchmarkEntry Create(string type, TimeSpan timestamp)
         {
             return new BenchmarkEntry
             {
                 BenchmarkingType = BenchmarkManager.BenchmarkingType,
                 Date = DateTime.Now,
                 Timestamp = timestamp,
-                MessageType = message.GetType(),
-                Message = message,
+                MessageType = type,
+            };
+        }
+
+        public static BenchmarkEntry Create(string type, TimeSpan timestamp, params object[] additionalProperties)
+        {
+            if (additionalProperties.Length % 2 != 0)
+                throw new ArgumentException("additionalProperties");
+
+            var hashTable = new Hashtable();
+            for (int i = 0; i < additionalProperties.Length; i+=2)
+            {
+                hashTable.Add(additionalProperties[i], additionalProperties[i + 1]);
+            }
+
+            return new BenchmarkEntry
+            {
+                BenchmarkingType = BenchmarkManager.BenchmarkingType,
+                Date = DateTime.Now,
+                Timestamp = timestamp,
+                MessageType = type,
+                AdditionalProperties = hashTable
             };
         }
     }

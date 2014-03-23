@@ -29,7 +29,7 @@ namespace Stump.Server.BaseServer.Benchmark
             }
         }
 
-        public void RegisterEntry(BenchmarkEntry entry)
+        public void Add(BenchmarkEntry entry)
         {
             lock (m_entries)
             {
@@ -45,14 +45,26 @@ namespace Stump.Server.BaseServer.Benchmark
             }
         }
 
+        public void AddRange(IEnumerable<BenchmarkEntry> entries)
+        {
+            lock (m_entries)
+            {
+                m_entries.AddRange(entries);
+            }
+
+            if (m_entries.Count < EntriesLimit)
+                return;
+
+            lock (m_entries)
+            {
+                m_entries.RemoveRange(0, EntriesLimit / 4);
+            }
+
+        }
+
         public void ClearResults()
         {
             m_entries.Clear();
-        }
-
-        public BenchmarkEntry[] GetEntries(Type message)
-        {
-            return m_entries.Where(entry => entry.MessageType == message).ToArray();
         }
 
         public BenchmarkEntry[] SortEntries()
@@ -65,10 +77,10 @@ namespace Stump.Server.BaseServer.Benchmark
             return m_entries.OrderByDescending(entry => entry.Timestamp).Take(limit).ToArray();
         }
 
-        public Dictionary<Type, Tuple<TimeSpan, int>> GetEntriesSummary()
+        public Dictionary<string, Tuple<TimeSpan, int>> GetEntriesSummary()
         {
             var sortedEntries = SortEntries();
-            var result = new Dictionary<Type, Tuple<TimeSpan, int>>();
+            var result = new Dictionary<string, Tuple<TimeSpan, int>>();
 
             foreach (var entries in sortedEntries.GroupBy(entry => entry.MessageType))
             {
@@ -80,7 +92,7 @@ namespace Stump.Server.BaseServer.Benchmark
             return result;
         }
 
-        public BenchmarkEntry GetHighestEntry(Type message)
+        public BenchmarkEntry GetHighestEntry(string message)
         {
             return m_entries.
                 Where(entry => entry.MessageType == message).
@@ -98,7 +110,7 @@ namespace Stump.Server.BaseServer.Benchmark
 
             foreach (var entry in summary)
             {
-                builder.AppendFormat("{0} {1}ms ({2} entries)\n", entry.Key.Name, entry.Value.Item1.TotalMilliseconds, entry.Value.Item2);
+                builder.AppendFormat("{0} {1}ms ({2} entries)\n", entry.Key, entry.Value.Item1.TotalMilliseconds, entry.Value.Item2);
             }
 
             return builder.ToString();
