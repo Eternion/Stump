@@ -1351,17 +1351,25 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnLifePointsChanged(FightActor actor, int delta, int permanentDamages, FightActor from)
         {
             var loss = (short) (-delta);
+            if (delta == 0)
+                return;
 
             ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
         {
+            if (delta == 0)
+                return;
+
             ActionsHandler.SendGameActionFightPointsVariationMessage(Clients, action, source, target, delta);
         }
 
         protected virtual void OnDamageReducted(FightActor fighter, FightActor source, int reduction)
         {
+            if (reduction == 0)
+                return;
+
             ActionsHandler.SendGameActionFightReduceDamagesMessage(Clients, source, fighter, reduction);
         }
 
