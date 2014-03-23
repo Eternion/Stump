@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
-using Stump.Core.Pool.New;
+using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 
@@ -12,7 +11,7 @@ namespace Stump.Server.WorldServer.Core.Network
     public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>
     {
         private WorldClient m_singleClient; // avoid new object allocation
-        private List<WorldClient> m_underlyingList = new List<WorldClient>();
+        private readonly List<WorldClient> m_underlyingList = new List<WorldClient>();
 
         public WorldClientCollection()
         {
@@ -44,13 +43,19 @@ namespace Stump.Server.WorldServer.Core.Network
             {
                 lock (this)
                 {
-                    SegmentStream stream = BufferManager.Default.CheckOutStream();
-
-                    var writer = new BigEndianWriter(stream);
-                    message.Pack(writer);
+                    if (m_underlyingList.Count == 0)
+                        return;
 
                     var disconnectedClients = new List<WorldClient>();
-                    foreach (var worldClient in m_underlyingList)
+                    SegmentStream stream = BufferManager.Default.CheckOutStream();
+                    var writer = new BigEndianWriter(stream);
+                    message.Pack(writer);
+                    stream.Segment.Uses = m_underlyingList.Count(x => x.Connected);
+
+                    if (stream.Segment.Uses == 0)
+                        stream.Dispose();
+
+                    foreach (WorldClient worldClient in m_underlyingList)
                     {
                         if (worldClient != null)
                         {
@@ -100,11 +105,8 @@ namespace Stump.Server.WorldServer.Core.Network
 
         public IEnumerator<WorldClient> GetEnumerator()
         {
-            if (m_singleClient != null)
-                return new[] { m_singleClient }.AsEnumerable().GetEnumerator();
-
             // not thread safe
-            return m_underlyingList.GetEnumerator();
+            return m_singleClient != null ? new[] { m_singleClient }.AsEnumerable().GetEnumerator() : m_underlyingList.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -23,12 +23,11 @@ using System.Linq;
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
-using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Core.IPC
 {
@@ -72,11 +71,16 @@ namespace Stump.Server.WorldServer.Core.IPC
         private bool m_requestingAccess;
         private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
         private bool m_wasConnected;
+        private int m_offset;
+        private int m_remainingLength;
+        
+        private BufferSegment m_bufferSegment;
 
         public IPCAccessor()
         {
             TaskPool = new SelfRunningTaskPool(TaskPoolInterval, "IPCAccessor Task Pool");
             m_updateTimer = new TimerEntry(0, UpdateInterval, Tick);
+            m_bufferSegment = BufferManager.Default.CheckOut();
         }
 
         public static IPCAccessor Instance
@@ -132,14 +136,14 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void OnMessageReceived(IPCMessage message)
         {
-            Action<IPCAccessor, IPCMessage> handler = MessageReceived;
+            var handler = MessageReceived;
             if (handler != null)
                 handler(this, message);
         }
 
         private void OnMessageSended(IPCMessage message)
         {
-            Action<IPCAccessor, IPCMessage> handler = MessageSent;
+            var handler = MessageSent;
             if (handler != null)
                 handler(this, message);
         }
@@ -148,7 +152,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         {
             logger.Info("IPC connection etablished");
 
-            Action<IPCAccessor> handler = Connected;
+            var handler = Connected;
             if (handler != null)
                 handler(this);
         }
@@ -158,7 +162,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             m_wasConnected = false;
             logger.Info("IPC connection lost");
 
-            Action<IPCAccessor> handler = Disconnected;
+            var handler = Disconnected;
             if (handler != null)
                 handler(this);
         }        
@@ -205,7 +209,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             logger.Info("Access to auth. server granted");
 
-            Action<IPCAccessor> handler = Granted;
+            var handler = Granted;
             if (handler != null)
                 handler(this);
         }
@@ -280,17 +284,24 @@ namespace Stump.Server.WorldServer.Core.IPC
                 return;
 
             var args = new SocketAsyncEventArgs();
+            var stream = BufferManager.Default.CheckOutStream();
             args.Completed += OnSendCompleted;
-            byte[] data = IPCMessageSerializer.Instance.SerializeWithLength(message);
+            IPCMessageSerializer.Instance.SerializeWithLength(message, stream);
 
             // serialize stuff
 
-            args.SetBuffer(data, 0, data.Length);
-            Socket.SendAsync(args);
+            args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
+            args.UserToken = stream;
+            if (Socket.SendAsync(args))
+            {
+                stream.Segment.DecrementUsage();
+                args.Dispose();
+            }
         }
 
-        private void OnSendCompleted(object sender, SocketAsyncEventArgs e)
-        {
+        private static void OnSendCompleted(object sender, SocketAsyncEventArgs e)
+        {                
+            ((SegmentStream)e.UserToken).Segment.DecrementUsage();
             e.Dispose();
         }
 
@@ -309,7 +320,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             var args = new SocketAsyncEventArgs();
             args.Completed += OnReceiveCompleted;
-            args.SetBuffer(new byte[8192], 0, 8192);
+            args.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_offset, 8192 - m_offset);
 
             if (!Socket.ReceiveAsync(args))
                 ProcessReceiveCompleted(args);
@@ -360,7 +371,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 m_messagePart.Build(reader, reader.BaseStream.Length - reader.BaseStream.Position);
 
                 if (!m_messagePart.IsValid)
-                    return;
+                    break;
 
                 IPCMessage message;
 
@@ -371,7 +382,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 catch (Exception ex)
                 {
                     logger.Error("Cannot deserialize received message ! Exception : {0}" + ex);
-                    return;
+                    break;
                 }
                 finally
                 {
@@ -380,6 +391,24 @@ namespace Stump.Server.WorldServer.Core.IPC
 
                 TaskPool.AddMessage(() => ProcessMessage(message));
             }
+
+            m_remainingLength = (int) (reader.BaseStream.Length - reader.BaseStream.Position);
+            m_offset = (int) reader.BaseStream.Position;
+
+            if (m_remainingLength > 0) // still some bytes in the buffer
+            {
+                EnsureBuffer();
+            }
+        }
+
+        protected void EnsureBuffer()
+        {
+            Array.Copy(m_bufferSegment.Buffer.Array,
+                       m_bufferSegment.Offset + m_offset,
+                       m_bufferSegment.Buffer.Array,
+                       m_bufferSegment.Offset,
+                       m_remainingLength);
+            m_offset = m_remainingLength;
         }
 
         protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
@@ -412,8 +441,8 @@ namespace Stump.Server.WorldServer.Core.IPC
             if (clients.Length > 1)
                 logger.Error("Several clients connected on the same account ({0}). Disconnect them all", message.AccountId);
 
-            bool isLogged = false;
-            for (int index = 0; index < clients.Length; index++)
+            var isLogged = false;
+            for (var index = 0; index < clients.Length; index++)
             {
                 var client = clients[index];
                 isLogged = client.Character != null;
@@ -433,7 +462,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             ReplyRequest(new DisconnectedClientMessage(true), request);
         }
 
-        private void HandleError(IPCErrorMessage error)
+        private static void HandleError(IPCErrorMessage error)
         {
             logger.Error("Error received of type {0}. Message : {1} StackTrace : {2}",
                 error.GetType(), error.Message, error.StackTrace);
@@ -441,13 +470,14 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void Close()
         {
-            if (Socket != null && Socket.Connected)
-            {
-                Socket.Shutdown(SocketShutdown.Both);
-                Socket.Close();
+            if (Socket == null || !Socket.Connected)
+                return;
 
-                Socket = null;
-            }
+            Socket.Shutdown(SocketShutdown.Both);
+            Socket.Close();
+            m_bufferSegment.DecrementUsage();
+
+            Socket = null;
         }
     }
 }

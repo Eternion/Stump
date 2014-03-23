@@ -121,7 +121,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
         protected override void OnDisposed()
         {
             if (Map != null && Map.IsActor(this))
-                Map.Area.ExecuteInContext(() => Map.Leave(this));
+                Map.Area.ExecuteInContext(() =>
+                {
+                    if (Map != null && Map.IsActor(this)) Map.Leave(this);
+                });
 
             base.OnDisposed();
 

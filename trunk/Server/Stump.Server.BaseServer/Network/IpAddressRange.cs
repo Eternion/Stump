@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Text;
 using Stump.Core.Extensions;
@@ -15,7 +16,7 @@ namespace Stump.Server.BaseServer.Network
             m_tokens = tokens;
         }
 
-        private IPAddressToken[] m_tokens;
+        private readonly IPAddressToken[] m_tokens;
 
         public IPAddressToken[] Tokens
         {
@@ -34,13 +35,7 @@ namespace Stump.Server.BaseServer.Network
             if (bytes.Length != Tokens.Length)
                 return true;
 
-            for (int i = 0; i < Tokens.Length; i++)
-            {
-                if (!Tokens[i].Match(bytes[i]))
-                    return false;
-            }
-
-            return true;
+            return !Tokens.Where((t, i) => !t.Match(bytes[i])).Any();
         }
 
         public static IPAddressRange Parse(string str)
@@ -52,7 +47,7 @@ namespace Stump.Server.BaseServer.Network
             if (split.Length != 4)
                 throw new FormatException(string.Format("{0} must contains 3 dots", str));
 
-            for (int i = 0; i < split.Length; i++)
+            for (var i = 0; i < split.Length; i++)
             {
                 tokens[i] = IPAddressToken.Parse(split[i]);
             }
@@ -64,9 +59,9 @@ namespace Stump.Server.BaseServer.Network
         {
             var sb = new StringBuilder();
 
-            for (int i = 0; i < Tokens.Length; i++)
+            for (var i = 0; i < Tokens.Length; i++)
             {
-                sb.Append(Tokens[i].ToString());
+                sb.Append(Tokens[i]);
 
                 if (i < 3)
                     sb.Append(".");
@@ -117,15 +112,13 @@ namespace Stump.Server.BaseServer.Network
             if (str == "*")
                 return new IPAddressToken(true);
 
-            if (str.Contains("-"))
-            {
-                var low = byte.Parse(str.Substring(0, str.IndexOf("-")).Trim());
-                var high = byte.Parse(str.Remove(0, str.IndexOf("-") + 1).Trim());
+            if (!str.Contains("-"))
+                return new IPAddressToken(byte.Parse(str));
 
-                return new IPAddressToken(low, high);
-            }
+            var low = byte.Parse(str.Substring(0, str.IndexOf("-")).Trim());
+            var high = byte.Parse(str.Remove(0, str.IndexOf("-") + 1).Trim());
 
-            return new IPAddressToken(byte.Parse(str));
+            return new IPAddressToken(low, high);
         }
 
         public override string ToString()

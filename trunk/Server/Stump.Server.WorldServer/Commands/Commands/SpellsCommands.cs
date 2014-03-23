@@ -20,6 +20,8 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -87,6 +89,24 @@ namespace Stump.Server.WorldServer.Commands.Commands
             else
                 trigger.ReplyError("Spell {0} not unlearned. {1} may not have this spell", trigger.Bold(spell.Name), trigger.Bold(target));
 
+        }
+    }
+
+    public class DowngradeSpellCommand : TargetSubCommand
+    {
+        public DowngradeSpellCommand()
+        {
+            Aliases = new[] {"downgrade", "down"};
+            RequiredRole = RoleEnum.Moderator;
+            ParentCommand = typeof(SpellsCommands);
+            Description = "Open SpellForget UI";
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var target = GetTarget(trigger);
+
+            ContextRoleplayHandler.SendSpellForgetUIMessage(target.Client, true);
         }
     }
 
@@ -176,7 +196,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             spell.CurrentLevel = (byte)level;
             trigger.ReplyBold("{0}'s spell {1} is now level {2}", target, spell.Template.Name, level);
-            InventoryHandler.SendSpellUpgradeSuccessMessage(target.Client, spell);
+            ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(target.Client, spell);
         }
     }
 }

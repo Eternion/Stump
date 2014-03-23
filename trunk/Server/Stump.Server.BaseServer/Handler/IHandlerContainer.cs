@@ -1,5 +1,3 @@
-
-using System;
 using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.BaseServer.Handler

@@ -37,7 +37,7 @@ namespace ArkalysPlugin.SmithMagic
 
         public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
         {
-            BasePlayerItem weapon = Owner.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
+            var weapon = Owner.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
 
             if (weapon == null || weapon.Effects.All(x => x.EffectId != EffectsEnum.Effect_DamageNeutral))
             {

@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void NotifySuccess()
         {
-            Action<ReadyChecker> handler = Success;
+            var handler = Success;
             if (handler != null)
                 handler(this);
         }
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void NotifyTimeout(CharacterFighter[] laggers)
         {
-            Action<ReadyChecker, CharacterFighter[]> handler = Timeout;
+            var handler = Timeout;
             if (handler != null)
                 handler(this, laggers);
         }
@@ -79,6 +79,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!m_started)
                 return;
 
+            if (m_fight is FightPvT)
+                return;
+
             if (ready && m_fighters.Contains(actor))
             {
                 m_fighters.Remove(actor);
@@ -88,13 +91,13 @@ namespace Stump.Server.WorldServer.Game.Fights
                 m_fighters.Add(actor);
             }
 
-            if (m_fighters.Count == 0)
-            {
-                if (m_timer != null)
-                    m_timer.Dispose();
+            if (m_fighters.Count != 0)
+                return;
 
-                NotifySuccess();
-            }
+            if (m_timer != null)
+                m_timer.Dispose();
+
+            NotifySuccess();
         }
 
         private void TimedOut()

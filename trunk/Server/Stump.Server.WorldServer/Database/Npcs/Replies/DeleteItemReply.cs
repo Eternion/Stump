@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (!base.Execute(npc, character))
                 return false;
 
-            BasePlayerItem item = character.Inventory.TryGetItem(Item);
+            var item = character.Inventory.TryGetItem(Item);
 
             if (item == null)
                 return false;

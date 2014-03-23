@@ -408,7 +408,7 @@ namespace Uplauncher
             
             var startDate = DateTime.Now;
             long bytesComputed = 0;
-            int filesChecked = 0;
+            var filesChecked = 0;
             // process in parallel each file but the last
             foreach(var file in files.Take(files.Count - 1))
             {

@@ -212,6 +212,7 @@
     <Compile Include="Commands\Commands\HelpCommand.cs" />
     <Compile Include="Commands\Commands\InfoCommand.cs" />
     <Compile Include="Commands\Commands\ListCommand.cs" />
+    <Compile Include="Commands\Commands\MemoryCommands.cs" />
     <Compile Include="Commands\Commands\PluginsCommand.cs" />
     <Compile Include="Commands\Commands\ShutdownCommand.cs" />
     <Compile Include="Commands\ICommandsUser.cs" />
