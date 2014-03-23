@@ -1147,9 +1147,9 @@
         /// </summary>
         Effect_760 = 760,
         /// <summary>
-        /// Switch the position of 2 players
+        /// Intercept damages
         /// </summary>
-        Effect_765 = 765,
+        Effect_DamageIntercept = 765,
         /// <summary>
         /// Clockwise confusion: #1{~1~2 to }#2 degrees
         /// </summary>
@@ -1655,7 +1655,7 @@
         /// (not found)
         /// </summary>
         Effect_1057 = 1057,
-        /// <summary>
+        /// <summary>765
         /// (not found)
         /// </summary>
         Effect_1058 = 1058,
