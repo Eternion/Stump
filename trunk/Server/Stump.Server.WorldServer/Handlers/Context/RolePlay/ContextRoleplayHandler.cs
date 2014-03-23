@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -44,7 +45,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(MapRunningFightDetailsRequestMessage.Id)]
         public static void HandleMapRunningFightDetailsRequestMessage(WorldClient client, MapRunningFightDetailsRequestMessage message)
         {
-            var fight = FightManager.Instance.GetFight(message.fightId);
+            var fight = Singleton<FightManager>.Instance.GetFight(message.fightId);
 
             if (fight == null || fight.Map != client.Character.Map)
                 return;

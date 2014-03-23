@@ -20470,6 +20470,12 @@
         BanditHideoutKey = 9997,
         // Item [Level : 1]
         CopyoftheBanditHideoutKey = 9999,
+        // Item [Level : 1]
+        LookChangePotion = 13518,
+        // Item [Level : 1]
+        GuildNameChangePotion = 13273,
+        // Item [Level : 1]
+        GuildEmblemChangePotion = 13270,
         End,
     }
 }

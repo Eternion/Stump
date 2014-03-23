@@ -1229,10 +1229,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var copyOfBuffs = m_buffList.ToArray();
 
-            foreach (var buff in copyOfBuffs)
+            foreach (var buff in copyOfBuffs.Where(buff => buff.Caster == caster))
             {
-                if (buff.Caster == caster)
-                    RemoveAndDispellBuff(buff);
+                RemoveAndDispellBuff(buff);
             }
         }
 
@@ -1311,11 +1310,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public short GetSpellBoost(Spell spell)
         {
-            if (!m_buffedSpells.ContainsKey(spell))
-                return 0;
-
-            return m_buffedSpells[spell];
+            return !m_buffedSpells.ContainsKey(spell) ? (short) 0 : m_buffedSpells[spell];
         }
+
         public bool MustSkipTurn()
         {
             return GetBuffs(x => x is SkipTurnBuff).Any();

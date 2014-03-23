@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            string generatedName = CharacterManager.Instance.GenerateName();
+            var generatedName = CharacterManager.Instance.GenerateName();
 
             client.Send(new CharacterNameSuggestionSuccessMessage(generatedName));
         }

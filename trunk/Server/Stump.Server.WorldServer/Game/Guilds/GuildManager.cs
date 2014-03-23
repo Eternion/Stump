@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
@@ -102,15 +103,20 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public GuildCreationResultEnum CreateGuild(Character character, string name, NetworkGuildEmblem emblem)
         {
+            var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.Guildalogem));
+            if (guildalogemme == null)
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
+
+            if (!Regex.IsMatch(name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            {
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_INVALID;
+            }
+
             if (DoesNameExist(name))
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
             if (DoesEmblemExist(emblem))
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
-
-            var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(1575));
-            if (guildalogemme == null)
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
 
             character.Inventory.RemoveItem(guildalogemme, 1);
             character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, guildalogemme.Template.Id);

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Stump.Core.Pool.New;
 
-namespace Stump.Core.Pool.New
+namespace Stump.Core.Pool
 {
 	/// <summary>
 	/// This class manages objects in a pool to maximize memory (de)allocation efficiency.

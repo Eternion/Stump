@@ -247,7 +247,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (client.Character.Fight != target.Character.Fight)
                 return;
 
-            client.Character.Fight.KickFighter(target);
+            client.Character.Fight.KickFighter(client.Character.Fighter, target);
         }
 
         public static void SendGameFightStartMessage(IPacketReceiver client)

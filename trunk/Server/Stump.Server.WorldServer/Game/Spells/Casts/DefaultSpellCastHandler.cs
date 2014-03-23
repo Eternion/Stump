@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
@@ -35,13 +33,13 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         {
             var random = new AsyncRandom();
 
-            List<EffectDice> effects = Critical ? SpellLevel.CriticalEffects : SpellLevel.Effects;
+            var effects = Critical ? SpellLevel.CriticalEffects : SpellLevel.Effects;
             var handlers = new List<SpellEffectHandler>();
 
-            double rand = random.NextDouble();
+            var rand = random.NextDouble();
             double randSum = effects.Sum(entry => entry.Random);
-            bool stopRand = false;
-            foreach (EffectDice effect in effects)
+            var stopRand = false;
+            foreach (var effect in effects)
             {
                 if (effect.Random > 0)
                 {
@@ -59,8 +57,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                     stopRand = true;
                 }
 
-                SpellEffectHandler handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell,
-                                                                                          TargetedCell, Critical);
+                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, TargetedCell, Critical);
 
                 if (MarkTrigger != null)
                     handler.MarkTrigger = MarkTrigger;
@@ -77,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             if (!m_initialized)
                 Initialize();
 
-            foreach (SpellEffectHandler handler in Handlers)
+            foreach (var handler in Handlers)
             {
                 handler.Apply();
             }

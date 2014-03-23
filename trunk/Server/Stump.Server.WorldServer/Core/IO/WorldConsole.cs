@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Core.IO
             }
         }
 
-        private List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
+        private readonly List<KeyValuePair<string, Exception>> m_commandsError = new List<KeyValuePair<string, Exception>>();
         public List<KeyValuePair<string, Exception>> CommandsErrors
         {
             get

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using NLog;
-using Stump.Core.Reflection;
 using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC.Messages;
 
@@ -20,7 +19,7 @@ namespace Stump.Server.BaseServer.IPC
         public delegate void IPCMessageHandler(IPCMessage message);
 
 
-        private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
+        private readonly Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
         protected abstract int RequestTimeout
         {
             get;

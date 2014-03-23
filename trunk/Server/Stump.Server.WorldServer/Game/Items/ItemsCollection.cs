@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Extensions;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
@@ -58,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             OnItemAdded(item);
 
-            ItemAddedEventHandler handler = ItemAdded;
+            var handler = ItemAdded;
             if (handler != null)
                 handler(this, item);
         }
@@ -73,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             OnItemRemoved(item);
 
-            ItemRemovedEventHandler handler = ItemRemoved;
+            var handler = ItemRemoved;
             if (handler != null)
                 handler(this, item);
         }
@@ -88,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             OnItemStackChanged(item, difference);
 
-            ItemStackChangedEventHandler handler = ItemStackChanged;
+            var handler = ItemStackChanged;
             if (handler != null)
                 handler(this, item, difference);
         }

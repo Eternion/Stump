@@ -45,7 +45,7 @@ namespace Stump.Server.AuthServer.Managers
         [Variable]
         public static int IpBanRefreshTime = 60;
 
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
         private List<IpBan> m_ipBans = new List<IpBan>(); 
         private SimpleTimerEntry m_timer;

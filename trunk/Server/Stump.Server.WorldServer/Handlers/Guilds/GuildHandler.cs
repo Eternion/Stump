@@ -97,6 +97,37 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             }
         }
 
+        [WorldHandler(GuildModificationValidMessage.Id)]
+        public static void HandleGuildModificationValidMessage(WorldClient client, GuildModificationValidMessage message)
+        {
+            var panel = client.Character.Dialog as GuildModificationPanel;
+            if (panel == null)
+                return;
+
+            panel.ModifyGuildName(message.guildName);
+            panel.ModifyGuildEmblem(message.guildEmblem);
+        }
+
+        [WorldHandler(GuildModificationNameValidMessage.Id)]
+        public static void HandleGuildModificationNameValidMessage(WorldClient client, GuildModificationNameValidMessage message)
+        {
+            var panel = client.Character.Dialog as GuildModificationPanel;
+            if (panel != null)
+            {
+                panel.ModifyGuildName(message.guildName);
+            }
+        }
+
+        [WorldHandler(GuildModificationEmblemValidMessage.Id)]
+        public static void HandleGuildModificationEmblemValidMessage(WorldClient client, GuildModificationEmblemValidMessage message)
+        {
+            var panel = client.Character.Dialog as GuildModificationPanel;
+            if (panel != null)
+            {
+                panel.ModifyGuildEmblem(message.guildEmblem);
+            }
+        }
+
         [WorldHandler(GuildChangeMemberParametersMessage.Id)]
         public static void HandleGuildChangeMemberParametersMessage(WorldClient client, GuildChangeMemberParametersMessage message)
         {
@@ -314,6 +345,11 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         public static void SendGuildCreationStartedMessage(IPacketReceiver client)
         {
             client.Send(new GuildCreationStartedMessage());
+        }
+
+        public static void SendGuildModificationStartedMessage(IPacketReceiver client, bool changeName, bool changeEmblem)
+        {
+            client.Send(new GuildModificationStartedMessage(changeName, changeEmblem));
         }
     }
 }

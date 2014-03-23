@@ -120,7 +120,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     {
                         var fighter = defender.CreateFighter(DefendersTeam);
 
-                        m_defendersMaps.Add(fighter, defender.Map);
+                        m_defendersMaps.Add(fighter, defender.LastMap);
                         DefendersTeam.AddFighter(fighter);
 
                         // if all defenders have been teleported we can launch the timer
@@ -131,6 +131,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                 });
                 
             }
+        }
+
+        protected override bool CanKickFighter(FightActor kicker, FightActor kicked)
+        {
+            return false;
         }
 
         public override void StartFighting()

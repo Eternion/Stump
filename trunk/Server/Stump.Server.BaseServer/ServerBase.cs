@@ -275,7 +275,7 @@ namespace Stump.Server.BaseServer
                 if (!plugin.UseConfig || !plugin.AllowConfigUpdate)
                     continue;
 
-                bool update = File.Exists(plugin.GetConfigPath());
+                var update = File.Exists(plugin.GetConfigPath());
 
                 if (!update)
                 {
@@ -284,11 +284,11 @@ namespace Stump.Server.BaseServer
 
                 plugin.LoadConfig();
 
-                if (update)
-                {
-                    logger.Info("Update '{0}' config file => '{1}'", plugin.Name, Path.GetFileName(plugin.GetConfigPath()));
-                    plugin.Config.Create(true);
-                }
+                if (!update)
+                    continue;
+
+                logger.Info("Update '{0}' config file => '{1}'", plugin.Name, Path.GetFileName(plugin.GetConfigPath()));
+                plugin.Config.Create(true);
             }
 
             logger.Info("All config files were correctly updated/created ! Shutdown ...");
@@ -371,16 +371,19 @@ namespace Stump.Server.BaseServer
 
         public void HandleCrashException(Exception e)
         {
-            ExceptionManager.Instance.RegisterException(e);
+            while (true)
+            {
+                ExceptionManager.Instance.RegisterException(e);
 
-            logger.Fatal(
-                string.Format(" Crash Exception : {0}\r\n", e.Message) +
-                string.Format(" Source: {0} -> {1}\r\n", e.Source,
-                        e.TargetSite) +
-                string.Format(" Stack Trace:\r\n{0}", e.StackTrace));
+                logger.Fatal(string.Format(" Crash Exception : {0}\r\n", e.Message) + string.Format(" Source: {0} -> {1}\r\n", e.Source, e.TargetSite) + string.Format(" Stack Trace:\r\n{0}", e.StackTrace));
 
-            if (e.InnerException != null)
-                HandleCrashException(e.InnerException);
+                if (e.InnerException != null)
+                {
+                    e = e.InnerException;
+                    continue;
+                }
+                break;
+            }
         }
 
         public virtual void Start()

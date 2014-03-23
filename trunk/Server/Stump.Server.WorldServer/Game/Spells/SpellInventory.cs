@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Spells
@@ -28,10 +30,8 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             var database = WorldServer.Instance.DBAccessor.Database;
 
-            foreach (var record in database.Query<CharacterSpellRecord>(string.Format(CharacterSpellRelator.FetchByOwner, Owner.Id)))
+            foreach (var spell in database.Query<CharacterSpellRecord>(string.Format(CharacterSpellRelator.FetchByOwner, Owner.Id)).Select(record => new CharacterSpell(record)))
             {
-                var spell = new CharacterSpell(record);
-
                 m_spells.Add(spell.Id, spell);
             }
         }
@@ -39,10 +39,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         public CharacterSpell GetSpell(int id)
         {
             CharacterSpell spell;
-            if (m_spells.TryGetValue(id, out spell))
-                return spell;
-
-            return null;
+            return m_spells.TryGetValue(id, out spell) ? spell : null;
         }
 
         public bool HasSpell(int id)
@@ -74,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             var spell = new CharacterSpell(record);
             m_spells.Add(spell.Id, spell);
 
-            InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
+            ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
 
             return spell;
         }
@@ -118,28 +115,28 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (Owner.IsFighting())
             {
                 if (send)
-                    InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                    ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
                 return false;
             }
 
             if (spell.CurrentLevel >= 6)
             {
                 if (send)
-                    InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                    ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
                 return false;
             }
 
             if (Owner.SpellsPoints < spell.CurrentLevel)
             {
                 if (send)
-                    InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                    ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
                 return false;
             }
 
             if (spell.ByLevel[spell.CurrentLevel + 1].MinPlayerLevel > Owner.Level)
             {
                 if (send)
-                    InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                    ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
                 return false;
             }
 
@@ -152,17 +149,17 @@ namespace Stump.Server.WorldServer.Game.Spells
 
             if (spell == null)
             {
-                InventoryHandler.SendSpellUpgradeFailureMessage(Owner.Client);
+                ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
                 return false;
             }
 
             if (!CanBoostSpell(spell))
                 return false;
 
-            Owner.SpellsPoints -= (ushort)spell.CurrentLevel;
+            Owner.SpellsPoints -= spell.CurrentLevel;
             spell.CurrentLevel++;
 
-            InventoryHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
+            ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
 
             return true;
         }
@@ -187,38 +184,65 @@ namespace Stump.Server.WorldServer.Game.Spells
             if (!HasSpell(spell.Id))
                 return false;
 
-            var resetPoints = 0;
-            for (var i = 1; i < spell.CurrentLevel; i++)
+            var level = spell.CurrentLevel;
+            for (var i = 1; i < level; i++)
             {
-                resetPoints += i;
+                DowngradeSpell(spell, false);
             }
-
-            spell.CurrentLevel = 1;
-            Owner.SpellsPoints += (ushort)resetPoints;
 
             InventoryHandler.SendSpellListMessage(Owner.Client, true); 
             return true;
         }
 
-        public int ForgetAllSpells()
+        public void ForgetAllSpells()
         {
-            var resetPoints = 0;
-
             foreach (var spell in m_spells)
             {
-                for (var i = 1; i < spell.Value.CurrentLevel; i++)
+                var level = spell.Value.CurrentLevel;
+                for (var i = 1; i < level; i++)
                 {
-                    resetPoints += i;
+                    DowngradeSpell(spell.Value, false);
                 }
-
-                spell.Value.CurrentLevel = 1;
             }
-
-            Owner.SpellsPoints += (ushort)resetPoints;
 
             InventoryHandler.SendSpellListMessage(Owner.Client, true);
             Owner.RefreshStats();
-            return resetPoints;
+        }
+
+        public int DowngradeSpell(SpellTemplate spell)
+        {
+            return DowngradeSpell(spell.Id);
+        }
+
+        public int DowngradeSpell(int id)
+        {
+            if (!HasSpell(id))
+                return 0;
+
+            var spell = GetSpell(id);
+
+            return DowngradeSpell(spell);
+        }
+
+        public int DowngradeSpell(CharacterSpell spell, bool send = true)
+        {
+            if (!HasSpell(spell.Id))
+                return 0;
+
+            if (spell.CurrentLevel <= 1)
+                return 0;
+
+            spell.CurrentLevel -= 1;
+            Owner.SpellsPoints += spell.CurrentLevel;
+
+            if (!send)
+                return spell.CurrentLevel;
+
+            InventoryHandler.SendSpellListMessage(Owner.Client, true);
+            ContextRoleplayHandler.SendSpellForgottenMessage(Owner.Client, spell, spell.CurrentLevel);
+            Owner.RefreshStats();
+
+            return spell.CurrentLevel;
         }
 
         public void MoveSpell(int id, byte position)

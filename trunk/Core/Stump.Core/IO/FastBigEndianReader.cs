@@ -17,7 +17,7 @@
 using System;
 using System.IO;
 using System.Text;
-using Stump.Core.Pool.New;
+using Stump.Core.Pool;
 
 namespace Stump.Core.IO
 {

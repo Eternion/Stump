@@ -3,7 +3,7 @@ using System.IO;
 
 // credits to wcell
 
-namespace Stump.Core.Pool.New
+namespace Stump.Core.Pool
 {
     /// <summary>
     /// Similar to MemoryStream, but with an underlying BufferSegment.
