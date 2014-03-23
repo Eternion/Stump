@@ -70,7 +70,7 @@ namespace Stump.Core.Pool
         public int Uses
         {
             get { return m_uses; }
-            internal set { m_uses = value; }
+            set { m_uses = value; }
         }
 
         /// <summary>

@@ -82,7 +82,7 @@ namespace Stump.Server.BaseServer.Network
         }
         
         // a bit dirty. only used by WorldClientCollection
-        public void Send(SegmentStream stream, bool dispose = true)
+        public void Send(SegmentStream stream)
         {   
             if (Socket == null || !Connected)
             {
@@ -91,15 +91,13 @@ namespace Stump.Server.BaseServer.Network
 
             var args = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
             args.Completed += OnSendCompleted;
-            
             args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
-            if (dispose)
-                args.UserToken = stream;
+            args.UserToken = stream;
 
             if (!Socket.SendAsync(args))
             {
                 args.Completed -= OnSendCompleted;
-                stream.Dispose();
+                stream.Segment.DecrementUsage();
                 ObjectPoolMgr.ReleaseObject(args);
             }
             LastActivity = DateTime.Now;
@@ -110,7 +108,7 @@ namespace Stump.Server.BaseServer.Network
             args.Completed -= OnSendCompleted;
             var stream = args.UserToken as SegmentStream;
             if (stream != null)
-                stream.Dispose();
+                stream.Segment.DecrementUsage();
 
             ObjectPoolMgr.ReleaseObject(args);
         }
@@ -179,8 +177,6 @@ namespace Stump.Server.BaseServer.Network
                     if (BuildMessage(m_bufferSegment))
                     {
                         m_offset = 0;
-                        m_bufferSegment.DecrementUsage();
-                        m_bufferSegment = BufferManager.Default.CheckOut();
                     }
                     else
                     {
@@ -269,15 +265,12 @@ namespace Stump.Server.BaseServer.Network
         /// </summary>
         protected void EnsureBuffer()
         {
-            var newSegment = BufferManager.Default.CheckOut();
             Array.Copy(m_bufferSegment.Buffer.Array,
                        m_bufferSegment.Offset + m_offset,
-                       newSegment.Buffer.Array,
-                       newSegment.Offset,
+                       m_bufferSegment.Buffer.Array,
+                       m_bufferSegment.Offset,
                        m_remainingLength);
-            m_bufferSegment.DecrementUsage();
-            m_bufferSegment = newSegment;
-            m_offset = 0;
+            m_offset = m_remainingLength;
         }
 
         /// <summary>

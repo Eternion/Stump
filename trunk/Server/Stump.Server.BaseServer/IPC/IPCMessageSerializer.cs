@@ -84,23 +84,22 @@ namespace Stump.Server.BaseServer.IPC
             Model.Serialize(stream, obj);
             return stream.ToArray();
         }
-        
-        public byte[] SerializeWithLength(object obj)
+
+        public void SerializeWithLength(object obj, Stream stream)
         {
-            var objStream = new MemoryStream();
-            Model.Serialize(objStream, obj);
-            var len = objStream.Length;
-            var lenSize = ComputeTypeLen(len);
-
-            var msgStream = new MemoryStream();
-            msgStream.WriteByte(lenSize);
-            for (var i = lenSize - 1; i >= 0; i--)
+            using (var objStream = new MemoryStream())
             {
-                msgStream.WriteByte((byte)(len >> 8*i & 255));
-            }
-            msgStream.Write(objStream.ToArray(), 0, (int) objStream.Length);
+                Model.Serialize(objStream, obj);
+                var len = objStream.Length;
+                var lenSize = ComputeTypeLen(len);
 
-            return msgStream.ToArray();
+                stream.WriteByte(lenSize);
+                for (var i = lenSize - 1; i >= 0; i--)
+                {
+                    stream.WriteByte((byte) (len >> 8*i & 255));
+                }
+                stream.Write(objStream.ToArray(), 0, (int) objStream.Length);
+            }
         }
 
         private static byte ComputeTypeLen(long len)
