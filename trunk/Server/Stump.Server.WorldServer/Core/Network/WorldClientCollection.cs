@@ -43,25 +43,22 @@ namespace Stump.Server.WorldServer.Core.Network
             {
                 lock (this)
                 {
-                    var stream = BufferManager.Default.CheckOutStream();
-
+                    var disconnectedClients = new List<WorldClient>();
+                    SegmentStream stream = BufferManager.Default.CheckOutStream();
                     var writer = new BigEndianWriter(stream);
                     message.Pack(writer);
-
-                    var disconnectedClients = new List<WorldClient>();
-                    foreach (var worldClient in m_underlyingList)
+                    stream.Segment.Uses = m_underlyingList.Count;
+                    foreach (WorldClient worldClient in m_underlyingList)
                     {
                         if (worldClient != null)
                         {
-                            worldClient.Send(stream, false);
+                            worldClient.Send(stream);
                             worldClient.OnMessageSent(message);
                         }
 
                         if (worldClient == null || !worldClient.Connected)
                             disconnectedClients.Add(worldClient);
                     }
-
-                    stream.Dispose();
 
                     foreach (var client in disconnectedClients)
                     {

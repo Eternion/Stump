@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC;
@@ -70,11 +71,16 @@ namespace Stump.Server.WorldServer.Core.IPC
         private bool m_requestingAccess;
         private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
         private bool m_wasConnected;
+        private int m_offset;
+        private int m_remainingLength;
+        
+        private BufferSegment m_bufferSegment;
 
         public IPCAccessor()
         {
             TaskPool = new SelfRunningTaskPool(TaskPoolInterval, "IPCAccessor Task Pool");
             m_updateTimer = new TimerEntry(0, UpdateInterval, Tick);
+            m_bufferSegment = BufferManager.Default.CheckOut();
         }
 
         public static IPCAccessor Instance
@@ -278,17 +284,24 @@ namespace Stump.Server.WorldServer.Core.IPC
                 return;
 
             var args = new SocketAsyncEventArgs();
+            var stream = BufferManager.Default.CheckOutStream();
             args.Completed += OnSendCompleted;
-            var data = IPCMessageSerializer.Instance.SerializeWithLength(message);
+            IPCMessageSerializer.Instance.SerializeWithLength(message, stream);
 
             // serialize stuff
 
-            args.SetBuffer(data, 0, data.Length);
-            Socket.SendAsync(args);
+            args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
+            args.UserToken = stream;
+            if (Socket.SendAsync(args))
+            {
+                stream.Segment.DecrementUsage();
+                args.Dispose();
+            }
         }
 
         private static void OnSendCompleted(object sender, SocketAsyncEventArgs e)
-        {
+        {                
+            ((SegmentStream)e.UserToken).Segment.DecrementUsage();
             e.Dispose();
         }
 
@@ -307,7 +320,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             var args = new SocketAsyncEventArgs();
             args.Completed += OnReceiveCompleted;
-            args.SetBuffer(new byte[8192], 0, 8192);
+            args.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_offset, 8192 - m_offset);
 
             if (!Socket.ReceiveAsync(args))
                 ProcessReceiveCompleted(args);
@@ -358,7 +371,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 m_messagePart.Build(reader, reader.BaseStream.Length - reader.BaseStream.Position);
 
                 if (!m_messagePart.IsValid)
-                    return;
+                    break;
 
                 IPCMessage message;
 
@@ -369,7 +382,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 catch (Exception ex)
                 {
                     logger.Error("Cannot deserialize received message ! Exception : {0}" + ex);
-                    return;
+                    break;
                 }
                 finally
                 {
@@ -378,6 +391,24 @@ namespace Stump.Server.WorldServer.Core.IPC
 
                 TaskPool.AddMessage(() => ProcessMessage(message));
             }
+
+            m_remainingLength = (int) (reader.BaseStream.Length - reader.BaseStream.Position);
+            m_offset = (int) reader.BaseStream.Position;
+
+            if (m_remainingLength > 0) // still some bytes in the buffer
+            {
+                EnsureBuffer();
+            }
+        }
+
+        protected void EnsureBuffer()
+        {
+            Array.Copy(m_bufferSegment.Buffer.Array,
+                       m_bufferSegment.Offset + m_offset,
+                       m_bufferSegment.Buffer.Array,
+                       m_bufferSegment.Offset,
+                       m_remainingLength);
+            m_offset = m_remainingLength;
         }
 
         protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
@@ -444,6 +475,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             Socket.Shutdown(SocketShutdown.Both);
             Socket.Close();
+            m_bufferSegment.DecrementUsage();
 
             Socket = null;
         }
