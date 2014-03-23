@@ -330,6 +330,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return !IsDead(); }
         }
 
+        public bool IsSacrificeProtected
+        {
+            get;
+            set;
+        }
+
         #region Stats
 
         public abstract byte Level

@@ -301,6 +301,7 @@
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rollback.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Sacrifice.cs" />
     <Compile Include="Game\Exchanges\TaxCollectorTrade.cs" />
     <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
@@ -412,8 +413,8 @@
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\FelineSpiritCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\FortuneSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\LivingChestCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\LuckSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
     <Compile Include="Game\Fights\TimeLine.cs" />
