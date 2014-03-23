@@ -256,8 +256,8 @@ namespace Stump.Server.WorldServer.Commands
                 if (splitted.Length != 2)
                     throw new ConverterException(string.Format("'{0}' is not of 'mapid' or'x,y'", entry));
 
-                int x = int.Parse(splitted[0].Trim());
-                int y = int.Parse(splitted[1].Trim());
+                var x = int.Parse(splitted[0].Trim());
+                var y = int.Parse(splitted[1].Trim());
 
                 var map = World.Instance.GetMap(x, y);
 
@@ -268,17 +268,15 @@ namespace Stump.Server.WorldServer.Commands
             }
 
             int outvalue;
-            if (int.TryParse(entry, out outvalue))
-            {
-                var map = World.Instance.GetMap(outvalue);
+            if (!int.TryParse(entry, out outvalue))
+                throw new ConverterException(string.Format("'{0}' is not of format 'mapid' or 'x,y'", entry));
 
-                if (map == null)
-                    throw new ConverterException(string.Format("'{0}' map not found", entry));
+            var map2 = World.Instance.GetMap(outvalue);
 
-                return map;
-            }
+            if (map2 == null)
+                throw new ConverterException(string.Format("'{0}' map not found", entry));
 
-            throw new ConverterException(string.Format("'{0}' is not of format 'mapid' or 'x,y'", entry));
+            return map2;
         };
     }
 }

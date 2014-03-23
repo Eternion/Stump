@@ -62,9 +62,10 @@ namespace Uplauncher
                     Visible = true,
                     Icon = Resources.dofus_icon_48,
                     ContextMenu = new ContextMenu(new[]
-                        {
-                            new MenuItem("Voter", OnTrayClickVote),
+                        { 
                             new MenuItem("Ouvrir", OnTrayClickShow),
+                            new MenuItem("Lancer le Jeu", OnTrayClickGame),
+                            new MenuItem("Voter", OnTrayClickVote),
                             new MenuItem("Quitter", OnTrayClickExit)
                         })
                 };
@@ -291,6 +292,7 @@ namespace Uplauncher
         #endregion
 
         #region TrayIcon
+
         public void HideWindowInTrayIcon()
         {
             View.Hide();
@@ -304,6 +306,13 @@ namespace Uplauncher
         {
             View.Show();
             OnVote(null);
+        }
+
+        private void OnTrayClickGame(object sender, EventArgs eventArgs)
+        {
+            View.Show();
+            if (CanPlay(eventArgs))
+                OnPlay(eventArgs);
         }
 
         private void OnTrayClickShow(object sender, EventArgs eventArgs)
@@ -324,6 +333,7 @@ namespace Uplauncher
         #endregion
 
         #region Vote Timer
+
         private void CheckVoteTiming()
         {
             var processStart = Process.GetCurrentProcess().StartTime;

@@ -139,6 +139,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 }
 
                 /* Set new name */
+                character.Name = message.name;
                 character.Rename = false;
 
                 WorldServer.Instance.DBAccessor.Database.Update(character);
