@@ -125,7 +125,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             SendServerOptionalFeaturesMessage(client, new short[0]);
             SendAccountCapabilitiesMessage(client);
 
-            client.Send(new TrustStatusMessage(true)); // usage -> ?
+            client.Send(new TrustStatusMessage(true)); // Restrict actions if account is not trust
 
             /* Just to get console AutoCompletion */
             if (client.UserGroup.Role >= RoleEnum.Moderator)

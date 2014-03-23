@@ -77,6 +77,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.IsFighting())
                 return;
 
+            if (client.Character.Fight is FightPvT)
+                return;
+
             client.Character.Fighter.ToggleReady(message.isReady);
         }
 

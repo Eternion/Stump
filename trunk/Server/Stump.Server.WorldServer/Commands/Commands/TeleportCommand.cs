@@ -5,7 +5,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
@@ -31,14 +30,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var point = new Point(trigger.Get<int>("x"), trigger.Get<int>("y"));
-            bool outdoorDefined = trigger.IsArgumentDefined("outdoor");
-            int outdoor = trigger.Get<int>("outdoor");
-            Map map;
+            var outdoorDefined = trigger.IsArgumentDefined("outdoor");
+            var outdoor = trigger.Get<int>("outdoor");
 
             foreach (var target in GetTargets(trigger))
             {                
                 var reference = target.Map;
 
+                Map map;
                 if (trigger.IsArgumentDefined("superarea"))
                 {
                     var superArea = trigger.Get<SuperArea>("superarea");
@@ -60,7 +59,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 }
                 else
                 {
-                    Cell cell = trigger.IsArgumentDefined("cell")
+                    var cell = trigger.IsArgumentDefined("cell")
                         ? map.Cells[trigger.Get<short>("cell")]
                         : target.Cell;
 
@@ -88,7 +87,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                Map map = trigger.Get<Map>("map");
+                var map = trigger.Get<Map>("map");
 
                 if (map == null)
                 {
@@ -96,7 +95,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 }
                 else
                 {
-                    Cell cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
+                    var cell = trigger.IsArgumentDefined("cell") ? map.Cells[trigger.Get<short>("cell")] : target.Cell;
 
                     target.Teleport(new ObjectPosition(map, cell, target.Direction));
 

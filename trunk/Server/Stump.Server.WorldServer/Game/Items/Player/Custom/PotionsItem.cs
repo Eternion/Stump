@@ -3,7 +3,6 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
-using Stump.Server.WorldServer.Handlers.Guilds;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {

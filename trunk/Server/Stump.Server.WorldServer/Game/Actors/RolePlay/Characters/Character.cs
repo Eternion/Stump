@@ -2263,7 +2263,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             m_recordLoaded = false;
             if (Area != null)
-                Area.ExecuteInContext(() => Dispose());
+                Area.ExecuteInContext(Dispose);
             else
                 Dispose();
         }

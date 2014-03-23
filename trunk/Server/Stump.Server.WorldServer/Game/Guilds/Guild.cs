@@ -530,11 +530,23 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (GuildManager.Instance.DoesNameExist(name))
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
+            character.Inventory.RemoveItem(potion, 1);
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, potion.Template.Id);
+
             Name = name;
 
-            foreach (var member in Members)
+            foreach (var taxCollector in TaxCollectors)
             {
-                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 383);
+                taxCollector.RefreshLook();
+                taxCollector.Map.Refresh(taxCollector);
+            }
+
+            foreach (var client in Clients)
+            {
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 383);
+                GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
+
+                client.Character.RefreshActor();
             }
 
             return GuildCreationResultEnum.GUILD_CREATE_OK;
@@ -554,9 +566,18 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             Emblem.ChangeEmblem(emblem);
 
-            foreach (var member in Members)
+            foreach (var taxCollector in TaxCollectors)
             {
-                member.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 382);
+                taxCollector.RefreshLook();
+                taxCollector.Map.Refresh(taxCollector);
+            }
+
+            foreach (var client in Clients)
+            {
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 382);
+                GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
+
+                client.Character.RefreshActor();
             }
 
             return GuildCreationResultEnum.GUILD_CREATE_OK;

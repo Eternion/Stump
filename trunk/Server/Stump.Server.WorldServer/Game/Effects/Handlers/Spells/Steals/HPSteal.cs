@@ -1,6 +1,5 @@
 ﻿using System;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -23,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
         public override bool Apply()
         {
-            foreach (FightActor actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors())
             {
                 if (Effect.Duration > 0)
                 {

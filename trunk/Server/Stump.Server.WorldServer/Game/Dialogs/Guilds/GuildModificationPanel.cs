@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
         public void Open()
         {                        
             Character.SetDialog(this);
-            GuildHandler.SendGuildModificationStartedMessage(Character.Client, true, false);
+            GuildHandler.SendGuildModificationStartedMessage(Character.Client, ChangeName, ChangeEmblem);
         }
 
         public void Close()
@@ -65,6 +65,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
 
             var result = Character.Guild.SetGuildName(Character, guildName);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
+
+            if (result == GuildCreationResultEnum.GUILD_CREATE_OK)
+                Close();
         }
 
         public void ModifyGuildEmblem(GuildEmblem emblem)
@@ -80,6 +83,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
 
             var result = Character.Guild.SetGuildEmblem(Character, emblem);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
+
+            if (result == GuildCreationResultEnum.GUILD_CREATE_OK)
+                Close();
         }
     }
 }

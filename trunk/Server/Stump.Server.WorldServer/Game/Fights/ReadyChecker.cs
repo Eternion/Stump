@@ -79,9 +79,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!m_started)
                 return;
 
-            if (m_fight is FightPvT)
-                return;
-
             if (ready && m_fighters.Contains(actor))
             {
                 m_fighters.Remove(actor);
