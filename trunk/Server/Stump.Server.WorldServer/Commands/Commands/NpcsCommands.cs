@@ -1,4 +1,3 @@
-using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -71,7 +70,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             RequiredRole = RoleEnum.GameMaster;
             Description = "Unspawn the npc by the given contextual id";
             ParentCommand = typeof(NpcsCommands);
-            AddParameter<sbyte>("npcid", "npc", "Npc Contextual id");
+            AddParameter<short>("npcid", "npc", "Npc Contextual id");
             AddParameter("map", "map", "Npc Map", isOptional: true, converter: ParametersConverter.MapConverter);
         }
 
