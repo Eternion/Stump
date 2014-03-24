@@ -114,13 +114,14 @@ namespace Stump.Server.WorldServer.Game.Fights
                 var defender1 = defender;
                 defender.Area.ExecuteInContext(() =>
                 {
+                    var lastMap = defender.Map;
                     defender1.Teleport(Map, defender1.Cell);
                     defender1.ResetDefender();
                     Map.Area.ExecuteInContext(() =>
                     {
                         var fighter = defender.CreateFighter(DefendersTeam);
 
-                        m_defendersMaps.Add(fighter, defender.LastMap);
+                        m_defendersMaps.Add(fighter, lastMap);
                         DefendersTeam.AddFighter(fighter);
 
                         // if all defenders have been teleported we can launch the timer
