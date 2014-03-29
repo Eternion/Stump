@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ServiceStack.Text;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
@@ -744,6 +745,8 @@ namespace Stump.Server.WorldServer.Database.Characters
             m_knownZaapsBin = SerializeZaaps(m_knownZaaps);
             m_customEntityLookString = m_customEntityLook == null ? null : m_customEntityLook.ToString();
             m_entityLookString = m_entityLook == null ? null : m_entityLook.ToString();
+            m_titlesCSV = m_titles.ToCSV(",");
+            m_ornamentsCSV = m_ornaments.ToCSV(",");
         }
     }
 }
