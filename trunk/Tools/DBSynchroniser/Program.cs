@@ -141,28 +141,13 @@ namespace DBSynchroniser
 
         private static IEnumerable<D2OTable> EnumerateTables(Assembly assembly)
         {
-            foreach (Type type in assembly.GetTypes())
+            return from type in assembly.GetTypes() let attr = type.GetCustomAttribute<D2OClassAttribute>() where attr != null let tableAttr = type.GetCustomAttribute<TableNameAttribute>() where tableAttr != null select new D2OTable
             {
-                var attr = type.GetCustomAttribute<D2OClassAttribute>();
-                if (attr != null)
-                {
-                    var tableAttr = type.GetCustomAttribute<TableNameAttribute>();
-
-                    if (tableAttr != null)
-                    {
-                        var table = new D2OTable
-                        {
-                            Type = type,
-                            ClassName = attr.Name,
-                            TableName = tableAttr.TableName,
-                            Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
-                        };
-
-                        yield return table;
-                    }
-                }
-            }
-
+                Type = type,
+                ClassName = attr.Name,
+                TableName = tableAttr.TableName,
+                Constructor = type.GetConstructor(new Type[0]).CreateDelegate()
+            };
         }
 
         private static void ShowMenus()
@@ -171,7 +156,7 @@ namespace DBSynchroniser
             Console.WriteLine("Languages = {0}", SpecificLanguage);
             Console.WriteLine();
             Console.WriteLine("What to do ?");
-            int number = 1;
+            var number = 1;
             foreach (var menu in m_menus)
             {
                 Console.WriteLine(number + ". " + menu.Item1);
@@ -184,7 +169,7 @@ namespace DBSynchroniser
             if (!string.IsNullOrEmpty(DofusCustomPath))
                 return DofusCustomPath;
 
-            string programFiles = Environment.GetEnvironmentVariable("programfiles(x86)");
+            var programFiles = Environment.GetEnvironmentVariable("programfiles(x86)");
 
             if (string.IsNullOrEmpty(programFiles))
                 programFiles = Environment.GetEnvironmentVariable("programfiles");
@@ -197,7 +182,7 @@ namespace DBSynchroniser
             if (Directory.Exists(Path.Combine(programFiles, "Dofus 2", "app")))
                 return Path.Combine(programFiles, "Dofus 2", "app");
 
-            string dofusDataPath = Path.Combine(AskDofusPath(), "app");
+            var dofusDataPath = Path.Combine(AskDofusPath(), "app");
 
             if (!Directory.Exists(dofusDataPath))
                 throw new Exception("Dofus data path not found");
