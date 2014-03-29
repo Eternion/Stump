@@ -7,8 +7,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
     public partial class ActionsHandler
     {
         [WorldHandler(GameActionAcknowledgementMessage.Id)]
-        public static void HandleGameActionAcknowledgementMessage(WorldClient client,
-                                                                  GameActionAcknowledgementMessage message)
+        public static void HandleGameActionAcknowledgementMessage(WorldClient client, GameActionAcknowledgementMessage message)
         {
             // valid == true anyway
             if (message.valid && client.Character.IsFighting() && client.Character.Fighter.IsFighterTurn())
