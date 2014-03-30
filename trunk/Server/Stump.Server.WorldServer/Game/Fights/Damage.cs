@@ -22,6 +22,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             BaseMaxDamages = Math.Max(effect.DiceFace, effect.DiceNum);
             BaseMinDamages = Math.Min(effect.DiceFace, effect.DiceNum);
+
+            if (BaseMinDamages == 0)
+                BaseMinDamages = BaseMaxDamages;
         }
 
         public Damage(EffectDice effect, EffectSchoolEnum school, FightActor source, Spell spell)
