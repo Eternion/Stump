@@ -65,7 +65,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
             if (cell < 0 || cell >= 560)
             {
-                throw new Exception(string.Format("Cell {0} out of range, current={1} neighbour={2}", cell, Cell.Id, mapNeighbour));
+                logger.Error("Cell {0} out of range, current={1} neighbour={2}", cell, Cell.Id, mapNeighbour);
+                return false;
             }
 
             var destination = new ObjectPosition(neighbour,
