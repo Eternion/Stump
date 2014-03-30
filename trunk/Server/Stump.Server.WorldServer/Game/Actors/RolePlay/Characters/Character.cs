@@ -2262,10 +2262,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
 
             m_recordLoaded = false;
-            if (Area != null)
-                Area.ExecuteInContext(Dispose);
-            else
-                Dispose();
         }
 
         #endregion
