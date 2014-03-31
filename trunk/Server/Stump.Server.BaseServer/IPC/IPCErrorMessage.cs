@@ -18,6 +18,7 @@ using ProtoBuf;
 
 namespace Stump.Server.BaseServer.IPC
 {
+    [ProtoContract]
     public class IPCErrorMessage : IPCMessage
     {
         public IPCErrorMessage()

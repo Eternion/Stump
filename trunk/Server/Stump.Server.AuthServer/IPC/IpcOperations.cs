@@ -123,7 +123,6 @@ namespace Stump.Server.AuthServer.IPC
                     return;
                 }
                 AccountManager.Instance.UnCacheAccount(account);
-                
 
                 Client.ReplyRequest(new AccountAnswerMessage(account.Serialize()), message);
             }
