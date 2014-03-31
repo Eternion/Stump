@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Web;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
+using Stump.ORM.SubSonic.Extensions;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -154,7 +156,47 @@ namespace Stump.Server.WorldServer.Game.Social
 
         private static string UnescapeChatCommand(string command)
         {
-            return HttpUtility.HtmlDecode(command);
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < command.Length; i++)
+            {
+                if (command[i] == '&')
+                {
+                    var index = command.IndexOf(';', i, 5);
+                    if (index == -1)
+                        continue;
+
+                    var str = command.Substring(i + 1, index - i - 1);
+
+                    switch (str)
+                    {
+                        case "lt":
+                            sb.Append("<");
+                            break;
+                        case "gt":
+                            sb.Append(">");
+                            break;
+                        case "quot":
+                            sb.Append("\"");
+                            break;
+                        case "amp":
+                            sb.Append("&");
+                            break;
+                        default:
+                            int id;
+                            if (!int.TryParse(str, out id))
+                                continue;
+                            sb.Append((char) id);
+                            break;
+                    }
+
+                    i = index + 1;
+                }
+                else
+                    sb.Append(command[i]);
+            }
+
+            return sb.ToString();
         }
 
         private static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message)

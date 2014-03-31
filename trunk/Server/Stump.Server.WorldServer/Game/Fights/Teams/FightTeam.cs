@@ -204,7 +204,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public bool IsFull()
         {
-            return Fight.State == FightState.Placement && m_fighters.Count > PlacementCells.Count();
+            return Fight.State == FightState.Placement && (m_fighters.Count > PlacementCells.Count() || m_fighters.Count >= 8);
         }
 
         public virtual FighterRefusedReasonEnum CanJoin(Character character)

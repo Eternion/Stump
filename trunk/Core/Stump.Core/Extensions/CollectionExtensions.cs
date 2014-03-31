@@ -180,7 +180,7 @@ namespace Stump.Core.Extensions
             IEnumerator colEnum = collection.GetEnumerator();
             while (colEnum.MoveNext())
             {
-                object cur = colEnum.Current;
+                var cur = colEnum.Current;
                 if (cur != null)
                 {
                     strs.Add(cur.ToString());
