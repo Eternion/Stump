@@ -36,6 +36,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         [Variable]
         public static int BaseResistance = 25;
 
+        [Variable]
+        public int MaxGatheredXP = 1000000;
+
         public const int TAXCOLLECTOR_BONES = 714;
 
         private readonly WorldMapTaxCollectorRecord m_record;
@@ -92,6 +95,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         }
 
         #region Properties
+
         public WorldMapTaxCollectorRecord Record
         {
             get
