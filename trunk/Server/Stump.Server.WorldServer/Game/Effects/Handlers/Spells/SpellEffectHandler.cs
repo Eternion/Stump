@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             {
                 return m_effectZone ??
                        (m_effectZone =
-                        new Zone((SpellShapeEnum) Effect.ZoneShape, (byte) Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint)));
+                        new Zone(Effect.ZoneShape, (byte) Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint)));
             }
             set
             {
@@ -156,19 +156,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                     return true;
             }
 
-            if (Caster.IsEnnemyWith(actor))
-            {
-                if ((Targets.HasFlag(SpellTargetType.ENNEMY_1) ||
-                    Targets.HasFlag(SpellTargetType.ENNEMY_2) ||
-                    Targets.HasFlag(SpellTargetType.ENNEMY_3) ||
-                    Targets.HasFlag(SpellTargetType.ENNEMY_4) ||
-                    Targets.HasFlag(SpellTargetType.ENNEMY_5)) && !(actor is SummonedFighter))
-                    return true;
+            if (!Caster.IsEnnemyWith(actor))
+                return false;
 
-                if ((Targets.HasFlag(SpellTargetType.ENNEMY_SUMMONS) ||
-                    Targets.HasFlag(SpellTargetType.ENNEMY_STATIC_SUMMONS)) && actor is SummonedFighter)
-                    return true;
-            }
+            if ((Targets.HasFlag(SpellTargetType.ENNEMY_1) ||
+                 Targets.HasFlag(SpellTargetType.ENNEMY_2) ||
+                 Targets.HasFlag(SpellTargetType.ENNEMY_3) ||
+                 Targets.HasFlag(SpellTargetType.ENNEMY_4) ||
+                 Targets.HasFlag(SpellTargetType.ENNEMY_5)) && !(actor is SummonedFighter))
+                return true;
+
+            if ((Targets.HasFlag(SpellTargetType.ENNEMY_SUMMONS) ||
+                 Targets.HasFlag(SpellTargetType.ENNEMY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                return true;
 
             return false;
         }
@@ -183,10 +183,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
-                return new[] {Caster};
-
-            return Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && IsValidTarget(entry)).ToArray();
+            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] {Caster} : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && IsValidTarget(entry)).ToArray();
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
@@ -197,11 +194,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
                 return new[] {Caster};
 
-            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF))
-                return new FightActor[0];
-
-
-            return GetAffectedActors().Where(entry => predicate(entry)).ToArray();
+            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry)).ToArray();
         }
 
         
@@ -222,7 +215,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable)
         {
-            int id = target.PopNextBuffId();
+            var id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable);
 
             target.AddAndApplyBuff(buff);

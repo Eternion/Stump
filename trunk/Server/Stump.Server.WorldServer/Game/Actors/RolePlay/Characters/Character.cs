@@ -1777,8 +1777,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 LastMap = Map;
                 Map = NextMap;
                 NextMap.Enter(this);
-                LastMap = null;
-                NextMap = null;
             });
         }
 

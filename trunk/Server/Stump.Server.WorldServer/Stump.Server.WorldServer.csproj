@@ -301,6 +301,7 @@
     <Compile Include="Game\Dialogs\IShopDialog.cs" />
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHPPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rollback.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Sacrifice.cs" />
     <Compile Include="Game\Exchanges\TaxCollectorTrade.cs" />
