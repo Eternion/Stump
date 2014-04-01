@@ -125,7 +125,7 @@ namespace Uplauncher.Patcher
         {
             ((WebClient) sender).DownloadFileCompleted -= OnUplauncherDownloaded;
 
-            string file = Path.GetTempFileName() + ".exe";
+            var file = Path.GetTempFileName() + ".exe";
             File.WriteAllBytes(file, Resources.UplauncherReplacer);
 
             var procInfo = new ProcessStartInfo
