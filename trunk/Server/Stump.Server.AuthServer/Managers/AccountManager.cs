@@ -247,7 +247,8 @@ namespace Stump.Server.AuthServer.Managers
                                 {
                                     AccountId = account.Id,
                                     WorldId = world.Id,
-                                    CharacterId = characterId
+                                    CharacterId = characterId,
+                                    DeletionDate = DateTime.Now
                                 };
 
             Database.Insert(character);
