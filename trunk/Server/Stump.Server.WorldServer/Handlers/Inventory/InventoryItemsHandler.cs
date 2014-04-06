@@ -151,7 +151,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendInventoryWeightMessage(WorldClient client)
         {
-            client.Send(new InventoryWeightMessage((int) client.Character.Inventory.Weight,
+            client.Send(new InventoryWeightMessage(client.Character.Inventory.Weight,
                                                    (int) client.Character.Inventory.WeightTotal));
         }
 

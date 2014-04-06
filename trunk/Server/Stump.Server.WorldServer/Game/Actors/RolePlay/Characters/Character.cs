@@ -444,6 +444,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (result)
                 TitleHandler.SendTitleLostMessage(Client, title);
 
+            if (title == SelectedTitle)
+                ResetTitle();
+
             return result;
         }
 
@@ -496,6 +499,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (result)
                 TitleHandler.SendTitlesAndOrnamentsListMessage(Client, this);
+
+            if (ornament == SelectedOrnament)
+                ResetOrnament();
 
             return result;
         }

@@ -36,7 +36,7 @@ namespace ArkalysPlugin.Prestige
         [Variable]
         public static int MessageId = 20016;
         [Variable]
-        public static int MessageLevelErrorId = 20023;
+        public static int MessageLevelErrorId = 20019;
         [Variable]
         public static int MessagePrestigeMaxId = 20021;
         [Variable]
