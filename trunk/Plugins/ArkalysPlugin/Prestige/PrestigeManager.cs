@@ -158,6 +158,9 @@ namespace ArkalysPlugin.Prestige
             foreach(var equippedItem in character.Inventory)
                 character.Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
+            character.RefreshStats();
+            character.RefreshActor();
+
             character.OpenPopup(
                 string.Format("Vous venez de passer au rang prestige {0}. \nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ", rank+1, BonusItem.Name) +
                 "les bonus s'appliquent sans équipper l'objet");
