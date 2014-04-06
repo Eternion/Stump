@@ -891,7 +891,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             RefreshStats();
-            CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
+            if (difference > 0)
+                CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
             CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, currentLevel);
 
             var handler = LevelChanged;

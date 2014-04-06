@@ -37,9 +37,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public static int BaseResistance = 25;
 
         [Variable]
-        public int MaxGatheredXPTotal = 2000000;
+        public static int MaxGatheredXPTotal = 2000000;
         [Variable]
-        public int MaxGatheredXPFight = 150000;
+        public static int MaxGatheredXPFight = 150000;
 
         public const int TAXCOLLECTOR_BONES = 714;
 

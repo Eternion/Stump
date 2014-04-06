@@ -121,12 +121,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public void AddEarnedExperience(int experience)
         {
-            if (TaxCollector.GatheredExperience > TaxCollector.MaxGatheredXPTotal)
+            if (TaxCollector.GatheredExperience > TaxCollectorNpc.MaxGatheredXPTotal)
                 return;
 
             var XP = (int) (experience * 0.1d); // own only a percent
 
-            Experience += XP > TaxCollector.MaxGatheredXPFight ? TaxCollector.MaxGatheredXPFight : XP;
+            Experience += XP > TaxCollectorNpc.MaxGatheredXPFight ? TaxCollectorNpc.MaxGatheredXPFight : XP;
         }
     }
 }
