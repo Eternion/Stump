@@ -1095,7 +1095,11 @@
         /// <summary>
         /// Unlock the title #3
         /// </summary>
-        Effect_724 = 724,
+        Effect_AddTitle = 724,
+        /// <summary>
+        /// Unlock the ornament #3
+        /// </summary>
+        Effect_AddOrnament = 726,
         /// <summary>
         /// Rename guild: #4
         /// </summary>

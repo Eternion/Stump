@@ -153,14 +153,14 @@ namespace ArkalysPlugin.Prestige
             character.AddTitle(title);
             character.Inventory.RefreshItem(item);
 
+            character.OpenPopup(
+                string.Format("Vous venez de passer au rang prestige {0}. \nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ", rank + 1, BonusItem.Name) +
+                "les bonus s'appliquent sans équipper l'objet.\nVous devez vous reconnecter pour continuer à jouer");
+
             character.LevelDown(character.Level);
 
             foreach(var equippedItem in character.Inventory)
                 character.Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-            
-            character.OpenPopup(
-                string.Format("Vous venez de passer au rang prestige {0}. \nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ", rank+1, BonusItem.Name) +
-                "les bonus s'appliquent sans équipper l'objet");
         }
 
         private static void AddEffects(BasePlayerItem item, IEnumerable<EffectInteger> effects)
@@ -189,9 +189,8 @@ namespace ArkalysPlugin.Prestige
             if (item == null)
                 return;
 
-            foreach (var effect in item.Effects)
+            foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, character, item)))
             {
-                var handler = EffectManager.Instance.GetItemEffectHandler(effect, character, item);
                 handler.Operation = ItemEffectHandler.HandlerOperation.UNAPPLY;
 
                 handler.Apply();

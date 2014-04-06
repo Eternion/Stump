@@ -169,23 +169,13 @@ namespace Stump.Server.WorldServer.Game.Effects
         public ItemEffectHandler GetItemEffectHandler(EffectBase effect, Character target, BasePlayerItem item)
         {
             ItemEffectConstructor handler;
-            if (m_itemsEffectHandler.TryGetValue(effect.EffectId, out handler))
-            {
-                return handler(effect, target, item);
-            }
-
-            return new DefaultItemEffect(effect, target, item);
+            return m_itemsEffectHandler.TryGetValue(effect.EffectId, out handler) ? handler(effect, target, item) : new DefaultItemEffect(effect, target, item);
         }
 
         public ItemEffectHandler GetItemEffectHandler(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply)
         {
             ItemSetEffectConstructor handler;
-            if (m_itemsSetEffectHandler.TryGetValue(effect.EffectId, out handler))
-            {
-                return handler(effect, target,itemSet, apply);
-            }
-
-            return new DefaultItemEffect(effect, target, itemSet, apply);
+            return m_itemsSetEffectHandler.TryGetValue(effect.EffectId, out handler) ? handler(effect, target,itemSet, apply) : new DefaultItemEffect(effect, target, itemSet, apply);
         }
 
         public void AddUsableEffectHandler(UsableEffectHandler handler)
@@ -221,12 +211,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         public UsableEffectHandler GetUsableEffectHandler(EffectBase effect, Character target, BasePlayerItem item)
         {
             UsableEffectConstructor handler;
-            if (m_usablesEffectHandler.TryGetValue(effect.EffectId, out handler))
-            {
-                return handler(effect, target, item);
-            }
-
-            return new DefaultUsableEffectHandler(effect, target, item);
+            return m_usablesEffectHandler.TryGetValue(effect.EffectId, out handler) ? handler(effect, target, item) : new DefaultUsableEffectHandler(effect, target, item);
         }
 
         public void AddSpellEffectHandler(SpellEffectHandler handler)
@@ -262,12 +247,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         public SpellEffectHandler GetSpellEffectHandler(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
         {
             SpellEffectConstructor handler;
-            if (m_spellsEffectHandler.TryGetValue(effect.EffectId, out handler))
-            {
-                return handler(effect, caster, spell, targetedCell, critical);
-            }
-
-            return new DefaultSpellEffect(effect, caster, spell, targetedCell, critical);
+            return m_spellsEffectHandler.TryGetValue(effect.EffectId, out handler) ? handler(effect, caster, spell, targetedCell, critical) : new DefaultSpellEffect(effect, caster, spell, targetedCell, critical);
         }
 
         public bool IsEffectHandledBy(EffectsEnum effect, Type handlerType)
@@ -363,7 +343,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         {
             var result = new List<EffectBase>();
 
-            int i = 0;
+            var i = 0;
             while (i + 1 < buffer.Length)
             {
                 result.Add(DeserializeEffect(buffer, ref i));
