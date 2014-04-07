@@ -46,11 +46,11 @@ namespace ArkalysPlugin.Npcs
         [Initialization(typeof(OrbsManager), Silent = true)]
         public static void InitializeItem()
         {
-            if (OrbsManager.OrbItemTemplate == null)
-            {
-                logger.Error("No orb item, script is disabled");
-                m_scriptDisabled = true;
-            }
+            if (OrbsManager.OrbItemTemplate != null)
+                return;
+
+            logger.Error("No orb item, script is disabled");
+            m_scriptDisabled = true;
         }
 
         private static void OnNpcSpawned(NpcTemplate template, Npc npc)
