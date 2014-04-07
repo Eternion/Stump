@@ -94,5 +94,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             OnItemMoved(item, item.Stack > 0, -(int)amountRemoved);
             return true;
         }
+
+
     }
 }
