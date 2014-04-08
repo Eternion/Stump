@@ -185,17 +185,21 @@
       <Project>{8AC12413-BD4F-4C35-B61A-5E5894D33AFB}</Project>
       <Name>Stump.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\DofusProtocolUpdated\Stump.DofusProtocolUpdated.Enums\Stump.DofusProtocolUpdated.Enums.csproj">
-      <Project>{b2b1e4e7-0d52-4ac6-9de7-1d8defdf372f}</Project>
-      <Name>Stump.DofusProtocolUpdated.Enums</Name>
+    <ProjectReference Include="..\..\..\DofusProtocol\D2oClasses\Stump.DofusProtocol.D2oClasses.csproj">
+      <Project>{33093793-c4ba-4b89-ac82-6e9d00437452}</Project>
+      <Name>Stump.DofusProtocol.D2oClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\DofusProtocolUpdated\Stump.DofusProtocolUpdated.Messages\Stump.DofusProtocolUpdated.Messages.csproj">
-      <Project>{4cc359c9-afeb-43e9-b59d-a559375f6e85}</Project>
-      <Name>Stump.DofusProtocolUpdated.Messages</Name>
+    <ProjectReference Include="..\..\..\DofusProtocol\Enums\Stump.DofusProtocol.Enums.csproj">
+      <Project>{d7bff8ed-065b-4a53-9805-595dfea75a0a}</Project>
+      <Name>Stump.DofusProtocol.Enums</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\DofusProtocolUpdated\Stump.DofusProtocolUpdated.Types\Stump.DofusProtocolUpdated.Types.csproj">
-      <Project>{d870a6be-540c-4920-969a-fb1e78b0147a}</Project>
-      <Name>Stump.DofusProtocolUpdated.Types</Name>
+    <ProjectReference Include="..\..\..\DofusProtocol\Messages\Stump.DofusProtocol.Messages.csproj">
+      <Project>{53092d2e-8f37-4889-b6b7-b359e093e3f4}</Project>
+      <Name>Stump.DofusProtocol.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DofusProtocol\Types\Stump.DofusProtocol.Types.csproj">
+      <Project>{10884165-d492-4895-b3ef-32429f7a7f55}</Project>
+      <Name>Stump.DofusProtocol.Types</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
