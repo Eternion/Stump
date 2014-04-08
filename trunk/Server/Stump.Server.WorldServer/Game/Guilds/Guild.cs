@@ -607,6 +607,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                     }
 
                     UpdateMember(Boss);
+                    Boss.Save(WorldServer.Instance.DBAccessor.Database);
                 }
 
                 Boss = guildMember;
@@ -614,6 +615,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
 
                 UpdateMember(Boss);
+                Boss.Save(WorldServer.Instance.DBAccessor.Database);
             }
         }
 
@@ -732,18 +734,21 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             Record.Spells = GetTaxCollectorSpellsLevels();
 
-            if (Record.IsNew)
-                database.Insert(Record);
-            else
-                database.Update(Record);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                if (Record.IsNew)
+                    database.Insert(Record);
+                else
+                    database.Update(Record);
+
+                IsDirty = false;
+                Record.IsNew = false;
+            });
 
             foreach (var member in Members.Where(x => !x.IsConnected && x.IsDirty))
             {
                 member.Save(database);
             }
-
-            IsDirty = false;
-            Record.IsNew = false;
         }
 
         protected void UpdateMember(GuildMember member)

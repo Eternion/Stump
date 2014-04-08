@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public LookCommand()
         {
             Aliases = new[] {"look"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Change the look of the target";
             AddParameter<string>("look", "l", "The new look for the target", isOptional:true);
             AddTargetParameter(true);
@@ -21,15 +21,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                /*if (trigger is GameTrigger && (trigger as GameTrigger).Character.IsGameMaster())
-                {
-                    target.CustomLook = ActorLook.Parse("{705}");
-                    target.CustomLookActivated = true;
-
-                    target.RefreshActor();
-                    return;
-                }*/
-
                 if (trigger.IsArgumentDefined("demorph"))
                 {
                     target.CustomLookActivated = false;

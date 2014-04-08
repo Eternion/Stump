@@ -1,5 +1,7 @@
 ﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Game.Dialogs.Spells
@@ -32,6 +34,21 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Spells
         {
             Character.CloseDialog(this);
             ContextRoleplayHandler.SendSpellForgetUIMessage(Character.Client, false);
+        }
+
+        public void DowngradeSpell(WorldClient client, int spellId)
+        {
+            var winPoints = client.Character.Spells.DowngradeSpell(spellId);
+
+            if (winPoints != 0)
+            {
+                var spell = SpellManager.Instance.GetSpellTemplate(spellId);
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 366, spell.Id, winPoints);
+            }
+
+            //todo: Find best way to refresh SpellForgetUI
+            ContextRoleplayHandler.SendSpellForgetUIMessage(client, false);
+            ContextRoleplayHandler.SendSpellForgetUIMessage(client, true);
         }
     }
 }

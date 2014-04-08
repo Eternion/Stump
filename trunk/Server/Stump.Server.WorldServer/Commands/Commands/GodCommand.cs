@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public LevelUpCommand()
         {
             Aliases = new[] { "levelup" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Gives some levels to the target";
             AddParameter("amount", "amount", "Amount of levels to add", (short)1);
             AddTargetParameter(true, "Character who will level up");
@@ -120,7 +120,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public SetKamasCommand()
         {
             Aliases = new[] { "kamas" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Set the amount kamas of target's inventory";
             AddParameter<int>("amount", "amount", "Amount of kamas to set");
             AddTargetParameter(true);
@@ -168,7 +168,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public InvisibleCommand()
         {
             Aliases = new[] { "invisible", "setinv" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Toggle invisible state";
             AddTargetParameter(true);
         }

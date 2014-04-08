@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "save" };
             Description = "Save the player";
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
         }
 
         public override void Execute(TriggerBase trigger)
@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new [] { "world" };
             Description = "Save world";
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             ParentCommand = typeof(SaveCommand);
         }
 

@@ -82,18 +82,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public int DispatchDamages(Damage damage)
         {
-            FightActor[] actors = GetCells().Select(x => Fight.GetFirstFighter<FightActor>(x)).
+            var actors = GetCells().Select(x => Fight.GetFirstFighter<FightActor>(x)).
                                              Where(x => x != null && !(x is SummonedFighter) && x.IsFriendlyWith(Caster)).ToArray();
 
             damage.GenerateDamages();
 
-            int percentResistance = GetAveragePercentResistance(actors, damage.School, damage.PvP);
-            int fixResistance = GetAverageFixResistance(actors, damage.School, damage.PvP);
+            var percentResistance = GetAveragePercentResistance(actors, damage.School, damage.PvP);
+            var fixResistance = GetAverageFixResistance(actors, damage.School, damage.PvP);
             damage.Amount = (int) ((1 - percentResistance/100d)*(damage.Amount - fixResistance));
             damage.Amount = damage.Amount / actors.Length;
             damage.IgnoreDamageReduction = true;
 
-            foreach (FightActor actor in actors)
+            foreach (var actor in actors)
             {
                 var damagePerFighter = new Damage(damage.Amount)
                 {
@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return damage.Amount;
         }
 
-        private int GetAveragePercentResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
+        private static int GetAveragePercentResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
         {
             switch (type)
             {

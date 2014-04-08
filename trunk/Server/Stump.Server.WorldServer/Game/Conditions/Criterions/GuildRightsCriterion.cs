@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions

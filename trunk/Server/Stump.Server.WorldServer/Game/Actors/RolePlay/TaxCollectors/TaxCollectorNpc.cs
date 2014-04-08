@@ -353,6 +353,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         #endregion
 
         #region Database
+
         public bool IsRecordDirty
         {
             get;
@@ -373,6 +374,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             WorldServer.Instance.DBAccessor.Database.Update(m_record);
         }
+
         #endregion
         
         public bool IsBagEmpty()

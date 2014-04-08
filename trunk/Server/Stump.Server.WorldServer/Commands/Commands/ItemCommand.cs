@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemCommand()
         {
             Aliases = new[] {"item"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Provides many commands to manage items";
         }
     }
@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemAddCommand()
         {
             Aliases = new[] {"add", "new"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Add an item to the targeted character";
             ParentCommand = typeof (ItemCommand);
 
@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ItemRemoveCommand()
         {
             Aliases = new[] {"remove", "delete"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Delete an item from the target";
             ParentCommand = typeof (ItemCommand);
 
@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             public ItemListCommand()
             {
                 Aliases = new[] {"list", "ls"};
-                RequiredRole = RoleEnum.GameMaster;
+                RequiredRole = RoleEnum.GameMaster_Padawan;
                 Description = "Lists loaded items or items from an inventory with a search pattern";
                 ParentCommand = typeof (ItemCommand);
                 AddParameter("pattern", "p", "Search pattern (see docs)", "*");
@@ -139,10 +139,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     var items = ItemManager.Instance.GetItemsByPattern(trigger.Get<string>("pattern"));
                     var startIndex = trigger.Get<int>("page")*LimitItemList;
 
-                    int counter = 0;
+                    var counter = 0;
                     var enumerator = items.GetEnumerator();
 
-                    for (int i = 0; enumerator.MoveNext(); i++)
+                    for (var i = 0; enumerator.MoveNext(); i++)
                     {
                         if (i < startIndex)
                             continue;
@@ -169,7 +169,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             public ItemShowInvCommand()
             {
                 Aliases = new[] {"showinv"};
-                RequiredRole = RoleEnum.Moderator;
+                RequiredRole = RoleEnum.GameMaster_Padawan;
                 Description = "Show items of the target into your inventory";
                 ParentCommand = typeof (ItemCommand);
                 AddParameter("target", "t", "Where items will be search",
@@ -200,7 +200,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             public ItemAddSetCommand()
             {
                 Aliases = new[] {"addset"};
-                RequiredRole = RoleEnum.GameMaster;
+                RequiredRole = RoleEnum.Administrator;
                 Description = "Add the entire itemset to the targeted character";
                 ParentCommand = typeof (ItemCommand);
 
@@ -238,7 +238,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             public ItemAddTypeCommand()
             {
                 Aliases = new[] {"addtype"};
-                RequiredRole = RoleEnum.GameMaster;
+                RequiredRole = RoleEnum.Administrator;
                 Description = "Add all the items match with typeId.";
                 ParentCommand = typeof (ItemCommand);
 
@@ -281,7 +281,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             public ItemDelTypeCommand()
             {
                 Aliases = new[] {"deltype"};
-                RequiredRole = RoleEnum.GameMaster;
+                RequiredRole = RoleEnum.Administrator;
                 Description = "Remove all the items match with typeId.";
                 ParentCommand = typeof (ItemCommand);
 

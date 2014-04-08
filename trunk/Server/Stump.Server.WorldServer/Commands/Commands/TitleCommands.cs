@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public AddRemoveTitleCommand()
         {
             Aliases = new[] {"title"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Add or remove a title on the target";
             AddParameter("target", "t", "Target", converter: ParametersConverter.CharacterConverter);
             AddParameter<short>("id", "id", "Id of the title", isOptional: true);
@@ -124,7 +124,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public AddRemoveOrnamentCommand()
         {
             Aliases = new[] { "ornament" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Add or remove an ornament on the target";
             AddParameter("target", "t", "Target", converter: ParametersConverter.CharacterConverter);
             AddParameter<short>("id", "id", "Id of the ornament", isOptional: true);

@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public AlignmentCommands()
         {
             Aliases = new[] {"alignment", "align"};
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Provides many commands to manage player alignment";
         }
     }
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public AlignmentSideCommand()
         {
             Aliases = new[] { "side" };
-            RequiredRole = RoleEnum.Moderator;
+            RequiredRole = RoleEnum.GameMaster;
             ParentCommand = typeof(AlignmentCommands);
             Description = "Set the alignement side of the given target";
             AddParameter("side", "s", "Alignement side", converter: ParametersConverter.GetEnumConverter<AlignmentSideEnum>());

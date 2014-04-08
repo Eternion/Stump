@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Dialogs.Spells;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace ArkalysPlugin.Npcs
@@ -25,6 +26,8 @@ namespace ArkalysPlugin.Npcs
         public static short ReplyRestatId = 20010;
         [Variable]
         public static short ReplySpellForgetId = 20011;
+        [Variable] 
+        public static short ReplySpellForgetPanelId = 20033;
         [Variable]
         public static short ReplyNoOrbsId = 20012;
 
@@ -109,7 +112,7 @@ namespace ArkalysPlugin.Npcs
             var orbs = Character.Inventory.TryGetItem(OrbsManager.OrbItemTemplate);
 
             if (orbs != null && orbs.Stack >= m_requieredOrbs)
-                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new [] {NpcRestatScript.ReplyRestatId, NpcRestatScript.ReplySpellForgetId}, m_requieredOrbs.ToString());
+                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcRestatScript.ReplyRestatId, NpcRestatScript.ReplySpellForgetId, NpcRestatScript.ReplySpellForgetPanelId }, m_requieredOrbs.ToString());
             else
                 ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcRestatScript.ReplyNoOrbsId }, m_requieredOrbs.ToString());
         }
@@ -152,13 +155,21 @@ namespace ArkalysPlugin.Npcs
                     Character.Spells.ForgetAllSpells();
                 }
             }
+            else if (replyId == NpcRestatScript.ReplySpellForgetPanelId)
+            {
+                if (orbs == null || orbs.Stack < m_requieredOrbs)
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1);
+                else
+                {
+                    Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
+
+                    var panel = new SpellForgetPanel(Character);
+                    panel.Open();
+                }
+            }
                
             Close();
-        }
-
-        public override void ChangeMessage(NpcMessage message)
-        {
-            
         }
     }
 }
