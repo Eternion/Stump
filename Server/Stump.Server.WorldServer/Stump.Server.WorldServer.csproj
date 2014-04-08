@@ -259,7 +259,6 @@
     <Compile Include="Game\Conditions\Criterions\AlignmentCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BonesCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
-    <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestDoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestStartableCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\Criterion.cs" />
@@ -304,7 +303,8 @@
     <Compile Include="Game\Dialogs\Spells\SpellForgetPanel.cs" />
     <Compile Include="Game\Effects\Handlers\Items\GiveOrnament.cs" />
     <Compile Include="Game\Effects\Handlers\Items\GiveTitle.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHPPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Heal\StealHpFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rollback.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Sacrifice.cs" />
     <Compile Include="Game\Exchanges\TaxCollectorTrade.cs" />
