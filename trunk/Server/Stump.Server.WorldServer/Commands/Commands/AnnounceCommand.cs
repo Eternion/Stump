@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"announce", "a"};
             Description = "Display an announce to all players";
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             AddParameter<string>("message", "msg", "The announce");
         }
 

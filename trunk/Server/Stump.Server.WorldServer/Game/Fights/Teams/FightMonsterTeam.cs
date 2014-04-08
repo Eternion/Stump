@@ -23,10 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public override FighterRefusedReasonEnum CanJoin(Character character)
         {
-            if (!character.IsGameMaster())
-                return FighterRefusedReasonEnum.WRONG_ALIGNMENT;
-
-            return base.CanJoin(character);
+            return !character.IsGameMaster() ? FighterRefusedReasonEnum.WRONG_ALIGNMENT : base.CanJoin(character);
         }
     }
 }

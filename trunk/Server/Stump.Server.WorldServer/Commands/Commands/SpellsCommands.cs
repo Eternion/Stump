@@ -20,9 +20,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
-using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -31,7 +29,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public SpellsCommands()
         {
             Aliases = new[] {"spell"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Manage spells";
         }
     }
@@ -41,7 +39,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public LearnSpellCommand()
         {
             Aliases = new[] {"learn", "add"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             ParentCommand = typeof (SpellsCommands);
             Description = "Learn the given spell";
             AddParameter("spell", "spell", "Given spell to learn", converter: ParametersConverter.SpellTemplateConverter);
@@ -68,7 +66,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public UnLearnSpellCommand()
         {
             Aliases = new[] {"unlearn", "forget", "remove"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             ParentCommand = typeof(SpellsCommands);
             Description = "Forget the given spell";
             AddParameter("spell", "spell", "Given spell to forget", converter: ParametersConverter.SpellTemplateConverter);
@@ -92,30 +90,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class DowngradeSpellCommand : TargetSubCommand
-    {
-        public DowngradeSpellCommand()
-        {
-            Aliases = new[] {"downgrade", "down"};
-            RequiredRole = RoleEnum.Moderator;
-            ParentCommand = typeof(SpellsCommands);
-            Description = "Open SpellForget UI";
-        }
-
-        public override void Execute(TriggerBase trigger)
-        {
-            var target = GetTarget(trigger);
-
-            ContextRoleplayHandler.SendSpellForgetUIMessage(target.Client, true);
-        }
-    }
-
     public class LearnMonsterSpellCommand : TargetSubCommand
     {
         public LearnMonsterSpellCommand()
         {
             Aliases = new[] { "learnmonster" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             ParentCommand = typeof(SpellsCommands);
             Description = "Learn the given spell";
             AddParameter("monster", "monster", "Target monster to learn spells", converter: ParametersConverter.MonsterTemplateConverter, isOptional: true);
@@ -143,7 +123,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public ListSpellsCommand()
         {
             Aliases = new[] {"list"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             ParentCommand = typeof(SpellsCommands);
             Description = "List the spells of the target";
             AddTargetParameter(true);
@@ -165,7 +145,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public SetSpellLevelCommand()
         {
             Aliases = new[] {"level"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             ParentCommand = typeof(SpellsCommands);
             Description = "Set the level of the given spell of the target";
             AddParameter("spell", "spell", "Given spell to forget", converter: ParametersConverter.SpellTemplateConverter);

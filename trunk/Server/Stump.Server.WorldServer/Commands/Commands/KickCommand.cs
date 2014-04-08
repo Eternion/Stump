@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public KickCommand()
         {
             Aliases = new[] { "kick" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.Moderator;
             Description = "Kick a player";
 
             AddTargetParameter();

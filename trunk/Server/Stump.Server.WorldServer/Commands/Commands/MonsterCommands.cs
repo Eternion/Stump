@@ -3,7 +3,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -19,7 +18,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public MonsterCommands()
         {
             Aliases = new[] {"monster"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Manage monsters";
         }
     }
@@ -29,7 +28,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public MonsterSpawnCommand()
         {
             Aliases = new[] {"spawn"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Spawn a monster on the current location";
             ParentCommand = typeof (MonsterCommands);
             AddParameter("monster", "m", "Monster template Id", converter: ParametersConverter.MonsterTemplateConverter);
@@ -104,7 +103,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public MonsterSpellsCommand()
         {
             Aliases = new[] {"spells"};
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Enumerate monster spells";
             ParentCommand = typeof (MonsterCommands);
             AddParameter("monster", "m", "Monster template Id", converter: ParametersConverter.MonsterTemplateConverter);
@@ -122,7 +121,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            MonsterGrade grade = template.Grades[trigger.Get<sbyte>("grade")];
+            var grade = template.Grades[trigger.Get<sbyte>("grade")];
 
             foreach (var spell in grade.Spells)
             {
@@ -141,7 +140,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public MonsterSpawnNextCommand()
         {
             Aliases = new[] { "spawnnext" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Spawn the next monster of the spawning pool";
             ParentCommand = typeof(MonsterCommands);
             AddParameter("map", "m", "Map", isOptional: true, converter: ParametersConverter.MapConverter);

@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public BanCommand()
         {
             Aliases = new[] { "ban" };
-            RequiredRole = RoleEnum.GameMaster_Padawan;
+            RequiredRole = RoleEnum.GameMaster;
             Description = "Ban a player";
 
             AddTargetParameter();

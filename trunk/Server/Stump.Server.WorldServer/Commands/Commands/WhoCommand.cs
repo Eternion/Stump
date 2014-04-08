@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -10,8 +11,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
 {
     public class WhoCommand : CommandBase
     {
-        private static Regex m_numberRegex = new Regex("^[0-9]+$", RegexOptions.Compiled);
-        private static Regex m_numberRangeRegex = new Regex("^([0-9]+)-([0-9]+)$", RegexOptions.Compiled);
+        private static readonly Regex m_numberRegex = new Regex("^[0-9]+$", RegexOptions.Compiled);
+        private static readonly Regex m_numberRangeRegex = new Regex("^([0-9]+)-([0-9]+)$", RegexOptions.Compiled);
 
         [Variable]
         public static int DisplayedElementsLimit = 50;
@@ -33,7 +34,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var parameters = trigger.Get<string>("params");
                 if (m_numberRegex.IsMatch(parameters))
                 {
-                    int level = int.Parse(parameters);
+                    var level = int.Parse(parameters);
                     predicate = x => x.Level == level;
                 }
                 else
@@ -41,8 +42,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     var match = m_numberRangeRegex.Match(parameters);
                     if (match.Success)
                     {
-                        int min = int.Parse(match.Groups[1].Value);
-                        int max = int.Parse(match.Groups[2].Value);
+                        var min = int.Parse(match.Groups[1].Value);
+                        var max = int.Parse(match.Groups[2].Value);
                         predicate = x => x.Level >= min && x.Level <= max;
                     }
                     else
@@ -68,22 +69,48 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
 
             var list = World.Instance.GetCharacters(predicate);
-            int counter = 0;
+            var counter = 0;
 
             foreach (var character in list)
             {
                 trigger.ReplyBold(" - {0} ({1}) in {2}", character.Name, character.Level, character.Area.Name);
                 counter++;
 
-                if (counter >= DisplayedElementsLimit)
-                {
-                    trigger.Reply("(...)");
-                    break;
-                }
+                if (counter < DisplayedElementsLimit)
+                    continue;
+
+                trigger.Reply("(...)");
+                break;
             }
 
             if (counter == 0)
                 trigger.ReplyError("No results found");
+        }
+    }
+
+    public class StaffListCommand : CommandBase
+    {
+        public StaffListCommand()
+        {
+            Aliases = new[] { "stafflist" };
+            RequiredRole = RoleEnum.Player;
+            Description = "Return a staff connected list";
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var list = World.Instance.GetCharacters(x => x.Account.UserGroupId > (int) RoleEnum.Player);
+
+            if (!list.Any())
+            {
+                trigger.ReplyBold("No results found");
+                return;
+            }
+
+            foreach (var player in list)
+            {
+                trigger.ReplyBold(" - {0}", player.Name);
+            }
         }
     }
 }

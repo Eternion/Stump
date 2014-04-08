@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(GameTrigger trigger)
         {
-            Character character = trigger.Character;
+            var character = trigger.Character;
 
             if (character.GuildMember != null)
                 character.Guild.SetBoss(character.GuildMember);

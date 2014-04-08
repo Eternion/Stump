@@ -17,18 +17,14 @@ namespace Stump.Server.AuthServer.Database
         {
             var db = AuthServer.Instance.DBAccessor.Database;
 
-            foreach(RoleEnum role in Enum.GetValues(typeof(RoleEnum)))
+            foreach (var role in from RoleEnum role in Enum.GetValues(typeof(RoleEnum)) where role != RoleEnum.None where !db.Query<UserGroupRecord>("SELECT * FROM groups WHERE groups.Role = " + (int) role).Any() select role)
             {
-                if (role == RoleEnum.None)
-                    continue;
-
-                if (!db.Query<UserGroupRecord>("SELECT * FROM groups WHERE groups.Role = " + (int) role).Any())
-                    db.Insert(new UserGroupRecord()
-                    {
-                        Name = role.ToString(),
-                        IsGameMaster = role >= RoleEnum.GameMaster,
-                        Role = role
-                    });
+                db.Insert(new UserGroupRecord
+                {
+                    Name = role.ToString(),
+                    IsGameMaster = role >= RoleEnum.GameMaster,
+                    Role = role
+                });
             }
         }
     }

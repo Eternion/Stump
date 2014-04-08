@@ -4,6 +4,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Dialogs.Spells;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
@@ -20,17 +21,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(ValidateSpellForgetMessage.Id)]
         public static void HandleValidateSpellForgetMessage(WorldClient client, ValidateSpellForgetMessage message)
         {
-           var winPoints = client.Character.Spells.DowngradeSpell(message.spellId);
-
-           if (winPoints != 0)
+            var panel = client.Character.Dialog as SpellForgetPanel;
+            if (panel != null)
             {
-                var spell = SpellManager.Instance.GetSpellTemplate(message.spellId);
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 366, spell.Id, winPoints);
+                panel.DowngradeSpell(client, message.spellId);
             }
-
-            //todo: Find best way to refresh SpellForgetUI
-            SendSpellForgetUIMessage(client, false);
-            SendSpellForgetUIMessage(client, true);
         }
 
         public static void SendSpellForgetUIMessage(IPacketReceiver client, bool open)

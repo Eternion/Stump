@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public InfoMapCommand()
         {
             Aliases = new [] { "map" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a map";
             ParentCommand = typeof(InfoCommand);
             AddParameter("map", "map", "Target map", isOptional: true, converter: ParametersConverter.MapConverter);
@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public InfoAreaCommand()
         {
             Aliases = new[] { "area" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Give informations about an area";
             ParentCommand = typeof(InfoCommand);
             AddParameter("area", "area", "Target area", isOptional: true, converter: ParametersConverter.AreaConverter);
@@ -123,7 +123,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public InfoCharacterCommand()
         {
             Aliases = new[] { "character", "char", "player" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a player";
             ParentCommand = typeof(InfoCommand);
             AddTargetParameter();
@@ -168,7 +168,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public InfoFightCommand()
         {
             Aliases = new[] { "fight" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Give informations about a fight";
             ParentCommand = typeof(InfoCommand);
             AddParameter("fight", "f", "Gives informations about the given fight", converter:ParametersConverter.FightConverter);
