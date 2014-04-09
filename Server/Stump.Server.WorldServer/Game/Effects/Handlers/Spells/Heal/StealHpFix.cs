@@ -33,14 +33,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, OnBuffTriggered);
                 }
-                else
-                    ;
             }
 
             return true;
         }
 
-        private void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private static void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
         }
     }
