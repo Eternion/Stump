@@ -66,6 +66,10 @@ namespace Stump.Core.Pool
 
         public override int Read(byte[] buffer, int offset, int count)
         {
+#if DEBUG
+            Segment.LastUsage = DateTime.Now;
+#endif
+
             count = Math.Min(count, m_segment.Offset + m_segment.Length - m_position);
             Buffer.BlockCopy(m_segment.Buffer.Array, m_position, buffer, offset, count);
             m_position += count;
@@ -74,6 +78,10 @@ namespace Stump.Core.Pool
 
         public override void Write(byte[] buffer, int offset, int count)
         {
+#if DEBUG
+            Segment.LastUsage = DateTime.Now;
+#endif
+
             if (m_position + count >= m_segment.Offset + m_segment.Length)
             {
                 EnsureCapacity(m_position - m_segment.Offset + count);
@@ -85,11 +93,17 @@ namespace Stump.Core.Pool
 
         public override int ReadByte()
         {
+#if DEBUG
+            Segment.LastUsage = DateTime.Now;
+#endif
             return m_segment.Buffer.Array[m_position++];
         }
 
         public override void WriteByte(byte value)
         {
+#if DEBUG
+            Segment.LastUsage = DateTime.Now;
+#endif
             if (m_position + 1 >= m_segment.Offset + m_segment.Length)
             {
                 EnsureCapacity(m_position - m_segment.Offset + 1);

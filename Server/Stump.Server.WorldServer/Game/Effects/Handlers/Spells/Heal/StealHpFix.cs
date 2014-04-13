@@ -8,11 +8,6 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 {
     [EffectHandler(EffectsEnum.Effect_StealHPFix)]
-    [EffectHandler(EffectsEnum.Effect_StealHPWater)]
-    [EffectHandler(EffectsEnum.Effect_StealHPEarth)]
-    [EffectHandler(EffectsEnum.Effect_StealHPAir)]
-    [EffectHandler(EffectsEnum.Effect_StealHPFire)]
-    [EffectHandler(EffectsEnum.Effect_StealHPNeutral)]
     public class StealHpFix : SpellEffectHandler
     {
         public StealHpFix(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
