@@ -116,8 +116,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new FriendListCriterion();
                 case GiftCriterion.Identifier:
                     return new GiftCriterion();
-                case GuildRightsCriterion.Identifier:
-                    return new GuildRightsCriterion();
+                /*case GuildRightsCriterion.Identifier:
+                    return new GuildRightsCriterion();*/
                 case HasItemCriterion.Identifier:
                     return new HasItemCriterion();
                 case JobCriterion.Identifier:

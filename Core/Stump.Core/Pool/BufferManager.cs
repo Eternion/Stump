@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using NLog;
 using Stump.Core.Collections;
@@ -72,6 +74,20 @@ namespace Stump.Core.Pool
             get { return m_uses; }
             set { m_uses = value; }
         }
+
+#if DEBUG
+        public string LastUserTrace
+        {
+            get;
+            set;
+        }
+
+        public DateTime LastUsage
+        {
+            get;
+            set;
+        }
+#endif
 
         /// <summary>
         ///     Unique identifier
@@ -256,6 +272,14 @@ namespace Stump.Core.Pool
             get { return m_segmentSize; }
         }
 
+#if DEBUG
+        public BufferSegment[] GetSegments()
+        {
+            return m_availableSegments.ToArray();
+        }
+
+#endif
+
         #region Constructors
 
         /// <summary>
@@ -274,6 +298,7 @@ namespace Stump.Core.Pool
 
         #endregion
 
+        private static int lastValue;
         /// <summary>
         ///     Checks out a segment, creating more if the pool is empty.
         /// </summary>
@@ -304,6 +329,12 @@ namespace Stump.Core.Pool
             // set initial usage to 1
             segment.Uses = 1;
 
+            //Debug.WriteLineIf(UsedSegmentCount != lastValue, string.Format("Used:{0} Last:{1} Stack:{2}", UsedSegmentCount, lastValue, new StackTrace()));
+            lastValue = UsedSegmentCount;
+#if DEBUG
+            segment.LastUserTrace = new StackTrace().ToString();
+            segment.LastUsage = DateTime.Now;
+#endif
             return segment;
         }
 
