@@ -109,6 +109,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
                     };
 
             MongoLogger.Instance.Insert("PlayerTrade", document);
+
+            FirstTrader.Character.SaveLater();
+            SecondTrader.Character.SaveLater();
         }
 
         protected override void OnTraderItemMoved(Trader trader, TradeItem item, bool modified, int difference)

@@ -164,10 +164,12 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
         public static void SendConsoleCommandsListMessage(IPacketReceiver client)
         {
+            var commands = WorldServer.Instance.CommandManager.AvailableCommands;
+
             client.Send(
                 new ConsoleCommandsListMessage(
-                    WorldServer.Instance.CommandManager.AvailableCommands.SelectMany(c => c.Aliases),
-                    new string[0],  new string[0]));
+                    commands.SelectMany(c => c.Aliases),
+                    commands.Select(c => c.GetSafeUsage()), commands.Select(c => c.Description)));
         }
         
 

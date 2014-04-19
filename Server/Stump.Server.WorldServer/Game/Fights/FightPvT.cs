@@ -149,7 +149,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FighterRefusedReasonEnum AddDefender(Character character)
         {
-            if (character.TaxCollectorDefendFight != null || character.IsBusy() || character.IsInFight())
+            if (character.TaxCollectorDefendFight != null || character.IsBusy() || character.IsInFight() || character.IsInJail())
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (!IsAttackersPlacementPhase)
