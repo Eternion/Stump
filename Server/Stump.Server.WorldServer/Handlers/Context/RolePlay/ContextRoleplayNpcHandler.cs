@@ -7,7 +7,6 @@ using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {

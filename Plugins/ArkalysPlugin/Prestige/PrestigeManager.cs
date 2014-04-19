@@ -154,7 +154,7 @@ namespace ArkalysPlugin.Prestige
             character.Inventory.RefreshItem(item);
 
             character.OpenPopup(
-                string.Format("Vous venez de passer au rang prestige {0}. \nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ", rank + 1, BonusItem.Name) +
+                string.Format("Vous venez de passer au rang prestige {0}. \nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ", rank, BonusItem.Name) +
                 "les bonus s'appliquent sans équipper l'objet.\nVous devez vous reconnecter pour continuer à jouer");
 
             character.LevelDown(character.Level);

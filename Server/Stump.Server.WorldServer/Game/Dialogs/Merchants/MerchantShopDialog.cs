@@ -93,6 +93,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             Merchant.KamasEarned += item.Price*quantity;
 
             Character.Client.Send(new ExchangeBuyOkMessage());
+
+            Merchant.Save();
             return true;
         }
 
