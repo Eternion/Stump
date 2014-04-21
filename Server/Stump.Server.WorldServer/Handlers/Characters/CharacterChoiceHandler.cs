@@ -239,7 +239,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
-                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
+                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                     characterRecord.Name,
                     characterRecord.EntityLook.GetEntityLook(),
                     (sbyte) characterRecord.Breed,
@@ -262,7 +262,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             foreach (var characterRecord in client.Characters)
             {
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
-                                                                            ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
+                                                                            ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                                                                             characterRecord.Name, characterRecord.EntityLook.GetEntityLook(),
                                                                             (sbyte) characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE));
 

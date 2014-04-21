@@ -236,6 +236,9 @@ namespace Stump.Server.WorldServer.Game.Items
                 var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items)
                 {
+                    if (item.Value.IsTemporarily)
+                        continue;
+
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);

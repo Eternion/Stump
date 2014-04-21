@@ -590,6 +590,12 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public int PrestigeRank
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         public CharacterRecord(Breed breed)

@@ -19,6 +19,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_highestCharacterLevel.Key; }
         }
 
+        public long HighestCharacterExperience
+        {
+            get { return m_highestCharacterLevel.Value.CharacterExp.Value; }
+        }
+
         public byte HighestGuildLevel
         {
             get { return m_highestGuildLevel.Key; }
@@ -67,6 +72,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             return long.MaxValue;
+        }
+        public byte GetCharacterLevel(long experience, int prestigeRank)
+        {
+            return GetCharacterLevel(experience - prestigeRank*HighestCharacterExperience);
         }
 
         public byte GetCharacterLevel(long experience)
