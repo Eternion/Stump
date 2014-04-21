@@ -118,7 +118,6 @@
     <Compile Include="Npcs\NpcGuilds.cs" />
     <Compile Include="Npcs\NpcRestatScript.cs" />
     <Compile Include="OrbsManager.cs" />
-    <Compile Include="Prestige\PrestigeManager.cs" />
     <Compile Include="Prestige\PrestigeNpc.cs" />
     <Compile Include="SmithMagic\SmithMagicPotionItem.cs" />
     <Compile Include="Votes\VoteNotificationHandler.cs" />

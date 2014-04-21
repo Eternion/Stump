@@ -34,6 +34,11 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             get;
         }
+        
+        bool IsTemporarily
+        {
+            get;
+        }
     }
 
     public abstract class Item<T> : IItem where T : ItemRecord<T>
@@ -81,6 +86,12 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             get { return Record.Effects; }
             protected set { Record.Effects = value; }
+        }
+
+        public bool IsTemporarily
+        {
+            get;
+            protected set;
         }
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()

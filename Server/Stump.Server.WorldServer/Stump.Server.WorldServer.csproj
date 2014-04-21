@@ -250,6 +250,7 @@
     <Compile Include="Game\Actors\Interfaces\INamedActor.cs" />
     <Compile Include="Game\Actors\Look\SubActorLook.cs" />
     <Compile Include="Game\Actors\Interfaces\IInteractNpc.cs" />
+    <Compile Include="Game\Actors\RolePlay\Characters\PrestigeManager.cs" />
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
     <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
@@ -395,6 +396,7 @@
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\DefaultItem.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\BoundLivingObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\CandyItem.cs" />
