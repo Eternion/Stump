@@ -16,10 +16,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         [WorldHandler(BasicSwitchModeRequestMessage.Id)]
         public static void HandleBasicSwitchModeRequestMessage(WorldClient client, BasicSwitchModeRequestMessage message)
         {
-            if (client.Character.ToggleAway())
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 37);
-            else
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 38);
+            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, client.Character.ToggleAway() ? (short) 37 : (short) 38);
         }
 
         [WorldHandler(BasicWhoAmIRequestMessage.Id)]
@@ -37,7 +34,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         public static void HandleBasicWhoIsRequestMessage(WorldClient client, BasicWhoIsRequestMessage message)
         {
             /* Get character */
-            Character character = World.Instance.GetCharacter(message.search);
+            var character = World.Instance.GetCharacter(message.search);
 
             /* check null */
             if (character == null)

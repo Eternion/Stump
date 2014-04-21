@@ -139,7 +139,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         public void SetColors(params Color[] colors)
         {
             var index = 1;
+
             m_colors = colors.ToDictionary(x => index++);
+
             m_entityLook.Invalidate();
         }
 
