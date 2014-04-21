@@ -151,6 +151,22 @@ namespace Stump.Server.WorldServer.Game.Items
 
         }
 
+        public BankItem CreateBankItem(Character character, BasePlayerItem item, uint amount)
+        {
+            var guid = BankItemRecord.PopNextId();
+            var record = new BankItemRecord // create the associated record
+                        {
+                            Id = guid,
+                            OwnerAccountId = character.Account.Id,
+                            Template = item.Template,
+                            Stack = amount,
+                            Effects = new List<EffectBase>(item.Effects),
+                            IsNew = true,
+                        };
+
+            return new BankItem(character, record);
+        }
+
         public List<EffectBase> GenerateItemEffects(ItemTemplate template, bool max = false)
         {
             var effects = template.Effects.Select(effect => EffectManager.Instance.IsUnRandomableWeaponEffect(effect.EffectId) ? effect : effect.GenerateEffect(EffectGenerationContext.Item, max ? EffectGenerationType.MaxEffects : EffectGenerationType.Normal)).ToList();

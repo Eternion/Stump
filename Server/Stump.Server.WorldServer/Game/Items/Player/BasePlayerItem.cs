@@ -54,31 +54,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        /// <summary>
-        ///   Check if the given item can be stacked with the actual item (without comparing his position)
-        /// </summary>
-        /// <param name = "compared"></param>
-        /// <returns></returns>
-        public virtual bool IsStackableWith(BasePlayerItem compared)
-        {
-            return (compared.Template.Id == Template.Id &&
-                    compared.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
-                    compared.Effects.CompareEnumerable(Effects));
-        }
-
-        /// <summary>
-        ///   Check if the given item must be stacked with the actual item
-        /// </summary>
-        /// <param name = "compared"></param>
-        /// <returns></returns>
-        public virtual bool MustStackWith(BasePlayerItem compared)
-        {
-            return (compared.Template.Id == Template.Id &&
-                    compared.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED &&
-                    compared.Position == Position &&
-                    compared.Effects.CompareEnumerable(Effects));
-        }
-
         public virtual bool IsLinked()
         {
             if (Template.IsLinkedToOwner)

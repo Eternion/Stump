@@ -296,6 +296,7 @@
     <Compile Include="Game\Conditions\ComparaisonOperatorEnum.cs" />
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
+    <Compile Include="Game\Dialogs\Bank\BankDialog.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildCreationPanel.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildModificationPanel.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapDialog.cs" />
@@ -392,6 +393,9 @@
     <Compile Include="Game\Guilds\GuildMember.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
+    <Compile Include="Game\Items\Player\Bank.cs" />
+    <Compile Include="Game\Items\Player\BankItem.cs" />
+    <Compile Include="Database\Items\BankItemRecord.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
