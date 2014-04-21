@@ -903,7 +903,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 if (spell.ObtainLevel > currentLevel)
                 {
-                    foreach (var shortcut in shortcuts.Where(x => x.Value.SpellId == spell.Id).ToArray())
+                    foreach (var shortcut in shortcuts.Where(x => x.Value.SpellId == spell.Spell).ToArray())
                         Shortcuts.RemoveShortcut(ShortcutBarEnum.SPELL_SHORTCUT_BAR, shortcut.Key);
 
                     if (Spells.HasSpell(spell.Spell))
