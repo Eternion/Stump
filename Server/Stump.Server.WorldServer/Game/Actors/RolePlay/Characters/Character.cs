@@ -2181,6 +2181,30 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion
+        
+
+        #region Bank
+
+        public Bank Bank
+        {
+            get;
+            private set;
+        }
+
+        public bool CheckBankIsLoaded(Action callBack)
+        {
+            if (Bank.IsLoaded)
+                return true;
+
+            WorldServer.Instance.IOTaskPool.AddMessage(() => { 
+                Bank.LoadRecord();
+                callBack();
+            });
+
+            return false;
+        }
+
+        #endregion
 
         #endregion
 
@@ -2303,6 +2327,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     // do something better here
                     Inventory.Save();
+                    if (Bank.IsLoaded)
+                        Bank.Save();
                     MerchantBag.Save();
                     Spells.Save();
                     Shortcuts.Save();
@@ -2327,6 +2353,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.DamageTaken = Stats.Health.DamageTaken;
 
                     WorldServer.Instance.DBAccessor.Database.Update(m_record);
+                    WorldServer.Instance.DBAccessor.Database.Update(Client.WorldAccount);
 
                     transaction.Complete();
                 }
@@ -2367,6 +2394,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
             UpdateLook(false);
+
+            Bank = new Bank(this); // lazy loading here !
 
             MerchantBag = new CharacterMerchantBag(this);
             CheckMerchantModeReconnection();

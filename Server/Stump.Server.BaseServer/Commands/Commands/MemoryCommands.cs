@@ -59,9 +59,9 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
         private static void PrintBufferInformations(TriggerBase trigger, BufferManager manager)
         {
-            var leaks = manager.GetSegments().Where(x => x.Uses > 0 && x.LastUsage < DateTime.Now - (TimeSpan.FromMinutes(10)));
+            var leaks = manager.GetSegments().Where(x => x.Uses > 0);
 
-            foreach (var leak in leaks)
+            foreach (var leak in leaks.OrderByDescending(x => DateTime.Now - x.LastUsage))
             {
                 trigger.Reply("Buffer #{0} Size:{1} LastUsage:{2} ago  Stack:{3}", leak.Number, leak.Length,
                     (DateTime.Now - leak.LastUsage).ToPrettyFormat(), leak.LastUserTrace);

@@ -788,6 +788,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             return Items.Values.FirstOrDefault(entry => entry.Position == position);
         }
+        
+        public BasePlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position)
+        {
+            var entries = from entry in Items.Values
+                                              where entry.Template.Id == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
+                                              select entry;
+
+            return entries.FirstOrDefault();
+        }
 
         public BasePlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position, BasePlayerItem except)
         {
