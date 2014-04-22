@@ -3,6 +3,7 @@ using System.Collections;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Conditions.Criterions;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
@@ -37,13 +38,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 }
                 else
                 {
-                    var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell);
-                    damage.GenerateDamages();
+                    var damages = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell);
 
                     if (Dice.EffectId == EffectsEnum.Effect_StealHPFix)
-                        actor.InflictDirectDamage(damage.Amount); // I could use a semicolon operator right here ...
+                    {
+                        damages.GenerateDamages();
+                        actor.InflictDirectDamage(damages.Amount);
+                    }
                     else
-                        actor.InflictDamage(damage);
+                        actor.InflictDamage(damages);
                 }
             }
 
@@ -52,9 +55,21 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
         private static void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
+            var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
+            {
+                Buff = buff
+            };
+
+            if (buff.Dice.EffectId == EffectsEnum.Effect_StealHPFix)
+            {
+                damages.GenerateDamages();
+                buff.Target.InflictDirectDamage(damages.Amount);
+            }
+            else
+                buff.Target.InflictDamage(damages);
         }
 
-        private EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
+        private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
         {
             switch (effect)
             {
