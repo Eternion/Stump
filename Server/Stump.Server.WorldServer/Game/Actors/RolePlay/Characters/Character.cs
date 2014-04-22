@@ -26,6 +26,8 @@ using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
+using Stump.Server.WorldServer.Game.Exchanges.Trades;
+using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
@@ -388,6 +390,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Trade
 
+        public IExchange Exchange
+        {
+            get { return Dialog as IExchange; }
+        }
+        public Exchanger Exchanger
+        {
+            get { return Dialoger as Exchanger; }
+        }
         public ITrade Trade
         {
             get { return Dialog as ITrade; }
@@ -401,6 +411,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public Trader Trader
         {
             get { return Dialoger as Trader; }
+        }
+
+        public bool IsInExchange()
+        {
+            return Exchanger != null;
         }
 
         public bool IsTrading()

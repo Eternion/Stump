@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "side" };
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommand = typeof(AlignmentCommands);
+            ParentCommandType = typeof(AlignmentCommands);
             Description = "Set the alignement side of the given target";
             AddParameter("side", "s", "Alignement side", converter: ParametersConverter.GetEnumConverter<AlignmentSideEnum>());
             AddTargetParameter(true);

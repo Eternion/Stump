@@ -9,7 +9,9 @@ using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
-using Stump.Server.WorldServer.Game.Exchanges.Items;
+using Stump.Server.WorldServer.Game.Exchanges.Trades;
+using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 
 namespace ArkalysPlugin.Npcs
 {
@@ -112,7 +114,7 @@ namespace ArkalysPlugin.Npcs
 
             if (orbs != null)
             {
-                SecondTrader.SetKamas((uint)(orbs.Stack*OrbToKamasRate));
+                SecondTrader.SetKamas((int) (orbs.Stack*OrbToKamasRate));
             }
             else
             {

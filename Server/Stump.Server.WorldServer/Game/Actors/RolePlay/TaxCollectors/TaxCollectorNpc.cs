@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges;
+using Stump.Server.WorldServer.Game.Exchanges.TaxCollector;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
@@ -389,7 +390,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public bool IsBusy()
         {
-            return OpenDialogs.Any(x => x is TaxCollectorTrade);
+            return OpenDialogs.Any(x => x is TaxCollectorExchange);
         }
 
         protected override void OnDisposed()

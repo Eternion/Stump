@@ -18,7 +18,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public ConfigReloadCommand()
         {
-            ParentCommand = typeof(ConfigCommand);
+            ParentCommandType = typeof(ConfigCommand);
             Aliases = new[] { "reload" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Reload the config file";
@@ -36,7 +36,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public ConfigSaveCommand()
         {
-            ParentCommand = typeof(ConfigCommand);
+            ParentCommandType = typeof(ConfigCommand);
             Aliases = new[] { "save" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Save the config file";

@@ -18,10 +18,9 @@ using System.Linq;
 using Stump.Core.Pool;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace Stump.Server.WorldServer.Game.Exchanges
+namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
 {
     public class NpcTrader : Trader
     {

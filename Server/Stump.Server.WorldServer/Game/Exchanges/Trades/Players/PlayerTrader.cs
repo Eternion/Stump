@@ -1,11 +1,9 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Dialogs;
-using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
 
-namespace Stump.Server.WorldServer.Game.Exchanges
+namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
 {
     public class PlayerTrader : Trader
     {
@@ -103,8 +101,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             return true;
         }
 
-        public override bool SetKamas(uint amount)
+        public override bool SetKamas(int amount)
         {
+            if (amount < 0)
+                return false;
+
             return amount <= Character.Inventory.Kamas && base.SetKamas(amount);
         }
     }

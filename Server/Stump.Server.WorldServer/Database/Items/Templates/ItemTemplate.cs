@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game.Conditions;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Item = Stump.DofusProtocol.D2oClasses.Item;
 
 namespace Stump.Server.WorldServer.Database.Items.Templates
 {

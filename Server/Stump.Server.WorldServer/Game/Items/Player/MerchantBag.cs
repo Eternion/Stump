@@ -22,7 +22,7 @@ using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
-    public class MerchantBag : ItemsCollection<MerchantItem>
+    public class MerchantBag : PersistantItemsCollection<MerchantItem>
     {
         public MerchantBag(Merchant owner)
         {

@@ -1,6 +1,4 @@
-﻿using Stump.Server.WorldServer.Game.Actors.RolePlay;
-
-namespace Stump.Server.WorldServer.Game.Exchanges
+﻿namespace Stump.Server.WorldServer.Game.Exchanges.Trades
 {
     public class EmptyTrader : Trader
     {
@@ -15,6 +13,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         public override int Id
         {
             get { return m_id; }
+        }
+
+        public override bool MoveItem(int id, int quantity)
+        {
+            return false;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "spawn" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Spawn a npc";
-            ParentCommand = typeof(NpcEditorCommands);
+            ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
             AddParameter("map", "map", "Map id", isOptional: true, converter: ParametersConverter.MapConverter);
             AddParameter<short>("cell", "cell", "Cell id", isOptional: true);
@@ -92,7 +92,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "unspawn" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Unspawn the npc by the given contextual id";
-            ParentCommand = typeof(NpcEditorCommands);
+            ParentCommandType = typeof(NpcEditorCommands);
             AddParameter<sbyte>("npcid", "npc", "Npc Contextual id");
             AddParameter("map", "map", "Npc Map", isOptional: true, converter: ParametersConverter.MapConverter);
         }
@@ -139,7 +139,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "shop" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Manage npc shop";
-            ParentCommand = typeof(NpcEditorCommands);
+            ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
             AddParameter("item", "item", converter: ParametersConverter.ItemTemplateConverter);
             AddParameter<float>("customprice", "price", isOptional: true);
@@ -223,7 +223,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "shoptoken" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Define the token needed to trade with the npc";
-            ParentCommand = typeof(NpcEditorCommands);
+            ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
             AddParameter("token", "token", "Token item", isOptional: true, converter: ParametersConverter.ItemTemplateConverter);
             AddParameter<bool>("notoken", "no", "Reset the shop as standard", isOptional: true);
@@ -271,7 +271,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "shopmax" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Set all sold items to max stats";
-            ParentCommand = typeof(NpcEditorCommands);
+            ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
             AddParameter("active", "active", "Active or not", true);
         }
@@ -304,7 +304,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "removeall" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Remove all items from NPC";
-            ParentCommand = typeof(NpcEditorCommands);
+            ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
         }
 

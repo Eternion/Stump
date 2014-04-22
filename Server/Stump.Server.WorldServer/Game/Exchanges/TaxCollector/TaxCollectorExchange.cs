@@ -4,16 +4,17 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.TaxCollector;
 
-namespace Stump.Server.WorldServer.Game.Exchanges
+namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 {
-    public class TaxCollectorTrade : Trade<CollectorTrader, EmptyTrader>
+    public class TaxCollectorExchange : IExchange
     {
-        public TaxCollectorTrade(TaxCollectorNpc taxCollector, Character character)
+        private CharacterCollector m_collector;
+
+        public TaxCollectorExchange(TaxCollectorNpc taxCollector, Character character)
         {
             TaxCollector = taxCollector;
             Character = character;
-            FirstTrader = new CollectorTrader(taxCollector, character, this);
-            SecondTrader = new EmptyTrader(taxCollector.Id, this);
+            m_collector = new CharacterCollector(taxCollector, character, this);
         }
 
         public TaxCollectorNpc TaxCollector
@@ -27,20 +28,24 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             get;
             private set;
         }
-        public override ExchangeTypeEnum ExchangeType
+        public ExchangeTypeEnum ExchangeType
         {
             get { return ExchangeTypeEnum.TAXCOLLECTOR; }
         }
 
+        public DialogTypeEnum DialogType
+        {
+            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
+        }
+
         #region IDialog Members
 
-        public override void Open()
+        public void Open()
         {
-            base.Open();
-
-            Character.SetDialoger(FirstTrader);
+            Character.SetDialoger(m_collector);
             TaxCollector.OnDialogOpened(this);
 
+            InventoryHandler.SendExchangeStartedMessage(Character.Client, ExchangeType);
             InventoryHandler.SendStorageInventoryContentMessage(Character.Client, TaxCollector);
 
             //Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
@@ -48,10 +53,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         }
 
 
-        public override void Close()
+        public void Close()
         {
-            base.Close();
-
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
             TaxCollector.OnDialogClosed(this);
@@ -62,11 +65,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             TaxCollectorHandler.SendTaxCollectorMovementMessage(TaxCollector.Guild.Clients, false, TaxCollector, Character.Name);
 
             TaxCollector.Delete();
-        }
-
-        protected override void Apply()
-        {
-            // nothing to do here
         }
 
         #endregion
