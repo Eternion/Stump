@@ -31,7 +31,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new [] { "spawn" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Add/Remove a monster spawn";
-            ParentCommand = typeof(MonsterEditorCommands);
+            ParentCommandType = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to spawn", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("subarea", "subarea", isOptional: true, converter: ParametersConverter.SubAreaConverter);
             AddParameter("map", "map", isOptional: true, converter: ParametersConverter.MapConverter);
@@ -112,7 +112,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "disable" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Disable a monster spawn";
-            ParentCommand = typeof(MonsterEditorCommands);
+            ParentCommandType = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to disable", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("subarea", "subarea", isOptional: true, converter: ParametersConverter.SubAreaConverter);
         }
@@ -150,7 +150,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "enable" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Enable a monster spawn";
-            ParentCommand = typeof(MonsterEditorCommands);
+            ParentCommandType = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to enable", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("subarea", "subarea", isOptional: true, converter: ParametersConverter.SubAreaConverter);
         }
@@ -188,7 +188,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "drop" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Add/Remove a monster drop";
-            ParentCommand = typeof(MonsterEditorCommands);
+            ParentCommandType = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Targetted monster", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("item", "item", converter: ParametersConverter.ItemTemplateConverter);
             AddParameter<double>("rate", "rate");
@@ -246,7 +246,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "spell" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Add/Remove a monster spell";
-            ParentCommand = typeof(MonsterEditorCommands);
+            ParentCommandType = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to spawn", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("spell", "spell", converter: ParametersConverter.SpellTemplateConverter);
         }
@@ -309,7 +309,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             Aliases = new[] { "kamas" };
             RequiredRole = RoleEnum.GameMaster;
             Description = "Set dropped kamas";
-            ParentCommand = typeof(MonsterEditorCommands);
+            ParentCommandType = typeof(MonsterEditorCommands);
             AddParameter("monster", "m", "Monster to spawn", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter<int>("minkamas", "min"); 
             AddParameter<int>("maxkamas", "max");

@@ -9,7 +9,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
-    public class MerchantItem : Item<PlayerMerchantItemRecord>
+    public class MerchantItem : PersistantItem<PlayerMerchantItemRecord>
     {
         #region Fields
 
@@ -63,6 +63,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                                  Effects.Select(x => x.GetObjectEffect()),
                                  Guid, (int)Stack, (int)Price);
         }
+        public override ObjectItem GetObjectItem()
+        {
+            return new ObjectItem(63, (short) Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid,
+                (int) Stack);
+        }
 
         public ObjectItemToSellInHumanVendorShop GetObjectItemToSellInHumanVendorShop()
         {
@@ -72,7 +77,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         #endregion
-
 
     }
 }

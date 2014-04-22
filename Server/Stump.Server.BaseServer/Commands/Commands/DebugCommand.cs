@@ -24,7 +24,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         public CommandsExceptions()
         {
             Aliases = new[] {"cmderror"};
-            ParentCommand = typeof (DebugCommand);
+            ParentCommandType = typeof (DebugCommand);
             RequiredRole = RoleEnum.Administrator;
             Description = "Give command error details";
             AddParameter<int>("index", "i", "Error index (last if not defined)", isOptional: true);
@@ -61,7 +61,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         public CommandGlobalExceptions()
         {
             Aliases = new[] { "error" };
-            ParentCommand = typeof(DebugCommand);
+            ParentCommandType = typeof(DebugCommand);
             RequiredRole = RoleEnum.Administrator;
             Description = "Give error details";
             AddParameter<int>("index", "i", "Error index (last if not defined)", isOptional: true);

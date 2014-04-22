@@ -6,6 +6,7 @@ using NLog;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
@@ -129,7 +130,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
             /* Just to get console AutoCompletion */
             if (client.UserGroup.Role >= RoleEnum.Moderator)
-                SendConsoleCommandsListMessage(client);
+                SendConsoleCommandsListMessage(client, CommandManager.Instance.AvailableCommands.Where(x => client.UserGroup.IsCommandAvailable(x)));
 
             var characterInFight = FindCharacterFightReconnection(client);
             if (characterInFight != null)
@@ -162,16 +163,19 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                             (sbyte) client.UserGroup.Role));
         }
 
-        public static void SendConsoleCommandsListMessage(IPacketReceiver client)
+        public static void SendConsoleCommandsListMessage(IPacketReceiver client, IEnumerable<CommandBase> commands)
         {
-            var commands = WorldServer.Instance.CommandManager.AvailableCommands;
+            var commandsInfos = (from command in commands
+                                 let aliases = command.GetFullAliases() 
+                                 let usage = command.GetSafeUsage() 
+                                 from alias in aliases select Tuple.Create(alias, usage, command.Description ?? string.Empty)).ToList();
 
             client.Send(
                 new ConsoleCommandsListMessage(
-                    commands.SelectMany(c => c.Aliases),
-                    commands.Select(c => c.GetSafeUsage()), commands.Select(c => c.Description)));
+                    commandsInfos.Select(x => x.Item1),
+                    commandsInfos.Select(x => x.Item2),
+                    commandsInfos.Select(x => x.Item3)));
         }
-        
 
         public static void SendQueueStatusMessage(IPacketReceiver client, ushort position, ushort total)
         {

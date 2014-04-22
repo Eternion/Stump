@@ -18,7 +18,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             Aliases = new[] { "summary", "sum" };
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(BenchmarkCommands);
+            ParentCommandType = typeof(BenchmarkCommands);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -33,7 +33,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             Aliases = new[] { "enable", "on" };
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(BenchmarkCommands);
+            ParentCommandType = typeof(BenchmarkCommands);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -48,7 +48,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
         {
             Aliases = new[] { "disable", "off" };
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(BenchmarkCommands);
+            ParentCommandType = typeof(BenchmarkCommands);
         }
 
         public override void Execute(TriggerBase trigger)

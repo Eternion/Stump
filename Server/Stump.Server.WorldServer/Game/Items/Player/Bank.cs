@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
@@ -23,8 +25,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             WorldServer.Instance.IOTaskPool.EnsureContext();
 
             Items =
-                WorldServer.Instance.DBAccessor.Database.Query<BankItem>(string.Format(BankItemRelator.FetchByOwner,
-                    Owner.Id)).ToDictionary(x => x.Guid);
+                WorldServer.Instance.DBAccessor.Database.Query<BankItemRecord>(string.Format(BankItemRelator.FetchByOwner,
+                    Owner.Id)).ToDictionary(x => x.Id, x => new BankItem(Owner, x));
             IsLoaded = true;
         }
 
@@ -59,7 +61,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (bankItem != null)
             {
                 bankItem.Stack += amount;
-                RefreshItem(bankItem);
             }
             else
             {
@@ -80,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (Owner.Inventory.Kamas < kamas)
                 kamas = Owner.Inventory.Kamas;
 
-            Kamas += kamas;
+            AddKamas(kamas);
             Owner.Inventory.SetKamas(Owner.Inventory.Kamas - kamas);
 
 
@@ -122,14 +123,38 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (kamas > Kamas)
                 kamas = Kamas;
 
-            Kamas -= kamas;
+            SubKamas(kamas);
             Owner.Inventory.AddKamas(kamas);
-            return false;
+            return true;
         }
 
-        public void RefreshItem(BankItem item)
-        {
 
+        protected override void OnItemAdded(BankItem item)
+        {
+            InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
+
+            base.OnItemAdded(item);
+        }
+
+        protected override void OnItemRemoved(BankItem item)
+        {            
+            InventoryHandler.SendStorageObjectRemoveMessage(Owner.Client, item);
+
+            base.OnItemRemoved(item);
+        }
+
+        protected override void OnItemStackChanged(BankItem item, int difference)
+        {            
+            InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
+
+            base.OnItemStackChanged(item, difference);
+        }
+
+        protected override void OnKamasAmountChanged(int amount)
+        {
+            InventoryHandler.SendStorageKamasUpdateMessage(Owner.Client, amount);
+
+            base.OnKamasAmountChanged(amount);
         }
     }
 }

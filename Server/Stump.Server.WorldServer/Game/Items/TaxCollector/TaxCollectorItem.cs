@@ -11,7 +11,7 @@ using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 {
-    public class TaxCollectorItem : Item<TaxCollectorItemRecord>
+    public class TaxCollectorItem : PersistantItem<TaxCollectorItemRecord>
     {
         #region Constructors
 
@@ -48,9 +48,10 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
                     compared.Effects.CompareEnumerable(Effects));
         }
 
-        public ObjectItem GetObjectItem()
+        public override ObjectItem GetObjectItem()
         {
-            return new ObjectItem((int)CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED, (short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
+            return new ObjectItem((int)CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
+                (short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
         }
 
         public ObjectItemQuantity GetObjectItemQuantity()

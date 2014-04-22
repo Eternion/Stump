@@ -14,7 +14,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
-    public abstract class BasePlayerItem : Item<PlayerItemRecord>
+    public abstract class BasePlayerItem : PersistantItem<PlayerItemRecord>
     {
         #region Fields
 
@@ -178,7 +178,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 (int)Stack);
         }
 
-        public ObjectItem GetObjectItem()
+        public override ObjectItem GetObjectItem()
         {
             return m_objectItemValidator;
         }

@@ -221,21 +221,22 @@ namespace Stump.Server.BaseServer.Commands
                 return;
             }
 
-            if (subcommand.ParentCommand == null)
+            if (subcommand.ParentCommandType == null)
             {
                 logger.Error("The subcommand {0} has no parent command and cannot be registered", commandType);
                 return;
             }
 
-            if (!IsCommandRegister(subcommand.ParentCommand))
-                RegisterCommand(subcommand.ParentCommand);
+            if (!IsCommandRegister(subcommand.ParentCommandType))
+                RegisterCommand(subcommand.ParentCommandType);
 
-            var parentCommand = AvailableCommands.SingleOrDefault(entry => entry.GetType() == subcommand.ParentCommand) as SubCommandContainer;
+            var parentCommand = AvailableCommands.SingleOrDefault(entry => entry.GetType() == subcommand.ParentCommandType) as SubCommandContainer;
 
             if (parentCommand == null)
-                throw new Exception(string.Format("Cannot found declaration of command '{0}'", subcommand.ParentCommand));
+                throw new Exception(string.Format("Cannot found declaration of command '{0}'", subcommand.ParentCommandType));
 
             parentCommand.AddSubCommand(subcommand);
+            subcommand.SetParentCommand(parentCommand);
             m_registeredCommands.Add(subcommand);
             m_commandsInfos.Add(new CommandInfo(subcommand));
             m_registeredTypes.Add(commandType);

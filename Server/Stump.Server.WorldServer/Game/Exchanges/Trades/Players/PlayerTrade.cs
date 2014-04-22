@@ -5,10 +5,9 @@ using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Exchanges.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
-namespace Stump.Server.WorldServer.Game.Exchanges
+namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
 {
     public class PlayerTrade : Trade<PlayerTrader, PlayerTrader>
     {
