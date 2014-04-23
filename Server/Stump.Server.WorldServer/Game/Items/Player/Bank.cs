@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             Items =
                 WorldServer.Instance.DBAccessor.Database.Query<BankItemRecord>(string.Format(BankItemRelator.FetchByOwner,
-                    Owner.Id)).ToDictionary(x => x.Id, x => new BankItem(Owner, x));
+                    Owner.Account.Id)).ToDictionary(x => x.Id, x => new BankItem(Owner, x));
             IsLoaded = true;
         }
 
