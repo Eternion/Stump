@@ -323,9 +323,15 @@ namespace Stump.Core.Pool
             // this doubles up with what CheckIn() looks for, but no harm in that, really.
             if (segment.Uses > 1)
             {
+#if DEBUG
+                log.Error(
+                    "Checked out segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last usage : {4}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace);
+#else
                 log.Error(
                     "Checked out segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3}",
                     segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count);
+#endif
             }
 
             // set initial usage to 1
@@ -358,9 +364,16 @@ namespace Stump.Core.Pool
         {
             if (segment.Uses > 1)
             {
+#if DEBUG
+                log.Error(
+                    "Checked in segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last Usage:{4}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace);
+#else
                 log.Error(
                     "Checked in segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3}",
                     segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count);
+#endif
+
             }
 
             m_availableSegments.Enqueue(segment);

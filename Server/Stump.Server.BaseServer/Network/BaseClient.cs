@@ -73,9 +73,17 @@ namespace Stump.Server.BaseServer.Network
         public virtual void Send(Message message)
         {
             var stream = BufferManager.GetSegmentStream(ClientManager.BufferSize);
-
+            
             var writer = new BigEndianWriter(stream);
-            message.Pack(writer);
+            try
+            {
+                message.Pack(writer);
+            }
+            catch
+            {
+                stream.Dispose();
+                throw;
+            }
 
             Send(stream);
 
@@ -87,21 +95,31 @@ namespace Stump.Server.BaseServer.Network
         {   
             if (Socket == null || !Connected)
             {
+                stream.Dispose();
                 return;
             }
-
+                            
             var args = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
-            args.Completed += OnSendCompleted;
-            args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
-            args.UserToken = stream;
-
-            if (!Socket.SendAsync(args))
+            try
             {
-                args.Completed -= OnSendCompleted;
-                stream.Segment.DecrementUsage();
-                ObjectPoolMgr.ReleaseObject(args);
+                args.Completed += OnSendCompleted;
+                args.SetBuffer(stream.Segment.Buffer.Array, stream.Segment.Offset, (int) (stream.Position));
+                args.UserToken = stream;
+
+                if (!Socket.SendAsync(args))
+                {
+                    args.Completed -= OnSendCompleted;
+                    stream.Dispose();
+                    ObjectPoolMgr.ReleaseObject(args);
+                }
+                LastActivity = DateTime.Now;
             }
-            LastActivity = DateTime.Now;
+            catch
+            {
+                stream.Dispose();
+                ObjectPoolMgr.ReleaseObject(args);
+                throw;
+            }
         }
 
         private static void OnSendCompleted(object sender, SocketAsyncEventArgs args)
@@ -109,7 +127,7 @@ namespace Stump.Server.BaseServer.Network
             args.Completed -= OnSendCompleted;
             var stream = args.UserToken as SegmentStream;
             if (stream != null)
-                stream.Segment.DecrementUsage();
+                stream.Dispose();
 
             ObjectPoolMgr.ReleaseObject(args);
         }
