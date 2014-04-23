@@ -17,7 +17,7 @@ namespace Stump.Core.Extensions
 
         public static string ToPrettyFormat(this TimeSpan span)
         {
-            if (span == TimeSpan.Zero) return "0 minutes";
+            if (span == TimeSpan.Zero) return "0 seconds ";
 
             var sb = new StringBuilder();
             if (span.Hours > 0)
@@ -25,7 +25,7 @@ namespace Stump.Core.Extensions
             if (span.Minutes > 0)
                 sb.AppendFormat("{0} minute{1} ", span.Minutes, span.Minutes > 1 ? "s" : String.Empty);
             if (span.Seconds > 0)
-                sb.AppendFormat("{0} seconds{1} ", span.Seconds, span.Seconds > 1 ? "s" : String.Empty);
+                sb.AppendFormat("{0} second{1} ", span.Seconds, span.Seconds > 1 ? "s" : String.Empty);
             return sb.ToString();
         }
     }
