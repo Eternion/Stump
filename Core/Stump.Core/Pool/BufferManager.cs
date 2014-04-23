@@ -205,6 +205,7 @@ namespace Stump.Core.Pool
 
         private static volatile int m_segmentId;
         private readonly LockFreeQueue<BufferSegment> m_availableSegments;
+        private readonly ConcurrentList<BufferSegment> m_segmentsInUse;
         private readonly List<ArrayBuffer> m_buffers;
 
         /// <summary>
@@ -273,9 +274,9 @@ namespace Stump.Core.Pool
         }
 
 #if DEBUG
-        public BufferSegment[] GetSegments()
+        public BufferSegment[] GetSegmentsInUse()
         {
-            return m_availableSegments.ToArray();
+            return m_segmentsInUse.ToArray();
         }
 
 #endif
@@ -293,6 +294,7 @@ namespace Stump.Core.Pool
             m_segmentSize = segmentSize;
             m_buffers = new List<ArrayBuffer>();
             m_availableSegments = new LockFreeQueue<BufferSegment>();
+            m_segmentsInUse = new ConcurrentList<BufferSegment>();
             Managers.Add(this);
         }
 
@@ -332,6 +334,7 @@ namespace Stump.Core.Pool
             //Debug.WriteLineIf(UsedSegmentCount != lastValue, string.Format("Used:{0} Last:{1} Stack:{2}", UsedSegmentCount, lastValue, new StackTrace()));
             lastValue = UsedSegmentCount;
 #if DEBUG
+            m_segmentsInUse.Add(segment);
             segment.LastUserTrace = new StackTrace().ToString();
             segment.LastUsage = DateTime.Now;
 #endif
@@ -361,6 +364,8 @@ namespace Stump.Core.Pool
             }
 
             m_availableSegments.Enqueue(segment);
+
+            m_segmentsInUse.Remove(segment);
         }
 
         /// <summary>
