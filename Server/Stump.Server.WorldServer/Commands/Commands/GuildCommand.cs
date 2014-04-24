@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"create"};
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof (GuildCommand);
+            ParentCommandType = typeof (GuildCommand);
         }
 
 
@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"join"};
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommand = typeof (GuildCommand);
+            ParentCommandType = typeof (GuildCommand);
 
             AddParameter<string>("guildname", "guild", "The name of the guild");
         }
@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"boss"};
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommand = typeof (GuildCommand);
+            ParentCommandType = typeof (GuildCommand);
         }
 
         public override void Execute(GameTrigger trigger)

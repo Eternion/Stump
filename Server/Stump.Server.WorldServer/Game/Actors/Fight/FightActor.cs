@@ -605,19 +605,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (!castZone.Contains(cell))
             {
-                Debug.WriteLine("!castZone.Contains(cell)");
                 return SpellCastResult.NOT_IN_ZONE;
             }
 
             if (!SpellHistory.CanCastSpell(spellLevel, cell))
             {
-                Debug.WriteLine("!SpellHistory.CanCastSpell(spellLevel, cell)");
                 return SpellCastResult.HISTORY_ERROR;
             }
 
             if (spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(Cell, cell))
             {
-                Debug.WriteLine("spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(Cell, cell)");
                 return SpellCastResult.NO_LOS;
             }
 

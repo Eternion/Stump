@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
@@ -49,23 +51,33 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            PrintBufferInformations(trigger, BufferManager.Default);
-            PrintBufferInformations(trigger, BufferManager.Tiny);
-            PrintBufferInformations(trigger, BufferManager.Small);
-            PrintBufferInformations(trigger, BufferManager.Large);
-            PrintBufferInformations(trigger, BufferManager.ExtraLarge);
-            PrintBufferInformations(trigger, BufferManager.SuperSized);
+            var path = string.Format("./bufferleaks {0}.txt", DateTime.Now.ToString("dd-MM hh-mm-ss"));
+            
+            using (var file = File.OpenWrite(path))
+            {
+                using (var writer = new StreamWriter(file))
+                {
+                    PrintBufferInformations(writer, BufferManager.Default);
+                    PrintBufferInformations(writer, BufferManager.Tiny);
+                    PrintBufferInformations(writer, BufferManager.Small);
+                    PrintBufferInformations(writer, BufferManager.Large);
+                    PrintBufferInformations(writer, BufferManager.ExtraLarge);
+                    PrintBufferInformations(writer, BufferManager.SuperSized);
+                }
+            }
+
+            trigger.Reply("Wrote {0}", Path.GetFullPath(path));
         }
 
-        private static void PrintBufferInformations(TriggerBase trigger, BufferManager manager)
+        private static void PrintBufferInformations(StreamWriter file, BufferManager manager)
         {
-            var leaks = manager.GetSegments().Where(x => x.LastUsage < DateTime.Now - (TimeSpan.FromMinutes(10)));
+            var leaks = manager.GetSegmentsInUse();
 
-            foreach (var leak in leaks)
+            foreach (var leak in leaks.OrderByDescending(x => DateTime.Now - x.LastUsage))
             {
-                trigger.Reply("Buffer #{0} Size:{1} LastUsage:{2} ago  Stack:{3}", leak.Number, leak.Length,
+                file.WriteLine("Buffer #{0} Size:{1} LastUsage:{2}ago  Stack:{3}", leak.Number, leak.Length,
                     (DateTime.Now - leak.LastUsage).ToPrettyFormat(), leak.LastUserTrace);
-                trigger.Reply("");
+                file.WriteLine("");
             }
         }
     }

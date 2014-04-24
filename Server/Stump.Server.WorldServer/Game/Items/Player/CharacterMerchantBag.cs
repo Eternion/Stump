@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Items.Player
 {
-    public sealed class CharacterMerchantBag : ItemsCollection<MerchantItem>
+    public sealed class CharacterMerchantBag : PersistantItemsCollection<MerchantItem>
     {
         public CharacterMerchantBag(Character owner)
         {

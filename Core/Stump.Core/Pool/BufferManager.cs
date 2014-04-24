@@ -205,6 +205,7 @@ namespace Stump.Core.Pool
 
         private static volatile int m_segmentId;
         private readonly LockFreeQueue<BufferSegment> m_availableSegments;
+        private readonly ConcurrentList<BufferSegment> m_segmentsInUse;
         private readonly List<ArrayBuffer> m_buffers;
 
         /// <summary>
@@ -273,9 +274,9 @@ namespace Stump.Core.Pool
         }
 
 #if DEBUG
-        public BufferSegment[] GetSegments()
+        public BufferSegment[] GetSegmentsInUse()
         {
-            return m_availableSegments.ToArray();
+            return m_segmentsInUse.ToArray();
         }
 
 #endif
@@ -293,6 +294,7 @@ namespace Stump.Core.Pool
             m_segmentSize = segmentSize;
             m_buffers = new List<ArrayBuffer>();
             m_availableSegments = new LockFreeQueue<BufferSegment>();
+            m_segmentsInUse = new ConcurrentList<BufferSegment>();
             Managers.Add(this);
         }
 
@@ -321,9 +323,15 @@ namespace Stump.Core.Pool
             // this doubles up with what CheckIn() looks for, but no harm in that, really.
             if (segment.Uses > 1)
             {
+#if DEBUG
+                log.Error(
+                    "Checked out segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last usage : {4}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace);
+#else
                 log.Error(
                     "Checked out segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3}",
                     segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count);
+#endif
             }
 
             // set initial usage to 1
@@ -332,6 +340,7 @@ namespace Stump.Core.Pool
             //Debug.WriteLineIf(UsedSegmentCount != lastValue, string.Format("Used:{0} Last:{1} Stack:{2}", UsedSegmentCount, lastValue, new StackTrace()));
             lastValue = UsedSegmentCount;
 #if DEBUG
+            m_segmentsInUse.Add(segment);
             segment.LastUserTrace = new StackTrace().ToString();
             segment.LastUsage = DateTime.Now;
 #endif
@@ -355,12 +364,21 @@ namespace Stump.Core.Pool
         {
             if (segment.Uses > 1)
             {
+#if DEBUG
+                log.Error(
+                    "Checked in segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last Usage:{4}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace);
+#else
                 log.Error(
                     "Checked in segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3}",
                     segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count);
+#endif
+
             }
 
             m_availableSegments.Enqueue(segment);
+
+            m_segmentsInUse.Remove(segment);
         }
 
         /// <summary>

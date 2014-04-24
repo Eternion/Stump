@@ -4,8 +4,8 @@ using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
-    public class ItemsStorage<T> : ItemsCollection<T>
-        where T : IItem
+    public class ItemsStorage<T> : PersistantItemsCollection<T>
+        where T : IPersistantItem
     {
         public event Action<ItemsStorage<T>, int> KamasAmountChanged;
 

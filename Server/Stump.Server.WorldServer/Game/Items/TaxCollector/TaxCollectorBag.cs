@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 {
-    public class TaxCollectorBag : ItemsCollection<TaxCollectorItem>
+    public class TaxCollectorBag : PersistantItemsCollection<TaxCollectorItem>
     {
         public TaxCollectorBag(TaxCollectorNpc owner)
         {

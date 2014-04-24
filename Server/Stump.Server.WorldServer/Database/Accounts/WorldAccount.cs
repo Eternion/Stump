@@ -57,6 +57,12 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
+        public int BankKamas
+        {
+            get;
+            set;
+        }
+
         public int LastConnectionTimeStamp
         {
             get { return LastConnection.HasValue ? (int) (DateTime.Now - LastConnection.Value).TotalHours : 0; }

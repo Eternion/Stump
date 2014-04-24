@@ -53,10 +53,10 @@ namespace Stump.Server.WorldServer.Core.Network
                     {
                         var writer = new BigEndianWriter(stream);
                         message.Pack(writer);
-                        stream.Segment.Uses = m_underlyingList.Count(x => x.Connected);
+                        stream.Segment.Uses = m_underlyingList.Count;
 
                         if (stream.Segment.Uses == 0)
-                            stream.Dispose();
+                            BufferManager.Default.CheckIn(stream.Segment);
 
                         foreach (WorldClient worldClient in m_underlyingList)
                         {

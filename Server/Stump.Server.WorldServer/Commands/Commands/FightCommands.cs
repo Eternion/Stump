@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"kick"};
             Description = "Kick the target";
-            ParentCommand = typeof (FightCommands);
+            ParentCommandType = typeof (FightCommands);
             RequiredRole = RoleEnum.GameMaster;
             AddTargetParameter();
         }
@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"list"};
             Description = "List fights on the map";
-            ParentCommand = typeof (FightCommands);
+            ParentCommandType = typeof (FightCommands);
             RequiredRole = RoleEnum.GameMaster;
             AddParameter("map", "m", "List fights of that map", isOptional: true,
                               converter: ParametersConverter.MapConverter);
@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "join" };
             Description = "Join a fight";
-            ParentCommand = typeof(FightCommands);
+            ParentCommandType = typeof(FightCommands);
             RequiredRole = RoleEnum.GameMaster;
             AddParameter("fight", "f", "The fight to join",
                               converter: ParametersConverter.FightConverter);
@@ -180,7 +180,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "end", "stop" };
             Description = "Ends a fight";
-            ParentCommand = typeof(FightCommands);
+            ParentCommandType = typeof(FightCommands);
             RequiredRole = RoleEnum.GameMaster;
             AddParameter("fight", "f", "The fight to end", isOptional: true,
                               converter: ParametersConverter.FightConverter);
@@ -212,7 +212,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "pass" };
             Description = "Pass the current turn in the given fight";
-            ParentCommand = typeof(FightCommands);
+            ParentCommandType = typeof(FightCommands);
             RequiredRole = RoleEnum.GameMaster;
             AddParameter("fight", "f", "The fight to end", isOptional: true,
                               converter: ParametersConverter.FightConverter);

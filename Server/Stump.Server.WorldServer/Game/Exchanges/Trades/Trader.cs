@@ -17,12 +17,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Stump.Server.WorldServer.Game.Dialogs;
-using Stump.Server.WorldServer.Game.Exchanges.Items;
 
-namespace Stump.Server.WorldServer.Game.Exchanges
+namespace Stump.Server.WorldServer.Game.Exchanges.Trades
 {
-    public abstract class Trader : IDialoger
+    public abstract class Trader : Exchanger
     {
         public delegate void ItemMovedHandler(Trader trader, TradeItem item, bool modified, int difference);
 
@@ -60,6 +58,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         private readonly List<TradeItem> m_items = new List<TradeItem>();
 
         protected Trader(ITrade trade)
+            : base (trade)
         {
             Trade = trade;
         }
@@ -68,14 +67,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         {
             get;
             private set;
-        }
-
-        public IDialog Dialog
-        {
-            get
-            {
-                return Trade;
-            }
         }
 
         public ReadOnlyCollection<TradeItem> Items
@@ -119,10 +110,18 @@ namespace Stump.Server.WorldServer.Game.Exchanges
         {
             ToggleReady(!ReadyToApply);
         }
-
-        public virtual bool MoveItem(int id, int quantity)
+        public override bool SetKamas(int amount)
         {
-            return false;  // do nothing :[
+            if (amount < 0)
+                return false;
+
+            ToggleReady(false);
+
+            Kamas = (uint)amount;
+
+            OnKamasChanged(Kamas);
+
+            return true;
         }
 
         public virtual void ToggleReady(bool status)
@@ -133,17 +132,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             ReadyToApply = status;
 
             OnReadyStatusChanged(ReadyToApply);
-        }
-
-        public virtual bool SetKamas(uint amount)
-        {
-            ToggleReady(false);
-
-            Kamas = amount;
-
-            OnKamasChanged(Kamas);
-
-            return true;
         }
     }
 }

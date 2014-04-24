@@ -124,6 +124,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
+        public int PrestigeRank
+        {
+            get { return Record.PrestigeRank; }
+        }
+
         public PlayableBreedEnum Breed
         {
             get { return Record.Breed; }
@@ -157,13 +162,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             if (IsConnected)
             {
-                return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Character.Experience), Character.Name, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
+                return new NetworkGuildMember(Id, Character.Level, Character.Name, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
                                               GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
                                               (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
                                               Record.AccountId, 0);
             }
 
-            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Experience), Name, (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
+            return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
+                Name, (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
                 GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
                 (sbyte)AlignementSide, LastConnection!= null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
                 Record.AccountId, 0);

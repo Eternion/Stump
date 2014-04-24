@@ -64,6 +64,11 @@ namespace Stump.Server.BaseServer.Commands
                 select entry.GetUsage());
         }
 
+        public virtual string[] GetFullAliases()
+        {
+            return Aliases;
+        }
+
         public abstract void Execute(TriggerBase trigger);
 
         public override string ToString()

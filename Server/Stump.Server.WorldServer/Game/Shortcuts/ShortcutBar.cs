@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -30,6 +31,16 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
         {
             get;
             private set;
+        }
+
+        public IReadOnlyDictionary<int, SpellShortcut> SpellsShortcuts
+        {
+            get { return new ReadOnlyDictionary<int, SpellShortcut>(m_spellShortcuts); }
+        }
+        
+        public IReadOnlyDictionary<int, ItemShortcut> ItemsShortcuts
+        {
+            get { return new ReadOnlyDictionary<int, ItemShortcut>(m_itemShortcuts); }
         }
 
         internal void Load()

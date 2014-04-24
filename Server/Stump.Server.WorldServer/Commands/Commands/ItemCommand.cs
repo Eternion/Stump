@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] {"add", "new"};
             RequiredRole = RoleEnum.Administrator;
             Description = "Add an item to the targeted character";
-            ParentCommand = typeof (ItemCommand);
+            ParentCommandType = typeof (ItemCommand);
 
             AddParameter("template", "item", "Item to add", converter: ParametersConverter.ItemTemplateConverter);
             AddTargetParameter(true, "Character who will receive the item");
@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] {"remove", "delete"};
             RequiredRole = RoleEnum.Administrator;
             Description = "Delete an item from the target";
-            ParentCommand = typeof (ItemCommand);
+            ParentCommandType = typeof (ItemCommand);
 
             AddParameter("template", "item", "Item to remove", converter: ParametersConverter.ItemTemplateConverter);
             AddTargetParameter(true, "Character who will lose the item");
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 Aliases = new[] {"list", "ls"};
                 RequiredRole = RoleEnum.GameMaster_Padawan;
                 Description = "Lists loaded items or items from an inventory with a search pattern";
-                ParentCommand = typeof (ItemCommand);
+                ParentCommandType = typeof (ItemCommand);
                 AddParameter("pattern", "p", "Search pattern (see docs)", "*");
                 AddParameter("target", "t", "Where items will be search",
                     converter: ParametersConverter.CharacterConverter, isOptional: true);
@@ -171,7 +171,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 Aliases = new[] {"showinv"};
                 RequiredRole = RoleEnum.GameMaster_Padawan;
                 Description = "Show items of the target into your inventory";
-                ParentCommand = typeof (ItemCommand);
+                ParentCommandType = typeof (ItemCommand);
                 AddParameter("target", "t", "Where items will be search",
                     converter: ParametersConverter.CharacterConverter, isOptional: true);
             }
@@ -202,7 +202,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 Aliases = new[] {"addset"};
                 RequiredRole = RoleEnum.Administrator;
                 Description = "Add the entire itemset to the targeted character";
-                ParentCommand = typeof (ItemCommand);
+                ParentCommandType = typeof (ItemCommand);
 
                 AddParameter("template", "itemset", "Itemset to add",
                     converter: ParametersConverter.ItemSetTemplateConverter);
@@ -240,7 +240,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 Aliases = new[] {"addtype"};
                 RequiredRole = RoleEnum.Administrator;
                 Description = "Add all the items match with typeId.";
-                ParentCommand = typeof (ItemCommand);
+                ParentCommandType = typeof (ItemCommand);
 
                 AddParameter<int>("typeid", "type", "TypeId to add");
                 AddParameter("etheral", "eth", "Etheral", false);
@@ -283,7 +283,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 Aliases = new[] {"deltype"};
                 RequiredRole = RoleEnum.Administrator;
                 Description = "Remove all the items match with typeId.";
-                ParentCommand = typeof (ItemCommand);
+                ParentCommandType = typeof (ItemCommand);
 
                 AddParameter<int>("typeid", "type", "TypeId to remove");
                 AddTargetParameter(true, "Character who will remove the items");
