@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
@@ -118,27 +120,51 @@ namespace Stump.Plugins.EditorPlugin.Commands
         }
         public override void Execute(TriggerBase trigger)
         {
-            var disableSpawn = new MonsterDisableSpawn { SubAreaId = -1, MonsterId = trigger.Get<MonsterTemplate>("monster").Id };
+            IEnumerable<MonsterSpawn> spawns;
+
+            var monster = trigger.Get<MonsterTemplate>("monster");
 
             if (trigger.IsArgumentDefined("subarea"))
             {
-                disableSpawn.SubAreaId = trigger.Get<SubArea>("subarea").Id;
+                var subArea = trigger.Get<SubArea>("subarea");
 
-                var spawn = new MonsterSpawn
+                spawns = subArea.Maps.SelectMany(x => x.MonsterSpawns).Distinct().Where(x => x.MonsterId == monster.Id).ToArray();
+            }
+            else
+            {
+                spawns = MonsterManager.Instance.GetMonsterSpawns().Where(x => x.MonsterId == monster.Id).ToArray();
+            }
+
+            foreach (var spawn in spawns)
+            {
+                if (spawn.Map != null)
+                    spawn.Map.RemoveMonsterSpawn(spawn);
+
+                if (spawn.SubArea != null)
                 {
-                    MonsterId = trigger.Get<MonsterTemplate>("monster").Id,
-                    SubAreaId = trigger.Get<SubArea>("subarea").Id
-                };
-
-                spawn.SubArea.RemoveMonsterSpawn(spawn);
+                    foreach (var map in spawn.SubArea.Maps)
+                    {
+                        map.RemoveMonsterSpawn(spawn);
+                    }
+                }            
             }
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
                 {
-                    MonsterManager.Instance.AddMonsterDisableSpawn(disableSpawn);
+                    WorldServer.Instance.DBAccessor.Database.BeginTransaction();
+                    var count = 0;
+                    foreach (var spawn in spawns)
+                    {
+                        if (!spawn.IsDisabled)
+                            count ++;
 
-                    trigger.Reply("Monster {0}<{1}> spawn disable", trigger.Get<MonsterTemplate>("monster").Name, trigger.Get<MonsterTemplate>("monster").Id);
+                        spawn.IsDisabled = true;
+                        WorldServer.Instance.DBAccessor.Database.Update(spawn);
+                    }
+                    WorldServer.Instance.DBAccessor.Database.CompleteTransaction();
+
+                    trigger.ReplyBold("Disabled {0} spawns", count);
                 });
         }
     }
@@ -156,27 +182,52 @@ namespace Stump.Plugins.EditorPlugin.Commands
         }
         public override void Execute(TriggerBase trigger)
         {
-            var enableSpawn = new MonsterDisableSpawn { SubAreaId = -1, MonsterId = trigger.Get<MonsterTemplate>("monster").Id };
+             IEnumerable<MonsterSpawn> spawns;
+
+            var monster = trigger.Get<MonsterTemplate>("monster");
 
             if (trigger.IsArgumentDefined("subarea"))
             {
-                enableSpawn.SubAreaId = trigger.Get<SubArea>("subarea").Id;
+                var subArea = trigger.Get<SubArea>("subarea");
 
-                var spawn = new MonsterSpawn
-                {
-                    MonsterId = trigger.Get<MonsterTemplate>("monster").Id,
-                    SubAreaId = trigger.Get<SubArea>("subarea").Id
-                };
-
-                spawn.SubArea.AddMonsterSpawn(spawn);
+                spawns = subArea.Maps.SelectMany(x => x.MonsterSpawns).Distinct().Where(x => x.MonsterId == monster.Id);
             }
+            else
+            {
+                spawns = MonsterManager.Instance.GetMonsterSpawns().Where(x => x.MonsterId == monster.Id);
+            }
+
+            foreach (var spawn in spawns)
+            {
+                if (spawn.Map != null)
+                    spawn.Map.AddMonsterSpawn(spawn);
+
+                if (spawn.SubArea != null)
+                {
+                    foreach (var map in spawn.SubArea.Maps)
+                    {
+                        map.AddMonsterSpawn(spawn);
+                    }
+                }
+            }
+
 
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
                 {
-                    MonsterManager.Instance.RemoveMonsterDisableSpawn(enableSpawn);
+                    WorldServer.Instance.DBAccessor.Database.BeginTransaction();
+                    var count = 0;
+                    foreach (var spawn in spawns)
+                    {
+                        if (spawn.IsDisabled)
+                            count ++;
 
-                    trigger.Reply("Monster {0}<{1}> spawn enable", trigger.Get<MonsterTemplate>("monster").Name, trigger.Get<MonsterTemplate>("monster").Id);
+                        spawn.IsDisabled = false;
+                        WorldServer.Instance.DBAccessor.Database.Update(spawn);
+                    }
+                    WorldServer.Instance.DBAccessor.Database.CompleteTransaction();
+
+                    trigger.ReplyBold("Re-Enabled {0} spawns", count);
                 });
         }
     }

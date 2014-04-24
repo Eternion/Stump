@@ -276,13 +276,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             get { return m_spawningPools.AsReadOnly(); }
         }
-
-        public bool SpawnEnabled
-        {
-            get;
-            private set;
-        }
-
         public uint RelativeId
         {
             get { return Record.RelativeId; }
@@ -681,9 +674,6 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void EnableClassicalMonsterSpawns()
         {
-            if (SpawnEnabled)
-                return;
-
             if (!CanSpawnMonsters())
                 return;
 
@@ -701,16 +691,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 pool.StartAutoSpawn();
             }
-
-            SpawnEnabled = true;
         }
 
         public void DisableClassicalMonsterSpawns()
         {
-            if (!SpawnEnabled)
-                return;
-
-            foreach (var actor in GetActors<MonsterGroup>().Where(actor => actor.GetMonsters().All(entry => MonsterSpawns.Any(spawn => spawn.MonsterId == entry.Template.Id))))
+            foreach (var actor in GetActors<MonsterGroup>().Where(actor => actor.GetMonsters().All(entry => MonsterSpawns.Any(spawn => spawn.MonsterId == entry.Template.Id))).ToArray())
             {
                 Leave(actor);
             }
@@ -719,8 +704,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 spawningPool.StopAutoSpawn();
             }
-
-            SpawnEnabled = false;
         }
 
         public void AddMonsterSpawn(MonsterSpawn spawn)
@@ -736,6 +719,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void RemoveMonsterSpawns(int monsterId)
         {
             m_monsterSpawns.RemoveAll(x => x.MonsterId == monsterId);
+        }
+
+        public void RemoveMonsterSpawns()
+        {
+            m_monsterSpawns.Clear();
         }
 
         public void AddMonsterDungeonSpawn(MonsterDungeonSpawn spawn)

@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Database.Monsters
         }
 
 
-        //[PrimaryKey("MonsterGradeId", false)]
+        
         public int MonsterGradeId
         {
             get;

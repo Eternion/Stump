@@ -274,20 +274,16 @@ namespace Stump.Server.WorldServer.Game
         {
             foreach (var spawn in MonsterManager.Instance.GetMonsterSpawns())
             {
+                if (spawn.IsDisabled)
+                    continue;
+
                 if (spawn.Map != null)
                 {
-                    if (spawn.SubArea == null)
-                        spawn.Map.AddMonsterSpawn(spawn);
-                    else
-                    {
-                        if (!MonsterManager.Instance.GetMonsterDisableSpawns(spawn.MonsterId, spawn.SubArea.Id))
-                            spawn.Map.AddMonsterSpawn(spawn);
-                    }                        
+                    spawn.Map.AddMonsterSpawn(spawn);
                 }
                 else if (spawn.SubArea != null)
                 {
-                    if (!MonsterManager.Instance.GetMonsterDisableSpawns(spawn.MonsterId, spawn.SubArea.Id))
-                        spawn.SubArea.AddMonsterSpawn(spawn);
+                    spawn.SubArea.AddMonsterSpawn(spawn);
                 }
             }
 
