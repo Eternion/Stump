@@ -250,6 +250,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
+            if (taxCollectorNpc.IsBusy())
+                return;
+
             var exchange = new TaxCollectorExchange(taxCollectorNpc, client.Character);
             exchange.Open();
         }

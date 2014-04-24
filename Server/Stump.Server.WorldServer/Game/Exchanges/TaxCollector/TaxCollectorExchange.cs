@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
 {
     public class TaxCollectorExchange : IExchange
     {
-        private CharacterCollector m_collector;
+        private readonly CharacterCollector m_collector;
 
         public TaxCollectorExchange(TaxCollectorNpc taxCollector, Character character)
         {
