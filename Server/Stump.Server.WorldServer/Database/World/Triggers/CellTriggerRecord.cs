@@ -4,7 +4,6 @@ using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Conditions;
-using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 
@@ -93,12 +92,12 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
 
         private void RefreshPosition()
         {
-            Map map = Game.World.Instance.GetMap(MapId);
+            var map = Game.World.Instance.GetMap(MapId);
 
             if (map == null)
                 throw new Exception(string.Format("Cannot load CellTrigger id={0}, map {1} isn't found", Id, MapId));
 
-            Cell cell = map.Cells[CellId];
+            var cell = map.Cells[CellId];
 
             m_position = new ObjectPosition(map, cell, DirectionsEnum.DIRECTION_EAST);
         }
