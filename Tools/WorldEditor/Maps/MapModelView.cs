@@ -31,7 +31,7 @@ using WorldEditor.Maps.Layers;
 
 namespace WorldEditor.Maps
 {
-    public class MapModelView
+    public class MapModelView : INotifyPropertyChanged
     {
         private readonly MapControl m_view;
         private readonly DlmReader m_dlmFile;

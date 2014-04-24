@@ -52,7 +52,7 @@ namespace WorldEditor.Maps
         public MapEditorModelView(MapEditor editor, DlmReader map)
         {
             m_editor = editor;
-            m_gfxs = new VirtualizingCollection<BrowsableGfx>(WorldGFXManager.GetGfxProvider(), 50);
+            //m_gfxs = new VirtualizingCollection<BrowsableGfx>(WorldGFXManager.GetGfxProvider(), 50);
             AddMap(map);
         }
 
@@ -67,6 +67,11 @@ namespace WorldEditor.Maps
         }
 
         private ObservableCollection<MapModelView> m_maps = new ObservableCollection<MapModelView>();
+        
+        public MapModelView CurrentMap
+        {
+            get { return (m_editor.DocumentPane.SelectedContent.Content as MapControl).ModelView; }
+        }
 
         public ObservableCollection<MapModelView> Maps
         {
