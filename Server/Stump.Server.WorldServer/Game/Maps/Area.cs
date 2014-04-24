@@ -493,7 +493,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             EnsureContext();
 
-            foreach (var map in Maps.Where(map => !map.SpawnEnabled && map.MonsterSpawnsCount > 0))
+            foreach (var map in Maps.Where(map => map.MonsterSpawnsCount > 0))
             {
                 map.EnableClassicalMonsterSpawns();
             }

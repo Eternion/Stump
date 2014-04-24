@@ -101,5 +101,11 @@ namespace Stump.Server.WorldServer.Database.Monsters
             get;
             set;
         }
+
+        public bool IsDisabled
+        {
+            get;
+            set;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
@@ -33,6 +34,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         public DungeonSpawningPool(Map map, int interval)
             : base(map, interval)
         {
+        }
+
+        public ReadOnlyCollection<MonsterDungeonSpawn> Spawns
+        {
+            get { return m_spawns.AsReadOnly(); }
         }
 
         public void AddSpawn(MonsterDungeonSpawn spawn)

@@ -143,6 +143,7 @@
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
     <Compile Include="Commands\Commands\BankCommand.cs" />
+    <Compile Include="Commands\Commands\DungeonCommands.cs" />
     <Compile Include="Commands\Commands\FightCommands.cs" />
     <Compile Include="Commands\Commands\GodCommand.cs" />
     <Compile Include="Commands\Commands\GuildCommand.cs" />
@@ -205,7 +206,6 @@
     <Compile Include="Database\Jobs\JobRecord.cs" />
     <Compile Include="Database\Jobs\JobTemplate.cs" />
     <Compile Include="Database\Monsters\DroppableItem.cs" />
-    <Compile Include="Database\Monsters\MonsterDisableSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterDungeonSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterGrade.cs" />
     <Compile Include="Database\Monsters\MonsterRace.cs" />
