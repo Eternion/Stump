@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -239,7 +238,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
-                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
+                    ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                     characterRecord.Name,
                     characterRecord.EntityLook.GetEntityLook(),
                     (sbyte) characterRecord.Breed,
@@ -262,7 +261,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             foreach (var characterRecord in client.Characters)
             {
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
-                                                                            ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience),
+                                                                            ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                                                                             characterRecord.Name, characterRecord.EntityLook.GetEntityLook(),
                                                                             (sbyte) characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE));
 

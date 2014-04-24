@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] { "spawn" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Spawn a npc on the current location";
-            ParentCommand = typeof(NpcsCommands);
+            ParentCommandType = typeof(NpcsCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
             AddParameter("map", "map", "Map id", isOptional: true, converter:ParametersConverter.MapConverter);
             AddParameter<short>("cell", "cell", "Cell id", isOptional:true);
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] { "unspawn" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Unspawn the npc by the given contextual id";
-            ParentCommand = typeof(NpcsCommands);
+            ParentCommandType = typeof(NpcsCommands);
             AddParameter<short>("npcid", "npc", "Npc Contextual id");
             AddParameter("map", "map", "Npc Map", isOptional: true, converter: ParametersConverter.MapConverter);
         }

@@ -17,9 +17,8 @@
 #endregion
 
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Game.Exchanges.Items;
 
-namespace Stump.Server.WorldServer.Game.Exchanges
+namespace Stump.Server.WorldServer.Game.Exchanges.Trades
 {
     public abstract class Trade<TFirst, TSecond> : ITrade
         where TFirst : Trader
@@ -37,11 +36,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             protected set;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
-
         Trader ITrade.FirstTrader
         {
             get { return FirstTrader; }
@@ -54,10 +48,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 
         #region ITrade Members
 
-        public abstract ExchangeTypeEnum ExchangeType
-        {
-            get;
-        }
 
         public virtual void Open()
         {
@@ -68,6 +58,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges
             SecondTrader.ItemMoved += OnTraderItemMoved;
             SecondTrader.KamasChanged += OnTraderKamasChanged;
             SecondTrader.ReadyStatusChanged += OnTraderReadyStatusChanged;
+        }
+
+        public DialogTypeEnum DialogType
+        {
+            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
+        }
+
+        public abstract ExchangeTypeEnum ExchangeType
+        {
+            get;
         }
 
         public virtual void Close()

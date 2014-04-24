@@ -126,7 +126,7 @@ namespace ArkalysPlugin.Prestige
             if (replyId == PrestigeNpc.ReplyPrestigeAcceptId)
             {
                 if (Character.Level >= 200)
-                    PrestigeManager.Instance.IncrementPrestige(Character);
+                    Character.IncrementPrestige();
             }
 
             Close();

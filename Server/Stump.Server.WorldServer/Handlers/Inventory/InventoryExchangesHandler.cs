@@ -12,7 +12,10 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
-using Stump.Server.WorldServer.Game.Exchanges.Items;
+using Stump.Server.WorldServer.Game.Exchanges.TaxCollector;
+using Stump.Server.WorldServer.Game.Exchanges.Trades;
+using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
@@ -83,18 +86,18 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeObjectMoveKamaMessage.Id)]
         public static void HandleExchangeObjectMoveKamaMessage(WorldClient client, ExchangeObjectMoveKamaMessage message)
         {
-            if (!client.Character.IsTrading())
+            if (!client.Character.IsInExchange())
                 return;
 
-            client.Character.Trader.SetKamas((uint)message.quantity);
+            client.Character.Exchanger.SetKamas(message.quantity);
         }
 
         [WorldHandler(ExchangeObjectMoveMessage.Id)]
         public static void HandleExchangeObjectMoveMessage(WorldClient client, ExchangeObjectMoveMessage message)
         {
-            if (client.Character.IsTrading())
-                client.Character.Trader.MoveItem(message.objectUID, message.quantity);
-            else if (client.Character.IsInMerchantDialog() && message.quantity <= 0)
+            if (client.Character.IsInExchange())
+                client.Character.Exchanger.MoveItem(message.objectUID, message.quantity);
+            else if (client.Character.IsInMerchantDialog() && message.quantity <= 0) // todo : merchant bag exchange
             {
                 // he is modifying his merchant bag and remove an item
                 var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
@@ -247,7 +250,10 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            var exchange = new TaxCollectorTrade(taxCollectorNpc, client.Character);
+            if (taxCollectorNpc.IsBusy())
+                return;
+
+            var exchange = new TaxCollectorExchange(taxCollectorNpc, client.Character);
             exchange.Open();
         }
 
@@ -271,6 +277,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                             playerTrade.SecondTrader.Character.Inventory.Weight,
                             (int)playerTrade.SecondTrader.Character.Inventory.WeightTotal
                             ));
+        }
+
+        public static void SendExchangeStartedMessage(IPacketReceiver client, ExchangeTypeEnum type)
+        {
+            client.Send(new ExchangeStartedMessage((sbyte)type));
         }
 
         public static void SendExchangeStartOkTaxCollectorMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)

@@ -143,5 +143,10 @@ namespace Stump.Server.WorldServer.Database.Guilds
                 return Character.LastUsage;
             } 
         }
+
+        public int PrestigeRank
+        {
+            get { return Character.PrestigeRank; }
+        }
     }
 }

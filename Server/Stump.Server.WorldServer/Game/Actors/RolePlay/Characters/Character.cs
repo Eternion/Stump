@@ -26,10 +26,13 @@ using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges;
+using Stump.Server.WorldServer.Game.Exchanges.Trades;
+using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
@@ -78,6 +81,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (GuildMember != null)
                 GuildMember.OnCharacterConnected(this);
+
+            if (PrestigeRank > 0 && PrestigeManager.Instance.PrestigeEnabled)
+            {
+                var item = GetPrestigeItem();
+                if (item == null)
+                    CreatePrestigeItem();
+                else
+                {
+                    item.UpdateEffects();
+                    Inventory.RefreshItem(item);
+                }
+                RefreshStats();
+            }
 
             var handler = LoggedIn;
             if (handler != null) handler(this);
@@ -374,6 +390,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Trade
 
+        public IExchange Exchange
+        {
+            get { return Dialog as IExchange; }
+        }
+        public Exchanger Exchanger
+        {
+            get { return Dialoger as Exchanger; }
+        }
         public ITrade Trade
         {
             get { return Dialog as ITrade; }
@@ -387,6 +411,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public Trader Trader
         {
             get { return Dialoger as Trader; }
+        }
+
+        public bool IsInExchange()
+        {
+            return Exchanger != null;
         }
 
         public bool IsTrading()
@@ -675,15 +704,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public long Experience
         {
-            get { return m_record.Experience; }
+            get { return RealExperience - PrestigeRank*ExperienceManager.Instance.HighestCharacterExperience; }
             private set
             {
-                m_record.Experience = value;
+                RealExperience = PrestigeRank*ExperienceManager.Instance.HighestCharacterExperience + value;
                 if ((value < UpperBoundExperience || Level >= ExperienceManager.Instance.HighestCharacterLevel) &&
                     value >= LowerBoundExperience) return;
                 var lastLevel = Level;
 
-                Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
+                Level = ExperienceManager.Instance.GetCharacterLevel(value);
 
                 LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
                 UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
@@ -884,10 +913,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 RemoveOrnament((short) OrnamentEnum.NIVEAU_200);
 
 
+            var shortcuts = Shortcuts.SpellsShortcuts;
             foreach (var spell in Breed.Spells)
             {
-                if (spell.ObtainLevel > currentLevel && Spells.HasSpell(spell.Spell))
-                    Spells.UnLearnSpell(spell.Spell);
+                if (spell.ObtainLevel > currentLevel)
+                {
+                    foreach (var shortcut in shortcuts.Where(x => x.Value.SpellId == spell.Spell).ToArray())
+                        Shortcuts.RemoveShortcut(ShortcutBarEnum.SPELL_SHORTCUT_BAR, shortcut.Key);
+
+                    if (Spells.HasSpell(spell.Spell))
+                    {
+                        Spells.UnLearnSpell(spell.Spell);
+                    }
+                }
                 else if (spell.ObtainLevel <= currentLevel && !Spells.HasSpell(spell.Spell))
                 {
                     Spells.LearnSpell(spell.Spell);
@@ -1242,6 +1280,110 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return TimeSpan.MaxValue;
 
             return MuteUntil.Value - DateTime.Now;
+        }
+
+        #endregion
+
+        #region Prestige
+
+        public int PrestigeRank
+        {
+            get { return m_record.PrestigeRank; }
+            private set { m_record.PrestigeRank = value; }
+        }
+
+        public long RealExperience 
+        {
+            get { return m_record.Experience; }
+            private set { m_record.Experience = value; }
+        }
+        
+        public bool IsPrestigeMax()
+        {
+            return PrestigeRank == PrestigeManager.PrestigeTitles.Length;
+        }
+
+        public PrestigeItem GetPrestigeItem()
+        {
+            return Inventory.TryGetItem(PrestigeManager.BonusItem) as PrestigeItem;
+        }
+
+        public PrestigeItem CreatePrestigeItem()
+        {
+            return (PrestigeItem) Inventory.AddItem(PrestigeManager.BonusItem);
+        }
+
+        public bool IncrementPrestige()
+        {
+            if (Level < 200 || IsPrestigeMax() && PrestigeManager.Instance.PrestigeEnabled)
+                return false;
+
+            PrestigeRank++;
+            AddTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
+
+            PrestigeItem item = GetPrestigeItem();
+
+            if (item == null)
+                item = CreatePrestigeItem();
+            else
+            {
+                item.UpdateEffects();
+                Inventory.RefreshItem(item);
+            }
+
+            OpenPopup(
+                string.Format(
+                    @"Vous venez de passer au rang prestige {0}. <\br>Vous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
+                    PrestigeRank + 1, item.Template.Name) +
+                @"les bonus s'appliquent sans équipper l'objet.<\br>Vous devez vous reconnecter pour continuer à jouer");
+
+            foreach (BasePlayerItem equippedItem in Inventory)
+                Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
+            Experience = 0;
+            return true;
+        }
+
+        public bool DecrementPrestige()
+        {
+            RemoveTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
+            PrestigeRank--;
+
+            PrestigeItem item = GetPrestigeItem();
+
+            if (item != null)
+            {
+                if (PrestigeRank > 0)
+                {
+                    item.UpdateEffects();
+                    Inventory.RefreshItem(item);
+                }
+                else Inventory.RemoveItem(item);
+            }
+
+            OpenPopup(
+                string.Format(
+                    "Vous venez de passer au rang prestige {0}. \nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
+                    PrestigeRank + 1, item.Template.Name) +
+                "les bonus s'appliquent sans équipper l'objet.\nVous devez vous reconnecter pour continuer à jouer");
+
+            return true;
+        }
+
+        public void ResetPrestige()
+        {
+            foreach (var title in PrestigeManager.PrestigeTitles)
+            {
+                RemoveTitle(title);
+            }
+            PrestigeRank = 0;
+            
+            PrestigeItem item = GetPrestigeItem();
+
+            if (item != null)
+            {
+                Inventory.RemoveItem(item);
+            }
         }
 
         #endregion
@@ -2054,6 +2196,30 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion
+        
+
+        #region Bank
+
+        public Bank Bank
+        {
+            get;
+            private set;
+        }
+
+        public bool CheckBankIsLoaded(Action callBack)
+        {
+            if (Bank.IsLoaded)
+                return true;
+
+            WorldServer.Instance.IOTaskPool.AddMessage(() => { 
+                Bank.LoadRecord();
+                callBack();
+            });
+
+            return false;
+        }
+
+        #endregion
 
         #endregion
 
@@ -2176,6 +2342,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 {
                     // do something better here
                     Inventory.Save();
+                    if (Bank.IsLoaded)
+                        Bank.Save();
                     MerchantBag.Save();
                     Spells.Save();
                     Shortcuts.Save();
@@ -2200,6 +2368,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     m_record.DamageTaken = Stats.Health.DamageTaken;
 
                     WorldServer.Instance.DBAccessor.Database.Update(m_record);
+                    WorldServer.Instance.DBAccessor.Database.Update(Client.WorldAccount);
 
                     transaction.Complete();
                 }
@@ -2229,7 +2398,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Stats = new StatsFields(this);
             Stats.Initialize(m_record);
-            Level = ExperienceManager.Instance.GetCharacterLevel(m_record.Experience);
+            Level = ExperienceManager.Instance.GetCharacterLevel(Experience);
             LowerBoundExperience = ExperienceManager.Instance.GetCharacterLevelExperience(Level);
             UpperBoundExperience = ExperienceManager.Instance.GetCharacterNextLevelExperience(Level);
 
@@ -2240,6 +2409,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
             UpdateLook(false);
+
+            Bank = new Bank(this); // lazy loading here !
 
             MerchantBag = new CharacterMerchantBag(this);
             CheckMerchantModeReconnection();

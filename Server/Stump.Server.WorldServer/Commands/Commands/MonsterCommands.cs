@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] {"spawn"};
             RequiredRole = RoleEnum.Administrator;
             Description = "Spawn a monster on the current location";
-            ParentCommand = typeof (MonsterCommands);
+            ParentCommandType = typeof (MonsterCommands);
             AddParameter("monster", "m", "Monster template Id", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter<sbyte>("grade", "g", "Monster grade", isOptional: true);
             AddParameter<sbyte>("id", "id", "Monster group id", isOptional: true);
@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] {"spells"};
             RequiredRole = RoleEnum.Administrator;
             Description = "Enumerate monster spells";
-            ParentCommand = typeof (MonsterCommands);
+            ParentCommandType = typeof (MonsterCommands);
             AddParameter("monster", "m", "Monster template Id", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter<sbyte>("grade", "g", "Monster grade", isOptional: true);
         }
@@ -142,7 +142,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new[] { "spawnnext" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Spawn the next monster of the spawning pool";
-            ParentCommand = typeof(MonsterCommands);
+            ParentCommandType = typeof(MonsterCommands);
             AddParameter("map", "m", "Map", isOptional: true, converter: ParametersConverter.MapConverter);
             AddParameter("subarea", "subarea", "If defined spawn a monster on each map", isOptional: true, converter: ParametersConverter.SubAreaConverter);
         }

@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "on" };
             RequiredRole = RoleEnum.GameMaster;
-            ParentCommand = typeof(GodCommand);
+            ParentCommandType = typeof(GodCommand);
             Description = "Activate god mode";
             AddTargetParameter(true);
         }
@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "off" };
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(GodCommand);
+            ParentCommandType = typeof(GodCommand);
             Description = "Disable god mode";
             AddTargetParameter(true);
         }

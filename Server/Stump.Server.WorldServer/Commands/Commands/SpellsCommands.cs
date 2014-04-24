@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"learn", "add"};
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof (SpellsCommands);
+            ParentCommandType = typeof (SpellsCommands);
             Description = "Learn the given spell";
             AddParameter("spell", "spell", "Given spell to learn", converter: ParametersConverter.SpellTemplateConverter);
             AddTargetParameter(true);
@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"unlearn", "forget", "remove"};
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(SpellsCommands);
+            ParentCommandType = typeof(SpellsCommands);
             Description = "Forget the given spell";
             AddParameter("spell", "spell", "Given spell to forget", converter: ParametersConverter.SpellTemplateConverter);
             AddTargetParameter(true);
@@ -96,7 +96,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] { "learnmonster" };
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(SpellsCommands);
+            ParentCommandType = typeof(SpellsCommands);
             Description = "Learn the given spell";
             AddParameter("monster", "monster", "Target monster to learn spells", converter: ParametersConverter.MonsterTemplateConverter, isOptional: true);
             AddTargetParameter(true);
@@ -124,7 +124,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"list"};
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(SpellsCommands);
+            ParentCommandType = typeof(SpellsCommands);
             Description = "List the spells of the target";
             AddTargetParameter(true);
         }
@@ -146,7 +146,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"level"};
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(SpellsCommands);
+            ParentCommandType = typeof(SpellsCommands);
             Description = "Set the level of the given spell of the target";
             AddParameter("spell", "spell", "Given spell to forget", converter: ParametersConverter.SpellTemplateConverter);
             AddParameter<int>("level", "l");

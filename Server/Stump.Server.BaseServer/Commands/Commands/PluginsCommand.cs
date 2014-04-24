@@ -20,7 +20,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginLoadCommand()
         {
-            ParentCommand = typeof (PluginsCommand);
+            ParentCommandType = typeof (PluginsCommand);
             Aliases = new[] {"load"};
             RequiredRole = RoleEnum.Administrator;
             Description = "Load a plugin";
@@ -80,7 +80,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginReloadCommand()
         {
-            ParentCommand = typeof (PluginsCommand);
+            ParentCommandType = typeof (PluginsCommand);
             Aliases = new[] { "reload" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Reload and reset a plugin";
@@ -109,7 +109,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginUnloadCommand()
         {
-            ParentCommand = typeof (PluginsCommand);
+            ParentCommandType = typeof (PluginsCommand);
             Aliases = new[] {"unload"};
             RequiredRole = RoleEnum.Administrator;
             Description = "Unload a plugin";
@@ -137,7 +137,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginInfoCommand()
         {
-            ParentCommand = typeof(PluginsCommand);
+            ParentCommandType = typeof(PluginsCommand);
             Aliases = new[] { "info" };
             RequiredRole = RoleEnum.Administrator;
             Description = "Get info. about a plugin";
@@ -163,7 +163,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
     {
         public PluginListCommand()
         {
-            ParentCommand = typeof(PluginsCommand);
+            ParentCommandType = typeof(PluginsCommand);
             Aliases = new[] { "list" };
             RequiredRole = RoleEnum.Administrator;
             Description = "List all loaded plugins";

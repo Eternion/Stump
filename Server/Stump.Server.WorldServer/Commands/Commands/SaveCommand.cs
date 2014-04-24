@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Aliases = new [] { "world" };
             Description = "Save world";
             RequiredRole = RoleEnum.Administrator;
-            ParentCommand = typeof(SaveCommand);
+            ParentCommandType = typeof(SaveCommand);
         }
 
         public override void Execute(TriggerBase trigger)

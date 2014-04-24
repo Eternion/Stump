@@ -124,6 +124,7 @@
     <Compile Include="Global\Placements\PlacementsFix.cs" />
     <Compile Include="Global\ZaapFinder.cs" />
     <Compile Include="Monsters\MonsterStatsFix.cs" />
+    <Compile Include="Npcs\NpcBank.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Global\IncarnamSpawningPool.cs" />

@@ -245,6 +245,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 var database = WorldServer.Instance.DBAccessor.Database;
                 foreach (var item in Items.Where(item => Tokens == null || item.Value != Tokens))
                 {
+                    if (item.Value.IsTemporarily)
+                        continue;
+
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
@@ -784,6 +787,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public BasePlayerItem TryGetItem(CharacterInventoryPositionEnum position)
         {
             return Items.Values.FirstOrDefault(entry => entry.Position == position);
+        }
+        
+        public BasePlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position)
+        {
+            var entries = from entry in Items.Values
+                                              where entry.Template.Id == template.Id && entry.Position == position && effects.CompareEnumerable(entry.Effects)
+                                              select entry;
+
+            return entries.FirstOrDefault();
         }
 
         public BasePlayerItem TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects, CharacterInventoryPositionEnum position, BasePlayerItem except)

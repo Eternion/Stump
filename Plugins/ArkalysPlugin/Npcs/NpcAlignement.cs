@@ -100,7 +100,7 @@ namespace ArkalysPlugin.Npcs
             ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage,
                                                                 Character.AlignmentSide !=
                                                                 AlignmentSideEnum.ALIGNMENT_NEUTRAL
-                                                                    ? new[] {NpcAlignement.ReplyBecomeNeutre}
+                                                                    ? new[] { NpcAlignement.ReplyBecomeNeutre }
                                                                     : new[]
                                                                         {
                                                                             NpcAlignement.ReplyBecomeAngel,

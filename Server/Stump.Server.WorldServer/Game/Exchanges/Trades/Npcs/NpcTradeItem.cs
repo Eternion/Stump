@@ -19,7 +19,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
-namespace Stump.Server.WorldServer.Game.Exchanges.Items
+namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
 {
     public class NpcTradeItem : TradeItem
     {

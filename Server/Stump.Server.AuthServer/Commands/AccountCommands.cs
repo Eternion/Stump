@@ -21,7 +21,7 @@ namespace Stump.Server.AuthServer.Commands
         public AccountCreateCommand()
         {
             Aliases = new[] {"create", "cr", "new"};
-            ParentCommand = typeof (AccountCommands);
+            ParentCommandType = typeof (AccountCommands);
             RequiredRole = RoleEnum.Administrator;
             Description = "Create a new account.";
 

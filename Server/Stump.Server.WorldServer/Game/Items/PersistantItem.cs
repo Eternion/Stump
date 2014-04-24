@@ -7,13 +7,20 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
-    public interface IItem
+    public interface IPersistantItem : IItem
     {
         IItemRecord Record
         {
             get;
         }
+        bool IsTemporarily
+        {
+            get;
+        }
+    }
 
+    public interface IItem
+    {
         int Guid
         {
             get;
@@ -34,21 +41,53 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             get;
         }
+
+        ObjectItem GetObjectItem();
     }
 
-    public abstract class Item<T> : IItem where T : ItemRecord<T>
+    public abstract class Item : IItem
     {
-        protected Item()
+        
+        public virtual int Guid
+        {
+            get;
+            protected set;
+        }
+
+        public virtual uint Stack
+        {
+            get;
+            set;
+        }
+
+        public virtual ItemTemplate Template
+        {
+            get;
+            protected set;
+        }
+
+        public virtual List<EffectBase> Effects
+        {
+            get;
+            protected set;
+        }
+
+        public abstract ObjectItem GetObjectItem();
+    }
+
+    public abstract class PersistantItem<T> : IPersistantItem where T : ItemRecord<T>
+    {
+        protected PersistantItem()
         {
             
         }
 
-        protected Item(T record)
+        protected PersistantItem(T record)
         {
             Record = record;
         }
 
-        IItemRecord IItem.Record
+        IItemRecord IPersistantItem.Record
         {
             get { return Record; }
         }
@@ -82,6 +121,14 @@ namespace Stump.Server.WorldServer.Game.Items
             get { return Record.Effects; }
             protected set { Record.Effects = value; }
         }
+
+        public bool IsTemporarily
+        {
+            get;
+            protected set;
+        }
+
+        public abstract ObjectItem GetObjectItem();
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
         {

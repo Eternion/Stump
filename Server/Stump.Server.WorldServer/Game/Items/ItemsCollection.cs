@@ -9,6 +9,39 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
+    public class PersistantItemsCollection<T> : ItemsCollection<T> where T : IPersistantItem
+    {
+        public virtual void Save()
+        {
+            lock (Locker)
+            {
+                var database = WorldServer.Instance.DBAccessor.Database;
+                foreach (var item in Items)
+                {
+                    if (item.Value.IsTemporarily)
+                        continue;
+
+                    if (item.Value.Record.IsNew)
+                    {
+                        database.Insert(item.Value.Record);
+                        item.Value.Record.IsNew = false;
+                    }
+                    else if (item.Value.Record.IsDirty)
+                    {
+                        database.Update(item.Value.Record);
+                    }
+                }
+
+                while (ItemsToDelete.Count > 0)
+                {
+                    var item = ItemsToDelete.Dequeue();
+
+                    database.Delete(item.Record);
+                }
+            }
+        }
+    }
+
     public class ItemsCollection<T> : IEnumerable<T> where T : IItem
     {
         #region Events
@@ -227,33 +260,6 @@ namespace Stump.Server.WorldServer.Game.Items
 
             ItemsToDelete = new Queue<T>(ItemsToDelete.Concat(Items.Values));
             Items.Clear();
-        }
-
-        public virtual void Save()
-        {
-            lock (Locker)
-            {
-                var database = WorldServer.Instance.DBAccessor.Database;
-                foreach (var item in Items)
-                {
-                    if (item.Value.Record.IsNew)
-                    {
-                        database.Insert(item.Value.Record);
-                        item.Value.Record.IsNew = false;
-                    }
-                    else if (item.Value.Record.IsDirty)
-                    {
-                        database.Update(item.Value.Record);
-                    }
-                }
-
-                while (ItemsToDelete.Count > 0)
-                {
-                    var item = ItemsToDelete.Dequeue();
-
-                    database.Delete(item.Record);
-                }
-            }
         }
 
         public virtual bool IsStackable(T item, out T stackableWith)
