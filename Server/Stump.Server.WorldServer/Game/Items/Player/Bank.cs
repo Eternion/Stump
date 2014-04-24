@@ -128,6 +128,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return true;
         }
 
+        public int GetAccessPrice()
+        {
+            //todo: Correct access price(1000 x different item types)
+            return 1000;
+        }
 
         protected override void OnItemAdded(BankItem item)
         {
