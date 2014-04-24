@@ -38,7 +38,8 @@ namespace WorldEditor.Maps
 
         private void Canvas_Loaded(object sender, RoutedEventArgs e)
         {
-            zoomAndPanControl.ScaleToFit();
+            zoomAndPanControl.ZoomTo(new Rect(ModelView.Elements.Min(x => x.PosX), ModelView.Elements.Min(x => x.PosY),
+                ModelView.Elements.Max(x => x.PosX), ModelView.Elements.Max(x => x.PosY)));
         }
 
         private void ZoomAndPanControl_MouseDown(object sender, MouseButtonEventArgs e)
