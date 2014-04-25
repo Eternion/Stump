@@ -125,4 +125,76 @@ namespace ArkalysPlugin.Commands
             trigger.Reply("Téléporté à la banque");
         }
     }
+
+    public class TalkTPCommand : InGameSubCommand
+    {
+        [Variable(true)]
+        public static int TalkMap;
+
+        [Variable(true)]
+        public static short TalkCell;
+
+        [Variable(true)]
+        public static byte TalkDirection;
+
+        public TalkTPCommand()
+        {
+            Aliases = new[] { "talk" };
+            RequiredRole = RoleEnum.Player;
+            Description = "Téléporte à l'espace de discution";
+            ParentCommandType = typeof(TPCommands);
+        }
+
+        public override void Execute(GameTrigger trigger)
+        {
+            var map = World.Instance.GetMap(TalkMap);
+
+            if (map == null)
+            {
+                trigger.ReplyError("Map {0} not found", TalkMap);
+                return;
+            }
+
+            var cell = map.Cells[TalkCell];
+
+            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)TalkDirection));
+            trigger.Reply("Téléporté à l'espace de discution");
+        }
+    }
+
+    public class DungeonTPCommand : InGameSubCommand
+    {
+        [Variable(true)]
+        public static int DungeonMap;
+
+        [Variable(true)]
+        public static short DungeonCell;
+
+        [Variable(true)]
+        public static byte DungeonDirection;
+
+        public DungeonTPCommand()
+        {
+            Aliases = new[] { "dungeon", "donjon", "dj" };
+            RequiredRole = RoleEnum.Player;
+            Description = "Téléporte à l'espace donjons";
+            ParentCommandType = typeof(TPCommands);
+        }
+
+        public override void Execute(GameTrigger trigger)
+        {
+            var map = World.Instance.GetMap(DungeonMap);
+
+            if (map == null)
+            {
+                trigger.ReplyError("Map {0} not found", DungeonMap);
+                return;
+            }
+
+            var cell = map.Cells[DungeonCell];
+
+            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)DungeonDirection));
+            trigger.Reply("Téléporté à l'espace donjons");
+        }
+    }
 }
