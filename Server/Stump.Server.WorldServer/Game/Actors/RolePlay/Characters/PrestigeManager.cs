@@ -14,8 +14,6 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
@@ -23,11 +21,8 @@ using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
-using Stump.Server.WorldServer.Game.Effects;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -55,6 +50,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 new EffectInteger(EffectsEnum.Effect_AddAgility, 25),
                 new EffectInteger(EffectsEnum.Effect_AddStrength, 25)
             },
+            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 6)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddVitality, 100)},
             new[]
             {
@@ -85,9 +81,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 new EffectInteger(EffectsEnum.Effect_AddNeutralResistPercent, 5)
             },
             new[] {new EffectInteger(EffectsEnum.Effect_AddRange, 1)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddMP, 1)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddAP_111, 1)},
-
+            new[] {new EffectInteger(EffectsEnum.Effect_AddMP_128, 1)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddAP_111, 1)}
         };
 
         private bool m_disabled;
