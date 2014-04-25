@@ -1362,9 +1362,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Experience = 0;
 
-            Spells.ForgetAllSpells();
             var points = Spells.CountSpentBoostPoint() + SpellsPoints - (Level - 1);
             SpellsPoints = (ushort)(points >= 0 ? points : 0);
+            Spells.ToList().ForEach(x => x.CurrentLevel = 1);
 
             ResetStats();
 
