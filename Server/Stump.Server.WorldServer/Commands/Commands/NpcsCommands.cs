@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var npcId = trigger.Get<sbyte>("npcid");
+            var npcId = trigger.Get<short>("npcid");
 
             if (trigger.IsArgumentDefined("map"))
             {
