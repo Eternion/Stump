@@ -44,6 +44,8 @@ namespace Stump.Server.AuthServer.Database
     {
         private List<int> m_availableServers;
         private string m_availableServersCSV;
+        private string m_availableCommandsCSV;
+        private List<string> m_availableCommands;
 
         public UserGroupRecord()
         {
@@ -93,6 +95,24 @@ namespace Stump.Server.AuthServer.Database
             set { m_availableServers = value; }
         }
 
+        [NullString]
+        public string AvailableCommandsCSV
+        {
+            get { return m_availableCommandsCSV; }
+            set
+            {
+                m_availableCommandsCSV = value;
+                m_availableCommands = value.FromCSV<string>(",").ToList();
+            }
+        }
+
+        [Ignore]
+        public List<string> AvailableCommands
+        {
+            get { return m_availableCommands; }
+            set { m_availableCommands = value; }
+        }
+
         public void BeforeSave(bool insert)
         {
             m_availableServersCSV = m_availableServers != null ? m_availableServers.ToCSV(",") : null;
@@ -112,6 +132,7 @@ namespace Stump.Server.AuthServer.Database
                 IsGameMaster = IsGameMaster,
                 Role = Role,
                 Servers = AvailableServers,
+                Commands = AvailableCommands,
             };
         }
     }
