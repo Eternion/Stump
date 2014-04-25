@@ -162,6 +162,7 @@
     <Compile Include="Commands\Commands\SpellsCommands.cs" />
     <Compile Include="Commands\Commands\TeleportCommand.cs" />
     <Compile Include="Commands\Commands\TitleCommands.cs" />
+    <Compile Include="Commands\Commands\TransitionsCommands.cs" />
     <Compile Include="Commands\Commands\WhoCommand.cs" />
     <Compile Include="Commands\Matching\BaseCriteria.cs" />
     <Compile Include="Commands\Matching\BaseMatching.cs" />
