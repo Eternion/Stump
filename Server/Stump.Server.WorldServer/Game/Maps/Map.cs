@@ -296,12 +296,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             get { return Record.Outdoor; }
         }
 
-        public int TopNeighbourId
-        {
-            get { return Record.TopNeighbourId; }
-            set { Record.TopNeighbourId = value; }
-        }
-
         public int Capabilities
         {
             get
@@ -310,11 +304,22 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
+        public int TopNeighbourId
+        {
+            get { return Record.TopNeighbourId; }
+            set { Record.TopNeighbourId = value; }
+        }
+
         public Map TopNeighbour
         {
             get
             {
                 return TopNeighbourId != -1 ? m_topNeighbour ?? (m_topNeighbour = World.Instance.GetMap(TopNeighbourId)) : null;
+            }
+            set
+            {
+                m_topNeighbour = value;
+                TopNeighbourId = value != null ? value.Id : -1;
             }
         }
 
@@ -330,6 +335,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 return BottomNeighbourId != -1 ? m_bottomNeighbour ?? (m_bottomNeighbour = World.Instance.GetMap(BottomNeighbourId)) : null;
             }
+            set
+            {
+                m_bottomNeighbour = value;
+                BottomNeighbourId = value != null ? value.Id : -1;
+            }
         }
 
         public int LeftNeighbourId
@@ -342,7 +352,14 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             get
             {
-                return LeftNeighbourId != -1 ? m_leftNeighbour ?? (m_leftNeighbour = World.Instance.GetMap(LeftNeighbourId)) : null;
+                return LeftNeighbourId != -1
+                    ? m_leftNeighbour ?? (m_leftNeighbour = World.Instance.GetMap(LeftNeighbourId))
+                    : null;
+            }
+            set
+            {
+                m_leftNeighbour = value;
+                LeftNeighbourId = value != null ? value.Id : -1;
             }
         }
 
@@ -357,6 +374,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             get
             {
                 return RightNeighbourId != -1 ? m_rightNeighbour ?? (m_rightNeighbour = World.Instance.GetMap(RightNeighbourId)) : null;
+            }
+            set
+            {
+                m_rightNeighbour = value;
+                RightNeighbourId = value != null ? value.Id : -1;
             }
         }
 
