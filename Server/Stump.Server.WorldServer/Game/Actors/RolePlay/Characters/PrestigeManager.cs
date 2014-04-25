@@ -97,11 +97,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             BonusItem = ItemManager.Instance.TryGetTemplate(ItemForBonus);
 
-            if (BonusItem == null)
-            {
-                logger.Error("Item {0} not found, prestiges disabled", ItemForBonus);
-                m_disabled = true;
-            }
+            if (BonusItem != null)
+                return;
+
+            logger.Error("Item {0} not found, prestiges disabled", ItemForBonus);
+            m_disabled = true;
         }
 
         public EffectInteger[] GetPrestigeEffects(int rank)
