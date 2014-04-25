@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         [Variable] public static short[] PrestigeTitles =
         {
-            200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212
+            200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214
         };
 
         private static readonly EffectInteger[][] m_prestigesBonus =
@@ -55,6 +55,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 new EffectInteger(EffectsEnum.Effect_AddAgility, 25),
                 new EffectInteger(EffectsEnum.Effect_AddStrength, 25)
             },
+            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 6)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddVitality, 100)},
             new[]
             {
@@ -65,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 new EffectInteger(EffectsEnum.Effect_AddStrength, 50)
             },
             new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 9)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonusPercent, 25)},
+            new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 25)},
             new[]
             {
                 new EffectInteger(EffectsEnum.Effect_AddAirElementReduction, 5),
@@ -75,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 new EffectInteger(EffectsEnum.Effect_AddNeutralElementReduction, 5)
             },
             new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 12)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonusPercent, 50)},
+            new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 50)},
             new[]
             {
                 new EffectInteger(EffectsEnum.Effect_AddAirResistPercent, 5),
@@ -85,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 new EffectInteger(EffectsEnum.Effect_AddNeutralResistPercent, 5)
             },
             new[] {new EffectInteger(EffectsEnum.Effect_AddRange, 1)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddMP, 1)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddMP_128, 1)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddAP_111, 1)},
 
         };
