@@ -130,17 +130,7 @@ namespace ArkalysPlugin.Npcs
                     Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
 
-                    Character.Stats.Agility.Base = Character.PermanentAddedAgility;
-                    Character.Stats.Strength.Base = Character.PermanentAddedStrength;
-                    Character.Stats.Vitality.Base = Character.PermanentAddedVitality;
-                    Character.Stats.Wisdom.Base = Character.PermanentAddedWisdom;
-                    Character.Stats.Intelligence.Base = Character.PermanentAddedIntelligence;
-                    Character.Stats.Chance.Base = Character.PermanentAddedChance;
-
-                    Character.StatsPoints = (ushort) (Character.Level*5);
-
-                    Character.RefreshStats();
-                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 15, Character.Level * 5);
+                    Character.ResetStats();
                 }
             }
             else if (replyId == NpcRestatScript.ReplySpellForgetId)
