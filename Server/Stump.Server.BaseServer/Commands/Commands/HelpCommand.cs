@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 
@@ -26,14 +25,8 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
             if (cmdStr == string.Empty)
             {
-                foreach (CommandBase command in CommandManager.Instance.AvailableCommands)
+                foreach (var command in CommandManager.Instance.AvailableCommands.Where(command => !(command is SubCommand)).Where(command => !trigger.CanAccessCommand(command)))
                 {
-                    if (command is SubCommand)
-                        continue;
-
-                    if (command.RequiredRole > trigger.UserRole)
-                        continue;
-
                     DisplayCommandDescription(trigger, command);
                 }
             }
@@ -41,7 +34,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             {
                 CommandBase command = CommandManager.Instance.GetCommand(cmdStr);
 
-                if (command == null || command.RequiredRole > trigger.UserRole)
+                if (command == null || !trigger.CanAccessCommand(command))
                 {
                     trigger.Reply("Command '{0}' doesn't exist", cmdStr);
                     return;
@@ -59,7 +52,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                         return;
                     }
 
-                    SubCommand subcommand = (command as SubCommandContainer)[subcmdStr];
+                    var subcommand = (command as SubCommandContainer)[subcmdStr];
 
                     if (subcommand == null || subcommand.RequiredRole > trigger.UserRole)
                     {
@@ -104,16 +97,18 @@ namespace Stump.Server.BaseServer.Commands.Commands
                 trigger.Reply("  -> " + command.Aliases.First() + " " + command.GetSafeUsage());
 
             if (command.Parameters != null)
-                foreach (IParameterDefinition commandParameter in command.Parameters)
+                foreach (var commandParameter in command.Parameters)
                 {
                     DisplayCommandParameter(trigger, commandParameter);
                 }
 
-            if (command is SubCommandContainer)
-                foreach (SubCommand subCommand in command as SubCommandContainer)
-                {
-                    DisplayFullSubCommandDescription(trigger, command, subCommand);
-                }
+            if (!(command is SubCommandContainer))
+                return;
+
+            foreach (var subCommand in command as SubCommandContainer)
+            {
+                DisplayFullSubCommandDescription(trigger, command, subCommand);
+            }
         }
 
         public static void DisplayFullSubCommandDescription(TriggerBase trigger, CommandBase command,
@@ -125,7 +120,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                           subcommand.Description);
             trigger.Reply("  -> " + command.Aliases.First() + " " + subcommand.Aliases.First() + " " + subcommand.GetSafeUsage());
 
-            foreach (IParameterDefinition commandParameter in subcommand.Parameters)
+            foreach (var commandParameter in subcommand.Parameters)
             {
                 DisplayCommandParameter(trigger, commandParameter);
             }
