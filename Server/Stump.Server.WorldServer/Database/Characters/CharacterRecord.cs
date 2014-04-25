@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ServiceStack.Text;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;

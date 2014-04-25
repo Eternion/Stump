@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public GoCommand()
         {
-            Aliases = new[] {"go", "teleport", "tp"};
+            Aliases = new[] { "go", "teleport" };
             RequiredRole = RoleEnum.GameMaster_Padawan;
             Description = "Teleport the target given map id";
             AddParameter("map", "map", "Map destination", converter:ParametersConverter.MapConverter);
