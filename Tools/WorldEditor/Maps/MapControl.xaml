@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="WorldEditor.Maps.MapControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ZoomAndPan="clr-namespace:ZoomAndPan;assembly=ZoomAndPan"
+             xmlns:Helpers="clr-namespace:WorldEditor.Helpers"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:Elements="clr-namespace:WorldEditor.Maps.Elements"
+             xmlns:maps="clr-namespace:WorldEditor.Maps"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel>
+        <TextBlock Text="ElementId : " />
+        <TextBlock Text="{Binding SelectedItem.ElementId}" />
+        <ZoomAndPan:ZoomAndPanControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="zoomAndPanControl"
+                                      Background="Transparent" HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch" MouseMove="ZoomAndPanControl_MouseMove"
+                                      MouseWheel="ZoomAndPanControl_MouseWheel" MouseDown="ZoomAndPanControl_MouseDown"
+                                      MouseUp="ZoomAndPanControl_MouseUp">
+            <ItemsControl x:Name="MapElements" ItemsSource="{Binding Elements}" HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Helpers:CanvasAutoSize SnapsToDevicePixels="True" IsItemsHost="True" Loaded="Canvas_Loaded" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type Elements:GfxElement}">
+                        <DataTemplate.Resources>
+                            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+                        </DataTemplate.Resources>
+                        <Helpers:OpaqueClickableImage Source="{Binding ImageSource}"
+                                                      Visibility="{Binding Layer.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseEnter">
+                                    <i:InvokeCommandAction
+                                        Command="{Binding ModelView.OverElementChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type maps:MapControl}}}"
+                                        CommandParameter="{Binding}" />
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="MouseLeave">
+                                    <i:InvokeCommandAction
+                                        Command="{Binding ModelView.OverElementChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type maps:MapControl}}}"
+                                        CommandParameter="{x:Null}" />
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                    <i:InvokeCommandAction
+                                        Command="{Binding ModelView.SelectedSingleElementCommand, RelativeSource={RelativeSource AncestorType={x:Type maps:MapControl}}}"
+                                        CommandParameter="{Binding}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <Helpers:OpaqueClickableImage.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Opacity" Value="{Binding Layer.Opacity}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Opacity" Value="0.8" />
+                                            <Setter Property="Effect">
+                                                <Setter.Value>
+                                                    <DropShadowEffect ShadowDepth="0" Color="Blue" Opacity="1"
+                                                                      BlurRadius="25" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsSelected}" Value="False" />
+                                                <Condition
+                                                    Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}"
+                                                    Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Opacity" Value="0.5" />
+                                            <Setter Property="Effect">
+                                                <Setter.Value>
+                                                    <DropShadowEffect ShadowDepth="0" Color="White" Opacity="1"
+                                                                      BlurRadius="5" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Helpers:OpaqueClickableImage.Style>
+                        </Helpers:OpaqueClickableImage>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type ContentPresenter}">
+                        <Setter Property="Canvas.Left" Value="{Binding PosX}" />
+                        <Setter Property="Canvas.Top" Value="{Binding PosY}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="99999" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsMouseOver}" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="99999" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+        </ZoomAndPan:ZoomAndPanControl>
+    </StackPanel>
+
+</UserControl>
