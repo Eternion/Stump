@@ -13,7 +13,7 @@ namespace ArkalysPlugin.Commands
         public TPCommands()
         {
             Aliases = new[] { "tp" };
-            RequiredRole = RoleEnum.Administrator;
+            RequiredRole = RoleEnum.Player;
             Description = "Teleport Commands";
         }
     }
