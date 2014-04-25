@@ -9,21 +9,14 @@ namespace Stump.Server.WorldServer.Database.Accounts
     {
         private readonly UserGroupData m_data;
 
-        public UserGroup(UserGroupData data, UserGroupCommand[] commands)
+        public UserGroup(UserGroupData data)
         {
             m_data = data;
-            AvailableCommands = commands;
         }
 
         public int Id
         {
             get { return m_data.Id; }
-        }
-
-        public UserGroupCommand[] AvailableCommands
-        {
-            get;
-            private set;
         }
 
         public string Name
@@ -43,7 +36,8 @@ namespace Stump.Server.WorldServer.Database.Accounts
 
         public bool IsCommandAvailable(CommandBase command)
         {
-            return Role >= command.RequiredRole || AvailableCommands.Any(x => command.Aliases.Contains(x.CommandAlias));
+            return Role >= command.RequiredRole ||
+                   (m_data.Commands != null && command.GetFullAliases().Any(x => m_data.Commands.Contains(x)));
         }
     }
 }
