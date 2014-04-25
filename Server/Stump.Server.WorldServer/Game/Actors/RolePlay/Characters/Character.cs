@@ -1360,12 +1360,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             foreach (var equippedItem in Inventory)
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
-            Experience = 0;
+            Spells.ForgetAllSpells();
 
-            var points = Spells.CountSpentBoostPoint() + SpellsPoints - (Level - 1);
+            var points = (Spells.CountSpentBoostPoint() + SpellsPoints) - Level;
             SpellsPoints = (ushort)(points >= 0 ? points : 0);
-            Spells.ToList().ForEach(x => x.CurrentLevel = 1);
 
+            Experience = 0;
             ResetStats();
 
             return true;
