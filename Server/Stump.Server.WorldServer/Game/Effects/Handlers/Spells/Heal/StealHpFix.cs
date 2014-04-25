@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Conditions.Criterions;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 {
-    [EffectHandler(EffectsEnum.Effect_StealHPAir)]
+    /*[EffectHandler(EffectsEnum.Effect_StealHPAir)]
     [EffectHandler(EffectsEnum.Effect_StealHPEarth)]
     [EffectHandler(EffectsEnum.Effect_StealHPFire)]
     [EffectHandler(EffectsEnum.Effect_StealHPWater)]
-    [EffectHandler(EffectsEnum.Effect_StealHPNeutral)]
+    [EffectHandler(EffectsEnum.Effect_StealHPNeutral)]*/
     [EffectHandler(EffectsEnum.Effect_StealHPFix)]
     public class StealHpFix : SpellEffectHandler
     {
