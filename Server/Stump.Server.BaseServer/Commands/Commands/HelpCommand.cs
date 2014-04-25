@@ -31,7 +31,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
                     if (command is SubCommand)
                         continue;
 
-                    if (command.RequiredRole > trigger.UserRole)
+                    if (trigger.CanAccessCommand(command))
                         continue;
 
                     DisplayCommandDescription(trigger, command);
@@ -41,7 +41,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             {
                 CommandBase command = CommandManager.Instance.GetCommand(cmdStr);
 
-                if (command == null || command.RequiredRole > trigger.UserRole)
+                if (command == null || !trigger.CanAccessCommand(command))
                 {
                     trigger.Reply("Command '{0}' doesn't exist", cmdStr);
                     return;
