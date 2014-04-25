@@ -935,9 +935,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             RefreshStats();
-            if (difference > 0)
-                CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
-            CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, currentLevel);
+
+            if (currentLevel > 1)
+            {
+                if (difference > 0)
+                    CharacterHandler.SendCharacterLevelUpMessage(Client, currentLevel);
+                CharacterHandler.SendCharacterLevelUpInformationMessage(Map.Clients, this, currentLevel);
+            }
 
             var handler = LevelChanged;
 
@@ -1349,9 +1353,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             OpenPopup(
                 string.Format(
-                    @"Vous venez de passer au rang prestige {0}. <\br>Vous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
+                    @"Vous venez de passer au rang prestige {0}. Vous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
                     PrestigeRank, item.Template.Name) +
-                @"les bonus s'appliquent sans équipper l'objet.<\br>Vous devez vous reconnecter pour continuer à jouer");
+                @"les bonus s'appliquent sans équipper l'objet. Vous devez vous reconnecter pour actualiser votre niveau.");
 
             foreach (var equippedItem in Inventory)
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
@@ -1383,9 +1387,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             OpenPopup(
                 string.Format(
-                    "Vous venez de passer au rang prestige {0}. \nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
+                    "Vous venez de passer au rang prestige {0}. Vous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
                     PrestigeRank + 1, item.Template.Name) +
-                "les bonus s'appliquent sans équipper l'objet.\nVous devez vous reconnecter pour continuer à jouer");
+                "les bonus s'appliquent sans équipper l'objet. Vous devez vous reconnecter pour actualiser votre niveau.");
 
             return true;
         }
