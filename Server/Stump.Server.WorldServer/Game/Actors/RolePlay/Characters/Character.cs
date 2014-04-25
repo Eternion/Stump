@@ -945,6 +945,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 handler(this, currentLevel, difference);
         }
 
+        public void ResetStats()
+        {
+            Stats.Agility.Base = PermanentAddedAgility;
+            Stats.Strength.Base = PermanentAddedStrength;
+            Stats.Vitality.Base = PermanentAddedVitality;
+            Stats.Wisdom.Base = PermanentAddedWisdom;
+            Stats.Intelligence.Base = PermanentAddedIntelligence;
+            Stats.Chance.Base = PermanentAddedChance;
+
+            var newPoints = Level*5;
+            StatsPoints = (ushort)newPoints;
+
+            RefreshStats();
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 15, newPoints);
+        }
+
         public void RefreshStats()
         {
             if (IsRegenActive())
@@ -1341,6 +1357,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
             Experience = 0;
+
+            Spells.ForgetAllSpells();
+            ResetStats();
+
             return true;
         }
 
