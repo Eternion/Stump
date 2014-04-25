@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Accounts
 {
     public class AccountManager : DataManager<AccountManager>
     {
-        public static UserGroup DefaultUserGroup = new UserGroup(new UserGroupData() { Id = 0, IsGameMaster = false, Name = "Default", Role = RoleEnum.Player}, new UserGroupCommand[0]);
+        public static UserGroup DefaultUserGroup = new UserGroup(new UserGroupData() { Id = 0, IsGameMaster = false, Name = "Default", Role = RoleEnum.Player});
 
         private Dictionary<int, UserGroup> m_userGroups;
 
@@ -54,8 +54,7 @@ namespace Stump.Server.WorldServer.Game.Accounts
             if (groups == null)
                 throw new Exception(string.Format("Cannot load groups : {0}", errorMsg.Message));
 
-            m_userGroups = groups.Select(x => new UserGroup(x, Database.Query<UserGroupCommand>(string.Format(UserGroupCommandRelator.FetchById, x.Id)).ToArray()))
-                .ToDictionary(x => x.Id, x => x);
+            m_userGroups = groups.Select(x => new UserGroup(x)).ToDictionary(x => x.Id, x => x);
         }
 
         public UserGroup GetGroupOrDefault(int id)

@@ -181,7 +181,6 @@
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\Accounts\AccountRelation.cs" />
     <Compile Include="Database\Accounts\UserGroup.cs" />
-    <Compile Include="Database\Accounts\UserGroupCommand.cs" />
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
     <Compile Include="Database\Breeds\Head.cs" />

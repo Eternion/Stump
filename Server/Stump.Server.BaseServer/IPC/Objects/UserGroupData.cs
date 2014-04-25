@@ -46,5 +46,12 @@ namespace Stump.Server.BaseServer.IPC.Objects
             get;
             set;
         }
+
+        [ProtoMember(6)]
+        public IList<string> Commands
+        {
+            get;
+            set;
+        }
     }
 }
