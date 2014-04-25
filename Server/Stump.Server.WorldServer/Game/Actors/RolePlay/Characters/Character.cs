@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
+using MongoDB.Driver.Linq;
 using NLog;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -1333,13 +1334,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             OpenPopup(
                 string.Format(
-                    @"Vous venez de passer au rang prestige {0}. <\br>Vous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
-                    PrestigeRank + 1, item.Template.Name) +
-                @"les bonus s'appliquent sans équipper l'objet.<\br>Vous devez vous reconnecter pour continuer à jouer");
+                    @"Vous venez de passer au rang prestige {0}. \r\nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
+                    PrestigeRank, item.Template.Name) +
+                @"les bonus s'appliquent sans équipper l'objet.\r\nVous devez vous reconnecter pour continuer à jouer");
 
             foreach (BasePlayerItem equippedItem in Inventory)
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
+            var points = Spells.CountSpentBoostPoint() + SpellsPoints - (Level - 1);
+            SpellsPoints = (ushort) (points >=0 ? points : 0);
+            StatsPoints = 0;
+            Stats.Agility.Base = PermanentAddedAgility;
+            Stats.Vitality.Base = PermanentAddedVitality;
+            Stats.Wisdom.Base = PermanentAddedWisdom;
+            Stats.Intelligence.Base = PermanentAddedIntelligence;
+            Stats.Strength.Base = PermanentAddedStrength;
+            Stats.Chance.Base = PermanentAddedChance;
             Experience = 0;
             return true;
         }

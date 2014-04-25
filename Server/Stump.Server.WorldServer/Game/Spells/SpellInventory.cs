@@ -255,6 +255,20 @@ namespace Stump.Server.WorldServer.Game.Spells
             Owner.Shortcuts.AddSpellShortcut(position, (short) id);
         }
 
+        public int CountSpentBoostPoint()
+        {
+            var count = 0;
+            foreach (var spell in this)
+            {
+                for (int i = 1; i < spell.CurrentLevel; i++)
+                {
+                    count += i;
+                }
+            }
+
+            return count;
+        }
+
         public void Save()
         {
             lock (m_locker)
