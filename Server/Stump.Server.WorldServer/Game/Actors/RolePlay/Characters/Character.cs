@@ -958,7 +958,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Stats.Intelligence.Base = PermanentAddedIntelligence;
             Stats.Chance.Base = PermanentAddedChance;
 
-            var newPoints = Level*5;
+            var newPoints = (Level-1)*5;
             StatsPoints = (ushort)newPoints;
 
             RefreshStats();
@@ -1363,7 +1363,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Experience = 0;
 
             Spells.ForgetAllSpells();
-            SpellsPoints = 0;
+            var points = Spells.CountSpentBoostPoint() + SpellsPoints - (Level - 1);
+            SpellsPoints = (ushort)(points >= 0 ? points : 0);
 
             ResetStats();
 
