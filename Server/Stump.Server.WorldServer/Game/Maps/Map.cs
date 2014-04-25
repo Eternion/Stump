@@ -500,7 +500,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return npc;
         }
 
-        public bool UnSpawnNpc(sbyte id)
+        public bool UnSpawnNpc(short id)
         {
             var npc = GetActor<Npc>(id);
 
