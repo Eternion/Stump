@@ -78,9 +78,12 @@ namespace Stump.Plugins.EditorPlugin.Commands
                                     };
 
                     NpcManager.Instance.AddNpcSpawn(spawn);
-                    var npc = position.Map.SpawnNpc(spawn);
+                    position.Map.Area.ExecuteInContext(() =>
+                    {
+                        var npc = position.Map.SpawnNpc(spawn);
 
-                    trigger.Reply("Npc {0} spawned", npc.Id);
+                        trigger.Reply("Npc {0} spawned", npc.Id);
+                    });
                 });
         }
     }
@@ -122,10 +125,11 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 trigger.ReplyError("This npc is not saved in database");
             }
 
+            npc.Map.UnSpawnNpc(npc);
+
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () =>
                 {
-                    npc.Map.UnSpawnNpc(npc);
                     NpcManager.Instance.RemoveNpcSpawn(npc.Spawn);
                     trigger.Reply("Npc {0} unspawned", npcId);
                 });

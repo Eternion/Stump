@@ -51,5 +51,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             ApplyBonus(ItemEffectHandler.HandlerOperation.UNAPPLY);
             return base.OnRemoveItem();
         }
+
+        public override bool IsLinked()
+        {
+            return true;
+        }
     }
 }

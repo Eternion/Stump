@@ -14,6 +14,8 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
@@ -21,8 +23,11 @@ using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -35,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         [Variable] public static short[] PrestigeTitles =
         {
-            200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212
+            200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214
         };
 
         private static readonly EffectInteger[][] m_prestigesBonus =
@@ -61,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 new EffectInteger(EffectsEnum.Effect_AddStrength, 50)
             },
             new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 9)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonusPercent, 25)},
+            new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 25)},
             new[]
             {
                 new EffectInteger(EffectsEnum.Effect_AddAirElementReduction, 5),
@@ -71,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 new EffectInteger(EffectsEnum.Effect_AddNeutralElementReduction, 5)
             },
             new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 12)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonusPercent, 50)},
+            new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 50)},
             new[]
             {
                 new EffectInteger(EffectsEnum.Effect_AddAirResistPercent, 5),
@@ -82,7 +87,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             },
             new[] {new EffectInteger(EffectsEnum.Effect_AddRange, 1)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddMP_128, 1)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddAP_111, 1)}
+            new[] {new EffectInteger(EffectsEnum.Effect_AddAP_111, 1)},
+
         };
 
         private bool m_disabled;
