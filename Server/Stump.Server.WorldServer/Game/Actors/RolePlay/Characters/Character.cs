@@ -94,6 +94,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
                 RefreshStats();
             }
+            else
+            {
+                var item = GetPrestigeItem();
+                if (item != null)
+                    Inventory.RemoveItem(item);
+            }
 
             var handler = LoggedIn;
             if (handler != null) handler(this);
