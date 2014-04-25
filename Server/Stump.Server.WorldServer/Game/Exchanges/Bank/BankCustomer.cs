@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Messages;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Exchanges.Bank
 {
@@ -24,19 +22,15 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
             {
                 var item = Character.Inventory.TryGetItem(id);
 
-                if (item == null)
-                    return false;
-
-                return Character.Bank.StoreItem(item, (uint)quantity);
-            }
-            else if (quantity < 0)
-            {
-                var item = Character.Bank.TryGetItem(id);
-               
-                return Character.Bank.TakeItemBack(item, (uint)-quantity);
+                return item != null && Character.Bank.StoreItem(item, (uint)quantity);
             }
 
-            return false;
+            if (quantity >= 0)
+                return false;
+
+            var deleteItem = Character.Bank.TryGetItem(id);
+
+            return Character.Bank.TakeItemBack(deleteItem, (uint)-quantity);
         }
 
         public override bool SetKamas(int amount)
@@ -45,11 +39,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
             {
                 return Character.Bank.StoreKamas(amount);
             }
-            else if (amount < 0)
-            {
-                return Character.Bank.TakeKamas(-amount);
-            }
-            return false;
+
+            return amount < 0 && Character.Bank.TakeKamas(-amount);
         }
     }
 }
