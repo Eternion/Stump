@@ -90,6 +90,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public bool TakeItemBack(BankItem item, uint amount)
         {
+            if (item == null)
+                return false;
+
             if (!HasItem(item))
                 return false;
 
