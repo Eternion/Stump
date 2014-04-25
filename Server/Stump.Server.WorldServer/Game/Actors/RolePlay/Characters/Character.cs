@@ -1363,6 +1363,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Experience = 0;
 
             Spells.ForgetAllSpells();
+            SpellsPoints = 0;
+
             ResetStats();
 
             return true;
