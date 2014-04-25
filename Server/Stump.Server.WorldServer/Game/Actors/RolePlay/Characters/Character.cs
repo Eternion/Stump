@@ -1321,7 +1321,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             PrestigeRank++;
             AddTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
 
-            PrestigeItem item = GetPrestigeItem();
+            var item = GetPrestigeItem();
 
             if (item == null)
                 item = CreatePrestigeItem();
@@ -1334,10 +1334,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             OpenPopup(
                 string.Format(
                     @"Vous venez de passer au rang prestige {0}. <\br>Vous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
-                    PrestigeRank + 1, item.Template.Name) +
+                    PrestigeRank, item.Template.Name) +
                 @"les bonus s'appliquent sans équipper l'objet.<\br>Vous devez vous reconnecter pour continuer à jouer");
 
-            foreach (BasePlayerItem equippedItem in Inventory)
+            foreach (var equippedItem in Inventory)
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
             Experience = 0;
@@ -1349,7 +1349,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             RemoveTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
             PrestigeRank--;
 
-            PrestigeItem item = GetPrestigeItem();
+            var item = GetPrestigeItem();
 
             if (item != null)
             {
@@ -1378,7 +1378,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
             PrestigeRank = 0;
             
-            PrestigeItem item = GetPrestigeItem();
+            var item = GetPrestigeItem();
 
             if (item != null)
             {
