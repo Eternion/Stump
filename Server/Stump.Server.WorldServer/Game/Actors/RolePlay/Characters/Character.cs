@@ -1359,19 +1359,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             OpenPopup(
                 string.Format(
-                    @"Vous venez de passer au rang prestige {0}. 1Vous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
+                    "Vous venez de passer au rang prestige {0}. \r\nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
                     PrestigeRank, item.Template.Name) +
-                @"les bonus s'appliquent sans équipper l'objet. Vous devez vous reconnecter pour actualiser votre niveau.");
+                "les bonus s'appliquent sans équipper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.");
 
             foreach (var equippedItem in Inventory.ToArray())
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
-            Spells.ForgetAllSpells();
-
-            var points = (Spells.CountSpentBoostPoint() + SpellsPoints) - Level;
-            SpellsPoints = (ushort)(points >= 0 ? points : 0);
+            var points = (Spells.CountSpentBoostPoint() + SpellsPoints) - (Level-1);
 
             Experience = 0;
+            Spells.ForgetAllSpells();
+            SpellsPoints = (ushort)(points >= 0 ? points : 0);
             ResetStats();
 
             return true;

@@ -210,7 +210,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 WorldServer.Instance.DBAccessor.Database.Insert(record);
 
-                pool.AddSpawn(group);
+                if (group.GroupMonsters.Count == 1)
+                    pool.AddSpawn(group);
                 map.Area.ExecuteInContext(pool.StartAutoSpawn);
             });
         }
