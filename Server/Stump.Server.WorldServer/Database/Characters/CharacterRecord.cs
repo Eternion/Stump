@@ -42,7 +42,6 @@ namespace Stump.Server.WorldServer.Database.Characters
         private string m_entityLookString;
         private byte[] m_knownZaapsBin;
         private int? m_spawnMapId;
-        private ushort m_honor;
 
         public CharacterRecord()
         {
@@ -511,11 +510,8 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         public ushort Honor
         {
-            get { return m_honor; }
-            set
-            {
-                m_honor = value > 17500 ? (ushort)17500 : value;
-            }
+            get;
+            set;
         }
 
         public ushort Dishonor
