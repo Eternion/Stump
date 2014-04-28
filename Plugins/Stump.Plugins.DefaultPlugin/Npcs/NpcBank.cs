@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Bank;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Plugins.DefaultPlugin.Npcs
@@ -110,8 +111,21 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
         {
             if (replyId == NpcBank.ReplyConsult)
             {
-                var dialog = new BankDialog(Character);
-                dialog.Open();
+                var accessPrice = Character.Bank.GetAccessPrice();
+
+                if (Character.Kamas < accessPrice)
+                {
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 82);
+                }
+                else
+                {
+                    Character.Inventory.SubKamas(accessPrice);
+                    BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
+                                                    46, accessPrice);
+
+                    var dialog = new BankDialog(Character);
+                    dialog.Open(); 
+                }
 
                 Close();
             }

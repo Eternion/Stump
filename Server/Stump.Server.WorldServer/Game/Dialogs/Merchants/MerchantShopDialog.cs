@@ -87,10 +87,11 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     21, quantity, item.Template.Id);
 
-            Character.Inventory.SubKamas((int)(item.Price * quantity));
+            var finalPrice = item.Price*quantity;
+            Character.Inventory.SubKamas((int)finalPrice);
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    46, (int)( item.Price * quantity ));
-            Merchant.KamasEarned += item.Price*quantity;
+                                                    46, (int)finalPrice);
+            Merchant.KamasEarned += finalPrice;
 
             Character.Client.Send(new ExchangeBuyOkMessage());
 
