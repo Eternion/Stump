@@ -25,7 +25,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
             if (cmdStr == string.Empty)
             {
-                foreach (var command in CommandManager.Instance.AvailableCommands.Where(command => !(command is SubCommand)).Where(command => !trigger.CanAccessCommand(command)))
+                foreach (var command in CommandManager.Instance.AvailableCommands.Where(command => !(command is SubCommand)).Where(trigger.CanAccessCommand))
                 {
                     DisplayCommandDescription(trigger, command);
                 }
