@@ -1,33 +1,35 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using Stump.Core.Collections;
+using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 
 namespace Stump.Server.WorldServer.Game.Parties
 {
     // todo : update members when their stats change
-    public class Party 
+    public class Party
     {
         /// <summary>
-        ///   Maximum number of characters that can be in a same group.
+        ///     Maximum number of characters that can be in a same group.
         /// </summary>
         public const int MaxMemberCount = 8;
 
         #region Events
 
         public delegate void MemberAddedHandler(Party party, Character member);
+
         public delegate void MemberRemovedHandler(Party party, Character member, bool kicked);
 
         public event Action<Party, Character> LeaderChanged;
 
         protected virtual void OnLeaderChanged(Character leader)
         {
-            ForEach(entry => PartyHandler.SendPartyLeaderUpdateMessage(entry.Client, this, leader));
+            PartyHandler.SendPartyLeaderUpdateMessage(Clients, this, leader);
 
             Action<Party, Character> handler = LeaderChanged;
             if (handler != null)
@@ -38,9 +40,9 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         protected virtual void OnGuestAdded(Character groupGuest)
         {
-            ForEach(entry => PartyHandler.SendPartyNewGuestMessage(entry.Client, this, groupGuest));
+            PartyHandler.SendPartyNewGuestMessage(Clients, this, groupGuest);
 
-            var handler = GuestAdded;
+            MemberAddedHandler handler = GuestAdded;
             if (handler != null)
                 handler(this, groupGuest);
         }
@@ -49,7 +51,8 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         protected virtual void OnGuestRemoved(Character groupGuest, bool kicked)
         {
-            var handler = GuestRemoved;
+            m_clients.Remove(groupGuest.Client);
+            MemberRemovedHandler handler = GuestRemoved;
             if (handler != null)
                 handler(this, groupGuest, kicked);
         }
@@ -58,12 +61,17 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         protected virtual void OnGuestPromoted(Character groupMember)
         {
+            m_clients.Add(groupMember.Client);
+
+            m_levelSum += groupMember.Level;
+            m_levelAvg = m_levelSum/MembersCount;
+
             PartyHandler.SendPartyJoinMessage(groupMember.Client, this);
 
             UpdateMember(groupMember);
             BindEvents(groupMember);
 
-            var handler = GuestPromoted;
+            Action<Party, Character> handler = GuestPromoted;
             if (handler != null)
                 handler(this, groupMember);
         }
@@ -72,12 +80,17 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         protected virtual void OnMemberRemoved(Character groupMember, bool kicked)
         {
+            m_clients.Remove(groupMember.Client);
+
+            m_levelSum -= groupMember.Level;
+            m_levelAvg = m_levelSum/MembersCount;
+
             if (kicked)
                 PartyHandler.SendPartyKickedByMessage(groupMember.Client, this, Leader);
             else
                 groupMember.Client.Send(new PartyLeaveMessage(Id));
 
-            ForEach(entry => PartyHandler.SendPartyMemberRemoveMessage(entry.Client, this, groupMember));
+            PartyHandler.SendPartyMemberRemoveMessage(Clients, this, groupMember);
             MemberRemovedHandler handler = MemberRemoved;
 
             UnBindEvents(groupMember);
@@ -90,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         protected virtual void OnGroupDisbanded()
         {
-            ForEach(entry => PartyHandler.SendPartyDeletedMessage(entry.Client, this));
+            PartyHandler.SendPartyDeletedMessage(Clients, this);
 
             UnBindEvents();
 
@@ -101,21 +114,22 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         #endregion
 
-        private readonly ConcurrentList<Character> m_members = new ConcurrentList<Character>();
-        private readonly ConcurrentList<Character> m_guests = new ConcurrentList<Character>();
+        private readonly WorldClientCollection m_clients = new WorldClientCollection();
 
         private readonly object m_guestLocker = new object();
+        private readonly ConcurrentList<Character> m_guests = new ConcurrentList<Character>();
         private readonly object m_memberLocker = new object();
+        private readonly ConcurrentList<Character> m_members = new ConcurrentList<Character>();
+        private bool m_restricted;
 
-        internal Party(int id, Character leader)
+        private int m_levelSum;
+        private int m_levelAvg;
+        private int m_prospectionSum;
+
+        public Party(int id)
         {
             Id = id;
             Restricted = true;
-
-            m_members.Add(leader);
-            BindEvents(leader);
-            Leader = leader;
-            PartyHandler.SendPartyJoinMessage(leader.Client, this);
         }
 
         public int Id
@@ -124,31 +138,44 @@ namespace Stump.Server.WorldServer.Game.Parties
             private set;
         }
 
-        public PartyTypeEnum Type
+        public WorldClientCollection Clients
         {
-            get
-            {
-                return PartyTypeEnum.PARTY_TYPE_CLASSICAL;
-            }
+            get { return m_clients; }
         }
 
-        private bool m_restricted;
+        public virtual PartyTypeEnum Type
+        {
+            get { return PartyTypeEnum.PARTY_TYPE_CLASSICAL; }
+        }
 
         public bool Restricted
         {
             get { return m_restricted; }
-            private set { m_restricted = value;
-                ForEach(entry => PartyHandler.SendPartyRestrictedMessage(entry.Client, this, m_restricted)); }
+            private set
+            {
+                m_restricted = value;
+                PartyHandler.SendPartyRestrictedMessage(Clients, this, m_restricted);
+            }
+        }
+
+        public virtual int MembersLimit
+        {
+            get { return MaxMemberCount; }
         }
 
         public bool IsFull
         {
-            get { return m_members.Count >= MaxMemberCount;}
+            get { return m_members.Count >= MembersLimit; }
         }
 
-        public int GroupLevel
+        public int GroupLevelSum
         {
-            get { return m_members.Sum(entry => entry.Level); }
+            get { return m_levelSum; }
+        }
+
+        public int GroupLevelAverage
+        {
+            get { return m_levelAvg; }
         }
 
         public int GroupProspecting
@@ -158,10 +185,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public int MembersCount
         {
-            get
-            {
-                return m_members.Count;
-            }
+            get { return m_members.Count; }
         }
 
         public IEnumerable<Character> Members
@@ -188,7 +212,26 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public bool CanInvite(Character character)
         {
-            return !IsMember(character) && !IsGuest(character);
+            PartyJoinErrorEnum dummy;
+            return CanInvite(character, out dummy);
+        }
+
+        public bool CanInvite(Character character, out PartyJoinErrorEnum error)
+        {
+            if (IsMember(character) || IsGuest(character))
+            {
+                error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_ALREADY_INVITED;
+                return false;
+            }
+
+            if (IsFull)
+            {
+                error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_PARTY_FULL;
+                return false;
+            }
+
+            error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNKNOWN;
+            return true;
         }
 
         public bool AddGuest(Character character)
@@ -219,7 +262,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         }
 
         /// <summary>
-        /// The guest is promote to member in the party. Whenever the player is not a guest, he auto joined the party.
+        ///     The guest is promote to member in the party. Whenever the player is not a guest, he auto joined the party.
         /// </summary>
         /// <param name="guest"></param>
         public bool PromoteGuestToMember(Character guest)
@@ -240,6 +283,9 @@ namespace Stump.Server.WorldServer.Game.Parties
             lock (m_memberLocker)
                 m_members.Add(guest);
 
+            if (Leader == null)
+                Leader = guest;
+
             OnGuestPromoted(guest);
 
             return true;
@@ -254,7 +300,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             lock (m_memberLocker)
             {
-                if (!m_members.Remove(character)) 
+                if (!m_members.Remove(character))
                     return;
 
                 OnMemberRemoved(character, false);
@@ -292,7 +338,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             if (!IsInGroup(leader))
                 return;
-            
+
             if (Leader == leader)
                 return;
 
@@ -343,14 +389,14 @@ namespace Stump.Server.WorldServer.Game.Parties
             if (!IsInGroup(character))
                 return;
 
-            ForEach(entry => PartyHandler.SendPartyUpdateMessage(entry.Client, this, character));
+            PartyHandler.SendPartyUpdateMessage(Clients, this, character);
         }
 
         public void ForEach(Action<Character> action)
         {
             lock (m_memberLocker)
             {
-                foreach (var character in Members)
+                foreach (Character character in Members)
                 {
                     action(character);
                 }
@@ -361,7 +407,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             lock (m_memberLocker)
             {
-                foreach (var character in Members)
+                foreach (Character character in Members)
                 {
                     if (character != except)
                         action(character);
@@ -373,10 +419,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             lock (m_memberLocker)
             {
-                foreach (var character in m_members)
-                {
-                    character.Client.Send(message);
-                }
+                m_clients.Send(message);
             }
         }
 
@@ -404,7 +447,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         private void UnBindEvents()
         {
-            foreach (var member in Members)
+            foreach (Character member in Members)
             {
                 UnBindEvents(member);
             }

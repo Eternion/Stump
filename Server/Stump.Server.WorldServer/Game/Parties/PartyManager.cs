@@ -7,9 +7,9 @@ namespace Stump.Server.WorldServer.Game.Parties
     {
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
 
-        public Party Create(Character leader)
+        public Party Create()
         {
-            var group = new Party(m_idProvider.Pop(), leader);
+            var group = new Party(m_idProvider.Pop());
 
             AddEntity(group.Id, group);
 

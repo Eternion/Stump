@@ -597,7 +597,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public int ArenaMaxERank
+        public int ArenaMaxRank
         {
             get;
             set;
