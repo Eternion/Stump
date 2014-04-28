@@ -48,10 +48,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 dropOnItem.Effects.Add(effect);
             }
 
-            Owner.Inventory.RefreshItemInstance(dropOnItem);
-            Owner.UpdateLook();
-            OnObjectModified();
+            var newInstance = Owner.Inventory.RefreshItemInstance(dropOnItem);
 
+            Owner.UpdateLook();
+            newInstance.OnObjectModified();
 
             return true;
         }
