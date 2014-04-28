@@ -1,6 +1,4 @@
 using System;
-using Stump.Core.Attributes;
-using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Game.Items
 {

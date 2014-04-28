@@ -324,10 +324,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item.OnRemoveItem() && base.RemoveItem(item, delete);
         }
 
-        public void RefreshItemInstance(BasePlayerItem item)
+        public BasePlayerItem RefreshItemInstance(BasePlayerItem item)
         {
             if (!Items.ContainsKey(item.Guid))
-                return;
+                return null;
 
             Items.Remove(item.Guid);
 
@@ -335,6 +335,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Items.Add(newInstance.Guid, newInstance);
 
             RefreshItem(item);
+
+            return newInstance;
         }
 
         public bool CanEquip(BasePlayerItem item, CharacterInventoryPositionEnum position, bool send = true)
