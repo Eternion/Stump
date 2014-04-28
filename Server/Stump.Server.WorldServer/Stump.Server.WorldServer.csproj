@@ -181,6 +181,7 @@
     <Compile Include="Core\Network\WorldPacketHandler.cs" />
     <Compile Include="Database\Accounts\AccountRelation.cs" />
     <Compile Include="Database\Accounts\UserGroup.cs" />
+    <Compile Include="Database\Arena\ArenaRecord.cs" />
     <Compile Include="Database\AutoAssignedRecord.cs" />
     <Compile Include="Database\Breeds\BreedItem.cs" />
     <Compile Include="Database\Breeds\Head.cs" />
@@ -255,6 +256,9 @@
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
     <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
+    <Compile Include="Game\Arena\ArenaManager.cs" />
+    <Compile Include="Game\Arena\ArenaParty.cs" />
+    <Compile Include="Game\Arena\ArenaQueueMember.cs" />
     <Compile Include="Game\Conditions\BoolOperator.cs" />
     <Compile Include="Game\Conditions\Criterions\AdminRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AlignementLevelCriterion.cs" />

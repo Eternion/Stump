@@ -45,6 +45,7 @@ using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.Titles;
@@ -1421,6 +1422,36 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Arena
+
+        public int ArenaRank
+        {
+            get { return m_record.ArenaRank; }
+            set { m_record.ArenaRank = value; }
+        }
+        
+        public int ArenaMaxRank
+        {
+            get { return m_record.ArenaMaxRank; }
+            set { m_record.ArenaMaxRank = value; }
+        }
+        public int ArenaDailyMaxRank
+        {
+            get { return m_record.ArenaDailyMaxRank; }
+            set { m_record.ArenaDailyMaxRank = value; }
+        }
+        public int ArenaDailyMatchsWon
+        {
+            get { return m_record.ArenaDailyMatchsWon; }
+            set { m_record.ArenaDailyMatchsWon = value; }
+        }
+        public int ArenaDailyMatchsCount
+        {
+            get { return m_record.ArenaDailyMatchsCount; }
+            set { m_record.ArenaDailyMatchsCount = value; }
+        }
+
+        #endregion
         #endregion
 
         #region Actions
@@ -1680,18 +1711,32 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void Invite(Character target)
         {
+            bool created = false;
             if (!IsInParty())
             {
-                Party party = PartyManager.Instance.Create(this);
+                Party party = PartyManager.Instance.Create();
 
                 EnterParty(party);
+                created = true;
             }
 
-            if (!Party.CanInvite(target))
+            PartyJoinErrorEnum error;
+            if (!Party.CanInvite(target, out error))
+            {
+                PartyHandler.SendPartyCannotJoinErrorMessage(target.Client, Party, error);
+                if (created)
+                    LeaveParty();
+
                 return;
+            }
 
             if (target.m_partyInvitations.ContainsKey(Party.Id))
+            {
+                if (created)
+                    LeaveParty();
+                
                 return; // already invited
+            }
 
             var invitation = new PartyInvitation(Party, this, target);
             target.m_partyInvitations.Add(Party.Id, invitation);
@@ -2230,7 +2275,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
         
-
         #region Bank
 
         public Bank Bank
@@ -2622,6 +2666,29 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look.GetEntityLook(),
                 (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
+        }
+
+        public PartyMemberArenaInformations GetPartyMemberArenaInformations()
+        {
+            return new PartyMemberArenaInformations(
+                Id,
+                Level,
+                Name,
+                Look.GetEntityLook(),
+                (sbyte) BreedId,
+                Sex == SexTypeEnum.SEX_FEMALE,
+                LifePoints,
+                MaxLifePoints,
+                (short) Stats[PlayerFields.Prospecting].Total,
+                RegenSpeed,
+                (short) Stats[PlayerFields.Initiative].Total,
+                PvPEnabled,
+                (sbyte) AlignmentSide,
+                (short) Map.Position.X,
+                (short) Map.Position.Y,
+                Map.Id,
+                (short) SubArea.Id,
+                (short)ArenaRank);
         }
 
         #endregion
