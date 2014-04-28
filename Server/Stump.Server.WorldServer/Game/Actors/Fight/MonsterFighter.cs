@@ -37,6 +37,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Cell cell;
             Fight.FindRandomFreeCell(this, out cell, false);
             Position = new ObjectPosition(monster.Group.Map, cell, monster.Group.Direction);
+
+            Frozen = !monster.Template.CanPlay;
         }
 
         public Monster Monster

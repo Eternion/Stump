@@ -34,6 +34,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_highestGrade.Key; }
         }
 
+        public ushort HighestGradeHonor
+        {
+            get { return m_highestGrade.Value.AlignmentHonor.Value; }
+        }
+
         #region Character
 
         /// <summary>
