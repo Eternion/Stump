@@ -1,6 +1,5 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Maps;
 
@@ -12,7 +11,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"transition"};
             Description = "Manage map transitions";
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
         }
          
     }
@@ -23,7 +22,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"set"};
             Description = "Set the current map transition";
-            RequiredRole  = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof (TransitionsCommands);
             AddParameter("transition", "t", "Top/Right/Bottom/Left",
                 converter: ParametersConverter.GetEnumConverter<MapNeighbour>());
@@ -84,7 +83,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             Aliases = new[] {"reset"};
             Description = "Reset the current map transition";
-            RequiredRole  = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof (TransitionsCommands);
             AddParameter("transition", "t", "Top/Right/Bottom/Left",
                 converter: ParametersConverter.GetEnumConverter<MapNeighbour>());
