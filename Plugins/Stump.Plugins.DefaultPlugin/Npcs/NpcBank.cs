@@ -97,7 +97,7 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
     {
          public NpcBankDialog(Character character, Npc npc) : base(character, npc)
          {
-             CurrentMessage = character.Level > 10 ? NpcBank.Message : NpcBank.WrongLevelMessage;
+             CurrentMessage = character.Level >= 10 ? NpcBank.Message : NpcBank.WrongLevelMessage;
          }
 
         public override void Open()

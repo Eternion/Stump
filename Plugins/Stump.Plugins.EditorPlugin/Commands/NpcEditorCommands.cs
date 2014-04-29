@@ -22,7 +22,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcEditorCommands()
         {
             Aliases = new[] { "nedit", "npcedit" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Npc editor";
         }
     }
@@ -32,7 +32,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcSpawnCommand()
         {
             Aliases = new[] { "spawn" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Spawn a npc";
             ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
@@ -93,7 +93,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcUnSpawnCommand()
         {
             Aliases = new[] { "unspawn" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Unspawn the npc by the given contextual id";
             ParentCommandType = typeof(NpcEditorCommands);
             AddParameter<sbyte>("npcid", "npc", "Npc Contextual id");
@@ -141,7 +141,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcShopCommand()
         {
             Aliases = new[] { "shop" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Manage npc shop";
             ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
@@ -210,7 +210,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 {
                     var items = shop.Items.Where(entry => entry.ItemId == itemTemplate.Id).ToArray();
 
-                    foreach (NpcItem item in items)
+                    foreach (var item in items)
                     {
                         WorldServer.Instance.DBAccessor.Database.Delete(item);
                         shop.Items.Remove(item);
@@ -225,7 +225,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcShopSetTokenCommand()
         {
             Aliases = new[] { "shoptoken" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Define the token needed to trade with the npc";
             ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
@@ -273,7 +273,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcShopMaxCommand()
         {
             Aliases = new[] { "shopmax" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Set all sold items to max stats";
             ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
@@ -306,7 +306,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
         public NpcShopRemoveAll()
         {
             Aliases = new[] { "removeall" };
-            RequiredRole = RoleEnum.GameMaster;
+            RequiredRole = RoleEnum.Administrator;
             Description = "Remove all items from NPC";
             ParentCommandType = typeof(NpcEditorCommands);
             AddParameter("npc", "npc", "Npc Template id", converter: ParametersConverter.NpcTemplateConverter);
