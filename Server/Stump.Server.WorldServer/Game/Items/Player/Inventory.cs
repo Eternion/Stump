@@ -466,7 +466,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (quantity > item.Stack || quantity == 0)
                 return null;
 
-            if (item.IsLinked())
+            if (item.IsLinkedToPlayer() || item.IsLinkedToAccount())
                 return null;
 
             RemoveItem(item, quantity);
@@ -501,20 +501,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 }
             }
 
-            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.RING)
-            {
-                // we can equip the same ring if it doesn't own to an item set
-                var ring = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.Template.Id == itemToEquip.Template.Id && entry.Template.ItemSetId > 0);
+            if (itemToEquip.Template.Type.ItemType != ItemTypeEnum.RING)
+                return false;
 
-                if (ring != null)
-                {
-                    MoveItem(ring, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+            // we can equip the same ring if it doesn't own to an item set
+            var ring = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.Template.Id == itemToEquip.Template.Id && entry.Template.ItemSetId > 0);
 
-                    return true;
-                }
-            }
+            if (ring == null)
+                return false;
 
-            return false;
+            MoveItem(ring, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+
+            return true;
         }
 
 
@@ -563,14 +561,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 return false;
             }
 
-            if (item.Template.Level > Owner.Level)
-            {
-                if (send)
-                    BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
-                return false;
-            }
+            if (item.Template.Level <= Owner.Level)
+                return true;
 
-            return true;
+            if (send)
+                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 3);
+            return false;
         }
 
         public void UseItem(BasePlayerItem item, uint amount = 1)
