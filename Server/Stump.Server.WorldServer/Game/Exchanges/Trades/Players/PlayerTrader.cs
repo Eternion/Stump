@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
             if (amount > playerItem.Stack || amount <= 0)
                 return false;
 
-            if (playerItem.IsLinked() && Trade is PlayerTrade)
+            if ((playerItem.IsLinkedToAccount() || playerItem.IsLinkedToPlayer()) && Trade is PlayerTrade)
             {
                 BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 345, playerItem.Template.Id, playerItem.Guid);
                 return false;

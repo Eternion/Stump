@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (!Owner.Inventory.HasItem(item))
                 return false;
 
-            if (item.IsLinked())
+            if (item.IsLinkedToPlayer())
                 return false;
 
             if (amount > item.Stack)

@@ -52,7 +52,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             return base.OnRemoveItem();
         }
 
-        public override bool IsLinked()
+        public override bool IsLinkedToPlayer()
+        {
+            return true;
+        }
+
+        public override bool IsLinkedToAccount()
         {
             return true;
         }
