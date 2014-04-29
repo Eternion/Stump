@@ -65,11 +65,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
             Effects.RemoveAll(effects.Contains);
             Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_LivingObjectId);
-            Owner.Inventory.RefreshItemInstance(this);
+            var newInstance = Owner.Inventory.RefreshItemInstance(this);
             Owner.Inventory.AddItem(livingObject);
 
             Owner.UpdateLook();
-            OnObjectModified();
+            newInstance.OnObjectModified();
         }
     }
 }

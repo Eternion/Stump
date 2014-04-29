@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        public virtual bool IsLinked()
+        public virtual bool IsLinkedToAccount()
         {
             if (Template.IsLinkedToOwner)
                 return true;
@@ -65,8 +65,21 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (IsTokenItem())
                 return true;
 
-            return Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981 ||
-                                    x.EffectId == EffectsEnum.Effect_NonExchangeable_982);
+            return Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982);
+        }
+
+        public virtual bool IsLinkedToPlayer()
+        {
+            if (Template.IsLinkedToOwner)
+                return true;
+
+            if (Template.Type.SuperType == ItemSuperTypeEnum.SUPERTYPE_QUEST)
+                return true;
+
+            if (IsTokenItem())
+                return true;
+
+            return Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981);
         }
 
         public bool IsTokenItem()
