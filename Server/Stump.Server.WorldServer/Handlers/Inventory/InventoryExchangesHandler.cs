@@ -42,13 +42,19 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         return;
                     }
 
-                    if (target.IsInRequest() || target.IsTrading())
+                    if (target.IsBusy() || target.IsTrading())
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
                         return;
                     }
 
-                    if (target.IsAway)
+                    if (target.FriendsBook.IsIgnored(client.Account.Id))
+                    {
+                        SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_RESTRICTED);
+                        return;
+                    }
+
+                    if (target.IsAway && !target.FriendsBook.IsFriend(client.Account.Id))
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
                         return;
