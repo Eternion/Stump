@@ -268,22 +268,24 @@ namespace Stump.Server.WorldServer.Database.Spells
         public void AssignFields(object d2oObject)
         {
             var spell = (SpellLevel) d2oObject;
+
             Id = spell.id;
             SpellId = spell.spellId;
             SpellBreed = spell.spellBreed;
             ApCost = spell.apCost;
+            MinRange = spell.minRange;
             Range = spell.range;
             CastInLine = spell.castInLine;
             CastInDiagonal = spell.castInDiagonal;
             CastTestLos = spell.castTestLos;
             CriticalHitProbability = spell.criticalHitProbability;
-            StatesRequired = spell.statesRequired.ToArray();
             CriticalFailureProbability = spell.criticalFailureProbability;
             NeedFreeCell = spell.needFreeCell;
-            NeedFreeTrapCell = spell.needFreeTrapCell;
             NeedTakenCell = spell.needTakenCell;
+            NeedFreeTrapCell = spell.needFreeTrapCell;
             RangeCanBeBoosted = spell.rangeCanBeBoosted;
             MaxStack = spell.maxStack;
+            MaxCastPerTurn = spell.maxCastPerTurn;
             MaxCastPerTarget = spell.maxCastPerTarget;
             MinCastInterval = spell.minCastInterval;
             InitialCooldown = spell.initialCooldown;
@@ -292,7 +294,7 @@ namespace Stump.Server.WorldServer.Database.Spells
             CriticalFailureEndsTurn = spell.criticalFailureEndsTurn;
             HideEffects = spell.hideEffects;
             Hidden = spell.hidden;
-            MinRange = spell.minRange;
+            StatesRequired = spell.statesRequired.ToArray();
             StatesForbidden = spell.statesForbidden.ToArray();
             m_effectsBin = EffectManager.Instance.SerializeEffects(spell.effects);
             m_criticalEffectsBin = EffectManager.Instance.SerializeEffects(spell.criticalEffect);

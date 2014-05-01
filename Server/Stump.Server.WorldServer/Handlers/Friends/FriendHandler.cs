@@ -142,6 +142,16 @@ namespace Stump.Server.WorldServer.Handlers.Friends
             client.Send(new FriendAddFailureMessage((sbyte)reason));
         }
 
+        public static void SendFriendAddedMessage(IPacketReceiver client, Friend friend)
+        {
+            client.Send(new FriendAddedMessage(friend.GetFriendInformations()));
+        }
+
+        public static void SendIgnoredAddedMessage(IPacketReceiver client, Ignored ignored, bool session)
+        {
+            client.Send(new IgnoredAddedMessage(ignored.GetIgnoredInformations(), session));
+        }
+
         public static void SendFriendDeleteResultMessage(IPacketReceiver client, bool success, string name)
         {
             client.Send(new FriendDeleteResultMessage(success, name));
@@ -169,7 +179,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
 
         public static void SendIgnoredListMessage(IPacketReceiver client, IEnumerable<Ignored> ignoreds)
         {
-            client.Send(new IgnoredListMessage(ignoreds.Select(entry => entry.GetIgnoredInformations())));
+            client.Send(new IgnoredListMessage(ignoreds.Where(x => !x.Session).Select(entry => entry.GetIgnoredInformations())));
         }
     }
 }
