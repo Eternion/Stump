@@ -2,7 +2,6 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
@@ -24,7 +23,13 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 return;
             }
 
-            if (target.IsAway)
+            if (target.FriendsBook.IsIgnored(client.Account.Id))
+            {
+                SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY);
+                return;
+            }
+
+            if (target.IsAway && !target.FriendsBook.IsFriend(client.Account.Id))
             {
                 SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY);
                 return;
