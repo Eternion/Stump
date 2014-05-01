@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Social
             if (friendAccount.Id == Owner.Client.WorldAccount.Id)
                 return ListAddFailureEnum.LIST_ADD_FAILURE_EGOCENTRIC;
 
-            if (m_friends.ContainsKey(friendAccount.Id))
+            if (IsIgnored(friendAccount.Id) || IsFriend(friendAccount.Id))
                 return ListAddFailureEnum.LIST_ADD_FAILURE_IS_DOUBLE;
 
             if (m_friends.Count >= MaxFriendsNumber)
@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Game.Social
             if (ignoredAccount.Id == Owner.Client.WorldAccount.Id)
                 return ListAddFailureEnum.LIST_ADD_FAILURE_EGOCENTRIC;
 
-            if (m_ignoreds.ContainsKey(ignoredAccount.Id))
+            if (IsFriend(ignoredAccount.Id) || IsIgnored(ignoredAccount.Id))
                 return ListAddFailureEnum.LIST_ADD_FAILURE_IS_DOUBLE;
 
             if (m_ignoreds.Count >= MaxFriendsNumber)
