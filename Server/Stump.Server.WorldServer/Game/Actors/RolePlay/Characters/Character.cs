@@ -1348,6 +1348,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             PrestigeRank++;
             AddTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
 
+            switch (PrestigeRank)
+            {
+                case 5:
+                    AddOrnament(25);
+                    break;
+                case 10:
+                    AddOrnament(49);
+                    break;
+                case 15:
+                    AddOrnament(50);
+                    break;
+            }
+
             var item = GetPrestigeItem();
 
             if (item == null)
