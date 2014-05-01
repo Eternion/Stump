@@ -10,9 +10,9 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightAgression : Fight
+    public class FightAgression : Fight<FightPlayerTeam, FightPlayerTeam>
     {
-        public FightAgression(int id, Map fightMap, FightTeam blueTeam, FightTeam redTeam) : base(id, fightMap, blueTeam, redTeam)
+        public FightAgression(int id, Map fightMap, FightPlayerTeam blueTeam, FightPlayerTeam redTeam) : base(id, fightMap, blueTeam, redTeam)
         {
             m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
         }

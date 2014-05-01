@@ -10,9 +10,9 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightDuel : Fight
+    public class FightDuel : Fight<FightPlayerTeam, FightPlayerTeam>
     {
-        public FightDuel(int id, Map fightMap, FightTeam blueTeam, FightTeam redTeam)
+        public FightDuel(int id, Map fightMap, FightPlayerTeam blueTeam, FightPlayerTeam redTeam)
             : base(id, fightMap, blueTeam, redTeam)
         {
         }

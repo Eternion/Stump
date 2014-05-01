@@ -85,18 +85,18 @@ namespace Stump.Server.WorldServer.Game.Maps
                 handler(this, actor);
         }
 
-        public event Action<Map, Fight> FightCreated;
+        public event Action<Map, IFight> FightCreated;
 
-        protected virtual void OnFightCreated(Fight fight)
+        protected virtual void OnFightCreated(IFight fight)
         {
             var handler = FightCreated;
             if (handler != null)
                 handler(this, fight);
         }
 
-        public event Action<Map, Fight> FightRemoved;
+        public event Action<Map, IFight> FightRemoved;
 
-        protected virtual void OnFightRemoved(Fight fight)
+        protected virtual void OnFightRemoved(IFight fight)
         {
             var handler = FightRemoved;
             if (handler != null)
@@ -205,7 +205,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly List<RolePlayActor> m_actors = new List<RolePlayActor>();
         private readonly ConcurrentDictionary<int, RolePlayActor> m_actorsMap = new ConcurrentDictionary<int, RolePlayActor>();
         private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
-        private readonly List<Fight> m_fights = new List<Fight>();
+        private readonly List<IFight> m_fights = new List<IFight>();
         private readonly Dictionary<int, InteractiveObject> m_interactives = new Dictionary<int, InteractiveObject>();
         private readonly Dictionary<int, MapNeighbour> m_clientMapsAround = new Dictionary<int, MapNeighbour>();
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
@@ -986,7 +986,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Fights
 
-        public ReadOnlyCollection<Fight> Fights
+        public ReadOnlyCollection<IFight> Fights
         {
             get { return m_fights.AsReadOnly(); }
         }
@@ -996,7 +996,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return (short)m_fights.Count;
         }
 
-        public void AddFight(Fight fight)
+        public void AddFight(IFight fight)
         {
             if (fight.Map != this)
                 return;
@@ -1008,7 +1008,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             OnFightCreated(fight);
         }
 
-        public void RemoveFight(Fight fight)
+        public void RemoveFight(IFight fight)
         {
             m_fights.Remove(fight);
 

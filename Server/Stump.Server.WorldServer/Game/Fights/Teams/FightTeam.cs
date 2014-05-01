@@ -91,10 +91,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             get;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get;
             internal set;
+        }
+
+        public FightTeam OpposedTeam
+        {
+            get { return Fight.BlueTeam == this ? Fight.RedTeam : Fight.BlueTeam; }
         }
 
         public virtual FightActor Leader

@@ -256,9 +256,13 @@
     <Compile Include="Game\Actors\RolePlay\Merchants\MerchantManager.cs" />
     <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
+    <Compile Include="Game\Arena\ArenaFight.cs" />
     <Compile Include="Game\Arena\ArenaManager.cs" />
     <Compile Include="Game\Arena\ArenaParty.cs" />
+    <Compile Include="Game\Arena\ArenaPopup.cs" />
     <Compile Include="Game\Arena\ArenaQueueMember.cs" />
+    <Compile Include="Game\Arena\ArenaTeam.cs" />
+    <Compile Include="Game\Arena\ArenaWaitingCharacter.cs" />
     <Compile Include="Game\Conditions\BoolOperator.cs" />
     <Compile Include="Game\Conditions\Criterions\AdminRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AlignementLevelCriterion.cs" />
@@ -446,6 +450,7 @@
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
+    <Compile Include="Handlers\Context\ContextArenaHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Guilds\GuildHandler.cs" />

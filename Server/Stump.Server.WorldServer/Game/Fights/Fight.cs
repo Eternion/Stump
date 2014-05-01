@@ -32,7 +32,248 @@ using TriggerType = Stump.Server.WorldServer.Game.Fights.Triggers.TriggerType;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public abstract class Fight : WorldObjectsContext, ICharacterContainer
+    public delegate void FightWinnersDelegate(IFight fight, FightTeam winners, FightTeam losers, bool draw);
+
+    public interface IFight : ICharacterContainer
+    {
+        int Id
+        {
+            get;
+        }
+
+        Map Map
+        {
+            get;
+        }
+
+        Cell[] Cells
+        {
+            get;
+        }
+
+        FightTypeEnum FightType
+        {
+            get;
+        }
+
+        FightState State
+        {
+            get;
+        }
+
+        bool IsStarted
+        {
+            get;
+        }
+
+        DateTime CreationTime
+        {
+            get;
+        }
+
+        DateTime StartTime
+        {
+            get;
+        }
+
+        short AgeBonus
+        {
+            get;
+        }
+
+        FightTeam RedTeam
+        {
+            get;
+        }
+
+        FightTeam BlueTeam
+        {
+            get;
+        }
+
+        FightTeam Winners
+        {
+            get;
+        }
+
+        FightTeam Losers
+        {
+            get;
+        }
+
+        bool Draw
+        {
+            get;
+        }
+
+        TimeLine TimeLine
+        {
+            get;
+        }
+        ReadOnlyCollection<FightActor> Fighters
+        {
+            get;
+        }
+
+        ReadOnlyCollection<FightActor> Leavers
+        {
+            get;
+        }
+
+        ReadOnlyCollection<FightSpectator> Spectators
+        {
+            get;
+        }
+
+        FightActor FighterPlaying
+        {
+            get;
+        }
+
+        DateTime TurnStartTime
+        {
+            get;
+        }
+
+        ReadyChecker ReadyChecker
+        {
+            get;
+        }
+
+        bool SpectatorClosed
+        {
+            get;
+        }
+
+        bool BladesVisible
+        {
+            get;
+        }
+
+        FightLoot TaxCollectorLoot
+        {
+            get;
+        }
+
+        SequenceTypeEnum Sequence
+        {
+            get;
+        }
+
+        bool IsSequencing
+        {
+            get;
+        }
+
+        bool WaitAcknowledgment
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Do not modify, just read
+        /// </summary>
+        WorldClientCollection Clients
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Do not modify, just read
+        /// </summary>
+        WorldClientCollection SpectatorClients
+        {
+            get;
+        }
+
+        void Initialize();
+        void StartFighting();
+        bool CheckFightEnd();
+        void CancelFight();
+        void EndFight();
+        event FightWinnersDelegate WinnersDetermined;
+        void StartPlacement();
+        void ShowBlades();
+        void HideBlades();
+        void UpdateBlades(FightTeam team);
+        bool FindRandomFreeCell(FightActor fighter, out Cell cell, bool placement = true);
+        bool RandomnizePosition(FightActor fighter);
+        void RandomnizePositions(FightTeam team);
+        DirectionsEnum FindPlacementDirection(FightActor fighter);
+        bool KickFighter(FightActor kicker, FightActor fighter);
+
+        /// <summary>
+        ///   Check if a character can change position (before the fight is started).
+        /// </summary>
+        /// <param name = "fighter"></param>
+        /// <param name="cell"></param>
+        /// <returns>If change is possible</returns>
+        bool CanChangePosition(FightActor fighter, Cell cell);
+
+        void ToggleSpectatorClosed(bool state);
+        bool CanSpectatorJoin(Character spectator);
+        bool AddSpectator(FightSpectator spectator);
+        void RemoveSpectator(FightSpectator spectator);
+        void RemoveAllSpectators();
+        void StartTurn();
+        event Action<IFight, FightActor> TurnStarted;
+        void StopTurn();
+        void SwitchFighters(FightActor fighter1, FightActor fighter2);
+        IEnumerable<Buff> GetBuffs();
+        void UpdateBuff(Buff buff);
+        bool StartSequence(SequenceTypeEnum sequenceType);
+        bool EndSequence(SequenceTypeEnum sequenceType, bool force = false);
+        void EndAllSequences();
+        void AcknowledgeAction();
+        IEnumerable<MarkTrigger> GetTriggers();
+        bool ShouldTriggerOnMove(Cell cell);
+        MarkTrigger[] GetTriggers(Cell cell);
+        void AddTriger(MarkTrigger trigger);
+        void RemoveTrigger(MarkTrigger trigger);
+        void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType);
+        void DecrementGlyphDuration(FightActor caster);
+        int PopNextTriggerId();
+        void FreeTriggerId(int id);
+        IEnumerable<Character> GetAllCharacters();
+        IEnumerable<Character> GetAllCharacters(bool withSpectators = false);
+        void ForEach(Action<Character> action);
+        void ForEach(Action<Character> action, bool withSpectators = false);
+        void ForEach(Action<Character> action, Character except, bool withSpectators = false);
+        bool IsCellFree(Cell cell);
+        int GetFightDuration();
+        int GetTurnTimeLeft();
+        sbyte GetNextContextualId();
+        void FreeContextualId(sbyte id);
+        FightActor GetOneFighter(int id);
+        FightActor GetOneFighter(Cell cell);
+        FightActor GetOneFighter(Predicate<FightActor> predicate);
+        T GetOneFighter<T>(int id) where T : FightActor;
+        T GetOneFighter<T>(Cell cell) where T : FightActor;
+        T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor;
+        T GetFirstFighter<T>(int id) where T : FightActor;
+        T GetFirstFighter<T>(Cell cell) where T : FightActor;
+        T GetFirstFighter<T>(Predicate<T> predicate) where T : FightActor;
+        ReadOnlyCollection<FightActor> GetAllFighters();
+        ReadOnlyCollection<FightActor> GetLeavers();
+        CharacterFighter GetLeaver(int characterId);
+        ReadOnlyCollection<FightSpectator> GetSpectators();
+        IEnumerable<Character> GetCharactersAndSpectators();
+        IEnumerable<FightActor> GetFightersAndLeavers();
+        IEnumerable<FightActor> GetAllFighters(Cell[] cells);
+        IEnumerable<FightActor> GetAllFighters(IEnumerable<Cell> cells);
+        IEnumerable<FightActor> GetAllFighters(Predicate<FightActor> predicate);
+        IEnumerable<T> GetAllFighters<T>() where T : FightActor;
+        IEnumerable<T> GetAllFighters<T>(Predicate<T> predicate) where T : FightActor;
+        IEnumerable<int> GetDeadFightersIds();
+        IEnumerable<int> GetAliveFightersIds();
+        FightCommonInformations GetFightCommonInformations();
+        FightExternalInformations GetFightExternalInformations();
+        bool CanBeSeen(Cell from, Cell to, bool throughEntities = false);
+    }
+
+    public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, ICharacterContainer, IFight
+        where TRedTeam : FightTeam
+        where TBlueTeam : FightTeam
     {
         protected readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -67,7 +308,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Constructor
 
-        protected Fight(int id, Map fightMap, FightTeam blueTeam, FightTeam redTeam)
+        protected Fight(int id, Map fightMap, TBlueTeam blueTeam, TRedTeam redTeam)
         {
             Id = id;
             Map = fightMap;
@@ -75,11 +316,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             BlueTeam.Fight = this;
             RedTeam = redTeam;
             RedTeam.Fight = this;
-            m_teams = new[] {RedTeam, BlueTeam};
+            m_teams = new[] {(FightTeam)RedTeam, BlueTeam};
 
             TimeLine = new TimeLine(this);
-            Leavers = new List<FightActor>();
-            Spectators = new List<FightSpectator>();
+            m_leavers = new List<FightActor>();
+            m_spectators = new List<FightSpectator>();
 
             BlueTeam.FighterAdded += OnFighterAdded;
             BlueTeam.FighterRemoved += OnFighterRemoved;
@@ -131,7 +372,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get
             {
-                return Fighters.AsReadOnly();
+                return Fighters;
             }
         }
 
@@ -170,13 +411,22 @@ namespace Stump.Server.WorldServer.Game.Fights
             protected set;
         }
 
-        public FightTeam RedTeam
+        FightTeam IFight.RedTeam
+        {
+            get { return RedTeam; }
+        }
+        FightTeam IFight.BlueTeam
+        {
+            get { return BlueTeam; }
+        }
+
+        public TRedTeam RedTeam
         {
             get;
             private set;
         }
 
-        public FightTeam BlueTeam
+        public TBlueTeam BlueTeam
         {
             get;
             private set;
@@ -223,21 +473,19 @@ namespace Stump.Server.WorldServer.Game.Fights
             protected set;
         }
 
-        internal List<FightActor> Fighters
+        public ReadOnlyCollection<FightActor> Fighters
         {
-            get { return TimeLine.Fighters; }
+            get { return TimeLine.Fighters.AsReadOnly(); }
         }
 
-        internal List<FightActor> Leavers
+        public ReadOnlyCollection<FightActor> Leavers
         {
-            get;
-            private set;
+            get { return m_leavers.AsReadOnly(); }
         }
 
-        internal List<FightSpectator> Spectators
+        public ReadOnlyCollection<FightSpectator> Spectators
         {
-            get;
-            private set;
+            get { return m_spectators.AsReadOnly(); }
         }
 
         public bool SpectatorClosed
@@ -400,7 +648,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             Dispose();
         }
 
-        public delegate void FightWinnersDelegate(Fight fight, FightTeam winners, FightTeam losers, bool draw);
         public event FightWinnersDelegate WinnersDetermined;
 
         protected virtual void OnWinnersDetermined(FightTeam winners, FightTeam losers, bool draw)
@@ -645,7 +892,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State != FightState.Placement)
                 throw new Exception("State != Placement, cannot give placement direction");
 
-            var team = fighter.Team == RedTeam ? BlueTeam : RedTeam;
+            var team = fighter.OpposedTeam;
 
             Tuple<Cell, uint> closerCell = null;
             foreach (var opposant in team.GetAllFighters())
@@ -888,7 +1135,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (!CanSpectatorJoin(spectator.Character))
                 return false;
 
-            Spectators.Add(spectator);
+            m_spectators.Add(spectator);
             spectator.JoinTime = DateTime.Now;
             spectator.Left += OnSpectectorLeft;
             spectator.Character.LoggedOut += OnSpectatorLoggedOut;
@@ -940,7 +1187,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void RemoveSpectator(FightSpectator spectator)
         {
-            Spectators.Remove(spectator);
+            m_spectators.Remove(spectator);
 
             Clients.Remove(spectator.Character.Client);
             SpectatorClients.Remove(spectator.Client);
@@ -958,7 +1205,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void RemoveAllSpectators()
         {
-            foreach (var spectator in Spectators.GetRange(0, Spectators.Count))
+            foreach (var spectator in m_spectators.GetRange(0, Spectators.Count))
             {
                 RemoveSpectator(spectator);
             }
@@ -979,7 +1226,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        public event Action<Fight, FightActor> TurnStarted;
+        public event Action<IFight, FightActor> TurnStarted;
 
         protected virtual void OnTurnStarted()
         {
@@ -1578,7 +1825,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                     fighter.Team.RemoveFighter(fighter);
                     fighter.Team.AddLeaver(fighter);
-                    Leavers.Add(fighter);
+                    m_leavers.Add(fighter);
                 }
             }
         }
@@ -1600,7 +1847,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             fighter.Team.RemoveFighter(fighter);
             fighter.Team.AddLeaver(fighter);
-            Leavers.Add(fighter);
+            m_leavers.Add(fighter);
         }
 
         protected virtual void OnPlayerLoggout(Character character)
@@ -1730,6 +1977,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private readonly WorldClientCollection m_spectatorClients = new WorldClientCollection();
+        private List<FightActor> m_leavers;
+        private List<FightSpectator> m_spectators;
 
         /// <summary>
         /// Do not modify, just read
@@ -1866,12 +2115,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public ReadOnlyCollection<FightActor> GetAllFighters()
         {
-            return Fighters.AsReadOnly();
+            return Fighters;
         }
 
         public ReadOnlyCollection<FightActor> GetLeavers()
         {
-            return Leavers.AsReadOnly();
+            return Leavers;
         }
 
         public CharacterFighter GetLeaver(int characterId)
@@ -1881,7 +2130,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public ReadOnlyCollection<FightSpectator> GetSpectators()
         {
-            return Spectators.AsReadOnly();
+            return Spectators;
         }
 
         public IEnumerable<Character> GetCharactersAndSpectators()

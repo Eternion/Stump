@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Arena;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
@@ -23,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         /// <summary>
         /// is seconds
         /// </summary>
-        [Variable] public static int ArenaFightsInterval = 60;
+        [Variable] public static int ArenaMatchmakingInterval = 60;
 
         private Dictionary<int, ArenaRecord> m_arenas;
         private SelfRunningTaskPool m_arenaTaskPool = new SelfRunningTaskPool(ArenaUpdateInterval, "Arena");
@@ -33,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         public override void Initialize()
         {
             m_arenas = Database.Query<ArenaRecord>(ArenaRelator.FetchQuery).ToDictionary(x => x.Id);
-            m_arenaTaskPool.CallPeriodically(ArenaFightsInterval*1000, StartFights);
+            m_arenaTaskPool.CallPeriodically(ArenaMatchmakingInterval*1000, ComputeMatchmaking);
         }
 
 
@@ -65,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                 m_queue.RemoveAll(x => x.Character == character);
         }
 
-        public void StartFights()
+        public void ComputeMatchmaking()
         {
             var queue = m_queue.ToList();
             ArenaQueueMember current;
@@ -114,11 +116,27 @@ namespace Stump.Server.WorldServer.Game.Arena
                     continue;
 
                 // start fight
-                // ...
+                StartFight(allies, enemies);
 
                 m_queue.RemoveAll(x => allies.Contains(x) || enemies.Contains(x));
 
                 current = m_queue.FirstOrDefault();
+            }
+        }
+
+        private void StartFight(IEnumerable<ArenaQueueMember> team1, IEnumerable<ArenaQueueMember> team2)
+        {
+            var arena = m_arenas.RandomElementOrDefault().Value;
+            var fight = FightManager.Instance.CreateArenaFight(arena.Map);
+
+            foreach (var member in team1)
+            {
+                fight.BlueTeam.AddQueueMember(member);
+            }
+
+            foreach (var member in team2)
+            {
+                fight.RedTeam.AddQueueMember(member);
             }
         }
     }

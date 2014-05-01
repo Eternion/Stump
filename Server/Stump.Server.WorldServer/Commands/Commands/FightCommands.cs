@@ -120,7 +120,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var target = GetTarget(trigger);
-            var fight = trigger.Get<Fight>("fight");
+            var fight = trigger.Get<IFight>("fight");
             var teamString = trigger.Get<string>("team");
 
             if (!teamString.Equals("blue", StringComparison.InvariantCultureIgnoreCase) &&
@@ -189,9 +189,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Fight fight;
+            IFight fight;
             if (trigger.IsArgumentDefined("fight"))
-                fight = trigger.Get<Fight>("fight");
+                fight = trigger.Get<IFight>("fight");
             else if ((trigger is GameTrigger) && (trigger as GameTrigger).Character.IsInFight())
                 fight = (trigger as GameTrigger).Character.Fight;
             else
@@ -220,9 +220,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Fight fight;
+            IFight fight;
             if (trigger.IsArgumentDefined("fight"))
-                fight = trigger.Get<Fight>("fight");
+                fight = trigger.Get<IFight>("fight");
             else if (( trigger is GameTrigger ) && ( trigger as GameTrigger ).Character.IsInFight())
                 fight = ( trigger as GameTrigger ).Character.Fight;
             else
