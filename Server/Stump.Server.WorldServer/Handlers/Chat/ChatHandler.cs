@@ -52,12 +52,12 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                     message.content);
 
                                 var document = new BsonDocument
-                            {
-                                {"SenderId", client.Character.Id},
-                                {"ReceiverId", chr.Id},
-                                {"Message", message.content},
-                                {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
-                            };
+                                {
+                                    { "SenderId", client.Character.Id },
+                                    { "ReceiverId", chr.Id },
+                                    { "Message", message.content },
+                                    { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                                };
 
                                 MongoLogger.Instance.Insert("PrivateMSG", document);
                             }
