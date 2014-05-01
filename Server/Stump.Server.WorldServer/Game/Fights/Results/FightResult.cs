@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             return false;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get { return Fighter.Fight; }
         }
@@ -126,7 +126,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             get;
         }
 
-        Fight Fight
+        IFight Fight
         {
             get;
         }

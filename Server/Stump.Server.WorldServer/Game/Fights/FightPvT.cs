@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights
     /// <summary>
     /// Players versus Tax Collector
     /// </summary>
-    public class FightPvT : Fight
+    public class FightPvT : Fight<FightTaxCollectorDefenderTeam, FightTaxCollectorAttackersTeam>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get
             {
-                return (FightTaxCollectorAttackersTeam) RedTeam;
+                return RedTeam;
             }
         }
 
@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get
             {
-                return (FightTaxCollectorDefenderTeam) BlueTeam;
+                return BlueTeam;
             }
         }
 

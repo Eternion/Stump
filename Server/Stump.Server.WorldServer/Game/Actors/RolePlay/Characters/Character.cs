@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
@@ -1199,7 +1200,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public Fights.Fight Fight
+        public IFight Fight
         {
             get { return Fighter == null ? (Spectator != null ? Spectator.Fight : null) : Fighter.Fight; }
         }
@@ -1424,6 +1425,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Arena
 
+        public void CheckArenaDailyProperties()
+        {
+            if (m_record.ArenaDailyDate.Day != DateTime.Now.Day)
+            {
+                m_record.ArenaDailyDate = DateTime.Now;
+                ArenaDailyMaxRank = 0;
+                ArenaDailyMatchsCount = 0;
+                ArenaDailyMatchsWon = 0;
+
+                // todo : gives bonus here
+            }
+        }
+
         public int ArenaRank
         {
             get { return m_record.ArenaRank; }
@@ -1449,6 +1463,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get { return m_record.ArenaDailyMatchsCount; }
             set { m_record.ArenaDailyMatchsCount = value; }
+        }
+
+        public ArenaPopup ArenaPopup
+        {
+            get;
+            set;
         }
 
         #endregion
@@ -1948,7 +1968,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Fighter;
         }
 
-        public FightSpectator CreateSpectator(Fights.Fight fight)
+        public FightSpectator CreateSpectator(IFight fight)
         {
             if (IsFighting() || IsSpectator() || !IsInWorld)
                 return null;
@@ -2505,6 +2525,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             FriendsBook.Load();
 
             ChatHistory = new ChatHistory(this);
+
+            CheckArenaDailyProperties();
 
             m_recordLoaded = true;
         }

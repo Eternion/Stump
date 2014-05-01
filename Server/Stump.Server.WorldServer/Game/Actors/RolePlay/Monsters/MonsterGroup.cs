@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             CreationDate = DateTime.Now;
         }
 
-        public Fights.Fight Fight
+        public IFight Fight
         {
             get;
             private set;

@@ -129,7 +129,7 @@ namespace Stump.Server.WorldServer.Commands
             return spellByName;
         };
 
-        public static ConverterHandler<Fight> FightConverter = (entry, trigger) =>
+        public static ConverterHandler<IFight> FightConverter = (entry, trigger) =>
         {
             int outvalue;
             if (!int.TryParse(entry, out outvalue))

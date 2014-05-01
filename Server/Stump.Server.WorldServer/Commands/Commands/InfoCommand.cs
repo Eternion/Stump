@@ -177,7 +177,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var fight = trigger.Get<Fight>("fight");
+            var fight = trigger.Get<IFight>("fight");
 
             trigger.ReplyBold("Fight {0}", fight.Id);
             trigger.ReplyBold("State : {0} Started Since : {1}", fight.State,

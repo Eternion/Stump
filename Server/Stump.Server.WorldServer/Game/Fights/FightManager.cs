@@ -1,15 +1,16 @@
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightManager : EntityManager<FightManager, Fight>
+    public class FightManager : EntityManager<FightManager, IFight>
     {
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
 
-        public Fight CreateDuel(Map map)
+        public FightDuel CreateDuel(Map map)
         {
             var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
             var blueTeam = new FightPlayerTeam(1, map.GetBlueFightPlacement());
@@ -21,10 +22,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             return fight;
         }
 
-        public Fight CreatePvMFight(Map map)
+        public FightPvM CreatePvMFight(Map map)
         {
-            var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
-            var blueTeam = new FightMonsterTeam(1, map.GetBlueFightPlacement());
+            var blueTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
+            var redTeam = new FightMonsterTeam(1, map.GetBlueFightPlacement());
 
             var fight = new FightPvM(m_idProvider.Pop(), map, blueTeam, redTeam);
 
@@ -33,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return fight;
         }
 
-        public Fight CreateAgressionFight(Map map, AlignmentSideEnum redAlignment, AlignmentSideEnum blueAlignment)
+        public FightAgression CreateAgressionFight(Map map, AlignmentSideEnum redAlignment, AlignmentSideEnum blueAlignment)
         {
             var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement(), redAlignment);
             var blueTeam = new FightPlayerTeam(1, map.GetBlueFightPlacement(), blueAlignment);
@@ -57,14 +58,26 @@ namespace Stump.Server.WorldServer.Game.Fights
             return fight;
         }
 
-        public void Remove(Fight fight)
+        public ArenaFight CreateArenaFight(Map map)
+        {
+            var redTeam = new ArenaTeam(0, map.GetRedFightPlacement());
+            var blueTeam = new ArenaTeam(1, map.GetBlueFightPlacement());
+
+            var fight = new ArenaFight(m_idProvider.Pop(), map, blueTeam, redTeam);
+
+            AddEntity(fight.Id, fight);
+
+            return fight;
+        }
+
+        public void Remove(IFight fight)
         {
             RemoveEntity(fight.Id);
 
             m_idProvider.Push(fight.Id);
         }
 
-        public Fight GetFight(int id)
+        public IFight GetFight(int id)
         {
             return GetEntityOrDefault(id);
         }

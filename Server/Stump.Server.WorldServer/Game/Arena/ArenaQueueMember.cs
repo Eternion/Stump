@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
@@ -6,7 +7,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaQueueMember
     {
-        [Variable] public static int ArenaMargeIncreasePerMinutes = 50;
+        [Variable] public static int ArenaMargeIncreasePerMinutes = 30;
 
         public ArenaQueueMember(Character character)
         {
@@ -61,6 +62,12 @@ namespace Stump.Server.WorldServer.Game.Arena
         public int MembersCount
         {
             get { return Party != null ? Party.MembersCount : 1; }
+        }
+
+        public ArenaTeam Team
+        {
+            get;
+            set;
         }
 
         public bool IsCompatibleWith(ArenaQueueMember member)

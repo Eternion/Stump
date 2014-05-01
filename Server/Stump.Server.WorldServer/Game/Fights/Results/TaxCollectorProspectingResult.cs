@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 {
     public class TaxCollectorProspectingResult : IFightResult, IExperienceResult
     {
-        public TaxCollectorProspectingResult(TaxCollectorNpc taxCollector, Fight fight)
+        public TaxCollectorProspectingResult(TaxCollectorNpc taxCollector, IFight fight)
         {
             TaxCollector = taxCollector;
             Fight = fight;
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             private set;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get;
             private set;
