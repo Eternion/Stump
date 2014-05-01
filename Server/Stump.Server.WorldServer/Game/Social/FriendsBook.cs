@@ -23,7 +23,6 @@ namespace Stump.Server.WorldServer.Game.Social
         private readonly ConcurrentDictionary<int, Friend> m_friends = new ConcurrentDictionary<int, Friend>();
         private readonly ConcurrentDictionary<int, Ignored> m_ignoreds = new ConcurrentDictionary<int, Ignored>();
         private readonly ConcurrentStack<AccountRelation> m_relationsToRemove = new ConcurrentStack<AccountRelation>();
-        private object m_lock = new object();
         private ConcurrentDictionary<int, AccountRelation> m_relations;
 
         public FriendsBook(Character owner)
@@ -86,6 +85,15 @@ namespace Stump.Server.WorldServer.Game.Social
             return null;
         }
 
+        public bool IsFriend(int accountId)
+        {
+            return Friends.ToArray().FirstOrDefault(x => x.Account.Id == accountId) != null;
+        }
+
+        public bool IsIgnored(int accountId)
+        {
+            return Ignoreds.ToArray().FirstOrDefault(x => x.Account.Id == accountId) != null;
+        }
 
         public bool AddFriend(WorldAccount friendAccount)
         {
@@ -110,21 +118,22 @@ namespace Stump.Server.WorldServer.Game.Social
                 return value;
             });
 
-            bool success;
-            if (friendAccount.ConnectedCharacter.HasValue)
+            Friend friend;
+            var isConnected = friendAccount.ConnectedCharacter.HasValue;
+            if (isConnected)
             {
                 var character = World.Instance.GetCharacter(friendAccount.ConnectedCharacter.Value);
-                var friend = new Friend(relation, friendAccount, character);
-                success = m_friends.TryAdd(friendAccount.Id, friend);
-
-                if (success)
-                    OnFriendOnline(friend);
+                friend = new Friend(relation, friendAccount, character);
             }
             else
-                success = m_friends.TryAdd(friendAccount.Id, new Friend(relation, friendAccount));
+                friend = new Friend(relation, friendAccount);
 
+            var success = m_friends.TryAdd(friendAccount.Id, friend);
 
-            FriendHandler.SendFriendsListMessage(Owner.Client, Friends);
+            if (success && isConnected)
+                OnFriendOnline(friend);
+
+            FriendHandler.SendFriendAddedMessage(Owner.Client, friend);
 
             return success;
         }
@@ -185,18 +194,19 @@ namespace Stump.Server.WorldServer.Game.Social
                     return value;
                 });
 
-            bool success;
+            Ignored ignored;
             if (ignoredAccount.ConnectedCharacter.HasValue)
             {
                 var character = World.Instance.GetCharacter(ignoredAccount.ConnectedCharacter.Value);
-
-                success = m_ignoreds.TryAdd(ignoredAccount.Id, new Ignored(relation, ignoredAccount, session, character));
+                ignored = new Ignored(relation, ignoredAccount, session, character);
             }
             else
-                success = m_ignoreds.TryAdd(ignoredAccount.Id, new Ignored(relation, ignoredAccount, session));
-
-
-            FriendHandler.SendIgnoredListMessage(Owner.Client, Ignoreds);
+            {
+                ignored = new Ignored(relation, ignoredAccount, session);
+            }
+                
+            var success = m_ignoreds.TryAdd(ignoredAccount.Id, ignored);
+            FriendHandler.SendIgnoredAddedMessage(Owner.Client, ignored, session);
 
             return success;
         }
