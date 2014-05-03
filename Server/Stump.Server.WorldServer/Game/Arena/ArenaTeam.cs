@@ -21,16 +21,12 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
         }
 
-        public void AddQueueMember(ArenaQueueMember member)
+        public void AddArenaFighter(Character character)
         {
             if (Fight.State != FightState.NotStarted)
                 return;
 
-            if (member.Party != null)
-                m_requestedCharacters.AddRange(member.Party.Members.Select(x => new ArenaWaitingCharacter(x, this)));
-            else m_requestedCharacters.Add(new ArenaWaitingCharacter(member.Character, this));
-
-            member.Team = this;
+            m_requestedCharacters.Add(new ArenaWaitingCharacter(character, this));
         }
 
         public Character[] GetAlliesInQueue()

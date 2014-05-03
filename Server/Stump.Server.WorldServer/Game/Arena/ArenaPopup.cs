@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -8,39 +10,52 @@ namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaPopup : Notification
     {
-
-        private readonly ArenaQueueMember m_member;
-
-        public ArenaPopup(Character character, ArenaQueueMember member)
+        public ArenaPopup(Character character, ArenaTeam team)
         {
             Character = character;
-            m_member = member;
+            Team = team;
+            Fight.FightDenied += OnFightDenied;
         }
 
 
-        public ArenaQueueMember Member
-        {
-            get { return m_member; }
-        }
         public Character Character
         {
             get;
             private set;
         }
 
+        public ArenaTeam Team
+        {
+            get;
+            set;
+        }
+
+        public ArenaFight Fight
+        {
+            get { return Team.Fight as ArenaFight; }
+        }
+
         public override void Display()
         {
             Character.ArenaPopup = this;
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Character.Client, false, 
+                PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
             ContextHandler.SendGameRolePlayArenaFightPropositionMessage(Character.Client, this);
         }
 
         public void Accept()
         {
-            Member.Team.ToggleReadyToFight(Character, true);
+            Team.ToggleReadyToFight(Character, true);
         }
 
         public void Deny()
         {
+            Fight.DenyFight(Character);
+        }
+
+        private void OnFightDenied(ArenaFight arg1, Character arg2)
+        {
+            ArenaManager.Instance.AddToQueue(Character);
         }
     }
 }

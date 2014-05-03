@@ -4,11 +4,13 @@ using Stump.Core.Attributes;
 using Stump.Core.Extensions;
 using Stump.Core.Reflection;
 using Stump.Core.Threading;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Arena;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
@@ -59,17 +61,28 @@ namespace Stump.Server.WorldServer.Game.Arena
             
             lock (m_queue)
                 m_queue.Add(new ArenaQueueMember(character));
+
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(character.Client, true,
+                PvpArenaStepEnum.ARENA_STEP_REGISTRED, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
 
         public void RemoveFromQueue(Character character)
         {
             lock (m_queue)
                 m_queue.RemoveAll(x => x.Character == character);
+
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(character.Client, false, 
+                PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
 
         public void ComputeMatchmaking()
         {
-            var queue = m_queue.ToList();
+            List<ArenaQueueMember> queue;
+            lock (m_queue)
+            {
+                queue = m_queue.ToList();
+                m_queue.Clear();
+            }
             ArenaQueueMember current;
 
             current = queue.FirstOrDefault();
@@ -118,9 +131,14 @@ namespace Stump.Server.WorldServer.Game.Arena
                 // start fight
                 StartFight(allies, enemies);
 
-                m_queue.RemoveAll(x => allies.Contains(x) || enemies.Contains(x));
+                queue.RemoveAll(x => allies.Contains(x) || enemies.Contains(x));
 
-                current = m_queue.FirstOrDefault();
+                current = queue.FirstOrDefault();
+            }
+
+            lock (m_queue)
+            {
+                m_queue.AddRange(queue);
             }
         }
 
@@ -129,14 +147,20 @@ namespace Stump.Server.WorldServer.Game.Arena
             var arena = m_arenas.RandomElementOrDefault().Value;
             var fight = FightManager.Instance.CreateArenaFight(arena.Map);
 
-            foreach (var member in team1)
+            foreach (var character in team1.SelectMany(x => x.EnumerateCharacters()))
             {
-                fight.BlueTeam.AddQueueMember(member);
+                fight.BlueTeam.AddArenaFighter(character);
+
+                var popup = new ArenaPopup(character, fight.BlueTeam);
+                popup.Display();
             }
 
-            foreach (var member in team2)
+            foreach (var character in team2.SelectMany(x => x.EnumerateCharacters()))
             {
-                fight.RedTeam.AddQueueMember(member);
+                fight.RedTeam.AddArenaFighter(character);
+
+                var popup = new ArenaPopup(character, fight.RedTeam);
+                popup.Display();            
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -64,10 +66,9 @@ namespace Stump.Server.WorldServer.Game.Arena
             get { return Party != null ? Party.MembersCount : 1; }
         }
 
-        public ArenaTeam Team
+        public IEnumerable<Character> EnumerateCharacters()
         {
-            get;
-            set;
+            return Party != null ? Party.Members : Enumerable.Repeat(Character, 1);
         }
 
         public bool IsCompatibleWith(ArenaQueueMember member)

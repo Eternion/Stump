@@ -820,8 +820,15 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         #endregion
+        
+        public virtual int GetPlacementTimeLeft()
+        {
+            return 0;
+        }
 
         #region Placement methods
+
+        
 
         public bool FindRandomFreeCell(FightActor fighter, out Cell cell, bool placement = true)
         {
@@ -1968,8 +1975,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Send Methods
 
-        protected abstract void SendGameFightJoinMessage(CharacterFighter fighter);
-        protected abstract void SendGameFightJoinMessage(FightSpectator spectator);
+        protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
+        {
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
+        }
+
+        protected virtual void SendGameFightJoinMessage(FightSpectator spectator)
+        {
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, false, IsStarted, GetPlacementTimeLeft(), FightType);
+        }
 
         #endregion
 
