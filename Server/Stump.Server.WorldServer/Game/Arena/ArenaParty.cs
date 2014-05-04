@@ -10,7 +10,6 @@ namespace Stump.Server.WorldServer.Game.Arena
         [Variable] public static int MaxArenaMemberCount = 3;
 
         private int m_rankSum ;
-        private int m_rankAvg;
 
         public ArenaParty(int id)
             : base(id)
@@ -29,7 +28,8 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public int GroupRankAverage
         {
-            get { return m_rankAvg; }
+            get;
+            private set;
         }
 
         protected override void OnGuestPromoted(Character groupMember)
@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             base.OnGuestPromoted(groupMember);
 
             m_rankSum += groupMember.ArenaRank;
-            m_rankAvg = m_rankSum/MembersCount;
+            GroupRankAverage = m_rankSum/MembersCount;
         }
 
         protected override void OnMemberRemoved(Character groupMember, bool kicked)
@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
 
             m_rankSum -= groupMember.ArenaRank;
-            m_rankAvg = m_rankSum/MembersCount;
+            GroupRankAverage = m_rankSum/MembersCount;
         }
     }
 }

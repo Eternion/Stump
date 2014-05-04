@@ -1679,6 +1679,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             notification.Display();
         }
 
+        public void ResetNotification()
+        {
+            Client.Send(new NotificationResetMessage());
+        }
+
         public void LeaveDialog()
         {
             if (IsInRequest())
@@ -1731,10 +1736,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void Invite(Character target)
         {
-            bool created = false;
+            var created = false;
             if (!IsInParty())
             {
-                Party party = PartyManager.Instance.Create();
+                var party = PartyManager.Instance.Create();
 
                 EnterParty(party);
                 created = true;
@@ -1801,12 +1806,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (party.IsMember(this))
                 return;
 
-            if (!party.PromoteGuestToMember(this))
-            {
-                Party.MemberRemoved -= OnPartyMemberRemoved;
-                Party.PartyDeleted -= OnPartyDeleted;
-                Party = null;
-            }
+            if (party.PromoteGuestToMember(this))
+                return;
+
+            Party.MemberRemoved -= OnPartyMemberRemoved;
+            Party.PartyDeleted -= OnPartyDeleted;
+            Party = null;
         }
 
         public void LeaveParty()

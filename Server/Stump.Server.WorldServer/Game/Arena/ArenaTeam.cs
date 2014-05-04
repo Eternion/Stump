@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
@@ -8,13 +7,12 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
-using Stump.Server.WorldServer.Game.Parties;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaTeam : FightTeamWithLeader<CharacterFighter>
     {
-        private List<ArenaWaitingCharacter> m_requestedCharacters = new List<ArenaWaitingCharacter>();
+        private readonly List<ArenaWaitingCharacter> m_requestedCharacters = new List<ArenaWaitingCharacter>();
 
         public ArenaTeam(sbyte id, Cell[] placementCells)
             : base(id, placementCells)
@@ -38,10 +36,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             var tuple = m_requestedCharacters.FirstOrDefault(x => x.Character == character);
 
-            if (tuple == null)
-                return false;
-
-            return tuple.Ready;
+            return tuple != null && tuple.Ready;
         }
 
         public void ToggleReadyToFight(Character character, bool ready)
@@ -65,10 +60,10 @@ namespace Stump.Server.WorldServer.Game.Arena
         private void TeleportCharactersToFight()
         {
             // a bit tricky
-            int count = m_requestedCharacters.Count + ((ArenaTeam) OpposedTeam).m_requestedCharacters.Count;
+            var count = m_requestedCharacters.Count + ((ArenaTeam) OpposedTeam).m_requestedCharacters.Count;
             foreach (var character in m_requestedCharacters.Concat(((ArenaTeam) OpposedTeam).m_requestedCharacters).Select(x => x.Character))
             {
-                Character character1 = character;
+                var character1 = character;
                 character.Area.ExecuteInContext(() =>
                 {
                     try

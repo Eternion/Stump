@@ -2,7 +2,6 @@
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
-using Stump.Core.Reflection;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
@@ -30,8 +29,8 @@ namespace Stump.Server.WorldServer.Game.Arena
         [Variable] public static int ArenaMatchmakingInterval = 60;
 
         private Dictionary<int, ArenaRecord> m_arenas;
-        private SelfRunningTaskPool m_arenaTaskPool = new SelfRunningTaskPool(ArenaUpdateInterval, "Arena");
-        private List<ArenaQueueMember> m_queue = new List<ArenaQueueMember>();
+        private readonly SelfRunningTaskPool m_arenaTaskPool = new SelfRunningTaskPool(ArenaUpdateInterval, "Arena");
+        private readonly List<ArenaQueueMember> m_queue = new List<ArenaQueueMember>();
         
         [Initialization(InitializationPass.Fifth)]
         public override void Initialize()
@@ -46,12 +45,13 @@ namespace Stump.Server.WorldServer.Game.Arena
             if (m_arenas.Count == 0)
                 return false;
 
-            //not in arena fight
+            //todo: not in arena fight
 
-            if (character.Level < ArenaMinLevel)
+            //Already in queue
+            if (m_queue.Exists(x => x.Character == character))
                 return false;
 
-            return true;
+            return character.Level >= ArenaMinLevel;
         }
 
         public void AddToQueue(Character character)
@@ -83,15 +83,14 @@ namespace Stump.Server.WorldServer.Game.Arena
                 queue = m_queue.ToList();
                 m_queue.Clear();
             }
-            ArenaQueueMember current;
 
-            current = queue.FirstOrDefault();
+            var current = queue.FirstOrDefault();
             while (current != null)
             {
                 queue.Remove(current);
 
                 var matchs = queue.Where(x => x.IsCompatibleWith(current)).ToList();
-                var allies = new List<ArenaQueueMember>() {current};
+                var allies = new List<ArenaQueueMember> {current};
                 var enemies = new List<ArenaQueueMember>();
 
                 var missingAllies = MaxPlayersPerFights - current.MembersCount;
