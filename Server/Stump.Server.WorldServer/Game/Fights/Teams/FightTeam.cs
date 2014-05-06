@@ -248,9 +248,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public bool RemoveFighter(FightActor actor)
         {
-            if (IsFull())
-                return false;
-
             lock (m_locker)
             {
                 if (!m_fighters.Remove(actor))

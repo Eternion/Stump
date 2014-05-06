@@ -833,13 +833,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (actor is CharacterFighter)
                 OnCharacterRemoved(actor as CharacterFighter);
 
-            if (State == FightState.Placement)
+            switch (State)
             {
-                ContextHandler.SendGameFightRemoveTeamMemberMessage(Clients, actor);
-            }
-            else if (State == FightState.Fighting)
-            {
-                ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);
+                case FightState.Placement:
+                    ContextHandler.SendGameFightRemoveTeamMemberMessage(Clients, actor);
+                    break;
+                case FightState.Fighting:
+                    ContextHandler.SendGameContextRemoveElementMessage(Clients, actor);
+                    break;
             }
 
             if (BladesVisible)
