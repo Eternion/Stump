@@ -5,7 +5,6 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
-using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
@@ -93,14 +92,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.Base,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
                 0, // shieldsPoints = ?
-                (short)Stats.AP.Total,
-                (short)Stats.AP.TotalMax,
-                (short)Stats.MP.Total,
-                (short)Stats.MP.TotalMax,
+                (short) Stats.AP.Total,
+                (short) Stats.AP.TotalMax,
+                (short) Stats.MP.Total,
+                (short) Stats.MP.TotalMax,
                 Summoner.Id,
                 true,
-                (short)Stats[PlayerFields.NeutralResistPercent].Total,
-                (short)Stats[PlayerFields.EarthResistPercent].Total,
+                (short) Stats[PlayerFields.NeutralResistPercent].Total,
+                (short) Stats[PlayerFields.EarthResistPercent].Total,
                 (short) Stats[PlayerFields.WaterResistPercent].Total,
                 (short) Stats[PlayerFields.AirResistPercent].Total,
                 (short) Stats[PlayerFields.FireResistPercent].Total,
@@ -112,10 +111,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short) Stats[PlayerFields.PushDamageReduction].Total,
                 (short) Stats[PlayerFields.CriticalDamageReduction].Total,
                 (short) Stats[PlayerFields.DodgeAPProbability].Total,
-                (short)Stats[PlayerFields.DodgeMPProbability].Total,
-                (short)Stats[PlayerFields.TackleBlock].Total,
-                (short)Stats[PlayerFields.TackleEvade].Total,
-                (sbyte)( client == null ? VisibleState : GetVisibleStateFor(client.Character) ) // invisibility state
+                (short) Stats[PlayerFields.DodgeMPProbability].Total,
+                (short) Stats[PlayerFields.TackleBlock].Total,
+                (short) Stats[PlayerFields.TackleEvade].Total,
+                (sbyte) (client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
                 );
         }
     }
