@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
@@ -1212,11 +1211,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             FreeBuffId(buff.Id);
         }
 
+        public void RemoveSpellBuffs(int spellId)
+        {
+            foreach (var buff in m_buffList.Where(x => x.Spell.Id == spellId).ToArray())
+            {
+                RemoveAndDispellBuff(buff);
+            }
+        }
+
         public void RemoveAndDispellAllBuffs()
         {
-            var copyOfBuffs = m_buffList.ToArray();
-
-            foreach (var buff in copyOfBuffs)
+            foreach (var buff in m_buffList.ToArray())
             {
                 RemoveAndDispellBuff(buff);
             }

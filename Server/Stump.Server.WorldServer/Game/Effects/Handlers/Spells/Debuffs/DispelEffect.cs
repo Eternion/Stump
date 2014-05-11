@@ -24,4 +24,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
             return true;
         }
     }
+
+    [EffectHandler(EffectsEnum.Effect_RemoveSpellEffects)]
+    public class RemoveSpellEffects : SpellEffectHandler
+    {
+        public RemoveSpellEffects(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+            : base(effect, caster, spell, targetedCell, critical)
+        {
+        }
+
+        public override bool Apply()
+        {
+            foreach (var actor in GetAffectedActors())
+            {
+                var integerEffect = GenerateEffect();
+
+                if (integerEffect == null)
+                    return false;
+
+                actor.RemoveSpellBuffs(integerEffect.Value);
+            }
+
+            return true;
+        }
+    }
 }

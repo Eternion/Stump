@@ -781,7 +781,7 @@
         /// <summary>
         /// Removes the effects of %1
         /// </summary>
-        Effect_DispelEffect = 406,
+        Effect_RemoveSpellEffects = 406,
         /// <summary>
         /// HP restored: #1{~1~2 to }#2
         /// </summary>
