@@ -155,10 +155,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
             var fight = FightManager.Instance.CreatePvMFight(Map);
 
-            fight.RedTeam.AddFighter(character.CreateFighter(fight.RedTeam));
+            fight.ChallengersTeam.AddFighter(character.CreateFighter(fight.ChallengersTeam));
 
-            foreach (var monster in CreateFighters(fight.BlueTeam))
-                fight.BlueTeam.AddFighter(monster);
+            foreach (var monster in CreateFighters(fight.DefendersTeam))
+                fight.DefendersTeam.AddFighter(monster);
 
             Fight = fight;
 
@@ -174,7 +174,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 EnterFight(this, character);
         }
 
-        public IEnumerable<MonsterFighter> CreateFighters(FightTeam team)
+        public IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team)
         {
             return m_monsters.Select(monster => monster.CreateFighter(team));
         }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Results;
@@ -18,9 +21,10 @@ namespace Stump.Server.WorldServer.Game.Arena
             if (handler != null) handler(this, character);
         }
 
-        public ArenaFight(int id, Map fightMap, ArenaTeam blueTeam, ArenaTeam redTeam)
-            : base(id, fightMap, blueTeam, redTeam)
+        public ArenaFight(int id, Map fightMap, ArenaTeam defendersTeam, ArenaTeam challengersTeam)
+            : base(id, fightMap, defendersTeam, challengersTeam)
         {
+             m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
         }
 
         public override FightTypeEnum FightType
@@ -35,10 +39,44 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             OnFightDenied(character);
         }
+         public override void StartPlacement()
+        {
+            base.StartPlacement();
+
+            m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
+        }
+
+        public override void StartFighting()
+        {
+            m_placementTimer.Dispose();
+
+            base.StartFighting();
+        }
+        public override int GetPlacementTimeLeft()
+        {
+            var timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
+
+            if (timeleft < 0)
+                timeleft = 0;
+
+            return (int)timeleft;
+        }
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            yield break;
+            var challengersRank =
+                (int) ChallengersTeam.Fighters.OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
+            var defendersRank =
+                (int) DefendersTeam.Fighters.OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
+
+            foreach (CharacterFighter fighter in Fighters.OfType<CharacterFighter>())
+            {
+                FightOutcomeEnum outcome = fighter.GetFighterOutcome();
+                yield return new ArenaFightResult(fighter, outcome, fighter.Loot,
+                    ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
+                        fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
+                        outcome == FightOutcomeEnum.RESULT_VICTORY));
+            }
         }
 
         protected override bool CanCancelFight()

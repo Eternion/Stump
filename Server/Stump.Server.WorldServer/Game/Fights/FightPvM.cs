@@ -11,12 +11,12 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightPvM : Fight<FightPlayerTeam, FightMonsterTeam>
+    public class FightPvM : Fight<FightMonsterTeam, FightPlayerTeam>
     {
         private bool m_ageBonusDefined;
 
-        public FightPvM(int id, Map fightMap, FightPlayerTeam blueTeam, FightMonsterTeam redTeam)
-            : base(id, fightMap, blueTeam, redTeam)
+        public FightPvM(int id, Map fightMap, FightMonsterTeam defendersTeam, FightPlayerTeam challengersTeam)
+            : base(id, fightMap, defendersTeam, challengersTeam)
         {
         }
 

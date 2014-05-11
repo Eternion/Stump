@@ -257,10 +257,12 @@
     <Compile Include="Game\Actors\RolePlay\TaxCollectors\TaxCollectorManager.cs" />
     <Compile Include="Game\Actors\Stats\StatsInitiative.cs" />
     <Compile Include="Game\Arena\ArenaFight.cs" />
+    <Compile Include="Game\Arena\ArenaFightResult.cs" />
     <Compile Include="Game\Arena\ArenaManager.cs" />
     <Compile Include="Game\Arena\ArenaParty.cs" />
     <Compile Include="Game\Arena\ArenaPopup.cs" />
     <Compile Include="Game\Arena\ArenaQueueMember.cs" />
+    <Compile Include="Game\Arena\ArenaRankFormulas.cs" />
     <Compile Include="Game\Arena\ArenaTeam.cs" />
     <Compile Include="Game\Arena\ArenaWaitingCharacter.cs" />
     <Compile Include="Game\Conditions\BoolOperator.cs" />

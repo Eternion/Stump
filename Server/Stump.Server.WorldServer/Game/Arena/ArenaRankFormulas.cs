@@ -1,0 +1,19 @@
+﻿using System;
+
+namespace Stump.Server.WorldServer.Game.Arena
+{
+    public class ArenaRankFormulas
+    {
+        public const int KFactor = 32;
+
+        public static double GetWinningChances(int currentRank, int opposantRank)
+        {
+            return 1/(1 + Math.Pow((opposantRank - currentRank)/400d, 10d));
+        }
+
+        public static int AdjustRank(int currentRank, int opposantRank, bool won)
+        {
+            return (int)(currentRank + KFactor*((won ? 1 : 0) - GetWinningChances(currentRank, opposantRank)));
+        }
+    }
+}

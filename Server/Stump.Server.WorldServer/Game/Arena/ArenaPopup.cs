@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             Character.ArenaPopup = this;
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Character.Client, false, 
                 PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
-            ContextHandler.SendGameRolePlayArenaFightPropositionMessage(Character.Client, this);
+            ContextHandler.SendGameRolePlayArenaFightPropositionMessage(Character.Client, this, 60);
         }
 
         public void Accept()
@@ -52,7 +52,13 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         private void OnFightDenied(ArenaFight arg1, Character arg2)
         {
-            ArenaManager.Instance.AddToQueue(Character);
+            if (Character.ArenaParty != null)
+            {
+                if (Character.IsPartyLeader(Character.ArenaParty.Id))
+                    ArenaManager.Instance.AddToQueue(Character.ArenaParty);
+            }
+            else
+                ArenaManager.Instance.AddToQueue(Character);
         }
     }
 }

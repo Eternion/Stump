@@ -314,7 +314,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new GameFightCharacterInformations(Id,
                                                       Look.GetEntityLook(),
                                                       GetEntityDispositionInformations(client),
-                                                      Team.Id,
+                                                      (sbyte)Team.Id,
                                                       IsAlive(),
                                                       GetGameFightMinimalStats(client),
                                                       Name,

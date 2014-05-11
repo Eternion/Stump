@@ -7,14 +7,16 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaTeam : FightTeamWithLeader<CharacterFighter>
     {
         private readonly List<ArenaWaitingCharacter> m_requestedCharacters = new List<ArenaWaitingCharacter>();
+        private readonly Dictionary<Character, Map> m_charactersMaps = new Dictionary<Character, Map>();
 
-        public ArenaTeam(sbyte id, Cell[] placementCells)
+        public ArenaTeam(TeamEnum id, Cell[] placementCells)
             : base(id, placementCells)
         {
         }
@@ -68,6 +70,8 @@ namespace Stump.Server.WorldServer.Game.Arena
                 {
                     try
                     {
+                        m_charactersMaps.Add(character1, character1.Map);
+                    
                         if (character1.IsFighting())
                         {
                             character1.NextMap = Fight.Map;
@@ -100,11 +104,13 @@ namespace Stump.Server.WorldServer.Game.Arena
             foreach (var character in m_requestedCharacters.Select(x => x.Character))
             {
                 AddFighter(character.CreateFighter(this));
+                character.NextMap = m_charactersMaps[character];
             }
 
             foreach (var character in ((ArenaTeam)OpposedTeam).m_requestedCharacters.Select(x => x.Character))
             {
-                OpposedTeam.AddFighter(character.CreateFighter(this));
+                OpposedTeam.AddFighter(character.CreateFighter(OpposedTeam));
+                character.NextMap = m_charactersMaps[character];
             }
 
             Fight.StartPlacement();

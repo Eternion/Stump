@@ -384,15 +384,85 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool IsInParty()
+        public ArenaParty ArenaParty
         {
-            return Party != null;
+            get;
+            private set;
         }
 
-        public bool IsPartyLeader()
+        public bool IsInParty()
         {
-            return IsInParty() && Party.Leader == this;
+            return Party != null || ArenaParty != null;
         }
+        public bool IsInParty(int id)
+        {
+            return Party.Id == id || ArenaParty.Id == id;
+        }
+
+        public bool IsInParty(PartyTypeEnum type)
+        {
+            return (type == PartyTypeEnum.PARTY_TYPE_CLASSICAL && Party != null) || (type == PartyTypeEnum.PARTY_TYPE_ARENA && ArenaParty != null);
+        }
+
+        public bool IsPartyLeader(int id)
+        {
+            return IsInParty(id) && GetParty(id).Leader == this;
+        }
+
+        public Party GetParty(int id)
+        {
+            if (Party.Id == id)
+                return Party;
+
+            if (ArenaParty.Id == id)
+                return ArenaParty;
+
+            return null;
+        }
+        public Party GetParty(PartyTypeEnum type)
+        {
+            switch (type)
+            {
+                case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
+                    return Party;
+                case PartyTypeEnum.PARTY_TYPE_ARENA:
+                    return ArenaParty;
+                default:
+                    throw new NotImplementedException(string.Format("Cannot manage party of type {0}", type));
+                    break;
+            }
+        }
+
+        public void SetParty(Party party)
+        {
+            switch (party.Type)
+            {
+                case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
+                    Party = party;
+                    break;
+                case PartyTypeEnum.PARTY_TYPE_ARENA:
+                    ArenaParty = (ArenaParty) party;
+                    break;
+                default:
+                    logger.Error("Cannot manage party of type {0} ({1})", party.GetType(), party.Type);
+                    break;
+            }
+        }
+
+        public void ResetParty(PartyTypeEnum type)
+        {
+            switch (type)
+            {
+                case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
+                    Party = null;
+                    break;
+                case PartyTypeEnum.PARTY_TYPE_ARENA:
+                    ArenaParty = null;
+                    break;
+                default:
+                    logger.Error("Cannot manage party of type {0}", type);
+                    break;
+            }        }
 
         #endregion
 
@@ -1438,6 +1508,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
+        public void UpdateArenaProperties(int rank, bool win)
+        {
+            CheckArenaDailyProperties();
+
+            ArenaRank = rank;
+
+            if (rank > ArenaMaxRank)
+                ArenaMaxRank = rank;
+
+            if (rank > ArenaDailyMaxRank)
+                ArenaDailyMaxRank = rank;
+
+            ArenaDailyMatchsCount++;
+
+            if (win) ArenaDailyMatchsWon++;
+            m_record.ArenaDailyDate = DateTime.Now;
+        }
+
         public int ArenaRank
         {
             get { return m_record.ArenaRank; }
@@ -1734,39 +1822,41 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Party
 
-        public void Invite(Character target)
+        public void Invite(Character target, PartyTypeEnum type)
         {
             var created = false;
-            if (!IsInParty())
+            Party party;
+            if (!IsInParty(type))
             {
-                var party = PartyManager.Instance.Create();
+                party = PartyManager.Instance.Create(type);
 
                 EnterParty(party);
                 created = true;
             }
+            else party = GetParty(type);
 
             PartyJoinErrorEnum error;
-            if (!Party.CanInvite(target, out error))
+            if (!party.CanInvite(target, out error))
             {
-                PartyHandler.SendPartyCannotJoinErrorMessage(target.Client, Party, error);
+                PartyHandler.SendPartyCannotJoinErrorMessage(target.Client, party, error);
                 if (created)
-                    LeaveParty();
+                    LeaveParty(party);
 
                 return;
             }
 
-            if (target.m_partyInvitations.ContainsKey(Party.Id))
+            if (target.m_partyInvitations.ContainsKey(party.Id))
             {
                 if (created)
-                    LeaveParty();
+                    LeaveParty(party);
                 
                 return; // already invited
             }
 
-            var invitation = new PartyInvitation(Party, this, target);
-            target.m_partyInvitations.Add(Party.Id, invitation);
+            var invitation = new PartyInvitation(party, this, target);
+            target.m_partyInvitations.Add(party.Id, invitation);
 
-            Party.AddGuest(target);
+            party.AddGuest(target);
             invitation.Display();
         }
 
@@ -1788,42 +1878,49 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
+        public void DenyAllInvitations(PartyTypeEnum type)
+        {
+            foreach (var partyInvitation in m_partyInvitations.Where(x => x.Value.Party.Type == type).ToArray())
+            {
+                partyInvitation.Value.Deny();
+            }
+        }
+
         public void EnterParty(Party party)
         {
-            if (IsInParty())
-                LeaveParty();
+            if (IsInParty(party.Id))
+                LeaveParty(party);
 
             if (m_partyInvitations.ContainsKey(party.Id))
                 m_partyInvitations.Remove(party.Id);
 
-            DenyAllInvitations();
+            DenyAllInvitations(party.Type);
             UpdateRegenedLife();
 
-            Party = party;
-            Party.MemberRemoved += OnPartyMemberRemoved;
-            Party.PartyDeleted += OnPartyDeleted;
+            SetParty(party);
+            party.MemberRemoved += OnPartyMemberRemoved;
+            party.PartyDeleted += OnPartyDeleted;
 
             if (party.IsMember(this))
                 return;
 
             if (party.PromoteGuestToMember(this))
                 return;
-
-            Party.MemberRemoved -= OnPartyMemberRemoved;
-            Party.PartyDeleted -= OnPartyDeleted;
-            Party = null;
+            // if fails to enter
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.PartyDeleted -= OnPartyDeleted;
+            ResetParty(party.Type);
         }
 
-        public void LeaveParty()
+        public void LeaveParty(Party party)
         {
-            if (!IsInParty())
+            if (!IsInParty(party.Id))
                 return;
 
-
-            Party.MemberRemoved -= OnPartyMemberRemoved;
-            Party.PartyDeleted -= OnPartyDeleted;
-            Party.RemoveMember(this);
-            Party = null;
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.PartyDeleted -= OnPartyDeleted;
+            party.RemoveMember(this);
+            ResetParty(party.Type);
         }
 
         private void OnPartyMemberRemoved(Party party, Character member, bool kicked)
@@ -1831,16 +1928,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (member != this)
                 return;
 
-            Party.MemberRemoved -= OnPartyMemberRemoved;
-            Party.PartyDeleted -= OnPartyDeleted;
-            Party = null;
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.PartyDeleted -= OnPartyDeleted;
+
+            ResetParty(party.Type);
         }
 
         private void OnPartyDeleted(Party party)
         {
-            Party.MemberRemoved -= OnPartyMemberRemoved;
-            Party.PartyDeleted -= OnPartyDeleted;
-            Party = null;
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.PartyDeleted -= OnPartyDeleted;
+
+            ResetParty(party.Type);
         }
 
         #endregion
@@ -2028,7 +2127,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 LastMap = Map;
                 Map = NextMap;
-                NextMap.Enter(this);
+                Map.Enter(this);
+                NextMap = null;
             });
         }
 
@@ -2390,8 +2490,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     if (IsDialoging())
                         Dialog.Close();
 
-                    if (IsInParty())
-                        LeaveParty();
+                    if (ArenaParty != null)
+                        LeaveParty(ArenaParty);
+
+                    if (Party != null)
+                        LeaveParty(Party);
 
                     if (Map != null && Map.IsActor(this))
                         Map.Leave(this);
@@ -2454,7 +2557,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     if (GuildMember != null && GuildMember.IsDirty)
                         GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
 
-                    m_record.MapId = Map.Id;
+                    m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
                     m_record.CellId = Cell.Id;
                     m_record.Direction = Direction;
 

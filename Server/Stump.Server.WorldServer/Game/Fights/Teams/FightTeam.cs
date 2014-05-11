@@ -48,21 +48,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         private readonly List<FightActor> m_leavers = new List<FightActor>();
         private readonly object m_locker = new object();
 
-        protected FightTeam(sbyte id, Cell[] placementCells)
+        protected FightTeam(TeamEnum id, Cell[] placementCells)
         {
             Id = id;
             PlacementCells = placementCells;
             AlignmentSide = AlignmentSideEnum.ALIGNMENT_WITHOUT;
         }
 
-        protected FightTeam(sbyte id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
+        protected FightTeam(TeamEnum id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
         {
             Id = id;
             PlacementCells = placementCells;
             AlignmentSide = alignmentSide;
         }
 
-        public sbyte Id
+        public TeamEnum Id
         {
             get;
             private set;
@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public FightTeam OpposedTeam
         {
-            get { return Fight.BlueTeam == this ? Fight.RedTeam : Fight.BlueTeam; }
+            get { return Fight.DefendersTeam == this ? Fight.ChallengersTeam : Fight.DefendersTeam; }
         }
 
         public virtual FightActor Leader
@@ -349,7 +349,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public FightTeamInformations GetFightTeamInformations()
         {
-            return new FightTeamInformations(Id,
+            return new FightTeamInformations((sbyte)Id,
                                              Leader != null ? Leader.Id : 0,
                                              (sbyte) AlignmentSide,
                                              (sbyte) TeamType,
@@ -368,7 +368,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public FightTeamLightInformations GetFightTeamLightInformations()
         {
-            return new FightTeamLightInformations(Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
+            return new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
                                                   (sbyte) TeamType, (sbyte) m_fighters.Count);
         }
     }

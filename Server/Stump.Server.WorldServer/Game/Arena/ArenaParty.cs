@@ -1,5 +1,6 @@
 ﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Parties;
 
@@ -47,6 +48,11 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             m_rankSum -= groupMember.ArenaRank;
             GroupRankAverage = m_rankSum/MembersCount;
+        }
+
+        public override PartyMemberInformations GetPartyMemberInformations(Character character)
+        {
+            return character.GetPartyMemberArenaInformations();
         }
     }
 }

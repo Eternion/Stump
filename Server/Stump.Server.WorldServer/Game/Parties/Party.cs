@@ -5,6 +5,7 @@ using Stump.Core.Collections;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
@@ -451,6 +452,16 @@ namespace Stump.Server.WorldServer.Game.Parties
             {
                 UnBindEvents(member);
             }
+        }
+
+        public virtual PartyMemberInformations GetPartyMemberInformations(Character character)
+        {
+            return character.GetPartyMemberInformations();
+        }
+
+        public virtual PartyGuestInformations GetPartyGuestInformations(Character character)
+        {
+            return character.GetPartyGuestInformations(this);
         }
     }
 }

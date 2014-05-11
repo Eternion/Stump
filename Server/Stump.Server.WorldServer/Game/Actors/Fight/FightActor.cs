@@ -1523,7 +1523,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new FightResult(this, GetFighterOutcome(), Loot);
         }
 
-        protected FightOutcomeEnum GetFighterOutcome()
+        public FightOutcomeEnum GetFighterOutcome()
         {
             var teamDead = Team.AreAllDead();
             var opposedTeamDead = OpposedTeam.AreAllDead();
@@ -1688,7 +1688,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
-                Team.Id,
+                (sbyte)Team.Id,
                 IsAlive(),
                 GetGameFightMinimalStats(client));
         }
