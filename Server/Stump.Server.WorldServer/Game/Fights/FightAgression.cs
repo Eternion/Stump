@@ -12,7 +12,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 {
     public class FightAgression : Fight<FightPlayerTeam, FightPlayerTeam>
     {
-        public FightAgression(int id, Map fightMap, FightPlayerTeam blueTeam, FightPlayerTeam redTeam) : base(id, fightMap, blueTeam, redTeam)
+        public FightAgression(int id, Map fightMap, FightPlayerTeam defendersTeam, FightPlayerTeam challengersTeam)
+            : base(id, fightMap, defendersTeam, challengersTeam)
         {
             m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
         }
@@ -65,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, GetPlacementTimeLeft(), FightType);
         }
 
-        public int GetPlacementTimeLeft()
+        public override int GetPlacementTimeLeft()
         {
             var timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
 

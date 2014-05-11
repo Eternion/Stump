@@ -8,11 +8,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
     public abstract class FightTeamWithLeader<T> : FightTeam 
         where T : FightActor
     {
-        public FightTeamWithLeader(sbyte id, Cell[] placementCells) : base(id, placementCells)
+        public FightTeamWithLeader(TeamEnum id, Cell[] placementCells) : base(id, placementCells)
         {
         }
 
-        public FightTeamWithLeader(sbyte id, Cell[] placementCells, AlignmentSideEnum alignmentSide) : base(id, placementCells, alignmentSide)
+        public FightTeamWithLeader(TeamEnum id, Cell[] placementCells, AlignmentSideEnum alignmentSide) : base(id, placementCells, alignmentSide)
         {
         }
 

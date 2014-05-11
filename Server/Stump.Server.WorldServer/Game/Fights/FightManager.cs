@@ -12,10 +12,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightDuel CreateDuel(Map map)
         {
-            var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
-            var blueTeam = new FightPlayerTeam(1, map.GetBlueFightPlacement());
+            var challengersTeam = new FightPlayerTeam(TeamEnum.TEAM_CHALLENGER, map.GetRedFightPlacement());
+            var defendersTeam = new FightPlayerTeam(TeamEnum.TEAM_DEFENDER, map.GetBlueFightPlacement());
 
-            var fight = new FightDuel(m_idProvider.Pop(), map, blueTeam, redTeam);
+            var fight = new FightDuel(m_idProvider.Pop(), map, defendersTeam, challengersTeam);
 
             AddEntity(fight.Id, fight);
 
@@ -24,10 +24,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightPvM CreatePvMFight(Map map)
         {
-            var blueTeam = new FightPlayerTeam(0, map.GetRedFightPlacement());
-            var redTeam = new FightMonsterTeam(1, map.GetBlueFightPlacement());
+            var challengersTeam = new FightPlayerTeam(TeamEnum.TEAM_CHALLENGER, map.GetRedFightPlacement());
+            var defendersTeam = new FightMonsterTeam(TeamEnum.TEAM_DEFENDER, map.GetBlueFightPlacement());
 
-            var fight = new FightPvM(m_idProvider.Pop(), map, blueTeam, redTeam);
+            var fight = new FightPvM(m_idProvider.Pop(), map, defendersTeam, challengersTeam);
 
             AddEntity(fight.Id, fight);
 
@@ -36,10 +36,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightAgression CreateAgressionFight(Map map, AlignmentSideEnum redAlignment, AlignmentSideEnum blueAlignment)
         {
-            var redTeam = new FightPlayerTeam(0, map.GetRedFightPlacement(), redAlignment);
-            var blueTeam = new FightPlayerTeam(1, map.GetBlueFightPlacement(), blueAlignment);
+            var challengersTeam = new FightPlayerTeam(TeamEnum.TEAM_CHALLENGER, map.GetRedFightPlacement(), redAlignment);
+            var defendersTeam = new FightPlayerTeam(TeamEnum.TEAM_DEFENDER, map.GetBlueFightPlacement(), blueAlignment);
 
-            var fight = new FightAgression(m_idProvider.Pop(), map, blueTeam, redTeam);
+            var fight = new FightAgression(m_idProvider.Pop(), map, defendersTeam, challengersTeam);
 
             AddEntity(fight.Id, fight);
 
@@ -48,10 +48,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightPvT CreatePvTFight(Map map)
         {
-            var redTeam = new FightTaxCollectorAttackersTeam(0, map.GetRedFightPlacement());
-            var blueTeam = new FightTaxCollectorDefenderTeam(1, map.GetBlueFightPlacement());
+            var challengersTeam = new FightTaxCollectorAttackersTeam(TeamEnum.TEAM_CHALLENGER, map.GetRedFightPlacement());
+            var defendersTeam = new FightTaxCollectorDefenderTeam(TeamEnum.TEAM_DEFENDER, map.GetBlueFightPlacement());
 
-            var fight = new FightPvT(m_idProvider.Pop(), map, blueTeam, redTeam);
+            var fight = new FightPvT(m_idProvider.Pop(), map, defendersTeam, challengersTeam);
 
             AddEntity(fight.Id, fight);
 
@@ -60,10 +60,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public ArenaFight CreateArenaFight(Map map)
         {
-            var redTeam = new ArenaTeam(0, map.GetRedFightPlacement());
-            var blueTeam = new ArenaTeam(1, map.GetBlueFightPlacement());
+            var challengersTeam = new ArenaTeam(TeamEnum.TEAM_CHALLENGER, map.GetRedFightPlacement());
+            var defendersTeam = new ArenaTeam(TeamEnum.TEAM_DEFENDER, map.GetBlueFightPlacement());
 
-            var fight = new ArenaFight(m_idProvider.Pop(), map, blueTeam, redTeam);
+            var fight = new ArenaFight(m_idProvider.Pop(), map, defendersTeam, challengersTeam);
 
             AddEntity(fight.Id, fight);
 

@@ -61,8 +61,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendMapRunningFightDetailsMessage(IPacketReceiver client, IFight fight)
         {
-            var redFighters = fight.RedTeam.GetAllFighters().ToArray();
-            var blueFighters = fight.BlueTeam.GetAllFighters().ToArray();
+            var redFighters = fight.ChallengersTeam.GetAllFighters().ToArray();
+            var blueFighters = fight.DefendersTeam.GetAllFighters().ToArray();
 
             var fighters = redFighters.Concat(blueFighters).ToArray();
 

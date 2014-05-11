@@ -97,8 +97,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var fight in map.Fights)
             {
-                trigger.ReplyBold(" - {0} (red:{1}, blue{2}){3}", fight.Id, fight.BlueTeam.Fighters.Count,
-                    fight.RedTeam.Fighters.Count, fight.State == FightState.Placement ? " Placement phase" : string.Empty);
+                trigger.ReplyBold(" - {0} (red:{1}, blue{2}){3}", fight.Id, fight.DefendersTeam.Fighters.Count,
+                    fight.ChallengersTeam.Fighters.Count, fight.State == FightState.Placement ? " Placement phase" : string.Empty);
             }
         }
     }
@@ -143,7 +143,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 target.Fighter.LeaveFight();
             }
 
-            var team = joinRed ? fight.RedTeam : fight.BlueTeam;
+            var team = joinRed ? fight.ChallengersTeam : fight.DefendersTeam;
             var fighter = target.CreateFighter(team);
 
             Cell cell;

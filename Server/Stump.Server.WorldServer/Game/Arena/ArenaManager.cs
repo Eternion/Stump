@@ -37,6 +37,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             m_arenas = Database.Query<ArenaRecord>(ArenaRelator.FetchQuery).ToDictionary(x => x.Id);
             m_arenaTaskPool.CallPeriodically(ArenaMatchmakingInterval*1000, ComputeMatchmaking);
+            m_arenaTaskPool.Start();
         }
 
 
@@ -75,17 +76,37 @@ namespace Stump.Server.WorldServer.Game.Arena
                 PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
 
+        public void AddToQueue(ArenaParty party)
+        {
+            if (!party.Members.All(CanJoinQueue))
+                return;
+            
+            lock (m_queue)
+                m_queue.Add(new ArenaQueueMember(party));
+
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, true,
+                PvpArenaStepEnum.ARENA_STEP_REGISTRED, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+        }
+
+        public void RemoveFromQueue(ArenaParty party)
+        {
+            lock (m_queue)
+                m_queue.RemoveAll(x => x.Party == party);
+
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, false, 
+                PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+        }
+
         public void ComputeMatchmaking()
         {
             List<ArenaQueueMember> queue;
             lock (m_queue)
             {
                 queue = m_queue.ToList();
-                m_queue.Clear();
             }
 
-            var current = queue.FirstOrDefault();
-            while (current != null)
+            ArenaQueueMember current;
+            while ((current = queue.FirstOrDefault()) != null)
             {
                 queue.Remove(current);
 
@@ -131,13 +152,8 @@ namespace Stump.Server.WorldServer.Game.Arena
                 StartFight(allies, enemies);
 
                 queue.RemoveAll(x => allies.Contains(x) || enemies.Contains(x));
-
-                current = queue.FirstOrDefault();
-            }
-
-            lock (m_queue)
-            {
-                m_queue.AddRange(queue);
+                lock(m_queue)
+                    m_queue.RemoveAll(x => allies.Contains(x) || enemies.Contains(x));
             }
         }
 
@@ -148,17 +164,17 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             foreach (var character in team1.SelectMany(x => x.EnumerateCharacters()))
             {
-                fight.BlueTeam.AddArenaFighter(character);
+                fight.DefendersTeam.AddArenaFighter(character);
 
-                var popup = new ArenaPopup(character, fight.BlueTeam);
+                var popup = new ArenaPopup(character, fight.DefendersTeam);
                 popup.Display();
             }
 
             foreach (var character in team2.SelectMany(x => x.EnumerateCharacters()))
             {
-                fight.RedTeam.AddArenaFighter(character);
+                fight.ChallengersTeam.AddArenaFighter(character);
 
-                var popup = new ArenaPopup(character, fight.RedTeam);
+                var popup = new ArenaPopup(character, fight.ChallengersTeam);
                 popup.Display();            
             }
         }

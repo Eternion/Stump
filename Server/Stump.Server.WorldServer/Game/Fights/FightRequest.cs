@@ -28,8 +28,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var fight = FightManager.Instance.CreateDuel(Source.Map);
 
-            fight.BlueTeam.AddFighter(Source.CreateFighter(fight.BlueTeam));
-            fight.RedTeam.AddFighter(Target.CreateFighter(fight.RedTeam));
+            fight.DefendersTeam.AddFighter(Source.CreateFighter(fight.DefendersTeam));
+            fight.ChallengersTeam.AddFighter(Target.CreateFighter(fight.ChallengersTeam));
 
             fight.StartPlacement();
         }

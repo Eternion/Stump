@@ -26,8 +26,15 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameRolePlayArenaRegisterMessage.Id)]
         public static void HandleGameRolePlayArenaRegisterMessage(WorldClient client, GameRolePlayArenaRegisterMessage message)
         {
+            // todo error messages
             // 3VS3 only ?
-            ArenaManager.Instance.AddToQueue(client.Character);
+            if (client.Character.ArenaParty != null)
+            {
+                if (client.Character.IsPartyLeader(client.Character.ArenaParty.Id))
+                    ArenaManager.Instance.AddToQueue(client.Character.ArenaParty);
+            }
+            else
+                ArenaManager.Instance.AddToQueue(client.Character);
         }
 
         [WorldHandler(GameRolePlayArenaUnregisterMessage.Id)]
@@ -36,9 +43,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             ArenaManager.Instance.RemoveFromQueue(client.Character);
         }   
         
-        public static void SendGameRolePlayArenaFightPropositionMessage(IPacketReceiver client, ArenaPopup popup)
+        public static void SendGameRolePlayArenaFightPropositionMessage(IPacketReceiver client, ArenaPopup popup, int delay)
         {
-            client.Send(new GameRolePlayArenaFightPropositionMessage(popup.Team.Fight.Id, popup.Team.GetAlliesInQueue().Select(x => x.Id), 10));
+            client.Send(new GameRolePlayArenaFightPropositionMessage(popup.Team.Fight.Id, popup.Team.GetAlliesInQueue().Select(x => x.Id), (short)delay));
         }
 
         public static void SendGameRolePlayArenaFighterStatusMessage(IPacketReceiver client)
