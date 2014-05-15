@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             if (character.Recolor)
             {
                 /* Set Colors */
-                var colors = message.indexedColor.Select(x => Color.FromArgb(x & 0xFFFFFF)).ToArray();
+                var colors = message.indexedColor.Select(x => ColorTranslator.FromHtml("#" + x.ToString("X"))).ToArray();
 
                 character.EntityLook.SetColors(colors);
                 character.Recolor = false;
