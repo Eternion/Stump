@@ -42,15 +42,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             var results = GetFightersAndLeavers().Where(entry => !( entry is SummonedFighter )).
                 Select(fighter => fighter.GetFightResult()).ToArray();
 
-            foreach (var result in results)
+            foreach (var playerResult in results.OfType<FightPlayerResult>())
             {
-                var playerResult = result as FightPlayerResult;
-                if (playerResult != null)
-                {                
-                    playerResult.SetEarnedHonor(CalculateEarnedHonor(playerResult.Fighter),
-                        CalculateEarnedDishonor(playerResult.Fighter));
-
-                }
+                playerResult.SetEarnedHonor(CalculateEarnedHonor(playerResult.Fighter),
+                    CalculateEarnedDishonor(playerResult.Fighter));
             }
 
             return results;
@@ -106,10 +101,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (Draw)
                 return 0;
 
-            if (character.OpposedTeam.AlignmentSide != AlignmentSideEnum.ALIGNMENT_NEUTRAL)
-                return 0;
-
-            return 1;
+            return character.OpposedTeam.AlignmentSide != AlignmentSideEnum.ALIGNMENT_NEUTRAL ? (short) 0 : (short) 1;
         }
     }
 }

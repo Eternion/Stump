@@ -5,7 +5,6 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database.World;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -33,8 +32,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             trigger.Character.Client.Send(new DebugClearHighlightCellsMessage());
 
-            Cell[] blue = trigger.Character.Map.GetBlueFightPlacement();
-            Cell[] red = trigger.Character.Map.GetRedFightPlacement();
+            var blue = trigger.Character.Map.GetBlueFightPlacement();
+            var red = trigger.Character.Map.GetRedFightPlacement();
             if (blue == null || blue.Length == 0)
             {
                 trigger.ReplyError("Blue placements not defined");
@@ -48,6 +47,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else
                 trigger.Character.Client.Send(new DebugHighlightCellsMessage(Color.Red.ToArgb(), red.Select(x => x.Id)));
+        }
+    }
+
+    public class FightPlacementClearCommand : InGameSubCommand
+    {
+        public FightPlacementClearCommand()
+        {
+            Aliases = new[] { "clear" };
+            ParentCommandType = typeof(FightPlacementCommands);
+            Description = "Clear current map placements";
+            RequiredRole = RoleEnum.GameMaster;
+        }
+
+        public override void Execute(GameTrigger trigger)
+        {
+            trigger.Character.Client.Send(new DebugClearHighlightCellsMessage());
         }
     }
 

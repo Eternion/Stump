@@ -394,9 +394,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             return Party != null || ArenaParty != null;
         }
+
         public bool IsInParty(int id)
         {
-            return Party.Id == id || ArenaParty.Id == id;
+            if (Party != null)
+                return Party.Id == id;
+
+            if (ArenaParty != null)
+                return ArenaParty.Id == id;
+
+            return false;
         }
 
         public bool IsInParty(PartyTypeEnum type)
@@ -411,10 +418,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public Party GetParty(int id)
         {
-            if (Party.Id == id)
+            if (Party != null && Party.Id == id)
                 return Party;
 
-            if (ArenaParty.Id == id)
+            if (ArenaParty != null && ArenaParty.Id == id)
                 return ArenaParty;
 
             return null;
@@ -429,7 +436,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     return ArenaParty;
                 default:
                     throw new NotImplementedException(string.Format("Cannot manage party of type {0}", type));
-                    break;
             }
         }
 

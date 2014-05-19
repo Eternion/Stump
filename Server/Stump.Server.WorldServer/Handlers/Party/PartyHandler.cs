@@ -1,8 +1,6 @@
-using System.Diagnostics.Contracts;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
@@ -117,6 +115,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyAbdicateThroneMessage.Id)]
         public static void HandlePartyAbdicateThroneMessage(WorldClient client, PartyAbdicateThroneMessage message)
         {
+            if (!client.Character.IsInParty())
+                return;
+
             if (!client.Character.IsPartyLeader(message.partyId))
                 return;
 
@@ -128,6 +129,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         [WorldHandler(PartyKickRequestMessage.Id)]
         public static void HandlePartyKickRequestMessage(WorldClient client, PartyKickRequestMessage message)
         {
+            if (!client.Character.IsInParty())
+                return;
+
             if (!client.Character.IsPartyLeader(message.partyId))
                 return;
 

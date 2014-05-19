@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -277,6 +278,18 @@ namespace Stump.Server.WorldServer.Commands
                 throw new ConverterException(string.Format("'{0}' map not found", entry));
 
             return map2;
+        };
+
+        public static ConverterHandler<short> CellConverter = (entry, trigger) =>
+        {
+            short outvalue;
+            if (!short.TryParse(entry, out outvalue))
+                throw new ConverterException(string.Format("'{0}' is not of format 'cellid'", entry));
+
+            if (outvalue < 0 || outvalue >= 560)
+                throw new ConverterException(string.Format("Cell {0} out of range", outvalue));
+
+            return outvalue;
         };
     }
 }

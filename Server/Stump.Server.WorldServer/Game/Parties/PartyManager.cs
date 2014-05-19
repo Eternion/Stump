@@ -1,7 +1,6 @@
 using System;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Arena;
 
 namespace Stump.Server.WorldServer.Game.Parties

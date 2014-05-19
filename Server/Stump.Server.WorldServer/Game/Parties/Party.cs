@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Collections;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -32,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             PartyHandler.SendPartyLeaderUpdateMessage(Clients, this, leader);
 
-            Action<Party, Character> handler = LeaderChanged;
+            var handler = LeaderChanged;
             if (handler != null)
                 handler(this, leader);
         }
@@ -43,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             PartyHandler.SendPartyNewGuestMessage(Clients, this, groupGuest);
 
-            MemberAddedHandler handler = GuestAdded;
+            var handler = GuestAdded;
             if (handler != null)
                 handler(this, groupGuest);
         }
@@ -53,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         protected virtual void OnGuestRemoved(Character groupGuest, bool kicked)
         {
             m_clients.Remove(groupGuest.Client);
-            MemberRemovedHandler handler = GuestRemoved;
+            var handler = GuestRemoved;
             if (handler != null)
                 handler(this, groupGuest, kicked);
         }
@@ -64,15 +63,15 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             m_clients.Add(groupMember.Client);
 
-            m_levelSum += groupMember.Level;
-            m_levelAvg = m_levelSum/MembersCount;
+            GroupLevelSum += groupMember.Level;
+            GroupLevelAverage = GroupLevelSum/MembersCount;
 
             PartyHandler.SendPartyJoinMessage(groupMember.Client, this);
 
             UpdateMember(groupMember);
             BindEvents(groupMember);
 
-            Action<Party, Character> handler = GuestPromoted;
+            var handler = GuestPromoted;
             if (handler != null)
                 handler(this, groupMember);
         }
@@ -83,8 +82,8 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             m_clients.Remove(groupMember.Client);
 
-            m_levelSum -= groupMember.Level;
-            m_levelAvg = m_levelSum/MembersCount;
+            GroupLevelSum -= groupMember.Level;
+            GroupLevelAverage = MembersCount > 0 ? GroupLevelSum / MembersCount : 0;
 
             if (kicked)
                 PartyHandler.SendPartyKickedByMessage(groupMember.Client, this, Leader);
@@ -92,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Parties
                 groupMember.Client.Send(new PartyLeaveMessage(Id));
 
             PartyHandler.SendPartyMemberRemoveMessage(Clients, this, groupMember);
-            MemberRemovedHandler handler = MemberRemoved;
+            var handler = MemberRemoved;
 
             UnBindEvents(groupMember);
 
@@ -108,7 +107,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
             UnBindEvents();
 
-            Action<Party> handler = PartyDeleted;
+            var handler = PartyDeleted;
             if (handler != null)
                 handler(this);
         }
@@ -123,8 +122,6 @@ namespace Stump.Server.WorldServer.Game.Parties
         private readonly ConcurrentList<Character> m_members = new ConcurrentList<Character>();
         private bool m_restricted;
 
-        private int m_levelSum;
-        private int m_levelAvg;
         private int m_prospectionSum;
 
         public Party(int id)
@@ -171,12 +168,14 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public int GroupLevelSum
         {
-            get { return m_levelSum; }
+            get;
+            private set;
         }
 
         public int GroupLevelAverage
         {
-            get { return m_levelAvg; }
+            get;
+            private set;
         }
 
         public int GroupProspecting
@@ -397,7 +396,7 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             lock (m_memberLocker)
             {
-                foreach (Character character in Members)
+                foreach (var character in Members)
                 {
                     action(character);
                 }
@@ -408,10 +407,9 @@ namespace Stump.Server.WorldServer.Game.Parties
         {
             lock (m_memberLocker)
             {
-                foreach (Character character in Members)
+                foreach (var character in Members.Where(character => character != except))
                 {
-                    if (character != except)
-                        action(character);
+                    action(character);
                 }
             }
         }
@@ -448,7 +446,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         private void UnBindEvents()
         {
-            foreach (Character member in Members)
+            foreach (var member in Members)
             {
                 UnBindEvents(member);
             }
