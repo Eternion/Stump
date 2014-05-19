@@ -89,12 +89,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
 
             Character.Inventory.SubKamas((int)(item.Price * quantity));
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    46, (int)( item.Price * quantity ));
+                                                    46, (int)(item.Price * quantity));
             Merchant.KamasEarned += item.Price*quantity;
 
             Character.Client.Send(new ExchangeBuyOkMessage());
 
             Merchant.Save();
+            Character.SaveLater();
+
             return true;
         }
 

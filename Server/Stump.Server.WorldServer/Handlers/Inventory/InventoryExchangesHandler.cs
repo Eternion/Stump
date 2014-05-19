@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                     return;
 
                 if (client.Character.MerchantBag.MoveToInventory(merchantItem))
-                    client.Send(new ExchangeShopStockMovementRemovedMessage(message.objectUID));
+                    SendExchangeShopStockMovementRemovedMessage(client, merchantItem);
             }
         }
 

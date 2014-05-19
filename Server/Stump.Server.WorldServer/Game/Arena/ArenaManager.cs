@@ -46,7 +46,8 @@ namespace Stump.Server.WorldServer.Game.Arena
             if (m_arenas.Count == 0)
                 return false;
 
-            //todo: not in arena fight
+            if (character.Fight is ArenaFight)
+                return false;
 
             //Already in queue
             if (m_queue.Exists(x => x.Character == character))

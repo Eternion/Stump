@@ -71,10 +71,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 quantity = item.Stack;
 
             RemoveItem(item, quantity);
-            BasePlayerItem newItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, quantity,
+            var newItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, quantity,
                                                                        item.Effects);
 
             Owner.Inventory.AddItem(newItem);
+
+            Save();
 
             return true;
         }

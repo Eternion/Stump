@@ -35,8 +35,6 @@ namespace Stump.Server.WorldServer.Game.Arena
         public override void Display()
         {
             Character.ArenaPopup = this;
-            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Character.Client, false, 
-                PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
             ContextHandler.SendGameRolePlayArenaFightPropositionMessage(Character.Client, this, 60);
         }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -17,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected virtual void OnFightDenied(Character character)
         {
-            Action<ArenaFight, Character> handler = FightDenied;
+            var handler = FightDenied;
             if (handler != null) handler(this, character);
         }
 
@@ -69,14 +68,10 @@ namespace Stump.Server.WorldServer.Game.Arena
             var defendersRank =
                 (int) DefendersTeam.Fighters.OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
 
-            foreach (CharacterFighter fighter in Fighters.OfType<CharacterFighter>())
-            {
-                FightOutcomeEnum outcome = fighter.GetFighterOutcome();
-                yield return new ArenaFightResult(fighter, outcome, fighter.Loot,
-                    ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
-                        fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
-                        outcome == FightOutcomeEnum.RESULT_VICTORY));
-            }
+            return (from fighter in Fighters.OfType<CharacterFighter>() let outcome = fighter.GetFighterOutcome() select new ArenaFightResult(fighter, outcome, fighter.Loot,
+                ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
+                    fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
+                    outcome == FightOutcomeEnum.RESULT_VICTORY)));
         }
 
         protected override bool CanCancelFight()
