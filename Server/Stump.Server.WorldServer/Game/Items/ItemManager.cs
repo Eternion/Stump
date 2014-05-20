@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public BasePlayerItem CreatePlayerItem(Character owner, IItem item)
         {
-            return CreatePlayerItem(owner, item.Template, (uint)item.Stack, item.Effects.Clone());
+            return CreatePlayerItem(owner, item.Template, item.Stack, item.Effects.Clone());
         }
 
         public BasePlayerItem CreatePlayerItem(Character owner, IItem item, uint amount)
