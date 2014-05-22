@@ -21,19 +21,19 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                             ));
         }
 
-        /*
-        public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedMonster summonedMonster)
+        public static void SendGameActionFightVanishMessage(IPacketReceiver client, FightActor source, FightActor target)
         {
-            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summonedMonster.Summoner.Id, summonedMonster.GetGameFightFighterInformations()));
+            client.Send(new GameActionFightVanishMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id));
         }
-         */
+         
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
-            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
+            client.Send(new GameActionFightSummonMessage(summon is SummonedClone ? (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE : (short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
         }
 
         public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)
         {
+            SendGameActionFightVanishMessage(client, source, target);
             client.Send(new GameActionFightInvisibilityMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, (sbyte)state));
         }
         
@@ -41,7 +41,6 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         {
             client.Send(new GameActionFightDispellEffectMessage(514, source.Id, target.Id, buff.Id));
         }
-
 
         public static void SendGameActionFightReflectDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
         {

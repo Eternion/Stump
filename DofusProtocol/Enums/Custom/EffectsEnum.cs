@@ -781,7 +781,7 @@
         /// <summary>
         /// Removes the effects of %1
         /// </summary>
-        Effect_406 = 406,
+        Effect_RemoveSpellEffects = 406,
         /// <summary>
         /// HP restored: #1{~1~2 to }#2
         /// </summary>
@@ -1349,7 +1349,7 @@
         /// <summary>
         /// Removes #3 state
         /// </summary>
-        Effect_951 = 951,
+        Effect_DispelState = 951,
         /// <summary>
         /// #3 state deactivated
         /// </summary>
