@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -40,6 +41,10 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public void Accept()
         {
+            ContextHandler.SendGameRolePlayArenaFighterStatusMessage(
+                (Fight.Clients.Where(x => x.Character.Team.OpposedTeam.Id != Team.Id) as WorldClientCollection),
+                Fight.Id, Character, true);
+
             Team.ToggleReadyToFight(Character, true);
         }
 
@@ -50,13 +55,22 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         private void OnFightDenied(ArenaFight arg1, Character arg2)
         {
+            foreach (var allie in Team.GetAlliesInQueue().Where(allie => allie != Character))
+            {
+                ArenaManager.Instance.AddToQueue(allie);
+            }
+
             if (Character.ArenaParty != null)
             {
-                if (Character.IsPartyLeader(Character.ArenaParty.Id))
-                    ArenaManager.Instance.AddToQueue(Character.ArenaParty);
+                if (!Character.IsPartyLeader(Character.ArenaParty.Id))
+                    return;
+
+                ArenaManager.Instance.RemoveFromQueue(Character.ArenaParty);
             }
             else
-                ArenaManager.Instance.AddToQueue(Character);
+            {
+                ArenaManager.Instance.RemoveFromQueue(Character);
+            }
         }
     }
 }

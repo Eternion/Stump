@@ -1991,8 +1991,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
         private readonly WorldClientCollection m_spectatorClients = new WorldClientCollection();
-        private List<FightActor> m_leavers;
-        private List<FightSpectator> m_spectators;
+        private readonly List<FightActor> m_leavers;
+        private readonly List<FightSpectator> m_spectators;
 
         /// <summary>
         /// Do not modify, just read
