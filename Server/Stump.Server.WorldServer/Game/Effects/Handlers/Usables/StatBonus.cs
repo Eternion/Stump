@@ -98,10 +98,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
             if (actualPts >= StatBonusLimit)
                 return 0;
 
-            if (actualPts + bonus > StatBonusLimit)
-                return (short) (actualPts - StatBonusLimit);
-
-            return bonus;
+            return actualPts + bonus > StatBonusLimit ? StatBonusLimit : bonus;
         }
 
         private void UpdatePermanentStatField(short bonus)
