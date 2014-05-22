@@ -49,11 +49,12 @@ namespace Stump.Server.WorldServer.Game.Arena
                 return;
 
             tuple.Ready = ready;
-            if (AreAllReadyToFight() && (((ArenaTeam) OpposedTeam).AreAllReadyToFight()))
+            if (AreAllReadyToFight() && (((ArenaTeam)OpposedTeam).AreAllReadyToFight()))
             {
                 Fight.Map.Area.ExecuteInContext(TeleportCharactersToFight);
             }
         }
+
         public bool AreAllReadyToFight()
         {
             return m_requestedCharacters.All(x => x.Ready);

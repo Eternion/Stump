@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Arena;
 
 namespace Stump.Server.WorldServer.Handlers.Context
@@ -40,7 +41,13 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameRolePlayArenaUnregisterMessage.Id)]
         public static void HandleGameRolePlayArenaUnregisterMessage(WorldClient client, GameRolePlayArenaUnregisterMessage message)
         {
-            ArenaManager.Instance.RemoveFromQueue(client.Character);
+            if (client.Character.ArenaParty != null)
+            {
+                if (client.Character.IsPartyLeader(client.Character.ArenaParty.Id))
+                    ArenaManager.Instance.RemoveFromQueue(client.Character.ArenaParty);
+            }
+            else
+                ArenaManager.Instance.RemoveFromQueue(client.Character);
         }   
         
         public static void SendGameRolePlayArenaFightPropositionMessage(IPacketReceiver client, ArenaPopup popup, int delay)
@@ -48,9 +55,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameRolePlayArenaFightPropositionMessage(popup.Team.Fight.Id, popup.Team.GetAlliesInQueue().Select(x => x.Id), (short)delay));
         }
 
-        public static void SendGameRolePlayArenaFighterStatusMessage(IPacketReceiver client)
+        public static void SendGameRolePlayArenaFighterStatusMessage(IPacketReceiver client, int fightId, Character character, bool accepted)
         {
-            client.Send(new GameRolePlayArenaFighterStatusMessage());
+            client.Send(new GameRolePlayArenaFighterStatusMessage(fightId, character.Id, accepted));
         }
 
         public static void SendGameRolePlayArenaRegistrationStatusMessage(IPacketReceiver client, bool registred, PvpArenaStepEnum step, PvpArenaTypeEnum type)

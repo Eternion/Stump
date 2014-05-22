@@ -169,6 +169,9 @@ namespace Stump.Server.WorldServer.Game.Arena
 
                 var popup = new ArenaPopup(character, fight.DefendersTeam);
                 popup.Display();
+
+                ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(character.Client, true,
+                PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
             }
 
             foreach (var character in team2.SelectMany(x => x.EnumerateCharacters()))
@@ -176,7 +179,10 @@ namespace Stump.Server.WorldServer.Game.Arena
                 fight.ChallengersTeam.AddArenaFighter(character);
 
                 var popup = new ArenaPopup(character, fight.ChallengersTeam);
-                popup.Display();            
+                popup.Display();
+
+                ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(character.Client, true,
+                PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
             }
         }
     }

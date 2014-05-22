@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {
@@ -47,6 +48,9 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public override void StartFighting()
         {
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
+                            PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+            
             m_placementTimer.Dispose();
 
             base.StartFighting();
