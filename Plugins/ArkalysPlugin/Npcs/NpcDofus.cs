@@ -122,16 +122,16 @@ namespace ArkalysPlugin.Npcs
     public class NpcDofusExchangeDialog : NpcTrade
     {
         private readonly List<RequiredItem> REQUIRED_ITEMS = new List<RequiredItem>
-        {
-            new RequiredItem(972, 100),
-            new RequiredItem(20015, 50),
-            new RequiredItem(694, 45),
-            new RequiredItem(7113, 40),
-            new RequiredItem(739, 35),
-            new RequiredItem(7754, 30),
-            new RequiredItem(6980, 25),
-            new RequiredItem(20140, 20)
-        };
+            {
+                new RequiredItem(972, 100),
+                new RequiredItem(20015, 50),
+                new RequiredItem(694, 45),
+                new RequiredItem(7113, 40),
+                new RequiredItem(739, 35),
+                new RequiredItem(7754, 30),
+                new RequiredItem(6980, 25),
+                new RequiredItem(20140, 20)
+            };
 
         public NpcDofusExchangeDialog(Character character, Npc npc)
              : base(character, npc)
@@ -145,7 +145,6 @@ namespace ArkalysPlugin.Npcs
             if (!(trader is PlayerTrader))
                 return;
 
-            ResetRequiredItems();
             AdjustLoots();
         }
 
@@ -157,32 +156,35 @@ namespace ArkalysPlugin.Npcs
 
         private void AdjustLoots()
         {
-            foreach (var item in FirstTrader.Items.ToArray().Where(item => !REQUIRED_ITEMS.Exists(x => x.ItemId == item.Template.Id)))
-            {
-                FirstTrader.MoveItemToInventory(item.Guid, item.Stack);
-            }
+            ResetRequiredItems();
 
-            foreach (var requiredItem in from item in FirstTrader.Items.ToArray() let requiredItem = GetRequiredItem(item.Template.Id) where requiredItem != null where item.Stack == requiredItem.Amount select requiredItem)
+            foreach (var item in FirstTrader.Items.ToArray())
             {
-                requiredItem.State = true;
+                var requiredItem = GetRequiredItem(item.Template.Id);
+                if (requiredItem != null)
+                {
+                    requiredItem.Count += item.Stack;
+                }
+                else
+                {
+                    FirstTrader.MoveItemToInventory(item.Guid, item.Stack);
+                }
             }
 
             var dofusLegendaire = ItemManager.Instance.TryGetTemplate(NpcDofus.RewardItemId);
+            var itemDofus = SecondTrader.Items.FirstOrDefault(item => item.Template.Id == dofusLegendaire.Id);
 
-            if (CanExchange())
-            {   
-                SecondTrader.AddItem(dofusLegendaire, 1);
-            }
-            else
+            if (itemDofus == null)
             {
-                var item = SecondTrader.Items.FirstOrDefault();
-
-                if (item == null)
+                if (!CanExchange())
                     return;
 
-                SecondTrader.RemoveItem(item.Template, 1);
-                InventoryHandler.SendExchangeObjectRemovedMessage(FirstTrader.Character.Client, true, item.Guid);
+                SecondTrader.AddItem(dofusLegendaire, 1);
+                return;
             }
+
+            SecondTrader.RemoveItem(itemDofus.Template, itemDofus.Stack);
+            InventoryHandler.SendExchangeObjectRemovedMessage(FirstTrader.Character.Client, true, itemDofus.Guid);
         }
 
         private RequiredItem GetRequiredItem(int itemId)
@@ -192,15 +194,12 @@ namespace ArkalysPlugin.Npcs
 
         private bool CanExchange()
         {
-            return REQUIRED_ITEMS.All(requiredItem => requiredItem.State);
+            return REQUIRED_ITEMS.All(requiredItem => requiredItem.Count >= requiredItem.Amount);
         }
 
         private void ResetRequiredItems()
         {
-            foreach (var requiredItem in REQUIRED_ITEMS)
-            {
-                requiredItem.State = false;
-            }
+            REQUIRED_ITEMS.ForEach(x => x.Count = 0);
         }
     }
 
@@ -210,7 +209,7 @@ namespace ArkalysPlugin.Npcs
         {
             ItemId = itemId;
             Amount = amount;
-            State = false;
+            Count = 0;
         }
 
         public int ItemId
@@ -225,7 +224,7 @@ namespace ArkalysPlugin.Npcs
             private set;
         }
 
-        public bool State
+        public long Count
         {
             get;
             set;
