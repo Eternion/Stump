@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -41,9 +40,11 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public void Accept()
         {
-            ContextHandler.SendGameRolePlayArenaFighterStatusMessage(
-                (Fight.Clients.Where(x => x.Character.Team.OpposedTeam.Id != Team.Id) as WorldClientCollection),
-                Fight.Id, Character, true);
+            foreach (var allie in Team.GetAlliesInQueue())
+            {
+                ContextHandler.SendGameRolePlayArenaFighterStatusMessage(allie.Client, Fight.Id, Character, true); 
+            }
+
 
             Team.ToggleReadyToFight(Character, true);
         }
