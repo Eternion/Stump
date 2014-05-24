@@ -353,7 +353,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                                              Leader != null ? Leader.Id : 0,
                                              (sbyte) AlignmentSide,
                                              (sbyte) TeamType,
-                                             m_fighters.Select(entry => entry.GetFightTeamMemberInformations())
+                                             m_fighters.Count > 0 ? m_fighters.Select(entry => entry.GetFightTeamMemberInformations()) : null
                 );
         }
 
