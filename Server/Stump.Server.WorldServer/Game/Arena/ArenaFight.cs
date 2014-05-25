@@ -13,14 +13,6 @@ namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaFight : Fight<ArenaTeam, ArenaTeam>
     {
-        public event Action<ArenaFight, Character> FightDenied;
-
-        protected virtual void OnFightDenied(Character character)
-        {
-            var handler = FightDenied;
-            if (handler != null) handler(this, character);
-        }
-
         public ArenaFight(int id, Map fightMap, ArenaTeam defendersTeam, ArenaTeam challengersTeam)
             : base(id, fightMap, defendersTeam, challengersTeam)
         {
@@ -32,15 +24,11 @@ namespace Stump.Server.WorldServer.Game.Arena
             get { return FightTypeEnum.FIGHT_TYPE_PVP_ARENA; }
         }
 
-        public void DenyFight(Character character)
-        {
-            if (State != FightState.NotStarted)
-                throw new Exception("DenyFight() : State != FightState.NotStarted");
-
-            OnFightDenied(character);
-        }
          public override void StartPlacement()
-        {
+        {            
+             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
+                            PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+
             base.StartPlacement();
 
             m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
@@ -48,9 +36,6 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public override void StartFighting()
         {
-            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
-                            PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
-            
             m_placementTimer.Dispose();
 
             base.StartFighting();
