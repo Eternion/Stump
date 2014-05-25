@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public static double GetWinningChances(int currentRank, int opposantRank)
         {
-            return 1/(1 + Math.Pow((opposantRank - currentRank)/400d, 10d));
+            return 1/(1 + Math.Pow(10d,(opposantRank - currentRank)/400d));
         }
 
         public static int AdjustRank(int currentRank, int opposantRank, bool won)
