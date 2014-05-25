@@ -65,25 +65,13 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             WaitingCharacter.DenyFight();
         }
-        /*
-        private void OnFightDenied(ArenaFight arg1, Character arg2)
+
+        public void Cancel()
         {
-            foreach (var allie in Team.GetAlliesInQueue().Where(allie => allie != Character))
-            {
-                ArenaManager.Instance.AddToQueue(allie);
-            }
+            if (m_timer != null)
+                m_timer.Dispose();
 
-            if (Character.ArenaParty != null)
-            {
-                if (!Character.IsPartyLeader(Character.ArenaParty.Id))
-                    return;
-
-                ArenaManager.Instance.RemoveFromQueue(Character.ArenaParty);
-            }
-            else
-            {
-                ArenaManager.Instance.RemoveFromQueue(Character);
-            }
-        }*/
+            // send something ?
+        }
     }
 }

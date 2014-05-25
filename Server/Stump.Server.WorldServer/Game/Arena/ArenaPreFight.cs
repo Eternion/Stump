@@ -144,6 +144,10 @@ namespace Stump.Server.WorldServer.Game.Arena
             arg2.FightDenied -= OnFightDenied;
 
             m_clients.Remove(arg2.Character.Client);
+
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
+                    PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+
         }
 
         private void OnMemberAdded(ArenaPreFightTeam arg1, ArenaWaitingCharacter arg2)
@@ -156,33 +160,50 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         private void OnFightDenied(ArenaWaitingCharacter obj)
         {
-            if (obj.Character.ArenaParty != null)
-                foreach (var character in obj.Team.Members)
-                {
-                    obj.Team.RemoveCharacter(character);
-                }
-            else
-                obj.Team.RemoveCharacter(obj);
-
-            if (!IsInQueue)
+            ArenaManager.Instance.ArenaTaskPool.ExecuteInContext(() =>
             {
-                ArenaManager.Instance.AddIncompleteFight(this);
-                InQueueSince = DateTime.Now;
-                IsInQueue = true;
-            }
+                if (obj.Character.ArenaParty != null)
+                {
+                    foreach (var character in obj.Team.Members.ToArray())
+                    {
+                        obj.Team.RemoveCharacter(character);
+                    }
+
+                    obj.Character.ArenaParty.RemoveMember(obj.Character);
+                }
+                else
+                    obj.Team.RemoveCharacter(obj);
+
+                if (!IsInQueue)
+                {
+                    ArenaManager.Instance.AddIncompleteFight(this);
+                    InQueueSince = DateTime.Now;
+                    IsInQueue = true;
+
+                    foreach (var character in DefendersTeam.Members.Concat(ChallengersTeam.Members))
+                    {
+                        if (character.Character.ArenaPopup != null)
+                            character.Character.ArenaPopup.Cancel();
+                    }
+
+                }
+            });
         }
 
         private void OnReadyChanged(ArenaWaitingCharacter character, bool ready)
         {
-            ContextHandler.SendGameRolePlayArenaFighterStatusMessage(m_clients, Id, character.Character, ready);
-
-            if (!IsInQueue && DefendersTeam.MissingMembers == 0 && ChallengersTeam.MissingMembers == 0 &&
-                DefendersTeam.Members.All(x => x.Ready) && ChallengersTeam.Members.All(x => x.Ready))
+            ArenaManager.Instance.ArenaTaskPool.ExecuteInContext(() =>
             {
-                m_fight = FightManager.Instance.CreateArenaFight(this);
+                ContextHandler.SendGameRolePlayArenaFighterStatusMessage(m_clients, Id, character.Character, ready);
 
-                TeleportFighters();
-            }
+                if (!IsInQueue && DefendersTeam.MissingMembers == 0 && ChallengersTeam.MissingMembers == 0 &&
+                    DefendersTeam.Members.All(x => x.Ready) && ChallengersTeam.Members.All(x => x.Ready))
+                {
+                    m_fight = FightManager.Instance.CreateArenaFight(this);
+
+                    TeleportFighters();
+                }
+            });
         }
 
         private void TeleportFighters()
@@ -195,7 +216,8 @@ namespace Stump.Server.WorldServer.Game.Arena
                 {
                     try
                     {
-                        m_charactersMaps.Add(character1, character1.Map);
+                        lock(m_charactersMaps)
+                            m_charactersMaps.Add(character1, character1.Map);
 
                         if (character1.IsFighting())
                         {
@@ -217,7 +239,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                     {
                         if (Interlocked.Decrement(ref count) <= 0)
                         {
-                            m_fight.Map.Area.ExecuteInContext(PrepareFight);
+                            m_fight.Map.Area.AddMessage(PrepareFight);
                         }
                     }
                 });

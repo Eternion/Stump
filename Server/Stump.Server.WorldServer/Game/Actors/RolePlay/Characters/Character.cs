@@ -397,13 +397,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool IsInParty(int id)
         {
-            if (Party != null)
-                return Party.Id == id;
-
-            if (ArenaParty != null)
-                return ArenaParty.Id == id;
-
-            return false;
+            return (Party != null && Party.Id == id) || (ArenaParty != null && ArenaParty.Id == id);
         }
 
         public bool IsInParty(PartyTypeEnum type)
@@ -2115,7 +2109,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (GodMode)
                 Stats.Health.DamageTaken = 0;
-            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team) && !(Fight is FightDuel))
+            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team) && !Fight.IsDeathTemporarily)
                 OnDied();
 
             Fighter = null;

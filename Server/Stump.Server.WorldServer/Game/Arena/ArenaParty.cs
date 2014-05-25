@@ -43,6 +43,8 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected override void OnMemberRemoved(Character groupMember, bool kicked)
         {
+            ArenaManager.Instance.RemoveFromQueue(this);
+
             base.OnMemberRemoved(groupMember, kicked);
 
 

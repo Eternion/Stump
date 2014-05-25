@@ -40,6 +40,15 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             base.StartFighting();
         }
+
+        protected override void OnFightEnded()
+        {
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
+                    PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+
+            base.OnFightEnded();
+        }
+
         public override int GetPlacementTimeLeft()
         {
             var timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;

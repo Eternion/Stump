@@ -170,6 +170,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        bool IsDeathTemporarily
+        {
+            get;
+        }
+
         /// <summary>
         /// Do not modify, just read
         /// </summary>
@@ -506,6 +511,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
+        public virtual bool IsDeathTemporarily
+        {
+            get { return false; }
+        }
+
         #endregion
 
         #region Phases
@@ -741,6 +751,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             RandomnizePositions(ChallengersTeam);
             RandomnizePositions(DefendersTeam);
+
+            TimeLine.OrderLine();
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
 
             ShowBlades();
             Map.AddFight(this);
@@ -1022,8 +1035,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             BindFighterEvents(actor);
 
             if (State == FightState.Placement)
+            {
+                TimeLine.OrderLine();
                 if (!RandomnizePosition(actor))
                     return;
+            }
 
             if (actor is CharacterFighter)
                 OnCharacterAdded(actor as CharacterFighter);
@@ -1788,7 +1804,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Placement)
             {
-                if (!(this is FightDuel))
+                if (!IsDeathTemporarily)
                     fighter.Stats.Health.DamageTaken += (short)(fighter.LifePoints - 1);
 
                 if (CheckFightEnd())
