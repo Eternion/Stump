@@ -289,6 +289,7 @@ namespace WorldEditor.Editors.Items
         public ObservableCollection<EffectWrapper> WrappedEffects
         {
             get { return m_effects; }
+            set { m_effects = value; }
         }
 
         public List<uint> FavoriteSubAreas
