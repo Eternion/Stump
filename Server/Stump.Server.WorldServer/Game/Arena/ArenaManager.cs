@@ -42,6 +42,10 @@ namespace Stump.Server.WorldServer.Game.Arena
             m_arenaTaskPool.Start();
         }
 
+        public SelfRunningTaskPool ArenaTaskPool
+        {
+            get { return m_arenaTaskPool; }
+        }
 
         public bool CanJoinQueue(Character character)
         {

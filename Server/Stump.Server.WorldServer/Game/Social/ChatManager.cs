@@ -83,6 +83,7 @@ namespace Stump.Server.WorldServer.Game.Social
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_GLOBAL, SayGlobal);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_GUILD, SayGuild);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_PARTY, SayParty);
+            ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_ARENA, SayArena);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_SALES, SaySales);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_SEEK, SaySeek);
             ChatHandlers.Add(ChatActivableChannelsEnum.CHANNEL_ADMIN, SayAdministrators);
@@ -97,12 +98,14 @@ namespace Stump.Server.WorldServer.Game.Social
                     return (!character.Map.IsMuted || character.UserGroup.Role >= AdministratorChatMinAccess);
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:
                     return character.IsFighting();
+                case ChatActivableChannelsEnum.CHANNEL_ARENA:
+                    return character.IsInParty(PartyTypeEnum.PARTY_TYPE_ARENA);
                 case ChatActivableChannelsEnum.CHANNEL_GUILD:
                     return character.Guild != null;
                 case ChatActivableChannelsEnum.CHANNEL_ALIGN:
                     return false;
                 case ChatActivableChannelsEnum.CHANNEL_PARTY:
-                    return character.IsInParty();
+                    return character.IsInParty(PartyTypeEnum.PARTY_TYPE_CLASSICAL);
                 case ChatActivableChannelsEnum.CHANNEL_SALES:
                     return !character.IsMuted();
                 case ChatActivableChannelsEnum.CHANNEL_SEEK:
@@ -251,6 +254,16 @@ namespace Stump.Server.WorldServer.Game.Social
             }
 
             client.Character.Party.ForEach(entry => SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg));
+        }
+        public void SayArena(WorldClient client, string msg)
+        {
+            if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA))
+            {
+                ChatHandler.SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_NO_PARTY_ARENA);
+                return;
+            }
+
+            client.Character.ArenaParty.ForEach(entry => SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA, msg));
         }
 
         public void SayGuild(WorldClient client, string msg)

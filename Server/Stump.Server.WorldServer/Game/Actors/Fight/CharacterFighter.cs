@@ -288,7 +288,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             base.ResetFightProperties();
 
-            if (Fight is FightDuel)
+            if (Fight.IsDeathTemporarily)
                 Stats.Health.DamageTaken = m_damageTakenBeforeFight;
             else if (Stats.Health.Total <= 0)
                 Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);

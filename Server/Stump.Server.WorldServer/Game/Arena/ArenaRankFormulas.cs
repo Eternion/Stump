@@ -13,7 +13,9 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public static int AdjustRank(int currentRank, int opposantRank, bool won)
         {
-            return (int)(currentRank + KFactor*((won ? 1 : 0) - GetWinningChances(currentRank, opposantRank)));
+            var rank = (int)(currentRank + KFactor*((won ? 1 : 0) - GetWinningChances(currentRank, opposantRank)));
+
+            return rank > 0 ? rank : 0;
         }
     }
 }
