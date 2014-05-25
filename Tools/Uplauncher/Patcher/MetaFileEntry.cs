@@ -68,8 +68,8 @@ namespace Uplauncher.Patcher
         }
         public void Download(UplauncherModelView uplauncher)
         {
-            string fullPath = Path.GetFullPath("./" + LocalURL);
-            bool isUplauncherExeFile = fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath),
+            var fullPath = Path.GetFullPath("./" + LocalURL);
+            var isUplauncherExeFile = fullPath.Equals(Path.GetFullPath(Constants.CurrentExePath),
                 StringComparison.InvariantCultureIgnoreCase);
 
 #if DEBUG
@@ -85,7 +85,7 @@ namespace Uplauncher.Patcher
 
             if (File.Exists(fullPath))
             {
-                string md5 = Cryptography.GetFileMD5HashBase64(fullPath);
+                var md5 = Cryptography.GetFileMD5HashBase64(fullPath);
 
                 if (md5 == FileMD5)
                 {
@@ -121,7 +121,7 @@ namespace Uplauncher.Patcher
             OnApplied();
         }
 
-        private void OnUplauncherDownloaded(object sender, AsyncCompletedEventArgs e)
+        private static void OnUplauncherDownloaded(object sender, AsyncCompletedEventArgs e)
         {
             ((WebClient) sender).DownloadFileCompleted -= OnUplauncherDownloaded;
 

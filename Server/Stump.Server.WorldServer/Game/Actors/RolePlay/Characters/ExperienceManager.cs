@@ -66,17 +66,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public long GetCharacterNextLevelExperience(byte level)
         {
-            if (m_records.ContainsKey((byte) (level + 1)))
-            {
-                var exp = m_records[(byte) (level + 1)].CharacterExp;
+            if (!m_records.ContainsKey((byte) (level + 1)))
+                return long.MaxValue;
 
-                if (!exp.HasValue)
-                    throw new Exception("Character level " + level + " is not defined");
+            var exp = m_records[(byte) (level + 1)].CharacterExp;
 
-                return exp.Value;
-            }
+            if (!exp.HasValue)
+                throw new Exception("Character level " + level + " is not defined");
 
-            return long.MaxValue;
+            return exp.Value;
         }
         public byte GetCharacterLevel(long experience, int prestigeRank)
         {

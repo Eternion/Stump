@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Social
         {
             if (IsOnline())
             {
-                return new IgnoredOnlineInformations((int)Account.Id,
+                return new IgnoredOnlineInformations(Account.Id,
                     Account.Nickname,
                     Character.Name,
                     (sbyte)Character.Breed.Id,
@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Social
             }
 
             return new IgnoredInformations(
-                (int)Account.Id,
+                Account.Id,
                 Account.Nickname);
         } 
     }
