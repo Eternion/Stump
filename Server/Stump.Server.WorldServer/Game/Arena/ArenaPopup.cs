@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+using Stump.Core.Attributes;
+using Stump.Core.Timers;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -7,53 +10,62 @@ namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaPopup : Notification
     {
-        public ArenaPopup(Character character, ArenaTeam team)
+        [Variable] public static int DisplayTime = 60;
+        private TimedTimerEntry m_timer;
+
+        public ArenaPopup(ArenaWaitingCharacter character)
         {
-            Character = character;
-            Team = team;
-            Fight.FightDenied += OnFightDenied;
+            WaitingCharacter = character;
         }
 
 
-        public Character Character
+        public ArenaWaitingCharacter WaitingCharacter
         {
             get;
             private set;
         }
 
-        public ArenaTeam Team
+        public Character Character
         {
-            get;
-            set;
+            get { return WaitingCharacter.Character; }
         }
 
-        public ArenaFight Fight
+        public ArenaPreFightTeam Team
         {
-            get { return Team.Fight as ArenaFight; }
+            get { return WaitingCharacter.Team; }
+        }
+
+        public ArenaPreFight Fight
+        {
+            get { return Team.Fight; }
         }
 
         public override void Display()
         {
             Character.ArenaPopup = this;
-            ContextHandler.SendGameRolePlayArenaFightPropositionMessage(Character.Client, this, 60);
+            m_timer = Character.Area.CallDelayed(DisplayTime*1000, Deny);
+            ContextHandler.SendGameRolePlayArenaFightPropositionMessage(Character.Client, this, DisplayTime);
+            
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Character.Client, true,
+                PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
 
         public void Accept()
         {
-            foreach (var allie in Team.GetAlliesInQueue())
-            {
-                ContextHandler.SendGameRolePlayArenaFighterStatusMessage(allie.Client, Fight.Id, Character, true); 
-            }
+            if (m_timer != null)
+                m_timer.Dispose();
 
-
-            Team.ToggleReadyToFight(Character, true);
+            WaitingCharacter.ToggleReady(true);
         }
 
         public void Deny()
         {
-            Fight.DenyFight(Character);
-        }
+            if (m_timer != null)
+                m_timer.Dispose();
 
+            WaitingCharacter.DenyFight();
+        }
+        /*
         private void OnFightDenied(ArenaFight arg1, Character arg2)
         {
             foreach (var allie in Team.GetAlliesInQueue().Where(allie => allie != Character))
@@ -72,6 +84,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             {
                 ArenaManager.Instance.RemoveFromQueue(Character);
             }
-        }
+        }*/
     }
 }

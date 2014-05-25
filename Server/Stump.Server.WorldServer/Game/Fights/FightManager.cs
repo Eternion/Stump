@@ -1,5 +1,6 @@
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Arena;
 using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps;
@@ -66,6 +67,25 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fight = new ArenaFight(m_idProvider.Pop(), map, defendersTeam, challengersTeam);
 
             AddEntity(fight.Id, fight);
+
+            return fight;
+        }        
+        
+        public ArenaFight CreateArenaFight(ArenaPreFight preFight)
+        {
+            var challengersTeam = new ArenaTeam(TeamEnum.TEAM_CHALLENGER, preFight.Arena.Map.GetRedFightPlacement());
+            var defendersTeam = new ArenaTeam(TeamEnum.TEAM_DEFENDER, preFight.Arena.Map.GetBlueFightPlacement());
+
+            var fight = new ArenaFight(preFight.Id, preFight.Arena.Map, defendersTeam, challengersTeam);
+
+            AddEntity(fight.Id, fight);
+
+            return fight;
+        }
+        
+        public ArenaPreFight CreateArenaPreFight(ArenaRecord arena)
+        {
+            var fight = new ArenaPreFight(m_idProvider.Pop(), arena);
 
             return fight;
         }

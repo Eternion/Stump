@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
@@ -31,6 +32,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         private Dictionary<int, ArenaRecord> m_arenas;
         private readonly SelfRunningTaskPool m_arenaTaskPool = new SelfRunningTaskPool(ArenaUpdateInterval, "Arena");
         private readonly List<ArenaQueueMember> m_queue = new List<ArenaQueueMember>();
+        private readonly List<ArenaPreFight> m_incompleteFights = new List<ArenaPreFight>();
         
         [Initialization(InitializationPass.Fifth)]
         public override void Initialize()
@@ -98,6 +100,15 @@ namespace Stump.Server.WorldServer.Game.Arena
                 PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
 
+        public void AddIncompleteFight(ArenaPreFight preFight)
+        {
+            lock (m_incompleteFights)
+                m_incompleteFights.Add(preFight);
+
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(preFight.Clients, true,
+                PvpArenaStepEnum.ARENA_STEP_REGISTRED, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+        }
+
         public void ComputeMatchmaking()
         {
             List<ArenaQueueMember> queue;
@@ -110,6 +121,20 @@ namespace Stump.Server.WorldServer.Game.Arena
             while ((current = queue.FirstOrDefault()) != null)
             {
                 queue.Remove(current);
+
+                lock(m_incompleteFights)
+                {
+                    m_incompleteFights.RemoveAll(
+                        x => x.ChallengersTeam.Members.Count == 0 && x.DefendersTeam.Members.Count == 0);
+
+                    var incompleteFightMatch = m_incompleteFights.Where(x => x.IsCompatibleWith(current)).OrderBy(x => Math.Abs(x.AverageElo - current.ArenaRank)).FirstOrDefault();
+
+                    if (incompleteFightMatch != null)
+                    {
+                        if (incompleteFightMatch.ReplaceMissings(current))
+                            m_incompleteFights.Remove(incompleteFightMatch);
+                    }
+                }
 
                 var matchs = queue.Where(x => x.IsCompatibleWith(current)).ToList();
                 var allies = new List<ArenaQueueMember> {current};
@@ -161,29 +186,19 @@ namespace Stump.Server.WorldServer.Game.Arena
         private void StartFight(IEnumerable<ArenaQueueMember> team1, IEnumerable<ArenaQueueMember> team2)
         {
             var arena = m_arenas.RandomElementOrDefault().Value;
-            var fight = FightManager.Instance.CreateArenaFight(arena.Map);
+            var preFight = FightManager.Instance.CreateArenaPreFight(arena);
 
             foreach (var character in team1.SelectMany(x => x.EnumerateCharacters()))
             {
-                fight.DefendersTeam.AddArenaFighter(character);
-
-                var popup = new ArenaPopup(character, fight.DefendersTeam);
-                popup.Display();
-
-                ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(character.Client, true,
-                PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+                preFight.DefendersTeam.AddCharacter(character);
             }
 
             foreach (var character in team2.SelectMany(x => x.EnumerateCharacters()))
             {
-                fight.ChallengersTeam.AddArenaFighter(character);
-
-                var popup = new ArenaPopup(character, fight.ChallengersTeam);
-                popup.Display();
-
-                ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(character.Client, true,
-                PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+                preFight.ChallengersTeam.AddCharacter(character);
             }
+
+            preFight.ShowPopups();
         }
     }
 }
