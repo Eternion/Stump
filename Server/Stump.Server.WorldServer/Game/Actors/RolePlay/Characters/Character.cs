@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using NLog;
+using Stump.Core.Attributes;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -57,6 +58,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private const int AURA_1_SKIN = 170;
         private const int AURA_2_SKIN = 171;
 
+        [Variable]
+        private const ushort HonorLimit = 16000;
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -1104,7 +1107,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void AddHonor(ushort amount)
         {
-            Honor += amount;
+            Honor += (Honor + amount) >= HonorLimit ? HonorLimit : amount;
         }
 
         public void SubHonor(ushort amount)
@@ -1347,6 +1350,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             PrestigeRank++;
             AddTitle(PrestigeManager.Instance.GetPrestigeTitle(PrestigeRank));
+
+            switch (PrestigeRank)
+            {
+                case 5:
+                    AddOrnament(25);
+                    break;
+                case 10:
+                    AddOrnament(49);
+                    break;
+                case 15:
+                    AddOrnament(50);
+                    break;
+            }
 
             var item = GetPrestigeItem();
 

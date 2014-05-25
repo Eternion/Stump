@@ -863,14 +863,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             // update boosts
             foreach (var boost in GetItems(CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD))
             {
-                var effect = boost.Effects.OfType<EffectMinMax>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
+                var effect = boost.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
 
                 if (effect == null)
                     continue;
 
-                effect.ValueMax--;
+                effect.Value--;
 
-                if (effect.ValueMax <= 0)
+                if (effect.Value <= 0)
                     RemoveItem(boost);
                 else
                     RefreshItem(boost);

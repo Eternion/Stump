@@ -3,19 +3,19 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
-[assembly: AssemblyTitle("Uplauncher")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Arkalys Uplauncher")]
+[assembly: AssemblyDescription("Official Arkalys Uplauncher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Uplauncher")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("ARKALYS")]
+[assembly: AssemblyProduct("Arkalys Uplauncher")]
+[assembly: AssemblyCopyright("Copyright ©  2014 ARKALYS - Tous droits réservés")]
+[assembly: AssemblyTrademark("ARKALYS")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+[assembly: ComVisible(true)]
 
 //In order to begin building localizable applications, set 
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
@@ -43,6 +43,7 @@ using System.Windows;
 //      Build Number
 //      Revision
 
-[assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyFileVersion("1.0.*")]
+[assembly: AssemblyVersion("1.0.1")]
+[assembly: AssemblyFileVersion("1.0.1")]
 
+[assembly: GuidAttribute("02ea7bcc-6660-4fa2-b792-7f67bc54ae06")]

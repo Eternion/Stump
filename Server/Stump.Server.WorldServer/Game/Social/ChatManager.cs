@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Web;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
-using Stump.ORM.SubSonic.Extensions;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -154,11 +153,40 @@ namespace Stump.Server.WorldServer.Game.Social
             }
         }
 
+        public void HandleChat(WorldClient client, ChatActivableChannelsEnum channel, string message, IEnumerable<ObjectItem> objectItems)
+        {
+            if (!CanUseChannel(client.Character, channel))
+                return;
+
+            if (!ChatHandlers.ContainsKey(channel))
+                return;
+
+            if (client.Character.IsMuted())
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 124,
+                                                        (int)client.Character.GetMuteRemainingTime().TotalSeconds);
+            else
+            {
+                if (!client.Character.ChatHistory.RegisterAndCheckFlood(new ChatEntry(message, channel, DateTime.Now)))
+                    return;
+
+                if (channel == ChatActivableChannelsEnum.CHANNEL_ARENA || channel == ChatActivableChannelsEnum.CHANNEL_GUILD
+                    || channel == ChatActivableChannelsEnum.CHANNEL_PARTY || channel == ChatActivableChannelsEnum.CHANNEL_SALES
+                    || channel == ChatActivableChannelsEnum.CHANNEL_TEAM || channel == ChatActivableChannelsEnum.CHANNEL_ADMIN)
+                {
+                    ChatHandler.SendChatServerWithObjectMessage(client, client.Character, channel, message, "", objectItems);
+                }
+                else
+                {
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
+                }
+            }
+        }
+
         private static string UnescapeChatCommand(string command)
         {
             var sb = new StringBuilder();
 
-            for (int i = 0; i < command.Length; i++)
+            for (var i = 0; i < command.Length; i++)
             {
                 if (command[i] == '&')
                 {
