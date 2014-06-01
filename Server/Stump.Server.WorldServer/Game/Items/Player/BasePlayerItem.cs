@@ -111,12 +111,15 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         /// <param name="targetCell"></param>
         /// <param name="target"></param>
         /// <returns>Returns the amount of items to remove</returns>
-        public virtual uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        public virtual uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             uint removed = 0;
             foreach (var handler in Effects.Select(effect => EffectManager.Instance.GetUsableEffectHandler(effect, target ?? Owner, this)))
             {
-                handler.NumberOfUses = amount;
+                handler.NumberOfUses = (uint)amount;
                 handler.TargetCell = targetCell;
 
                 if (handler.Apply())

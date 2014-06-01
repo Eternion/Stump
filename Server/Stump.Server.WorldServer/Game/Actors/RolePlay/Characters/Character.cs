@@ -32,6 +32,7 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Maps;
@@ -1499,12 +1500,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (m_record.ArenaDailyDate.Day != DateTime.Now.Day)
             {
+                var amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
+
                 m_record.ArenaDailyDate = DateTime.Now;
                 ArenaDailyMaxRank = 0;
                 ArenaDailyMatchsCount = 0;
                 ArenaDailyMatchsWon = 0;
 
-                // todo : gives bonus here
+                Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
             }
         }
 
@@ -1524,6 +1527,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (win) ArenaDailyMatchsWon++;
             m_record.ArenaDailyDate = DateTime.Now;
+
+            if (win)
+            {
+                var amount = (int)Math.Ceiling(ArenaRank/100d);
+                Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
+            }
         }
 
         public int ArenaRank

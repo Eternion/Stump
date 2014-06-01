@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                     }
                 else
                 {
-                    var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, drop.Amount);
+                    var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, (int)drop.Amount);
                     Character.Inventory.AddItem(item);
                 }
             }

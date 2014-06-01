@@ -68,11 +68,11 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             Merchant.OnDialogClosed(this);
         }
 
-        public bool BuyItem(int itemGuid, uint quantity)
+        public bool BuyItem(int itemGuid, int quantity)
         {
             var item = Merchant.Bag.FirstOrDefault(x => x.Guid == itemGuid);
 
-            if (item == null || quantity == 0 || !CanBuy(item, quantity))
+            if (item == null || quantity <= 0 || !CanBuy(item, quantity))
             {
                 Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
                 return false;
@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             Character.Inventory.SubKamas((int)(item.Price * quantity));
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     46, (int)(item.Price * quantity));
-            Merchant.KamasEarned += item.Price*quantity;
+            Merchant.KamasEarned += (uint)(item.Price*quantity);
 
             Character.Client.Send(new ExchangeBuyOkMessage());
 
@@ -100,12 +100,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             return true;
         }
 
-        public bool CanBuy(MerchantItem item, uint amount)
+        public bool CanBuy(MerchantItem item, int amount)
         {
             return Character.Inventory.Kamas >= item.Price * amount || !Merchant.CanBeSee(Character);
         }
 
-        public bool SellItem(int id, uint quantity)
+        public bool SellItem(int id, int quantity)
         {
             Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.SELL_ERROR));
             return false;

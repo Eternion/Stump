@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-        public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
             var criterion = Template.CriteriaExpression as HasItemCriterion;
 
