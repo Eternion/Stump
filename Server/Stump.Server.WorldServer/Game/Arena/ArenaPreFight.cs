@@ -212,7 +212,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             foreach (var character in ChallengersTeam.Members.Concat(DefendersTeam.Members).Select(x => x.Character))
             {
                 var character1 = character;
-                character.Area.ExecuteInContext(() =>
+                character.Area.AddMessage(() =>
                 {
                     try
                     {
@@ -231,7 +231,6 @@ namespace Stump.Server.WorldServer.Game.Arena
                         }
                         else
                         {
-                            character1.NextMap = m_fight.Map;
                             character1.Teleport(m_fight.Map, m_fight.Map.Cells[character1.Cell.Id]);
                         }
                     }

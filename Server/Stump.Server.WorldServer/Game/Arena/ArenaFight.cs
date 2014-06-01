@@ -16,7 +16,6 @@ namespace Stump.Server.WorldServer.Game.Arena
         public ArenaFight(int id, Map fightMap, ArenaTeam defendersTeam, ArenaTeam challengersTeam)
             : base(id, fightMap, defendersTeam, challengersTeam)
         {
-             m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
         }
 
         public override FightTypeEnum FightType

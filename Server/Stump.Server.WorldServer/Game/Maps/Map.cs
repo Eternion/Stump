@@ -1550,7 +1550,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage(Character character)
         {
-            return new MapComplementaryInformationsDataMessage(
+            return new MapComplementaryInformationsWithCoordsMessage(
                 (short)SubArea.Id,
                 Id,
                 0,
@@ -1559,7 +1559,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
                 new StatedElement[0],
                 new MapObstacle[0],
-                m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()));
+                m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()),
+                (short)Position.X,
+                (short)Position.Y);
         }
 
         #endregion

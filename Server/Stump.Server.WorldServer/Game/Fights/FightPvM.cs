@@ -106,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return false;
         }
 
-        public int GetPlacementTimeLeft()
+        public override int GetPlacementTimeLeft()
         {
             var timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
 

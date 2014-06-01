@@ -6,7 +6,11 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Arena;
+using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 
 namespace Stump.Server.WorldServer.Game.Parties
@@ -67,8 +71,8 @@ namespace Stump.Server.WorldServer.Game.Parties
             GroupLevelAverage = GroupLevelSum/MembersCount;
 
             PartyHandler.SendPartyJoinMessage(groupMember.Client, this);
+            PartyHandler.SendPartyNewMemberMessage(Clients, this, groupMember);
 
-            UpdateMember(groupMember);
             BindEvents(groupMember);
 
             var handler = GuestPromoted;
@@ -414,14 +418,6 @@ namespace Stump.Server.WorldServer.Game.Parties
             }
         }
 
-        public void SendToAll(Message message)
-        {
-            lock (m_memberLocker)
-            {
-                m_clients.Send(message);
-            }
-        }
-
         private void OnLifeUpdated(Character character, int regainedLife)
         {
             UpdateMember(character);
@@ -432,16 +428,42 @@ namespace Stump.Server.WorldServer.Game.Parties
             UpdateMember(character);
         }
 
+        private void OnEnterMap(RolePlayActor character, Map map)
+        {
+            UpdateMember(character as Character);
+        }
+
+        private void OnContextChanged(Character character, bool infight)
+        {
+            // not rdy yet
+            if (!infight)
+                return;
+            var reason = PartyFightReasonEnum.UNKNOW;
+
+            if (character.Fight is FightDuel || character.Fight is FightAgression || character.Fight is ArenaFight)
+                reason = character.Fighter.Team == character.Fight.ChallengersTeam
+                    ? PartyFightReasonEnum.ATTACK_PLAYER
+                    : PartyFightReasonEnum.PLAYER_ATTACK;
+            else if (character.Fight is FightPvM || character.Fight is FightPvT)
+                reason = PartyFightReasonEnum.MONSTER_ATTACK;
+
+            PartyHandler.SendPartyMemberInFightMessage(Clients, this, character, reason, character.Fight);
+        }
+
         private void BindEvents(Character member)
         {
             member.LifeRegened += OnLifeUpdated;
             member.LevelChanged += OnLevelChanged;
+            member.EnterMap += OnEnterMap;
+            member.ContextChanged += OnContextChanged;
         }
 
         private void UnBindEvents(Character member)
         {
-            member.LifeRegened -= OnLifeUpdated;
+            //member.LifeRegened -= OnLifeUpdated;
             member.LevelChanged -= OnLevelChanged;
+            member.EnterMap -= OnEnterMap;
+            member.ContextChanged -= OnContextChanged;
         }
 
         private void UnBindEvents()
