@@ -274,6 +274,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         FightCommonInformations GetFightCommonInformations();
         FightExternalInformations GetFightExternalInformations();
         bool CanBeSeen(Cell from, Cell to, bool throughEntities = false);
+        int GetPlacementTimeLeft();
     }
 
     public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, ICharacterContainer, IFight

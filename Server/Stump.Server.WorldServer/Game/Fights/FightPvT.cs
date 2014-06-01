@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 defender.Area.ExecuteInContext(() =>
                 {
                     var lastMap = defender.Map;
-                    defender1.Teleport(Map, defender1.Cell);
+                    defender1.Teleport(Map, Map.Cells[defender1.Cell.Id]);
                     defender1.ResetDefender();
                     Map.Area.ExecuteInContext(() =>
                     {

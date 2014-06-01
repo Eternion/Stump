@@ -1,10 +1,12 @@
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Parties;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
@@ -157,7 +159,18 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 
         public static void SendPartyUpdateMessage(IPacketReceiver client, Game.Parties.Party party, Character member)
         {
-            client.Send(new PartyUpdateMessage(party.Id, member.GetPartyMemberInformations()));
+            client.Send(new PartyUpdateMessage(party.Id, party.GetPartyMemberInformations(member)));
+        }
+
+        public static void SendPartyMemberInFightMessage(IPacketReceiver client, Game.Parties.Party party, Character member, PartyFightReasonEnum reason, IFight fight)
+        {
+            client.Send(new PartyMemberInFightMessage(party.Id, (sbyte)reason, member.Id, member.Account.Id, member.Name, fight.Id, 
+                new MapCoordinatesExtended((short)fight.Map.Position.X, (short)fight.Map.Position.Y, fight.Map.Id, (short)fight.Map.SubArea.Id), fight.GetPlacementTimeLeft()));
+        }
+
+        public static void SendPartyNewMemberMessage(IPacketReceiver client, Game.Parties.Party party, Character member)
+        {
+            client.Send(new PartyNewMemberMessage(party.Id, party.GetPartyMemberInformations(member)));
         }
 
         public static void SendPartyNewGuestMessage(IPacketReceiver client, Game.Parties.Party party, Character guest)

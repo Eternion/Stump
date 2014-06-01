@@ -146,6 +146,7 @@
     <Compile Include="Custom\NotificationEnum.cs" />
     <Compile Include="Custom\OptionalFeaturesEnum.cs" />
     <Compile Include="Custom\OrnamentEnum.cs" />
+    <Compile Include="Custom\PartyFightReasonEnum.cs" />
     <Compile Include="Custom\SpellShapeEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />
     <Compile Include="Custom\ContinentIdEnum.cs" />
