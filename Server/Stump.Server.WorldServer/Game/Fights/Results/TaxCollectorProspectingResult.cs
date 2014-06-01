@@ -105,12 +105,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 if (template.Effects.Count > 0)
                     for (var i = 0; i < drop.Amount; i++)
                     {
-                        var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, drop.Amount);
+                        var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, (int)drop.Amount);
                         TaxCollector.Bag.AddItem(item);
                     }
                 else
                 {
-                    var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, drop.Amount);
+                    var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, (int)drop.Amount);
                     TaxCollector.Bag.AddItem(item);
                 }
             }

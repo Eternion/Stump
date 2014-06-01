@@ -8,8 +8,10 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Arena;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Arena
@@ -29,11 +31,21 @@ namespace Stump.Server.WorldServer.Game.Arena
         /// </summary>
         [Variable] public static int ArenaMatchmakingInterval = 60;
 
+        public ItemTemplate TokenItemTemplate
+        {
+            get
+            {
+                return m_tokenTemplate ??
+                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int) ItemIdEnum.Kolizeton));
+            }
+        }
+
         private Dictionary<int, ArenaRecord> m_arenas;
         private readonly SelfRunningTaskPool m_arenaTaskPool = new SelfRunningTaskPool(ArenaUpdateInterval, "Arena");
         private readonly List<ArenaQueueMember> m_queue = new List<ArenaQueueMember>();
         private readonly List<ArenaPreFight> m_incompleteFights = new List<ArenaPreFight>();
-        
+        private ItemTemplate m_tokenTemplate;
+
         [Initialization(InitializationPass.Fifth)]
         public override void Initialize()
         {

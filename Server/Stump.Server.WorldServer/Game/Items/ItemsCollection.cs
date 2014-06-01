@@ -148,7 +148,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 T stackableWith;
                 if (IsStackable(item, out stackableWith))
                 {
-                    StackItem(stackableWith, item.Stack);
+                    StackItem(stackableWith, (int)item.Stack);
                     DeleteItem(item);
 
                     return stackableWith;
@@ -168,7 +168,7 @@ namespace Stump.Server.WorldServer.Game.Items
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <param name="delete"></param>
-        public virtual uint RemoveItem(T item, uint amount, bool delete = true)
+        public virtual int RemoveItem(T item, int amount, bool delete = true)
         {
             if (!HasItem(item))
                 return 0;
@@ -176,7 +176,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (item.Stack <= amount)
             {
                 RemoveItem(item, delete);
-                return item.Stack;
+                return (int)item.Stack;
             }
 
             UnStackItem(item, amount);
@@ -228,11 +228,14 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="amount"></param>
-        public virtual void StackItem(T item, uint amount)
+        public virtual void StackItem(T item, int amount)
         {
-            item.Stack += amount;
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
 
-            NotifyItemStackChanged(item, (int)amount);
+            item.Stack += (uint)amount;
+
+            NotifyItemStackChanged(item, amount);
         }
 
         /// <summary>
@@ -240,15 +243,18 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="amount"></param>
-        public virtual void UnStackItem(T item, uint amount)
+        public virtual void UnStackItem(T item, int amount)
         {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             if (item.Stack - amount <= 0)
                 RemoveItem(item);
             else
             {
-                item.Stack -= amount;
+                item.Stack -= (uint)amount;
 
-                NotifyItemStackChanged(item, (int)(-amount));
+                NotifyItemStackChanged(item, -amount);
             }
         }
 

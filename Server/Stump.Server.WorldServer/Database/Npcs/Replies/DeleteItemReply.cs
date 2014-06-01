@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (item == null)
                 return false;
 
-            character.Inventory.RemoveItem(item, Amount);
+            character.Inventory.RemoveItem(item, (int)Amount);
             character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, Amount,
                                              item.Template.Id);
 
