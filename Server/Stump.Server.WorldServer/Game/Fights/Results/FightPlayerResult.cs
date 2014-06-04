@@ -49,8 +49,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public override FightResultListEntry GetFightResultListEntry()
         {
-            var additionalDatas =
-                new List<DofusProtocol.Types.FightResultAdditionalData>();
+            var additionalDatas = new List<DofusProtocol.Types.FightResultAdditionalData>();
 
             if (ExperienceData != null)
                 additionalDatas.Add(ExperienceData.GetFightResultAdditionalData());

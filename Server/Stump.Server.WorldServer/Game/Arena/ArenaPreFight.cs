@@ -15,11 +15,11 @@ namespace Stump.Server.WorldServer.Game.Arena
     public class ArenaPreFight
     {
 
-        private WorldClientCollection m_clients = new WorldClientCollection();
+        private readonly WorldClientCollection m_clients = new WorldClientCollection();
 
-        private ArenaPreFightTeam m_team1;
-        private ArenaPreFightTeam m_team2;
-        private Dictionary<Character, Map> m_charactersMaps = new Dictionary<Character, Map>();
+        private readonly ArenaPreFightTeam m_team1;
+        private readonly ArenaPreFightTeam m_team2;
+        private readonly Dictionary<Character, Map> m_charactersMaps = new Dictionary<Character, Map>();
 
         private ArenaFight m_fight;
 
@@ -112,28 +112,23 @@ namespace Stump.Server.WorldServer.Game.Arena
             foreach (var character in member.EnumerateCharacters())
                 team.AddCharacter(character);
 
-            if (ChallengersTeam.MissingMembers == 0 && DefendersTeam.MissingMembers == 0)
-            {
-               
-                IsInQueue = false;
-                ShowPopups();
-                return true;
-            }
+            if (ChallengersTeam.MissingMembers != 0 || DefendersTeam.MissingMembers != 0)
+                return false;
 
-            return false;
+            IsInQueue = false;
+            ShowPopups();
+            return true;
         }
 
         public void ShowPopups()
-        { 
-            foreach (var character in DefendersTeam.Members)
+        {
+            foreach (var popup in DefendersTeam.Members.Select(character => new ArenaPopup(character)))
             {
-                var popup = new ArenaPopup(character);
                 popup.Display();
-            }            
-            
-            foreach (var character in ChallengersTeam.Members)
+            }
+
+            foreach (var popup in ChallengersTeam.Members.Select(character => new ArenaPopup(character)))
             {
-                var popup = new ArenaPopup(character);
                 popup.Display();
             }
         }
@@ -174,18 +169,16 @@ namespace Stump.Server.WorldServer.Game.Arena
                 else
                     obj.Team.RemoveCharacter(obj);
 
-                if (!IsInQueue)
+                if (IsInQueue)
+                    return;
+
+                ArenaManager.Instance.AddIncompleteFight(this);
+                InQueueSince = DateTime.Now;
+                IsInQueue = true;
+
+                foreach (var character in DefendersTeam.Members.Concat(ChallengersTeam.Members).Where(character => character.Character.ArenaPopup != null))
                 {
-                    ArenaManager.Instance.AddIncompleteFight(this);
-                    InQueueSince = DateTime.Now;
-                    IsInQueue = true;
-
-                    foreach (var character in DefendersTeam.Members.Concat(ChallengersTeam.Members))
-                    {
-                        if (character.Character.ArenaPopup != null)
-                            character.Character.ArenaPopup.Cancel();
-                    }
-
+                    character.Character.ArenaPopup.Cancel();
                 }
             });
         }
@@ -196,13 +189,11 @@ namespace Stump.Server.WorldServer.Game.Arena
             {
                 ContextHandler.SendGameRolePlayArenaFighterStatusMessage(m_clients, Id, character.Character, ready);
 
-                if (!IsInQueue && DefendersTeam.MissingMembers == 0 && ChallengersTeam.MissingMembers == 0 &&
-                    DefendersTeam.Members.All(x => x.Ready) && ChallengersTeam.Members.All(x => x.Ready))
-                {
-                    m_fight = FightManager.Instance.CreateArenaFight(this);
+                if (IsInQueue || DefendersTeam.MissingMembers != 0 || ChallengersTeam.MissingMembers != 0 ||
+                    !DefendersTeam.Members.All(x => x.Ready) || !ChallengersTeam.Members.All(x => x.Ready)) return;
+                m_fight = FightManager.Instance.CreateArenaFight(this);
 
-                    TeleportFighters();
-                }
+                TeleportFighters();
             });
         }
 
@@ -259,6 +250,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                 character.NextMap = m_charactersMaps[character];
             }
 
+            
             m_fight.StartPlacement();
         }
     }

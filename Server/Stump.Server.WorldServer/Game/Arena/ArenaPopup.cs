@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.Core.Attributes;
+﻿using Stump.Core.Attributes;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -46,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             m_timer = Character.Area.CallDelayed(DisplayTime*1000, Deny);
             ContextHandler.SendGameRolePlayArenaFightPropositionMessage(Character.Client, this, DisplayTime);
             
-            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Character.Client, true,
+            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Character.Client, false,
                 PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
 

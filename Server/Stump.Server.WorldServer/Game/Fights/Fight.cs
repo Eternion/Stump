@@ -675,7 +675,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 Losers = DefendersTeam;
                 Draw = false;
             }
-
             else if (!DefendersTeam.AreAllDead() && ChallengersTeam.AreAllDead())
             {
                 Winners = DefendersTeam;
