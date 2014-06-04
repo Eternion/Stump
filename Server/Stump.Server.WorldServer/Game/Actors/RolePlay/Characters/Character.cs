@@ -1498,17 +1498,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void CheckArenaDailyProperties()
         {
-            if (m_record.ArenaDailyDate.Day != DateTime.Now.Day)
-            {
-                var amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
+            if (m_record.ArenaDailyDate.Day == DateTime.Now.Day)
+                return;
 
-                m_record.ArenaDailyDate = DateTime.Now;
-                ArenaDailyMaxRank = 0;
-                ArenaDailyMatchsCount = 0;
-                ArenaDailyMatchsWon = 0;
+            var amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
 
-                Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
-            }
+            m_record.ArenaDailyDate = DateTime.Now;
+            ArenaDailyMaxRank = 0;
+            ArenaDailyMatchsCount = 0;
+            ArenaDailyMatchsWon = 0;
+
+            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
         }
 
         public void UpdateArenaProperties(int rank, bool win)
@@ -1525,14 +1525,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             ArenaDailyMatchsCount++;
 
-            if (win) ArenaDailyMatchsWon++;
+            if (win)
+                ArenaDailyMatchsWon++;
+
             m_record.ArenaDailyDate = DateTime.Now;
 
-            if (win)
-            {
-                var amount = (int)Math.Ceiling(ArenaRank/100d);
-                Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
-            }
+            if (!win)
+                return;
+
+            var amount = (int)Math.Ceiling(ArenaRank/100d);
+            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
         }
 
         public int ArenaRank
@@ -1915,6 +1917,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (party.PromoteGuestToMember(this))
                 return;
+
             // if fails to enter
             party.MemberRemoved -= OnPartyMemberRemoved;
             party.PartyDeleted -= OnPartyDeleted;
@@ -2643,8 +2646,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             ChatHistory = new ChatHistory(this);
 
-            CheckArenaDailyProperties();
-
             m_recordLoaded = true;
         }
 
@@ -2796,7 +2797,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!m_partyInvitations.ContainsKey(party.Id))
                 return new PartyGuestInformations();
 
-            PartyInvitation invitation = m_partyInvitations[party.Id];
+            var invitation = m_partyInvitations[party.Id];
 
             return new PartyGuestInformations(
                 Id,

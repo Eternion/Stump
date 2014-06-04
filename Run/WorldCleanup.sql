@@ -71,6 +71,9 @@ SELECT COUNT(*) FROM guilds WHERE Id NOT IN (SELECT GuildId FROM guild_members);
 */
 DELETE FROM guilds WHERE Id NOT IN (SELECT GuildId FROM guild_members);
 
+-- Find guilds to remove guilds doesn't have any guild members
+SELECT COUNT(*) FROM guilds WHERE Id NOT IN (SELECT GuildId FROM guild_members WHERE RankId = '1');
+
 -- Cleanup world_maps_taxcollector to remove taxCollectors doesn't have guild associated
 /*
 SELECT COUNT(*) FROM world_maps_taxcollector WHERE GuildId NOT IN (SELECT Id FROM guilds);

@@ -9,13 +9,13 @@ namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaPreFightTeam
     {
-        private List<ArenaWaitingCharacter> m_members = new List<ArenaWaitingCharacter>();
+        private readonly List<ArenaWaitingCharacter> m_members = new List<ArenaWaitingCharacter>();
 
         public event Action<ArenaPreFightTeam, ArenaWaitingCharacter> MemberAdded;
 
         protected virtual void OnMemberAdded(ArenaWaitingCharacter arg2)
         {
-            Action<ArenaPreFightTeam, ArenaWaitingCharacter> handler = MemberAdded;
+            var handler = MemberAdded;
             if (handler != null) handler(this, arg2);
         }
 
@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected virtual void OnMemberRemoved(ArenaWaitingCharacter arg2)
         {
-            Action<ArenaPreFightTeam, ArenaWaitingCharacter> handler = MemberRemoved;
+            var handler = MemberRemoved;
             if (handler != null) handler(this, arg2);
         }
 
