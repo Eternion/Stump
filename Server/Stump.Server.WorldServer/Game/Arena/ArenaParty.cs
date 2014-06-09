@@ -1,4 +1,6 @@
-﻿using Stump.Core.Attributes;
+﻿using System;
+using System.Linq;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -31,6 +33,50 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             get;
             private set;
+        }
+
+        public override bool CanInvite(Character character, out PartyJoinErrorEnum error, Character inviter = null, bool send = true)
+        {
+            var lower = Members.Min(x => x.Level);
+            var upper = Members.Max(x => x.Level);
+
+            if (Math.Max(character.Level, upper) - Math.Min(character.Level, lower) > 50)
+            {
+                if (inviter != null && send)
+                {
+                    // Impossible d'inviter %1 : l'écart maximal entre le plus haut et le plus bas niveau d'une équipe Kolizéum ne peut dépasser 50 niveaux.
+                    inviter.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 359, character.Name);
+                }
+
+                error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION;
+                return false;
+            }
+
+            if (character.ArenaPenality > DateTime.Now)
+            {
+                if (inviter != null && send)
+                {
+                    // %1 est interdit de Kolizéum pour un certain temps car il a abandonné un match de Kolizéum.
+                    inviter.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 328, character.Name);
+                }
+
+                error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION;
+                return false;            
+            }
+
+            if (character.Level < ArenaManager.ArenaMinLevel)
+            {
+                if (inviter != null && send)
+                {
+                    // %1 doit être au moins niveau 50 pour faire des combats en Kolizéum.
+                    inviter.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 327, character.Name);
+                }
+
+                error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION;
+                return false;                        
+            }
+
+            return base.CanInvite(character, out error, inviter, send);
         }
 
         protected override void OnGuestPromoted(Character groupMember)

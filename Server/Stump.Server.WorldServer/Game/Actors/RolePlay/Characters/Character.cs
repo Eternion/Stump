@@ -1496,6 +1496,46 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Arena
 
+        public bool CanEnterArena(bool send = true)
+        {
+            if (Level < ArenaManager.ArenaMinLevel)
+            {
+                if (send)
+                    // Vous devez être au moins niveau 50 pour faire des combats en Kolizéum.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 326);
+                return false;
+            }
+
+            if (ArenaPenality >= DateTime.Now)
+            {
+                if (send)
+                    // Vous êtes interdit de Kolizéum pour un certain temps car vous avez abandonné un match de Kolizéum.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 323);
+
+                return false;
+            }
+
+            if (IsInJail())
+            {
+                if (send)
+                    // Vous ne pouvez pas participer au Kolizéum depuis une prison.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 339);
+
+                return false;
+            }
+
+            if (Fight is ArenaFight)
+            {
+                if (send)
+                    //Vous êtes déjà en combat de Kolizéum.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 334);
+
+                return false;
+            }
+
+            return true;
+        }
+
         public void CheckArenaDailyProperties()
         {
             if (m_record.ArenaDailyDate.Day == DateTime.Now.Day)
@@ -1535,6 +1575,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             var amount = (int)Math.Ceiling(ArenaRank/100d);
             Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
+
+            ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(Client, this);
+        }
+
+        public void SetArenaPenality(TimeSpan time)
+        {
+            ArenaPenality = DateTime.Now + time;
+
+            // Vous êtes interdit de Kolizéum pour un certain temps car vous avez abandonné un match de Kolizéum.
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 323);
+        }
+
+        public void ToggleArenaPenality()
+        {
+            SetArenaPenality(TimeSpan.FromMinutes(ArenaManager.ArenaPenalityTime));
         }
 
         public int ArenaRank
@@ -1562,6 +1617,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get { return m_record.ArenaDailyMatchsCount; }
             set { m_record.ArenaDailyMatchsCount = value; }
+        }
+
+        public DateTime ArenaPenality
+        {
+            get { return m_record.ArenaPenalityDate; }
+            set { m_record.ArenaPenalityDate = value; }
         }
 
         public ArenaPopup ArenaPopup
@@ -1847,7 +1908,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             else party = GetParty(type);
 
             PartyJoinErrorEnum error;
-            if (!party.CanInvite(target, out error))
+            if (!party.CanInvite(target, out error, this))
             {
                 PartyHandler.SendPartyCannotJoinErrorMessage(target.Client, party, error);
                 if (created)
@@ -1899,8 +1960,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void EnterParty(Party party)
         {
-            if (IsInParty(party.Id))
-                LeaveParty(party);
+            if (IsInParty(party.Type))
+                LeaveParty(GetParty(party.Type));
 
             if (m_partyInvitations.ContainsKey(party.Id))
                 m_partyInvitations.Remove(party.Id);

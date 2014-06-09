@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Arena
 {

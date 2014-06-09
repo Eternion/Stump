@@ -60,14 +60,24 @@ namespace Stump.Server.WorldServer.Game.Arena
         protected override IEnumerable<IFightResult> GenerateResults()
         {
             var challengersRank =
-                (int) ChallengersTeam.Fighters.OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
+                (int) ChallengersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             var defendersRank =
-                (int) DefendersTeam.Fighters.OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
+                (int) DefendersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
 
-            return (from fighter in Fighters.OfType<CharacterFighter>() let outcome = fighter.GetFighterOutcome() select new ArenaFightResult(fighter, outcome, fighter.Loot,
+            return (from fighter in GetFightersAndLeavers().OfType<CharacterFighter>() let outcome = fighter.GetFighterOutcome() select new ArenaFightResult(fighter, outcome, fighter.Loot,
                 ArenaRankFormulas.AdjustRank(fighter.Character.ArenaRank,
                     fighter.Team == ChallengersTeam ? defendersRank : challengersRank,
                     outcome == FightOutcomeEnum.RESULT_VICTORY)));
+        }
+
+        protected override void OnPlayerLeft(FightActor fighter)
+        {
+            if (fighter is CharacterFighter)
+            {
+                (fighter as CharacterFighter).Character.ToggleArenaPenality();
+            }
+
+            base.OnPlayerLeft(fighter);
         }
 
         protected override bool CanCancelFight()
