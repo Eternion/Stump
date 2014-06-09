@@ -48,7 +48,6 @@ namespace Stump.Server.WorldServer.Game.Arena
         private Dictionary<int, ArenaRecord> m_arenas;
         private readonly SelfRunningTaskPool m_arenaTaskPool = new SelfRunningTaskPool(ArenaUpdateInterval, "Arena");
         private readonly List<ArenaQueueMember> m_queue = new List<ArenaQueueMember>();
-        private readonly List<ArenaPreFight> m_incompleteFights = new List<ArenaPreFight>();
         private ItemTemplate m_tokenTemplate;
 
         [Initialization(InitializationPass.Fifth)]
@@ -117,16 +116,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, false, 
                 PvpArenaStepEnum.ARENA_STEP_UNREGISTER, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
         }
-
-        public void AddIncompleteFight(ArenaPreFight preFight)
-        {
-            lock (m_incompleteFights)
-                m_incompleteFights.Add(preFight);
-
-            ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(preFight.Clients, true,
-                PvpArenaStepEnum.ARENA_STEP_REGISTRED, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
-        }
-
         public void ComputeMatchmaking()
         {
             List<ArenaQueueMember> queue;
@@ -139,20 +128,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             while ((current = queue.FirstOrDefault()) != null)
             {
                 queue.Remove(current);
-
-                lock(m_incompleteFights)
-                {
-                    m_incompleteFights.RemoveAll(
-                        x => x.ChallengersTeam.Members.Count == 0 && x.DefendersTeam.Members.Count == 0);
-
-                    var incompleteFightMatch = m_incompleteFights.Where(x => x.IsCompatibleWith(current)).OrderBy(x => Math.Abs(x.AverageElo - current.ArenaRank)).FirstOrDefault();
-
-                    if (incompleteFightMatch != null)
-                    {
-                        if (incompleteFightMatch.ReplaceMissings(current))
-                            m_incompleteFights.Remove(incompleteFightMatch);
-                    }
-                }
 
                 var matchs = queue.Where(x => x.IsCompatibleWith(current)).ToList();
                 var allies = new List<ArenaQueueMember> {current};

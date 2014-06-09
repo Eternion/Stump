@@ -37,19 +37,23 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public override bool CanInvite(Character character, out PartyJoinErrorEnum error, Character inviter = null, bool send = true)
         {
-            var lower = Members.Min(x => x.Level);
-            var upper = Members.Max(x => x.Level);
-
-            if (Math.Max(character.Level, upper) - Math.Min(character.Level, lower) > 50)
+            if (Members.Any())
             {
-                if (inviter != null && send)
-                {
-                    // Impossible d'inviter %1 : l'écart maximal entre le plus haut et le plus bas niveau d'une équipe Kolizéum ne peut dépasser 50 niveaux.
-                    inviter.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 359, character.Name);
-                }
+                var lower = Members.Min(x => x.Level);
+                var upper = Members.Max(x => x.Level);
 
-                error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION;
-                return false;
+                if (Math.Max(character.Level, upper) - Math.Min(character.Level, lower) > 50)
+                {
+                    if (inviter != null && send)
+                    {
+                        // Impossible d'inviter %1 : l'écart maximal entre le plus haut et le plus bas niveau d'une équipe Kolizéum ne peut dépasser 50 niveaux.
+                        inviter.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 359,
+                            character.Name);
+                    }
+
+                    error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION;
+                    return false;
+                }
             }
 
             if (character.ArenaPenality > DateTime.Now)

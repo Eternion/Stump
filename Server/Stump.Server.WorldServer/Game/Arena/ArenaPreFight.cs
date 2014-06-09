@@ -65,65 +65,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             get { return m_team2; }
         }
 
-        public bool IsInQueue
-        {
-            get;
-            private set;
-        }
-
-        public int AverageElo
-        {
-            get
-            {
-                return DefendersTeam.Members.Concat(ChallengersTeam.Members).Sum(x => x.Character.ArenaRank)/
-                       (DefendersTeam.Members.Count + ChallengersTeam.Members.Count);
-            }
-        }
-
-        public DateTime InQueueSince
-        {
-            get;
-            private set;
-        }
-
-        public int MaxMatchableRank
-        {
-            get { return (int) (AverageElo + ArenaQueueMember.ArenaMargeIncreasePerMinutes*(DateTime.Now - InQueueSince).TotalMinutes); }
-        }
-        
-        public int MinMatchableRank
-        {
-            get { return (int) (AverageElo - ArenaQueueMember.ArenaMargeIncreasePerMinutes*(DateTime.Now - InQueueSince).TotalMinutes); }
-        }
-
-        public bool IsCompatibleWith(ArenaQueueMember member)
-        {
-            return (ChallengersTeam.MissingMembers >= member.MembersCount ||
-                    DefendersTeam.MissingMembers >= member.MembersCount) &&
-                   (member.MinMatchableRank < MinMatchableRank || member.MaxMatchableRank > MaxMatchableRank);
-        }
-
-        public bool ReplaceMissings(ArenaQueueMember member)
-        {
-            var team = (ChallengersTeam.MissingMembers >= member.MembersCount) ? ChallengersTeam : DefendersTeam;
-
-            if (team.MissingMembers < member.MembersCount)
-                return false;
-
-            foreach (var character in member.EnumerateCharacters())
-                team.AddCharacter(character);
-
-            if (ChallengersTeam.MissingMembers == 0 && DefendersTeam.MissingMembers == 0)
-            {
-               
-                IsInQueue = false;
-                ShowPopups();
-                return true;
-            }
-
-            return false;
-        }
-
         public void ShowPopups()
         { 
             foreach (var character in DefendersTeam.Members)
@@ -162,7 +103,9 @@ namespace Stump.Server.WorldServer.Game.Arena
         private void OnFightDenied(ArenaWaitingCharacter obj)
         {
             ArenaManager.Instance.ArenaTaskPool.ExecuteInContext(() =>
-            {
+            {                
+                ContextHandler.SendGameRolePlayArenaFighterStatusMessage(m_clients, Id, obj.Character, false);
+
                 // %1 a refusé le combat en Kolizéum.
                 BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 275, obj.Character.Name);
 
@@ -180,24 +123,35 @@ namespace Stump.Server.WorldServer.Game.Arena
                 else
                     obj.Team.RemoveCharacter(obj);
 
-                foreach (var character in (obj.Team == DefendersTeam ? ChallengersTeam : DefendersTeam).Members)
+                var opposedTeam = obj.Team == DefendersTeam ? ChallengersTeam : DefendersTeam;
+                foreach (var character in opposedTeam.Members)
                 {
                     // Combat de Kolizéum annulé/non validé par l'autre équipe.
                     character.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 274);
                 }
-
-                if (!IsInQueue)
+                
+                foreach (var character in DefendersTeam.Members.Concat(ChallengersTeam.Members))
                 {
-                    ArenaManager.Instance.AddIncompleteFight(this);
-                    InQueueSince = DateTime.Now;
-                    IsInQueue = true;
+                    if (character.Character.ArenaPopup != null)
+                        character.Character.ArenaPopup.Cancel();
+                }
 
-                    foreach (var character in DefendersTeam.Members.Concat(ChallengersTeam.Members))
+                foreach (var character in obj.Team.Members)
+                {
+                    if (character.Character.ArenaParty == null)
+                        ArenaManager.Instance.AddToQueue(character.Character);
+                }
+
+                bool once = false;
+                foreach (var character in opposedTeam.Members)
+                {
+                    if (character.Character.ArenaParty == null)
+                        ArenaManager.Instance.AddToQueue(character.Character);
+                    else if (!once)
                     {
-                        if (character.Character.ArenaPopup != null)
-                            character.Character.ArenaPopup.Cancel();
+                        ArenaManager.Instance.AddToQueue(character.Character.ArenaParty);
+                        once = true;
                     }
-
                 }
             });
         }
@@ -208,7 +162,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             {
                 ContextHandler.SendGameRolePlayArenaFighterStatusMessage(m_clients, Id, character.Character, ready);
 
-                if (!IsInQueue && DefendersTeam.MissingMembers == 0 && ChallengersTeam.MissingMembers == 0 &&
+                if (DefendersTeam.MissingMembers == 0 && ChallengersTeam.MissingMembers == 0 &&
                     DefendersTeam.Members.All(x => x.Ready) && ChallengersTeam.Members.All(x => x.Ready))
                 {
                     m_fight = FightManager.Instance.CreateArenaFight(this);

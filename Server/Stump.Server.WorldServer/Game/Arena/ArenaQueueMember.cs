@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public bool IsCompatibleWith(ArenaQueueMember member)
         {
-            return member.MinMatchableRank < MinMatchableRank || member.MaxMatchableRank > MaxMatchableRank;
+            return Math.Max(member.MinMatchableRank, MinMatchableRank) <= Math.Max(member.MaxMatchableRank,MaxMatchableRank);
         }
     }
 }
