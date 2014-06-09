@@ -31,6 +31,11 @@ namespace Stump.Server.WorldServer.Game.Arena
         /// </summary>
         [Variable] public static int ArenaMatchmakingInterval = 60;
 
+        /// <summary>
+        /// in minutes
+        /// </summary>
+        [Variable] public static int ArenaPenalityTime = 30;
+
         public ItemTemplate TokenItemTemplate
         {
             get
@@ -64,14 +69,11 @@ namespace Stump.Server.WorldServer.Game.Arena
             if (m_arenas.Count == 0)
                 return false;
 
-            if (character.Fight is ArenaFight)
-                return false;
-
             //Already in queue
             if (m_queue.Exists(x => x.Character == character))
                 return false;
 
-            return character.Level >= ArenaMinLevel;
+            return character.CanEnterArena();
         }
 
         public void AddToQueue(Character character)

@@ -220,7 +220,7 @@ namespace Stump.Server.WorldServer.Game.Parties
             return CanInvite(character, out dummy);
         }
 
-        public bool CanInvite(Character character, out PartyJoinErrorEnum error)
+        public virtual bool CanInvite(Character character, out PartyJoinErrorEnum error, Character inviter = null, bool send = true)
         {
             if (IsMember(character) || IsGuest(character))
             {
