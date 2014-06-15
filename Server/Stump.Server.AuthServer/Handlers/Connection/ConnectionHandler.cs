@@ -102,7 +102,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.DisconnectLater(1000);
                 return;
             }
-
+            
+            client.Account = account;
             /* Check Sanctions */
             if (account.IsBanned && account.BanEndDate > DateTime.Now)
             {
@@ -133,14 +134,13 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
             }
 
-            AccountManager.Instance.DisconnectClientsUsingAccount(account, success => AuthServer.Instance.IOTaskPool.AddMessage(() =>
+            AccountManager.Instance.DisconnectClientsUsingAccount(account, client, success => AuthServer.Instance.IOTaskPool.AddMessage(() =>
             {
                 // we must reload the record since it may have been modified
                 if (success)
                     account = AccountManager.Instance.FindAccountById(account.Id);
 
                 /* Bind Account to Client */
-                client.Account = account;
                 client.UserGroup = AccountManager.Instance.FindUserGroup(account.UserGroupId);
 
                 if (client.UserGroup == null)
