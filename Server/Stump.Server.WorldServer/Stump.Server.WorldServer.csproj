@@ -297,6 +297,7 @@
     <Compile Include="Game\Conditions\ComparaisonOperatorEnum.cs" />
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
     <Compile Include="Game\Exchanges\Bank\BankDialog.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildCreationPanel.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildModificationPanel.cs" />

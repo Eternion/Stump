@@ -52,14 +52,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         // Todo: reduce duplication (see RestoreHpPercent)
         private void HealHpPercent(FightActor actor, int percent)
         {
-            int healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
+            var healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
 
             actor.Heal(healAmount, Caster, false);
         }
 
         private void DealHpPercent(FightActor actor, int percent)
         {
-            int damageAmount = (int)(actor.MaxLifePoints * (percent / 100d));
+            var damageAmount = (int)(actor.MaxLifePoints * (percent / 100d));
 
             actor.InflictDirectDamage(damageAmount, Caster);
         }
