@@ -9,6 +9,7 @@ using Stump.Core.Attributes;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
+using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Messages;
 
@@ -266,15 +267,14 @@ namespace Stump.Server.AuthServer.Managers
             return true;
         }
 
-        public void DisconnectClientsUsingAccount(Account account)
+        public void DisconnectClientsUsingAccount(Account account, AuthClient except = null)
         {
-            DisconnectClientsUsingAccount(account, result => { }); // do nothing
+            DisconnectClientsUsingAccount(account, except, result => { }); // do nothing
         }
 
-        public void DisconnectClientsUsingAccount(Account account, Action<bool> callback)
+        public void DisconnectClientsUsingAccount(Account account, AuthClient except, Action<bool> callback)
         {
-            var clients = AuthServer.Instance.FindClients(entry => entry.Account != null &&
-                                                                            entry.Account.Id == account.Id).ToArray();
+            var clients = AuthServer.Instance.FindClients(entry => entry != except && entry.Account != null && entry.Account.Id == account.Id).ToArray();
 
             // disconnect clients from auth server
             foreach (var client in clients)

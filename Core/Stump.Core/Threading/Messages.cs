@@ -64,7 +64,7 @@ namespace Stump.Core.Threading
         /// </summary>
         public virtual void Execute()
         {
-            Action cb = Callback;
+            var cb = Callback;
             if (cb != null)
             {
                 cb();
@@ -79,8 +79,8 @@ namespace Stump.Core.Threading
         public override string ToString()
         {
             var sb = new StringBuilder();
-            Delegate[] actions = Callback.GetInvocationList();
-            foreach ( Delegate del in actions )
+            var actions = Callback.GetInvocationList();
+            foreach (var del in actions)
             {
                 sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
             }
@@ -118,12 +118,12 @@ namespace Stump.Core.Threading
         /// </summary>
         public void Wait()
         {
-            if (!m_executed)
+            if (m_executed)
+                return;
+
+            lock (this)
             {
-                lock (this)
-                {
-                    Monitor.Wait(this);
-                }
+                Monitor.Wait(this);
             }
         }
     }
@@ -383,7 +383,7 @@ namespace Stump.Core.Threading
         /// </summary>
         public virtual void Execute()
         {
-            Action<T1, T2, T3> cb = Callback;
+            var cb = Callback;
             if (cb != null)
             {
                 cb(Parameter1, Parameter2, Parameter3);
@@ -397,8 +397,8 @@ namespace Stump.Core.Threading
         public override string ToString()
         {
             var sb = new StringBuilder();
-            Delegate[] actions = Callback.GetInvocationList();
-            foreach ( Delegate del in actions )
+            var actions = Callback.GetInvocationList();
+            foreach (var del in actions)
             {
                 sb.AppendLine( del.Method.ReflectedType.FullName + "." + del.Method.Name );
             }
