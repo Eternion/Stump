@@ -406,7 +406,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         private void HandleMessage(DisconnectClientMessage message)
         {
-            var clients = WorldServer.Instance.FindClients(client => client.Account != null && client.Account.Id == message.AccountId);
+            var clients = WorldServer.Instance.FindClients(client => client.Account != null && client.Account.Id == message.AccountId).ToArray();
 
             if (clients.Length > 1)
                 logger.Error("Several clients connected on the same account ({0}). Disconnect them all", message.AccountId);
