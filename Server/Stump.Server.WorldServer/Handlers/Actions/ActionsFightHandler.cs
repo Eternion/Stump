@@ -33,7 +33,6 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
         public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)
         {
-            SendGameActionFightVanishMessage(client, source, target);
             client.Send(new GameActionFightInvisibilityMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, (sbyte)state));
         }
         
