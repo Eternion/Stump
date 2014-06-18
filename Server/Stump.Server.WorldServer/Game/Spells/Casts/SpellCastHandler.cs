@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             set { m_castPoint = value; }
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get { return Caster.Fight; }
         }

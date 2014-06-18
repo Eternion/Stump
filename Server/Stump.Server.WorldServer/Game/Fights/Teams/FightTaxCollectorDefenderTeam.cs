@@ -7,11 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 {
     public class FightTaxCollectorDefenderTeam : FightTeamWithLeader<TaxCollectorFighter>
     {
-        public FightTaxCollectorDefenderTeam(sbyte id, Cell[] placementCells) : base(id, placementCells)
+        public FightTaxCollectorDefenderTeam(TeamEnum id, Cell[] placementCells) : base(id, placementCells)
         {
         }
 
-        public FightTaxCollectorDefenderTeam(sbyte id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
+        public FightTaxCollectorDefenderTeam(TeamEnum id, Cell[] placementCells, AlignmentSideEnum alignmentSide)
             : base(id, placementCells, alignmentSide)
         {
         }

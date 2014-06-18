@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new GameFightTaxCollectorInformations(Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
-                Team.Id,
+                (sbyte)Team.Id,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
                 TaxCollectorNpc.FirstNameId,

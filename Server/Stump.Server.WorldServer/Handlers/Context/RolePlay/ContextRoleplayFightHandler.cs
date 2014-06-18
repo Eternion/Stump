@@ -24,9 +24,11 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                                                                             target.Id));
         }
 
-        public static void SendGameRolePlayArenaUpdatePlayerInfosMessage(IPacketReceiver client)
+        public static void SendGameRolePlayArenaUpdatePlayerInfosMessage(IPacketReceiver client, Character character)
         {
-            client.Send(new GameRolePlayArenaUpdatePlayerInfosMessage(0, 0, 0, 0, 0));
+            client.Send(new GameRolePlayArenaUpdatePlayerInfosMessage((short) character.ArenaRank, 
+                (short) character.ArenaDailyMaxRank, (short) character.ArenaMaxRank, 
+                (short) character.ArenaDailyMatchsWon, (short) character.ArenaDailyMatchsCount));
         }
     }
 }

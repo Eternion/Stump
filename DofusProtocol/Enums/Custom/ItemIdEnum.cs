@@ -20476,6 +20476,7 @@
         GuildNameChangePotion = 13273,
         // Item [Level : 1]
         GuildEmblemChangePotion = 13270,
+        Kolizeton = 12736,
         End,
     }
 }

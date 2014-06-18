@@ -161,9 +161,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             client.Character = new Character(character, client);
 
+            //Arena
+            client.Character.CheckArenaDailyProperties();
+
             SendCharacterSelectedSuccessMessage(client);
 
-            ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client);
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
 
@@ -197,7 +199,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             //InitializationHandler.SendOnConnectionEventMessage(client, 2);
 
-            ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client);
+            ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client, client.Character);
 
             SendCharacterCapabilitiesMessage(client);
 

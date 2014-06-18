@@ -115,7 +115,7 @@ namespace Stump.Server.BaseServer.Initialization
                     OnProcessInitialization(text);
                 }
 
-                method.Method.Invoke(method.Caller, new object[0]);
+               method.Method.Invoke(method.Caller, new object[0]);
 
                 method.Initialized = true;
 

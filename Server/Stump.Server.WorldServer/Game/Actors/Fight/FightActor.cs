@@ -257,7 +257,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected FightActor(FightTeam team)
         {
             Team = team;
-            OpposedTeam = Fight.BlueTeam == Team ? Fight.RedTeam : Fight.BlueTeam;
             VisibleState = VisibleStateEnum.VISIBLE;
             Loot = new FightLoot();
             SpellHistory = new SpellHistory(this);
@@ -267,7 +266,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Properties
 
-        public Fights.Fight Fight
+        public IFight Fight
         {
             get { return Team.Fight; }
         }
@@ -280,8 +279,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightTeam OpposedTeam
         {
-            get;
-            private set;
+            get { return Team.OpposedTeam; }
         }
 
         public override ICharacterContainer CharacterContainer
@@ -1530,7 +1528,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new FightResult(this, GetFighterOutcome(), Loot);
         }
 
-        protected FightOutcomeEnum GetFighterOutcome()
+        public FightOutcomeEnum GetFighterOutcome()
         {
             var teamDead = Team.AreAllDead();
             var opposedTeamDead = OpposedTeam.AreAllDead();
@@ -1695,7 +1693,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
-                Team.Id,
+                (sbyte)Team.Id,
                 IsAlive(),
                 GetGameFightMinimalStats(client));
         }

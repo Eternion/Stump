@@ -21,6 +21,7 @@ using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
@@ -46,6 +47,7 @@ using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.Titles;
@@ -385,15 +387,85 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool IsInParty()
+        public ArenaParty ArenaParty
         {
-            return Party != null;
+            get;
+            private set;
         }
 
-        public bool IsPartyLeader()
+        public bool IsInParty()
         {
-            return IsInParty() && Party.Leader == this;
+            return Party != null || ArenaParty != null;
         }
+
+        public bool IsInParty(int id)
+        {
+            return (Party != null && Party.Id == id) || (ArenaParty != null && ArenaParty.Id == id);
+        }
+
+        public bool IsInParty(PartyTypeEnum type)
+        {
+            return (type == PartyTypeEnum.PARTY_TYPE_CLASSICAL && Party != null) || (type == PartyTypeEnum.PARTY_TYPE_ARENA && ArenaParty != null);
+        }
+
+        public bool IsPartyLeader(int id)
+        {
+            return IsInParty(id) && GetParty(id).Leader == this;
+        }
+
+        public Party GetParty(int id)
+        {
+            if (Party != null && Party.Id == id)
+                return Party;
+
+            if (ArenaParty != null && ArenaParty.Id == id)
+                return ArenaParty;
+
+            return null;
+        }
+        public Party GetParty(PartyTypeEnum type)
+        {
+            switch (type)
+            {
+                case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
+                    return Party;
+                case PartyTypeEnum.PARTY_TYPE_ARENA:
+                    return ArenaParty;
+                default:
+                    throw new NotImplementedException(string.Format("Cannot manage party of type {0}", type));
+            }
+        }
+
+        public void SetParty(Party party)
+        {
+            switch (party.Type)
+            {
+                case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
+                    Party = party;
+                    break;
+                case PartyTypeEnum.PARTY_TYPE_ARENA:
+                    ArenaParty = (ArenaParty) party;
+                    break;
+                default:
+                    logger.Error("Cannot manage party of type {0} ({1})", party.GetType(), party.Type);
+                    break;
+            }
+        }
+
+        public void ResetParty(PartyTypeEnum type)
+        {
+            switch (type)
+            {
+                case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
+                    Party = null;
+                    break;
+                case PartyTypeEnum.PARTY_TYPE_ARENA:
+                    ArenaParty = null;
+                    break;
+                default:
+                    logger.Error("Cannot manage party of type {0}", type);
+                    break;
+            }        }
 
         #endregion
 
@@ -1201,7 +1273,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public Fights.Fight Fight
+        public IFight Fight
         {
             get { return Fighter == null ? (Spectator != null ? Spectator.Fight : null) : Fighter.Fight; }
         }
@@ -1437,6 +1509,144 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Arena
+
+        public bool CanEnterArena(bool send = true)
+        {
+            if (Level < ArenaManager.ArenaMinLevel)
+            {
+                if (send)
+                    // Vous devez être au moins niveau 50 pour faire des combats en Kolizéum.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 326);
+                return false;
+            }
+
+            if (ArenaPenality >= DateTime.Now)
+            {
+                if (send)
+                    // Vous êtes interdit de Kolizéum pour un certain temps car vous avez abandonné un match de Kolizéum.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 323);
+
+                return false;
+            }
+
+            if (IsInJail())
+            {
+                if (send)
+                    // Vous ne pouvez pas participer au Kolizéum depuis une prison.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 339);
+
+                return false;
+            }
+
+            if (Fight is ArenaFight)
+            {
+                if (send)
+                    //Vous êtes déjà en combat de Kolizéum.
+                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 334);
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public void CheckArenaDailyProperties()
+        {
+            if (m_record.ArenaDailyDate.Day == DateTime.Now.Day)
+                return;
+
+            var amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
+
+            m_record.ArenaDailyDate = DateTime.Now;
+            ArenaDailyMaxRank = 0;
+            ArenaDailyMatchsCount = 0;
+            ArenaDailyMatchsWon = 0;
+
+            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
+        }
+
+        public void UpdateArenaProperties(int rank, bool win)
+        {
+            CheckArenaDailyProperties();
+
+            ArenaRank = rank;
+
+            if (rank > ArenaMaxRank)
+                ArenaMaxRank = rank;
+
+            if (rank > ArenaDailyMaxRank)
+                ArenaDailyMaxRank = rank;
+
+            ArenaDailyMatchsCount++;
+
+            if (win)
+                ArenaDailyMatchsWon++;
+
+            m_record.ArenaDailyDate = DateTime.Now;
+
+            ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(Client, this);
+
+            if (!win)
+                return;
+
+            var amount = (int)Math.Ceiling(ArenaRank/100d);
+            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
+        }
+
+        public void SetArenaPenality(TimeSpan time)
+        {
+            ArenaPenality = DateTime.Now + time;
+
+            // Vous êtes interdit de Kolizéum pour un certain temps car vous avez abandonné un match de Kolizéum.
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 323);
+        }
+
+        public void ToggleArenaPenality()
+        {
+            SetArenaPenality(TimeSpan.FromMinutes(ArenaManager.ArenaPenalityTime));
+        }
+
+        public int ArenaRank
+        {
+            get { return m_record.ArenaRank; }
+            set { m_record.ArenaRank = value; }
+        }
+        
+        public int ArenaMaxRank
+        {
+            get { return m_record.ArenaMaxRank; }
+            set { m_record.ArenaMaxRank = value; }
+        }
+        public int ArenaDailyMaxRank
+        {
+            get { return m_record.ArenaDailyMaxRank; }
+            set { m_record.ArenaDailyMaxRank = value; }
+        }
+        public int ArenaDailyMatchsWon
+        {
+            get { return m_record.ArenaDailyMatchsWon; }
+            set { m_record.ArenaDailyMatchsWon = value; }
+        }
+        public int ArenaDailyMatchsCount
+        {
+            get { return m_record.ArenaDailyMatchsCount; }
+            set { m_record.ArenaDailyMatchsCount = value; }
+        }
+
+        public DateTime ArenaPenality
+        {
+            get { return m_record.ArenaPenalityDate; }
+            set { m_record.ArenaPenalityDate = value; }
+        }
+
+        public ArenaPopup ArenaPopup
+        {
+            get;
+            set;
+        }
+
+        #endregion
         #endregion
 
         #region Actions
@@ -1579,8 +1789,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Jail
 
-        private readonly int[] JAILS_MAPS = {105121026, 105119744, 105120002};
-        private readonly int[][] JAILS_CELLS = {new[] {179, 445, 184, 435}, new[] {314}, new[] {300}};
+        private readonly int[] JAILS_MAPS = { 105121026, 105119744, 105120002 };
+        private readonly int[][] JAILS_CELLS = { new[] { 179, 445, 184, 435 }, new[] { 314 }, new[] { 300 } };
 
         public bool TeleportToJail()
         {
@@ -1644,6 +1854,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             notification.Display();
         }
 
+        public void ResetNotification()
+        {
+            Client.Send(new NotificationResetMessage());
+        }
+
         public void LeaveDialog()
         {
             if (IsInRequest())
@@ -1694,25 +1909,41 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Party
 
-        public void Invite(Character target)
+        public void Invite(Character target, PartyTypeEnum type)
         {
-            if (!IsInParty())
+            var created = false;
+            Party party;
+            if (!IsInParty(type))
             {
-                Party party = PartyManager.Instance.Create(this);
+                party = PartyManager.Instance.Create(type);
 
                 EnterParty(party);
+                created = true;
+            }
+            else party = GetParty(type);
+
+            PartyJoinErrorEnum error;
+            if (!party.CanInvite(target, out error, this))
+            {
+                PartyHandler.SendPartyCannotJoinErrorMessage(target.Client, party, error);
+                if (created)
+                    LeaveParty(party);
+
+                return;
             }
 
-            if (!Party.CanInvite(target))
-                return;
-
-            if (target.m_partyInvitations.ContainsKey(Party.Id))
+            if (target.m_partyInvitations.ContainsKey(party.Id))
+            {
+                if (created)
+                    LeaveParty(party);
+                
                 return; // already invited
+            }
 
-            var invitation = new PartyInvitation(Party, this, target);
-            target.m_partyInvitations.Add(Party.Id, invitation);
+            var invitation = new PartyInvitation(party, this, target);
+            target.m_partyInvitations.Add(party.Id, invitation);
 
-            Party.AddGuest(target);
+            party.AddGuest(target);
             invitation.Display();
         }
 
@@ -1734,42 +1965,50 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
+        public void DenyAllInvitations(PartyTypeEnum type)
+        {
+            foreach (var partyInvitation in m_partyInvitations.Where(x => x.Value.Party.Type == type).ToArray())
+            {
+                partyInvitation.Value.Deny();
+            }
+        }
+
         public void EnterParty(Party party)
         {
-            if (IsInParty())
-                LeaveParty();
+            if (IsInParty(party.Type))
+                LeaveParty(GetParty(party.Type));
 
             if (m_partyInvitations.ContainsKey(party.Id))
                 m_partyInvitations.Remove(party.Id);
 
-            DenyAllInvitations();
+            DenyAllInvitations(party.Type);
             UpdateRegenedLife();
 
-            Party = party;
-            Party.MemberRemoved += OnPartyMemberRemoved;
-            Party.PartyDeleted += OnPartyDeleted;
+            SetParty(party);
+            party.MemberRemoved += OnPartyMemberRemoved;
+            party.PartyDeleted += OnPartyDeleted;
 
             if (party.IsMember(this))
                 return;
 
-            if (!party.PromoteGuestToMember(this))
-            {
-                Party.MemberRemoved -= OnPartyMemberRemoved;
-                Party.PartyDeleted -= OnPartyDeleted;
-                Party = null;
-            }
-        }
-
-        public void LeaveParty()
-        {
-            if (!IsInParty())
+            if (party.PromoteGuestToMember(this))
                 return;
 
+            // if fails to enter
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.PartyDeleted -= OnPartyDeleted;
+            ResetParty(party.Type);
+        }
 
-            Party.MemberRemoved -= OnPartyMemberRemoved;
-            Party.PartyDeleted -= OnPartyDeleted;
-            Party.RemoveMember(this);
-            Party = null;
+        public void LeaveParty(Party party)
+        {
+            if (!IsInParty(party.Id))
+                return;
+
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.PartyDeleted -= OnPartyDeleted;
+            party.RemoveMember(this);
+            ResetParty(party.Type);
         }
 
         private void OnPartyMemberRemoved(Party party, Character member, bool kicked)
@@ -1777,16 +2016,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (member != this)
                 return;
 
-            Party.MemberRemoved -= OnPartyMemberRemoved;
-            Party.PartyDeleted -= OnPartyDeleted;
-            Party = null;
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.PartyDeleted -= OnPartyDeleted;
+
+            ResetParty(party.Type);
         }
 
         private void OnPartyDeleted(Party party)
         {
-            Party.MemberRemoved -= OnPartyMemberRemoved;
-            Party.PartyDeleted -= OnPartyDeleted;
-            Party = null;
+            party.MemberRemoved -= OnPartyMemberRemoved;
+            party.PartyDeleted -= OnPartyDeleted;
+
+            ResetParty(party.Type);
         }
 
         #endregion
@@ -1919,7 +2160,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Fighter;
         }
 
-        public FightSpectator CreateSpectator(Fights.Fight fight)
+        public FightSpectator CreateSpectator(IFight fight)
         {
             if (IsFighting() || IsSpectator() || !IsInWorld)
                 return null;
@@ -1956,7 +2197,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (GodMode)
                 Stats.Health.DamageTaken = 0;
-            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team) && !(Fight is FightDuel))
+            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team) && !Fight.IsDeathTemporarily)
                 OnDied();
 
             Fighter = null;
@@ -1974,7 +2215,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 LastMap = Map;
                 Map = NextMap;
-                NextMap.Enter(this);
+                Map.Enter(this);
+                NextMap = null;
             });
         }
 
@@ -2246,7 +2488,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
         
-
         #region Bank
 
         public Bank Bank
@@ -2337,8 +2578,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     if (IsDialoging())
                         Dialog.Close();
 
-                    if (IsInParty())
-                        LeaveParty();
+                    if (ArenaParty != null)
+                        LeaveParty(ArenaParty);
+
+                    if (Party != null)
+                        LeaveParty(Party);
 
                     if (Map != null && Map.IsActor(this))
                         Map.Leave(this);
@@ -2401,7 +2645,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     if (GuildMember != null && GuildMember.IsDirty)
                         GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
 
-                    m_record.MapId = Map.Id;
+                    m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
                     m_record.CellId = Cell.Id;
                     m_record.Direction = Direction;
 
@@ -2629,7 +2873,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!m_partyInvitations.ContainsKey(party.Id))
                 return new PartyGuestInformations();
 
-            PartyInvitation invitation = m_partyInvitations[party.Id];
+            var invitation = m_partyInvitations[party.Id];
 
             return new PartyGuestInformations(
                 Id,
@@ -2638,6 +2882,29 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look.GetEntityLook(),
                 (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
+        }
+
+        public PartyMemberArenaInformations GetPartyMemberArenaInformations()
+        {
+            return new PartyMemberArenaInformations(
+                Id,
+                Level,
+                Name,
+                Look.GetEntityLook(),
+                (sbyte) BreedId,
+                Sex == SexTypeEnum.SEX_FEMALE,
+                LifePoints,
+                MaxLifePoints,
+                (short) Stats[PlayerFields.Prospecting].Total,
+                RegenSpeed,
+                (short) Stats[PlayerFields.Initiative].Total,
+                PvPEnabled,
+                (sbyte) AlignmentSide,
+                (short) Map.Position.X,
+                (short) Map.Position.Y,
+                Map.Id,
+                (short) SubArea.Id,
+                (short)ArenaRank);
         }
 
         #endregion

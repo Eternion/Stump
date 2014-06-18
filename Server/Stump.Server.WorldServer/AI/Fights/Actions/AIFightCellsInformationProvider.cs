@@ -6,7 +6,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 {
     public class AIFightCellsInformationProvider : FigthCellsInformationProvider
     {
-        public AIFightCellsInformationProvider(Fight fight, AIFighter fighter)
+        public AIFightCellsInformationProvider(IFight fight, AIFighter fighter)
             : base(fight)
         {
             Fighter = fighter;
