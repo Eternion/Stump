@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             }
 
             logger.Debug("Client request ticket {0}", message.ticket);
-            IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage() { Ticket = message.ticket }, 
+            IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage { Ticket = message.ticket }, 
                 msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnAccountReceived(msg, client)), error => client.Disconnect());
         }
 
@@ -102,6 +102,9 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                 client.DisconnectLater(1000);
                 return;
             }
+
+            var clients = WorldServer.Instance.FindClients(x => x.Account != null && x.Account.Id == ticketAccount.Id).ToArray();
+            clients.ForEach(x => x.Disconnect());
 
             /* Bind WorldAccount if exist */
             var account = AccountManager.Instance.FindById(ticketAccount.Id);
