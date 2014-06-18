@@ -50,38 +50,50 @@ namespace Stump.Server.WorldServer.Game.Items
 
         #region Creators
 
-        public BasePlayerItem CreatePlayerItem(Character owner, int id, uint amount, bool maxEffects = false)
-        {
+        public BasePlayerItem CreatePlayerItem(Character owner, int id, int amount, bool maxEffects = false)
+        {            
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             if (!m_itemTemplates.ContainsKey(id))
                 throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
 
             return CreatePlayerItem(owner, m_itemTemplates[id], amount, maxEffects);
         }
 
-        public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, uint amount, bool maxEffects = false)
-        {
+        public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, int amount, bool maxEffects = false)
+        {            
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             return CreatePlayerItem(owner, template, amount, GenerateItemEffects(template, maxEffects));
         }
 
         public BasePlayerItem CreatePlayerItem(Character owner, IItem item)
         {
-            return CreatePlayerItem(owner, item.Template, item.Stack, item.Effects.Clone());
+            return CreatePlayerItem(owner, item.Template, (int)item.Stack, item.Effects.Clone());
         }
 
-        public BasePlayerItem CreatePlayerItem(Character owner, IItem item, uint amount)
-        {
+        public BasePlayerItem CreatePlayerItem(Character owner, IItem item, int amount)
+        {            
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             return CreatePlayerItem(owner, item.Template, amount, item.Effects.Clone());
         }
 
-        public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, uint amount, List<EffectBase> effects)
-        {
+        public BasePlayerItem CreatePlayerItem(Character owner, ItemTemplate template, int amount, List<EffectBase> effects)
+        {            
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             var guid = PlayerItemRecord.PopNextId();
             var record = new PlayerItemRecord // create the associated record
                         {
                             Id = guid,
                             OwnerId = owner.Id,
                             Template = template,
-                            Stack = amount,
+                            Stack = (uint)amount,
                             Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
                             Effects = effects,
                             IsNew = true,
@@ -116,25 +128,30 @@ namespace Stump.Server.WorldServer.Game.Items
             return m_itemCtorByTypes.TryGetValue((ItemTypeEnum) record.Template.Type.Id, out ctor) ? ctor(character, record) : new DefaultItem(character, record);
         }
 
-        public MerchantItem CreateMerchantItem(BasePlayerItem item, uint quantity, uint price)
+        public MerchantItem CreateMerchantItem(BasePlayerItem item, int quantity, uint price)
         {
+            if (quantity < 0)
+                throw new ArgumentException("quantity < 0", "quantity");
+
             var guid = PlayerItemRecord.PopNextId();
 
             var newitem =
-                new MerchantItem(item.Owner, guid, item.Template, item.Effects, quantity, price);
+                new MerchantItem(item.Owner, guid, item.Template, item.Effects, (uint)quantity, price);
 
             return newitem;
         }
 
-        public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, ItemTemplate template, uint amount)
+        public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, ItemTemplate template, int amount)
         {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
             var guid = TaxCollectorItemRecord.PopNextId();
             var record = new TaxCollectorItemRecord // create the associated record
                         {
                             Id = guid,
                             OwnerId = owner.GlobalId,
                             Template = template,
-                            Stack = amount,
+                            Stack = (uint)amount,
                             Effects = GenerateItemEffects(template),
                             IsNew = true,
                         };
@@ -142,8 +159,12 @@ namespace Stump.Server.WorldServer.Game.Items
             return new TaxCollectorItem(record);
         }
         
-        public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, int id, uint amount)
+        public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, int id, int amount)
         {
+             if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+
             if (!m_itemTemplates.ContainsKey(id))
                 throw new Exception(string.Format("Template id '{0}' doesn't exist", id));
 
@@ -151,15 +172,19 @@ namespace Stump.Server.WorldServer.Game.Items
 
         }
 
-        public BankItem CreateBankItem(Character character, BasePlayerItem item, uint amount)
+        public BankItem CreateBankItem(Character character, BasePlayerItem item, int amount)
         {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+
             var guid = BankItemRecord.PopNextId();
             var record = new BankItemRecord // create the associated record
                         {
                             Id = guid,
                             OwnerAccountId = character.Account.Id,
                             Template = item.Template,
-                            Stack = amount,
+                            Stack = (uint)amount,
                             Effects = new List<EffectBase>(item.Effects),
                             IsNew = true,
                         };

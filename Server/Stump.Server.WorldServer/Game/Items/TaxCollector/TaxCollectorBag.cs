@@ -63,16 +63,16 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 
         public bool MoveToInventory(TaxCollectorItem item, Character character)
         {
-            return MoveToInventory(item, character, item.Stack);
+            return MoveToInventory(item, character, (int)item.Stack);
         }
 
-        public bool MoveToInventory(TaxCollectorItem item, Character character, uint quantity)
+        public bool MoveToInventory(TaxCollectorItem item, Character character, int quantity)
         {
             if (quantity == 0)
                 return false;
 
             if (quantity > item.Stack)
-                quantity = item.Stack;
+                quantity = (int)item.Stack;
 
             RemoveItem(item, quantity);
             var newItem = ItemManager.Instance.CreatePlayerItem(character, item.Template, quantity,

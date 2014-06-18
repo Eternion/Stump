@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 {
     public class TaxCollectorProspectingResult : IFightResult, IExperienceResult
     {
-        public TaxCollectorProspectingResult(TaxCollectorNpc taxCollector, Fight fight)
+        public TaxCollectorProspectingResult(TaxCollectorNpc taxCollector, IFight fight)
         {
             TaxCollector = taxCollector;
             Fight = fight;
@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             private set;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get;
             private set;
@@ -105,12 +105,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                 if (template.Effects.Count > 0)
                     for (var i = 0; i < drop.Amount; i++)
                     {
-                        var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, drop.Amount);
+                        var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, (int)drop.Amount);
                         TaxCollector.Bag.AddItem(item);
                     }
                 else
                 {
-                    var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, drop.Amount);
+                    var item = ItemManager.Instance.CreateTaxCollectorItem(TaxCollector, drop.ItemId, (int)drop.Amount);
                     TaxCollector.Bag.AddItem(item);
                 }
             }

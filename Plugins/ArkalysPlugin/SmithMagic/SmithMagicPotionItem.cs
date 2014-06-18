@@ -35,7 +35,7 @@ namespace ArkalysPlugin.SmithMagic
             ItemManager.Instance.AddItemConstructor(typeof (SmithMagicPotionItem));
         }
 
-        public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
             var weapon = Owner.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
 

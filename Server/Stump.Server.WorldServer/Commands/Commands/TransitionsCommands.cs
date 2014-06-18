@@ -1,6 +1,7 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -27,6 +28,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             AddParameter("transition", "t", "Top/Right/Bottom/Left",
                 converter: ParametersConverter.GetEnumConverter<MapNeighbour>());
             AddParameter("map", "m", "The destination", converter: ParametersConverter.MapConverter);
+            AddParameter("cell", "c", "The cell destination", isOptional:true, converter: ParametersConverter.CellConverter);
             AddParameter("from", "f", "The map to modify", isOptional:true, converter: ParametersConverter.MapConverter);
         }
 
@@ -35,6 +37,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             var transition = trigger.Get<MapNeighbour>("t");
             var map = trigger.Get<Map>("map");
+            var cell = trigger.IsArgumentDefined("cell") ? map.GetCell(trigger.Get<short>("cell")) : null;
 
             Map from;
             if (trigger.IsArgumentDefined("from"))
@@ -54,15 +57,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 case MapNeighbour.Top:
                     from.TopNeighbour = map;
+                    from.TopNeighbourCell = cell;
                     break;
                 case MapNeighbour.Bottom:
                     from.BottomNeighbour = map;
+                    from.BottomNeighbourCell = cell;
                     break;
                 case MapNeighbour.Right:
                     from.RightNeighbour = map;
+                    from.RightNeighbourCell = cell;
                     break;
                 case MapNeighbour.Left:
                     from.LeftNeighbour = map;
+                    from.LeftNeighbourCell = cell;
                     break;
                 default:
                     trigger.ReplyError("{0} not a valid transition", transition);
@@ -112,15 +119,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 case MapNeighbour.Top:
                     from.TopNeighbour = null;
+                    from.TopNeighbourCell = null;
                     break;
                 case MapNeighbour.Bottom:
                     from.BottomNeighbour = null;
+                    from.BottomNeighbourCell = null;
                     break;
                 case MapNeighbour.Right:
                     from.RightNeighbour = null;
+                    from.RightNeighbourCell = null;
                     break;
                 case MapNeighbour.Left:
                     from.LeftNeighbour = null;
+                    from.LeftNeighbourCell = null;
                     break;
                 default:
                     trigger.ReplyError("{0} not a valid transition", transition);

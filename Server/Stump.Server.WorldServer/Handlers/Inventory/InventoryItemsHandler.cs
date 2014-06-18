@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (item == null)
                 return;
 
-            client.Character.Inventory.RemoveItem(item, (uint) message.quantity);
+            client.Character.Inventory.RemoveItem(item, message.quantity);
         }
 
         [WorldHandler(ObjectUseMessage.Id)]
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (item == null)
                 return;
 
-            client.Character.Inventory.UseItem(item, (uint) message.quantity);
+            client.Character.Inventory.UseItem(item,  message.quantity);
         }
 
         [WorldHandler(ObjectUseOnCellMessage.Id)]
@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             if (food.Stack < message.foodQuantity)
                 message.foodQuantity = (short) food.Stack;
-            uint i = 0;
+            int i = 0;
             for (; i < message.foodQuantity; i++)
             {
                 if (!item.Feed(food))

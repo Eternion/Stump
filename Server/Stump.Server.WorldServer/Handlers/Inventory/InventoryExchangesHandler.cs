@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                     return;
 
                 if (client.Character.MerchantBag.MoveToInventory(merchantItem))
-                    client.Send(new ExchangeShopStockMovementRemovedMessage(message.objectUID));
+                    SendExchangeShopStockMovementRemovedMessage(client, merchantItem);
             }
         }
 
@@ -130,7 +130,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             var dialog = client.Character.Dialog as IShopDialog;
             if (dialog != null)
-                dialog.BuyItem(message.objectToBuyId, (uint)message.quantity);
+                dialog.BuyItem(message.objectToBuyId, message.quantity);
         }
 
         [WorldHandler(ExchangeSellMessage.Id)]
@@ -138,7 +138,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             var dialog = client.Character.Dialog as IShopDialog;
             if (dialog != null) 
-                dialog.SellItem(message.objectToSellId, (uint)message.quantity);
+                dialog.SellItem(message.objectToSellId, message.quantity);
         }
 
         [WorldHandler(ExchangeShowVendorTaxMessage.Id)]
@@ -175,7 +175,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (client.Character.IsBusy())
                 return;
 
-            client.Character.Inventory.MoveToMerchantBag(item, (uint) message.quantity, (uint) message.price);
+            client.Character.Inventory.MoveToMerchantBag(item, message.quantity, (uint) message.price);
         }
 
         [WorldHandler(ExchangeObjectModifyPricedMessage.Id)]
@@ -202,13 +202,13 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             if (message.quantity < merchantItem.Stack)
                 client.Character.MerchantBag.MoveToInventory(merchantItem,
-                                                             (uint) (merchantItem.Stack - message.quantity));
+                                                             (int)(merchantItem.Stack - message.quantity));
             else
             {
                 var playerItem = client.Character.Inventory.TryGetItem(merchantItem.Template);
                 if (playerItem != null)
                     client.Character.Inventory.MoveToMerchantBag(playerItem,
-                                                                 (uint) (message.quantity - merchantItem.Stack),
+                                                                 (int) (message.quantity - merchantItem.Stack),
                                                                  (uint) message.price);
             }
         }

@@ -85,18 +85,18 @@ namespace Stump.Server.WorldServer.Game.Maps
                 handler(this, actor);
         }
 
-        public event Action<Map, Fight> FightCreated;
+        public event Action<Map, IFight> FightCreated;
 
-        protected virtual void OnFightCreated(Fight fight)
+        protected virtual void OnFightCreated(IFight fight)
         {
             var handler = FightCreated;
             if (handler != null)
                 handler(this, fight);
         }
 
-        public event Action<Map, Fight> FightRemoved;
+        public event Action<Map, IFight> FightRemoved;
 
-        protected virtual void OnFightRemoved(Fight fight)
+        protected virtual void OnFightRemoved(IFight fight)
         {
             var handler = FightRemoved;
             if (handler != null)
@@ -205,7 +205,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private readonly List<RolePlayActor> m_actors = new List<RolePlayActor>();
         private readonly ConcurrentDictionary<int, RolePlayActor> m_actorsMap = new ConcurrentDictionary<int, RolePlayActor>();
         private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
-        private readonly List<Fight> m_fights = new List<Fight>();
+        private readonly List<IFight> m_fights = new List<IFight>();
         private readonly Dictionary<int, InteractiveObject> m_interactives = new Dictionary<int, InteractiveObject>();
         private readonly Dictionary<int, MapNeighbour> m_clientMapsAround = new Dictionary<int, MapNeighbour>();
         private readonly Dictionary<Cell, List<CellTrigger>> m_cellsTriggers = new Dictionary<Cell, List<CellTrigger>>();
@@ -216,6 +216,10 @@ namespace Stump.Server.WorldServer.Game.Maps
         private Map m_leftNeighbour;
         private Map m_rightNeighbour;
         private Map m_topNeighbour;
+        private Cell m_bottomNeighbourCell;
+        private Cell m_leftNeighbourCell;
+        private Cell m_rightNeighbourCell;
+        private Cell m_topNeighbourCell;
         private Cell[] m_redPlacement;
         private Cell[] m_bluePlacement;
         private Cell[] m_freeCells;
@@ -323,6 +327,25 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
+        public int TopNeighbourCellId
+        {
+            get { return Record.TopNeighbourCellId; }
+            set { Record.TopNeighbourCellId = value; }
+        }
+
+        public Cell TopNeighbourCell
+        {
+            get
+            {
+                return TopNeighbourCellId != -1 ? m_topNeighbourCell ?? (m_topNeighbourCell = TopNeighbour.GetCell(TopNeighbourCellId)) : null;
+            }
+            set
+            {
+                m_topNeighbourCell = value;
+                TopNeighbourCellId = value != null ? value.Id : -1;
+            }
+        }
+
         public int BottomNeighbourId
         {
             get { return Record.BottomNeighbourId; }
@@ -339,6 +362,25 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 m_bottomNeighbour = value;
                 BottomNeighbourId = value != null ? value.Id : -1;
+            }
+        }
+
+        public int BottomNeighbourCellId
+        {
+            get { return Record.BottomNeighbourCellId; }
+            set { Record.BottomNeighbourCellId = value; }
+        }
+
+        public Cell BottomNeighbourCell
+        {
+            get
+            {
+                return BottomNeighbourCellId != -1 ? m_bottomNeighbourCell ?? (m_bottomNeighbourCell = BottomNeighbour.GetCell(BottomNeighbourCellId)) : null;
+            }
+            set
+            {
+                m_bottomNeighbourCell = value;
+                BottomNeighbourCellId = value != null ? value.Id : -1;
             }
         }
 
@@ -363,6 +405,25 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
+        public int LeftNeighbourCellId
+        {
+            get { return Record.LeftNeighbourCellId; }
+            set { Record.LeftNeighbourCellId = value; }
+        }
+
+        public Cell LeftNeighbourCell
+        {
+            get
+            {
+                return LeftNeighbourCellId != -1 ? m_leftNeighbourCell ?? (m_leftNeighbourCell = LeftNeighbour.GetCell(LeftNeighbourCellId)) : null;
+            }
+            set
+            {
+                m_leftNeighbourCell = value;
+                LeftNeighbourCellId = value != null ? value.Id : -1;
+            }
+        }
+
         public int RightNeighbourId
         {
             get { return Record.RightNeighbourId; }
@@ -379,6 +440,25 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 m_rightNeighbour = value;
                 RightNeighbourId = value != null ? value.Id : -1;
+            }
+        }
+
+        public int RightNeighbourCellId
+        {
+            get { return Record.RightNeighbourCellId; }
+            set { Record.RightNeighbourCellId = value; }
+        }
+
+        public Cell RightNeighbourCell
+        {
+            get
+            {
+                return RightNeighbourCellId != -1 ? m_rightNeighbourCell ?? (m_rightNeighbourCell = RightNeighbour.GetCell(RightNeighbourCellId)) : null;
+            }
+            set
+            {
+                m_rightNeighbourCell = value;
+                RightNeighbourCellId = value != null ? value.Id : -1;
             }
         }
 
@@ -986,7 +1066,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         #region Fights
 
-        public ReadOnlyCollection<Fight> Fights
+        public ReadOnlyCollection<IFight> Fights
         {
             get { return m_fights.AsReadOnly(); }
         }
@@ -996,7 +1076,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return (short)m_fights.Count;
         }
 
-        public void AddFight(Fight fight)
+        public void AddFight(IFight fight)
         {
             if (fight.Map != this)
                 return;
@@ -1008,7 +1088,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             OnFightCreated(fight);
         }
 
-        public void RemoveFight(Fight fight)
+        public void RemoveFight(IFight fight)
         {
             m_fights.Remove(fight);
 
@@ -1413,13 +1493,13 @@ namespace Stump.Server.WorldServer.Game.Maps
             switch (mapneighbour)
             {
                 case MapNeighbour.Top:
-                    return (short)(currentCell + 532);
+                    return TopNeighbourCell != null ? TopNeighbourCell.Id : (short)(currentCell + 532);
                 case MapNeighbour.Bottom:
-                    return (short)(currentCell - 532);
+                    return BottomNeighbourCell != null ? BottomNeighbourCell.Id : (short)(currentCell - 532);
                 case MapNeighbour.Right:
-                    return (short)(currentCell - 13);
+                    return RightNeighbourCell != null ? RightNeighbourCell.Id : (short)(currentCell - 13);
                 case MapNeighbour.Left:
-                    return (short)(currentCell + 13);
+                    return LeftNeighbourCell != null ? LeftNeighbourCell.Id : (short)(currentCell + 13);
                 default:
                     return 0;
             }
@@ -1470,7 +1550,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public MapComplementaryInformationsDataMessage GetMapComplementaryInformationsDataMessage(Character character)
         {
-            return new MapComplementaryInformationsDataMessage(
+            return new MapComplementaryInformationsWithCoordsMessage(
                 (short)SubArea.Id,
                 Id,
                 0,
@@ -1479,7 +1559,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
                 new StatedElement[0],
                 new MapObstacle[0],
-                m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()));
+                m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()),
+                (short)Position.X,
+                (short)Position.Y);
         }
 
         #endregion

@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             CanSell = true;
         }
 
-        public override bool BuyItem(int itemId, uint amount)
+        public override bool BuyItem(int itemId, int amount)
         {
             if (!base.BuyItem(itemId, amount)) 
                 return false;
