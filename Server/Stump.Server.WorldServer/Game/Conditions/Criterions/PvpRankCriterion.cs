@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override bool Eval(Character character)
         {
-            return Compare(character.AlignmentGrade, Rank);
+            return Compare(character.AlignmentGrade, Rank) && character.PvPEnabled;
         }
 
         public override void Build()

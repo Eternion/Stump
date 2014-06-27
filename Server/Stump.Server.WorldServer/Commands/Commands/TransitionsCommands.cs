@@ -1,7 +1,6 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Commands.Commands
