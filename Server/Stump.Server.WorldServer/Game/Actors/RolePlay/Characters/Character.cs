@@ -1225,6 +1225,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnPvPToggled()
         {
+            foreach (var item in Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD).Where(item => !item.AreConditionFilled(this)))
+            {
+                Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+            }
+
             Map.Refresh(this);
             RefreshStats();
 
@@ -1450,7 +1455,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 string.Format(
                     "Vous venez de passer au rang prestige {0}. \r\nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
                     PrestigeRank, item.Template.Name) +
-                "les bonus s'appliquent sans équipper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.");
+                "les bonus s'appliquent sans équiper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.");
 
             foreach (var equippedItem in Inventory.ToArray())
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);

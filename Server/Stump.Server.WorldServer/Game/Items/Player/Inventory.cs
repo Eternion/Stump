@@ -370,7 +370,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
             if (!(item.Template is WeaponTemplate) || !item.Template.TwoHanded || shield == null)
                 return true;
-
+ 
             if (send)
                 BasicHandler.SendTextInformationMessage(Owner.Client,
                     TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);

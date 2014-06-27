@@ -104,7 +104,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             if (food.Stack < message.foodQuantity)
                 message.foodQuantity = (short) food.Stack;
-            int i = 0;
+
+            var i = 0;
             for (; i < message.foodQuantity; i++)
             {
                 if (!item.Feed(food))
