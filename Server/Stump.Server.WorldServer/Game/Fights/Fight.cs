@@ -1859,7 +1859,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             fighter.PersonalReadyChecker = null;
             var isfighterTurn = fighter.IsFighterTurn();
 
+            var results = GenerateResults();
+
             ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
+            ContextHandler.SendGameFightEndMessage(fighter.Character.Client, this,
+                results.Select(x => x.GetFightResultListEntry()));
 
             var fightend = CheckFightEnd();
 

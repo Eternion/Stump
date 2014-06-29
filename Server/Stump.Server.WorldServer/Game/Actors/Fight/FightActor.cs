@@ -1530,6 +1530,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightOutcomeEnum GetFighterOutcome()
         {
+            if (HasLeft())
+                return FightOutcomeEnum.RESULT_LOST;
+
             var teamDead = Team.AreAllDead();
             var opposedTeamDead = OpposedTeam.AreAllDead();
 
