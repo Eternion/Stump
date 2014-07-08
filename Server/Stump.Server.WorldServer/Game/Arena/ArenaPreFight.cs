@@ -5,6 +5,7 @@ using System.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Arena;
+using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
@@ -19,6 +20,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         private readonly WorldClientCollection m_clients = new WorldClientCollection();
 
         private readonly Dictionary<Character, Map> m_charactersMaps = new Dictionary<Character, Map>();
+        private int m_readyPlayersCount;
 
         private ArenaFight m_fight;
 
@@ -170,40 +172,51 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         private void TeleportFighters()
         {
-            var count = ChallengersTeam.Members.Count + DefendersTeam.Members.Count;
+            // it's a mess to manage all these contexts together
+            m_readyPlayersCount = ChallengersTeam.Members.Count + DefendersTeam.Members.Count;
             foreach (var character in ChallengersTeam.Members.Concat(DefendersTeam.Members).Select(x => x.Character))
             {
                 var character1 = character;
                 character.Area.AddMessage(() =>
                 {
-                    try
-                    {
-                        lock(m_charactersMaps)
-                            m_charactersMaps.Add(character1, character1.Map);
+                    lock(m_charactersMaps)
+                        m_charactersMaps.Add(character1, character1.Map);
 
-                        if (character1.IsFighting())
-                        {
-                            character1.NextMap = m_fight.Map;
-                            character1.Fighter.LeaveFight();
-                        }
-                        else if (character1.IsSpectator())
-                        {
-                            character1.NextMap = m_fight.Map;
-                            character1.Spectator.Leave();
-                        }
-                        else
-                        {
-                            character1.Teleport(m_fight.Map, m_fight.Map.Cells[character1.Cell.Id]);
-                        }
-                    }
-                    finally
+                    if (character1.IsFighting())
                     {
-                        if (Interlocked.Decrement(ref count) <= 0)
+                        character1.EnterMap += OnFightLeft;
+                        character1.NextMap = m_fight.Map;
+                        character1.Fighter.LeaveFight();
+                    }
+                    else if (character1.IsSpectator())
+                    {
+                        character1.EnterMap += OnFightLeft;
+                        character1.NextMap = m_fight.Map;
+                        character1.Spectator.Leave();
+                    }
+                    else
+                    {
+                        character1.Teleport(m_fight.Map, m_fight.Map.Cells[character1.Cell.Id]);
+                             
+                        if (Interlocked.Decrement(ref m_readyPlayersCount) <= 0)
                         {
                             m_fight.Map.Area.AddMessage(PrepareFight);
                         }
                     }
                 });
+            }
+        }
+
+        private void OnFightLeft(RolePlayActor rolePlayActor, Map map)
+        {
+            if (map == m_fight.Map)
+            {
+                rolePlayActor.EnterMap -= OnFightLeft;
+
+                if (Interlocked.Decrement(ref m_readyPlayersCount) <= 0)
+                {
+                    m_fight.Map.Area.AddMessage(PrepareFight);
+                }
             }
         }
 

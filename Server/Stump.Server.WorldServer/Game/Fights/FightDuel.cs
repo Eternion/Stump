@@ -31,6 +31,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.StartFighting();
         }
 
+        public override bool IsDeathTemporarily
+        {
+            get { return true; }
+        }
+
         public override FightTypeEnum FightType
         {
             get { return FightTypeEnum.FIGHT_TYPE_CHALLENGE; }

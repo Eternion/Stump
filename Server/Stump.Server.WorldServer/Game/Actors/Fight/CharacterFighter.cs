@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             m_damageTakenBeforeFight = Stats.Health.DamageTaken;
 
-            if (Fight.FightType == FightTypeEnum.FIGHT_TYPE_CHALLENGE)
+            if (Fight.IsDeathTemporarily)
                 Stats.Health.DamageTaken = 0;
         }
 
