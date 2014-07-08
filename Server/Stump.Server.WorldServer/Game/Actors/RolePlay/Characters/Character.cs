@@ -2056,9 +2056,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var dest = GetSpawnPoint() ?? Breed.GetStartPosition();
 
             // use nextmap to update correctly the areas changements
-            NextMap = dest.Map;
-            Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
-            Direction = dest.Direction;
+            // if next map is already set we do not change it
+            if (NextMap == null)
+            {
+                NextMap = dest.Map;
+                Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
+                Direction = dest.Direction;
+            }
 
             // energy lost go here
             Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);

@@ -1542,7 +1542,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (teamDead && !opposedTeamDead)
                 return FightOutcomeEnum.RESULT_LOST;
 
-            return FightOutcomeEnum.RESULT_DRAW;
+            return FightOutcomeEnum.RESULT_VICTORY;
         }
 
         #endregion

@@ -22,7 +22,12 @@ namespace Stump.Server.WorldServer.Game.Arena
             get { return FightTypeEnum.FIGHT_TYPE_PVP_ARENA; }
         }
 
-         public override void StartPlacement()
+        public override bool IsDeathTemporarily
+        {
+            get { return true; }
+        }
+
+        public override void StartPlacement()
         {            
              ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
                             PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
