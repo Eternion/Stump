@@ -18,6 +18,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Breeds;
@@ -1886,10 +1887,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null && target.IsTaxCollectorOwner(GuildMember))
                 return FighterRefusedReasonEnum.WRONG_GUILD;
 
-            if (target.IsBusy() || target.IsFighting)
+            if (target.IsBusy() || IsFighting() || IsSpectator() || !IsInWorld)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
             if (target.Map != Map)
+                return FighterRefusedReasonEnum.WRONG_MAP;
+
+            return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
+        }        
+        
+        public FighterRefusedReasonEnum CanAttack(MonsterGroup group)
+        {
+            if (IsFighting() || IsSpectator() || !IsInWorld)
+                return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
+
+            if (group.Map != Map)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
@@ -1898,7 +1910,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public CharacterFighter CreateFighter(FightTeam team)
         {
             if (IsFighting() || IsSpectator() || !IsInWorld)
-                return null;
+                throw new Exception(string.Format("{0} is already in a fight", this));
 
             NextMap = Map; // we do not leave the map
             Map.Leave(this);
@@ -1919,10 +1931,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public FightSpectator CreateSpectator(Fights.Fight fight)
         {
             if (IsFighting() || IsSpectator() || !IsInWorld)
-                return null;
+                throw new Exception(string.Format("{0} is already in a fight", this));
 
             if (!fight.CanSpectatorJoin(this))
-                return null;
+                throw new Exception(string.Format("{0} cannot join fight in spectator", this));
 
             NextMap = Map; // we do not leave the map
             Map.Leave(this);

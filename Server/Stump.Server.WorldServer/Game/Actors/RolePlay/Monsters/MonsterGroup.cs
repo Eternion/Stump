@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Timers;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -150,6 +151,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             if (Map.GetBlueFightPlacement().Length < m_monsters.Count)
             {
                 character.SendServerMessage("Cannot start fight : Not enough fight placements");
+                return;
+            }
+
+            var reason = character.CanAttack(this);
+            if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+            {                
+                ContextHandler.SendChallengeFightJoinRefusedMessage(character.Client, character, reason);
                 return;
             }
 
