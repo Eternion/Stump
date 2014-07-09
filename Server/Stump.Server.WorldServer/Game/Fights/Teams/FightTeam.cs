@@ -138,6 +138,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public virtual bool ChangeLeader(FightActor leader)
         {
+            if (leader == null)
+                throw new ArgumentNullException("leader");
+
             if (!m_fighters.Contains(leader))
                 return false;
 
@@ -234,6 +237,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public bool AddFighter(FightActor actor)
         {
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+
             if (IsFull())
                 return false;
 

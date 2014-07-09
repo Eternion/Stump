@@ -146,6 +146,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var team = joinRed ? fight.RedTeam : fight.BlueTeam;
             var fighter = target.CreateFighter(team);
 
+            if (fighter == null)
+            {
+                trigger.ReplyError("Cannot join fight for an unknown reason");
+                return;
+            }
+
             Cell cell;
             if (!fight.FindRandomFreeCell(fighter, out cell))
                 foreach (var ally in team.Fighters)
