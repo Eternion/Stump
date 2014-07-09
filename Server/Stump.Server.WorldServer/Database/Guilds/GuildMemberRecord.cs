@@ -8,18 +8,16 @@ namespace Stump.Server.WorldServer.Database.Guilds
 {
     public class GuildMemberRelator
     {
-        public static string FetchQuery = "SELECT * FROM guild_members";
+        public static string FetchQuery = "SELECT gm.*,ch.Id,ch.Name,ch.Experience,ch.Breed,ch.Sex,ch.AlignmentSide,ch.LastUsage,ch.PrestigeRank FROM guild_members gm LEFT JOIN characters ch ON ch.Id = gm.CharacterId";
 
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FetchByGuildId = "SELECT * FROM guild_members gm LEFT JOIN " + 
-            "(SELECT Id, Name, Experience, Breed, Sex, AlignmentSide, LastUsage FROM characters) ch ON ch.Id = gm.CharacterId WHERE GuildId={0}";
+        public static string FetchByGuildId = "SELECT gm.*,ch.Id,ch.Name,ch.Experience,ch.Breed,ch.Sex,ch.AlignmentSide,ch.LastUsage,ch.PrestigeRank FROM guild_members gm LEFT JOIN characters ON characters.Id = gm.CharacterId WHERE GuildId={0}";
         /// <summary>
         /// Use string.Format
         /// </summary>
-        public static string FindByCharacterId = "SELECT * FROM guild_members gm LEFT JOIN " + 
-            "(SELECT Id, Name, Experience, Breed, Sex, AlignmentSide, LastUsage FROM characters) ch ON ch.Id = gm.CharacterId WHERE CharacterId={0}";
+        public static string FindByCharacterId = "SELECT gm.*,ch.Id,ch.Name,ch.Experience,ch.Breed,ch.Sex,ch.AlignmentSide,ch.LastUsage,ch.PrestigeRank FROM guild_members gm LEFT JOIN characters ON characters.Id = gm.CharacterId WHERE CharacterId={0}";
 
         
         private GuildMemberRecord m_current;
@@ -65,7 +63,8 @@ namespace Stump.Server.WorldServer.Database.Guilds
             get;
             set;
         }
-
+        
+        [Index]
         public int GuildId
         {
             get;
