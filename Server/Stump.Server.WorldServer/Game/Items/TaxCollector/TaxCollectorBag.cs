@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Stump.ORM.SubSonic.Query;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
@@ -97,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             DeleteAll(false);
 
             if (lazySave)
-                WorldServer.Instance.IOTaskPool.AddMessage(() => Save());
+                WorldServer.Instance.IOTaskPool.AddMessage(Save);
             else
                 Save();
         }
