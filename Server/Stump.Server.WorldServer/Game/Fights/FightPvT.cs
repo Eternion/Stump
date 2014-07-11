@@ -274,7 +274,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return results;
 
             var teamPP = ChallengersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-            var kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
+            var kamas = TaxCollector.Kamas;
 
             foreach (var looter in looters)
             {
@@ -282,17 +282,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             var i = 0;
+
             // dispatch loots
-            var items =
-                TaxCollector.TaxCollectorNpc.Bag.SelectMany(x => Enumerable.Repeat(x.Template.Id, (int) x.Stack))
-                            .Shuffle()
-                            .ToList();
             foreach (var looter in looters)
             {
-                var count = (int) Math.Ceiling(items.Count*((double) looter.Prospecting/teamPP));
-                for (; i < count && i < items.Count; i++)
+                var count = (int) Math.Ceiling(TaxCollector.Items.Count*((double) looter.Prospecting/teamPP));
+                for (; i < count && i < TaxCollector.Items.Count; i++)
                 {
-                    looter.Loot.AddItem(items[i]);
+                    looter.Loot.AddItem(TaxCollector.Items[i]);
                 }
             }
 

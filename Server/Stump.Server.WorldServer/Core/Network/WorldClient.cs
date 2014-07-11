@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using NLog;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
@@ -30,6 +31,7 @@ namespace Stump.Server.WorldServer.Core.Network
 
             lock (ApproachHandler.ConnectionQueue.SyncRoot)
                 ApproachHandler.ConnectionQueue.Add(this);
+                
             InQueueUntil = DateTime.Now;
         }
 
