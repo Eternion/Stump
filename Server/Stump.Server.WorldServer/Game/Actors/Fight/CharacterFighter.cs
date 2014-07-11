@@ -299,9 +299,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             IsDisconnected = true;
         }
 
-        public override IFightResult GetFightResult()
+        public override IFightResult GetFightResult(FightOutcomeEnum outcome)
         {
-            return new FightPlayerResult(this, GetFighterOutcome(), Loot);
+            return new FightPlayerResult(this, outcome, Loot);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

@@ -35,6 +35,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             }
         }
 
+        public bool HasLeft
+        {
+            get { return false; }
+        }
+
         public int Id
         {
             get
