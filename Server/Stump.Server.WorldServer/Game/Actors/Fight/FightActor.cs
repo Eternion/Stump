@@ -1522,10 +1522,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return 0;
         }
-
-        public virtual IFightResult GetFightResult()
+        
+        public virtual IFightResult GetFightResult(FightOutcomeEnum outcome)
         {
-            return new FightResult(this, GetFighterOutcome(), Loot);
+            return new FightResult(this, outcome, Loot);
+        }
+
+        public IFightResult GetFightResult()
+        {
+            return GetFightResult(GetFighterOutcome());
         }
 
         public FightOutcomeEnum GetFighterOutcome()

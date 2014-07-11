@@ -75,6 +75,30 @@ namespace Stump.Server.WorldServer.Game.Arena
                     outcome == FightOutcomeEnum.RESULT_VICTORY)));
         }
 
+        protected override IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver, out IFightResult leaverResult)
+        {
+            var opposedTeamRank = (int)leaver.OpposedTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
+            var rankLose = ArenaRankFormulas.AdjustRank(leaver.Character.ArenaRank, opposedTeamRank, false);
+            leaverResult = null;
+
+            var list = new List<IFightResult>();
+            foreach (var fighter in GetFightersAndLeavers().OfType<CharacterFighter>())
+            {
+                var outcome = fighter.Team == leaver.Team
+                    ? FightOutcomeEnum.RESULT_LOST
+                    : FightOutcomeEnum.RESULT_VICTORY;
+
+                var result = new ArenaFightResult(fighter, outcome, fighter.Loot, fighter == leaver ? rankLose : 0);
+
+                if (fighter == leaver)
+                    leaverResult = result;
+
+                list.Add(result);
+            }
+
+            return list;
+        }
+
         protected override void OnPlayerLeft(FightActor fighter)
         {
             if (fighter is CharacterFighter)

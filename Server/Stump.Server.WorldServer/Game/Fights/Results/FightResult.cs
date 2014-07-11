@@ -20,11 +20,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             protected set;
         }
 
+
         #region IFightResult Members
 
         public bool Alive
         {
             get { return Fighter.IsAlive() && !Fighter.HasLeft(); }
+        }
+
+        public bool HasLeft
+        {
+            get { return Fighter.HasLeft(); }
         }
 
         public int Id
@@ -92,6 +98,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
     public interface IFightResult
     {
         bool Alive
+        {
+            get;
+        }
+        bool HasLeft
         {
             get;
         }

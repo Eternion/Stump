@@ -91,6 +91,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return results;
         }
 
+
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
             ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, true, !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);

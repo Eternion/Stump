@@ -697,11 +697,33 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected abstract IEnumerable<IFightResult> GenerateResults();
 
+        protected virtual IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver,
+            out IFightResult leaverResult)
+        {
+            leaverResult = null;
+            var list = new List<IFightResult>();
+            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)))
+            {
+                var result =
+                    fighter.GetFightResult(fighter.Team == leaver.Team
+                        ? FightOutcomeEnum.RESULT_LOST
+                        : FightOutcomeEnum.RESULT_VICTORY);
+
+                if (fighter == leaver)
+                    leaverResult = result;
+
+                list.Add(result);
+            }
+
+            return list;
+        }
+
         protected void ApplyResults(IEnumerable<IFightResult> results)
         {
             foreach (var fightResult in results)
             {
-                fightResult.Apply();
+                if (!fightResult.HasLeft)
+                    fightResult.Apply();
             }
         }
 
@@ -1859,7 +1881,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             fighter.PersonalReadyChecker = null;
             var isfighterTurn = fighter.IsFighterTurn();
 
-            var results = GenerateResults();
+            IFightResult leaverResult;
+            var results = GenerateLeaverResults(fighter, out leaverResult);
+
+            leaverResult.Apply();
 
             ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
             ContextHandler.SendGameFightEndMessage(fighter.Character.Client, this,

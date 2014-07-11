@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
@@ -65,9 +66,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return TaxCollectorNpc.Name;
         }
 
-        public override IFightResult GetFightResult()
+        public override IFightResult GetFightResult(FightOutcomeEnum outcome)
         {
-            return new TaxCollectorFightResult(this, GetFighterOutcome(), Loot);
+            return new TaxCollectorFightResult(this, outcome, Loot);
         }
 
         public TaxCollectorFightersInformation GetTaxCollectorFightersInformation()
