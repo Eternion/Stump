@@ -240,8 +240,12 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public bool AddGuest(Character character)
         {
-            if (IsFull || !CanInvite(character))
+            PartyJoinErrorEnum error;
+            if (!CanInvite(character, out error))
+            {
+                PartyHandler.SendPartyCannotJoinErrorMessage(character.Client, this, error);
                 return false;
+            }
 
             lock (m_guestLocker)
                 m_guests.Add(character);
@@ -438,16 +442,16 @@ namespace Stump.Server.WorldServer.Game.Parties
             // not rdy yet
             if (!infight)
                 return;
-            var reason = PartyFightReasonEnum.UNKNOW;
 
-            if (character.Fight is FightDuel || character.Fight is FightAgression || character.Fight is ArenaFight)
-                reason = character.Fighter.Team == character.Fight.ChallengersTeam
+            if (character.Fight is FightDuel || character.Fight is FightAgression)
+            {
+                PartyHandler.SendPartyMemberInFightMessage(Clients, this, character,
+                    character.Fighter.Team == character.Fight.ChallengersTeam
                     ? PartyFightReasonEnum.ATTACK_PLAYER
-                    : PartyFightReasonEnum.PLAYER_ATTACK;
+                    : PartyFightReasonEnum.PLAYER_ATTACK, character.Fight);
+            }
             else if (character.Fight is FightPvM || character.Fight is FightPvT)
-                reason = PartyFightReasonEnum.MONSTER_ATTACK;
-
-            PartyHandler.SendPartyMemberInFightMessage(Clients, this, character, reason, character.Fight);
+                PartyHandler.SendPartyMemberInFightMessage(Clients, this, character, PartyFightReasonEnum.MONSTER_ATTACK, character.Fight);
         }
 
         private void BindEvents(Character member)

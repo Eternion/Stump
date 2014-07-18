@@ -720,10 +720,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void ApplyResults(IEnumerable<IFightResult> results)
         {
-            foreach (var fightResult in results)
+            foreach (var fightResult in results.Where(fightResult => !fightResult.HasLeft))
             {
-                if (!fightResult.HasLeft)
-                    fightResult.Apply();
+                fightResult.Apply();
             }
         }
 

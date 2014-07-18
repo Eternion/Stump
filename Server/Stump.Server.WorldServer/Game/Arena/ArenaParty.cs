@@ -68,19 +68,25 @@ namespace Stump.Server.WorldServer.Game.Arena
                 return false;            
             }
 
-            if (character.Level < ArenaManager.ArenaMinLevel)
+            if (character.Level >= ArenaManager.ArenaMinLevel)
+                return base.CanInvite(character, out error, inviter, send);
+
+            if (send)
             {
-                if (inviter != null && send)
+                if (inviter != null)
                 {
                     // %1 doit être au moins niveau 50 pour faire des combats en Kolizéum.
                     inviter.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 327, character.Name);
                 }
-
-                error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION;
-                return false;                        
+                else
+                {
+                    // Vous devez être au moins niveau 50 pour faire des combats en Kolizéum.
+                    character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 326);
+                }
             }
 
-            return base.CanInvite(character, out error, inviter, send);
+            error = PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION;
+            return false;
         }
 
         protected override void OnGuestPromoted(Character groupMember)
@@ -99,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
 
             m_rankSum -= groupMember.ArenaRank;
-            GroupRankAverage = m_rankSum/MembersCount;
+            GroupRankAverage = MembersCount > 0 ? m_rankSum / MembersCount : 0;
         }
 
         public override PartyMemberInformations GetPartyMemberInformations(Character character)
