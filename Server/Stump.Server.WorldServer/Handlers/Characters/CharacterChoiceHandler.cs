@@ -18,6 +18,7 @@ using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Friends;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 using Stump.Server.WorldServer.Handlers.Startup;
@@ -63,6 +64,14 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             if (character.Recolor)
             {
+                if (message.indexedColor.Any(x => x.Equals(-1)))
+                {
+                    client.Send(new CharacterSelectedErrorMessage());
+                    SendCharactersListWithModificationsMessage(client);
+
+                    return;
+                }
+
                 /* Set Colors */
                 var colors = message.indexedColor.Select(x => ColorTranslator.FromHtml("#" + x.ToString("X"))).ToArray();
 
