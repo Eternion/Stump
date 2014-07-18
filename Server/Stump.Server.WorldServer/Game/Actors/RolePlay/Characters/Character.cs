@@ -1923,7 +1923,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 party = PartyManager.Instance.Create(type);
 
-                EnterParty(party);
+                if (!EnterParty(party))
+                    return;
+
                 created = true;
             }
             else party = GetParty(type);
@@ -1979,7 +1981,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        public void EnterParty(Party party)
+        public bool EnterParty(Party party)
         {
             if (IsInParty(party.Type))
                 LeaveParty(GetParty(party.Type));
@@ -1995,15 +1997,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             party.PartyDeleted += OnPartyDeleted;
 
             if (party.IsMember(this))
-                return;
+                return false;
 
             if (party.PromoteGuestToMember(this))
-                return;
+                return true;
 
             // if fails to enter
             party.MemberRemoved -= OnPartyMemberRemoved;
             party.PartyDeleted -= OnPartyDeleted;
             ResetParty(party.Type);
+
+            return false;
         }
 
         public void LeaveParty(Party party)

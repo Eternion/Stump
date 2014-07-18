@@ -223,7 +223,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public int TaxCollectorHealth
         {
-            get { return TaxCollectorNpc.BaseHealth + 20*Level; }
+            get { return 100*Level; }
+        }
+
+        public int TaxCollectorResistance
+        {
+            get { return Level > 50 ? 50 : Level; }
         }
 
         public int TaxCollectorDamageBonuses

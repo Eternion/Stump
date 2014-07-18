@@ -299,14 +299,10 @@ namespace Stump.Server.BaseServer.Network
                 if (readAsyncEventArgs != null)
                     PushSocketArg(readAsyncEventArgs);
 
-                try
+                if (e.AcceptSocket != null)
                 {
-                    if (e.AcceptSocket != null)
+                    if (e.AcceptSocket.Connected)
                         e.AcceptSocket.Disconnect(false);
-                }
-                catch(Exception ex2)
-                {
-                    logger.Error("Socket disconnected. Exception: {0}", ex2);
                 }
 
 

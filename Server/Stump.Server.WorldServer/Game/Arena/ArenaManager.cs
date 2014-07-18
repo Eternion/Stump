@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
@@ -29,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         /// <summary>
         /// is seconds
         /// </summary>
-        [Variable] public static int ArenaMatchmakingInterval = 60;
+        [Variable] public static int ArenaMatchmakingInterval = 30;
 
         /// <summary>
         /// in minutes

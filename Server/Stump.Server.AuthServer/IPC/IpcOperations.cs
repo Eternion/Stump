@@ -25,7 +25,6 @@ using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
-using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.IPC
@@ -128,7 +127,7 @@ namespace Stump.Server.AuthServer.IPC
             }
             else if (!string.IsNullOrEmpty(message.Nickname))
             {
-                Account account = AccountManager.FindAccountByNickname(message.Nickname);
+                var account = AccountManager.FindAccountByNickname(message.Nickname);
 
                 if (account == null)
                 {
@@ -140,7 +139,7 @@ namespace Stump.Server.AuthServer.IPC
             }
             else if (!string.IsNullOrEmpty(message.Login))
             {
-                Account account = AccountManager.FindAccountByLogin(message.Login);
+                var account = AccountManager.FindAccountByLogin(message.Login);
 
                 if (account == null)
                 {
@@ -152,7 +151,7 @@ namespace Stump.Server.AuthServer.IPC
             }
             else if (message.Id.HasValue)
             {
-                Account account = AccountManager.FindAccountById(message.Id.Value);
+                var account = AccountManager.FindAccountById(message.Id.Value);
                 
                 if (account == null)
                 {
@@ -164,7 +163,7 @@ namespace Stump.Server.AuthServer.IPC
             }
             else if (message.CharacterId.HasValue)
             {
-                Account account = AccountManager.FindAccountByCharacterId(message.CharacterId.Value);
+                var account = AccountManager.FindAccountByCharacterId(message.CharacterId.Value);
                 
                 if (account == null)
                 {
