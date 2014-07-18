@@ -120,10 +120,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             if (Token != null)
             {
                 Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
+
+                Character.Area.AddMessage(() => Character.Inventory.Save());
             }
             else
             {
-                Character.Inventory.SubKamas((int) finalPrice);
+                Character.Inventory.SubKamas(finalPrice);
                 BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                         46, finalPrice);
             }
