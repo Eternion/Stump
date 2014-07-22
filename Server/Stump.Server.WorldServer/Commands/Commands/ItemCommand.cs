@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             AddParameter("template", "item", "Item to add", converter: ParametersConverter.ItemTemplateConverter);
             AddTargetParameter(true, "Character who will receive the item");
-            AddParameter("amount", "amount", "Amount of items to add", 1u);
+            AddParameter("amount", "amount", "Amount of items to add", 1);
             AddParameter<bool>("max", "max", "Set item's effect to maximal values", isOptional: true);
 
         }
@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var target in GetTargets(trigger))
             {
-                var item = ItemManager.Instance.CreatePlayerItem(target, itemTemplate, trigger.Get<uint>("amount"),
+                var item = ItemManager.Instance.CreatePlayerItem(target, itemTemplate, trigger.Get<int>("amount"),
                     trigger.IsArgumentDefined("max"));
 
                 target.Inventory.AddItem(item);
@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             AddParameter("template", "item", "Item to remove", converter: ParametersConverter.ItemTemplateConverter);
             AddTargetParameter(true, "Character who will lose the item");
-            AddParameter<uint>("amount", "amount", "Amount of items to remove", isOptional: true);
+            AddParameter<int>("amount", "amount", "Amount of items to remove", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     {
                         if (trigger.IsArgumentDefined("amount"))
                         {
-                            target.Inventory.RemoveItem(item, trigger.Get<uint>("amount"));
+                            target.Inventory.RemoveItem(item, trigger.Get<int>("amount"));
                             trigger.ReplyBold("'{0}'x{1} removed from {1}'s inventory", itemTemplate.Name,
                                 trigger.Get<uint>("amount"), target);
                         }

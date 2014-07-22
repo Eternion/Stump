@@ -222,11 +222,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 ApplyItemSetEffects(itemSet, CountItemSetEquiped(itemSet), true, false);
             }
 
-            if (TokenTemplate != null && ActiveTokens && Owner.Account.Tokens > 0)
-            {
-                Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, Owner.Account.Tokens);
-                Items.Add(Tokens.Guid, Tokens); // cannot stack
-            }
+            if (TokenTemplate == null || !ActiveTokens || Owner.Account.Tokens <= 0)
+                return;
+
+            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (int)Owner.Account.Tokens);
+            Items.Add(Tokens.Guid, Tokens); // cannot stack
         }
 
         private void UnLoadInventory()
@@ -243,11 +243,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             lock (Locker)
             {
                 var database = WorldServer.Instance.DBAccessor.Database;
-                foreach (var item in Items.Where(item => Tokens == null || item.Value != Tokens))
+                foreach (var item in Items.Where(item => Tokens == null || item.Value != Tokens).Where(item => !item.Value.IsTemporarily))
                 {
-                    if (item.Value.IsTemporarily)
-                        continue;
-
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);
@@ -298,8 +295,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.SetKamas(amount);
         }
 
-        public BasePlayerItem AddItem(ItemTemplate template, uint amount = 1)
+        public BasePlayerItem AddItem(ItemTemplate template, int amount = 1)
         {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             var item = TryGetItem(template);
 
             if (item != null && !item.IsEquiped())
@@ -368,16 +368,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
 
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
-            if (item.Template is WeaponTemplate && item.Template.TwoHanded && shield != null)
-            {
-                if (send)
-                    BasicHandler.SendTextInformationMessage(Owner.Client,
-                        TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
+            if (!(item.Template is WeaponTemplate) || !item.Template.TwoHanded || shield == null)
+                return true;
+ 
+            if (send)
+                BasicHandler.SendTextInformationMessage(Owner.Client,
+                    TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
 
-                return false;
-            }
-
-            return true;
+            return false;
         }
 
         public CharacterInventoryPositionEnum[] GetItemPossiblePositions(BasePlayerItem item)
@@ -435,7 +433,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (item.Stack > 1) // if the item to move is stack we cut it
             {
-                CutItem(item, item.Stack - 1);
+                CutItem(item, (int)item.Stack - 1);
                 // now we have 2 stack : itemToMove, stack = 1
                 //						 newitem, stack = itemToMove.Stack - 1
             }
@@ -449,7 +447,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
 
                 NotifyItemMoved(item, oldPosition);
-                StackItem(stacktoitem, item.Stack); // in all cases Stack = 1 else there is an error
+                StackItem(stacktoitem, (int)item.Stack); // in all cases Stack = 1 else there is an error
                 RemoveItem(item);
             }
             else // else we just move the item
@@ -458,7 +456,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        public MerchantItem MoveToMerchantBag(BasePlayerItem item, uint quantity, uint price)
+        public MerchantItem MoveToMerchantBag(BasePlayerItem item, int quantity, uint price)
         {
             if (!HasItem(item))
                 return null;
@@ -476,7 +474,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (existingItem != null)
             {
                 existingItem.Price = price;
-                Owner.MerchantBag.StackItem(existingItem, quantity);
+                Owner.MerchantBag.StackItem(existingItem, (int)quantity);
 
                 return existingItem;
             }
@@ -516,13 +514,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
 
-        public void ChangeItemOwner(Character newOwner, BasePlayerItem item, uint amount)
-        {
+        public void ChangeItemOwner(Character newOwner, BasePlayerItem item, int amount)
+        {            
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             if (!HasItem(item.Guid))
                 return;
 
             if (amount > item.Stack)
-                amount = item.Stack;
+                amount = (int)item.Stack;
 
             // delete the item if there is no more stack else we unstack it
             if (amount >= item.Stack)
@@ -569,30 +570,33 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return false;
         }
 
-        public void UseItem(BasePlayerItem item, uint amount = 1)
+        public void UseItem(BasePlayerItem item, int amount = 1)
         {
             UseItem(item, amount, null, null);
         }        
         
-        public void UseItem(BasePlayerItem item, Cell targetCell, uint amount = 1)
+        public void UseItem(BasePlayerItem item, Cell targetCell, int amount = 1)
         {
             UseItem(item, amount, targetCell, null);
         }        
         
-        public void UseItem(BasePlayerItem item, Character target, uint amount = 1)
+        public void UseItem(BasePlayerItem item, Character target, int amount = 1)
         {
             UseItem(item, amount, null, target);
         }        
         
-        public void UseItem(BasePlayerItem item, uint amount , Cell targetCell, Character target)
+        public void UseItem(BasePlayerItem item, int amount , Cell targetCell, Character target)
         {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             if (!CanUseItem(item))
                 return;
 
             if (amount > item.Stack)
-                amount = item.Stack;
+                amount = (int)item.Stack;
 
-            var removeAmount = item.UseItem(amount, targetCell, target);
+            var removeAmount = (int)item.UseItem(amount, targetCell, target);
 
             if (removeAmount > 0)
                 RemoveItem(item, removeAmount);
@@ -604,8 +608,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public BasePlayerItem CutItem(BasePlayerItem item, uint amount)
+        public BasePlayerItem CutItem(BasePlayerItem item, int amount)
         {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             if (amount >= item.Stack)
                 return item;
 
@@ -863,14 +870,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             // update boosts
             foreach (var boost in GetItems(CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD))
             {
-                var effect = boost.Effects.OfType<EffectMinMax>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
+                var effect = boost.Effects.OfType<EffectDice>().FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_RemainingFights);
 
                 if (effect == null)
                     continue;
 
-                effect.ValueMax--;
+                effect.Value--;
 
-                if (effect.ValueMax <= 0)
+                if (effect.Value <= 0)
                     RemoveItem(boost);
                 else
                     RefreshItem(boost);

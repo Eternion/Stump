@@ -28,11 +28,26 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
-        {            
+        {
             m_emblems = Database.Query<EmblemRecord>(EmblemRelator.FetchQuery).ToDictionary(x => x.Id);
-            m_guilds = Database.Query<GuildRecord>(GuildRelator.FetchQuery).ToList().Select(x => new Guild(x, FindGuildMembers(x.Id))).ToDictionary(x => x.Id);
-            m_guildsMembers = m_guilds.Values.SelectMany(x => x.Members).ToDictionary(x => x.Id);
-            m_idProvider = m_guilds.Any() ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max()) : new UniqueIdProvider(1);
+            m_guildsMembers =
+                Database.Fetch<GuildMemberRecord, CharacterRecord, GuildMemberRecord>(new GuildMemberRelator().Map,
+                    GuildMemberRelator.FetchQuery).ToDictionary(x => x.CharacterId, x => new GuildMember(x));
+
+            var membersByGuilds = m_guildsMembers.Values.GroupBy(x => x.Record.GuildId).ToDictionary(x => x.Key);
+            m_guilds =
+                Database.Query<GuildRecord>(GuildRelator.FetchQuery)
+                        .ToList()
+                        .Select(
+                            x =>
+                                new Guild(x,
+                                    membersByGuilds.ContainsKey(x.Id)
+                                        ? membersByGuilds[x.Id]
+                                        : Enumerable.Empty<GuildMember>()))
+                        .ToDictionary(x => x.Id);
+            m_idProvider = m_guilds.Any()
+                ? new UniqueIdProvider(m_guilds.Select(x => x.Value.Id).Max())
+                : new UniqueIdProvider(1);
 
             World.Instance.RegisterSaveableInstance(this);
         }
@@ -50,12 +65,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public bool DoesEmblemExist(GuildEmblem emblem)
         {
             return m_guilds.Any(x => x.Value.Emblem.DoesEmblemMatch(emblem));
-        }
-
-        public GuildMember[] FindGuildMembers(int guildId)
-        {
-            return Database.Fetch<GuildMemberRecord, CharacterRecord, GuildMemberRecord>(new GuildMemberRelator().Map,
-                string.Format(GuildMemberRelator.FetchByGuildId, guildId)).Select(x => new GuildMember(x)).ToArray();
         }
 
         public Guild TryGetGuild(int id)
@@ -144,6 +153,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
+                guild.RemoveGuildMembers();
                 guild.RemoveTaxCollectors();
 
                 m_guilds.Remove(guild.Id);

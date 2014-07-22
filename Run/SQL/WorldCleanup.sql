@@ -65,11 +65,20 @@ SELECT COUNT(*) FROM guild_members WHERE CharacterId NOT IN (SELECT Id FROM char
 */
 DELETE FROM guild_members WHERE CharacterId NOT IN (SELECT Id FROM characters);
 
+-- Cleanup guild_members doesn't have guild record associated
+/*
+SELECT COUNT(*) FROM guild_members WHERE GuildId NOT IN (SELECT Id FROM guilds);
+*/
+DELETE FROM guild_members WHERE GuildId NOT IN (SELECT Id FROM guilds);
+
 -- Cleanup guilds to remove guilds doesn't have any guild members
 /*
 SELECT COUNT(*) FROM guilds WHERE Id NOT IN (SELECT GuildId FROM guild_members);
 */
 DELETE FROM guilds WHERE Id NOT IN (SELECT GuildId FROM guild_members);
+
+-- Find guilds to remove guilds doesn't have any guild members
+SELECT COUNT(*) FROM guilds WHERE Id NOT IN (SELECT GuildId FROM guild_members WHERE RankId = '1');
 
 -- Cleanup world_maps_taxcollector to remove taxCollectors doesn't have guild associated
 /*

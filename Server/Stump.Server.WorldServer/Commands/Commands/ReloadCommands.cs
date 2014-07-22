@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Spells;
@@ -33,7 +34,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {"breeds", BreedManager.Instance},
                 {"experiences", ExperienceManager.Instance},
                 {"langs", TextManager.Instance},
-
+                {"guilds", GuildManager.Instance}
             };
 
         public ReloadCommands()

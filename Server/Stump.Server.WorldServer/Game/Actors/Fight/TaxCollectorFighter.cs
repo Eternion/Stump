@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Stump.Core.Extensions;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
@@ -21,6 +24,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Id = Fight.GetNextContextualId();
             TaxCollectorNpc = taxCollector;
             Look = TaxCollectorNpc.Look.Clone();
+            Items = TaxCollectorNpc.Bag.SelectMany(x => Enumerable.Repeat(x.Template.Id, (int) x.Stack))
+                            .Shuffle()
+                            .ToList();
+            Kamas = TaxCollectorNpc.GatheredKamas;
 
             m_stats = new StatsFields(this);
             m_stats.Initialize(TaxCollectorNpc);
@@ -60,14 +67,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return m_stats; }
         }
 
+        public List<int> Items
+        {
+            get;
+            private set;
+        }
+
+        public int Kamas
+        {
+            get;
+            private set;
+        }
+
         public override string GetMapRunningFighterName()
         {
             return TaxCollectorNpc.Name;
         }
 
-        public override IFightResult GetFightResult()
+        public override IFightResult GetFightResult(FightOutcomeEnum outcome)
         {
-            return new TaxCollectorFightResult(this, GetFighterOutcome(), Loot);
+            return new TaxCollectorFightResult(this, outcome, Loot);
         }
 
         public TaxCollectorFightersInformation GetTaxCollectorFightersInformation()
@@ -92,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new GameFightTaxCollectorInformations(Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
-                Team.Id,
+                (sbyte)Team.Id,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
                 TaxCollectorNpc.FirstNameId,

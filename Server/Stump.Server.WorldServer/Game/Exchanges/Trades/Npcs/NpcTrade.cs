@@ -78,12 +78,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs
             foreach (var tradeItem in FirstTrader.Items)
             {
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
-                    FirstTrader.Character.Inventory.RemoveItem(item, tradeItem.Stack);
+                    FirstTrader.Character.Inventory.RemoveItem(item, (int)tradeItem.Stack);
             }
 
             foreach (var tradeItem in SecondTrader.Items)
             {
-                FirstTrader.Character.Inventory.AddItem(tradeItem.Template, tradeItem.Stack);
+                FirstTrader.Character.Inventory.AddItem(tradeItem.Template, (int)tradeItem.Stack);
             }
 
             InventoryHandler.SendInventoryWeightMessage(FirstTrader.Character.Client);

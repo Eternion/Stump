@@ -117,7 +117,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             private set { m_affectedCells = value; }
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get { return Caster.Fight; }
         }
