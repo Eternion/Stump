@@ -32,8 +32,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         [Variable]
         public static int BaseMP = 5;
         [Variable]
-        public static int BaseHealth = 3000;
-        [Variable]
         public static int BaseResistance = 25;
 
         [Variable]

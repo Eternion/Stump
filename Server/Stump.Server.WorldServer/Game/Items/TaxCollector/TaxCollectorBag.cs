@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Stump.ORM.SubSonic.Query;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
@@ -63,16 +62,16 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
 
         public bool MoveToInventory(TaxCollectorItem item, Character character)
         {
-            return MoveToInventory(item, character, item.Stack);
+            return MoveToInventory(item, character, (int)item.Stack);
         }
 
-        public bool MoveToInventory(TaxCollectorItem item, Character character, uint quantity)
+        public bool MoveToInventory(TaxCollectorItem item, Character character, int quantity)
         {
             if (quantity == 0)
                 return false;
 
             if (quantity > item.Stack)
-                quantity = item.Stack;
+                quantity = (int)item.Stack;
 
             RemoveItem(item, quantity);
             var newItem = ItemManager.Instance.CreatePlayerItem(character, item.Template, quantity,
@@ -97,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             DeleteAll(false);
 
             if (lazySave)
-                WorldServer.Instance.IOTaskPool.AddMessage(() => Save());
+                WorldServer.Instance.IOTaskPool.AddMessage(Save);
             else
                 Save();
         }

@@ -16,6 +16,7 @@
 
 using System.Linq;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -42,6 +43,7 @@ namespace ArkalysPlugin
         private static void OnCreatingCharacter(CharacterRecord record)
         {
             record.KnownZaaps = m_zaaps.ToList();
+            WorldServer.Instance.IOTaskPool.AddMessage(() => CharacterManager.Instance.Database.Update(record));
         }
     }
 }
