@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 {
     public class TimeLine
     {
-        public TimeLine(Fight fight)
+        public TimeLine(IFight fight)
         {
             Fight = fight;
             Fighters = new List<FightActor>();
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             private set;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get;
             private set;
@@ -135,9 +135,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void OrderLine()
         {
-            var redFighters = Fight.RedTeam.GetAllFighters().
+            var redFighters = Fight.ChallengersTeam.GetAllFighters().
                 OrderByDescending(entry => entry.Stats[PlayerFields.Initiative].Total);
-            var blueFighters = Fight.BlueTeam.GetAllFighters().
+            var blueFighters = Fight.DefendersTeam.GetAllFighters().
                 OrderByDescending(entry => entry.Stats[PlayerFields.Initiative].Total);
 
             var redFighterFirst = redFighters.First().Stats[PlayerFields.Initiative].Total >

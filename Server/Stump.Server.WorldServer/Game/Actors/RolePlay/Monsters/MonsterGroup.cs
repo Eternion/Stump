@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Timers;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -39,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             CreationDate = DateTime.Now;
         }
 
-        public Fights.Fight Fight
+        public IFight Fight
         {
             get;
             private set;
@@ -153,12 +154,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 return;
             }
 
+            var reason = character.CanAttack(this);
+            if (reason != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+            {                
+                ContextHandler.SendChallengeFightJoinRefusedMessage(character.Client, character, reason);
+                return;
+            }
+
             var fight = FightManager.Instance.CreatePvMFight(Map);
 
-            fight.RedTeam.AddFighter(character.CreateFighter(fight.RedTeam));
+            fight.ChallengersTeam.AddFighter(character.CreateFighter(fight.ChallengersTeam));
 
-            foreach (var monster in CreateFighters(fight.BlueTeam))
-                fight.BlueTeam.AddFighter(monster);
+            foreach (var monster in CreateFighters(fight.DefendersTeam))
+                fight.DefendersTeam.AddFighter(monster);
 
             Fight = fight;
 
@@ -174,7 +182,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                 EnterFight(this, character);
         }
 
-        public IEnumerable<MonsterFighter> CreateFighters(FightTeam team)
+        public IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team)
         {
             return m_monsters.Select(monster => monster.CreateFighter(team));
         }

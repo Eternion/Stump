@@ -106,7 +106,7 @@
                         <TextBlock Text="Edit" VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
                 </Button>
-                <Button Margin="3,3,0,3" Command="{Binding CopyItemCommand}">
+                <Button Margin="3,3,0,3" Command="{Binding CopyItemCommand}" CommandParameter="{Binding ElementName=ResultListBox, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/WorldEditor;component/Images/Copy_6524.png" Margin="0,0,3,0" Width="16" Height="16" VerticalAlignment="Center"></Image>
                         <TextBlock Text="Copy" VerticalAlignment="Center"></TextBlock>

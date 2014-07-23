@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-        public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
             if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook)
             {
@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-        public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
             if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook)
             {
@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-        public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
             if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook)
             {
@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-        public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
             if (Owner.GuildMember == null)
                 return 0;
@@ -106,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         {
         }
 
-        public override uint UseItem(uint amount = 1, Cell targetCell = null, Character target = null)
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
             if (Owner.GuildMember == null)
                 return 0;

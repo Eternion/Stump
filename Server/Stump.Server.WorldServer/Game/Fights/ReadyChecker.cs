@@ -35,11 +35,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         private readonly List<CharacterFighter> m_fighters;
-        private readonly Fight m_fight;
+        private readonly IFight m_fight;
         private bool m_started;
         private TimedTimerEntry m_timer;
 
-        public ReadyChecker(Fight fight, IEnumerable<CharacterFighter> actors)
+        public ReadyChecker(IFight fight, IEnumerable<CharacterFighter> actors)
         {
             m_fight = fight;
             m_fighters = actors.ToList();
@@ -106,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 NotifyTimeout(m_fighters.ToArray());
         }
 
-        public static ReadyChecker RequestCheck(Fight fight, Action success, Action<CharacterFighter[]> fail)
+        public static ReadyChecker RequestCheck(IFight fight, Action success, Action<CharacterFighter[]> fail)
         {
             var checker = new ReadyChecker(fight, fight.GetAllFighters<CharacterFighter>(entry => !entry.HasLeft()).ToList());
             checker.Success += (chk) => success();

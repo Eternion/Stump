@@ -2,7 +2,8 @@
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Game.Exchanges.Bank;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -21,15 +22,27 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public BankOpenCommand()
         {
             Aliases = new[] {"open"};
-            Description = "Open his own bank";
+            Description = "Open target bank";
             RequiredRole = RoleEnum.GameMaster;
             ParentCommandType = typeof (BankCommands);
+            AddParameter("target", "t", "Bank Owner nam",
+                    converter: ParametersConverter.CharacterConverter, isOptional: true);
         }
 
         public override void Execute(GameTrigger trigger)
         {
-            var dialog = new BankDialog(trigger.Character);
-            dialog.Open();
+            if (trigger.IsArgumentDefined("target"))
+            {
+                var target = trigger.Get<Character>("target");
+                var source = trigger.Character.Client;
+
+                InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
+                InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
+            }
+            else
+            {
+                trigger.ReplyError("Please define a target");
+            }
         }
     }
 }

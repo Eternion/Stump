@@ -126,7 +126,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
             /* Ok */
             client.Send(new AuthenticationTicketAcceptedMessage());
-            SendServerOptionalFeaturesMessage(client, new short[0]);
+            SendServerOptionalFeaturesMessage(client, OptionalFeaturesEnum.PvpArena);
             SendAccountCapabilitiesMessage(client);
 
             client.Send(new TrustStatusMessage(true)); // Restrict actions if account is not trust
@@ -151,9 +151,9 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             client.Send(new StartupActionsListMessage());
         }
 
-        public static void SendServerOptionalFeaturesMessage(IPacketReceiver client, IEnumerable<short> features)
+        public static void SendServerOptionalFeaturesMessage(IPacketReceiver client, params OptionalFeaturesEnum[] features)
         {
-            client.Send(new ServerOptionalFeaturesMessage(features));
+            client.Send(new ServerOptionalFeaturesMessage(features.Select(x => (short)x)));
         }
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)

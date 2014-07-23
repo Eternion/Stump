@@ -31,12 +31,15 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
             var result = client.Character.CanAttack(taxCollector);
 
             if (result != FighterRefusedReasonEnum.FIGHTER_ACCEPTED)
+            {
                 ContextHandler.SendChallengeFightJoinRefusedMessage(client, client.Character, result);
+                return;
+            }
 
             var fight = FightManager.Instance.CreatePvTFight(client.Character.Map);
 
-            fight.RedTeam.AddFighter(client.Character.CreateFighter(fight.RedTeam));
-            fight.BlueTeam.AddFighter(taxCollector.CreateFighter(fight.BlueTeam));
+            fight.ChallengersTeam.AddFighter(client.Character.CreateFighter(fight.ChallengersTeam));
+            fight.DefendersTeam.AddFighter(taxCollector.CreateFighter(fight.DefendersTeam));
 
             fight.StartPlacement();
         }

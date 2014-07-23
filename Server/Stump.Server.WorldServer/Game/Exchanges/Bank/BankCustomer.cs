@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
             {
                 var item = Character.Inventory.TryGetItem(id);
 
-                return item != null && Character.Bank.StoreItem(item, (uint)quantity);
+                return item != null && Character.Bank.StoreItem(item, quantity);
             }
 
             if (quantity >= 0)
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
 
             var deleteItem = Character.Bank.TryGetItem(id);
 
-            return Character.Bank.TakeItemBack(deleteItem, (uint)-quantity);
+            return Character.Bank.TakeItemBack(deleteItem, -quantity);
         }
 
         public override bool SetKamas(int amount)

@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
 {
-    public partial class ChatHandler : WorldHandlerContainer
+    public partial class ChatHandler
     {
         [WorldHandler(ChatSmileyRequestMessage.Id)]
         public static void HandleChatSmileyRequestMessage(WorldClient client, ChatSmileyRequestMessage message)
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             client.Send(new ChatSmileyMessage(
                             character.Id,
                             smileyId,
-                            (int) character.Account.Id));
+                            character.Account.Id));
         }
 
         public static void SendChatSmileyMessage(IPacketReceiver client, ContextActor entity, sbyte smileyId)

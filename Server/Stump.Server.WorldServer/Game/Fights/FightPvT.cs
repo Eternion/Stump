@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights
     /// <summary>
     /// Players versus Tax Collector
     /// </summary>
-    public class FightPvT : Fight
+    public class FightPvT : Fight<FightTaxCollectorDefenderTeam, FightTaxCollectorAttackersTeam>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -32,8 +32,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly List<Character> m_defendersQueue = new List<Character>();
         private readonly Dictionary<FightActor, Map> m_defendersMaps = new Dictionary<FightActor, Map>();
 
-        public FightPvT(int id, Map fightMap, FightTaxCollectorDefenderTeam blueTeam,  FightTaxCollectorAttackersTeam redTeam)
-            : base(id, fightMap, blueTeam, redTeam)
+        public FightPvT(int id, Map fightMap, FightTaxCollectorDefenderTeam defendersTeam,  FightTaxCollectorAttackersTeam challengersTeam)
+            : base(id, fightMap, defendersTeam, challengersTeam)
         {
         }
 
@@ -41,22 +41,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get;
             private set;
-        }
-
-        public FightTaxCollectorAttackersTeam AttackersTeam
-        {
-            get
-            {
-                return (FightTaxCollectorAttackersTeam) RedTeam;
-            }
-        }
-
-        public FightTaxCollectorDefenderTeam DefendersTeam
-        {
-            get
-            {
-                return (FightTaxCollectorDefenderTeam) BlueTeam;
-            }
         }
 
         public ReadOnlyCollection<Character> DefendersQueue
@@ -115,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 defender.Area.ExecuteInContext(() =>
                 {
                     var lastMap = defender.Map;
-                    defender1.Teleport(Map, defender1.Cell);
+                    defender1.Teleport(Map, Map.Cells[defender1.Cell.Id]);
                     defender1.ResetDefender();
                     Map.Area.ExecuteInContext(() =>
                     {
@@ -194,7 +178,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public override bool CanChangePosition(FightActor fighter, Cell cell)
         {
             return base.CanChangePosition(fighter, cell) && 
-                ((IsAttackersPlacementPhase && fighter.Team == AttackersTeam) || (IsDefendersPlacementPhase && fighter.Team == DefendersTeam));
+                ((IsAttackersPlacementPhase && fighter.Team == ChallengersTeam) || (IsDefendersPlacementPhase && fighter.Team == DefendersTeam));
         }
 
         protected override void OnFighterAdded(FightTeam team, FightActor actor)
@@ -214,11 +198,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (State == FightState.Placement)
             {
-                if (team == AttackersTeam)
+                if (team == ChallengersTeam)
                 {
                     TaxCollectorHandler.SendGuildFightPlayersEnemiesListMessage(
                         TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc,
-                        AttackersTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character));
+                        ChallengersTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character));
                 }
             }
 
@@ -235,8 +219,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void DeterminsWinners()
         {
-            Winners = TaxCollector.IsDead() ? (FightTeam)AttackersTeam : DefendersTeam;
-            Losers = TaxCollector.IsDead() ? (FightTeam)DefendersTeam : AttackersTeam;
+            Winners = TaxCollector.IsDead() ? (FightTeam)ChallengersTeam : DefendersTeam;
+            Losers = TaxCollector.IsDead() ? (FightTeam)DefendersTeam : ChallengersTeam;
             Draw = false;
 
             OnWinnersDetermined(Winners, Losers, Draw);
@@ -246,7 +230,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Placement)
             {
-                if (team == AttackersTeam && actor is CharacterFighter)
+                if (team == ChallengersTeam && actor is CharacterFighter)
                 {
                     TaxCollectorHandler.SendGuildFightPlayersEnemyRemoveMessage(
                         TaxCollector.TaxCollectorNpc.Guild.Clients, TaxCollector.TaxCollectorNpc, (actor as CharacterFighter).Character);
@@ -281,16 +265,16 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var results = new List<IFightResult>();
 
-            var looters = AttackersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
+            var looters = ChallengersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
             
             results.AddRange(looters);
             results.AddRange(DefendersTeam.Fighters.Select(entry => entry.GetFightResult()));
 
-            if (Winners != AttackersTeam)
+            if (Winners != ChallengersTeam)
                 return results;
 
-            var teamPP = AttackersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-            var kamas = TaxCollector.TaxCollectorNpc.GatheredKamas;
+            var teamPP = ChallengersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            var kamas = TaxCollector.Kamas;
 
             foreach (var looter in looters)
             {
@@ -298,17 +282,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             var i = 0;
+
             // dispatch loots
-            var items =
-                TaxCollector.TaxCollectorNpc.Bag.SelectMany(x => Enumerable.Repeat(x.Template.Id, (int) x.Stack))
-                            .Shuffle()
-                            .ToList();
             foreach (var looter in looters)
             {
-                var count = (int) Math.Ceiling(items.Count*((double) looter.Prospecting/teamPP));
-                for (; i < count && i < items.Count; i++)
+                var count = (int) Math.Ceiling(TaxCollector.Items.Count*((double) looter.Prospecting/teamPP));
+                for (; i < count && i < TaxCollector.Items.Count; i++)
                 {
-                    looter.Loot.AddItem(items[i]);
+                    looter.Loot.AddItem(TaxCollector.Items[i]);
                 }
             }
 
@@ -320,7 +301,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var timer = (int) GetPlacementTimeLeft(fighter).TotalMilliseconds;
             ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), 
-                (fighter.Team == AttackersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase), false,
+                (fighter.Team == ChallengersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase), false,
                 IsStarted, timer, FightType);
         }
 
@@ -349,13 +330,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public TimeSpan GetPlacementTimeLeft(FightActor fighter)
         {
-            if (State == FightState.NotStarted && fighter.Team == AttackersTeam)
+            if (State == FightState.NotStarted && fighter.Team == ChallengersTeam)
                 return TimeSpan.FromMilliseconds(PvTAttackersPlacementPhaseTime);
 
             if (fighter.Team == DefendersTeam && m_placementTimer == null)
                 return TimeSpan.FromMilliseconds(PvTDefendersPlacementPhaseTime);
 
-            if ((fighter.Team == AttackersTeam && IsAttackersPlacementPhase) ||
+            if ((fighter.Team == ChallengersTeam && IsAttackersPlacementPhase) ||
                 (fighter.Team == DefendersTeam && IsDefendersPlacementPhase))
                 return m_placementTimer.NextTick - DateTime.Now;
 
