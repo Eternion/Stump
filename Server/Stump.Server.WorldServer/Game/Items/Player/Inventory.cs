@@ -724,7 +724,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (!item.OnEquipItem(wasEquiped))
                 return;
-
+            
             if (item.Template.ItemSet != null && !(wasEquiped && isEquiped))
             {
                 var count = CountItemSetEquiped(item.Template.ItemSet);

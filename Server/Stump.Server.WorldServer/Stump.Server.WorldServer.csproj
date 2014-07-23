@@ -414,6 +414,7 @@
     <Compile Include="Game\Items\Player\Bank.cs" />
     <Compile Include="Game\Items\Player\BankItem.cs" />
     <Compile Include="Database\Items\BankItemRecord.cs" />
+    <Compile Include="Game\Items\Player\Custom\DofusItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />

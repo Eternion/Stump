@@ -239,19 +239,22 @@ namespace Stump.Server.WorldServer.Game.Items
                             .CreateDelegate<PlayerItemConstructor>());
                 }
 
-                var typeAttr = type.GetCustomAttribute<ItemTypeAttribute>();
+                var typeAttrs = type.GetCustomAttributes<ItemTypeAttribute>();
 
-                if (typeAttr != null)
+                if (typeAttrs != null)
                 {
-                    if (m_itemCtorByTypes.ContainsKey(typeAttr.ItemType))
+                    foreach (var typeAttr in typeAttrs)
                     {
-                        logger.Error("Item Constructor with Type {0} defined twice or more !", typeAttr.ItemType);
-                        continue;
-                    }
+                        if (m_itemCtorByTypes.ContainsKey(typeAttr.ItemType))
+                        {
+                            logger.Error("Item Constructor with Type {0} defined twice or more !", typeAttr.ItemType);
+                            continue;
+                        }
 
-                    m_itemCtorByTypes.Add(typeAttr.ItemType,
-                        type.GetConstructor(new[] { typeof (Character), typeof (PlayerItemRecord) })
-                            .CreateDelegate<PlayerItemConstructor>());
+                        m_itemCtorByTypes.Add(typeAttr.ItemType,
+                            type.GetConstructor(new[] { typeof(Character), typeof(PlayerItemRecord) })
+                                .CreateDelegate<PlayerItemConstructor>());
+                    }
                 }
 
                 var effectAttr = type.GetCustomAttribute<ItemHasEffectAttribute>();
