@@ -141,8 +141,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
                     var fight = Singleton<FightManager>.Instance.CreateAgressionFight(target.Map, 
                         client.Character.AlignmentSide, target.AlignmentSide);
 
-                    fight.RedTeam.AddFighter(client.Character.CreateFighter(fight.RedTeam));
-                    fight.BlueTeam.AddFighter(target.CreateFighter(fight.BlueTeam));
+                    fight.ChallengersTeam.AddFighter(client.Character.CreateFighter(fight.ChallengersTeam));
+                    fight.DefendersTeam.AddFighter(target.CreateFighter(fight.DefendersTeam));
 
                     fight.StartPlacement();
                 }
@@ -210,10 +210,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
             }
 
             FightTeam team;
-            if (fight.RedTeam.Leader.Id == message.fighterId)
-                team = fight.RedTeam;
-            else if (fight.BlueTeam.Leader.Id == message.fighterId)
-                team = fight.BlueTeam;
+            if (fight.ChallengersTeam.Leader.Id == message.fighterId)
+                team = fight.ChallengersTeam;
+            else if (fight.DefendersTeam.Leader.Id == message.fighterId)
+                team = fight.DefendersTeam;
             else
             {
                 SendChallengeFightJoinRefusedMessage(client, client.Character, FighterRefusedReasonEnum.WRONG_MAP);
@@ -263,22 +263,22 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightStartingMessage((sbyte) fightTypeEnum));
         }
 
-        public static void SendGameRolePlayShowChallengeMessage(IPacketReceiver client, Fight fight)
+        public static void SendGameRolePlayShowChallengeMessage(IPacketReceiver client, IFight fight)
         {
             client.Send(new GameRolePlayShowChallengeMessage(fight.GetFightCommonInformations()));
         }
 
-        public static void SendGameRolePlayRemoveChallengeMessage(IPacketReceiver client, Fight fight)
+        public static void SendGameRolePlayRemoveChallengeMessage(IPacketReceiver client, IFight fight)
         {
             client.Send(new GameRolePlayRemoveChallengeMessage(fight.Id));
         }
 
-        public static void SendGameFightEndMessage(IPacketReceiver client, Fight fight)
+        public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight)
         {
             client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, new FightResultListEntry[0]));
         }
 
-        public static void SendGameFightEndMessage(IPacketReceiver client, Fight fight, IEnumerable<FightResultListEntry> results)
+        public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight, IEnumerable<FightResultListEntry> results)
         {
             client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, results));
         }
@@ -291,7 +291,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                  timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
         }
 
-        public static void SendGameFightSpectateMessage(IPacketReceiver client, Fight fight)
+        public static void SendGameFightSpectateMessage(IPacketReceiver client, IFight fight)
         {
             client.Send(new GameFightSpectateMessage(
                 fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
@@ -316,7 +316,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
 
-        public static void SendGameFightSynchronizeMessage(WorldClient client, Fight fight)
+        public static void SendGameFightSynchronizeMessage(WorldClient client, IFight fight)
         {
             client.Send(
                 new GameFightSynchronizeMessage(
@@ -328,7 +328,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightNewRoundMessage(roundNumber));
         }
 
-        public static void SendGameFightTurnListMessage(IPacketReceiver client, Fight fight)
+        public static void SendGameFightTurnListMessage(IPacketReceiver client, IFight fight)
         {
             client.Send(new GameFightTurnListMessage(fight.GetAliveFightersIds(), fight.GetDeadFightersIds()));
         }
@@ -348,7 +348,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightTurnEndMessage(fighter.Id));
         }
 
-        public static void SendGameFightUpdateTeamMessage(IPacketReceiver client, Fight fight, FightTeam team)
+        public static void SendGameFightUpdateTeamMessage(IPacketReceiver client, IFight fight, FightTeam team)
         {
             client.Send(new GameFightUpdateTeamMessage(
                             (short) fight.Id,
@@ -367,7 +367,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightRemoveTeamMemberMessage(IPacketReceiver client, FightActor fighter)
         {
-            client.Send(new GameFightRemoveTeamMemberMessage((short) fighter.Fight.Id, fighter.Team.Id, fighter.Id));
+            client.Send(new GameFightRemoveTeamMemberMessage((short) fighter.Fight.Id, (sbyte)fighter.Team.Id, fighter.Id));
         }
 
         public static void SendGameFightLeaveMessage(IPacketReceiver client, FightActor fighter)
@@ -375,17 +375,17 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightLeaveMessage(fighter.Id));
         }
 
-        public static void SendGameFightPlacementPossiblePositionsMessage(IPacketReceiver client, Fight fight, sbyte team)
+        public static void SendGameFightPlacementPossiblePositionsMessage(IPacketReceiver client, IFight fight, sbyte team)
         {
             client.Send(new GameFightPlacementPossiblePositionsMessage(
-                            fight.RedTeam.PlacementCells.Select(entry => entry.Id),
-                            fight.BlueTeam.PlacementCells.Select(entry => entry.Id),
+                            fight.ChallengersTeam.PlacementCells.Select(entry => entry.Id),
+                            fight.DefendersTeam.PlacementCells.Select(entry => entry.Id),
                             team));
         }
 
         public static void SendGameFightOptionStateUpdateMessage(IPacketReceiver client, FightTeam team, FightOptionsEnum option, bool state)
         {
-            client.Send(new GameFightOptionStateUpdateMessage((short) team.Fight.Id, team.Id, (sbyte)option, state));
+            client.Send(new GameFightOptionStateUpdateMessage((short) team.Fight.Id, (sbyte)team.Id, (sbyte)option, state));
         }
 
         public static void SendGameActionFightSpellCastMessage(IPacketReceiver client, ActionsEnum actionId, FightActor caster, FightActor target,

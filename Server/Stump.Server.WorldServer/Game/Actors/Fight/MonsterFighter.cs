@@ -141,7 +141,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
-                Team.Id,
+                (sbyte)Team.Id,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
                 (short)Monster.Template.Id,

@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
         #endregion
 
-        public virtual bool BuyItem(int itemId, uint amount)
+        public virtual bool BuyItem(int itemId, int amount)
         {
             var itemToSell = Items.FirstOrDefault(entry => entry.Item.Id == itemId);
 
@@ -103,9 +103,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return false;
             }
 
-            var finalPrice = (uint) (itemToSell.Price*amount);
+            var finalPrice = (int) (itemToSell.Price*amount);
 
-            if (!CanBuy(itemToSell, amount))
+            if (amount <= 0 || !CanBuy(itemToSell, amount))
             {
                 Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.BUY_ERROR));
                 return false;
@@ -120,10 +120,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             if (Token != null)
             {
                 Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
+
+                Character.Area.AddMessage(() => Character.Inventory.Save());
             }
             else
             {
-                Character.Inventory.SubKamas((int) finalPrice);
+                Character.Inventory.SubKamas(finalPrice);
                 BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                         46, finalPrice);
             }
@@ -132,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             return true;
         }
 
-        public bool CanBuy(NpcItem item, uint amount)
+        public bool CanBuy(NpcItem item, int amount)
         {
             if (Token != null)
             {
@@ -151,9 +153,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             return true;
         }
 
-        public bool SellItem(int guid, uint amount)
+        public bool SellItem(int guid, int amount)
         {
-            if (!CanSell)
+            if (!CanSell || amount <= 0)
             {
                 Character.Client.Send(new ExchangeErrorMessage((int) ExchangeErrorEnum.SELL_ERROR));
                 return false;
@@ -189,7 +191,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             if (Token != null)
             {
-                Character.Inventory.AddItem(Token, (uint) price);
+                Character.Inventory.AddItem(Token, (int) price);
             }
             else
             {

@@ -177,22 +177,22 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var fight = trigger.Get<Fight>("fight");
+            var fight = trigger.Get<IFight>("fight");
 
             trigger.ReplyBold("Fight {0}", fight.Id);
             trigger.ReplyBold("State : {0} Started Since : {1}", fight.State,
                               fight.IsStarted ? (DateTime.Now - fight.StartTime).ToString(@"m\mss\s") : "not");
-            trigger.ReplyBold("Blue team ({0}) :", fight.BlueTeam.Fighters.Count);
+            trigger.ReplyBold("Blue team ({0}) :", fight.DefendersTeam.Fighters.Count);
 
-            foreach (var fighter in fight.BlueTeam.Fighters)
+            foreach (var fighter in fight.DefendersTeam.Fighters)
             {
                 trigger.ReplyBold(" - {0} : {1} Level : {2}{3}", fighter.GetType().Name, fighter, fighter.Level,
                     fighter.IsDead() ? " DEAD" : string.Empty);
             }
 
-            trigger.ReplyBold("Red team ({0}) :", fight.RedTeam.Fighters.Count);
+            trigger.ReplyBold("Red team ({0}) :", fight.ChallengersTeam.Fighters.Count);
 
-            foreach (var fighter in fight.RedTeam.Fighters)
+            foreach (var fighter in fight.ChallengersTeam.Fighters)
             {
                 trigger.ReplyBold(" - {0} : {1} Level : {2}{3}", fighter.GetType().Name, fighter, fighter.Level,
                     fighter.IsDead() ? " DEAD" : string.Empty);

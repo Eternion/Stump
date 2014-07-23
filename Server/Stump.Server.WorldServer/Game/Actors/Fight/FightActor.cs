@@ -257,7 +257,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected FightActor(FightTeam team)
         {
             Team = team;
-            OpposedTeam = Fight.BlueTeam == Team ? Fight.RedTeam : Fight.BlueTeam;
             VisibleState = VisibleStateEnum.VISIBLE;
             Loot = new FightLoot();
             SpellHistory = new SpellHistory(this);
@@ -267,7 +266,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Properties
 
-        public Fights.Fight Fight
+        public IFight Fight
         {
             get { return Team.Fight; }
         }
@@ -280,8 +279,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightTeam OpposedTeam
         {
-            get;
-            private set;
+            get { return Team.OpposedTeam; }
         }
 
         public override ICharacterContainer CharacterContainer
@@ -1524,14 +1522,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return 0;
         }
-
-        public virtual IFightResult GetFightResult()
+        
+        public virtual IFightResult GetFightResult(FightOutcomeEnum outcome)
         {
-            return new FightResult(this, GetFighterOutcome(), Loot);
+            return new FightResult(this, outcome, Loot);
         }
 
-        protected FightOutcomeEnum GetFighterOutcome()
+        public IFightResult GetFightResult()
         {
+            return GetFightResult(GetFighterOutcome());
+        }
+
+        public FightOutcomeEnum GetFighterOutcome()
+        {
+            if (HasLeft())
+                return FightOutcomeEnum.RESULT_LOST;
+
             var teamDead = Team.AreAllDead();
             var opposedTeamDead = OpposedTeam.AreAllDead();
 
@@ -1541,7 +1547,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (teamDead && !opposedTeamDead)
                 return FightOutcomeEnum.RESULT_LOST;
 
-            return FightOutcomeEnum.RESULT_DRAW;
+            return FightOutcomeEnum.RESULT_VICTORY;
         }
 
         #endregion
@@ -1695,7 +1701,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
-                Team.Id,
+                (sbyte)Team.Id,
                 IsAlive(),
                 GetGameFightMinimalStats(client));
         }

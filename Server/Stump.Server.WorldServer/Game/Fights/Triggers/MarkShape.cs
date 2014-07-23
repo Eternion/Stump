@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         private readonly Zone m_zone;
         private readonly Cell[] m_cells;
 
-        public MarkShape(Fight fight, Cell cell, GameActionMarkCellsTypeEnum shape, byte size, Color color)
+        public MarkShape(IFight fight, Cell cell, GameActionMarkCellsTypeEnum shape, byte size, Color color)
         {
             Fight = fight;
             Cell = cell;
@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             m_cells = m_zone.GetCells(Cell, fight.Map);
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get;
             private set;

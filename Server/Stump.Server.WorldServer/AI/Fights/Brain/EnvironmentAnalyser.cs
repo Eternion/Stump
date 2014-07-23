@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             private set;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get { return Fighter.Fight; }
         }

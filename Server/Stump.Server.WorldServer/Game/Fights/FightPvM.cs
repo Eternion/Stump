@@ -11,12 +11,12 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightPvM : Fight
+    public class FightPvM : Fight<FightMonsterTeam, FightPlayerTeam>
     {
         private bool m_ageBonusDefined;
 
-        public FightPvM(int id, Map fightMap, FightTeam blueTeam, FightTeam redTeam)
-            : base(id, fightMap, blueTeam, redTeam)
+        public FightPvM(int id, Map fightMap, FightMonsterTeam defendersTeam, FightPlayerTeam challengersTeam)
+            : base(id, fightMap, defendersTeam, challengersTeam)
         {
         }
 
@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             foreach (var team in m_teams)
             {
-                IEnumerable<FightActor> droppers = ( team == RedTeam ? BlueTeam : RedTeam ).GetAllFighters(entry => entry.IsDead()).ToList();
+                IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead()).ToList();
                 var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
                 var teamPP = team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
@@ -91,6 +91,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return results;
         }
 
+
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
             ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, true, !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
@@ -106,7 +107,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return false;
         }
 
-        public int GetPlacementTimeLeft()
+        public override int GetPlacementTimeLeft()
         {
             var timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
 

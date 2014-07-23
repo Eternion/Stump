@@ -121,7 +121,7 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcGuildsDialog : NpcDialog
     {
-        private readonly uint m_requieredOrbs;
+        private readonly int m_requieredOrbs;
 
         public NpcGuildsDialog(Character character, Npc npc) : base(character, npc)
         {

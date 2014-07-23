@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             group.Fight.WinnersDetermined += OnWinnersDetermined;
         }
 
-        private void OnWinnersDetermined(Fight fight, FightTeam winners, FightTeam losers, bool draw)
+        private void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
         {
             fight.WinnersDetermined -= OnWinnersDetermined;
 
