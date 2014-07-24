@@ -70,12 +70,12 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public void ShowPopups()
         {
-            foreach (var popup in DefendersTeam.Members.Select(character => new ArenaPopup(character)))
+            foreach (var popup in DefendersTeam.Members.ToArray().Select(character => new ArenaPopup(character)))
             {
                 popup.Display();
             }
 
-            foreach (var popup in ChallengersTeam.Members.Select(character => new ArenaPopup(character)))
+            foreach (var popup in ChallengersTeam.Members.ToArray().Select(character => new ArenaPopup(character)))
             {
                 popup.Display();
             }
