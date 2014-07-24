@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
                 var item = FirstTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
 
                 FirstTrader.Character.Inventory.ChangeItemOwner(
-                    SecondTrader.Character, item, tradeItem.Stack);
+                    SecondTrader.Character, item, (int)tradeItem.Stack);
             }
 
             foreach (var tradeItem in SecondTrader.Items)
@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades.Players
                 var item = SecondTrader.Character.Inventory.TryGetItem(tradeItem.Guid);
 
                 SecondTrader.Character.Inventory.ChangeItemOwner(
-                    FirstTrader.Character, item, tradeItem.Stack);
+                    FirstTrader.Character, item, (int)tradeItem.Stack);
             }
 
             InventoryHandler.SendInventoryWeightMessage(FirstTrader.Character.Client);

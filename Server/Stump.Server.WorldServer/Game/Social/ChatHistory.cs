@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Social
     {
         [Variable] public static int MaxChatEntries = 50;
 
-        private List<ChatEntry> m_entries = new List<ChatEntry>();
+        private readonly List<ChatEntry> m_entries = new List<ChatEntry>();
 
         public ChatHistory(Character character)
         {
@@ -80,15 +80,13 @@ namespace Stump.Server.WorldServer.Game.Social
                 }
             }
 
-            if (m_entries.Count >= ChatManager.AntiFloodAllowedMessages &&
-                m_entries.Take(ChatManager.AntiFloodAllowedMessages)
-                                  .All(x => ( DateTime.Now - x.Date ).TotalSeconds < ChatManager.AntiFloodAllowedMessagesResetTime))
-            {
-                Character.Mute(TimeSpan.FromSeconds(ChatManager.AntiFloodMuteTime));
-                return false;
-            }
+            if (m_entries.Count < ChatManager.AntiFloodAllowedMessages ||
+                !m_entries.Take(ChatManager.AntiFloodAllowedMessages)
+                    .All(x => (DateTime.Now - x.Date).TotalSeconds < ChatManager.AntiFloodAllowedMessagesResetTime))
+                return true;
 
-            return true;
+            Character.Mute(TimeSpan.FromSeconds(ChatManager.AntiFloodMuteTime));
+            return false;
         }
     }
 }

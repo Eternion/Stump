@@ -59,22 +59,24 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public bool MoveToInventory(MerchantItem item)
         {
-            return MoveToInventory(item, item.Stack);
+            return MoveToInventory(item, (int)item.Stack);
         }
 
-        public bool MoveToInventory(MerchantItem item, uint quantity)
+        public bool MoveToInventory(MerchantItem item, int quantity)
         {
-            if (quantity == 0)
+            if (quantity <= 0)
                 return false;
 
             if (quantity > item.Stack)
-                quantity = item.Stack;
+                quantity = (int)item.Stack;
 
             RemoveItem(item, quantity);
-            BasePlayerItem newItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, quantity,
+            var newItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, quantity,
                                                                        item.Effects);
 
             Owner.Inventory.AddItem(newItem);
+
+            Save();
 
             return true;
         }

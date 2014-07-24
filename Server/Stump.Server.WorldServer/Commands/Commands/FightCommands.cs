@@ -97,8 +97,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var fight in map.Fights)
             {
-                trigger.ReplyBold(" - {0} (red:{1}, blue{2}){3}", fight.Id, fight.BlueTeam.Fighters.Count,
-                    fight.RedTeam.Fighters.Count, fight.State == FightState.Placement ? " Placement phase" : string.Empty);
+                trigger.ReplyBold(" - {0} (red:{1}, blue{2}){3}", fight.Id, fight.DefendersTeam.Fighters.Count,
+                    fight.ChallengersTeam.Fighters.Count, fight.State == FightState.Placement ? " Placement phase" : string.Empty);
             }
         }
     }
@@ -120,7 +120,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         public override void Execute(TriggerBase trigger)
         {
             var target = GetTarget(trigger);
-            var fight = trigger.Get<Fight>("fight");
+            var fight = trigger.Get<IFight>("fight");
             var teamString = trigger.Get<string>("team");
 
             if (!teamString.Equals("blue", StringComparison.InvariantCultureIgnoreCase) &&
@@ -143,7 +143,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 target.Fighter.LeaveFight();
             }
 
-            var team = joinRed ? fight.RedTeam : fight.BlueTeam;
+            var team = joinRed ? fight.ChallengersTeam : fight.DefendersTeam;
             var fighter = target.CreateFighter(team);
 
             if (fighter == null)
@@ -195,9 +195,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Fight fight;
+            IFight fight;
             if (trigger.IsArgumentDefined("fight"))
-                fight = trigger.Get<Fight>("fight");
+                fight = trigger.Get<IFight>("fight");
             else if ((trigger is GameTrigger) && (trigger as GameTrigger).Character.IsInFight())
                 fight = (trigger as GameTrigger).Character.Fight;
             else
@@ -226,9 +226,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            Fight fight;
+            IFight fight;
             if (trigger.IsArgumentDefined("fight"))
-                fight = trigger.Get<Fight>("fight");
+                fight = trigger.Get<IFight>("fight");
             else if (( trigger is GameTrigger ) && ( trigger as GameTrigger ).Character.IsInFight())
                 fight = ( trigger as GameTrigger ).Character.Fight;
             else

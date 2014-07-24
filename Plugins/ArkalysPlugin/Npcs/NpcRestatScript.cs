@@ -97,11 +97,11 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcRestatDialog : NpcDialog
     {
-        private readonly uint m_requieredOrbs;
+        private readonly int m_requieredOrbs;
         public NpcRestatDialog(Character character, Npc npc)
             : base(character, npc)
         {
-            m_requieredOrbs = (uint)Math.Floor(Character.Level*NpcRestatScript.OrbFactor);
+            m_requieredOrbs = (int)Math.Floor(Character.Level*NpcRestatScript.OrbFactor);
             CurrentMessage = NpcRestatScript.Message;
         }
 

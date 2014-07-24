@@ -49,8 +49,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public override FightResultListEntry GetFightResultListEntry()
         {
-            var additionalDatas =
-                new List<DofusProtocol.Types.FightResultAdditionalData>();
+            var additionalDatas = new List<DofusProtocol.Types.FightResultAdditionalData>();
 
             if (ExperienceData != null)
                 additionalDatas.Add(ExperienceData.GetFightResultAdditionalData());
@@ -78,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                     }
                 else
                 {
-                    var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, drop.Amount);
+                    var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, (int)drop.Amount);
                     Character.Inventory.AddItem(item);
                 }
             }

@@ -201,6 +201,27 @@ namespace WorldEditor.Search
 
         #endregion
 
+
+        #region CopyItemCommand
+
+        private DelegateCommand m_copyItemCommand;
+
+        public DelegateCommand CopyItemCommand
+        {
+            get { return m_copyItemCommand ?? (m_copyItemCommand = new DelegateCommand(OnCopyItem, CanCopyItem)); }
+        }
+
+        protected virtual bool CanCopyItem(object parameter)
+        {
+            return true;
+        }
+
+        protected virtual void OnCopyItem(object parameter)
+        {
+        }
+
+        #endregion
+
         protected void LoadAvailableCriterias()
         {
             m_searchProperties.Clear();

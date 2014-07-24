@@ -5,12 +5,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 {
     public class FigthCellsInformationProvider : ICellsInformationProvider
     {
-        public FigthCellsInformationProvider(Fight fight)
+        public FigthCellsInformationProvider(IFight fight)
         {
             Fight = fight;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get;
             private set;

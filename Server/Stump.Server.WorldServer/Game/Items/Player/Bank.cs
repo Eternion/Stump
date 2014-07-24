@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -48,22 +49,22 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             protected set { Owner.Client.WorldAccount.BankKamas = value; }
         }
 
-        public bool StoreItem(BasePlayerItem item, uint amount)
+        public bool StoreItem(BasePlayerItem item, int amount)
         {
-            if (!Owner.Inventory.HasItem(item))
+            if (!Owner.Inventory.HasItem(item) || amount <= 0)
                 return false;
 
             if (item.IsLinkedToPlayer())
                 return false;
 
             if (amount > item.Stack)
-                amount = item.Stack;
+                amount = (int)item.Stack;
 
             var bankItem = TryGetItem(item.Template, item.Effects);
 
             if (bankItem != null)
             {
-                bankItem.Stack += amount;
+                bankItem.Stack += (uint)amount;
             }
             else
             {
@@ -91,8 +92,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return true;
         }
 
-        public bool TakeItemBack(BankItem item, uint amount)
+        public bool TakeItemBack(BankItem item, int amount)
         {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
             if (item == null)
                 return false;
 
@@ -100,14 +104,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 return false;
 
             if (amount > item.Stack)
-                amount = item.Stack;
+                amount = (int)item.Stack;
 
             var playerItem = Owner.Inventory.TryGetItem(item.Template, item.Effects,
                 CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
             if (playerItem != null)
             {
-                playerItem.Stack += amount;
+                playerItem.Stack += (uint)amount;
                 Owner.Inventory.RefreshItem(playerItem);
             }
             else

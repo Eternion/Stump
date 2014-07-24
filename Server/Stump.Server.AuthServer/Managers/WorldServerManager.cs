@@ -279,16 +279,13 @@ namespace Stump.Server.AuthServer.Managers
         {
             var server = GetServerById(world.Id);
 
-            if (server != null && server.Connected)
-            {
-                server.SetOffline();
-                Database.Update(server);
+            if (server == null || !server.Connected) return;
+            server.SetOffline();
+            Database.Update(server);
 
-                OnServerRemoved(m_realmlist[world.Id]);
+            OnServerRemoved(m_realmlist[world.Id]);
 
-                logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
-            }
-
+            logger.Info("Unregistered \"{0}\" <Id : {1}> <{2}>", world.Name, world.Id, world.Address);
         }
     }
 }

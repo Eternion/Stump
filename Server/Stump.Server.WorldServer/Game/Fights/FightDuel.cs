@@ -10,10 +10,10 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightDuel : Fight
+    public class FightDuel : Fight<FightPlayerTeam, FightPlayerTeam>
     {
-        public FightDuel(int id, Map fightMap, FightTeam blueTeam, FightTeam redTeam)
-            : base(id, fightMap, blueTeam, redTeam)
+        public FightDuel(int id, Map fightMap, FightPlayerTeam defendersTeam, FightPlayerTeam challengersTeam)
+            : base(id, fightMap, defendersTeam, challengersTeam)
         {
         }
 
@@ -29,6 +29,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_placementTimer.Dispose();
 
             base.StartFighting();
+        }
+
+        public override bool IsDeathTemporarily
+        {
+            get { return true; }
         }
 
         public override FightTypeEnum FightType

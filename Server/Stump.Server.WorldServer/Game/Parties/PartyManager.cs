@@ -1,5 +1,7 @@
+using System;
 using Stump.Core.Pool;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Arena;
 
 namespace Stump.Server.WorldServer.Game.Parties
 {
@@ -7,13 +9,35 @@ namespace Stump.Server.WorldServer.Game.Parties
     {
         private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
 
-        public Party Create(Character leader)
+        public Party CreateClassical()
         {
-            var group = new Party(m_idProvider.Pop(), leader);
+            var group = new Party(m_idProvider.Pop());
 
             AddEntity(group.Id, group);
 
             return group;
+        }
+
+        public ArenaParty CreateArenaParty()
+        {
+            var group = new ArenaParty(m_idProvider.Pop());
+
+            AddEntity(group.Id, group);
+
+            return group;
+        }
+
+        public Party Create(PartyTypeEnum type)
+        {
+            switch(type)
+            {
+                case PartyTypeEnum.PARTY_TYPE_CLASSICAL:
+                    return CreateClassical();
+                case PartyTypeEnum.PARTY_TYPE_ARENA:
+                    return CreateArenaParty();
+                default:
+                    throw new NotImplementedException(string.Format("Party of type {0} not supported", type));
+            }
         }
 
         public void Remove(Party party)

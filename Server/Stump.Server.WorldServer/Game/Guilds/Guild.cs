@@ -223,7 +223,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public int TaxCollectorHealth
         {
-            get { return TaxCollectorNpc.BaseHealth + 20*Level; }
+            get { return 100*Level; }
+        }
+
+        public int TaxCollectorResistance
+        {
+            get { return Level > 50 ? 50 : Level; }
         }
 
         public int TaxCollectorDamageBonuses
@@ -310,11 +315,25 @@ namespace Stump.Server.WorldServer.Game.Guilds
             TaxCollectorHandler.SendTaxCollectorMovementRemoveMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
+        public void RemoveGuildMember(GuildMember member)
+        {
+            m_members.Remove(member);
+            GuildManager.Instance.DeleteGuildMember(member);
+        }
+
         public void RemoveTaxCollectors()
         {
             foreach (var taxCollector in m_taxCollectors.ToArray())
             {
                 RemoveTaxCollector(taxCollector);
+            }
+        }
+
+        public void RemoveGuildMembers()
+        {
+            foreach (var member in m_members.ToArray())
+            {
+                RemoveGuildMember(member);
             }
         }
 

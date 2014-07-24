@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             private set;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get { return Caster.Fight; }
         }

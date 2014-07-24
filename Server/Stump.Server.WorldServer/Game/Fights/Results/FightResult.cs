@@ -20,11 +20,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             protected set;
         }
 
+
         #region IFightResult Members
 
         public bool Alive
         {
             get { return Fighter.IsAlive() && !Fighter.HasLeft(); }
+        }
+
+        public bool HasLeft
+        {
+            get { return Fighter.HasLeft(); }
         }
 
         public int Id
@@ -52,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             return false;
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get { return Fighter.Fight; }
         }
@@ -95,6 +101,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
         {
             get;
         }
+        bool HasLeft
+        {
+            get;
+        }
 
         int Id
         {
@@ -126,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
             get;
         }
 
-        Fight Fight
+        IFight Fight
         {
             get;
         }

@@ -251,11 +251,22 @@ namespace Stump.Server.BaseServer.Network
                     m_resumeEvent.WaitOne();
                 }
 
-                var IP = ((IPEndPoint)e.AcceptSocket.RemoteEndPoint).Address;
-
-                if (MaxIPConnexions.HasValue && CountClientWithSameIp(IP) > MaxIPConnexions.Value)
+                try
                 {
-                    logger.Error("Client {0} try to connect more then {1} times", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
+                    var IP = ((IPEndPoint)e.AcceptSocket.RemoteEndPoint).Address;
+
+                    if (MaxIPConnexions.HasValue && CountClientWithSameIp(IP) > MaxIPConnexions.Value)
+                    {
+                        logger.Error("Client {0} try to connect more then {1} times", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
+                        m_semaphore.Release();
+
+                        StartAccept();
+                        return;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    logger.Error("Invalid remote end-point. Exception : {0}", ex);
                     m_semaphore.Release();
 
                     StartAccept();
@@ -289,7 +300,10 @@ namespace Stump.Server.BaseServer.Network
                     PushSocketArg(readAsyncEventArgs);
 
                 if (e.AcceptSocket != null)
-                    e.AcceptSocket.Disconnect(false);
+                {
+                    if (e.AcceptSocket.Connected)
+                        e.AcceptSocket.Disconnect(false);
+                }
 
 
                 StartAccept();
