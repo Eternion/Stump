@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Arena
     public class ArenaQueueMember
     {
         [Variable] public static int ArenaMargeIncreasePerMinutes = 30;
-
+        [Variable] public static int ArenaMaxLevelDifference = 50;
         public ArenaQueueMember(Character character)
         {
             Character = character;
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public bool IsCompatibleWith(ArenaQueueMember member)
         {
-            return Math.Max(member.MinMatchableRank, MinMatchableRank) <= Math.Max(member.MaxMatchableRank,MaxMatchableRank);
+            return Math.Max(member.MinMatchableRank, MinMatchableRank) <= Math.Max(member.MaxMatchableRank, MaxMatchableRank) && Math.Abs(member.Character.Level - Character.Level) <= ArenaMaxLevelDifference;
         }
     }
 }
