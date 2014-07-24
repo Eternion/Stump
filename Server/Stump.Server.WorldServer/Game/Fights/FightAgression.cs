@@ -10,9 +10,10 @@ using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
-    public class FightAgression : Fight
+    public class FightAgression : Fight<FightPlayerTeam, FightPlayerTeam>
     {
-        public FightAgression(int id, Map fightMap, FightTeam blueTeam, FightTeam redTeam) : base(id, fightMap, blueTeam, redTeam)
+        public FightAgression(int id, Map fightMap, FightPlayerTeam defendersTeam, FightPlayerTeam challengersTeam)
+            : base(id, fightMap, defendersTeam, challengersTeam)
         {
             m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
         }
@@ -41,15 +42,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             var results = GetFightersAndLeavers().Where(entry => !( entry is SummonedFighter )).
                 Select(fighter => fighter.GetFightResult()).ToArray();
 
-            foreach (var result in results)
+            foreach (var playerResult in results.OfType<FightPlayerResult>())
             {
-                var playerResult = result as FightPlayerResult;
-                if (playerResult != null)
-                {                
-                    playerResult.SetEarnedHonor(CalculateEarnedHonor(playerResult.Fighter),
-                        CalculateEarnedDishonor(playerResult.Fighter));
-
-                }
+                playerResult.SetEarnedHonor(CalculateEarnedHonor(playerResult.Fighter),
+                    CalculateEarnedDishonor(playerResult.Fighter));
             }
 
             return results;
@@ -65,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, GetPlacementTimeLeft(), FightType);
         }
 
-        public int GetPlacementTimeLeft()
+        public override int GetPlacementTimeLeft()
         {
             var timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
 
@@ -105,10 +101,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (Draw)
                 return 0;
 
-            if (character.OpposedTeam.AlignmentSide != AlignmentSideEnum.ALIGNMENT_NEUTRAL)
-                return 0;
-
-            return 1;
+            return character.OpposedTeam.AlignmentSide != AlignmentSideEnum.ALIGNMENT_NEUTRAL ? (short) 0 : (short) 1;
         }
     }
 }

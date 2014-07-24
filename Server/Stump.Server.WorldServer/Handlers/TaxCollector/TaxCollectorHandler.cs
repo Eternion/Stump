@@ -38,8 +38,8 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
 
             var fight = FightManager.Instance.CreatePvTFight(client.Character.Map);
 
-            fight.RedTeam.AddFighter(client.Character.CreateFighter(fight.RedTeam));
-            fight.BlueTeam.AddFighter(taxCollector.CreateFighter(fight.BlueTeam));
+            fight.ChallengersTeam.AddFighter(client.Character.CreateFighter(fight.ChallengersTeam));
+            fight.DefendersTeam.AddFighter(taxCollector.CreateFighter(fight.DefendersTeam));
 
             fight.StartPlacement();
         }

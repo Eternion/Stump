@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using MongoDB.Bson;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Logging;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
@@ -35,29 +37,37 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 {
                     if (client.Character != chr)
                     {
-                        if (!chr.IsAway)
+                        if (!chr.FriendsBook.IsIgnored(client.Account.Id))
                         {
-                            if (client.Character.IsAway)
-                                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
-
-                            // send a copy to sender
-                            SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                message.content);
-
-                            // Send to receiver
-                            SendChatServerMessage(chr.Client, client.Character,
-                                ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                message.content);
-
-                            var document = new BsonDocument
+                            if (!chr.IsAway || chr.FriendsBook.IsFriend(client.Account.Id))
                             {
-                                {"SenderId", client.Character.Id},
-                                {"ReceiverId", chr.Id},
-                                {"Message", message.content},
-                                {"Date", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
-                            };
+                                if (client.Character.IsAway)
+                                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
 
-                            MongoLogger.Instance.Insert("PrivateMSG", document);
+                                // send a copy to sender
+                                SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                                    message.content);
+
+                                // Send to receiver
+                                SendChatServerMessage(chr.Client, client.Character,
+                                    ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
+                                    message.content);
+
+                                var document = new BsonDocument
+                                {
+                                    { "SenderId", client.Character.Id },
+                                    { "ReceiverId", chr.Id },
+                                    { "Message", message.content },
+                                    { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+                                };
+
+                                MongoLogger.Instance.Insert("PrivateMSG", document);
+                            }
+                            else
+                            {
+                                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
+                                    chr.Name);
+                            }
                         }
                         else
                         {
@@ -90,6 +100,17 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             MongoLogger.Instance.Insert("MultiMessage", document);
 
             ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum)message.channel, message.content);
+        }
+
+        [WorldHandler(ChatClientMultiWithObjectMessage.Id)]
+        public static void HandleChatClientMultiWithObjectMessage(WorldClient client, ChatClientMultiWithObjectMessage message)
+        {
+            ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum)message.channel, message.content, message.objects);
+        }
+
+        public static  void SendChatServerWithObjectMessage(IPacketReceiver client, INamedActor sender, ChatActivableChannelsEnum channel, string content, string fingerprint, IEnumerable<ObjectItem> objectItems)
+        {
+            client.Send(new ChatServerWithObjectMessage((sbyte)channel, content, DateTime.Now.GetUnixTimeStamp(), fingerprint, sender.Id, sender.Name, 0, objectItems));
         }
 
         public static void SendChatServerMessage(IPacketReceiver client, string message)

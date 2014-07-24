@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Game.Fights
     {
         public event Action<FightSpectator> Left;
 
-        public FightSpectator(Character character, Fight fight)
+        public FightSpectator(Character character, IFight fight)
         {
             Character = character;
             Fight = fight;
@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return Character.Client; }
         }
 
-        public Fight Fight
+        public IFight Fight
         {
             get;
             private set;

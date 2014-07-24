@@ -54,15 +54,15 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             BasicHandler.SendBasicNoOperationMessage(client);
         }
 
-        public static void SendMapRunningFightListMessage(IPacketReceiver client, IEnumerable<Fight> fights)
+        public static void SendMapRunningFightListMessage(IPacketReceiver client, IEnumerable<IFight> fights)
         {
             client.Send(new MapRunningFightListMessage(fights.Select(entry => entry.GetFightExternalInformations())));
         }
 
-        public static void SendMapRunningFightDetailsMessage(IPacketReceiver client, Fight fight)
+        public static void SendMapRunningFightDetailsMessage(IPacketReceiver client, IFight fight)
         {
-            var redFighters = fight.RedTeam.GetAllFighters().ToArray();
-            var blueFighters = fight.BlueTeam.GetAllFighters().ToArray();
+            var redFighters = fight.ChallengersTeam.GetAllFighters().ToArray();
+            var blueFighters = fight.DefendersTeam.GetAllFighters().ToArray();
 
             var fighters = redFighters.Concat(blueFighters).ToArray();
 

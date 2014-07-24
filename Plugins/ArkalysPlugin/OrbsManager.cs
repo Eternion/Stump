@@ -59,7 +59,7 @@ namespace ArkalysPlugin
                 FightManager.Instance.EntityAdded += OnFightCreated;
         }
 
-        private static void OnFightCreated(Fight fight)
+        private static void OnFightCreated(IFight fight)
         {
             if (fight is FightPvM)
             {
@@ -67,7 +67,7 @@ namespace ArkalysPlugin
             }
         }
 
-        private static void OnWinnersDetermined(Fight fight, FightTeam winners, FightTeam losers, bool draw)
+        private static void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
         {
             var monsters = fight.GetAllFighters<MonsterFighter>(entry => entry.IsDead()).ToList();
             var players = fight.GetAllFighters<CharacterFighter>().ToList();

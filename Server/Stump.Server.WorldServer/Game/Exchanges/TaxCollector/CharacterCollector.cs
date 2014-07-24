@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
             if (taxCollectorItem == null)
                 return false;
 
-            if (TaxCollector.Bag.MoveToInventory(taxCollectorItem, Character, (uint)quantity))
+            if (TaxCollector.Bag.MoveToInventory(taxCollectorItem, Character, quantity))
                 Character.Client.Send(new StorageObjectRemoveMessage(id));
 
             return true;

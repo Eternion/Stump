@@ -591,6 +591,48 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public int ArenaRank
+        {
+            get;
+            set;
+        }
+
+        public int ArenaMaxRank
+        {
+            get;
+            set;
+        }
+
+        public DateTime ArenaDailyDate
+        {
+            get;
+            set;
+        }
+
+        public int ArenaDailyMaxRank
+        {
+            get;
+            set;
+        }
+
+        public int ArenaDailyMatchsCount
+        {
+            get;
+            set;
+        }
+
+        public int ArenaDailyMatchsWon
+        {
+            get;
+            set;
+        }
+
+        public DateTime ArenaPenalityDate
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         public CharacterRecord(Breed breed)
