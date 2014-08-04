@@ -3,6 +3,7 @@ using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -36,8 +37,21 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var target = trigger.Get<Character>("target");
                 var source = trigger.Character.Client;
 
-                InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
-                InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
+                if (!target.Bank.IsLoaded)
+                {
+                    WorldServer.Instance.IOTaskPool.AddMessage(() =>
+                    {
+                        target.Bank.LoadRecord();
+
+                        InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
+                        InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
+                    });
+                }
+                else
+                {
+                    InventoryHandler.SendExchangeStartedMessage(source, ExchangeTypeEnum.STORAGE);
+                    InventoryHandler.SendStorageInventoryContentMessage(source, target.Bank);
+                }
             }
             else
             {
