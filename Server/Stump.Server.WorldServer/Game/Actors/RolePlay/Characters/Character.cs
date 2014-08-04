@@ -1244,8 +1244,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnAligmenentSideChanged()
         {
-            Map.Refresh(this);
-            RefreshStats();
             TogglePvPMode(false);
 
             Honor = 0;
@@ -2130,7 +2128,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.Map != Map || !Map.AllowAggression)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
-            if (target.Client.IP == Client.IP)
+            if (string.Equals(target.Client.IP, Client.IP))
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             if (Level - target.Level > 20)
