@@ -81,6 +81,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                     return EffectSchoolEnum.Water;
                 case EffectsEnum.Effect_StealHPNeutral:
                     return EffectSchoolEnum.Neutral;
+                case EffectsEnum.Effect_StealHPFix:
+                    return EffectSchoolEnum.Unknown;
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));
             }

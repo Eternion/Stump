@@ -123,8 +123,6 @@ namespace ArkalysPlugin.Npcs
                 Character.ChangeAlignementSide(AlignmentSideEnum.ALIGNMENT_NEUTRAL);
             }
 
-            Character.Honor = 0;
-
             Close();
         }
     }
