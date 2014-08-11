@@ -1,4 +1,6 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System;
+using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Results;
@@ -22,7 +24,8 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public override FightResultListEntry GetFightResultListEntry()
         {
-            return new FightResultPlayerListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive, (byte)Level,
+            var amount = Fighter.Character.ComputeWonArenaTokens(Rank);
+            return new FightResultPlayerListEntry((short) Outcome, new DofusProtocol.Types.FightLoot(Enumerable.Repeat((short)ItemIdEnum.Kolizeton, amount), 0), Id, Alive, (byte)Level,
                 new FightResultAdditionalData[0]);
         }
 

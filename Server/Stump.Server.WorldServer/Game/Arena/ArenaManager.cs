@@ -20,6 +20,8 @@ namespace Stump.Server.WorldServer.Game.Arena
         [Variable] public static int MaxPlayersPerFights = 3;
 
         [Variable] public static int ArenaMinLevel = 50;
+
+        [Variable] public static int ArenaMaxLevelDifference = 50;
         /// <summary>
         /// in ms
         /// </summary>

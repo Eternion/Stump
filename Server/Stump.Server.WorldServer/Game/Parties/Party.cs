@@ -238,6 +238,14 @@ namespace Stump.Server.WorldServer.Game.Parties
             return true;
         }
 
+        public virtual bool CanLeaveParty(Character character)
+        {
+            if (!IsMember(character))
+                return false;
+
+            return true;
+        }
+
         public bool AddGuest(Character character)
         {
             PartyJoinErrorEnum error;

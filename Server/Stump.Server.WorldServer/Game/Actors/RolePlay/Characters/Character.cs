@@ -1570,6 +1570,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
         }
 
+        public int ComputeWonArenaTokens(int rank)
+        {
+            int amount = 0;
+             if (m_record.ArenaDailyDate.Day != DateTime.Now.Day)
+                amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
+
+            amount += (int)Math.Ceiling(rank/100d);
+
+            return amount;
+        }
+
         public void UpdateArenaProperties(int rank, bool win)
         {
             CheckArenaDailyProperties();
@@ -2010,7 +2021,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void LeaveParty(Party party)
         {
-            if (!IsInParty(party.Id))
+            if (!IsInParty(party.Id) || !party.CanLeaveParty(this))
                 return;
 
             party.MemberRemoved -= OnPartyMemberRemoved;
