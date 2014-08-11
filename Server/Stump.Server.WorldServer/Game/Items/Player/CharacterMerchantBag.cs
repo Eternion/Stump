@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             Owner.Inventory.AddItem(newItem);
 
-            Save();
+            Owner.Area.AddMessage(Save);
 
             return true;
         }
