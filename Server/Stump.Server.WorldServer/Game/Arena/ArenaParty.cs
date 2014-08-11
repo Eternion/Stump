@@ -89,12 +89,19 @@ namespace Stump.Server.WorldServer.Game.Arena
             return false;
         }
 
+        public override bool CanLeaveParty(Character character)
+        {
+            return base.CanLeaveParty(character) && !(character.Fight is ArenaFight);
+        }
+
         protected override void OnGuestPromoted(Character groupMember)
         {
             base.OnGuestPromoted(groupMember);
 
             m_rankSum += groupMember.ArenaRank;
             GroupRankAverage = m_rankSum/MembersCount;
+
+            ArenaManager.Instance.RemoveFromQueue(groupMember);
         }
 
         protected override void OnMemberRemoved(Character groupMember, bool kicked)
