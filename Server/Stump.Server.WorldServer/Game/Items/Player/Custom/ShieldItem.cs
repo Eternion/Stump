@@ -18,7 +18,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (unequip)
                 return base.OnEquipItem(true);
 
-            return !(Owner.Fight is ArenaFight);
+            if (!(Owner.Fight is ArenaFight))
+                return true;
+
+            Owner.Inventory.MoveItem(this, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+            return false;
         }
     }
 }

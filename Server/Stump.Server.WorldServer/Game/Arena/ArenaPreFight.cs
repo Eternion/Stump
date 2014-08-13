@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Arena;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -183,11 +182,6 @@ namespace Stump.Server.WorldServer.Game.Arena
                     lock(m_charactersMaps)
                         m_charactersMaps.Add(character1, character1.Map);
 
-                    foreach (var item in character1.Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD))
-                    {
-                        character1.Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-                    }
-
                     if (character1.IsFighting())
                     {
                         character1.EnterMap += OnFightLeft;
@@ -202,6 +196,8 @@ namespace Stump.Server.WorldServer.Game.Arena
                     }
                     else
                     {
+                        RemoveShield(character1);
+
                         character1.Teleport(m_fight.Map, m_fight.Map.Cells[character1.Cell.Id]);
                              
                         if (Interlocked.Decrement(ref m_readyPlayersCount) <= 0)
@@ -213,10 +209,20 @@ namespace Stump.Server.WorldServer.Game.Arena
             }
         }
 
+        private static void RemoveShield(IInventoryOwner character)
+        {
+            foreach (var item in character.Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD))
+            {
+                character.Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+            }
+        }
+
         private void OnFightLeft(RolePlayActor rolePlayActor, Map map)
         {
             if (map != m_fight.Map)
                 return;
+
+            RemoveShield(rolePlayActor as Character);
 
             rolePlayActor.EnterMap -= OnFightLeft;
 

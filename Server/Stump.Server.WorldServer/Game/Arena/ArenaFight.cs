@@ -109,16 +109,6 @@ namespace Stump.Server.WorldServer.Game.Arena
             base.OnPlayerLeft(fighter);
         }
 
-        protected override void OnCharacterAdded(CharacterFighter fighter)
-        {
-            var shield = fighter.Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
-
-            if (shield != null)
-                fighter.Character.Inventory.MoveItem(shield, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-
-            base.OnCharacterAdded(fighter);
-        }
-
         protected override bool CanCancelFight()
         {
             return false;
