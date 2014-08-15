@@ -41,6 +41,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     damages.Source = actor;
                     damages.ReflectedDamages = true;
                     damages.IgnoreDamageBoost = true;
+                    damages.IsCritical = Critical;
                     Caster.InflictDamage(damages);
 
                     actor.RemoveAndDispellBuff(buff);

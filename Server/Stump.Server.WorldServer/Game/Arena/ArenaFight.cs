@@ -22,6 +22,15 @@ namespace Stump.Server.WorldServer.Game.Arena
             get { return FightTypeEnum.FIGHT_TYPE_PVP_ARENA; }
         }
 
+        public override bool IsPvP
+        {
+            get { return false; } // don't know why
+        }
+        public override bool IsMultiAccountRestricted
+        {
+            get { return true; }
+        }
+
         public override bool IsDeathTemporarily
         {
             get { return true; }

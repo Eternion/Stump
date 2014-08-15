@@ -43,13 +43,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                     {
                         NotifySpellReflected(actor);
-                        Caster.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), actor, Spell) {ReflectedDamages = true, MarkTrigger = MarkTrigger});
+                        Caster.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), actor, Spell)
+                        {
+                            ReflectedDamages = true,
+                            MarkTrigger = MarkTrigger,
+                            IsCritical = Critical
+                        });
 
                         actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
-                        actor.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell) {MarkTrigger = MarkTrigger});
+                        actor.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell)
+                        {
+                            MarkTrigger = MarkTrigger,
+                            IsCritical = Critical
+                        });
                     }
                 }
             }

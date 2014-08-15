@@ -38,7 +38,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 Buff = buff,
                 IgnoreDamageReduction = true,
                 School = GetEffectSchool(buff.Dice.EffectId),
-                MarkTrigger = MarkTrigger
+                MarkTrigger = MarkTrigger,
+                IsCritical = Critical
             };
 
             damages.BaseMaxDamages = buff.Target.UsedAP * damages.BaseMaxDamages;

@@ -18,6 +18,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         {
             logger.Debug("Apply spells fix");
 
+            #region FECA
+
+            #endregion
+
             #region IOP
             // iop's wrath (159)
             // increase buff duration to 5

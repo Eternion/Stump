@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                     return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
             }
 
-            if (Fighters.Where(x => x is CharacterFighter).Any(x => (x as CharacterFighter).Character.Client.IP == character.Client.IP))
+            if (Fight.IsMultiAccountRestricted && Fighters.Where(x => x is CharacterFighter).Any(x => (x as CharacterFighter).Character.Client.IP == character.Client.IP))
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             return base.CanJoin(character);

@@ -36,6 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     damage.Amount = (int)((actor.MaxLifePoints * (damage.Amount / 100d)));
                     damage.IgnoreDamageBoost = true;
                     damage.MarkTrigger = MarkTrigger;
+                    damage.IsCritical = Critical;
 
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
