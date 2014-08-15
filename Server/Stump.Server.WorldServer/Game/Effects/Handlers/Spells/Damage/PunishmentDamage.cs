@@ -43,7 +43,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     damages.IgnoreDamageBoost = true;
                     Caster.InflictDamage(damages);
 
-                    actor.RemoveAndDispellBuff(buff);
+                    if (buff.Duration <= 0)
+                        actor.RemoveAndDispellBuff(buff);
                 }
                 else
                 {

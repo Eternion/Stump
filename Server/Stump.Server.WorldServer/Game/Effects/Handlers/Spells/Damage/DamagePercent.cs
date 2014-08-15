@@ -46,7 +46,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                         damage.ReflectedDamages = true;
                         Caster.InflictDamage(damage);
 
-                        actor.RemoveAndDispellBuff(buff);
+                        if (buff.Duration <= 0)
+                            actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
