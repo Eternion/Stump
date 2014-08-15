@@ -89,7 +89,8 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             get;
             set;
         }
-
+        
+        [DefaultSetting(-1)]
         public int TopNeighbourCellId
         {
             get;
@@ -101,7 +102,8 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             get;
             set;
         }
-
+        
+        [DefaultSetting(-1)]
         public int BottomNeighbourCellId
         {
             get;
@@ -114,6 +116,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
+        [DefaultSetting(-1)]
         public int LeftNeighbourCellId
         {
             get;
@@ -125,7 +128,8 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             get;
             set;
         }
-
+        
+        [DefaultSetting(-1)]
         public int RightNeighbourCellId
         {
             get;

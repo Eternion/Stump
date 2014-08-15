@@ -37,6 +37,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 else
                 {
                     var damages = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell);
+                    damages.IsCritical = Critical;
 
                     if (Dice.EffectId == EffectsEnum.Effect_StealHPFix)
                     {
@@ -55,7 +56,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
         {
             var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
             {
-                Buff = buff
+                Buff = buff,
+                IsCritical = buff.Critical,
             };
 
             if (buff.Dice.EffectId == EffectsEnum.Effect_StealHPFix)

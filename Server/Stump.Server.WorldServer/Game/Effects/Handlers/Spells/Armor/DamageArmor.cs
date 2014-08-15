@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -28,6 +29,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 
                 if (Effect.Duration <= 0)
                     return false;
+
+                // these spells cannot stacks
+                if (actor.GetBuffs(x => x.Spell.Id == Spell.Id).Any())
+                    continue;
 
                 AddTriggerBuff(actor, true, BuffTriggerType.BUFF_ADDED, ApplyArmorBuff, RemoveArmorBuff);
             }

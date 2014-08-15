@@ -68,7 +68,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return FightTypeEnum.FIGHT_TYPE_PvT; }
         }
 
-        
+        public override bool IsPvP
+        {
+            get { return true; }
+        }
+        public override bool IsMultiAccountRestricted
+        {
+            get { return true; }
+        }
+
         public override void StartPlacement()
         {
             base.StartPlacement();

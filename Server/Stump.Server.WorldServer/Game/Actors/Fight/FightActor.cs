@@ -754,14 +754,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 if (damage.Spell != null)
                     damage.Amount += damage.Source.GetSpellBoost(damage.Spell);
 
-                damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School);
+                damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School, damage.IsCritical);
             }
 
             var minDamage = CalculateErosionDamage(damage.Amount);
 
             if (!damage.IgnoreDamageReduction)
             {
-                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.PvP);
+                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical);
 
                 var reduction = CalculateArmorReduction(damage.School);
 
@@ -851,7 +851,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Formulas
 
-        public virtual int CalculateDamage(int damage, EffectSchoolEnum type)
+        public virtual int CalculateDamage(int damage, EffectSchoolEnum type, bool critical)
         {
             // formulas :
             // DAMAGE * [(100 + STATS + %BONUS + MULT*100)/100 + (BONUS + PHS/MGKBONUS + ELTBONUS)]
@@ -859,32 +859,62 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             switch (type)
             {
                 case EffectSchoolEnum.Neutral:
-                    return (int) (damage*
-                                    (100 + Stats[PlayerFields.Strength].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe * 100) / 100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.PhysicalDamage].TotalSafe + Stats[PlayerFields.NeutralDamageBonus].TotalSafe));
+                    damage = (int) (damage*
+                                    (100 + Stats[PlayerFields.Strength].TotalSafe +
+                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
+                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                     Stats[PlayerFields.PhysicalDamage].TotalSafe +
+                                     Stats[PlayerFields.NeutralDamageBonus].TotalSafe));
+                    break;
                 case EffectSchoolEnum.Earth:
-                    return (int)(damage *
-                                    (100 + Stats[PlayerFields.Strength].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.PhysicalDamage].TotalSafe + Stats[PlayerFields.EarthDamageBonus].TotalSafe));
+                    damage = (int) (damage*
+                                    (100 + Stats[PlayerFields.Strength].TotalSafe +
+                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
+                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                     Stats[PlayerFields.PhysicalDamage].TotalSafe +
+                                     Stats[PlayerFields.EarthDamageBonus].TotalSafe));
+                    break;
                 case EffectSchoolEnum.Air:
-                    return (int)(damage *
-                                    (100 + Stats[PlayerFields.Agility].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.MagicDamage].TotalSafe + Stats[PlayerFields.AirDamageBonus].TotalSafe));
+                    damage = (int) (damage*
+                                    (100 + Stats[PlayerFields.Agility].TotalSafe +
+                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
+                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                     Stats[PlayerFields.MagicDamage].TotalSafe +
+                                     Stats[PlayerFields.AirDamageBonus].TotalSafe));
+                    break;
                 case EffectSchoolEnum.Water:
-                    return (int)(damage *
-                                    (100 + Stats[PlayerFields.Chance].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.MagicDamage].TotalSafe + Stats[PlayerFields.WaterDamageBonus].TotalSafe));
+                    damage = (int) (damage*
+                                    (100 + Stats[PlayerFields.Chance].TotalSafe +
+                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
+                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                     Stats[PlayerFields.MagicDamage].TotalSafe +
+                                     Stats[PlayerFields.WaterDamageBonus].TotalSafe));
+                    break;
                 case EffectSchoolEnum.Fire:
-                    return (int)(damage *
-                                    (100 + Stats[PlayerFields.Intelligence].TotalSafe + Stats[PlayerFields.DamageBonusPercent].TotalSafe + Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe + Stats[PlayerFields.MagicDamage].TotalSafe + Stats[PlayerFields.FireDamageBonus].TotalSafe));
-                default:
-                    return damage;
+                    damage = (int) (damage*
+                                    (100 + Stats[PlayerFields.Intelligence].TotalSafe +
+                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
+                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
+                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                     Stats[PlayerFields.MagicDamage].TotalSafe +
+                                     Stats[PlayerFields.FireDamageBonus].TotalSafe));
+                    break;
             }
+
+            if (critical)
+                return damage + Stats[PlayerFields.CriticalDamageBonus].Total;
+
+            return damage;
         }
 
-        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool pvp)
-        {
+        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical)
+        {           
+            var pvp = Fight.IsPvP;
+
             double percentResistance;
             double fixResistance;
 
@@ -914,7 +944,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     return damage;
             }
 
-            return (int)( ( 1 - percentResistance / 100d ) * ( damage - fixResistance ) );
+            return (int)( ( 1 - percentResistance / 100d ) * ( damage - fixResistance ) ) - (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
         }
 
         public virtual int CalculateDamageReflection(int damage)
@@ -1653,6 +1683,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)
         {
+            var pvp = Fight.IsPvP;
+
             return new GameFightMinimalStats(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
@@ -1665,16 +1697,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats.MP.TotalMax,
                 0,
                 false,
-                (short)Stats[PlayerFields.NeutralResistPercent].Total,
-                (short)Stats[PlayerFields.EarthResistPercent].Total,
-                (short)Stats[PlayerFields.WaterResistPercent].Total,
-                (short)Stats[PlayerFields.AirResistPercent].Total,
-                (short)Stats[PlayerFields.FireResistPercent].Total,
-                (short)Stats[PlayerFields.NeutralElementReduction].Total,
-                (short)Stats[PlayerFields.EarthElementReduction].Total,
-                (short)Stats[PlayerFields.WaterElementReduction].Total,
-                (short)Stats[PlayerFields.AirElementReduction].Total,
-                (short)Stats[PlayerFields.FireElementReduction].Total,
+                (short)(Stats[PlayerFields.NeutralResistPercent].Total + (pvp ? Stats[PlayerFields.PvpNeutralResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.EarthResistPercent].Total + (pvp ? Stats[PlayerFields.PvpEarthResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.WaterResistPercent].Total + (pvp ? Stats[PlayerFields.PvpWaterResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.AirResistPercent].Total + (pvp ? Stats[PlayerFields.PvpAirResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.FireResistPercent].Total + (pvp ? Stats[PlayerFields.PvpFireResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.NeutralElementReduction].Total + (pvp ? Stats[PlayerFields.PvpNeutralElementReduction].Total : 0)),
+                (short)(Stats[PlayerFields.EarthElementReduction].Total + (pvp ? Stats[PlayerFields.PvpEarthElementReduction].Total : 0)),
+                (short)(Stats[PlayerFields.WaterElementReduction].Total + (pvp ? Stats[PlayerFields.PvpWaterElementReduction].Total : 0)),
+                (short)(Stats[PlayerFields.AirElementReduction].Total + (pvp ? Stats[PlayerFields.PvpAirElementReduction].Total : 0)),
+                (short)(Stats[PlayerFields.FireElementReduction].Total + (pvp ? Stats[PlayerFields.PvpFireElementReduction].Total : 0)),
                 (short)Stats[PlayerFields.PushDamageReduction].Total,
                 (short)Stats[PlayerFields.CriticalDamageReduction].Total,
                 (short)Stats[PlayerFields.DodgeAPProbability].Total,

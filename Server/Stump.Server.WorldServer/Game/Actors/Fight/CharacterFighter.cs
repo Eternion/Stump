@@ -233,7 +233,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
 
-        public override int CalculateDamage(int damage, EffectSchoolEnum type)
+        public override int CalculateDamage(int damage, EffectSchoolEnum type, bool critical)
         {
             if (Character.GodMode)
                 return short.MaxValue;
@@ -241,7 +241,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return
                 base.CalculateDamage(
                 ((m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0) + damage),
-                    type);
+                    type, critical);
         }
 
         public bool CanUseWeapon(Cell cell, WeaponTemplate weapon)

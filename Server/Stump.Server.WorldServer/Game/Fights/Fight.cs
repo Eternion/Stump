@@ -56,6 +56,16 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        bool IsPvP
+        {
+            get;
+        }
+
+        bool IsMultiAccountRestricted
+        {
+            get;
+        }
+
         FightState State
         {
             get;
@@ -385,6 +395,16 @@ namespace Stump.Server.WorldServer.Game.Fights
         public abstract FightTypeEnum FightType
         {
             get;
+        }
+
+        public abstract bool IsPvP
+        {
+            get;
+        }
+
+        public virtual bool IsMultiAccountRestricted
+        {
+            get { return false; }
         }
 
         public FightState State

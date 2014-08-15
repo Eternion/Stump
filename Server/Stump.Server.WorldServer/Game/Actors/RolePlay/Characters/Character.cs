@@ -1245,6 +1245,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private void OnAligmenentSideChanged()
         {
             TogglePvPMode(false);
+            Map.Refresh(this);
 
             Honor = 0;
             Dishonor = 0;

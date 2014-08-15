@@ -87,8 +87,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
             damage.GenerateDamages();
 
-            var percentResistance = GetAveragePercentResistance(actors, damage.School, damage.PvP);
-            var fixResistance = GetAverageFixResistance(actors, damage.School, damage.PvP);
+            var percentResistance = GetAveragePercentResistance(actors, damage.School, Fight.IsPvP);
+            var fixResistance = GetAverageFixResistance(actors, damage.School, Fight.IsPvP);
             damage.Amount = (int) ((1 - percentResistance/100d)*(damage.Amount - fixResistance));
             damage.Amount = damage.Amount / actors.Length;
             damage.IgnoreDamageReduction = true;
@@ -103,6 +103,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                     MarkTrigger = this,
                     IgnoreDamageReduction = true,
                     EffectGenerationType = damage.EffectGenerationType,
+                    IsCritical = damage.IsCritical
                 };
 
                 actor.InflictDamage(damagePerFighter);

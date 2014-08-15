@@ -353,11 +353,11 @@
         /// <summary>
         /// Increases chance of avoiding AP loss by #1{~1~2 to }#2%
         /// </summary>
-        Effect_IncreaseAPAvoid = 160,
+        Effect_AddDodgeAPProbability = 160,
         /// <summary>
         /// Increases chance of avoiding MP loss by #1{~1~2 to }#2%
         /// </summary>
-        Effect_IncreaseMPAvoid = 161,
+        Effect_AddDodgeMPProbability = 161,
         /// <summary>
         /// -#1{~1~2 to}#2 chance of avoiding AP losses
         /// </summary>
@@ -789,19 +789,19 @@
         /// <summary>
         /// +#1{~1~2 to }#2 AP attack
         /// </summary>
-        Effect_410 = 410,
+        Effect_AddAPAttack = 410,
         /// <summary>
         /// -#1{~1~2 to }#2 AP attack
         /// </summary>
-        Effect_411 = 411,
+        Effect_SubAPAttack = 411,
         /// <summary>
         /// +#1{~1~2 to }#2 MP attack
         /// </summary>
-        Effect_412 = 412,
+        Effect_AddMPAttack = 412,
         /// <summary>
         /// -#1{~1~2 to }#2 MP attack
         /// </summary>
-        Effect_413 = 413,
+        Effect_SubMPAttack = 413,
         /// <summary>
         /// +#1{~1~2 to }#2 pushback damage
         /// </summary>
