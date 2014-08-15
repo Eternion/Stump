@@ -50,7 +50,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                             IsCritical = Critical
                         });
 
-                        actor.RemoveAndDispellBuff(buff);
+                        if (buff.Duration <= 0)
+                            actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {

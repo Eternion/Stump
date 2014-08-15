@@ -44,7 +44,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     damages.IsCritical = Critical;
                     Caster.InflictDamage(damages);
 
-                    actor.RemoveAndDispellBuff(buff);
+                    if (buff.Duration <= 0)
+                        actor.RemoveAndDispellBuff(buff);
                 }
                 else
                 {
