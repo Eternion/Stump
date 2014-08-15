@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Arena
@@ -21,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         [Variable] public static int ArenaMinLevel = 50;
 
-        [Variable] public static int ArenaMaxLevelDifference = 50;
+        [Variable] public static int ArenaMaxLevelDifference = 40;
         /// <summary>
         /// in ms
         /// </summary>
@@ -70,10 +71,15 @@ namespace Stump.Server.WorldServer.Game.Arena
                 return false;
 
             //Already in queue
-            if (m_queue.Exists(x => x.Character == character))
+            if (IsInQueue(character))
                 return false;
 
             return character.CanEnterArena();
+        }
+
+        public bool IsInQueue(Character character)
+        {
+            return m_queue.Exists(x => x.Character == character);
         }
 
         public void AddToQueue(Character character)
@@ -107,6 +113,9 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, true,
                 PvpArenaStepEnum.ARENA_STEP_REGISTRED, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+
+            //%1 vous a inscrit à un combat en Kolizéum.
+            BasicHandler.SendTextInformationMessage(party.Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 272, party.Leader.Name);
         }
 
         public void RemoveFromQueue(ArenaParty party)

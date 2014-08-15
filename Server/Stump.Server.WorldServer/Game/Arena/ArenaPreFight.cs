@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -234,16 +235,31 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         private void PrepareFight()
         {
+            var challengersParty = ChallengersTeam.Members.Select(x => x.Character.GetParty(PartyTypeEnum.PARTY_TYPE_ARENA)).FirstOrDefault() ??
+                                 PartyManager.Instance.Create(PartyTypeEnum.PARTY_TYPE_ARENA);
+            var defendersParty = DefendersTeam.Members.Select(x => x.Character.GetParty(PartyTypeEnum.PARTY_TYPE_ARENA)).FirstOrDefault() ??
+                                 PartyManager.Instance.Create(PartyTypeEnum.PARTY_TYPE_ARENA);
+
             foreach (var character in ChallengersTeam.Members.Select(x => x.Character))
             {
                 m_fight.ChallengersTeam.AddFighter(character.CreateFighter(m_fight.ChallengersTeam));
                 character.NextMap = m_charactersMaps[character];
+
+                if (challengersParty.Leader != null)
+                    challengersParty.Leader.Invite(character, PartyTypeEnum.PARTY_TYPE_ARENA, true);
+                else
+                    character.EnterParty(challengersParty);
             }
 
             foreach (var character in DefendersTeam.Members.Select(x => x.Character))
             {
                 m_fight.DefendersTeam.AddFighter(character.CreateFighter(m_fight.DefendersTeam));
                 character.NextMap = m_charactersMaps[character];
+
+                if (defendersParty.Leader != null)
+                    defendersParty.Leader.Invite(character, PartyTypeEnum.PARTY_TYPE_ARENA, true);
+                else
+                    character.EnterParty(defendersParty);
             }
 
             m_fight.StartPlacement();
