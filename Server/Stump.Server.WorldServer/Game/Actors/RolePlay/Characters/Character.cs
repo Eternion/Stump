@@ -1552,6 +1552,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
+            if (Fight is FightAgression || Fight is FightPvT)
+                return false;
+
             return true;
         }
 
@@ -1924,7 +1927,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Party
 
-        public void Invite(Character target, PartyTypeEnum type)
+        public void Invite(Character target, PartyTypeEnum type, bool force = false)
         {
             var created = false;
             Party party;
@@ -1961,7 +1964,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             target.m_partyInvitations.Add(party.Id, invitation);
 
             party.AddGuest(target);
-            invitation.Display();
+
+            if (force)
+                invitation.Accept();
+            else
+                invitation.Display();
         }
 
         public PartyInvitation GetInvitation(int id)

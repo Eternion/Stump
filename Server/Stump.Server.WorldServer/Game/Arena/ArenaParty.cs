@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                 var lower = Members.Min(x => x.Level);
                 var upper = Members.Max(x => x.Level);
 
-                if (Math.Max(character.Level, upper) - Math.Min(character.Level, lower) > 50)
+                if (Math.Max(character.Level, upper) - Math.Min(character.Level, lower) > ArenaManager.ArenaMaxLevelDifference)
                 {
                     if (inviter != null && send)
                     {

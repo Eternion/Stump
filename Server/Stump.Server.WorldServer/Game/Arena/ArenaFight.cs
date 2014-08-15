@@ -103,7 +103,11 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             if (fighter is CharacterFighter)
             {
-                (fighter as CharacterFighter).Character.ToggleArenaPenality();
+                var characterFighter = (fighter as CharacterFighter);
+                characterFighter.Character.ToggleArenaPenality();
+
+                if (characterFighter.Character.ArenaParty != null)
+                    characterFighter.Character.LeaveParty(characterFighter.Character.ArenaParty);
             }
 
             base.OnPlayerLeft(fighter);

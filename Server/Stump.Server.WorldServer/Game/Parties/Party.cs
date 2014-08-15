@@ -240,10 +240,7 @@ namespace Stump.Server.WorldServer.Game.Parties
 
         public virtual bool CanLeaveParty(Character character)
         {
-            if (!IsMember(character))
-                return false;
-
-            return true;
+            return IsMember(character);
         }
 
         public bool AddGuest(Character character)
