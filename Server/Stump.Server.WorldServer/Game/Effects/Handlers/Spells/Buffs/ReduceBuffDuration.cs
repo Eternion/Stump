@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 }
 
                 ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor,
-                    (short)-(integerEffect.Value));
+                    (short)-integerEffect.Value);
             }
 
             return true;

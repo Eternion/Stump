@@ -76,6 +76,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region ENUTROF
+            // corruption (59)
+            // effect #4 = only self (state exhausted)
+            FixEffectOnAllLevels(59, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             #endregion
 
             #region OSAMODAS
