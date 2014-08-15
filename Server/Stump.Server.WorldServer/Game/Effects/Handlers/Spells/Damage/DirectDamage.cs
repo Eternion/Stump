@@ -45,7 +45,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                         NotifySpellReflected(actor);
                         Caster.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), actor, Spell) {ReflectedDamages = true, MarkTrigger = MarkTrigger});
 
-                        actor.RemoveAndDispellBuff(buff);
+                        if (buff.Duration <= 0)
+                            actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
