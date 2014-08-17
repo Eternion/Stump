@@ -22,8 +22,10 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public override FightResultListEntry GetFightResultListEntry()
         {
-            var amount = Fighter.Character.ComputeWonArenaTokens(Rank);
-            var loot = new DofusProtocol.Types.FightLoot(new[] { (short) ItemIdEnum.Kolizeton, (short)amount }, 0);
+            var amount = Outcome == FightOutcomeEnum.RESULT_VICTORY ? Fighter.Character.ComputeWonArenaTokens(Rank) : 0;
+            var items = amount > 0 ? new[] {(short) ItemIdEnum.Kolizeton, (short) amount} : new short[0];
+
+            var loot = new DofusProtocol.Types.FightLoot(items, 0);
 
             return new FightResultPlayerListEntry((short) Outcome, loot, Id, Alive, (byte)Level,
                 new FightResultAdditionalData[0]);

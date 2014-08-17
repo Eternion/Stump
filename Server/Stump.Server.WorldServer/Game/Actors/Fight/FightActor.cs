@@ -441,12 +441,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Leave
 
-        public void LeaveFight()
+        public void LeaveFight(bool force = false)
         {
             if (HasLeft())
                 return;
 
-            m_left = true;
+            m_left = !force;
 
             OnLeft();
         }

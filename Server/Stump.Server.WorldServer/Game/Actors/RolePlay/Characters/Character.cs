@@ -1576,7 +1576,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public int ComputeWonArenaTokens(int rank)
         {
-            int amount = 0;
+            var amount = 0;
              if (m_record.ArenaDailyDate.Day != DateTime.Now.Day)
                 amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
 
@@ -1624,6 +1624,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void ToggleArenaPenality()
         {
             SetArenaPenality(TimeSpan.FromMinutes(ArenaManager.ArenaPenalityTime));
+        }
+
+        public void ToggleArenaWaitTime()
+        {
+            SetArenaPenality(TimeSpan.FromMinutes(ArenaManager.ArenaWaitTime));
         }
 
         public int ArenaRank
@@ -2077,14 +2082,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             var dest = GetSpawnPoint() ?? Breed.GetStartPosition();
 
-            // use nextmap to update correctly the areas changements
-            // if next map is already set we do not change it
-            if (NextMap == null)
-            {
-                NextMap = dest.Map;
-                Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
-                Direction = dest.Direction;
-            }
+            NextMap = dest.Map;
+            Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
+            Direction = dest.Direction;
 
             // energy lost go here
             Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);

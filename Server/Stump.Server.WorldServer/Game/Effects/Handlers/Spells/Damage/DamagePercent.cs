@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
-                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
+                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0 && buff.CanReflect())
                     {
                         NotifySpellReflected(actor);
                         damage.Source = actor;

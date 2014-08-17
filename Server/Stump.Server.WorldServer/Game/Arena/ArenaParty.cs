@@ -89,6 +89,14 @@ namespace Stump.Server.WorldServer.Game.Arena
             return false;
         }
 
+        public override void Kick(Character member)
+        {
+            if (Leader.Fight is ArenaFight)
+                return;
+
+            base.Kick(member);
+        }
+
         public override bool CanLeaveParty(Character character)
         {
             return base.CanLeaveParty(character) && !(character.Fight is ArenaFight);

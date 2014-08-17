@@ -38,6 +38,12 @@ namespace Stump.Server.WorldServer.Game.Arena
         /// </summary>
         [Variable] public static int ArenaPenalityTime = 30;
 
+        /// <summary>
+        /// in minutes
+        /// </summary>
+        [Variable]
+        public static int ArenaWaitTime = 10;
+
         public ItemTemplate TokenItemTemplate
         {
             get
@@ -114,8 +120,11 @@ namespace Stump.Server.WorldServer.Game.Arena
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, true,
                 PvpArenaStepEnum.ARENA_STEP_REGISTRED, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
 
-            //%1 vous a inscrit à un combat en Kolizéum.
-            BasicHandler.SendTextInformationMessage(party.Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 272, party.Leader.Name);
+            foreach (var client in party.Clients.Where(client => client != party.Leader.Client))
+            {
+                //%1 vous a inscrit à un combat en Kolizéum.
+                BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 272, party.Leader.Name);
+            }
         }
 
         public void RemoveFromQueue(ArenaParty party)
@@ -131,7 +140,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             List<ArenaQueueMember> queue;
             lock (m_queue)
             {
-                queue = m_queue.ToList();
+                queue = m_queue.Where(x => !x.IsBusy()).ToList();
             }
 
             ArenaQueueMember current;

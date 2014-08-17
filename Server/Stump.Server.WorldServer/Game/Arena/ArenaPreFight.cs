@@ -106,6 +106,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             ArenaManager.Instance.ArenaTaskPool.ExecuteInContext(() =>
             {                
                 ContextHandler.SendGameRolePlayArenaFighterStatusMessage(m_clients, Id, obj.Character, false);
+                obj.Character.ToggleArenaWaitTime();
 
                 // %1 a refusé le combat en Kolizéum.
                 BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 275, obj.Character.Name);
@@ -115,6 +116,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                     foreach (var character in obj.Team.Members.ToArray())
                     {
                         obj.Team.RemoveCharacter(character);
+
                         // Combat de Kolizéum annulé/non validé par votre équipe
                         character.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 273);
                     }
@@ -187,7 +189,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                     {
                         character1.EnterMap += OnFightLeft;
                         character1.NextMap = m_fight.Map;
-                        character1.Fighter.LeaveFight();
+                        character1.Fighter.LeaveFight(true);
                     }
                     else if (character1.IsSpectator())
                     {
@@ -245,6 +247,9 @@ namespace Stump.Server.WorldServer.Game.Arena
                 m_fight.ChallengersTeam.AddFighter(character.CreateFighter(m_fight.ChallengersTeam));
                 character.NextMap = m_charactersMaps[character];
 
+                if (challengersParty.IsInGroup(character))
+                    continue;
+
                 if (challengersParty.Leader != null)
                     challengersParty.Leader.Invite(character, PartyTypeEnum.PARTY_TYPE_ARENA, true);
                 else
@@ -255,6 +260,9 @@ namespace Stump.Server.WorldServer.Game.Arena
             {
                 m_fight.DefendersTeam.AddFighter(character.CreateFighter(m_fight.DefendersTeam));
                 character.NextMap = m_charactersMaps[character];
+
+                if (defendersParty.IsInGroup(character))
+                    continue;
 
                 if (defendersParty.Leader != null)
                     defendersParty.Leader.Invite(character, PartyTypeEnum.PARTY_TYPE_ARENA, true);

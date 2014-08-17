@@ -108,18 +108,14 @@ namespace Stump.Server.WorldServer.Game.Arena
             return list;
         }
 
-        protected override void OnPlayerLeft(FightActor fighter)
+        protected override void OnPlayerReadyToLeave(CharacterFighter characterFighter)
         {
-            if (fighter is CharacterFighter)
-            {
-                var characterFighter = (fighter as CharacterFighter);
-                characterFighter.Character.ToggleArenaPenality();
+            base.OnPlayerReadyToLeave(characterFighter);
 
-                if (characterFighter.Character.ArenaParty != null)
-                    characterFighter.Character.LeaveParty(characterFighter.Character.ArenaParty);
-            }
+            characterFighter.Character.ToggleArenaPenality();
 
-            base.OnPlayerLeft(fighter);
+            if (characterFighter.Character.ArenaParty != null)
+                characterFighter.Character.LeaveParty(characterFighter.Character.ArenaParty);
         }
 
         protected override bool CanCancelFight()

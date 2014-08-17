@@ -261,9 +261,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             else
                 TaxCollector.TaxCollectorNpc.Delete();
 
-            foreach (var defender in DefendersTeam.Fighters.Where(defender => m_defendersMaps.ContainsKey(defender)))
+            foreach (var defender in DefendersTeam.Fighters.Where(defender => m_defendersMaps.ContainsKey(defender)).OfType<CharacterFighter>())
             {
-                defender.NextMap = m_defendersMaps[defender];
+                defender.Character.NextMap = m_defendersMaps[defender];
+            }
+
+            foreach (var defender in DefendersQueue)
+            {
+                defender.ResetDefender();
             }
 
             base.OnWinnersDetermined(winners, losers, draw);
