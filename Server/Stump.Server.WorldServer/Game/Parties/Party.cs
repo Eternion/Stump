@@ -328,7 +328,7 @@ namespace Stump.Server.WorldServer.Game.Parties
             }
         }
 
-        public void Kick(Character member)
+        public virtual void Kick(Character member)
         {
             lock (m_memberLocker)
             {

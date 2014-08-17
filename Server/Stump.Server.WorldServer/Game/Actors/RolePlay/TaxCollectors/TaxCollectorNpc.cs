@@ -39,6 +39,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         [Variable]
         public static int MaxGatheredXPFight = 150000;
 
+        [Variable]
+        public static int MaxTaxCollectorsPercentPerArea = 25;
+
         public const int TAXCOLLECTOR_BONES = 714;
 
         private readonly WorldMapTaxCollectorRecord m_record;

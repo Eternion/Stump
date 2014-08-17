@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public bool IsBusy()
         {
-            return EnumerateCharacters().Any(x => (x.Fight is FightAgression) || (x.Fight is FightPvT));
+            return EnumerateCharacters().Any(x => (x.Fight is FightAgression) || (x.Fight is FightPvT) || (x.Fight is FightDuel));
         }
 
         public IEnumerable<Character> EnumerateCharacters()
@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         public bool IsCompatibleWith(ArenaQueueMember member)
         {
             return Math.Max(member.MinMatchableRank, MinMatchableRank) <= Math.Max(member.MaxMatchableRank, MaxMatchableRank)
-                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference && !member.IsBusy();
+                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference;
         }
     }
 }
