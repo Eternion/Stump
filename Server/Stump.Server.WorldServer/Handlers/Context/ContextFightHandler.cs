@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using NLog.Targets;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -13,6 +14,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Handlers.Context
@@ -138,6 +140,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 }
                 else
                 {
+                    //<b>%1</b> agresse <b>%2</b>
+                    foreach (var mapClient in target.Map.Clients.Where(mapClient => mapClient != client && mapClient != target.Client))
+                    {
+                        ContextRoleplayHandler.SendGameRolePlayAggressionMessage(mapClient, client.Character, target);
+                    }
+
                     var fight = Singleton<FightManager>.Instance.CreateAgressionFight(target.Map, 
                         client.Character.AlignmentSide, target.AlignmentSide);
 
