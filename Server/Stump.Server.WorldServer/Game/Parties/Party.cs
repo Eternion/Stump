@@ -8,7 +8,6 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
@@ -448,15 +447,15 @@ namespace Stump.Server.WorldServer.Game.Parties
             if (!infight)
                 return;
 
-            if (character.Fight is FightDuel || character.Fight is FightAgression)
+            /*if (character.Fight is FightAgression)
             {
                 PartyHandler.SendPartyMemberInFightMessage(Clients, this, character,
                     character.Fighter.Team == character.Fight.ChallengersTeam
                     ? PartyFightReasonEnum.ATTACK_PLAYER
                     : PartyFightReasonEnum.PLAYER_ATTACK, character.Fight);
             }
-            else if (character.Fight is FightPvM || character.Fight is FightPvT)
-                PartyHandler.SendPartyMemberInFightMessage(Clients, this, character, PartyFightReasonEnum.MONSTER_ATTACK, character.Fight);
+            else if (character.Fight is FightPvM)
+                PartyHandler.SendPartyMemberInFightMessage(Clients, this, character, PartyFightReasonEnum.MONSTER_ATTACK, character.Fight);*/
         }
 
         private void BindEvents(Character member)

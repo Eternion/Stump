@@ -108,11 +108,21 @@ namespace Stump.Server.WorldServer.Game.Arena
             return list;
         }
 
+        protected override void OnPlayerLeft(FightActor fighter)
+        {
+            base.OnPlayerLeft(fighter);
+
+            var characterFighter = fighter as CharacterFighter;
+
+            characterFighter.Character.ToggleArenaPenality();
+
+            if (characterFighter.Character.ArenaParty != null)
+                characterFighter.Character.LeaveParty(characterFighter.Character.ArenaParty);
+        }
+
         protected override void OnPlayerReadyToLeave(CharacterFighter characterFighter)
         {
             base.OnPlayerReadyToLeave(characterFighter);
-
-            characterFighter.Character.ToggleArenaPenality();
 
             if (characterFighter.Character.ArenaParty != null)
                 characterFighter.Character.LeaveParty(characterFighter.Character.ArenaParty);
