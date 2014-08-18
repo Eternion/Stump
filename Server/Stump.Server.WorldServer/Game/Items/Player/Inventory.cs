@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         [Variable]
         public static readonly int TokenTemplateId = (int)ItemIdEnum.GameMasterToken;
-        private static ItemTemplate TokenTemplate;
+        public static ItemTemplate TokenTemplate;
 
         [Initialization(typeof(ItemManager), Silent=true)]
         private static void InitializeTokenTemplate()
