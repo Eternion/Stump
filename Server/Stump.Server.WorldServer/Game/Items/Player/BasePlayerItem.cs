@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Cache;
-using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items;
@@ -29,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #region Constructors
 
-        public BasePlayerItem(Character owner, PlayerItemRecord record)
+        protected BasePlayerItem(Character owner, PlayerItemRecord record)
             : base(record)
         {
             m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);
