@@ -875,9 +875,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (effect == null)
                     continue;
 
-                effect.Value--;
+                var newEffect = new EffectDice(effect);
+                newEffect.Value--;
 
-                if (effect.Value <= 0)
+                boost.Effects.Remove(effect);
+                boost.Effects.Add(newEffect);
+
+                if (newEffect.Value <= 0)
                     RemoveItem(boost);
                 else
                     RefreshItem(boost);
