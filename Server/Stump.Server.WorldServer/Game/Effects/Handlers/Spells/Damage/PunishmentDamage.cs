@@ -19,8 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                var damages = new Fights.Damage(Dice);
-                damages.MarkTrigger = MarkTrigger;
+                var damages = new Fights.Damage(Dice) {MarkTrigger = MarkTrigger};
                 damages.GenerateDamages();
 
                 var damageRate = 0d;
@@ -35,10 +34,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
                // spell reflected
                 var buff = actor.GetBestReflectionBuff();
-                if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0 && buff.CanReflect())
+                if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                 {
                     NotifySpellReflected(actor);
-                    damages.Source = actor;
+                    damages.Source = Caster;
                     damages.ReflectedDamages = true;
                     damages.IgnoreDamageBoost = true;
                     damages.IsCritical = Critical;
@@ -58,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private void NotifySpellReflected(FightActor source)
         {
-            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, source, Caster);
+            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
     }
 }

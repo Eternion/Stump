@@ -732,11 +732,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int InflictDamage(Damage damage)
         {
-            // a bit ugly
-            var fractionGlyph = Fight.GetTriggers().FirstOrDefault(x => x is FractionGlyph && x.ContainsCell(Cell)) as FractionGlyph;
-            if (fractionGlyph != null && !(damage.MarkTrigger is FractionGlyph))
-                return fractionGlyph.DispatchDamages(damage);
-
             OnBeforeDamageInflicted(damage);
             TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
 
@@ -796,6 +791,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var permanentDamages = CalculateErosionDamage(damage.Amount);
             damage.Amount -= permanentDamages;
+
+            // a bit ugly
+            var fractionGlyph = Fight.GetTriggers().FirstOrDefault(x => x is FractionGlyph && x.ContainsCell(Cell)) as FractionGlyph;
+            if (fractionGlyph != null && IsFriendlyWith(fractionGlyph.Caster) && !(damage.MarkTrigger is FractionGlyph))
+                return fractionGlyph.DispatchDamages(damage);
+
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
 

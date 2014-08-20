@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 var target = actor;
                 var buff = actor.GetBestReflectionBuff();
-                if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0 && buff.CanReflect())
+                if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                 {
                     NotifySpellReflected(actor);
                     target = Caster;
@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         }
         private void NotifySpellReflected(FightActor source)
         {
-            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, source, Caster);
+            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
     }
 }
