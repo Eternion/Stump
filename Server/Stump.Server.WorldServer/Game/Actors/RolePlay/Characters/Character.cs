@@ -1564,25 +1564,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (m_record.ArenaDailyDate.Day == DateTime.Now.Day)
                 return;
 
-            var amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
+            var amountToken = (int)Math.Floor(ArenaDailyMaxRank/10d);
+            var amountKamas = (ArenaDailyMaxRank * 10);
 
             m_record.ArenaDailyDate = DateTime.Now;
             ArenaDailyMaxRank = 0;
             ArenaDailyMatchsCount = 0;
             ArenaDailyMatchsWon = 0;
 
-            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
+            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amountToken);
+            Inventory.AddKamas(amountKamas);
+            
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 276, amountKamas, amountToken);
         }
 
         public int ComputeWonArenaTokens(int rank)
         {
-            var amount = 0;
-             if (m_record.ArenaDailyDate.Day != DateTime.Now.Day)
-                amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
-
-            amount += (int)Math.Ceiling(rank/100d);
-
-            return amount;
+            return (int)Math.Floor(rank/100d);
         }
 
         public void UpdateArenaProperties(int rank, bool win)
@@ -1609,8 +1607,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!win)
                 return;
 
-            var amount = (int)Math.Ceiling(ArenaRank/100d);
-            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
+            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, ComputeWonArenaTokens(ArenaRank));
         }
 
         public void SetArenaPenality(TimeSpan time)

@@ -40,10 +40,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 {
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
-                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0 && buff.CanReflect())
+                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                     {
                         NotifySpellReflected(actor);
-                        Caster.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), actor, Spell)
+                        Caster.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell)
                         {
                             ReflectedDamages = true,
                             MarkTrigger = MarkTrigger,
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private void NotifySpellReflected(FightActor source)
         {
-            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, source, Caster);
+            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
 
         private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
