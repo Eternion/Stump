@@ -1875,7 +1875,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                     ( (CharacterFighter)fighter ).PersonalReadyChecker = readyChecker;
                     // Clients.Remove(character.Client); // can be instant so we remove him before to start the checker .. why ???
                     readyChecker.Start();
-
                 }
                 else
                 {
@@ -1912,7 +1911,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fightend = CheckFightEnd();
 
             if (!fightend && isfighterTurn)
-                StopTurn();
+                StopTurn();   
 
             fighter.ResetFightProperties();
             fighter.Character.RejoinMap();

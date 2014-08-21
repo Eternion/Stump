@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -11,6 +12,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 {
     public class Bank : ItemsStorage<BankItem>
     {
+        //1K per default
+        [Variable]
+        private static int PricePerItem = 1;
         public Bank(Character character)
         {
             Owner = character;
@@ -139,8 +143,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public int GetAccessPrice()
         {
-            //todo: Correct access price(1000 x different item types)
-            return 1000;
+            return (Items.Count * PricePerItem);
         }
 
         protected override void OnItemAdded(BankItem item)

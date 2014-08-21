@@ -104,6 +104,12 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
         {
             base.Open();
 
+            if (Character.CheckBankIsLoaded(() => Character.Area.AddMessage(OpenCallBack)))
+                OpenCallBack();
+        }
+
+        private void OpenCallBack()
+        {
             ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, CurrentMessage == NpcBank.Message ? new[] { NpcBank.ReplyInfos, NpcBank.ReplyConsult } : new[] { NpcBank.ReplyInfos }, Character.Bank.GetAccessPrice().ToString());
         }
 

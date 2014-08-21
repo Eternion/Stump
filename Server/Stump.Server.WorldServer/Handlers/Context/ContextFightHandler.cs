@@ -51,6 +51,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (fighter == null)
                 return;
 
+            if (fighter.GetVisibleStateFor(client.Character.Fighter) == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            {
+                //Impossible de lancer ce sort : la cellule visée n'est pas valide !
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 193);
+                return;
+            }
             client.Character.Fighter.CastSpell(spell, fighter.Cell);
         }
 

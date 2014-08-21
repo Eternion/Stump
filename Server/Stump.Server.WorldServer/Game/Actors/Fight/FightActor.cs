@@ -792,10 +792,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var permanentDamages = CalculateErosionDamage(damage.Amount);
             damage.Amount -= permanentDamages;
 
-            // a bit ugly
-            var fractionGlyph = Fight.GetTriggers().FirstOrDefault(x => x is FractionGlyph && x.ContainsCell(Cell)) as FractionGlyph;
-            if (fractionGlyph != null && IsFriendlyWith(fractionGlyph.Caster) && !(damage.MarkTrigger is FractionGlyph))
-                return fractionGlyph.DispatchDamages(damage);
+            //Fraction
+            var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
+            if (fractionBuff != null && !(damage is FractionDamage))
+                return fractionBuff.DispatchDamages(damage);
 
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
@@ -944,6 +944,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 default:
                     return damage;
             }
+
+            percentResistance = percentResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : percentResistance;
+            fixResistance = fixResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : fixResistance;
 
             return (int)( ( 1 - percentResistance / 100d ) * ( damage - fixResistance ) ) - (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
         }
@@ -1566,8 +1569,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightOutcomeEnum GetFighterOutcome()
         {
-            if (HasLeft())
-                return FightOutcomeEnum.RESULT_LOST;
+            /*if (HasLeft())
+                return FightOutcomeEnum.RESULT_LOST;*/
 
             var teamDead = Team.AreAllDead();
             var opposedTeamDead = OpposedTeam.AreAllDead();

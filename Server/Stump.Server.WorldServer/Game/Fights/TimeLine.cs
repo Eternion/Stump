@@ -65,10 +65,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             Fighters.Remove(fighter);
 
-            if (index <= Index && index > 0)
-            {
+            if (index > Index)
+                return true;
+
+            if (index > 0)
                 Index--;
-            }
+            else
+                Index = Fighters.Count - 1;
 
             return true;
         }
