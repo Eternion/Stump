@@ -86,8 +86,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected override IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver, out IFightResult leaverResult)
         {
-            var opposedTeamRank = (int)leaver.OpposedTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
-            var rankLose = ArenaRankFormulas.AdjustRank(leaver.Character.ArenaRank, opposedTeamRank, false);
+            var rankLose = CalculateRankLoose(leaver);
             leaverResult = null;
 
             var list = new List<IFightResult>();
@@ -97,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                     ? FightOutcomeEnum.RESULT_LOST
                     : FightOutcomeEnum.RESULT_VICTORY;
 
-                var result = new ArenaFightResult(fighter, outcome, fighter.Loot, fighter == leaver ? rankLose : 0);
+                var result = new ArenaFightResult(fighter, outcome, new FightLoot(), fighter == leaver ? rankLose : 0, false);
 
                 if (fighter == leaver)
                     leaverResult = result;
@@ -113,11 +112,19 @@ namespace Stump.Server.WorldServer.Game.Arena
             base.OnPlayerLeft(fighter);
 
             var characterFighter = fighter as CharacterFighter;
+            if (characterFighter == null)
+                return;
 
             characterFighter.Character.ToggleArenaPenality();
 
             if (characterFighter.Character.ArenaParty != null)
                 characterFighter.Character.LeaveParty(characterFighter.Character.ArenaParty);
+
+            if (State != FightState.Placement)
+                return;
+
+            var rankLoose = CalculateRankLoose(characterFighter);
+            characterFighter.Character.UpdateArenaProperties(rankLoose, false);
         }
 
         protected override void OnPlayerReadyToLeave(CharacterFighter characterFighter)
@@ -131,6 +138,12 @@ namespace Stump.Server.WorldServer.Game.Arena
         protected override bool CanCancelFight()
         {
             return false;
+        }
+
+        protected int CalculateRankLoose(CharacterFighter character)
+        {
+            var opposedTeamRank = (int)character.OpposedTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
+            return ArenaRankFormulas.AdjustRank(character.Character.ArenaRank, opposedTeamRank, false);
         }
     }
 }

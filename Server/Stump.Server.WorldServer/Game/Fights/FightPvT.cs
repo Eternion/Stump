@@ -278,15 +278,15 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var results = new List<IFightResult>();
 
-            var looters = ChallengersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
-            
+            var looters = ChallengersTeam.GetAllFightersWithLeavers<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
+
             results.AddRange(looters);
             results.AddRange(DefendersTeam.Fighters.Select(entry => entry.GetFightResult()));
 
             if (Winners != ChallengersTeam)
                 return results;
 
-            var teamPP = ChallengersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            var teamPP = ChallengersTeam.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
             var kamas = TaxCollector.Kamas;
 
             foreach (var looter in looters)

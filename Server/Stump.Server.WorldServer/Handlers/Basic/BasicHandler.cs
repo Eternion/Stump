@@ -40,13 +40,27 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             {
                 client.Send(new BasicWhoIsNoMatchMessage(message.search));
             }
-                /* Send info about it */
             else
             {
+                /* Send info about it */
                 client.Send(new BasicWhoIsMessage(message.search == client.Character.Name,
                                                   (sbyte) character.UserGroup.Role,
                                                   character.Client.WorldAccount.Nickname, character.Name,
                                                   (short) character.Map.SubArea.Id));
+            }
+        }
+
+        [WorldHandler(NumericWhoIsRequestMessage.Id)]
+        public static void HandleNumericWhoIsRequestMessage(WorldClient client, NumericWhoIsRequestMessage message)
+        {
+            /* Get character */
+            var character = World.Instance.GetCharacter(message.playerId);
+
+            /* check null */
+            if (character != null)
+            {
+                /* Send info about it */
+                client.Send(new NumericWhoIsMessage(character.Id, character.Account.Id));
             }
         }
 

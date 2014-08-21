@@ -88,6 +88,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null)
                 GuildMember.OnCharacterConnected(this);
 
+            //Arena
+            CheckArenaDailyProperties();
+
             if (PrestigeRank > 0 && PrestigeManager.Instance.PrestigeEnabled)
             {
                 var item = GetPrestigeItem();
@@ -1580,7 +1583,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public int ComputeWonArenaTokens(int rank)
         {
-            return (int)Math.Floor(rank/100d);
+            var result = (int) Math.Floor(rank/100d);
+            return result > 0 ? result : 1;
+        }
+
+        public int ComputeWonArenaKamas()
+        {
+            return (int)Math.Floor((50 * (Level * (Level / 200d))));
         }
 
         public void UpdateArenaProperties(int rank, bool win)
@@ -1608,6 +1617,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
 
             Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, ComputeWonArenaTokens(ArenaRank));
+            Inventory.AddKamas(ComputeWonArenaKamas());
         }
 
         public void SetArenaPenality(TimeSpan time)

@@ -341,7 +341,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\MPDebuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\SkipTurn.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\RestoreHpPercent.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Marks\DamageSharing.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\DamageSharing.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rewind.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
@@ -379,6 +379,7 @@
     <Compile Include="Game\Exchanges\Trades\TradeItem.cs" />
     <Compile Include="Game\Exchanges\Trades\Trader.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\DodgeBuff.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\FractionBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
