@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -22,10 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         public override bool Apply()
         {
-            foreach (var actor in GetAffectedActors())
-            {
-                var buff = AddTriggerBuff(actor, true, BuffTriggerType.TURN_END, OnBuffTriggered);
-            }
+            GetAffectedActors().Select(actor => AddTriggerBuff(actor, true, BuffTriggerType.TURN_END, OnBuffTriggered));
 
             return true;
         }
@@ -38,7 +36,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 Buff = buff,
                 IgnoreDamageReduction = true,
                 School = GetEffectSchool(buff.Dice.EffectId),
-                MarkTrigger = MarkTrigger
+                MarkTrigger = MarkTrigger,
+                IsCritical = Critical
             };
 
             damages.BaseMaxDamages = buff.Target.UsedMP * damages.BaseMaxDamages; 

@@ -18,7 +18,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         {
             logger.Debug("Apply spells fix");
 
+            #region FECA
+
+            #endregion
+
             #region IOP
+
             // iop's wrath (159)
             // increase buff duration to 5
             FixEffectOnAllLevels(159, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 5);
@@ -37,6 +42,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // bond (142)
             // #2 effect = enemies
             FixEffectOnAllLevels(142, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            // duel (144)
+            // #3 effect = Only Self
+            // #4 effect = Only Self
+            FixEffectOnAllLevels(144, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(144, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
             #endregion
 
             #region SADIDA
@@ -72,6 +84,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region ENUTROF
+            // corruption (59)
+            // effect #4 = only self (state exhausted)
+            FixEffectOnAllLevels(59, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             #endregion
 
             #region OSAMODAS
@@ -88,6 +103,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region ECAFLIP
+
             // heads or tails (102)
             // #1 + #3 = enemies
             // #2 + #4 = allies
@@ -96,7 +112,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(102, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
             FixEffectOnAllLevels(102, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
 
+            // Smell (115)
+            // Add MP and Sub AP round 1
+            // Add AP and Sub MP round 2
+
+            #endregion
+
             #region TOFU
+
             // béco du tofu (1999)
             // steal agility
             // target only self -> all
@@ -105,12 +128,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
-            #endregion
-
             #region SRAM
+
             // chakra concentration (62)
             // duration steal = 0
             FixEffectOnAllLevels(62, EffectsEnum.Effect_StealHPFire, (level, effect, critical) => effect.Duration = 0);
+
             #endregion
         }
 

@@ -142,7 +142,13 @@ namespace ArkalysPlugin.Npcs
                     Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
 
+                    var points = (Character.Spells.CountSpentBoostPoint() + Character.SpellsPoints);
+
                     Character.Spells.ForgetAllSpells();
+                    Character.SpellsPoints = (ushort)(points >= 0 ? points : 0);
+                    Character.RefreshStats();
+
+                    Character.SaveLater();
                 }
             }
             else if (replyId == NpcRestatScript.ReplySpellForgetPanelId)

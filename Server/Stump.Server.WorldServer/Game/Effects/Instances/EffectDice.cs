@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override EffectInstance GetEffectInstance()
         {
-            return new EffectInstanceDice()
+            return new EffectInstanceDice
             {
                 effectId = (uint)Id,
                 targetId = (int)Targets,
@@ -101,22 +101,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             var rand = new AsyncRandom();
 
-            short max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
-            short min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
+            var max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
+            var min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
 
             if (type == EffectGenerationType.MaxEffects)
                 return new EffectInteger(Id, Template.Operator != "-" ? max : min, this);
             if (type == EffectGenerationType.MinEffects)
                 return new EffectInteger(Id, Template.Operator != "-" ? min : max, this);
 
-            if (min == 0)
-                if (max == 0)
-                    return new EffectInteger(Id, m_value, this);
-                else                    
-                    return new EffectInteger(Id, max, this);
+            if (min != 0)
+                return new EffectInteger(Id, (short) rand.Next(min, max + 1), this);
 
-
-            return new EffectInteger(Id, (short)rand.Next(min, max + 1), this);
+            return max == 0 ? new EffectInteger(Id, m_value, this) : new EffectInteger(Id, max, this);
         }
 
         protected override void InternalSerialize(ref BinaryWriter writer)
@@ -170,7 +166,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         {
             unchecked
             {
-                int result = base.GetHashCode();
+                var result = base.GetHashCode();
                 result = (result*397) ^ m_diceface;
                 result = (result*397) ^ m_dicenum;
                 return result;

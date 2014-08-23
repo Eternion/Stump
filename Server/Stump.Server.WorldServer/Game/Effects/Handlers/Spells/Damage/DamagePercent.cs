@@ -36,17 +36,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     damage.Amount = (int)((actor.MaxLifePoints * (damage.Amount / 100d)));
                     damage.IgnoreDamageBoost = true;
                     damage.MarkTrigger = MarkTrigger;
+                    damage.IsCritical = Critical;
 
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
                     if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                     {
                         NotifySpellReflected(actor);
-                        damage.Source = actor;
+                        damage.Source = Caster;
                         damage.ReflectedDamages = true;
                         Caster.InflictDamage(damage);
 
-                        actor.RemoveAndDispellBuff(buff);
+                        if (buff.Duration <= 0)
+                            actor.RemoveAndDispellBuff(buff);
                     }
                     else
                     {
@@ -60,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private void NotifySpellReflected(FightActor source)
         {
-            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, source, Caster);
+            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
 
         private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)

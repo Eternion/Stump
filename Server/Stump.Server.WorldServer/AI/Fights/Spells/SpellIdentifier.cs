@@ -112,8 +112,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_AddVitality:
                 case EffectsEnum.Effect_AddVitalityPercent:
                 case EffectsEnum.Effect_Dodge:
-                case EffectsEnum.Effect_IncreaseAPAvoid:
-                case EffectsEnum.Effect_IncreaseMPAvoid:
+                case EffectsEnum.Effect_AddDodgeAPProbability:
+                case EffectsEnum.Effect_AddDodgeMPProbability:
                 case EffectsEnum.Effect_Invisibility:
                 case EffectsEnum.Effect_ReflectSpell:
                 case EffectsEnum.Effect_RegainAP:
@@ -174,8 +174,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_277:
                 case EffectsEnum.Effect_278:
                 case EffectsEnum.Effect_279:
-                case EffectsEnum.Effect_411:
-                case EffectsEnum.Effect_413:
+                case EffectsEnum.Effect_SubAPAttack:
+                case EffectsEnum.Effect_SubMPAttack:
                 case EffectsEnum.Effect_SubCriticalDamageBonus:
                 case EffectsEnum.Effect_SubPushDamageReduction:
                 case EffectsEnum.Effect_SubCriticalDamageReduction:

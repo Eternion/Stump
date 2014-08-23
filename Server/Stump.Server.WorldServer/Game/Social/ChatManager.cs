@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Social
         /// <summary>
         ///   Delegate for parsing incomming in game messages.
         /// </summary>
-        public delegate void ChatParserDelegate(WorldClient client, string msg);
+        public delegate void ChatParserDelegate(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems);
 
         #endregion
 
@@ -128,7 +128,7 @@ namespace Stump.Server.WorldServer.Game.Social
 
         #region Handlers
 
-        public void HandleChat(WorldClient client, ChatActivableChannelsEnum channel, string message)
+        public void HandleChat(WorldClient client, ChatActivableChannelsEnum channel, string message, IEnumerable<ObjectItem> objectItems = null)
         {
             if (!CanUseChannel(client.Character, channel))
                 return;
@@ -151,36 +151,7 @@ namespace Stump.Server.WorldServer.Game.Social
                 else
                 {
                     if (client.Character.ChatHistory.RegisterAndCheckFlood(new ChatEntry(message, channel, DateTime.Now)))
-                        ChatHandlers[channel](client, message);
-                }
-            }
-        }
-
-        public void HandleChat(WorldClient client, ChatActivableChannelsEnum channel, string message, IEnumerable<ObjectItem> objectItems)
-        {
-            if (!CanUseChannel(client.Character, channel))
-                return;
-
-            if (!ChatHandlers.ContainsKey(channel))
-                return;
-
-            if (client.Character.IsMuted())
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 124,
-                                                        (int)client.Character.GetMuteRemainingTime().TotalSeconds);
-            else
-            {
-                if (!client.Character.ChatHistory.RegisterAndCheckFlood(new ChatEntry(message, channel, DateTime.Now)))
-                    return;
-
-                if (channel == ChatActivableChannelsEnum.CHANNEL_ARENA || channel == ChatActivableChannelsEnum.CHANNEL_GUILD
-                    || channel == ChatActivableChannelsEnum.CHANNEL_PARTY || channel == ChatActivableChannelsEnum.CHANNEL_SALES
-                    || channel == ChatActivableChannelsEnum.CHANNEL_TEAM || channel == ChatActivableChannelsEnum.CHANNEL_ADMIN)
-                {
-                    ChatHandler.SendChatServerWithObjectMessage(client, client.Character, channel, message, "", objectItems);
-                }
-                else
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
+                        ChatHandlers[channel](client, message, objectItems);
                 }
             }
         }
@@ -243,17 +214,28 @@ namespace Stump.Server.WorldServer.Game.Social
             ChatHandler.SendChatServerMessage(client, sender, channel, message);
         }
 
-        public void SayGlobal(WorldClient client, string msg)
+        private static void SendChatServerWithObjectMessage(IPacketReceiver client, INamedActor sender, ChatActivableChannelsEnum channel, string message, IEnumerable<ObjectItem> objectItems)
+        {
+            ChatHandler.SendChatServerWithObjectMessage(client, sender, channel, message, "", objectItems);
+        }
+
+        public void SayGlobal(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL))
                 return;
 
+            var clients = client.Character.Map.Clients;
+
             if (client.Character.IsFighting())
-                SendChatServerMessage(client.Character.Fight.Clients, client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+                clients = client.Character.Fight.Clients;
             else if (client.Character.IsSpectator())
-                SendChatServerMessage(client.Character.Fight.SpectatorClients, client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+                clients = client.Character.Fight.SpectatorClients;
+
+            if (objectItems != null)
+                //Impossible d'afficher des objets dans ce canal.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
             else
-                SendChatServerMessage(client.Character.Map.Clients, client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
+                SendChatServerMessage(clients, client.Character, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
         }
 
         public void SayGlobal(NamedActor actor, string msg)
@@ -261,19 +243,24 @@ namespace Stump.Server.WorldServer.Game.Social
             SendChatServerMessage(actor.CharacterContainer.Clients, actor, ChatActivableChannelsEnum.CHANNEL_GLOBAL, msg);
         }
 
-        public void SayAdministrators(WorldClient client, string msg)
+        public void SayAdministrators(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (client.UserGroup.Role < AdministratorChatMinAccess)
                 return;
 
             World.Instance.ForEachCharacter(entry =>
             {
-                if (CanUseChannel(entry, ChatActivableChannelsEnum.CHANNEL_ADMIN))
-                    ChatHandler.SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ADMIN, msg);
+                if (!CanUseChannel(entry, ChatActivableChannelsEnum.CHANNEL_ADMIN))
+                    return;
+
+                if (objectItems != null)
+                    SendChatServerWithObjectMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ADMIN, msg, objectItems);
+                else
+                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ADMIN, msg);
             });
         }
 
-        public void SayParty(WorldClient client, string msg)
+        public void SayParty(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY))
             {
@@ -281,9 +268,15 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
             }
 
-            client.Character.Party.ForEach(entry => SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg));
+            client.Character.Party.ForEach(entry =>
+            {
+                if (objectItems != null)
+                    SendChatServerWithObjectMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg, objectItems);
+                else
+                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_PARTY, msg);
+            });
         }
-        public void SayArena(WorldClient client, string msg)
+        public void SayArena(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA))
             {
@@ -291,10 +284,15 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
             }
 
-            client.Character.ArenaParty.ForEach(entry => SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA, msg));
+            client.Character.ArenaParty.ForEach(entry => { 
+                if (objectItems != null)
+                    SendChatServerWithObjectMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA, msg, objectItems);
+                else
+                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_ARENA, msg);
+            });
         }
 
-        public void SayGuild(WorldClient client, string msg)
+        public void SayGuild(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD))
             {
@@ -302,10 +300,16 @@ namespace Stump.Server.WorldServer.Game.Social
                 return;
             }
 
-            client.Character.Guild.Clients.ForEach(entry => SendChatServerMessage(entry, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg));
+            client.Character.Guild.Clients.ForEach(entry =>
+            {
+                if (objectItems != null)
+                    SendChatServerWithObjectMessage(entry, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg, objectItems);
+                else
+                    SendChatServerMessage(entry, client.Character, ChatActivableChannelsEnum.CHANNEL_GUILD, msg);
+            });
         }
 
-        public void SayTeam(WorldClient client, string msg)
+        public void SayTeam(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_TEAM))
             {
@@ -315,26 +319,40 @@ namespace Stump.Server.WorldServer.Game.Social
 
             foreach (var fighter in client.Character.Fighter.Team.GetAllFighters<CharacterFighter>())
             {
-                SendChatServerMessage(fighter.Character.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_TEAM, msg);
+                if (objectItems != null)
+                    SendChatServerWithObjectMessage(fighter.Character.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_TEAM, msg, objectItems);
+                else
+                    SendChatServerMessage(fighter.Character.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_TEAM, msg);
             }
         }
 
-        public void SaySeek(WorldClient client, string msg)
+        public void SaySeek(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK))
                 return;
 
             World.Instance.ForEachCharacter(entry =>
-                SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK, msg));
+            {
+                if (objectItems != null)
+                    //Impossible d'afficher des objets dans ce canal.
+                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 114);
+                else
+                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SEEK, msg);
+            });
         }
 
-        public void SaySales(WorldClient client, string msg)
+        public void SaySales(WorldClient client, string msg, IEnumerable<ObjectItem> objectItems)
         {
             if (!CanUseChannel(client.Character, ChatActivableChannelsEnum.CHANNEL_SALES))
                 return;
 
             World.Instance.ForEachCharacter(entry =>
-                SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg));
+            {
+                if (objectItems != null)
+                    SendChatServerWithObjectMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg, objectItems);
+                else
+                    SendChatServerMessage(entry.Client, client.Character, ChatActivableChannelsEnum.CHANNEL_SALES, msg);
+            });
         }
 
         public static bool IsGlobalChannel(ChatActivableChannelsEnum channel)

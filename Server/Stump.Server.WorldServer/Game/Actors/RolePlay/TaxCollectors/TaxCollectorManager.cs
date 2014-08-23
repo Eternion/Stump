@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Stump.Core.Extensions;
 using Stump.Core.Pool;
@@ -93,12 +94,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return;
             }
 
-            /* */
-            /*if (character.Guild.TaxCollectors.Any(x => x.SubArea == character.SubArea))
+            if (((double)character.Guild.TaxCollectors.Count(x => x.SubArea == character.SubArea) /
+                          character.SubArea.Maps.Count()) * 100 > TaxCollectorNpc.MaxTaxCollectorsPercentPerArea)
             {
-                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
+                character.SendServerMessage("Impossible de poser un percepteur, vous possédez déjà 25% de la zone.", Color.Red);
                 return;
-            }*/
+            }
 
             if (character.Inventory.Kamas < character.Guild.HireCost)
             {

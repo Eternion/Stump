@@ -353,11 +353,11 @@
         /// <summary>
         /// Increases chance of avoiding AP loss by #1{~1~2 to }#2%
         /// </summary>
-        Effect_IncreaseAPAvoid = 160,
+        Effect_AddDodgeAPProbability = 160,
         /// <summary>
         /// Increases chance of avoiding MP loss by #1{~1~2 to }#2%
         /// </summary>
-        Effect_IncreaseMPAvoid = 161,
+        Effect_AddDodgeMPProbability = 161,
         /// <summary>
         /// -#1{~1~2 to}#2 chance of avoiding AP losses
         /// </summary>
@@ -789,19 +789,19 @@
         /// <summary>
         /// +#1{~1~2 to }#2 AP attack
         /// </summary>
-        Effect_410 = 410,
+        Effect_AddAPAttack = 410,
         /// <summary>
         /// -#1{~1~2 to }#2 AP attack
         /// </summary>
-        Effect_411 = 411,
+        Effect_SubAPAttack = 411,
         /// <summary>
         /// +#1{~1~2 to }#2 MP attack
         /// </summary>
-        Effect_412 = 412,
+        Effect_AddMPAttack = 412,
         /// <summary>
         /// -#1{~1~2 to }#2 MP attack
         /// </summary>
-        Effect_413 = 413,
+        Effect_SubMPAttack = 413,
         /// <summary>
         /// +#1{~1~2 to }#2 pushback damage
         /// </summary>
@@ -1787,23 +1787,23 @@
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Neutral damage
         /// </summary>
-        Effect_1092 = 1092,
+        Effect_DamageNeutralPerHPEroded = 1092,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Air damage
         /// </summary>
-        Effect_1093 = 1093,
+        Effect_DamageAirPerHPEroded = 1093,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Fire damage
         /// </summary>
-        Effect_1094 = 1094,
+        Effect_DamageFirePerHPEroded = 1094,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Water damage
         /// </summary>
-        Effect_1095 = 1095,
+        Effect_DamageWaterPerHPEroded = 1095,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Earth damage
         /// </summary>
-        Effect_1096 = 1096,
+        Effect_DamageEarthPerHPEroded = 1096,
         /// <summary>
         /// Creates illusions
         /// </summary>

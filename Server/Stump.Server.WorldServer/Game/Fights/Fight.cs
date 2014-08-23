@@ -56,6 +56,16 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        bool IsPvP
+        {
+            get;
+        }
+
+        bool IsMultiAccountRestricted
+        {
+            get;
+        }
+
         FightState State
         {
             get;
@@ -385,6 +395,16 @@ namespace Stump.Server.WorldServer.Game.Fights
         public abstract FightTypeEnum FightType
         {
             get;
+        }
+
+        public abstract bool IsPvP
+        {
+            get;
+        }
+
+        public virtual bool IsMultiAccountRestricted
+        {
+            get { return false; }
         }
 
         public FightState State
@@ -1642,7 +1662,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnLifePointsChanged(FightActor actor, int delta, int permanentDamages, FightActor from)
         {
             var loss = (short) (-delta);
-            if (delta == 0)
+            if (delta == 0 && permanentDamages == 0)
                 return;
 
             ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
@@ -1855,7 +1875,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                     ( (CharacterFighter)fighter ).PersonalReadyChecker = readyChecker;
                     // Clients.Remove(character.Client); // can be instant so we remove him before to start the checker .. why ???
                     readyChecker.Start();
-
                 }
                 else
                 {
@@ -1892,7 +1911,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fightend = CheckFightEnd();
 
             if (!fightend && isfighterTurn)
-                StopTurn();
+                StopTurn();   
 
             fighter.ResetFightProperties();
             fighter.Character.RejoinMap();

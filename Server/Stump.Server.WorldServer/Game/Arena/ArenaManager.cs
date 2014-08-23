@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Arena
@@ -20,6 +21,8 @@ namespace Stump.Server.WorldServer.Game.Arena
         [Variable] public static int MaxPlayersPerFights = 3;
 
         [Variable] public static int ArenaMinLevel = 50;
+
+        [Variable] public static int ArenaMaxLevelDifference = 40;
         /// <summary>
         /// in ms
         /// </summary>
@@ -34,6 +37,12 @@ namespace Stump.Server.WorldServer.Game.Arena
         /// in minutes
         /// </summary>
         [Variable] public static int ArenaPenalityTime = 30;
+
+        /// <summary>
+        /// in minutes
+        /// </summary>
+        [Variable]
+        public static int ArenaWaitTime = 10;
 
         public ItemTemplate TokenItemTemplate
         {
@@ -68,10 +77,15 @@ namespace Stump.Server.WorldServer.Game.Arena
                 return false;
 
             //Already in queue
-            if (m_queue.Exists(x => x.Character == character))
+            if (IsInQueue(character))
                 return false;
 
             return character.CanEnterArena();
+        }
+
+        public bool IsInQueue(Character character)
+        {
+            return m_queue.Exists(x => x.Character == character);
         }
 
         public void AddToQueue(Character character)
@@ -105,6 +119,12 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(party.Clients, true,
                 PvpArenaStepEnum.ARENA_STEP_REGISTRED, PvpArenaTypeEnum.ARENA_TYPE_3VS3);
+
+            foreach (var client in party.Clients.Where(client => client != party.Leader.Client))
+            {
+                //%1 vous a inscrit à un combat en Kolizéum.
+                BasicHandler.SendTextInformationMessage(client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 272, party.Leader.Name);
+            }
         }
 
         public void RemoveFromQueue(ArenaParty party)
@@ -120,7 +140,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             List<ArenaQueueMember> queue;
             lock (m_queue)
             {
-                queue = m_queue.ToList();
+                queue = m_queue.Where(x => !x.IsBusy()).ToList();
             }
 
             ArenaQueueMember current;

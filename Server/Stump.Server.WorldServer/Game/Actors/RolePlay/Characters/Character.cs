@@ -88,6 +88,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (GuildMember != null)
                 GuildMember.OnCharacterConnected(this);
 
+            //Arena
+            CheckArenaDailyProperties();
+
             if (PrestigeRank > 0 && PrestigeManager.Instance.PrestigeEnabled)
             {
                 var item = GetPrestigeItem();
@@ -1121,7 +1124,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set
             {
                 m_record.Honor = value > ExperienceManager.Instance.HighestGradeHonor ? ExperienceManager.Instance.HighestGradeHonor : value;
-                if (value < UpperBoundHonor || AlignmentGrade >= ExperienceManager.Instance.HighestGrade)
+                if ((value > LowerBoundHonor && value < UpperBoundHonor))
                     return;
 
                 var lastGrade = AlignmentGrade;
@@ -1244,9 +1247,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnAligmenentSideChanged()
         {
-            Map.Refresh(this);
-            RefreshStats();
             TogglePvPMode(false);
+            Map.Refresh(this);
 
             Honor = 0;
             Dishonor = 0;
@@ -1554,22 +1556,41 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
+            if (Fight is FightAgression || Fight is FightPvT)
+                return false;
+
             return true;
         }
 
         public void CheckArenaDailyProperties()
         {
-            if (m_record.ArenaDailyDate.Day == DateTime.Now.Day)
+            if (m_record.ArenaDailyDate.Day == DateTime.Now.Day || ArenaDailyMaxRank <= 0)
                 return;
 
-            var amount = (int)Math.Ceiling(ArenaDailyMaxRank/10d);
+            var amountToken = (int)Math.Floor(ArenaDailyMaxRank/10d);
+            var amountKamas = (ArenaDailyMaxRank * 10);
 
             m_record.ArenaDailyDate = DateTime.Now;
             ArenaDailyMaxRank = 0;
             ArenaDailyMatchsCount = 0;
             ArenaDailyMatchsWon = 0;
 
-            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
+            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amountToken);
+            Inventory.AddKamas(amountKamas);
+            
+            //SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 276, amountKamas, amountToken);
+            DisplayNotification(NotificationEnum.KOLIZÉUM, amountKamas, amountToken);
+        }
+
+        public int ComputeWonArenaTokens(int rank)
+        {
+            var result = (int) Math.Floor(rank/100d);
+            return result > 0 ? result : 1;
+        }
+
+        public int ComputeWonArenaKamas()
+        {
+            return (int)Math.Floor((50 * (Level * (Level / 200d))));
         }
 
         public void UpdateArenaProperties(int rank, bool win)
@@ -1596,8 +1617,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!win)
                 return;
 
-            var amount = (int)Math.Ceiling(ArenaRank/100d);
-            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amount);
+            Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, ComputeWonArenaTokens(ArenaRank));
+            Inventory.AddKamas(ComputeWonArenaKamas());
         }
 
         public void SetArenaPenality(TimeSpan time)
@@ -1611,6 +1632,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void ToggleArenaPenality()
         {
             SetArenaPenality(TimeSpan.FromMinutes(ArenaManager.ArenaPenalityTime));
+        }
+
+        public void ToggleArenaWaitTime()
+        {
+            SetArenaPenality(TimeSpan.FromMinutes(ArenaManager.ArenaWaitTime));
         }
 
         public int ArenaRank
@@ -1672,12 +1698,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 var date = Account.LastConnection.Value;
 
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 193,
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 152,
                     date.Year,
                     date.Month,
                     date.Day,
                     date.Hour,
-                    date.Minute.ToString("00"));
+                    date.Minute.ToString("00"),
+                    Account.LastConnectionIp);
+
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 153, Client.IP);
             }
 
             if (m_earnKamasInMerchant > 0)
@@ -1855,6 +1884,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}, true));
         }
 
+        public void DisplayNotification(NotificationEnum notification, params object[] parameters)
+        {
+            Client.Send(new NotificationByServerMessage((ushort)notification, parameters.Select(entry => entry.ToString()), true));
+        }
+
         public void DisplayNotification(Notification notification)
         {
             notification.Display();
@@ -1915,7 +1949,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Party
 
-        public void Invite(Character target, PartyTypeEnum type)
+        public void Invite(Character target, PartyTypeEnum type, bool force = false)
         {
             var created = false;
             Party party;
@@ -1952,7 +1986,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             target.m_partyInvitations.Add(party.Id, invitation);
 
             party.AddGuest(target);
-            invitation.Display();
+
+            if (force)
+                invitation.Accept();
+            else
+                invitation.Display();
         }
 
         public PartyInvitation GetInvitation(int id)
@@ -2012,7 +2050,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void LeaveParty(Party party)
         {
-            if (!IsInParty(party.Id))
+            if (!IsInParty(party.Id) || !party.CanLeaveParty(this))
                 return;
 
             party.MemberRemoved -= OnPartyMemberRemoved;
@@ -2060,14 +2098,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             var dest = GetSpawnPoint() ?? Breed.GetStartPosition();
 
-            // use nextmap to update correctly the areas changements
-            // if next map is already set we do not change it
-            if (NextMap == null)
-            {
-                NextMap = dest.Map;
-                Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
-                Direction = dest.Direction;
-            }
+            NextMap = dest.Map;
+            Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
+            Direction = dest.Direction;
 
             // energy lost go here
             Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
@@ -2130,7 +2163,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.Map != Map || !Map.AllowAggression)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
-            if (target.Client.IP == Client.IP)
+            if (string.Equals(target.Client.IP, Client.IP))
                 return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             if (Level - target.Level > 20)

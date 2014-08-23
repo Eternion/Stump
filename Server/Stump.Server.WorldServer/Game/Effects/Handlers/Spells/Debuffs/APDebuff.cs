@@ -30,8 +30,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                 {
                     NotifySpellReflected(actor);
-                    actor.RemoveAndDispellBuff(buff);
                     target = Caster;
+
+                    if (buff.Duration <= 0)
+                        actor.RemoveAndDispellBuff(buff);
                 }
 
                 if (Effect.Duration > 1)
@@ -48,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
         }
         private void NotifySpellReflected(FightActor source)
         {
-            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, source, Caster);
+            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
     }
 }
