@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #region Constructors
 
-        public BasePlayerItem(Character owner, PlayerItemRecord record)
+        protected BasePlayerItem(Character owner, PlayerItemRecord record)
             : base(record)
         {
             m_objectItemValidator = new ObjectValidator<ObjectItem>(BuildObjectItem);

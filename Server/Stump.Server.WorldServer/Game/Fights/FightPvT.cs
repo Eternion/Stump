@@ -68,7 +68,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return FightTypeEnum.FIGHT_TYPE_PvT; }
         }
 
-        
+        public override bool IsPvP
+        {
+            get { return true; }
+        }
+        public override bool IsMultiAccountRestricted
+        {
+            get { return true; }
+        }
+
         public override void StartPlacement()
         {
             base.StartPlacement();
@@ -253,9 +261,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             else
                 TaxCollector.TaxCollectorNpc.Delete();
 
-            foreach (var defender in DefendersTeam.Fighters.Where(defender => m_defendersMaps.ContainsKey(defender)))
+            foreach (var defender in DefendersTeam.Fighters.Where(defender => m_defendersMaps.ContainsKey(defender)).OfType<CharacterFighter>())
             {
-                defender.NextMap = m_defendersMaps[defender];
+                defender.Character.NextMap = m_defendersMaps[defender];
+            }
+
+            foreach (var defender in DefendersQueue)
+            {
+                defender.ResetDefender();
             }
 
             base.OnWinnersDetermined(winners, losers, draw);
@@ -265,15 +278,15 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var results = new List<IFightResult>();
 
-            var looters = ChallengersTeam.GetAllFighters<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
-            
+            var looters = ChallengersTeam.GetAllFightersWithLeavers<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
+
             results.AddRange(looters);
-            results.AddRange(DefendersTeam.Fighters.Select(entry => entry.GetFightResult()));
+            results.AddRange(DefendersTeam.GetAllFightersWithLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
 
             if (Winners != ChallengersTeam)
                 return results;
 
-            var teamPP = ChallengersTeam.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            var teamPP = ChallengersTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
             var kamas = TaxCollector.Kamas;
 
             foreach (var looter in looters)

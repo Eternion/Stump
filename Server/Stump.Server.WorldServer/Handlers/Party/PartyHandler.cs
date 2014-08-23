@@ -1,4 +1,5 @@
 using System.Linq;
+using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -6,8 +7,10 @@ using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Parties;
+using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 {
@@ -53,6 +56,13 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (target.IsAway)
             {
                 SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY);
+                return;
+            }
+
+            if (ArenaManager.Instance.IsInQueue(client.Character))
+            {
+                //Vous ne pouvez pas inviter %1 en groupe de Kolizéum car vous êtes en préparation d'un combat de Kolizéum.
+                BasicHandler.SendTextInformationMessage(client.Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 353, target.Name);
                 return;
             }
 

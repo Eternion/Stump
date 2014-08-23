@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -28,6 +29,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                 if (!Leader.Character.IsInParty(PartyTypeEnum.PARTY_TYPE_CLASSICAL) || !Leader.Character.Party.IsInGroup(character))
                     return FighterRefusedReasonEnum.TEAM_LIMITED_BY_MAINCHARACTER;
             }
+
+            if (Fight.IsMultiAccountRestricted && Fighters.Where(x => x is CharacterFighter).Any(x => (x as CharacterFighter).Character.Client.IP == character.Client.IP))
+                return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             return base.CanJoin(character);
         }

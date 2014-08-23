@@ -2,7 +2,6 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
-using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using MonsterGrade = Stump.Server.WorldServer.Database.Monsters.MonsterGrade;
 

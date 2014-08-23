@@ -13,6 +13,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         protected int ValueEquiped;
         protected int ValueGiven;
         private int? m_limit;
+        private readonly bool m_limitEquippedOnly;
 
         public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, StatsFormulasHandler formulas = null)
         {
@@ -21,10 +22,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Name = name;
             Owner = owner;
         }
-        public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, int limit)
+        public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, int limit, bool limitEquippedOnly = false)
         {
             ValueBase = valueBase;
             m_limit = limit;
+            m_limitEquippedOnly = limitEquippedOnly;
             Name = name;
             Owner = owner;
         }
@@ -90,10 +92,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             {
                 var totalNoBoost = Base + Equiped;
 
-                if (Limit != null && totalNoBoost > Limit.Value)
+                if (m_limitEquippedOnly && Limit != null && totalNoBoost > Limit.Value)
                     totalNoBoost = Limit.Value;
 
-                return totalNoBoost + Given + Context;
+                var total = totalNoBoost + Given + Context;
+
+                if (Limit != null && !m_limitEquippedOnly && total > Limit.Value)
+                    total = Limit.Value;
+
+                return total;
             }
         }
 

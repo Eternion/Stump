@@ -16,11 +16,8 @@ namespace Stump.Server.WorldServer.Game.Items
             lock (Locker)
             {
                 var database = WorldServer.Instance.DBAccessor.Database;
-                foreach (var item in Items)
+                foreach (var item in Items.Where(item => !item.Value.IsTemporarily))
                 {
-                    if (item.Value.IsTemporarily)
-                        continue;
-
                     if (item.Value.Record.IsNew)
                     {
                         database.Insert(item.Value.Record);

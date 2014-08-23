@@ -37,9 +37,18 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return FightTypeEnum.FIGHT_TYPE_AGRESSION; }
         }
 
+        public override bool IsPvP
+        {
+            get { return true; }
+        }
+        public override bool IsMultiAccountRestricted
+        {
+            get { return true; }
+        }
+
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            var results = GetFightersAndLeavers().Where(entry => !( entry is SummonedFighter )).
+            var results = GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).
                 Select(fighter => fighter.GetFightResult()).ToArray();
 
             foreach (var playerResult in results.OfType<FightPlayerResult>())
@@ -84,8 +93,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (character.OpposedTeam.AlignmentSide == AlignmentSideEnum.ALIGNMENT_NEUTRAL)
                 return 0;
 
-            var winnersLevel = (double)Winners.GetAllFightersWithLeavers().Sum(entry => entry.Level);
-            var losersLevel = (double)Losers.GetAllFightersWithLeavers().Sum(entry => entry.Level);
+            var winnersLevel = (double)Winners.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
+            var losersLevel = (double)Losers.GetAllFightersWithLeavers<CharacterFighter>().Sum(entry => entry.Level);
 
             var delta = Math.Floor(Math.Sqrt(character.Level) * 10 * ( losersLevel / winnersLevel ));
 

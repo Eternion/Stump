@@ -1,17 +1,9 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
-using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Fights.Triggers;
+
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
     [SpellCastHandler(SpellIdEnum.Fortune)]
@@ -36,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             m_affectedActors = Handlers[1].GetAffectedActors().ToArray();
             foreach (var target in m_affectedActors)
             {
-                int id = target.PopNextBuffId();
+                var id = target.PopNextBuffId();
                 var buff = new TriggerBuff(id, target, Caster, Handlers[1].Dice, Spell, false, false, BuffTriggerType.TURN_BEGIN, FortuneBuffTrigger);
                 target.AddAndApplyBuff(buff);
             }

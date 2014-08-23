@@ -119,9 +119,11 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             Character.Inventory.AddItem(item);
             if (Token != null)
             {
-                Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
-
-                Character.Area.AddMessage(() => Character.Inventory.Save());
+                Character.Area.AddMessage(() =>
+                {
+                    Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
+                    Character.Inventory.Save();
+                });
             }
             else
             {
@@ -180,9 +182,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             int price;
 
             if (saleItem != null)
-                price = (int) ((int) Math.Ceiling(saleItem.Price/10) * amount);
+                price = (int) Math.Ceiling(saleItem.Price/10) * amount;
             else
-                price = (int) ((int)Math.Ceiling(item.Template.Price / 10) * amount);
+                price = (int) Math.Ceiling(item.Template.Price / 10) * amount;
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     22, amount, item.Template.Id);
@@ -191,7 +193,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             if (Token != null)
             {
-                Character.Inventory.AddItem(Token, (int) price);
+                Character.Inventory.AddItem(Token, price);
             }
             else
             {

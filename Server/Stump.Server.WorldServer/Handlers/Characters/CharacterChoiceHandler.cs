@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -18,7 +19,6 @@ using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Friends;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
-using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 using Stump.Server.WorldServer.Handlers.Startup;
@@ -64,18 +64,21 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             if (character.Recolor)
             {
-                if (message.indexedColor.Any(x => x.Equals(-1)))
+                /* Get character Breed */
+                var breed = BreedManager.Instance.GetBreed((int)character.Breed);
+
+                if (breed == null)
                 {
                     client.Send(new CharacterSelectedErrorMessage());
-                    SendCharactersListWithModificationsMessage(client);
-
                     return;
                 }
 
                 /* Set Colors */
-                var colors = message.indexedColor.Select(x => ColorTranslator.FromHtml("#" + x.ToString("X"))).ToArray();
+                var breedColors = character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleColors : breed.FemaleColors;
 
-                character.EntityLook.SetColors(colors);
+                character.EntityLook.SetColors(
+                    message.indexedColor.Select((x, i) => x == -1 ? Color.FromArgb((int)breedColors[i]) : Color.FromArgb(x)).ToArray());
+
                 character.Recolor = false;
 
                 WorldServer.Instance.DBAccessor.Database.Update(character);
@@ -158,8 +161,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         }
 
         public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)
-        {            
-            
+        {
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
@@ -169,9 +171,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             client.Character = new Character(character, client);
-
-            //Arena
-            client.Character.CheckArenaDailyProperties();
 
             SendCharacterSelectedSuccessMessage(client);
 
@@ -206,7 +205,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             client.Character.SendConnectionMessages();
 
-            //InitializationHandler.SendOnConnectionEventMessage(client, 2);
+            //InitializationHandler.SendOnConnectionEventMessage(client, 3);
+
+            //Start Cinematic(Doesn't work for now)
+            if (client.Character.Record.LastUsage == null)
+                BasicHandler.SendCinematicMessage(client, 10);
 
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client, client.Character);
 

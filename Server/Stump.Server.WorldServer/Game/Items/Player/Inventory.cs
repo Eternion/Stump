@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         [Variable]
         public static readonly int TokenTemplateId = (int)ItemIdEnum.GameMasterToken;
-        private static ItemTemplate TokenTemplate;
+        public static ItemTemplate TokenTemplate;
 
         [Initialization(typeof(ItemManager), Silent=true)]
         private static void InitializeTokenTemplate()
@@ -485,32 +485,30 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return merchantItem;
         }
 
-        private bool UnEquipedDouble(BasePlayerItem itemToEquip)
+        private void UnEquipedDouble(IItem itemToEquip)
         {
-            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS)
+            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHY || itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS_SHOP)
             {
-                var dofus = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.Template.Id == itemToEquip.Template.Id);
+                var item = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.Template.Id == itemToEquip.Template.Id);
 
-                if (dofus != null)
+                if (item != null)
                 {
-                    MoveItem(dofus, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                    MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
 
-                    return true;
+                    return;
                 }
             }
 
             if (itemToEquip.Template.Type.ItemType != ItemTypeEnum.RING)
-                return false;
+                return;
 
             // we can equip the same ring if it doesn't own to an item set
             var ring = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.Template.Id == itemToEquip.Template.Id && entry.Template.ItemSetId > 0);
 
             if (ring == null)
-                return false;
+                return;
 
             MoveItem(ring, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-
-            return true;
         }
 
 
@@ -875,9 +873,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if (effect == null)
                     continue;
 
-                effect.Value--;
+                var newEffect = new EffectDice(effect);
+                newEffect.Value--;
 
-                if (effect.Value <= 0)
+                boost.Effects.Remove(effect);
+                boost.Effects.Add(newEffect);
+
+                if (newEffect.Value <= 0)
                     RemoveItem(boost);
                 else
                     RefreshItem(boost);

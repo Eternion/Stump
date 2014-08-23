@@ -3,10 +3,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
@@ -20,16 +18,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
-            var fighters = Fight.GetAllFighters(f => f.IsAlive());
+            var fighters = Fight.GetAllFighters(x => x.IsAlive() && !(x is SummonedMonster));
             foreach (var fighter in fighters)
             {
                 var newCell = fighter.FightStartPosition.Cell;
+
                 var oldFighter = Fight.GetOneFighter(newCell);
                 if (oldFighter != null)
-                    MoveOldFighter(oldFighter);
-                fighter.Position.Cell = newCell;
+                    fighter.ExchangePositions(oldFighter);
+                else
+                {
+                    fighter.Position.Cell = newCell;
 
-                ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, fighter, newCell);
+                    ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, fighter, newCell);               
+                }
             }
 
             return true;
