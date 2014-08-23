@@ -101,5 +101,10 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         {
             client.Send(new BasicNoOperationMessage());
         }
+
+        public static void SendCinematicMessage(IPacketReceiver client, short cinematicId)
+        {
+            client.Send(new CinematicMessage(cinematicId));
+        }
     }
 }

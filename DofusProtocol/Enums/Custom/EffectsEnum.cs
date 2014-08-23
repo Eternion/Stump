@@ -1787,23 +1787,23 @@
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Neutral damage
         /// </summary>
-        Effect_1092 = 1092,
+        Effect_DamageNeutralPerHPEroded = 1092,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Air damage
         /// </summary>
-        Effect_1093 = 1093,
+        Effect_DamageAirPerHPEroded = 1093,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Fire damage
         /// </summary>
-        Effect_1094 = 1094,
+        Effect_DamageFirePerHPEroded = 1094,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Water damage
         /// </summary>
-        Effect_1095 = 1095,
+        Effect_DamageWaterPerHPEroded = 1095,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Earth damage
         /// </summary>
-        Effect_1096 = 1096,
+        Effect_DamageEarthPerHPEroded = 1096,
         /// <summary>
         /// Creates illusions
         /// </summary>

@@ -1662,7 +1662,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnLifePointsChanged(FightActor actor, int delta, int permanentDamages, FightActor from)
         {
             var loss = (short) (-delta);
-            if (delta == 0)
+            if (delta == 0 && permanentDamages == 0)
                 return;
 
             ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);

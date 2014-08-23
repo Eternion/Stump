@@ -11,6 +11,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             Fight = fight;
             Fighters = new List<FightActor>();
+            RoundNumber = 1;
+            NewRound = true;
         }
 
         internal List<FightActor> Fighters
