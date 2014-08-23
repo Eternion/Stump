@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -160,8 +161,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         }
 
         public static void CommonCharacterSelection(WorldClient client, CharacterRecord character)
-        {            
-            
+        {
             // Check if we also have a world account
             if (client.WorldAccount == null)
             {
@@ -205,7 +205,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             client.Character.SendConnectionMessages();
 
-            //InitializationHandler.SendOnConnectionEventMessage(client, 2);
+            //InitializationHandler.SendOnConnectionEventMessage(client, 3);
+
+            //Start Cinematic(Doesn't work for now)
+            if (client.Character.Record.LastUsage == null)
+                BasicHandler.SendCinematicMessage(client, 10);
 
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client, client.Character);
 

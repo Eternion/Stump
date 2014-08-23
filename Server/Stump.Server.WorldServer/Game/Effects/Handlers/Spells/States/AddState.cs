@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return false;
                 }
 
-                AddStateBuff(affectedActor, true, state);
+                AddStateBuff(affectedActor, false, state);
             }
 
             return true;

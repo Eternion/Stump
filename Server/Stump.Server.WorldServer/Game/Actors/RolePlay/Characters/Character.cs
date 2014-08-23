@@ -1124,7 +1124,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             set
             {
                 m_record.Honor = value > ExperienceManager.Instance.HighestGradeHonor ? ExperienceManager.Instance.HighestGradeHonor : value;
-                if (value < UpperBoundHonor || AlignmentGrade >= ExperienceManager.Instance.HighestGrade)
+                if ((value > LowerBoundHonor && value < UpperBoundHonor))
                     return;
 
                 var lastGrade = AlignmentGrade;
@@ -1564,7 +1564,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void CheckArenaDailyProperties()
         {
-            if (m_record.ArenaDailyDate.Day == DateTime.Now.Day)
+            if (m_record.ArenaDailyDate.Day == DateTime.Now.Day || ArenaDailyMaxRank <= 0)
                 return;
 
             var amountToken = (int)Math.Floor(ArenaDailyMaxRank/10d);
@@ -1578,7 +1578,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory.AddItem(ArenaManager.Instance.TokenItemTemplate, amountToken);
             Inventory.AddKamas(amountKamas);
             
-            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 276, amountKamas, amountToken);
+            //SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 276, amountKamas, amountToken);
+            DisplayNotification(NotificationEnum.KOLIZÉUM, amountKamas, amountToken);
         }
 
         public int ComputeWonArenaTokens(int rank)
@@ -1697,12 +1698,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 var date = Account.LastConnection.Value;
 
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 193,
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 152,
                     date.Year,
                     date.Month,
                     date.Day,
                     date.Hour,
-                    date.Minute.ToString("00"));
+                    date.Minute.ToString("00"),
+                    Account.LastConnectionIp);
+
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 153, Client.IP);
             }
 
             if (m_earnKamasInMerchant > 0)
@@ -1878,6 +1882,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void DisplayNotification(string text, NotificationEnum notification = NotificationEnum.INFORMATION)
         {
             Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}, true));
+        }
+
+        public void DisplayNotification(NotificationEnum notification, params object[] parameters)
+        {
+            Client.Send(new NotificationByServerMessage((ushort)notification, parameters.Select(entry => entry.ToString()), true));
         }
 
         public void DisplayNotification(Notification notification)

@@ -238,7 +238,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger,
                                           TriggerBuffApplyHandler applyTrigger)
         {
-            int id = target.PopNextBuffId();
+            var id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger);
 
             target.AddAndApplyBuff(buff);

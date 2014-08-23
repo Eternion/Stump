@@ -9,21 +9,21 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
-    [EffectHandler(EffectsEnum.Effect_DamageAirPerMP)] 
-    [EffectHandler(EffectsEnum.Effect_DamageEarthPerMP)]
-    [EffectHandler(EffectsEnum.Effect_DamageFirePerMP)]
-    [EffectHandler(EffectsEnum.Effect_DamageWaterPerMP)]
-    [EffectHandler(EffectsEnum.Effect_DamageNeutralPerMP)]
-    public class DamagePerMPUsed : SpellEffectHandler
+    [EffectHandler(EffectsEnum.Effect_DamageAirPerHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageEarthPerHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageFirePerHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageWaterPerHPEroded)]
+    [EffectHandler(EffectsEnum.Effect_DamageNeutralPerHPEroded)]
+    public class DamagePerHPEroded : SpellEffectHandler
     {
-        public DamagePerMPUsed(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public DamagePerHPEroded(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
 
         public override bool Apply()
         {
-            GetAffectedActors().Select(actor => AddTriggerBuff(actor, true, BuffTriggerType.TURN_END, OnBuffTriggered));
+            GetAffectedActors().Select(actor => AddTriggerBuff(actor, true, BuffTriggerType.BUFF_ADDED, OnBuffTriggered));
 
             return true;
         }
@@ -40,8 +40,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 IsCritical = Critical
             };
 
-            damages.BaseMaxDamages = buff.Target.UsedMP * damages.BaseMaxDamages; 
-            damages.BaseMinDamages = buff.Target.UsedMP * damages.BaseMinDamages;
+            var damagesAmount = (buff.Target.Stats.Health.PermanentDamages*Dice.DiceNum)/100;
+
+            damages.BaseMaxDamages = damagesAmount;
+            damages.BaseMinDamages = damagesAmount;
 
             buff.Target.InflictDamage(damages);
         }
@@ -50,15 +52,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             switch (effect)
             {
-                case EffectsEnum.Effect_DamageWaterPerMP:
+                case EffectsEnum.Effect_DamageWaterPerHPEroded:
                     return EffectSchoolEnum.Water;
-                case EffectsEnum.Effect_DamageEarthPerMP:
+                case EffectsEnum.Effect_DamageEarthPerHPEroded:
                     return EffectSchoolEnum.Earth;
-                case EffectsEnum.Effect_DamageAirPerMP:
+                case EffectsEnum.Effect_DamageAirPerHPEroded:
                     return EffectSchoolEnum.Air;
-                case EffectsEnum.Effect_DamageFirePerMP:
+                case EffectsEnum.Effect_DamageFirePerHPEroded:
                     return EffectSchoolEnum.Fire;
-                case EffectsEnum.Effect_DamageNeutralPerMP:
+                case EffectsEnum.Effect_DamageNeutralPerHPEroded:
                     return EffectSchoolEnum.Neutral;
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));

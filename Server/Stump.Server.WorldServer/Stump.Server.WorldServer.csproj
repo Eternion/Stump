@@ -310,6 +310,7 @@
     <Compile Include="Game\Conditions\ComparaisonOperatorEnum.cs" />
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
     <Compile Include="Game\Exchanges\Bank\BankDialog.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildCreationPanel.cs" />
@@ -403,7 +404,6 @@
     <Compile Include="Game\Fights\Results\IExperienceResult.cs" />
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
-    <Compile Include="Game\Fights\Triggers\FractionGlyph.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
     <Compile Include="Game\Guilds\GuildEmblem.cs" />
