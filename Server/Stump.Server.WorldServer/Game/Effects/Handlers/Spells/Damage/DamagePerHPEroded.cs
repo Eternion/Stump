@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -23,7 +22,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         public override bool Apply()
         {
-            GetAffectedActors().Select(actor => AddTriggerBuff(actor, true, BuffTriggerType.BUFF_ADDED, OnBuffTriggered));
+            foreach (var actor in GetAffectedActors())
+            {
+                AddTriggerBuff(actor, true, BuffTriggerType.BUFF_ADDED, OnBuffTriggered);
+            }
 
             return true;
         }

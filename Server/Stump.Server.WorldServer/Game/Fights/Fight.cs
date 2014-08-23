@@ -287,7 +287,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         int GetPlacementTimeLeft();
     }
 
-    public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, ICharacterContainer, IFight
+    public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, IFight
         where TRedTeam : FightTeam
         where TBlueTeam : FightTeam
     {
