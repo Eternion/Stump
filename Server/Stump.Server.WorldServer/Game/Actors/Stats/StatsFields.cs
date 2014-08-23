@@ -18,6 +18,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         [Variable]
         public static int APLimit = 12;
+        
+        [Variable]
+        public static int ResistanceLimit = 50;
 
         [Variable]
         public static int RangeLimit = 6;
@@ -133,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance));
             Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility));
             Fields.Add(PlayerFields.Intelligence, new StatsData(Owner, PlayerFields.Intelligence, record.Intelligence));
-            Fields.Add(PlayerFields.Range, new StatsData(Owner, PlayerFields.Range, 0, RangeLimit));
+            Fields.Add(PlayerFields.Range, new StatsData(Owner, PlayerFields.Range, 0, RangeLimit, true));
             Fields.Add(PlayerFields.SummonLimit, new StatsData(Owner, PlayerFields.SummonLimit, 1));
             Fields.Add(PlayerFields.DamageReflection, new StatsData(Owner, PlayerFields.DamageReflection, 0));
             Fields.Add(PlayerFields.CriticalHit, new StatsData(Owner, PlayerFields.CriticalHit, 0));
@@ -158,11 +161,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.FireDamageBonus, new StatsData(Owner, PlayerFields.FireDamageBonus, 0));
             Fields.Add(PlayerFields.DodgeAPProbability, new StatsData(Owner, PlayerFields.DodgeAPProbability, 0, FormulasWisdomDependant));
             Fields.Add(PlayerFields.DodgeMPProbability, new StatsData(Owner, PlayerFields.DodgeMPProbability, 0, FormulasWisdomDependant));
-            Fields.Add(PlayerFields.NeutralResistPercent, new StatsData(Owner, PlayerFields.NeutralResistPercent, 0));
-            Fields.Add(PlayerFields.EarthResistPercent, new StatsData(Owner, PlayerFields.EarthResistPercent, 0));
-            Fields.Add(PlayerFields.WaterResistPercent, new StatsData(Owner, PlayerFields.WaterResistPercent, 0));
-            Fields.Add(PlayerFields.AirResistPercent, new StatsData(Owner, PlayerFields.AirResistPercent, 0));
-            Fields.Add(PlayerFields.FireResistPercent, new StatsData(Owner, PlayerFields.FireResistPercent, 0));
+            Fields.Add(PlayerFields.NeutralResistPercent, new StatsData(Owner, PlayerFields.NeutralResistPercent, 0, ResistanceLimit));
+            Fields.Add(PlayerFields.EarthResistPercent, new StatsData(Owner, PlayerFields.EarthResistPercent, 0, ResistanceLimit));
+            Fields.Add(PlayerFields.WaterResistPercent, new StatsData(Owner, PlayerFields.WaterResistPercent, 0, ResistanceLimit));
+            Fields.Add(PlayerFields.AirResistPercent, new StatsData(Owner, PlayerFields.AirResistPercent, 0, ResistanceLimit));
+            Fields.Add(PlayerFields.FireResistPercent, new StatsData(Owner, PlayerFields.FireResistPercent, 0, ResistanceLimit));
             Fields.Add(PlayerFields.NeutralElementReduction, new StatsData(Owner, PlayerFields.NeutralElementReduction, 0));
             Fields.Add(PlayerFields.EarthElementReduction, new StatsData(Owner, PlayerFields.EarthElementReduction, 0));
             Fields.Add(PlayerFields.WaterElementReduction, new StatsData(Owner, PlayerFields.WaterElementReduction, 0));
@@ -170,11 +173,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.FireElementReduction, new StatsData(Owner, PlayerFields.FireElementReduction, 0));
             Fields.Add(PlayerFields.PushDamageReduction, new StatsData(Owner, PlayerFields.PushDamageReduction, 0));
             Fields.Add(PlayerFields.CriticalDamageReduction, new StatsData(Owner, PlayerFields.CriticalDamageReduction, 0));
-            Fields.Add(PlayerFields.PvpNeutralResistPercent, new StatsData(Owner, PlayerFields.PvpNeutralResistPercent, 0));
-            Fields.Add(PlayerFields.PvpEarthResistPercent, new StatsData(Owner, PlayerFields.PvpEarthResistPercent, 0));
-            Fields.Add(PlayerFields.PvpWaterResistPercent, new StatsData(Owner, PlayerFields.PvpWaterResistPercent, 0));
-            Fields.Add(PlayerFields.PvpAirResistPercent, new StatsData(Owner, PlayerFields.PvpAirResistPercent, 0));
-            Fields.Add(PlayerFields.PvpFireResistPercent, new StatsData(Owner, PlayerFields.PvpFireResistPercent, 0));
+            Fields.Add(PlayerFields.PvpNeutralResistPercent, new StatsData(Owner, PlayerFields.PvpNeutralResistPercent, 0, ResistanceLimit));
+            Fields.Add(PlayerFields.PvpEarthResistPercent, new StatsData(Owner, PlayerFields.PvpEarthResistPercent, 0, ResistanceLimit));
+            Fields.Add(PlayerFields.PvpWaterResistPercent, new StatsData(Owner, PlayerFields.PvpWaterResistPercent, 0, ResistanceLimit));
+            Fields.Add(PlayerFields.PvpAirResistPercent, new StatsData(Owner, PlayerFields.PvpAirResistPercent, 0, ResistanceLimit));
+            Fields.Add(PlayerFields.PvpFireResistPercent, new StatsData(Owner, PlayerFields.PvpFireResistPercent, 0, ResistanceLimit));
             Fields.Add(PlayerFields.PvpNeutralElementReduction, new StatsData(Owner, PlayerFields.PvpNeutralElementReduction, 0));
             Fields.Add(PlayerFields.PvpEarthElementReduction, new StatsData(Owner, PlayerFields.PvpEarthElementReduction, 0));
             Fields.Add(PlayerFields.PvpWaterElementReduction, new StatsData(Owner, PlayerFields.PvpWaterElementReduction, 0));

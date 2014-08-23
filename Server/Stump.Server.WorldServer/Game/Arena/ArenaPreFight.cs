@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Arena;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -106,6 +106,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             ArenaManager.Instance.ArenaTaskPool.ExecuteInContext(() =>
             {                
                 ContextHandler.SendGameRolePlayArenaFighterStatusMessage(m_clients, Id, obj.Character, false);
+                obj.Character.ToggleArenaWaitTime();
 
                 // %1 a refusé le combat en Kolizéum.
                 BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 275, obj.Character.Name);
@@ -115,6 +116,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                     foreach (var character in obj.Team.Members.ToArray())
                     {
                         obj.Team.RemoveCharacter(character);
+
                         // Combat de Kolizéum annulé/non validé par votre équipe
                         character.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 273);
                     }
@@ -183,16 +185,11 @@ namespace Stump.Server.WorldServer.Game.Arena
                     lock(m_charactersMaps)
                         m_charactersMaps.Add(character1, character1.Map);
 
-                    foreach (var item in character1.Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD))
-                    {
-                        character1.Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-                    }
-
                     if (character1.IsFighting())
                     {
                         character1.EnterMap += OnFightLeft;
                         character1.NextMap = m_fight.Map;
-                        character1.Fighter.LeaveFight();
+                        character1.Fighter.LeaveFight(true);
                     }
                     else if (character1.IsSpectator())
                     {
@@ -202,6 +199,8 @@ namespace Stump.Server.WorldServer.Game.Arena
                     }
                     else
                     {
+                        RemoveShield(character1);
+
                         character1.Teleport(m_fight.Map, m_fight.Map.Cells[character1.Cell.Id]);
                              
                         if (Interlocked.Decrement(ref m_readyPlayersCount) <= 0)
@@ -213,10 +212,20 @@ namespace Stump.Server.WorldServer.Game.Arena
             }
         }
 
+        private static void RemoveShield(IInventoryOwner character)
+        {
+            foreach (var item in character.Inventory.GetItems(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD))
+            {
+                character.Inventory.MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+            }
+        }
+
         private void OnFightLeft(RolePlayActor rolePlayActor, Map map)
         {
             if (map != m_fight.Map)
                 return;
+
+            RemoveShield(rolePlayActor as Character);
 
             rolePlayActor.EnterMap -= OnFightLeft;
 
@@ -228,16 +237,37 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         private void PrepareFight()
         {
+            var challengersParty = ChallengersTeam.Members.Select(x => x.Character.GetParty(PartyTypeEnum.PARTY_TYPE_ARENA)).FirstOrDefault() ??
+                                 PartyManager.Instance.Create(PartyTypeEnum.PARTY_TYPE_ARENA);
+            var defendersParty = DefendersTeam.Members.Select(x => x.Character.GetParty(PartyTypeEnum.PARTY_TYPE_ARENA)).FirstOrDefault() ??
+                                 PartyManager.Instance.Create(PartyTypeEnum.PARTY_TYPE_ARENA);
+
             foreach (var character in ChallengersTeam.Members.Select(x => x.Character))
             {
                 m_fight.ChallengersTeam.AddFighter(character.CreateFighter(m_fight.ChallengersTeam));
                 character.NextMap = m_charactersMaps[character];
+
+                if (challengersParty.IsInGroup(character))
+                    continue;
+
+                if (challengersParty.Leader != null)
+                    challengersParty.Leader.Invite(character, PartyTypeEnum.PARTY_TYPE_ARENA, true);
+                else
+                    character.EnterParty(challengersParty);
             }
 
             foreach (var character in DefendersTeam.Members.Select(x => x.Character))
             {
                 m_fight.DefendersTeam.AddFighter(character.CreateFighter(m_fight.DefendersTeam));
                 character.NextMap = m_charactersMaps[character];
+
+                if (defendersParty.IsInGroup(character))
+                    continue;
+
+                if (defendersParty.Leader != null)
+                    defendersParty.Leader.Invite(character, PartyTypeEnum.PARTY_TYPE_ARENA, true);
+                else
+                    character.EnterParty(defendersParty);
             }
 
             m_fight.StartPlacement();

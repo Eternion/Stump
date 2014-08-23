@@ -1,12 +1,12 @@
-﻿using System.Drawing;
+﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Triggers;
+using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_DamageSharing)]
     public class DamageSharing : SpellEffectHandler
@@ -18,10 +18,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
         public override bool Apply()
         {
-            var glyph = new FractionGlyph((short) Fight.PopNextTriggerId(), Caster, Spell, Dice, TargetedCell,
-                (byte) Effect.ZoneSize, Color.White);
+            var actors = GetAffectedActors(x => x is CharacterFighter && x.IsFriendlyWith(Caster)).ToArray();
+            foreach (var actor in actors)
+            {
+                var buffId = actor.PopNextBuffId();
+                var buff = new FractionBuff(buffId, actor, Caster, Dice, Spell, Critical, true, actors);
 
-            Fight.AddTriger(glyph);
+                actor.AddAndApplyBuff(buff);
+            }
 
             return true;
         }

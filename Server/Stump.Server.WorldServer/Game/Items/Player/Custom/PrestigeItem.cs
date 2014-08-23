@@ -27,9 +27,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         private void ApplyBonus(ItemEffectHandler.HandlerOperation operation)
         {
-            foreach (
-                var handler in
-                    Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, this)))
+            foreach (var handler in Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, this)))
             {
                 handler.Operation = operation;
 

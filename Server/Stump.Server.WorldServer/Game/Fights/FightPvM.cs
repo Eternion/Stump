@@ -52,6 +52,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get { return FightTypeEnum.FIGHT_TYPE_PvM; }
         }
+        public override bool IsPvP
+        {
+            get { return false; }
+        }
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {

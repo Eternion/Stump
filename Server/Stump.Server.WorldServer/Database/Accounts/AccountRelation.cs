@@ -28,6 +28,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
             set;
         }
 
+        [Index]
         public int AccountId
         {
             get;

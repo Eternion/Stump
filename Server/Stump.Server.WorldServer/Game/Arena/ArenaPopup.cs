@@ -57,6 +57,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             {
                 Deny();
             }
+
         }
 
         public void Accept()

@@ -325,6 +325,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
             return m_fighters.Concat(m_leavers);
         }
 
+        public IEnumerable<T> GetAllFightersWithLeavers<T>() where T : FightActor
+        {
+            return m_fighters.Concat(m_leavers).OfType<T>();
+        }
+
         public IEnumerable<FightActor> GetAllFighters(Cell[] cells)
         {
             return GetAllFighters<FightActor>(entry => cells.Contains(entry.Position.Cell));

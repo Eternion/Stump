@@ -274,7 +274,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             byte size = 0;
             byte minSize = 0;
 
-            int commaIndex = rawZone.IndexOf(',');
+            var commaIndex = rawZone.IndexOf(',');
             try
             {
                 if (commaIndex == -1 && rawZone.Length > 1)
@@ -308,11 +308,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             builder.Append((char) (int) ZoneShape);
             builder.Append(ZoneSize);
 
-            if (ZoneMinSize > 0)
-            {
-                builder.Append(",");
-                builder.Append(ZoneMinSize);
-            }
+            if (ZoneMinSize <= 0)
+                return builder.ToString();
+
+            builder.Append(",");
+            builder.Append(ZoneMinSize);
 
             return builder.ToString();
         }

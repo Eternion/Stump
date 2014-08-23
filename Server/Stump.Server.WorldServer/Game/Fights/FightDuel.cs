@@ -41,6 +41,16 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return FightTypeEnum.FIGHT_TYPE_CHALLENGE; }
         }
 
+        public override bool IsPvP
+        {
+            get { return true; }
+        }
+
+        public override bool IsMultiAccountRestricted
+        {
+            get { return false; }
+        }
+
         protected override IEnumerable<IFightResult> GenerateResults()
         {
             return GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(fighter => fighter.GetFightResult());
