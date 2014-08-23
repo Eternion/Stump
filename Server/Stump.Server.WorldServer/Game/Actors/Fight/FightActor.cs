@@ -972,7 +972,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (erosion > 50)
                 erosion = 50;
 
-            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.Truce) != null)
+            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.Truce).Any())
                 erosion -= 10;
 
             return (int)( damages * ( erosion / 100d ) );
