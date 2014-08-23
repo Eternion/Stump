@@ -50,7 +50,10 @@
                             IsEnabled="{Binding EffectToEdit.ParametersCount, Converter={StaticResource GreaterThan}, ConverterParameter=3}" />
         <xctk:IntegerUpDown Value="{Binding EffectToEdit[4]}" Grid.Column="2" Grid.Row="4" Margin="3"
                             IsEnabled="{Binding EffectToEdit.ParametersCount, Converter={StaticResource GreaterThan}, ConverterParameter=4}" />
-        <TextBlock Text="{Binding EffectToEdit.Description}" Foreground="{Binding EffectToEdit.Operator, Converter={StaticResource ColorByOperatorConverter}}" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2" Margin="5" HorizontalAlignment="Center" TextWrapping="Wrap" />
+        <StackPanel  Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="{Binding EffectToEdit.Description}" Foreground="{Binding EffectToEdit.Operator, Converter={StaticResource ColorByOperatorConverter}}"  Margin="5" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding EffectToEdit.EffectId}" Margin="5"  TextWrapping="Wrap" />
+        </StackPanel>
         <UniformGrid VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Rows="1" Grid.Column="1" Grid.Row="6" Margin="3" Grid.ColumnSpan="2">
             <Button Content="OK" Margin="5" IsDefault="True" Click="OnButtonOKClick" />
             <Button Content="Cancel" IsCancel="True" Margin="5" Click="OnButtonCancelClick" />

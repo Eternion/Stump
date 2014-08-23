@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                 var lower = Members.Min(x => x.Level);
                 var upper = Members.Max(x => x.Level);
 
-                if (Math.Max(character.Level, upper) - Math.Min(character.Level, lower) > 50)
+                if (Math.Max(character.Level, upper) - Math.Min(character.Level, lower) > ArenaManager.ArenaMaxLevelDifference)
                 {
                     if (inviter != null && send)
                     {
@@ -89,12 +89,27 @@ namespace Stump.Server.WorldServer.Game.Arena
             return false;
         }
 
+        public override void Kick(Character member)
+        {
+            if (Leader.Fight is ArenaFight)
+                return;
+
+            base.Kick(member);
+        }
+
+        public override bool CanLeaveParty(Character character)
+        {
+            return base.CanLeaveParty(character) && !(character.Fight is ArenaFight);
+        }
+
         protected override void OnGuestPromoted(Character groupMember)
         {
             base.OnGuestPromoted(groupMember);
 
             m_rankSum += groupMember.ArenaRank;
             GroupRankAverage = m_rankSum/MembersCount;
+
+            ArenaManager.Instance.RemoveFromQueue(groupMember);
         }
 
         protected override void OnMemberRemoved(Character groupMember, bool kicked)

@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 }
                 else
                 {
-                    var damage = actor.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell));
+                    var damage = actor.InflictDamage(new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell) {IsCritical = Critical});
 
                     if (damage / 2 > 0)
                         Caster.HealDirect((short)( damage / 2d ), actor);

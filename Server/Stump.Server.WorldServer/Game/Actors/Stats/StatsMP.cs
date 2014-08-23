@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         }
 
         public StatsMP(IStatsOwner owner, int valueBase, int limit)
-            : base(owner, PlayerFields.AP, valueBase, limit)
+            : base(owner, PlayerFields.AP, valueBase, limit, true)
         {
         }
 

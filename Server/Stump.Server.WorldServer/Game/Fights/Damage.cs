@@ -71,6 +71,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             set;
         }
 
+        public bool IsCritical
+        {
+            get;
+            set;
+        }
+
         public int Amount
         {
             get { return m_amount; }
@@ -93,11 +99,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get;
             set;
-        }
-
-        public bool PvP
-        {
-            get { return Source is CharacterFighter; }
         }
 
         public bool IgnoreDamageReduction

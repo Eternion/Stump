@@ -1,108 +1,79 @@
-﻿#region License GNU GPL
-
-// FractionGlyph.cs
-// 
-// Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
-// under the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
-// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
-#endregion
-
-using System;
-using System.Drawing;
-using System.Linq;
+﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.Game.Fights.Triggers
+namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
-    public class FractionGlyph : MarkTrigger
+    public class FractionBuff : Buff
     {
-        public FractionGlyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect,
-            Cell centerCell, byte size, Color color) : base(id, caster, castedSpell, originEffect, centerCell,
-                new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, color))
+        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, FightActor[] fighters)
+            : base(id, target, caster, effect, spell, critical, dispelable)
         {
-            Duration = originEffect.Duration;
+            Fighters = fighters;
         }
 
-        public int Duration
+        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId)
+            : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        {
+        }
+
+        public FightActor[] Fighters
         {
             get;
-            private set;
+            set;
         }
 
-        public override GameActionMarkTypeEnum Type
+        public IFight Fight
         {
-            get { return GameActionMarkTypeEnum.GLYPH; }
+            get { return Caster.Fight; }
         }
 
-        public override TriggerType TriggerType
+        public override void Apply()
         {
-            get { return TriggerType.NEVER; }
+            
         }
 
-        public override void Trigger(FightActor trigger)
+        public override void Dispell()
         {
-            throw new NotImplementedException();
+
         }
 
-        public override GameActionMark GetGameActionMark()
+        public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type,
-                Shapes.Select(entry => entry.GetGameActionMarkedCell()));
-        }
+            var values = Effect.GetValues();
 
-        public override GameActionMark GetHiddenGameActionMark()
-        {
-            return GetGameActionMark();
-        }
-
-        public override bool DoesSeeTrigger(FightActor fighter)
-        {
-            return true;
-        }
-
-        public override bool DecrementDuration()
-        {
-            return (Duration--) <= 0;
+            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
         }
 
         public int DispatchDamages(Damage damage)
         {
-            var actors = GetCells().Select(x => Fight.GetFirstFighter<FightActor>(x)).
-                                             Where(x => x != null && !(x is SummonedFighter) && x.IsFriendlyWith(Caster)).ToArray();
-
             damage.GenerateDamages();
 
-            var percentResistance = GetAveragePercentResistance(actors, damage.School, damage.PvP);
-            var fixResistance = GetAverageFixResistance(actors, damage.School, damage.PvP);
-            damage.Amount = (int) ((1 - percentResistance/100d)*(damage.Amount - fixResistance));
-            damage.Amount = damage.Amount / actors.Length;
+            if (Fighters.Count() < 2)
+                return damage.Amount;
+
+            var percentResistance = GetAveragePercentResistance(Fighters, damage.School, Fight.IsPvP);
+            var fixResistance = GetAverageFixResistance(Fighters, damage.School, Fight.IsPvP);
+
+            damage.Amount = (int)((1 - percentResistance / 100d) * (damage.Amount - fixResistance));
+            damage.Amount = (damage.Amount / Fighters.Length);
             damage.IgnoreDamageReduction = true;
 
-            foreach (var actor in actors)
+            foreach (var actor in Fighters)
             {
-                var damagePerFighter = new Damage(damage.Amount)
+                var damagePerFighter = new FractionDamage(damage.Amount)
                 {
                     Source = damage.Source,
                     School = damage.School,
                     Buff = damage.Buff,
-                    MarkTrigger = this,
                     IgnoreDamageReduction = true,
+                    IgnoreDamageBoost = true,
                     EffectGenerationType = damage.EffectGenerationType,
+                    IsCritical = damage.IsCritical
                 };
 
                 actor.InflictDamage(damagePerFighter);
@@ -145,7 +116,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             }
         }
 
-        private int GetAverageFixResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
+        private static int GetAverageFixResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
         {
             switch (type)
             {
@@ -182,6 +153,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 default:
                     return 0;
             }
+        }
+    }
+
+    public class FractionDamage : Damage
+    {
+        public FractionDamage(int amount) : base(amount)
+        {
+
         }
     }
 }

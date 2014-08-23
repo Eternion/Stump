@@ -125,7 +125,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return m_monsterSpawns.Values.ToArray();
         }
 
-
         public MonsterDungeonSpawn[] GetMonsterDungeonsSpawns()
         {
             return m_monsterDungeonsSpawns.Values.ToArray();

@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -25,6 +26,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         {
             if (Fight is FightPvT && character.Guild == (Fight as FightPvT).TaxCollector.TaxCollectorNpc.Guild)
                 return FighterRefusedReasonEnum.WRONG_GUILD;
+
+            if (Fighters.Where(x => x is CharacterFighter).Any(x => (x as CharacterFighter).Character.Client.IP == character.Client.IP))
+                return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             return base.CanJoin(character);
         }

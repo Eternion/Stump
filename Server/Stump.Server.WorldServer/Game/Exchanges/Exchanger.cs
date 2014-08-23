@@ -4,9 +4,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges
 {
     public abstract class Exchanger : IDialoger
     {
-        private IExchange m_exchange;
+        private readonly IExchange m_exchange;
 
-        public Exchanger(IExchange exchange)
+        protected Exchanger(IExchange exchange)
         {
             m_exchange = exchange;
         }
