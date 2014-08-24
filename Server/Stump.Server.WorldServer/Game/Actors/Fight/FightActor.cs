@@ -752,7 +752,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (!damage.IgnoreDamageReduction)
             {
-                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical);
+                var damageWithoutArmor = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, false);
+                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, true);
 
                 var reduction = CalculateArmorReduction(damage.School);
 
@@ -770,8 +771,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     }
                 }
 
-                if (reduction > 0)
-                    damage.Amount -= reduction;
+                permanentDamages = CalculateErosionDamage(damageWithoutArmor);
+                damage.Amount -= permanentDamages;
             }
 
             if (damage.Amount <= 0)
@@ -788,7 +789,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
 
-            OnLifePointsChanged(-damage.Amount, permanentDamages, damage.Source);
+            OnLifePointsChanged(-(damage.Amount + permanentDamages), permanentDamages, damage.Source);
 
             if (IsDead())
                 OnDead(damage.Source);
@@ -900,15 +901,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return damage;
         }
 
-        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical)
+        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor)
         {           
             var percentResistance = CalculateTotalResistances(type, true);
             var fixResistance = CalculateTotalResistances(type, false);
+            var armorResistance = withArmor ? CalculateArmorReduction(type) : 0;
 
             percentResistance = percentResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : percentResistance;
             fixResistance = fixResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : fixResistance;
 
-            return (int)( ( 1 - percentResistance / 100d ) * ( damage - fixResistance ) ) - (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
+            var result = (int)((1 - percentResistance / 100d) * (damage - armorResistance - fixResistance)) -
+                         (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
+
+            return result;
         }
 
         public virtual int CalculateTotalResistances(EffectSchoolEnum type, bool percent)

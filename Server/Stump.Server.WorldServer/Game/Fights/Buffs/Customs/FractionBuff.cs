@@ -58,8 +58,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
             var percentResistance = GetAveragePercentResistance(Fighters, damage.School, Fight.IsPvP);
             var fixResistance = GetAverageFixResistance(Fighters, damage.School, Fight.IsPvP);
+            var armor = GetAverageArmor(Fighters, damage.School);
 
-            damage.Amount = (int)((1 - percentResistance / 100d) * (damage.Amount - fixResistance));
+            damage.Amount = (int)((1 - percentResistance / 100d) * (damage.Amount - armor - fixResistance));
             damage.Amount = (damage.Amount / Fighters.Length);
             damage.IgnoreDamageReduction = true;
 
@@ -82,6 +83,33 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             return damage.Amount;
         }
 
+        private static int GetAverageArmor(FightActor[] actors, EffectSchoolEnum type)
+        {
+            int specificArmor;
+            switch (type)
+            {
+                case EffectSchoolEnum.Neutral:
+                    specificArmor = (int) actors.Average(x => x.Stats[PlayerFields.NeutralDamageArmor].TotalSafe);
+                    break;
+                case EffectSchoolEnum.Earth:
+                    specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.EarthDamageArmor].TotalSafe);
+                    break;
+                case EffectSchoolEnum.Air:
+                    specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.AirDamageArmor].TotalSafe);
+                    break;
+                case EffectSchoolEnum.Water:
+                    specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.WaterDamageArmor].TotalSafe);
+                    break;
+                case EffectSchoolEnum.Fire:
+                    specificArmor = (int)actors.Average(x => x.Stats[PlayerFields.FireDamageArmor].TotalSafe);
+                    break;
+                default:
+                    return 0;
+            }
+
+            return specificArmor + (int)actors.Average(x => x.Stats[PlayerFields.GlobalDamageReduction].Total);
+        }
+        
         private static int GetAveragePercentResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
         {
             switch (type)

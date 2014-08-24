@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return false;
                 }
 
-                AddStateBuff(affectedActor, false, state);
+                AddStateBuff(affectedActor, state.Id == (int)SpellStatesEnum.Invulnerable, state);
             }
 
             return true;
