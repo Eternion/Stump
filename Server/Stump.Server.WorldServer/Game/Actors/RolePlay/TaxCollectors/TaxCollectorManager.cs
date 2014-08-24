@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             }
 
             if (((double)character.Guild.TaxCollectors.Count(x => x.SubArea == character.SubArea) /
-                          character.SubArea.Maps.Count()) * 100 > TaxCollectorNpc.MaxTaxCollectorsPercentPerArea)
+                          character.SubArea.Maps.Count(x => x.AllowCollector)) * 100 > TaxCollectorNpc.MaxTaxCollectorsPercentPerArea)
             {
                 character.SendServerMessage("Impossible de poser un percepteur, vous possédez déjà 25% de la zone.", Color.Red);
                 return;
