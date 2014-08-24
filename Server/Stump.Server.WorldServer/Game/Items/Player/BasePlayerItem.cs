@@ -242,7 +242,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-
         public override List<EffectBase> Effects
         {
             get { return base.Effects; }
