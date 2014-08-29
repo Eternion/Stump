@@ -8,7 +8,6 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
 
@@ -273,6 +272,14 @@ namespace Stump.Server.WorldServer.Game.Parties
             }
         }
 
+        public void RemoveAllGuest()
+        {
+            foreach (var guest in m_guests.ToArray())
+            {
+                guest.DenyAllInvitations(this);
+            }
+        }
+
         /// <summary>
         ///     The guest is promote to member in the party. Whenever the player is not a guest, he auto joined the party.
         /// </summary>
@@ -303,7 +310,7 @@ namespace Stump.Server.WorldServer.Game.Parties
             return true;
         }
 
-        public bool AddMember(Character member)
+        public virtual bool AddMember(Character member)
         {
             return PromoteGuestToMember(member);
         }
