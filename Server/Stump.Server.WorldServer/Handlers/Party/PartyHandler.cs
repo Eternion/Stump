@@ -59,10 +59,25 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 return;
             }
 
-            if (ArenaManager.Instance.IsInQueue(client.Character))
+            if (ArenaManager.Instance.IsInQueue(client.Character) || client.Character.ArenaPopup != null || (client.Character.ArenaParty != null && ArenaManager.Instance.IsInQueue(client.Character.ArenaParty)))
             {
                 //Vous ne pouvez pas inviter %1 en groupe de Kolizéum car vous êtes en préparation d'un combat de Kolizéum.
-                BasicHandler.SendTextInformationMessage(client.Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 353, target.Name);
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 353, target.Name);
+                return;
+            }
+
+            if (client.Character.Fight is ArenaFight)
+            {
+                //Vous êtes déjà en combat de Kolizéum.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 334);
+                SendPartyCannotJoinErrorMessage(client, client.Character.ArenaParty, PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMODIFIABLE);
+                return;
+            }
+
+            if (target.ArenaPopup != null || target.Fight is ArenaFight)
+            {
+                //%1 est déjà dans un combat de Kolizéum.
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 335, target.Name);
                 return;
             }
 
