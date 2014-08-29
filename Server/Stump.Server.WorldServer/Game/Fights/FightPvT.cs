@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -291,7 +290,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             foreach (var looter in looters)
             {
-                looter.Loot.Kamas = FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas);
+                looter.Loot.Kamas = kamas > 0 ? FightFormulas.AdjustDroppedKamas(looter, teamPP, kamas) : 0;
             }
 
             var i = 0;
@@ -305,7 +304,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                     looter.Loot.AddItem(TaxCollector.Items[i]);
                 }
             }
-
 
             return results;
         }

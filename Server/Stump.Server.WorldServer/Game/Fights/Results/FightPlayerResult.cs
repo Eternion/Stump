@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public override bool CanLoot(FightTeam team)
         {
-            return Fighter.Team == team && !Fighter.HasLeft();
+            return Fighter.Team == team;
         }
 
         public FightExperienceData ExperienceData
