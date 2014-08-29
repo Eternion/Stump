@@ -243,6 +243,7 @@
     <Compile Include="Database\World\WorldMapTaxCollector.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
+    <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
