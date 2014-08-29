@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Items
 {
     public class Pet
     {
-        private List<EffectBase> m_effects = new List<EffectBase>();
+        private readonly List<EffectBase> m_effects = new List<EffectBase>();
 
         public Character Owner
         {

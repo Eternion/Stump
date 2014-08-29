@@ -189,10 +189,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 if (group == null)
                 {
-                    group = new MonsterDungeonSpawn()
+                    group = new MonsterDungeonSpawn
                     {
                         Map = map,
-                        GroupMonsters = new List<MonsterGrade>() {grade},
+                        GroupMonsters = new List<MonsterGrade> {grade},
                     };
                     WorldServer.Instance.DBAccessor.Database.Insert(group);
                 }
@@ -204,7 +204,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     group.GroupMonsters.Add(grade);
                 }
 
-                var record = new MonsterDungeonSpawnEntity()
+                var record = new MonsterDungeonSpawnEntity
                 {
                     DungeonSpawnId = group.Id,
                     MonsterGradeId = grade.Id,

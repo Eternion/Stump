@@ -78,9 +78,15 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region ENIRIPSA
+
             // stimulatin word (126)
             // target ally => all
             FixEffectOnAllLevels(126, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+
+            // Regeneration Word (131)
+            //Nerf duration => -1
+            FixEffectOnAllLevels(131, EffectsEnum.Effect_RestoreHPPercent, (level, effect, critical) => effect.Duration--);
+
             #endregion
 
             #region ENUTROF
