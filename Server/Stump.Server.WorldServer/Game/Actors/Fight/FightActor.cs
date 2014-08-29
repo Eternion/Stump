@@ -1040,7 +1040,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
 
             var prob = (apAttack/(double) apDodge)*
-                       ( ( Stats.AP.TotalMax / (double)( Stats.AP.TotalMax - Stats.AP.Used ) ) / 2d );
+                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
 
             if (prob < 0.10)
                 prob = 0.10;
@@ -1058,7 +1058,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
 
             var prob = (mpAttack/(double) mpDodge)*
-                       ( ( Stats.AP.TotalMax / (double)( Stats.AP.TotalMax - Stats.AP.Used ) ) / 2d );
+                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
 
             if (prob < 0.10)
                 prob = 0.10;
