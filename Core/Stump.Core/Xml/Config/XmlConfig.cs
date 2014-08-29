@@ -281,7 +281,7 @@ namespace Stump.Core.Xml.Config
                 foreach (var type in assembly.GetTypes())
                 {
                     var fields = from field in type.GetFields(BindingFlags.GetField | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                                 where ReflectionExtensions.GetCustomAttribute<VariableAttribute>(field) != null
+                                 where field.GetCustomAttribute<VariableAttribute>() != null
                                  select field;
 
                     object instance = null;
@@ -305,7 +305,7 @@ namespace Stump.Core.Xml.Config
                         }
                         DocEntry member = null;
                         if (documentation != null)
-                            member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + field.Name).FirstOrDefault();
+                            member = documentation.Members.FirstOrDefault(entry => entry.Name == type.FullName + "." + field.Name);
 
                         if (member != null)
                             node.Documentation = member.Summary;
@@ -314,7 +314,7 @@ namespace Stump.Core.Xml.Config
                     }
 
                     var properties = from property in type.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                                     where ReflectionExtensions.GetCustomAttribute<VariableAttribute>(property) != null
+                                     where property.GetCustomAttribute<VariableAttribute>() != null
                                      select property;
 
                     foreach (var property in properties)
@@ -335,7 +335,7 @@ namespace Stump.Core.Xml.Config
 
                         DocEntry member = null;
                         if (documentation != null)
-                            member = documentation.Members.Where(entry => entry.Name == type.FullName + "." + property.Name).FirstOrDefault();
+                            member = documentation.Members.FirstOrDefault(entry => entry.Name == type.FullName + "." + property.Name);
 
                         if (member != null)
                             node.Documentation = member.Summary;
@@ -350,13 +350,8 @@ namespace Stump.Core.Xml.Config
         {
             m_nodes.Clear();
 
-            foreach (XPathNavigator navigator in m_document.CreateNavigator().Select("//Variable[@name]"))
+            foreach (var variableNode in from XPathNavigator navigator in m_document.CreateNavigator().Select("//Variable[@name]") where navigator.IsNode select new XmlConfigNode(((IHasXmlNode) navigator).GetNode()))
             {
-                if (!navigator.IsNode)
-                    continue;
-
-                var variableNode = new XmlConfigNode(((IHasXmlNode) navigator).GetNode());
-
                 if (string.IsNullOrEmpty(variableNode.Name))
                 {
                     logger.Error(string.Format("Variable in {0} has not attribute 'name'", variableNode.Path));

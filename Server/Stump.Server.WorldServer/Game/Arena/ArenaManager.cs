@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 
@@ -86,6 +87,16 @@ namespace Stump.Server.WorldServer.Game.Arena
         public bool IsInQueue(Character character)
         {
             return m_queue.Exists(x => x.Character == character);
+        }
+
+        public bool IsInQueue(ArenaParty party)
+        {
+            return m_queue.Exists(x => x.Party == party);
+        }
+
+        public ArenaQueueMember GetQueueMember(Character character)
+        {
+            return m_queue.FirstOrDefault(x => x.Character == character);
         }
 
         public void AddToQueue(Character character)
@@ -202,12 +213,38 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             foreach (var character in team1.SelectMany(x => x.EnumerateCharacters()))
             {
+                character.DenyAllInvitations(PartyTypeEnum.PARTY_TYPE_ARENA);
                 preFight.DefendersTeam.AddCharacter(character);
             }
 
             foreach (var character in team2.SelectMany(x => x.EnumerateCharacters()))
             {
+                character.DenyAllInvitations(PartyTypeEnum.PARTY_TYPE_ARENA);
                 preFight.ChallengersTeam.AddCharacter(character);
+            }
+
+            var challengersParty = preFight.ChallengersTeam.Members.Select(x => x.Character.GetParty(PartyTypeEnum.PARTY_TYPE_ARENA)).FirstOrDefault() ??
+                                 PartyManager.Instance.Create(PartyTypeEnum.PARTY_TYPE_ARENA);
+            var defendersParty = preFight.DefendersTeam.Members.Select(x => x.Character.GetParty(PartyTypeEnum.PARTY_TYPE_ARENA)).FirstOrDefault() ??
+                                 PartyManager.Instance.Create(PartyTypeEnum.PARTY_TYPE_ARENA);
+
+            challengersParty.RemoveAllGuest();
+            defendersParty.RemoveAllGuest();
+
+            foreach (var character in preFight.ChallengersTeam.Members.Select(x => x.Character).Where(character => !challengersParty.IsInGroup(character)))
+            {
+                if (challengersParty.Leader != null)
+                    challengersParty.Leader.Invite(character, PartyTypeEnum.PARTY_TYPE_ARENA, true);
+                else
+                    character.EnterParty(challengersParty);
+            }
+
+            foreach (var character in preFight.DefendersTeam.Members.Select(x => x.Character).Where(character => !defendersParty.IsInGroup(character)))
+            {
+                if (defendersParty.Leader != null)
+                    defendersParty.Leader.Invite(character, PartyTypeEnum.PARTY_TYPE_ARENA, true);
+                else
+                    character.EnterParty(defendersParty);
             }
 
             preFight.ShowPopups();
