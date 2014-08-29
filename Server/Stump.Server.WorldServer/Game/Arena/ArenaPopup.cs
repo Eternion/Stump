@@ -62,17 +62,13 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public void Accept()
         {
-            if (m_timer != null)
-                m_timer.Dispose();
-
+            Cancel();
             WaitingCharacter.ToggleReady(true);
         }
 
         public void Deny()
         {
-            if (m_timer != null)
-                m_timer.Dispose();
-
+            Cancel();
             WaitingCharacter.DenyFight();
         }
 
@@ -81,6 +77,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             if (m_timer != null)
                 m_timer.Dispose();
 
+            Character.ArenaPopup = null;
             // send something ?
         }
     }

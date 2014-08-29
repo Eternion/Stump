@@ -750,9 +750,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var permanentDamages = CalculateErosionDamage(damage.Amount);
 
+            //Fraction
+            var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
+            if (fractionBuff != null && !(damage is FractionDamage))
+                return fractionBuff.DispatchDamages(damage);
+
             if (!damage.IgnoreDamageReduction)
             {
-                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical);
+                var damageWithoutArmor = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, false);
+                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, true);
 
                 var reduction = CalculateArmorReduction(damage.School);
 
@@ -770,25 +776,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     }
                 }
 
-                if (reduction > 0)
-                    damage.Amount -= reduction;
+                permanentDamages = CalculateErosionDamage(damageWithoutArmor);
+                damage.Amount -= permanentDamages;
             }
 
             if (damage.Amount <= 0)
                 damage.Amount = 0;
 
             if (damage.Amount > LifePoints)
+            {
                 damage.Amount = LifePoints;
-
-            //Fraction
-            var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
-            if (fractionBuff != null && !(damage is FractionDamage))
-                return fractionBuff.DispatchDamages(damage);
+                permanentDamages = 0;
+            }
 
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
 
-            OnLifePointsChanged(-damage.Amount, permanentDamages, damage.Source);
+            OnLifePointsChanged(-(damage.Amount + permanentDamages), permanentDamages, damage.Source);
 
             if (IsDead())
                 OnDead(damage.Source);
@@ -900,15 +904,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return damage;
         }
 
-        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical)
+        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor)
         {           
             var percentResistance = CalculateTotalResistances(type, true);
             var fixResistance = CalculateTotalResistances(type, false);
+            var armorResistance = withArmor ? CalculateArmorReduction(type) : 0;
 
             percentResistance = percentResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : percentResistance;
             fixResistance = fixResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : fixResistance;
 
-            return (int)( ( 1 - percentResistance / 100d ) * ( damage - fixResistance ) ) - (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
+            var result = (int)((1 - percentResistance / 100d) * (damage - armorResistance - fixResistance)) -
+                         (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
+
+            return result;
         }
 
         public virtual int CalculateTotalResistances(EffectSchoolEnum type, bool percent)
@@ -972,7 +980,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (erosion > 50)
                 erosion = 50;
 
-            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.Truce) != null)
+            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.Truce).Any())
                 erosion -= 10;
 
             return (int)( damages * ( erosion / 100d ) );
@@ -1469,10 +1477,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Trap) || // traps
                    spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
-                   spell.Template.Id == 74 || // double
-                   spell.Template.Id == 62 || // chakra pulsion
-                   spell.Template.Id == 66 || // insidious poison
-                   spell.Template.Id == 67;
+                   spell.Template.Id == (int)SpellIdEnum.Double || // double
+                   spell.Template.Id == (int)SpellIdEnum.ChakraImpulse || // chakra pulsion
+                   spell.Template.Id == (int)SpellIdEnum.InsidiousPoison || // insidious poison
+                   spell.Template.Id == (int)SpellIdEnum.Fear;
         }
 
         public bool DispellInvisibilityBuff()

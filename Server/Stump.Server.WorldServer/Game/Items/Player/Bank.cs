@@ -13,8 +13,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
     public class Bank : ItemsStorage<BankItem>
     {
         //1K per default
-        [Variable]
-        private static int PricePerItem = 1;
+        [Variable] private const int PricePerItem = 1;
+
         public Bank(Character character)
         {
             Owner = character;
@@ -28,8 +28,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             WorldServer.Instance.IOTaskPool.EnsureContext();
 
-            Items =
-                WorldServer.Instance.DBAccessor.Database.Query<BankItemRecord>(string.Format(BankItemRelator.FetchByOwner,
+            Items = WorldServer.Instance.DBAccessor.Database.Query<BankItemRecord>(string.Format(BankItemRelator.FetchByOwner,
                     Owner.Account.Id)).ToDictionary(x => x.Id, x => new BankItem(Owner, x));
             IsLoaded = true;
         }

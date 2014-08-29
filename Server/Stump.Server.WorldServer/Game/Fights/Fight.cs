@@ -287,7 +287,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         int GetPlacementTimeLeft();
     }
 
-    public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, ICharacterContainer, IFight
+    public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, IFight
         where TRedTeam : FightTeam
         where TBlueTeam : FightTeam
     {
@@ -1863,8 +1863,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
             else
             {
-                fighter.Die();
-
                 if (fighter is CharacterFighter && (fighter as CharacterFighter).Character.IsLoggedIn)
                 {
                     // wait the character to be ready
@@ -1872,7 +1870,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     readyChecker.Success += obj => OnPlayerReadyToLeave(fighter as CharacterFighter);
                     readyChecker.Timeout += (obj, laggers) => OnPlayerReadyToLeave(fighter as CharacterFighter);
 
-                    ( (CharacterFighter)fighter ).PersonalReadyChecker = readyChecker;
+                    ((CharacterFighter)fighter).PersonalReadyChecker = readyChecker;
                     // Clients.Remove(character.Client); // can be instant so we remove him before to start the checker .. why ???
                     readyChecker.Start();
                 }
@@ -1890,7 +1888,9 @@ namespace Stump.Server.WorldServer.Game.Fights
                     fighter.Team.RemoveFighter(fighter);
                     fighter.Team.AddLeaver(fighter);
                     m_leavers.Add(fighter);
-                }
+
+                    fighter.Die();
+                }     
             }
         }
 
@@ -1919,6 +1919,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             fighter.Team.RemoveFighter(fighter);
             fighter.Team.AddLeaver(fighter);
             m_leavers.Add(fighter);
+
+            fighter.Die();
         }
 
         protected virtual void OnPlayerLoggout(Character character)

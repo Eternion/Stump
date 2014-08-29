@@ -11,6 +11,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             Owner = owner;
             Record = record;
+
+            if (record.Effects == null)
+                record.Effects = ItemManager.Instance.GenerateItemEffects(Record.Template);
         }
 
         public Character Owner
@@ -18,6 +21,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             get;
             private set;
         }
+
         public virtual int Weight
         {
             get { return (int) (Template.RealWeight*Stack); }
