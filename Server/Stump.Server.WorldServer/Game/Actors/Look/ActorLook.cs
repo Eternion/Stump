@@ -197,6 +197,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+
+        public void SetRiderLook(ActorLook look)
+        {
+            SetSubLooks(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,
+                                  look));
+        }
+
+        public void RemoveMounts()
+        {
+            m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER);
+            m_entityLook.Invalidate();
+        }
+
         public void SetAuraSkin(short skin)
         {
             var auraLook = AuraLook;

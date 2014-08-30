@@ -80,13 +80,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
 
         public virtual bool Execute(Npc npc, Character character)
         {
-            if (!CanExecute(npc, character))
-            {
-                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 34);
-                return false;
-            }
+            if (CanExecute(npc, character))
+                return true;
 
-            return true;
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 34);
+            return false;
         }
     }
 }

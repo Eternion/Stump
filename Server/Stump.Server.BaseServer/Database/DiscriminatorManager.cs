@@ -18,8 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using Stump.Core.Reflection;
 
@@ -28,7 +26,7 @@ namespace Stump.Server.BaseServer.Database
     public class DiscriminatorManager<T> : Singleton<DiscriminatorManager<T>>
     {
         private bool m_initialized;
-        private Dictionary<string, Delegate> m_constructors = new Dictionary<string, Delegate>();
+        private readonly Dictionary<string, Delegate> m_constructors = new Dictionary<string, Delegate>();
         // todo  : manage assemblies correctly
 
         public void Initialize(Assembly assembly)
