@@ -750,6 +750,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var permanentDamages = CalculateErosionDamage(damage.Amount);
 
+            //Fraction
+            var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
+            if (fractionBuff != null && !(damage is FractionDamage))
+                return fractionBuff.DispatchDamages(damage);
+
             if (!damage.IgnoreDamageReduction)
             {
                 var damageWithoutArmor = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, false);
@@ -779,12 +784,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 damage.Amount = 0;
 
             if (damage.Amount > LifePoints)
+            {
                 damage.Amount = LifePoints;
-
-            //Fraction
-            var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
-            if (fractionBuff != null && !(damage is FractionDamage))
-                return fractionBuff.DispatchDamages(damage);
+                permanentDamages = 0;
+            }
 
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
@@ -1045,7 +1048,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
 
             var prob = (apAttack/(double) apDodge)*
-                       ( ( Stats.AP.TotalMax / (double)( Stats.AP.TotalMax - Stats.AP.Used ) ) / 2d );
+                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
 
             if (prob < 0.10)
                 prob = 0.10;
@@ -1063,7 +1066,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
 
             var prob = (mpAttack/(double) mpDodge)*
-                       ( ( Stats.AP.TotalMax / (double)( Stats.AP.TotalMax - Stats.AP.Used ) ) / 2d );
+                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
 
             if (prob < 0.10)
                 prob = 0.10;
@@ -1474,10 +1477,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Trap) || // traps
                    spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
-                   spell.Template.Id == 74 || // double
-                   spell.Template.Id == 62 || // chakra pulsion
-                   spell.Template.Id == 66 || // insidious poison
-                   spell.Template.Id == 67;
+                   spell.Template.Id == (int)SpellIdEnum.Double || // double
+                   spell.Template.Id == (int)SpellIdEnum.ChakraImpulse || // chakra pulsion
+                   spell.Template.Id == (int)SpellIdEnum.InsidiousPoison || // insidious poison
+                   spell.Template.Id == (int)SpellIdEnum.Fear;
         }
 
         public bool DispellInvisibilityBuff()

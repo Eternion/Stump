@@ -124,6 +124,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (TaxCollectorDefendFight != null)
                 TaxCollectorDefendFight.RemoveDefender(this);
 
+            if (ArenaManager.Instance.IsInQueue(this))
+                ArenaManager.Instance.RemoveFromQueue(this);
+
+            if (ArenaPopup != null)
+                ArenaPopup.Deny();
+
             var handler = LoggedOut;
             if (handler != null) handler(this);
         }
@@ -670,9 +676,33 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
+        public ActorLook MountLook
+        {
+            get
+            {
+                var petSkin = GetEquipedMount();
+                if (petSkin == -1)
+                    return null;
+
+                var mountLook = new ActorLook { BonesID = (short)petSkin };
+                var playerLook = RealLook.Clone();
+
+                if (petSkin == 1792)
+                {
+                    mountLook.AddColor(1, Color.FromArgb(212, 246, 212));
+                    mountLook.AddColor(2, Color.FromArgb(111, 133, 145));
+                }
+
+                playerLook.BonesID = 2;
+                mountLook.SetRiderLook(playerLook);
+
+                return mountLook;
+            }
+        }
+
         public override ActorLook Look
         {
-            get { return (CustomLookActivated && CustomLook != null ? CustomLook : RealLook); }
+            get { return GetEquipedMount() != -1 ? MountLook : (CustomLookActivated && CustomLook != null ? CustomLook : RealLook); }
         }
 
         public override SexTypeEnum Sex
@@ -748,11 +778,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             var petSkin = Inventory.GetPetSkin();
 
-            if (petSkin.HasValue)
-                RealLook.SetPetSkin(petSkin.Value);
+            if (petSkin != null && petSkin.Item1.HasValue && petSkin.Item2)
+                RealLook.SetPetSkin(petSkin.Item1.Value);
             else
                 RealLook.RemovePets();
-
+                
             if (send)
                 RefreshActor();
         }
@@ -1066,6 +1096,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsGameMaster()
         {
             return UserGroup.IsGameMaster;
+        }
+
+        #endregion
+
+        #region Mount
+
+        public int GetEquipedMount()
+        {
+            var petSkin = Inventory.GetPetSkin();
+            return (petSkin != null && petSkin.Item1.HasValue && !petSkin.Item2) ? petSkin.Item1.Value : -1;
         }
 
         #endregion
@@ -2014,6 +2054,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void DenyAllInvitations(PartyTypeEnum type)
         {
             foreach (var partyInvitation in m_partyInvitations.Where(x => x.Value.Party.Type == type).ToArray())
+            {
+                partyInvitation.Value.Deny();
+            }
+        }
+
+        public void DenyAllInvitations(Party party)
+        {
+            foreach (var partyInvitation in m_partyInvitations.Where(x => x.Value.Party == party).ToArray())
             {
                 partyInvitation.Value.Deny();
             }

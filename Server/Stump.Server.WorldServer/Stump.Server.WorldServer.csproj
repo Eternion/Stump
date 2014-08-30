@@ -243,6 +243,7 @@
     <Compile Include="Database\World\WorldMapTaxCollector.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
+    <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
@@ -275,6 +276,7 @@
     <Compile Include="Game\Conditions\Criterions\BonesCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\MapCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestDoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestStartableCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\Criterion.cs" />

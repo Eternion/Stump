@@ -842,14 +842,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return GetEquipedItems().Where(entry => entry.Position != CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS && entry.AppearanceId != 0).Select(entry => (short)entry.AppearanceId).ToArray();
         }
 
-        public short? GetPetSkin()
+        public Tuple<short?, bool> GetPetSkin()
         {
             var pet = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
 
             if (pet == null || pet.AppearanceId == 0)
                 return null;
 
-            return (short?) pet.AppearanceId;
+            return Tuple.Create((short?)pet.AppearanceId, pet.Template.TypeId == (int)ItemTypeEnum.PET);
         }
 
         #region Events

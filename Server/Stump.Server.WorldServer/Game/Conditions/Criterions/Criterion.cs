@@ -128,6 +128,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new LevelCriterion();
                 case MapCharactersCriterion.Identifier:
                     return new MapCharactersCriterion();
+                case MapCriterion.Identifier:
+                    return new MapCriterion();
                 case MariedCriterion.Identifier:
                     return new MariedCriterion();
                 case MaxRankCriterion.Identifier:

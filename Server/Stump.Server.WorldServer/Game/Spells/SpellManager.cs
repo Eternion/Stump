@@ -24,6 +24,7 @@ namespace Stump.Server.WorldServer.Game.Spells
 
         private Dictionary<uint, SpellLevelTemplate> m_spellsLevels;
         private Dictionary<int, SpellTemplate> m_spells;
+        private Dictionary<int, SpellBombTemplate> m_spellsBomb;
         private Dictionary<int, SpellType> m_spellsTypes;
         private Dictionary<int, SpellState> m_spellsState;
 
@@ -42,6 +43,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             m_spells = Database.Fetch<SpellTemplate>(SpellTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_spellsTypes = Database.Fetch<SpellType>(SpellTypeRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_spellsState = Database.Fetch<SpellState>(SpellStateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_spellsBomb = Database.Fetch<SpellBombTemplate>(SpellBombRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
             InitializeHandlers();
         }
@@ -106,6 +108,11 @@ namespace Stump.Server.WorldServer.Game.Spells
                         : StringComparison.InvariantCulture));
         }
 
+        public SpellBombTemplate GetSpellBombTemplate(int id)
+        {
+            SpellBombTemplate template;
+            return m_spellsBomb.TryGetValue(id, out template) ? template : null;
+        }
 
         public SpellTemplate GetFirstSpellTemplate(Predicate<SpellTemplate> predicate)
         {
