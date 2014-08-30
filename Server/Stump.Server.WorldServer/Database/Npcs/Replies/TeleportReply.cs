@@ -1,10 +1,10 @@
 ﻿using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
-using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
@@ -12,11 +12,9 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     [Discriminator("Teleport", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class TeleportReply : NpcReply
     {
-        private int m_cellId;
-        private DirectionsEnum m_direction;
-        private int m_mapId;
         private bool m_mustRefreshPosition;
         private ObjectPosition m_position;
+        private ItemTemplate m_itemTemplate;
 
         public TeleportReply()
         {
@@ -67,7 +65,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         {
             get
             {
-                return (DirectionsEnum)Record.GetParameter<int>(2, false);
+                return (DirectionsEnum)Record.GetParameter<int>(2);
             }
             set
             {
@@ -76,14 +74,45 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
+        public int ItemId
+        {
+            get { return Record.GetParameter<int>(3); }
+            set { Record.SetParameter(3, value); }
+        }
+
+        public ItemTemplate Item
+        {
+            get { return m_itemTemplate ?? (m_itemTemplate = ItemManager.Instance.TryGetTemplate(ItemId)); }
+            set
+            {
+                m_itemTemplate = value;
+                ItemId = value.Id;
+            }
+        }
+
+        /// <summary>
+        /// Parameter 1
+        /// </summary>
+        public uint Amount
+        {
+            get
+            {
+                return Record.GetParameter<uint>(4);
+            }
+            set
+            {
+                Record.SetParameter(4, value);
+            }
+        }
+
         private void RefreshPosition()
         {
-            Map map = Game.World.Instance.GetMap(MapId);
+            var map = Game.World.Instance.GetMap(MapId);
 
             if (map == null)
                 throw new Exception(string.Format("Cannot load SkillTeleport id={0}, map {1} isn't found", Id, MapId));
 
-            Cell cell = map.Cells[CellId];
+            var cell = map.Cells[CellId];
 
             m_position = new ObjectPosition(map, cell, Direction);
         }
@@ -102,6 +131,21 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         {
             if (!base.Execute(npc, character))
                 return false;
+
+            if (Item == null)
+                return character.Teleport(GetPosition());
+
+            var item = character.Inventory.TryGetItem(Item);
+
+            if (item == null)
+                return false;
+
+            if (item.Stack < Amount)
+                return false;
+
+            character.Inventory.RemoveItem(item, (int)Amount);
+            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, Amount,
+                item.Template.Id);
 
             return character.Teleport(GetPosition());
         }
