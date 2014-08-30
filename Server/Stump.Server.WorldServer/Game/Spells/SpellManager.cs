@@ -56,23 +56,26 @@ namespace Stump.Server.WorldServer.Game.Spells
                 if (type.GetCustomAttribute<DefaultSpellCastHandlerAttribute>(false) != null)
                     continue; // we don't mind about default handlers
 
-                var attribute = type.GetCustomAttributes<SpellCastHandlerAttribute>().SingleOrDefault();
+                var attributes = type.GetCustomAttributes<SpellCastHandlerAttribute>().ToArray();
 
-                if (attribute == null)
+                if (attributes.Length == 0)
                 {
-                    logger.Error("SpellCastHandler '{0}' has no SpellCastHandlerAttribute, or more than 1", type.Name);
+                    logger.Error("SpellCastHandler '{0}' has no SpellCastHandlerAttribute", type.Name);
                     continue;
                 }
 
-                var spell = GetSpellTemplate(attribute.Spell);
-
-                if (spell == null)
+                foreach (var attribute in attributes)
                 {
-                    logger.Error("SpellCastHandler '{0}' -> Spell {1} not found", type.Name, attribute.Spell);
-                    continue;
-                }
+                    var spell = GetSpellTemplate(attribute.Spell);
 
-                AddSpellCastHandler(type, spell);
+                    if (spell == null)
+                    {
+                        logger.Error("SpellCastHandler '{0}' -> Spell {1} not found", type.Name, attribute.Spell);
+                        continue;
+                    }
+
+                    AddSpellCastHandler(type, spell);
+                }
             }
         }
 

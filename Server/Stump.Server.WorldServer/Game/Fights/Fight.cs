@@ -1061,15 +1061,21 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnFighterAdded(FightTeam team, FightActor actor)
         {
+            if (State == FightState.Ended)
+            {
+                throw new Exception("Fight ended");
+            }
+
             if (actor is SummonedFighter)
             {
                 OnSummonAdded(actor as SummonedFighter);
                 return;
             }
 
-            if (State == FightState.Ended)
+            if (actor is SummonedBomb)
             {
-                throw new Exception("Fight ended");
+                OnBombAdded(actor as SummonedBomb);
+                return;
             }
 
             TimeLine.Fighters.Add(actor);
@@ -1098,6 +1104,13 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             TimeLine.InsertFighter(fighter, TimeLine.Fighters.IndexOf(fighter.Summoner) + 1);
             BindFighterEvents(fighter);
+
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
+        }
+        protected virtual void OnBombAdded(SummonedBomb bomb)
+        {
+            TimeLine.InsertFighter(bomb, TimeLine.Fighters.IndexOf(bomb.Summoner) + 1);
+            BindFighterEvents(bomb);
 
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
@@ -1138,6 +1151,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
+            if (actor is SummonedBomb)
+            {
+                OnBombRemoved(actor as SummonedBomb);
+                return;
+            }
+
             TimeLine.RemoveFighter(actor);
             UnBindFighterEvents(actor);
 
@@ -1162,6 +1181,13 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             TimeLine.RemoveFighter(fighter);
             UnBindFighterEvents(fighter);
+
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
+        }
+        protected virtual void OnBombRemoved(SummonedBomb bomb)
+        {
+            TimeLine.RemoveFighter(bomb);
+            UnBindFighterEvents(bomb);
 
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }

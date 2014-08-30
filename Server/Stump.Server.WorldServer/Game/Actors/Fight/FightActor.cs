@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
@@ -1361,6 +1362,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #region Summons
 
         private readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
+        private readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
         public int SummonedCount
         {
@@ -1368,14 +1370,30 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
-        public ReadOnlyCollection<SummonedFighter> GetSummons()
+        public int BombsCount
         {
-            return m_summons.AsReadOnly();
+            get;
+            set;
         }
+
+        public ReadOnlyCollection<SummonedFighter> Summons
+        {
+            get { return m_summons.AsReadOnly(); }
+        }
+        public ReadOnlyCollection<SummonedBomb> Bombs
+        {
+            get { return m_bombs.AsReadOnly(); }
+        }
+
 
         public bool CanSummon()
         {
             return SummonedCount < Stats[PlayerFields.SummonLimit].Total;
+        }
+
+        public bool CanSummonBomb()
+        {
+            return BombsCount < SummonedBomb.BombLimit;
         }
 
         public void AddSummon(SummonedFighter summon)
@@ -1395,9 +1413,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_summons.Remove(summon);
         }
 
+        public void AddBomb(SummonedBomb bomb)
+        {
+            if (bomb.MonsterBombTemplate.Template.UseBombSlot)
+                BombsCount++;
+
+            m_bombs.Add(bomb);
+        }
+
+        public void RemoveBomb(SummonedBomb bomb)
+        {
+            if (bomb.MonsterBombTemplate.Template.UseBombSlot)
+                BombsCount--;
+
+            m_bombs.Remove(bomb);
+        }
+
         public void RemoveAllSummons()
         {
             m_summons.Clear();
+            m_bombs.Clear();
         }
 
         public void KillAllSummons()
@@ -1405,6 +1440,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             foreach (var summon in m_summons.ToArray())
             {
                 summon.Die();
+            }
+            foreach (var bomb in m_bombs.ToArray())
+            {
+                bomb.Die();
             }
         }
 

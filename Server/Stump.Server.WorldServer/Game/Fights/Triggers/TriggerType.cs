@@ -1,10 +1,13 @@
+using System;
+
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
+    [Flags]
     public enum TriggerType
     {
-        NEVER,
-        TURN_BEGIN,
-        TURN_END,
-        MOVE,
+        NEVER=0,
+        TURN_BEGIN=1,
+        TURN_END=2,
+        MOVE=4,
     }
 }

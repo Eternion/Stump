@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class SpellCastHandlerAttribute : Attribute
     {
         public SpellCastHandlerAttribute(int spellId)
