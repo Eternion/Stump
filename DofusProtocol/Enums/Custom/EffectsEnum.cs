@@ -1470,11 +1470,11 @@
         /// <summary>
         /// Summons #1
         /// </summary>
-        Effect_1008 = 1008,
+        Effect_SummonsBomb = 1008,
         /// <summary>
         /// Activate a bomb
         /// </summary>
-        Effect_1009 = 1009,
+        Effect_TriggerBomb = 1009,
         /// <summary>
         /// Places a grade #2 Glyph
         /// </summary>

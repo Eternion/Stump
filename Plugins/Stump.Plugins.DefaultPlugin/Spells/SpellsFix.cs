@@ -141,9 +141,31 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(62, EffectsEnum.Effect_StealHPFire, (level, effect, critical) => effect.Duration = 0);
 
             #endregion
+
+            #region ROUBLARD
+            // bombs are shit :)
+            // 2822,2845,2830 bomb explosion spell
+            // remove all Effect_ReduceEffectsDuration effects and the second damage effect
+            // the kill effect is on the caster (the bomb)
+            RemoveEffectOnAllLevels(2822, EffectsEnum.Effect_ReduceEffectsDuration, false);
+            RemoveEffectOnAllLevels(2822, 0, false);
+            FixEffectOnAllLevels(2822, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            // same here and we remove the second LostMP effect
+            RemoveEffectOnAllLevels(2845, EffectsEnum.Effect_ReduceEffectsDuration, false);
+            RemoveEffectOnAllLevels(2845, 0, false);
+            RemoveEffectOnAllLevels(2845, 2, false);
+            FixEffectOnAllLevels(2845, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+            
+            // same here and we remove the second LostAP effect
+            RemoveEffectOnAllLevels(2830, EffectsEnum.Effect_ReduceEffectsDuration, false);
+            RemoveEffectOnAllLevels(2830, 0, false);
+            RemoveEffectOnAllLevels(2830, 2, false);
+            FixEffectOnAllLevels(2830, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+            #endregion
         }
 
-        public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)
+        public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer, bool critical=true)
         {
             var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
 
@@ -153,11 +175,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             foreach (var level in spellLevels)
             {
                 fixer(level, level.Effects[effectIndex], false);
-                fixer(level, level.CriticalEffects[effectIndex], true);
+                if (critical)
+                    fixer(level, level.CriticalEffects[effectIndex], true);
             }
         }
 
-        public static void FixEffectOnAllLevels(int spellId, EffectsEnum effect, Action<SpellLevelTemplate, EffectDice, bool> fixer)
+        public static void FixEffectOnAllLevels(int spellId, EffectsEnum effect, Action<SpellLevelTemplate, EffectDice, bool> fixer, bool critical=true)
         {
             var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
 
@@ -174,14 +197,34 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                     fixer(level, spellEffect, false);
                 }
 
-                foreach (var spellEffect in level.CriticalEffects.Where(entry => entry.EffectId == effect))
-                {
-                    fixer(level, spellEffect, true);
-                }
+                if (critical)
+                    foreach (EffectDice spellEffect in level.CriticalEffects.Where(entry => entry.EffectId == effect))
+                    {
+                        fixer(level, spellEffect, true);
+                    }
             }
         }
 
-        public static void RemoveEffectOnAllLevels(int spellId, EffectsEnum effect)
+        public static void RemoveEffectOnAllLevels(int spellId, int effectIndex, bool critical=true)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+            {
+                logger.Error("Cannot apply fix on spell {0} : spell do not exists", spellId);
+                return;
+            }
+
+            foreach (var level in spellLevels)
+            {
+                level.Effects.Remove(level.Effects[effectIndex]);
+                if (critical)
+                    level.CriticalEffects.Remove(level.CriticalEffects[effectIndex]);
+                
+            }
+        }
+
+        public static void RemoveEffectOnAllLevels(int spellId, EffectsEnum effect, bool critical=true)
         {
             var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
 
@@ -194,8 +237,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             foreach (var level in spellLevels)
             {
                 level.Effects.RemoveAll(entry => entry.EffectId == effect);
-                level.CriticalEffects.RemoveAll(entry => entry.EffectId == effect);
-                
+                if (critical)
+                    level.CriticalEffects.RemoveAll(entry => entry.EffectId == effect);
             }
         }
     }

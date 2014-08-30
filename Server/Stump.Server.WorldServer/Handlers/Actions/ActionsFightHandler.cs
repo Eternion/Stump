@@ -29,6 +29,11 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
             client.Send(new GameActionFightSummonMessage(summon is SummonedClone ? (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE : (short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
+        }        
+        
+        public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedBomb summon)
+        {
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
         }
 
         public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)

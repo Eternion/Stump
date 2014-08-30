@@ -314,6 +314,8 @@
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerBomb.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Summon\Bomb.cs" />
     <Compile Include="Game\Exchanges\Bank\BankDialog.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildCreationPanel.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildModificationPanel.cs" />
@@ -406,6 +408,7 @@
     <Compile Include="Game\Fights\Results\IExperienceResult.cs" />
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
+    <Compile Include="Game\Fights\Triggers\Wall.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
     <Compile Include="Game\Guilds\GuildEmblem.cs" />
@@ -445,6 +448,7 @@
     <Compile Include="Game\Social\Friend.cs" />
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
+    <Compile Include="Game\Spells\Casts\BombExplodSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\ChakraConcentrationCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
