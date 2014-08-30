@@ -291,7 +291,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeStartOkTaxCollectorMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
         {
-            client.Send(new ExchangeStartOkTaxCollectorMessage(taxCollector.Id, taxCollector.Bag.Select(x => x.GetObjectItem()), 0));
+            client.Send(new ExchangeStartOkTaxCollectorMessage(taxCollector.Id, taxCollector.Bag.Select(x => x.GetObjectItem()), taxCollector.GatheredKamas));
         }
 
         public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)
