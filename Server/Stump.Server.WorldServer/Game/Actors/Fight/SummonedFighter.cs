@@ -44,10 +44,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             base.OnDead(killedBy);
 
-            Fight.TimeLine.RemoveFighter(this);
+            //Fight.TimeLine.RemoveFighter(this);
             Summoner.RemoveSummon(this);
 
-            ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
+            //ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
         }
     }
 }
