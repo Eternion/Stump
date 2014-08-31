@@ -3,6 +3,7 @@ using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
@@ -103,8 +104,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                     effect.Targets = 
                         SpellTargetType.ALLY_STATIC_SUMMONS |
                         SpellTargetType.ALLY_SUMMONS | (critical ? 
-                        SpellTargetType.ENNEMY_STATIC_SUMMONS |
-                        SpellTargetType.ENNEMY_SUMMONS : 0);
+                        SpellTargetType.ENEMY_STATIC_SUMMONS |
+                        SpellTargetType.ENEMY_SUMMONS : 0);
                 });
             #endregion
 
@@ -162,6 +163,27 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(2830, 0, false);
             RemoveEffectOnAllLevels(2830, 2, false);
             FixEffectOnAllLevels(2830, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            // botte (2795)
+            // all effects are in triple, wtf !!
+            RemoveEffectOnAllLevels(2795, 0);
+            RemoveEffectOnAllLevels(2795, 2);
+            RemoveEffectOnAllLevels(2795, 2);
+            RemoveEffectOnAllLevels(2795, 4);
+            RemoveEffectOnAllLevels(2795, 4);
+            // first effect => all buts bombs
+            // others => bombs only
+            FixEffectOnAllLevels(2795, EffectsEnum.Effect_PushBack_1103, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2795, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.SELF);
+            // all allies but self
+            FixEffectOnAllLevels(2795, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            // Aimantation (2801)
+            RemoveEffectOnAllLevels(2801, 1, false);            
+            // first effect for bombs only, second for all but self and bombs
+            FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS, false);
+            FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.SELF, false);
+
             #endregion
         }
 

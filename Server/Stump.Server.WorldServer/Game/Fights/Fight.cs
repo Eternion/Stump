@@ -1987,6 +1987,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 ContextHandler.SendGameActionFightMarkCellsMessage(fighter.Character.Client, trigger, trigger.DoesSeeTrigger(fighter));
             }
+
+            if (trigger.TriggerType.HasFlag(TriggerType.CREATION))
+            {
+                var fighters = GetAllFighters(trigger.GetCells());
+                foreach (var fighter in fighters)
+                    trigger.Trigger(fighter);
+            }
         }
 
         public void RemoveTrigger(MarkTrigger trigger)

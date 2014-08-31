@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Stump.Core.I18N;
 using Stump.DofusProtocol.Enums;
@@ -51,6 +52,20 @@ namespace Stump.Tools.SpellsExplorer
                 var pattern = Console.ReadLine();
                 try
                 {
+                    if (pattern.StartsWith("flags:"))
+                    {
+                        var flag = int.Parse(pattern.Remove(0, "flags:".Length), NumberStyles.HexNumber);
+
+                        foreach (
+                            var spell in
+                                SpellManager.Instance.GetSpellTemplates()
+                                            .Where(
+                                                x =>
+                                                    SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => (int) y.Targets == flag)))
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                    }
+
                     var critical = pattern.EndsWith("!");
                     if (critical)
                         pattern = pattern.Remove(pattern.Length - 1, 1);

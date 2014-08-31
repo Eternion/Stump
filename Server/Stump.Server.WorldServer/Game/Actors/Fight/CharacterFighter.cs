@@ -210,21 +210,27 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             switch (result)
             {
                 case SpellCastResult.NO_LOS:
+                    // Impossible de lancer ce sort : un obstacle gène votre vue !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 174);
                     break;
                 case SpellCastResult.HAS_NOT_SPELL:
+                    // Impossible de lancer ce sort : vous ne le possédez pas !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 169);
                     break;
                 case SpellCastResult.NOT_ENOUGH_AP:
+                    // Impossible de lancer ce sort : Vous avez %1 PA disponible(s) et il vous en faut %2 pour ce sort !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
                     break;
                 case SpellCastResult.UNWALKABLE_CELL:
-                case SpellCastResult.CELL_NOT_FREE:
+                    // Impossible de lancer ce sort : la cellule visée n'est pas disponible !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 172);
                     break;
+                case SpellCastResult.CELL_NOT_FREE:
+                    //Impossible de lancer ce sort : la cellule visée n'est pas valide !
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 193);
+                    break;
                 default:
-                    BasicHandler.SendTextInformationMessage(Character.Client,
-                        TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
                     Character.SendServerMessage("(" + result + ")", Color.Red);
                     break;
             }

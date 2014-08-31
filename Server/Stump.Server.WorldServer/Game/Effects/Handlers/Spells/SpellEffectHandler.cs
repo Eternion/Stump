@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog.Targets;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
@@ -146,28 +147,32 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             {
                 if ((Targets.HasFlag(SpellTargetType.ALLY_1) ||
                     Targets.HasFlag(SpellTargetType.ALLY_2) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_3) ||
                     Targets.HasFlag(SpellTargetType.ALLY_4) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_5)) && !(actor is SummonedFighter))
+                    Targets.HasFlag(SpellTargetType.ALLY_5)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
                     return true;
 
                 if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
                     Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                    return true;
+
+                if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS) && actor is SummonedBomb)
                     return true;
             }
 
             if (!Caster.IsEnnemyWith(actor))
                 return false;
 
-            if ((Targets.HasFlag(SpellTargetType.ENNEMY_1) ||
-                 Targets.HasFlag(SpellTargetType.ENNEMY_2) ||
-                 Targets.HasFlag(SpellTargetType.ENNEMY_3) ||
-                 Targets.HasFlag(SpellTargetType.ENNEMY_4) ||
-                 Targets.HasFlag(SpellTargetType.ENNEMY_5)) && !(actor is SummonedFighter))
+            if ((Targets.HasFlag(SpellTargetType.ENEMY_1) ||
+                 Targets.HasFlag(SpellTargetType.ENEMY_2) ||
+                 Targets.HasFlag(SpellTargetType.ENEMY_4) ||
+                 Targets.HasFlag(SpellTargetType.ENEMY_5)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
                 return true;
 
-            if ((Targets.HasFlag(SpellTargetType.ENNEMY_SUMMONS) ||
-                 Targets.HasFlag(SpellTargetType.ENNEMY_STATIC_SUMMONS)) && actor is SummonedFighter)
+            if ((Targets.HasFlag(SpellTargetType.ENEMY_SUMMONS) ||
+                 Targets.HasFlag(SpellTargetType.ENEMY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                return true;
+
+            if (Targets.HasFlag(SpellTargetType.ENEMY_BOMBS) && actor is SummonedBomb)
                 return true;
 
             return false;
