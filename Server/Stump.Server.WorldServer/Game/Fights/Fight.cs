@@ -1585,7 +1585,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var cells = path.GetPath();
             if (fighter != null)
             {
-                var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.IsVisibleFor(fighter)).Select(entry => entry.Cell.Id).ToList();
+                var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.CanTackle(fighter)).Select(entry => entry.Cell.Id).ToList();
                 var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
 
                 for (var i = 0; i < cells.Length; i++)
@@ -1970,7 +1970,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public bool ShouldTriggerOnMove(Cell cell)
         {
-            return m_triggers.Any(entry => entry.TriggerType == TriggerType.MOVE && entry.ContainsCell(cell));
+            return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.ContainsCell(cell));
         }
 
         public MarkTrigger[] GetTriggers(Cell cell)
@@ -1993,6 +1993,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             trigger.Triggered -= OnMarkTriggered;
             m_triggers.Remove(trigger);
+            trigger.NotifyRemoved();
 
             ContextHandler.SendGameActionFightUnmarkCellsMessage(Clients, trigger);
         }
@@ -2002,7 +2003,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var triggers = m_triggers.ToArray();
 
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
-            foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType == triggerType && markTrigger.ContainsCell(cell)))
+            foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
             {
                 StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
 
@@ -2276,12 +2277,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<int> GetDeadFightersIds()
         {
-            return GetFightersAndLeavers().Where(entry => entry.IsDead()).Select(entry => entry.Id);
+            return GetFightersAndLeavers().Where(entry => entry.IsDead() && entry.IsVisibleInTimeline).Select(entry => entry.Id);
         }
 
         public IEnumerable<int> GetAliveFightersIds()
         {
-            return GetAllFighters<FightActor>(entry => entry.IsAlive()).Select(entry => entry.Id);
+            return GetAllFighters<FightActor>(entry => entry.IsAlive() && entry.IsVisibleInTimeline).Select(entry => entry.Id);
         }
 
         public FightCommonInformations GetFightCommonInformations()

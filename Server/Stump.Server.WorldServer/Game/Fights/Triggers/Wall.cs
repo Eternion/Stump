@@ -42,7 +42,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
-            // launch wall spell ???
+            NotifyTriggered(trigger, CastedSpell);
+
+            var handler = SpellManager.Instance.GetSpellCastHandler(Caster, CastedSpell, trigger.Cell, false);
+            handler.MarkTrigger = this;
+            handler.Initialize();
+            handler.Execute();
         }
 
         public override GameActionMark GetGameActionMark()

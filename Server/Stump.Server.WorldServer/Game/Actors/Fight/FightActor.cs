@@ -333,6 +333,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             set;
         }
 
+        public virtual bool IsVisibleInTimeline
+        {
+            get { return true; }
+        }
+
         #region Stats
 
         public abstract byte Level
@@ -981,7 +986,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (erosion > 50)
                 erosion = 50;
 
-            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.Truce).Any())
+            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.TRÊVE).Any())
                 erosion -= 10;
 
             return (int)( damages * ( erosion / 100d ) );
@@ -1516,10 +1521,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Trap) || // traps
                    spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
-                   spell.Template.Id == (int)SpellIdEnum.Double || // double
-                   spell.Template.Id == (int)SpellIdEnum.ChakraImpulse || // chakra pulsion
-                   spell.Template.Id == (int)SpellIdEnum.InsidiousPoison || // insidious poison
-                   spell.Template.Id == (int)SpellIdEnum.Fear;
+                   spell.Template.Id == (int)SpellIdEnum.DOUBLE || // double
+                   spell.Template.Id == (int)SpellIdEnum.PULSION_DE_CHAKRA || // chakra pulsion
+                   spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX || // insidious poison
+                   spell.Template.Id == (int)SpellIdEnum.PEUR;
         }
 
         public bool DispellInvisibilityBuff()
@@ -1680,6 +1685,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override bool CanMove()
         {
             return IsFighterTurn() && IsAlive() && MP > 0;
+        }
+
+        public virtual bool CanTackle(FightActor fighter)
+        {
+            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter);
         }
 
         public virtual bool CanPlay()
