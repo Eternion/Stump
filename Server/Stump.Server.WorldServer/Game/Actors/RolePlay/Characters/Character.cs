@@ -689,8 +689,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 if (petSkin == 1792)
                 {
-                    mountLook.AddColor(1, playerLook.Colors.ElementAtOrDefault(3).Value);
-                    mountLook.AddColor(2, playerLook.Colors.ElementAtOrDefault(4).Value);
+                    mountLook.AddColor(1, Color.FromArgb(212, 246, 212));
+                    mountLook.AddColor(2, Color.FromArgb(111, 133, 145));
                 }
 
                 playerLook.BonesID = 2;
