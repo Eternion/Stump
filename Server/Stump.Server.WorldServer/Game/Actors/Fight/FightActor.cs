@@ -1086,7 +1086,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightActor[] GetTacklers()
         {
-            return OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.IsVisibleFor(this) && entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
+            return OpposedTeam.GetAllFighters(entry => entry.CanTackle(this) && entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
         }
 
         public virtual int GetTackledMP()

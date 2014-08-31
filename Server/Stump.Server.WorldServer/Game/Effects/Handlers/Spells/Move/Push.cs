@@ -17,6 +17,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
+        public bool DamagesDisabled
+        {
+            get;
+            set;
+        }
 
         public override bool Apply()
         {
@@ -39,6 +44,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 for (var i = 0; i < integerEffect.Value; i++)
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
+                    
+
+                    if (!DamagesDisabled && (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId])))
+                    {
+                        var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (integerEffect.Value - i) + 
+                            Caster.Stats[PlayerFields.PushDamageBonus] - actor.Stats[PlayerFields.PushDamageReduction];
+
+                        actor.InflictDirectDamage(pushbackDamages, Caster);
+                        break;
+                    }
 
                     if (nextCell == null)
                         break;
@@ -48,22 +63,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                         lastCell = nextCell;
                         break;
                     }
-
-                    if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]))
-                    {
-                        var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (integerEffect.Value - i) + 
-                            Caster.Stats[PlayerFields.PushDamageBonus] - actor.Stats[PlayerFields.PushDamageReduction];
-
-                        actor.InflictDirectDamage(pushbackDamages, Caster);
-                        break;
-                    }
-
                     lastCell = nextCell;
                 }
 
                 var endCell = lastCell;
                 var actorCopy = actor;
-                Fight.ForEach(entry => ActionsHandler.SendGameActionFightSlideMessage(entry.Client, Caster, actorCopy, startCell.CellId, endCell.CellId));
+                ActionsHandler.SendGameActionFightSlideMessage(Fight.Clients, Caster, actorCopy, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
             }

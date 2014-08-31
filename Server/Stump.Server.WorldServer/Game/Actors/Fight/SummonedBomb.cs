@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
@@ -49,6 +50,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private List<Wall> m_walls = new List<Wall>(); 
 
         private StatsFields m_stats;
+        private bool m_initialized;
 
         public SummonedBomb(int id, FightTeam team, SpellBombTemplate spellBombTemplate, MonsterGrade monsterBombTemplate, FightActor summoner, Cell cell)
             : base(team)
@@ -69,6 +71,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Fight.TurnStarted += OnTurnStarted;
 
             CheckAndBuildWalls();
+            m_initialized = true;
         }
 
         private void OnTurnStarted(IFight fight, FightActor player)
@@ -171,10 +174,41 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return MonsterBombTemplate.Template.Name; }
         }
 
+        public override int CalculateDamage(int damage, EffectSchoolEnum type, bool critical)
+        {
+            PlayerFields stats;
+            switch (type)
+            {
+
+                case EffectSchoolEnum.Neutral:
+                case EffectSchoolEnum.Earth:
+                    stats = PlayerFields.Strength;
+                    break;
+                case EffectSchoolEnum.Air:
+                    stats = PlayerFields.Agility;
+                    break;
+                case EffectSchoolEnum.Fire:
+                    stats = PlayerFields.Intelligence;
+                    break;
+                case EffectSchoolEnum.Water:
+                    stats = PlayerFields.Chance;
+                    break;
+                default:
+                    stats = PlayerFields.Strength;
+                    break;
+            }
+
+            return (int) Math.Floor(damage*
+                                    (100 + Summoner.Stats[stats].Total + Summoner.Stats[PlayerFields.DamageBonusPercent])/
+                                    100d + Summoner.Stats[PlayerFields.DamageBonus].Total);
+        }
+
         private static bool IsBoundWith(SummonedBomb bomb1, SummonedBomb bomb2)
         {
             var dist = bomb1.Position.Point.DistanceToCell(bomb2.Position.Point);
-            return dist <= 2 || (dist <= 7 && bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point));
+            return dist <= 2 || 
+                (dist <= 7 && bomb1.MonsterBombTemplate == bomb2.MonsterBombTemplate &&
+                bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point));
         }
 
         public void Explode()
@@ -250,14 +284,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        protected override void OnStopMoving(Path path, bool canceled)
+        protected override void OnPositionChanged(ObjectPosition position)
         {
-            base.OnStopMoving(path, canceled);
-            CheckAndBuildWalls();
+            base.OnPositionChanged(position);
+            if (m_initialized)
+                CheckAndBuildWalls();
         }
 
         public bool CheckAndBuildWalls()
         {
+            var existantWall = Fight.GetTriggers(Cell).OfType<Wall>().Where(x => x.Caster == Summoner);
+
+            foreach (var wall in existantWall)
+            {
+                Fight.RemoveTrigger(wall);
+            }
+
             if (Summoner.Bombs.Count <= 0)
                 return false;
 
