@@ -4,7 +4,6 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Game.Items.Player;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
 {
@@ -65,6 +64,9 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             var item = character.Inventory.TryGetItem(Item);
 
             if (item == null)
+                return false;
+
+            if (item.Stack < Amount)
                 return false;
 
             character.Inventory.RemoveItem(item, (int)Amount);
