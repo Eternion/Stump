@@ -210,6 +210,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
                     }
         }
 
+        public bool IsOnSameLine(MapPoint point)
+        {
+            return point.X == X || point.Y == Y;
+        }
+
         public MapPoint[] GetCellsOnLineBetween(MapPoint destination)
         {
             var result = new List<MapPoint>();

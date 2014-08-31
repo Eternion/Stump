@@ -21,6 +21,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 handler(this, target, triggeredSpell);
         }
 
+        public event Action<MarkTrigger> Removed;
+
+        public void NotifyRemoved()
+        {
+            var handler = Removed;
+            if (handler != null)
+                handler(this);
+        }
+
         protected MarkTrigger(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, params MarkShape[] shapes)
         {
             Id = id;

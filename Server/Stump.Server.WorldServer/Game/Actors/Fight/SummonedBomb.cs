@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using Stump.Core.Attributes;
@@ -14,8 +17,10 @@ using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 
@@ -23,8 +28,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SummonedBomb : FightActor, INamedActor
     {
-        [Variable] public static int[] BonusDamageIncrease = {40,60,80};
+        [Variable] public static int BonusDamageIncrease = 25;
+        [Variable] public static int BonusDamageIncreaseLimit = 3;
         [Variable] public static int BombLimit = 3;
+
+        private static Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>()
+        {
+            {2, SpellIdEnum.MUR_DE_FEU},
+            {3, SpellIdEnum.MUR_D_AIR},
+            {4, SpellIdEnum.MUR_D_EAU}
+        };        
+        
+        private static Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
+        {
+            {2, Color.Red},
+            {3, Color.Green},
+            {4, Color.Blue}
+        };
+
+        private List<Wall> m_walls = new List<Wall>(); 
 
         private StatsFields m_stats;
 
@@ -43,15 +65,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             AdjustStats();
 
             ExplodSpell = new Spell(spellBombTemplate.ExplodReactionSpell, (byte)MonsterBombTemplate.GradeId);
-            //ChainReactionSpell = new Spell(spellBombTemplate.ChainReactionSpell, bombLevel); // useless ?
 
             Fight.TurnStarted += OnTurnStarted;
+
+            CheckAndBuildWalls();
         }
 
         private void OnTurnStarted(IFight fight, FightActor player)
         {
             if (player == this)
+            {
+                IncreaseDamageBonus();
                 PassTurn();
+            }
         }
 
         private void AdjustStats()
@@ -88,24 +114,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
-        public int BombLevel
-        {
-            get;
-            private set;
-        }
-
         public Spell ExplodSpell
         {
             get;
             private set;
         }
-        
-        public Spell ChainReactionSpell
-        {
-            get;
-            private set;
-        }
-
         public int DamageBonusPercent
         {
             get;
@@ -118,6 +131,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
+        public override bool IsVisibleInTimeline
+        {
+            get { return false; }
+        }
+
         public override byte Level
         {
             get { return (byte)MonsterBombTemplate.Level; }
@@ -126,6 +144,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override StatsFields Stats
         {
             get { return m_stats; }
+        }
+
+        public ReadOnlyCollection<Wall> Walls
+        {
+            get { return m_walls.AsReadOnly(); }
         }
 
         public override Spell GetSpell(int id)
@@ -148,15 +171,34 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return MonsterBombTemplate.Template.Name; }
         }
 
+        private static bool IsBoundWith(SummonedBomb bomb1, SummonedBomb bomb2)
+        {
+            var dist = bomb1.Position.Point.DistanceToCell(bomb2.Position.Point);
+            return dist <= 2 || (dist <= 7 && bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point));
+        }
+
         public void Explode()
         {
             // check reaction
-            var cross = new Cross(1, 7);
-            var circle = new Lozenge(1, 2);
-
             var bombs = new List<SummonedBomb>() {this};
-            bombs.AddRange(Fight.GetAllFighters<SummonedBomb>(x => cross.GetCells(Cell, Fight.Map).Contains(x.Cell)));
-            bombs.AddRange(Fight.GetAllFighters<SummonedBomb>(x => circle.GetCells(Cell, Fight.Map).Contains(x.Cell)));
+            foreach (var bomb in Summoner.Bombs)
+            {
+                if (bombs.Contains(bomb))
+                    continue;
+
+                if (!IsBoundWith(this, bomb))
+                    continue;
+
+                bombs.Add(bomb);
+                foreach (var bomb2 in Summoner.Bombs)
+                {
+                    if (bombs.Contains(bomb2))
+                        continue;
+
+                    if (IsBoundWith(bomb, bomb2))
+                        bombs.Add(bomb2);
+                }
+            }
 
             if (bombs.Count > 1)
                 ExplodeInReaction(bombs);
@@ -197,15 +239,82 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IncreaseDamageBonus()
         {
-            if (DamageBonusTurns > BonusDamageIncrease.Length)
+            if (DamageBonusTurns >= BonusDamageIncreaseLimit)
                 return false;
 
-            DamageBonusPercent += BonusDamageIncrease[DamageBonusTurns];
+            DamageBonusPercent += BonusDamageIncrease;
             DamageBonusTurns++;
 
-            Look.SetScales((short) (Look.Scales[0]*0.2));
+            Look.Rescale(1.2);
 
             return true;
+        }
+
+        protected override void OnStopMoving(Path path, bool canceled)
+        {
+            base.OnStopMoving(path, canceled);
+            CheckAndBuildWalls();
+        }
+
+        public bool CheckAndBuildWalls()
+        {
+            if (Summoner.Bombs.Count <= 0)
+                return false;
+
+            var bombs = from x in Summoner.Bombs
+                let dist = x.Position.Point.DistanceToCell(Position.Point)
+                where x.MonsterBombTemplate == MonsterBombTemplate &&
+                      x.Position.Point.IsOnSameLine(Position.Point) && dist >= 2 && dist <= 7
+                select x;
+            var walls = bombs.Select(x => Tuple.Create(x, x.Position.Point.GetCellsOnLineBetween(Position.Point).Select(y => y.CellId).ToArray())).ToArray();
+
+            foreach (var wall in Walls.ToArray())
+            {
+                if (!walls.Any(x => x.Item2.Contains(wall.CenterCell.Id)))
+                {
+                    Fight.RemoveTrigger(wall);
+                }
+            }
+            
+            var wallSpell = new Spell((int)wallsSpells[SpellBombTemplate.WallId], (byte) MonsterBombTemplate.GradeId);
+            var color = wallsColors[SpellBombTemplate.WallId];
+            foreach (var tuple in walls)
+            {
+                foreach (var cellId in tuple.Item2)
+                {
+                    if (m_walls.Any(x => x.CenterCell.Id == cellId))
+                        continue;
+
+                    var cell = Fight.Map.Cells[cellId];
+                    var wall = new Wall((short) Fight.PopNextTriggerId(), Summoner, wallSpell, null, cell,
+                        new MarkShape(Fight, cell,
+                            GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, color));
+
+                    Fight.AddTriger(wall);
+
+                    BindWall(wall);
+                    tuple.Item1.BindWall(wall);
+                }
+            }
+
+            return true;
+        }
+
+        public void BindWall(Wall wall)
+        {
+            m_walls.Add(wall);
+            wall.Removed += OnWallRemoved;
+            wall.BindToBomb(this);
+        }
+
+        private void OnWallRemoved(MarkTrigger obj)
+        {
+            m_walls.Remove((Wall)obj);
+        }
+
+        public override bool CanTackle(FightActor fighter)
+        {
+            return false;
         }
 
         public override int GetTackledAP()
@@ -218,10 +327,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return 0;
         }
 
-        public bool CheckAndBuildWalls(SummonedBomb bomb)
+        protected override void OnDead(FightActor killedBy)
         {
-            return false;
+            base.OnDead(killedBy);
+
+            Summoner.RemoveBomb(this);
+
+            foreach (var wall in m_walls.ToArray())
+            {
+                Fight.RemoveTrigger(wall);
+            }
         }
+
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {

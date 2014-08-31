@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
-    [SpellCastHandler(SpellIdEnum.Fortune)]
+    [SpellCastHandler(SpellIdEnum.ROUE_DE_LA_FORTUNE)]
     public class FortuneCastHandler : DefaultSpellCastHandler
     {
         private FightActor[] m_affectedActors; 
