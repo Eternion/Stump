@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:39
+// Generated on 09/01/2014 15:51:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,66 +19,50 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int fightId;
-        public IEnumerable<string> names;
-        public IEnumerable<short> levels;
-        public sbyte teamSwap;
-        public IEnumerable<bool> alives;
+        public IEnumerable<Types.GameFightFighterLightInformations> attackers;
+        public IEnumerable<Types.GameFightFighterLightInformations> defenders;
         
         public MapRunningFightDetailsMessage()
         {
         }
         
-        public MapRunningFightDetailsMessage(int fightId, IEnumerable<string> names, IEnumerable<short> levels, sbyte teamSwap, IEnumerable<bool> alives)
+        public MapRunningFightDetailsMessage(int fightId, IEnumerable<Types.GameFightFighterLightInformations> attackers, IEnumerable<Types.GameFightFighterLightInformations> defenders)
         {
             this.fightId = fightId;
-            this.names = names;
-            this.levels = levels;
-            this.teamSwap = teamSwap;
-            this.alives = alives;
+            this.attackers = attackers;
+            this.defenders = defenders;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(fightId);
-            var names_before = writer.Position;
-            var names_count = 0;
+            var attackers_before = writer.Position;
+            var attackers_count = 0;
             writer.WriteUShort(0);
-            foreach (var entry in names)
+            foreach (var entry in attackers)
             {
-                 writer.WriteUTF(entry);
-                 names_count++;
+                 writer.WriteShort(entry.TypeId);
+                 entry.Serialize(writer);
+                 attackers_count++;
             }
-            var names_after = writer.Position;
-            writer.Seek((int)names_before);
-            writer.WriteUShort((ushort)names_count);
-            writer.Seek((int)names_after);
+            var attackers_after = writer.Position;
+            writer.Seek((int)attackers_before);
+            writer.WriteUShort((ushort)attackers_count);
+            writer.Seek((int)attackers_after);
 
-            var levels_before = writer.Position;
-            var levels_count = 0;
+            var defenders_before = writer.Position;
+            var defenders_count = 0;
             writer.WriteUShort(0);
-            foreach (var entry in levels)
+            foreach (var entry in defenders)
             {
-                 writer.WriteShort(entry);
-                 levels_count++;
+                 writer.WriteShort(entry.TypeId);
+                 entry.Serialize(writer);
+                 defenders_count++;
             }
-            var levels_after = writer.Position;
-            writer.Seek((int)levels_before);
-            writer.WriteUShort((ushort)levels_count);
-            writer.Seek((int)levels_after);
-
-            writer.WriteSByte(teamSwap);
-            var alives_before = writer.Position;
-            var alives_count = 0;
-            writer.WriteUShort(0);
-            foreach (var entry in alives)
-            {
-                 writer.WriteBoolean(entry);
-                 alives_count++;
-            }
-            var alives_after = writer.Position;
-            writer.Seek((int)alives_before);
-            writer.WriteUShort((ushort)alives_count);
-            writer.Seek((int)alives_after);
+            var defenders_after = writer.Position;
+            writer.Seek((int)defenders_before);
+            writer.WriteUShort((ushort)defenders_count);
+            writer.Seek((int)defenders_after);
 
         }
         
@@ -88,34 +72,26 @@ namespace Stump.DofusProtocol.Messages
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             var limit = reader.ReadUShort();
-            var names_ = new string[limit];
+            var attackers_ = new Types.GameFightFighterLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 names_[i] = reader.ReadUTF();
+                 attackers_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterLightInformations>(reader.ReadShort());
+                 attackers_[i].Deserialize(reader);
             }
-            names = names_;
+            attackers = attackers_;
             limit = reader.ReadUShort();
-            var levels_ = new short[limit];
+            var defenders_ = new Types.GameFightFighterLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 levels_[i] = reader.ReadShort();
+                 defenders_[i] = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterLightInformations>(reader.ReadShort());
+                 defenders_[i].Deserialize(reader);
             }
-            levels = levels_;
-            teamSwap = reader.ReadSByte();
-            if (teamSwap < 0)
-                throw new Exception("Forbidden value on teamSwap = " + teamSwap + ", it doesn't respect the following condition : teamSwap < 0");
-            limit = reader.ReadUShort();
-            var alives_ = new bool[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 alives_[i] = reader.ReadBoolean();
-            }
-            alives = alives_;
+            defenders = defenders_;
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + names.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(short) + levels.Sum(x => sizeof(short)) + sizeof(sbyte) + sizeof(short) + alives.Sum(x => sizeof(bool));
+            return sizeof(int) + sizeof(short) + attackers.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + defenders.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

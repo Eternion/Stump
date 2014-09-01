@@ -132,7 +132,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
         {
-            return new ObjectItemInformationWithQuantity((short) Template.Id, 0, false, Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int)Stack);
+            return new ObjectItemInformationWithQuantity((short) Template.Id, Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int)Stack);
         }
     }
 }

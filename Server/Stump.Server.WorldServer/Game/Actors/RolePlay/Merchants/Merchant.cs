@@ -173,7 +173,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)
         {
-            return new GameRolePlayMerchantInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), Name, 0);
+            return new GameRolePlayMerchantInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(), Name, 0, new HumanOption[0]);
         }
 
         #endregion

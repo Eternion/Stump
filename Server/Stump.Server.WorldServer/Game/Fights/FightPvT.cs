@@ -311,14 +311,12 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
             var timer = (int) GetPlacementTimeLeft(fighter).TotalMilliseconds;
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), 
-                (fighter.Team == ChallengersTeam && IsAttackersPlacementPhase) || (fighter.Team == DefendersTeam && IsDefendersPlacementPhase), false,
-                IsStarted, timer, FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, timer, FightType);
         }
 
         protected override void SendGameFightJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, 0, FightType);
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, 0, FightType);
         }
 
         protected override bool CanCancelFight()

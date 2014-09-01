@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public FightResultListEntry GetFightResultListEntry()
         {
-            return new FightResultTaxCollectorListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive,
+            return new FightResultTaxCollectorListEntry((short) Outcome, 0, Loot.GetFightLoot(), Id, Alive,
                 TaxCollector.Guild.Level, TaxCollector.Guild.GetBasicGuildInformations(), Experience);
         }
 

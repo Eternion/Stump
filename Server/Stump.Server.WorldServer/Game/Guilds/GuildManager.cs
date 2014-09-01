@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Characters;

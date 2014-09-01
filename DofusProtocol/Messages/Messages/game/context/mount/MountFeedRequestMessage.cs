@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:38
+// Generated on 09/01/2014 15:51:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +46,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             mountUid = reader.ReadDouble();
-            if (mountUid < 0)
-                throw new Exception("Forbidden value on mountUid = " + mountUid + ", it doesn't respect the following condition : mountUid < 0");
+            if (mountUid < 0 || mountUid > 9.007199254740992E15)
+                throw new Exception("Forbidden value on mountUid = " + mountUid + ", it doesn't respect the following condition : mountUid < 0 || mountUid > 9.007199254740992E15");
             mountLocation = reader.ReadSByte();
             mountFoodUid = reader.ReadInt();
             if (mountFoodUid < 0)

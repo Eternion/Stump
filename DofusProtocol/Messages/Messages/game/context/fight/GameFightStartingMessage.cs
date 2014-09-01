@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:37
+// Generated on 09/01/2014 15:51:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,19 +19,25 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte fightType;
+        public int attackerId;
+        public int defenderId;
         
         public GameFightStartingMessage()
         {
         }
         
-        public GameFightStartingMessage(sbyte fightType)
+        public GameFightStartingMessage(sbyte fightType, int attackerId, int defenderId)
         {
             this.fightType = fightType;
+            this.attackerId = attackerId;
+            this.defenderId = defenderId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(fightType);
+            writer.WriteInt(attackerId);
+            writer.WriteInt(defenderId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -39,11 +45,13 @@ namespace Stump.DofusProtocol.Messages
             fightType = reader.ReadSByte();
             if (fightType < 0)
                 throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
+            attackerId = reader.ReadInt();
+            defenderId = reader.ReadInt();
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte);
+            return sizeof(sbyte) + sizeof(int) + sizeof(int);
         }
         
     }

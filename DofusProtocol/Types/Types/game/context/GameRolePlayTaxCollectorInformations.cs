@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 09/01/2014 15:52:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public short firstNameId;
-        public short lastNameId;
-        public Types.GuildInformations guildIdentity;
+        public Types.TaxCollectorStaticInformations identification;
         public byte guildLevel;
         public int taxCollectorAttack;
         
@@ -27,12 +25,10 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameRolePlayTaxCollectorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, short firstNameId, short lastNameId, Types.GuildInformations guildIdentity, byte guildLevel, int taxCollectorAttack)
+        public GameRolePlayTaxCollectorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, Types.TaxCollectorStaticInformations identification, byte guildLevel, int taxCollectorAttack)
          : base(contextualId, look, disposition)
         {
-            this.firstNameId = firstNameId;
-            this.lastNameId = lastNameId;
-            this.guildIdentity = guildIdentity;
+            this.identification = identification;
             this.guildLevel = guildLevel;
             this.taxCollectorAttack = taxCollectorAttack;
         }
@@ -40,9 +36,8 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(firstNameId);
-            writer.WriteShort(lastNameId);
-            guildIdentity.Serialize(writer);
+            writer.WriteShort(identification.TypeId);
+            identification.Serialize(writer);
             writer.WriteByte(guildLevel);
             writer.WriteInt(taxCollectorAttack);
         }
@@ -50,14 +45,8 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            firstNameId = reader.ReadShort();
-            if (firstNameId < 0)
-                throw new Exception("Forbidden value on firstNameId = " + firstNameId + ", it doesn't respect the following condition : firstNameId < 0");
-            lastNameId = reader.ReadShort();
-            if (lastNameId < 0)
-                throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
-            guildIdentity = new Types.GuildInformations();
-            guildIdentity.Deserialize(reader);
+            identification = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorStaticInformations>(reader.ReadShort());
+            identification.Deserialize(reader);
             guildLevel = reader.ReadByte();
             if (guildLevel < 0 || guildLevel > 255)
                 throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 0 || guildLevel > 255");
@@ -66,7 +55,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + guildIdentity.GetSerializationSize() + sizeof(byte) + sizeof(int);
+            return base.GetSerializationSize() + sizeof(short) + identification.GetSerializationSize() + sizeof(byte) + sizeof(int);
         }
         
     }

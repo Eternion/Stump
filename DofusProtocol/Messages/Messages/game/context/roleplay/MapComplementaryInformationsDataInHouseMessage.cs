@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:39
+// Generated on 09/01/2014 15:51:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public MapComplementaryInformationsDataInHouseMessage(short subAreaId, int mapId, sbyte subareaAlignmentSide, IEnumerable<Types.HouseInformations> houses, IEnumerable<Types.GameRolePlayActorInformations> actors, IEnumerable<Types.InteractiveElement> interactiveElements, IEnumerable<Types.StatedElement> statedElements, IEnumerable<Types.MapObstacle> obstacles, IEnumerable<Types.FightCommonInformations> fights, Types.HouseInformationsInside currentHouse)
-         : base(subAreaId, mapId, subareaAlignmentSide, houses, actors, interactiveElements, statedElements, obstacles, fights)
+        public MapComplementaryInformationsDataInHouseMessage(short subAreaId, int mapId, IEnumerable<Types.HouseInformations> houses, IEnumerable<Types.GameRolePlayActorInformations> actors, IEnumerable<Types.InteractiveElement> interactiveElements, IEnumerable<Types.StatedElement> statedElements, IEnumerable<Types.MapObstacle> obstacles, IEnumerable<Types.FightCommonInformations> fights, Types.HouseInformationsInside currentHouse)
+         : base(subAreaId, mapId, houses, actors, interactiveElements, statedElements, obstacles, fights)
         {
             this.currentHouse = currentHouse;
         }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:40
+
+// Generated on 09/01/2014 15:52:35
 using System;
 using System.Collections.Generic;
 
@@ -23,5 +24,7 @@ namespace Stump.DofusProtocol.Enums
         GUILD_RIGHT_TAKE_OTHERS_MOUNTS_IN_PADDOCKS = 16384,
         GUILD_RIGHT_DEFENSE_PRIORITY = 32768,
         GUILD_RIGHT_COLLECT_MY_TAX_COLLECTOR = 65536,
+        GUILD_RIGHT_SET_ALLIANCE_PRISM = 131072,
+        GUILD_RIGHT_TALK_IN_ALLIANCE_CHAN = 262144,
     }
 }

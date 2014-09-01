@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 09/01/2014 15:52:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,18 +21,20 @@ namespace Stump.DofusProtocol.Types
         public short worldY;
         public int mapId;
         public short subAreaId;
+        public IEnumerable<Types.PartyCompanionBaseInformations> companions;
         
         public PartyInvitationMemberInformations()
         {
         }
         
-        public PartyInvitationMemberInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, short worldX, short worldY, int mapId, short subAreaId)
+        public PartyInvitationMemberInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<Types.PartyCompanionBaseInformations> companions)
          : base(id, level, name, entityLook, breed, sex)
         {
             this.worldX = worldX;
             this.worldY = worldY;
             this.mapId = mapId;
             this.subAreaId = subAreaId;
+            this.companions = companions;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -42,6 +44,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
+            var companions_before = writer.Position;
+            var companions_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in companions)
+            {
+                 entry.Serialize(writer);
+                 companions_count++;
+            }
+            var companions_after = writer.Position;
+            writer.Seek((int)companions_before);
+            writer.WriteUShort((ushort)companions_count);
+            writer.Seek((int)companions_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -57,11 +72,19 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
+            var limit = reader.ReadUShort();
+            var companions_ = new Types.PartyCompanionBaseInformations[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 companions_[i] = new Types.PartyCompanionBaseInformations();
+                 companions_[i].Deserialize(reader);
+            }
+            companions = companions_;
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + companions.Sum(x => x.GetSerializationSize());
         }
         
     }

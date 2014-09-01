@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:40
+
+// Generated on 09/01/2014 15:52:35
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +18,7 @@ namespace Stump.DofusProtocol.Enums
         BAD_IPRANGE = 8,
         CREDENTIALS_RESET = 9,
         EMAIL_UNVALIDATED = 10,
+        OTP_TIMEOUT = 11,
         SERVICE_UNAVAILABLE = 53,
         UNKNOWN_AUTH_ERROR = 99,
         SPARE = 100,

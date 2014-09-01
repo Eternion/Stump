@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:02
+// Generated on 09/01/2014 15:52:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,8 +71,8 @@ namespace Stump.DofusProtocol.Types
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
             price = reader.ReadUInt();
-            if (price < 0 || price > 4294967295)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 4294967295");
+            if (price < 0 || price > 4.294967295E9)
+                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 4.294967295E9");
             isLocked = reader.ReadBoolean();
         }
         

@@ -73,8 +73,6 @@ namespace Stump.Server.WorldServer.Database.Items.Shops
         {
             return new ObjectItemToSellInNpcShop(
                 (short) Item.Id,
-                0,
-                false,
                 Item.Effects.Select(entry => entry.GetObjectEffect()),
                 (int) (CustomPrice.HasValue ? CustomPrice.Value : Item.Price),
                 BuyCriterion ?? string.Empty);

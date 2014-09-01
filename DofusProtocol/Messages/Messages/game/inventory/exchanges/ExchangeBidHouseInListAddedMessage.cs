@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:50
+// Generated on 09/01/2014 15:52:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +20,6 @@ namespace Stump.DofusProtocol.Messages
         
         public int itemUID;
         public int objGenericId;
-        public short powerRate;
-        public bool overMax;
         public IEnumerable<Types.ObjectEffect> effects;
         public IEnumerable<int> prices;
         
@@ -29,12 +27,10 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ExchangeBidHouseInListAddedMessage(int itemUID, int objGenericId, short powerRate, bool overMax, IEnumerable<Types.ObjectEffect> effects, IEnumerable<int> prices)
+        public ExchangeBidHouseInListAddedMessage(int itemUID, int objGenericId, IEnumerable<Types.ObjectEffect> effects, IEnumerable<int> prices)
         {
             this.itemUID = itemUID;
             this.objGenericId = objGenericId;
-            this.powerRate = powerRate;
-            this.overMax = overMax;
             this.effects = effects;
             this.prices = prices;
         }
@@ -43,8 +39,6 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(itemUID);
             writer.WriteInt(objGenericId);
-            writer.WriteShort(powerRate);
-            writer.WriteBoolean(overMax);
             var effects_before = writer.Position;
             var effects_count = 0;
             writer.WriteUShort(0);
@@ -78,8 +72,6 @@ namespace Stump.DofusProtocol.Messages
         {
             itemUID = reader.ReadInt();
             objGenericId = reader.ReadInt();
-            powerRate = reader.ReadShort();
-            overMax = reader.ReadBoolean();
             var limit = reader.ReadUShort();
             var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
@@ -99,7 +91,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(short) + sizeof(bool) + sizeof(short) + effects.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + prices.Sum(x => sizeof(int));
+            return sizeof(int) + sizeof(int) + sizeof(short) + effects.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + prices.Sum(x => sizeof(int));
         }
         
     }

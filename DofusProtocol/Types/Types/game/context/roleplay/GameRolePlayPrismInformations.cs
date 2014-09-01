@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 09/01/2014 15:52:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,34 +17,35 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public Types.ActorAlignmentInformations alignInfos;
+        public Types.PrismInformation prism;
         
         public GameRolePlayPrismInformations()
         {
         }
         
-        public GameRolePlayPrismInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, Types.ActorAlignmentInformations alignInfos)
+        public GameRolePlayPrismInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, Types.PrismInformation prism)
          : base(contextualId, look, disposition)
         {
-            this.alignInfos = alignInfos;
+            this.prism = prism;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            alignInfos.Serialize(writer);
+            writer.WriteShort(prism.TypeId);
+            prism.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            alignInfos = new Types.ActorAlignmentInformations();
-            alignInfos.Deserialize(reader);
+            prism = Types.ProtocolTypeManager.GetInstance<Types.PrismInformation>(reader.ReadShort());
+            prism.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + alignInfos.GetSerializationSize();
+            return base.GetSerializationSize() + sizeof(short) + prism.GetSerializationSize();
         }
         
     }

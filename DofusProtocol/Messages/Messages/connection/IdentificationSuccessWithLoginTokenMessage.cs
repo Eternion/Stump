@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:30
+// Generated on 09/01/2014 15:51:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public IdentificationSuccessWithLoginTokenMessage(bool hasRights, bool wasAlreadyConnected, string login, string nickname, int accountId, sbyte communityId, string secretQuestion, double subscriptionEndDate, double accountCreation, string loginToken)
-         : base(hasRights, wasAlreadyConnected, login, nickname, accountId, communityId, secretQuestion, subscriptionEndDate, accountCreation)
+        public IdentificationSuccessWithLoginTokenMessage(string login, string nickname, int accountId, sbyte communityId, string secretQuestion, double subscriptionEndDate, double accountCreation, string loginToken)
+         : base(login, nickname, accountId, communityId, secretQuestion, subscriptionEndDate, accountCreation)
         {
             this.loginToken = loginToken;
         }

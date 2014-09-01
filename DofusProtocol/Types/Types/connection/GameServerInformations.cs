@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:58
+// Generated on 09/01/2014 15:52:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +64,8 @@ namespace Stump.DofusProtocol.Types
             if (charactersCount < 0)
                 throw new Exception("Forbidden value on charactersCount = " + charactersCount + ", it doesn't respect the following condition : charactersCount < 0");
             date = reader.ReadDouble();
+            if (date < -9.007199254740992E15 || date > 9.007199254740992E15)
+                throw new Exception("Forbidden value on date = " + date + ", it doesn't respect the following condition : date < -9.007199254740992E15 || date > 9.007199254740992E15");
         }
         
         public virtual int GetSerializationSize()

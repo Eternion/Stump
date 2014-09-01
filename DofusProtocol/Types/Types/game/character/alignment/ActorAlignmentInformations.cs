@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:58
+// Generated on 09/01/2014 15:52:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +20,17 @@ namespace Stump.DofusProtocol.Types
         public sbyte alignmentSide;
         public sbyte alignmentValue;
         public sbyte alignmentGrade;
-        public ushort dishonor;
         public int characterPower;
         
         public ActorAlignmentInformations()
         {
         }
         
-        public ActorAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, ushort dishonor, int characterPower)
+        public ActorAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, int characterPower)
         {
             this.alignmentSide = alignmentSide;
             this.alignmentValue = alignmentValue;
             this.alignmentGrade = alignmentGrade;
-            this.dishonor = dishonor;
             this.characterPower = characterPower;
         }
         
@@ -41,7 +39,6 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(alignmentSide);
             writer.WriteSByte(alignmentValue);
             writer.WriteSByte(alignmentGrade);
-            writer.WriteUShort(dishonor);
             writer.WriteInt(characterPower);
         }
         
@@ -54,9 +51,6 @@ namespace Stump.DofusProtocol.Types
             alignmentGrade = reader.ReadSByte();
             if (alignmentGrade < 0)
                 throw new Exception("Forbidden value on alignmentGrade = " + alignmentGrade + ", it doesn't respect the following condition : alignmentGrade < 0");
-            dishonor = reader.ReadUShort();
-            if (dishonor < 0 || dishonor > 500)
-                throw new Exception("Forbidden value on dishonor = " + dishonor + ", it doesn't respect the following condition : dishonor < 0 || dishonor > 500");
             characterPower = reader.ReadInt();
             if (characterPower < 0)
                 throw new Exception("Forbidden value on characterPower = " + characterPower + ", it doesn't respect the following condition : characterPower < 0");
@@ -64,7 +58,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(ushort) + sizeof(int);
+            return sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int);
         }
         
     }

@@ -361,6 +361,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
                                              Leader != null ? Leader.Id : 0,
                                              (sbyte) AlignmentSide,
                                              (sbyte) TeamType,
+                                             0,
                                              m_fighters.Select(entry => entry.GetFightTeamMemberInformations()));
         }
 
@@ -376,7 +377,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         public FightTeamLightInformations GetFightTeamLightInformations()
         {
             return new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
-                                                  (sbyte) TeamType, (sbyte) m_fighters.Count);
+                                                  (sbyte) TeamType, 0, false, false, false, false, false, (sbyte) m_fighters.Count, 0);
         }
     }
 }

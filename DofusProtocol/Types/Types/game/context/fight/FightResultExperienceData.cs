@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 09/01/2014 15:52:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,14 +87,14 @@ namespace Stump.DofusProtocol.Types
             showExperienceForMount = BooleanByteWrapper.GetFlag(flag1, 5);
             isIncarnationExperience = BooleanByteWrapper.GetFlag(flag1, 6);
             experience = reader.ReadDouble();
-            if (experience < 0)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0");
+            if (experience < 0 || experience > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
             experienceLevelFloor = reader.ReadDouble();
-            if (experienceLevelFloor < 0)
-                throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0");
+            if (experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15");
             experienceNextLevelFloor = reader.ReadDouble();
-            if (experienceNextLevelFloor < 0)
-                throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0");
+            if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15");
             experienceFightDelta = reader.ReadInt();
             experienceForGuild = reader.ReadInt();
             if (experienceForGuild < 0)

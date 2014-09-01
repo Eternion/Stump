@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:53
+// Generated on 09/01/2014 15:52:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +53,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             rideId = reader.ReadDouble();
+            if (rideId < -9.007199254740992E15 || rideId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on rideId = " + rideId + ", it doesn't respect the following condition : rideId < -9.007199254740992E15 || rideId > 9.007199254740992E15");
             var limit = reader.ReadUShort();
             var boostToUpdateList_ = new Types.UpdateMountBoost[limit];
             for (int i = 0; i < limit; i++)

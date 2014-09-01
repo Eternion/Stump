@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:55
+// Generated on 09/01/2014 15:52:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +18,30 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public short subAreaId;
         public int targetId;
         
         public PrismFightSwapRequestMessage()
         {
         }
         
-        public PrismFightSwapRequestMessage(int targetId)
+        public PrismFightSwapRequestMessage(short subAreaId, int targetId)
         {
+            this.subAreaId = subAreaId;
             this.targetId = targetId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteShort(subAreaId);
             writer.WriteInt(targetId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            subAreaId = reader.ReadShort();
+            if (subAreaId < 0)
+                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             targetId = reader.ReadInt();
             if (targetId < 0)
                 throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0");
@@ -43,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(int);
+            return sizeof(short) + sizeof(int);
         }
         
     }

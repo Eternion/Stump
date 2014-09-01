@@ -2077,12 +2077,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, GetPlacementTimeLeft(), FightType);
         }
 
         protected virtual void SendGameFightJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, false, IsStarted, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, GetPlacementTimeLeft(), FightType);
         }
 
         #endregion
@@ -2303,7 +2303,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightExternalInformations GetFightExternalInformations()
         {
-            return new FightExternalInformations(Id, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting, m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+            return new FightExternalInformations(Id, (sbyte)FightType, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting, m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
         }
 
 

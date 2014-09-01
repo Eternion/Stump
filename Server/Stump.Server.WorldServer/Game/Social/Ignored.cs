@@ -68,8 +68,10 @@ namespace Stump.Server.WorldServer.Game.Social
         {
             if (IsOnline())
             {
-                return new IgnoredOnlineInformations(Account.Id,
+                return new IgnoredOnlineInformations(
+                    Account.Id,
                     Account.Nickname,
+                    Character.Id,
                     Character.Name,
                     (sbyte)Character.Breed.Id,
                     Character.Sex == SexTypeEnum.SEX_FEMALE);

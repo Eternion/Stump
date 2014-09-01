@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:44
+// Generated on 09/01/2014 15:52:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyInvitationDungeonMessage(int partyId, sbyte partyType, sbyte maxParticipants, int fromId, string fromName, int toId, short dungeonId)
-         : base(partyId, partyType, maxParticipants, fromId, fromName, toId)
+        public PartyInvitationDungeonMessage(int partyId, sbyte partyType, string partyName, sbyte maxParticipants, int fromId, string fromName, int toId, short dungeonId)
+         : base(partyId, partyType, partyName, maxParticipants, fromId, fromName, toId)
         {
             this.dungeonId = dungeonId;
         }

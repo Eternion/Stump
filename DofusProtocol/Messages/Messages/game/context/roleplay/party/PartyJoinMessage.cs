@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:44
+// Generated on 09/01/2014 15:52:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +24,13 @@ namespace Stump.DofusProtocol.Messages
         public IEnumerable<Types.PartyMemberInformations> members;
         public IEnumerable<Types.PartyGuestInformations> guests;
         public bool restricted;
+        public string partyName;
         
         public PartyJoinMessage()
         {
         }
         
-        public PartyJoinMessage(int partyId, sbyte partyType, int partyLeaderId, sbyte maxParticipants, IEnumerable<Types.PartyMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests, bool restricted)
+        public PartyJoinMessage(int partyId, sbyte partyType, int partyLeaderId, sbyte maxParticipants, IEnumerable<Types.PartyMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests, bool restricted, string partyName)
          : base(partyId)
         {
             this.partyType = partyType;
@@ -38,6 +39,7 @@ namespace Stump.DofusProtocol.Messages
             this.members = members;
             this.guests = guests;
             this.restricted = restricted;
+            this.partyName = partyName;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -74,6 +76,7 @@ namespace Stump.DofusProtocol.Messages
             writer.Seek((int)guests_after);
 
             writer.WriteBoolean(restricted);
+            writer.WriteUTF(partyName);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -105,11 +108,12 @@ namespace Stump.DofusProtocol.Messages
             }
             guests = guests_;
             restricted = reader.ReadBoolean();
+            partyName = reader.ReadUTF();
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(short) + members.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + guests.Sum(x => x.GetSerializationSize()) + sizeof(bool);
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(short) + members.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + guests.Sum(x => x.GetSerializationSize()) + sizeof(bool) + sizeof(short) + Encoding.UTF8.GetByteCount(partyName);
         }
         
     }

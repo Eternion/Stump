@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 09/01/2014 15:52:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +22,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightAIInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, bool alive, Types.GameFightMinimalStats stats)
-         : base(contextualId, look, disposition, teamId, alive, stats)
+        public GameFightAIInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, uint wave, bool alive, Types.GameFightMinimalStats stats)
+         : base(contextualId, look, disposition, teamId, wave, alive, stats)
         {
         }
         

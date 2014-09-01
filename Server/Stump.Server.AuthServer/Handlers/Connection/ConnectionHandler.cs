@@ -161,7 +161,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
                 /* If autoconnect, send to the lastServer */
                 
-                if (message.autoconnect && client.Account.LastConnectionWorld != null && WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
+                if (message.serverId != -1 && client.Account.LastConnectionWorld != null && WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
                     SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
                 else
                     SendServersListMessage(client);
@@ -171,14 +171,14 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
             client.Send(new IdentificationSuccessMessage(
-                client.UserGroup.Role >= RoleEnum.Moderator,
-                wasAlreadyConnected,
                 client.Account.Login,
                 client.Account.Nickname,
                 client.Account.Id,
-                0, // community ID ? ( se trouve dans le d2p, utilisé pour trouver les serveurs de la communauté )
+                0,
                 client.Account.SecretQuestion,
-                client.Account.SubscriptionEnd > DateTime.Now ? client.Account.SubscriptionEnd.GetUnixTimeStampLong() : 0,
+                client.Account.SubscriptionEnd > DateTime.Now
+                    ? client.Account.SubscriptionEnd.GetUnixTimeStampLong()
+                    : 0,
                 (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
 
             client.LookingOfServers = true;

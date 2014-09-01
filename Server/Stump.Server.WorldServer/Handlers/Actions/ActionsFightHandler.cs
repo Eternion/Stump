@@ -46,9 +46,9 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightDispellEffectMessage(514, source.Id, target.Id, buff.Id));
         }
 
-        public static void SendGameActionFightReflectDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
+        public static void SendGameActionFightReflectDamagesMessage(IPacketReceiver client, FightActor source, FightActor target)
         {
-            client.Send(new GameActionFightReflectDamagesMessage((short)ActionsEnum.ACTION_CHARACTER_LIFE_LOST_REFLECTOR, source.Id, target.Id, amount));
+            client.Send(new GameActionFightReflectDamagesMessage((short)ActionsEnum.ACTION_CHARACTER_LIFE_LOST_REFLECTOR, source.Id, target.Id));
         }
 
         public static void SendGameActionFightPointsVariationMessage(IPacketReceiver client, ActionsEnum action,

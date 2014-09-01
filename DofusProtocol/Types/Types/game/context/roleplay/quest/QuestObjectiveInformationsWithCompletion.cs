@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:01
+// Generated on 09/01/2014 15:52:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public QuestObjectiveInformationsWithCompletion(short objectiveId, bool objectiveStatus, short curCompletion, short maxCompletion)
-         : base(objectiveId, objectiveStatus)
+        public QuestObjectiveInformationsWithCompletion(short objectiveId, bool objectiveStatus, IEnumerable<string> dialogParams, short curCompletion, short maxCompletion)
+         : base(objectiveId, objectiveStatus, dialogParams)
         {
             this.curCompletion = curCompletion;
             this.maxCompletion = maxCompletion;

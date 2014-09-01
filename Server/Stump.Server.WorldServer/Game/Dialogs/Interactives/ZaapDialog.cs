@@ -92,10 +92,12 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
 
         public void SendZaapListMessage(IPacketReceiver client)
         {
-            client.Send(new ZaapListMessage((sbyte)TeleporterTypeEnum.TELEPORTER_ZAAP,
+            client.Send(new ZaapListMessage(
+                (sbyte)TeleporterTypeEnum.TELEPORTER_ZAAP,
                 m_destinations.Select(entry => entry.Id),
                 m_destinations.Select(entry => (short)entry.SubArea.Id),
                 m_destinations.Select(GetCostTo),
+                new[] { (sbyte)TeleporterTypeEnum.TELEPORTER_ZAAP },
                 Zaap.Map.Id));
         }
 

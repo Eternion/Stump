@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:49
+// Generated on 09/01/2014 15:52:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ZaapListMessage(sbyte teleporterType, IEnumerable<int> mapIds, IEnumerable<short> subAreaIds, IEnumerable<short> costs, int spawnMapId)
-         : base(teleporterType, mapIds, subAreaIds, costs)
+        public ZaapListMessage(sbyte teleporterType, IEnumerable<int> mapIds, IEnumerable<short> subAreaIds, IEnumerable<short> costs, IEnumerable<sbyte> destTeleporterType, int spawnMapId)
+         : base(teleporterType, mapIds, subAreaIds, costs, destTeleporterType)
         {
             this.spawnMapId = spawnMapId;
         }

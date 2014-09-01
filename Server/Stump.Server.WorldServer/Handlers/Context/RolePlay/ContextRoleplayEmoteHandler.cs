@@ -23,24 +23,24 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendEmotePlayMessage(IPacketReceiver client, Character character, EmotesEnum emote)
         {
             client.Send(new EmotePlayMessage(
-                            (sbyte) emote,
+                            (byte) emote,
                             DateTime.Now.GetUnixTimeStampLong(),
                             character.Id,
-                            (int) character.Account.Id
+                            character.Account.Id
                             ));
         }
 
         public static void SendEmotePlayMessage(IPacketReceiver client, ContextActor actor, EmotesEnum emote)
         {
             client.Send(new EmotePlayMessage(
-                            (sbyte) emote,
+                            (byte) emote,
                             DateTime.Now.GetUnixTimeStampLong(),
                             actor.Id,
                             0
                             ));
         }
 
-        public static void SendEmoteListMessage(IPacketReceiver client, IEnumerable<sbyte> emoteList)
+        public static void SendEmoteListMessage(IPacketReceiver client, IEnumerable<byte> emoteList)
         {
             client.Send(new EmoteListMessage(emoteList));
         }

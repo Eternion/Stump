@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 09/01/2014 15:52:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,14 +54,14 @@ namespace Stump.DofusProtocol.Types
             if (jobLevel < 0)
                 throw new Exception("Forbidden value on jobLevel = " + jobLevel + ", it doesn't respect the following condition : jobLevel < 0");
             jobXP = reader.ReadDouble();
-            if (jobXP < 0)
-                throw new Exception("Forbidden value on jobXP = " + jobXP + ", it doesn't respect the following condition : jobXP < 0");
+            if (jobXP < 0 || jobXP > 9.007199254740992E15)
+                throw new Exception("Forbidden value on jobXP = " + jobXP + ", it doesn't respect the following condition : jobXP < 0 || jobXP > 9.007199254740992E15");
             jobXpLevelFloor = reader.ReadDouble();
-            if (jobXpLevelFloor < 0)
-                throw new Exception("Forbidden value on jobXpLevelFloor = " + jobXpLevelFloor + ", it doesn't respect the following condition : jobXpLevelFloor < 0");
+            if (jobXpLevelFloor < 0 || jobXpLevelFloor > 9.007199254740992E15)
+                throw new Exception("Forbidden value on jobXpLevelFloor = " + jobXpLevelFloor + ", it doesn't respect the following condition : jobXpLevelFloor < 0 || jobXpLevelFloor > 9.007199254740992E15");
             jobXpNextLevelFloor = reader.ReadDouble();
-            if (jobXpNextLevelFloor < 0)
-                throw new Exception("Forbidden value on jobXpNextLevelFloor = " + jobXpNextLevelFloor + ", it doesn't respect the following condition : jobXpNextLevelFloor < 0");
+            if (jobXpNextLevelFloor < 0 || jobXpNextLevelFloor > 9.007199254740992E15)
+                throw new Exception("Forbidden value on jobXpNextLevelFloor = " + jobXpNextLevelFloor + ", it doesn't respect the following condition : jobXpNextLevelFloor < 0 || jobXpNextLevelFloor > 9.007199254740992E15");
         }
         
         public virtual int GetSerializationSize()

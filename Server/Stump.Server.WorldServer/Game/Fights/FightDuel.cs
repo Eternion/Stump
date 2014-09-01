@@ -58,12 +58,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
         }
 
         protected override void SendGameFightJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
         }
 
         public TimeSpan GetPlacementTimeLeft()
