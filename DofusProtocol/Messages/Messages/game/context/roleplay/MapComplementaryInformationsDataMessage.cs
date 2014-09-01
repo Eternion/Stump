@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:39
+// Generated on 09/01/2014 15:51:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,6 @@ namespace Stump.DofusProtocol.Messages
         
         public short subAreaId;
         public int mapId;
-        public sbyte subareaAlignmentSide;
         public IEnumerable<Types.HouseInformations> houses;
         public IEnumerable<Types.GameRolePlayActorInformations> actors;
         public IEnumerable<Types.InteractiveElement> interactiveElements;
@@ -32,11 +31,10 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public MapComplementaryInformationsDataMessage(short subAreaId, int mapId, sbyte subareaAlignmentSide, IEnumerable<Types.HouseInformations> houses, IEnumerable<Types.GameRolePlayActorInformations> actors, IEnumerable<Types.InteractiveElement> interactiveElements, IEnumerable<Types.StatedElement> statedElements, IEnumerable<Types.MapObstacle> obstacles, IEnumerable<Types.FightCommonInformations> fights)
+        public MapComplementaryInformationsDataMessage(short subAreaId, int mapId, IEnumerable<Types.HouseInformations> houses, IEnumerable<Types.GameRolePlayActorInformations> actors, IEnumerable<Types.InteractiveElement> interactiveElements, IEnumerable<Types.StatedElement> statedElements, IEnumerable<Types.MapObstacle> obstacles, IEnumerable<Types.FightCommonInformations> fights)
         {
             this.subAreaId = subAreaId;
             this.mapId = mapId;
-            this.subareaAlignmentSide = subareaAlignmentSide;
             this.houses = houses;
             this.actors = actors;
             this.interactiveElements = interactiveElements;
@@ -49,7 +47,6 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteShort(subAreaId);
             writer.WriteInt(mapId);
-            writer.WriteSByte(subareaAlignmentSide);
             var houses_before = writer.Position;
             var houses_count = 0;
             writer.WriteUShort(0);
@@ -141,7 +138,6 @@ namespace Stump.DofusProtocol.Messages
             mapId = reader.ReadInt();
             if (mapId < 0)
                 throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
-            subareaAlignmentSide = reader.ReadSByte();
             var limit = reader.ReadUShort();
             var houses_ = new Types.HouseInformations[limit];
             for (int i = 0; i < limit; i++)
@@ -194,7 +190,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(int) + sizeof(sbyte) + sizeof(short) + houses.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + actors.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + interactiveElements.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + statedElements.Sum(x => x.GetSerializationSize()) + sizeof(short) + obstacles.Sum(x => x.GetSerializationSize()) + sizeof(short) + fights.Sum(x => x.GetSerializationSize());
+            return sizeof(short) + sizeof(int) + sizeof(short) + houses.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + actors.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + interactiveElements.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + statedElements.Sum(x => x.GetSerializationSize()) + sizeof(short) + obstacles.Sum(x => x.GetSerializationSize()) + sizeof(short) + fights.Sum(x => x.GetSerializationSize());
         }
         
     }

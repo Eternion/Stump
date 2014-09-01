@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:34
+// Generated on 09/01/2014 15:51:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +27,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public CharactersListWithModificationsMessage(bool hasStartupActions, IEnumerable<Types.CharacterBaseInformations> characters, IEnumerable<Types.CharacterToRecolorInformation> charactersToRecolor, IEnumerable<int> charactersToRename, IEnumerable<int> unusableCharacters, IEnumerable<Types.CharacterToRelookInformation> charactersToRelook)
-         : base(hasStartupActions, characters)
+        public CharactersListWithModificationsMessage(IEnumerable<Types.CharacterBaseInformations> characters, bool hasStartupActions, IEnumerable<Types.CharacterToRecolorInformation> charactersToRecolor, IEnumerable<int> charactersToRename, IEnumerable<int> unusableCharacters, IEnumerable<Types.CharacterToRelookInformation> charactersToRelook)
+         : base(characters, hasStartupActions)
         {
             this.charactersToRecolor = charactersToRecolor;
             this.charactersToRename = charactersToRename;

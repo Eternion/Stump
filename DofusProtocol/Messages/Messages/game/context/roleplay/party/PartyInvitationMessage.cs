@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:44
+// Generated on 09/01/2014 15:52:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +19,7 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte partyType;
+        public string partyName;
         public sbyte maxParticipants;
         public int fromId;
         public string fromName;
@@ -28,10 +29,11 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyInvitationMessage(int partyId, sbyte partyType, sbyte maxParticipants, int fromId, string fromName, int toId)
+        public PartyInvitationMessage(int partyId, sbyte partyType, string partyName, sbyte maxParticipants, int fromId, string fromName, int toId)
          : base(partyId)
         {
             this.partyType = partyType;
+            this.partyName = partyName;
             this.maxParticipants = maxParticipants;
             this.fromId = fromId;
             this.fromName = fromName;
@@ -42,6 +44,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteSByte(partyType);
+            writer.WriteUTF(partyName);
             writer.WriteSByte(maxParticipants);
             writer.WriteInt(fromId);
             writer.WriteUTF(fromName);
@@ -54,6 +57,7 @@ namespace Stump.DofusProtocol.Messages
             partyType = reader.ReadSByte();
             if (partyType < 0)
                 throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
+            partyName = reader.ReadUTF();
             maxParticipants = reader.ReadSByte();
             if (maxParticipants < 0)
                 throw new Exception("Forbidden value on maxParticipants = " + maxParticipants + ", it doesn't respect the following condition : maxParticipants < 0");
@@ -68,7 +72,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(sbyte) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(fromName) + sizeof(int);
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(partyName) + sizeof(sbyte) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(fromName) + sizeof(int);
         }
         
     }

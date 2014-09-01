@@ -80,6 +80,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                         client.Character.Stats[PlayerFields.DamageBonusPercent],
                         client.Character.Stats[PlayerFields.TrapBonus],
                         client.Character.Stats[PlayerFields.TrapBonusPercent],
+                        client.Character.Stats[PlayerFields.GlyphBonusPercent],
                         client.Character.Stats[PlayerFields.PermanentDamagePercent],
                         client.Character.Stats[PlayerFields.TackleBlock],
                         client.Character.Stats[PlayerFields.TackleEvade],
@@ -116,7 +117,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                         client.Character.Stats[PlayerFields.PvpWaterElementReduction],
                         client.Character.Stats[PlayerFields.PvpAirElementReduction],
                         client.Character.Stats[PlayerFields.PvpFireElementReduction],
-                        new List<CharacterSpellModification>()
+                        new List<CharacterSpellModification>(),
+                        0
                         )));
         }
 

@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:50
+// Generated on 09/01/2014 15:52:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +82,8 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             userName = reader.ReadUTF();
             experience = reader.ReadDouble();
+            if (experience < -9.007199254740992E15 || experience > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9.007199254740992E15 || experience > 9.007199254740992E15");
             var limit = reader.ReadUShort();
             var objectsInfos_ = new Types.ObjectItemQuantity[limit];
             for (int i = 0; i < limit; i++)

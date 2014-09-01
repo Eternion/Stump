@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:47
+// Generated on 09/01/2014 15:52:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +45,8 @@ namespace Stump.DofusProtocol.Messages
             guildInfo = new Types.GuildInformations();
             guildInfo.Deserialize(reader);
             memberRights = reader.ReadUInt();
-            if (memberRights < 0 || memberRights > 4294967295)
-                throw new Exception("Forbidden value on memberRights = " + memberRights + ", it doesn't respect the following condition : memberRights < 0 || memberRights > 4294967295");
+            if (memberRights < 0 || memberRights > 4.294967295E9)
+                throw new Exception("Forbidden value on memberRights = " + memberRights + ", it doesn't respect the following condition : memberRights < 0 || memberRights > 4.294967295E9");
             enabled = reader.ReadBoolean();
         }
         

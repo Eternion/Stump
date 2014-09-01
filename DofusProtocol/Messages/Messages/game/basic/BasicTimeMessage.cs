@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:33
+// Generated on 09/01/2014 15:51:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int timestamp;
+        public double timestamp;
         public short timezoneOffset;
         
         public BasicTimeMessage()
         {
         }
         
-        public BasicTimeMessage(int timestamp, short timezoneOffset)
+        public BasicTimeMessage(double timestamp, short timezoneOffset)
         {
             this.timestamp = timestamp;
             this.timezoneOffset = timezoneOffset;
@@ -33,21 +33,21 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(timestamp);
+            writer.WriteDouble(timestamp);
             writer.WriteShort(timezoneOffset);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            timestamp = reader.ReadInt();
-            if (timestamp < 0)
-                throw new Exception("Forbidden value on timestamp = " + timestamp + ", it doesn't respect the following condition : timestamp < 0");
+            timestamp = reader.ReadDouble();
+            if (timestamp < 0 || timestamp > 9.007199254740992E15)
+                throw new Exception("Forbidden value on timestamp = " + timestamp + ", it doesn't respect the following condition : timestamp < 0 || timestamp > 9.007199254740992E15");
             timezoneOffset = reader.ReadShort();
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short);
+            return sizeof(double) + sizeof(short);
         }
         
     }

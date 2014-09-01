@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer.Game.Social
                     return character.IsInParty(PartyTypeEnum.PARTY_TYPE_ARENA);
                 case ChatActivableChannelsEnum.CHANNEL_GUILD:
                     return character.Guild != null;
-                case ChatActivableChannelsEnum.CHANNEL_ALIGN:
+                case ChatActivableChannelsEnum.CHANNEL_ALLIANCE:
                     return false;
                 case ChatActivableChannelsEnum.CHANNEL_PARTY:
                     return character.IsInParty(PartyTypeEnum.PARTY_TYPE_CLASSICAL);

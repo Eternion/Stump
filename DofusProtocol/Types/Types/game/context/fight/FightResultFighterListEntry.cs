@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 09/01/2014 15:52:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightResultFighterListEntry(short outcome, Types.FightLoot rewards, int id, bool alive)
-         : base(outcome, rewards)
+        public FightResultFighterListEntry(short outcome, uint wave, Types.FightLoot rewards, int id, bool alive)
+         : base(outcome, wave, rewards)
         {
             this.id = id;
             this.alive = alive;

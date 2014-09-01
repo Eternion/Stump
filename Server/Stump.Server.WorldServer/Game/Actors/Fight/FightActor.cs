@@ -14,7 +14,6 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
@@ -100,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected internal virtual void OnDamageReflected(FightActor target, int reflected)
         {
-            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, (int)reflected);
+            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target);
 
             var handler = DamageReflected;
             if (handler != null)
@@ -1790,8 +1789,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
                 (sbyte)Team.Id,
+                0,
                 IsAlive(),
                 GetGameFightMinimalStats(client));
+        }
+
+        public virtual GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
+        {
+            return new GameFightFighterLightInformations(
+                true,
+                IsAlive(),
+                Id,
+                0,
+                Level,
+                (sbyte)BreedEnum.UNDEFINED);
         }
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)

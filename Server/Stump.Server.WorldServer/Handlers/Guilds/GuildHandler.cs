@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Messages;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Types;
@@ -40,7 +41,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 case (sbyte)GuildInformationsTypeEnum.INFO_HOUSES:
                     SendGuildHousesInformationMessage(client);
                     break;
-                case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR:
+                case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR_GUILD_ONLY:
                     TaxCollectorHandler.SendTaxCollectorListMessage(client, client.Character.Guild);
                     break;
                 case (sbyte)GuildInformationsTypeEnum.INFO_TAX_COLLECTOR_LEAVE:
@@ -301,8 +302,8 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildInformationsGeneralMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildInformationsGeneralMessage(true, false, guild.Level, guild.ExperienceLevelFloor, guild.Experience,
-                guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp())); 
+            client.Send(new GuildInformationsGeneralMessage(guild.Level, guild.ExperienceLevelFloor, guild.Experience,
+                guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp(), (short)guild.Members.Count(), (short)guild.Members.Count(x => x.IsConnected))); 
         }
 
         public static void SendGuildInformationsMembersMessage(IPacketReceiver client, Guild guild)
@@ -349,7 +350,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildModificationStartedMessage(IPacketReceiver client, bool changeName, bool changeEmblem)
         {
-            client.Send(new GuildModificationStartedMessage(changeName, changeEmblem));
+            client.Send(new GuildModificationStartedMessage());
         }
     }
 }

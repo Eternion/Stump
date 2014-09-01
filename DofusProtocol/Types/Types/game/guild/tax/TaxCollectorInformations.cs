@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:02
+// Generated on 09/01/2014 15:52:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,16 +26,13 @@ namespace Stump.DofusProtocol.Types
         public short subAreaId;
         public sbyte state;
         public Types.EntityLook look;
-        public int kamas;
-        public double experience;
-        public int pods;
-        public int itemsValue;
+        public IEnumerable<Types.TaxCollectorComplementaryInformations> complements;
         
         public TaxCollectorInformations()
         {
         }
         
-        public TaxCollectorInformations(int uniqueId, short firtNameId, short lastNameId, Types.AdditionalTaxCollectorInformations additionalInfos, short worldX, short worldY, short subAreaId, sbyte state, Types.EntityLook look, int kamas, double experience, int pods, int itemsValue)
+        public TaxCollectorInformations(int uniqueId, short firtNameId, short lastNameId, Types.AdditionalTaxCollectorInformations additionalInfos, short worldX, short worldY, short subAreaId, sbyte state, Types.EntityLook look, IEnumerable<Types.TaxCollectorComplementaryInformations> complements)
         {
             this.uniqueId = uniqueId;
             this.firtNameId = firtNameId;
@@ -46,10 +43,7 @@ namespace Stump.DofusProtocol.Types
             this.subAreaId = subAreaId;
             this.state = state;
             this.look = look;
-            this.kamas = kamas;
-            this.experience = experience;
-            this.pods = pods;
-            this.itemsValue = itemsValue;
+            this.complements = complements;
         }
         
         public virtual void Serialize(IDataWriter writer)
@@ -63,10 +57,20 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(subAreaId);
             writer.WriteSByte(state);
             look.Serialize(writer);
-            writer.WriteInt(kamas);
-            writer.WriteDouble(experience);
-            writer.WriteInt(pods);
-            writer.WriteInt(itemsValue);
+            var complements_before = writer.Position;
+            var complements_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in complements)
+            {
+                 writer.WriteShort(entry.TypeId);
+                 entry.Serialize(writer);
+                 complements_count++;
+            }
+            var complements_after = writer.Position;
+            writer.Seek((int)complements_before);
+            writer.WriteUShort((ushort)complements_count);
+            writer.Seek((int)complements_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -90,25 +94,23 @@ namespace Stump.DofusProtocol.Types
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             state = reader.ReadSByte();
+            if (state < 0)
+                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
             look = new Types.EntityLook();
             look.Deserialize(reader);
-            kamas = reader.ReadInt();
-            if (kamas < 0)
-                throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
-            experience = reader.ReadDouble();
-            if (experience < 0)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0");
-            pods = reader.ReadInt();
-            if (pods < 0)
-                throw new Exception("Forbidden value on pods = " + pods + ", it doesn't respect the following condition : pods < 0");
-            itemsValue = reader.ReadInt();
-            if (itemsValue < 0)
-                throw new Exception("Forbidden value on itemsValue = " + itemsValue + ", it doesn't respect the following condition : itemsValue < 0");
+            var limit = reader.ReadUShort();
+            var complements_ = new Types.TaxCollectorComplementaryInformations[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 complements_[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorComplementaryInformations>(reader.ReadShort());
+                 complements_[i].Deserialize(reader);
+            }
+            complements = complements_;
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + sizeof(short) + additionalInfos.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + look.GetSerializationSize() + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int);
+            return sizeof(int) + sizeof(short) + sizeof(short) + additionalInfos.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + look.GetSerializationSize() + sizeof(short) + complements.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

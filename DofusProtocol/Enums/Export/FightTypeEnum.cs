@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:40
+
+// Generated on 09/01/2014 15:52:35
 using System;
 using System.Collections.Generic;
 
@@ -15,5 +16,7 @@ namespace Stump.DofusProtocol.Enums
         FIGHT_TYPE_PvT = 5,
         FIGHT_TYPE_PvMU = 6,
         FIGHT_TYPE_PVP_ARENA = 7,
+        FIGHT_TYPE_Koh = 8,
+        FIGHT_TYPE_PvPr = 9,
     }
 }

@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:40
+
+// Generated on 09/01/2014 15:52:35
 using System;
 using System.Collections.Generic;
 
@@ -18,5 +19,6 @@ namespace Stump.DofusProtocol.Enums
         CANNOT_UNEQUIP = 9,
         CANNOT_EQUIP_HERE = 10,
         CRITERIONS = 11,
+        MIMICRY_OBJECT_ERROR = 12,
     }
 }

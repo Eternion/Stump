@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:40
+
+// Generated on 09/01/2014 15:52:35
 using System;
 using System.Collections.Generic;
 
@@ -17,5 +18,7 @@ namespace Stump.DofusProtocol.Enums
         PARTY_JOIN_ERROR_PLAYER_LOYAL = 8,
         PARTY_JOIN_ERROR_UNMODIFIABLE = 9,
         PARTY_JOIN_ERROR_UNMET_CRITERION = 10,
+        PARTY_JOIN_ERROR_NOT_ENOUGH_ROOM = 11,
+        PARTY_JOIN_ERROR_COMPOSITION_CHANGED = 12,
     }
 }

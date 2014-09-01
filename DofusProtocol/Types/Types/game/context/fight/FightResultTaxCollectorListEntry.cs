@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 09/01/2014 15:52:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +25,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightResultTaxCollectorListEntry(short outcome, Types.FightLoot rewards, int id, bool alive, byte level, Types.BasicGuildInformations guildInfo, int experienceForGuild)
-         : base(outcome, rewards, id, alive)
+        public FightResultTaxCollectorListEntry(short outcome, uint wave, Types.FightLoot rewards, int id, bool alive, byte level, Types.BasicGuildInformations guildInfo, int experienceForGuild)
+         : base(outcome, wave, rewards, id, alive)
         {
             this.level = level;
             this.guildInfo = guildInfo;

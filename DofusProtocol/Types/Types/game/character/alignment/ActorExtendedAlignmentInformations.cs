@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:58
+// Generated on 09/01/2014 15:52:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +20,19 @@ namespace Stump.DofusProtocol.Types
         public ushort honor;
         public ushort honorGradeFloor;
         public ushort honorNextGradeFloor;
-        public bool pvpEnabled;
+        public sbyte aggressable;
         
         public ActorExtendedAlignmentInformations()
         {
         }
         
-        public ActorExtendedAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, ushort dishonor, int characterPower, ushort honor, ushort honorGradeFloor, ushort honorNextGradeFloor, bool pvpEnabled)
-         : base(alignmentSide, alignmentValue, alignmentGrade, dishonor, characterPower)
+        public ActorExtendedAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, int characterPower, ushort honor, ushort honorGradeFloor, ushort honorNextGradeFloor, sbyte aggressable)
+         : base(alignmentSide, alignmentValue, alignmentGrade, characterPower)
         {
             this.honor = honor;
             this.honorGradeFloor = honorGradeFloor;
             this.honorNextGradeFloor = honorNextGradeFloor;
-            this.pvpEnabled = pvpEnabled;
+            this.aggressable = aggressable;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(honor);
             writer.WriteUShort(honorGradeFloor);
             writer.WriteUShort(honorNextGradeFloor);
-            writer.WriteBoolean(pvpEnabled);
+            writer.WriteSByte(aggressable);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -56,12 +56,14 @@ namespace Stump.DofusProtocol.Types
             honorNextGradeFloor = reader.ReadUShort();
             if (honorNextGradeFloor < 0 || honorNextGradeFloor > 20000)
                 throw new Exception("Forbidden value on honorNextGradeFloor = " + honorNextGradeFloor + ", it doesn't respect the following condition : honorNextGradeFloor < 0 || honorNextGradeFloor > 20000");
-            pvpEnabled = reader.ReadBoolean();
+            aggressable = reader.ReadSByte();
+            if (aggressable < 0)
+                throw new Exception("Forbidden value on aggressable = " + aggressable + ", it doesn't respect the following condition : aggressable < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(ushort) + sizeof(ushort) + sizeof(ushort) + sizeof(bool);
+            return base.GetSerializationSize() + sizeof(ushort) + sizeof(ushort) + sizeof(ushort) + sizeof(sbyte);
         }
         
     }

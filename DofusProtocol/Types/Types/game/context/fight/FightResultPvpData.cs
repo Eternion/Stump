@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 09/01/2014 15:52:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,22 +22,18 @@ namespace Stump.DofusProtocol.Types
         public ushort maxHonorForGrade;
         public ushort honor;
         public short honorDelta;
-        public ushort dishonor;
-        public short dishonorDelta;
         
         public FightResultPvpData()
         {
         }
         
-        public FightResultPvpData(byte grade, ushort minHonorForGrade, ushort maxHonorForGrade, ushort honor, short honorDelta, ushort dishonor, short dishonorDelta)
+        public FightResultPvpData(byte grade, ushort minHonorForGrade, ushort maxHonorForGrade, ushort honor, short honorDelta)
         {
             this.grade = grade;
             this.minHonorForGrade = minHonorForGrade;
             this.maxHonorForGrade = maxHonorForGrade;
             this.honor = honor;
             this.honorDelta = honorDelta;
-            this.dishonor = dishonor;
-            this.dishonorDelta = dishonorDelta;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -48,8 +44,6 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(maxHonorForGrade);
             writer.WriteUShort(honor);
             writer.WriteShort(honorDelta);
-            writer.WriteUShort(dishonor);
-            writer.WriteShort(dishonorDelta);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -68,15 +62,11 @@ namespace Stump.DofusProtocol.Types
             if (honor < 0 || honor > 20000)
                 throw new Exception("Forbidden value on honor = " + honor + ", it doesn't respect the following condition : honor < 0 || honor > 20000");
             honorDelta = reader.ReadShort();
-            dishonor = reader.ReadUShort();
-            if (dishonor < 0 || dishonor > 500)
-                throw new Exception("Forbidden value on dishonor = " + dishonor + ", it doesn't respect the following condition : dishonor < 0 || dishonor > 500");
-            dishonorDelta = reader.ReadShort();
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(ushort) + sizeof(short) + sizeof(ushort) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(ushort) + sizeof(short);
         }
         
     }

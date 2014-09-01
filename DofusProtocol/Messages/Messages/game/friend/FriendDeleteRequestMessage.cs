@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:46
+// Generated on 09/01/2014 15:52:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,30 +18,32 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public string name;
+        public int accountId;
         
         public FriendDeleteRequestMessage()
         {
         }
         
-        public FriendDeleteRequestMessage(string name)
+        public FriendDeleteRequestMessage(int accountId)
         {
-            this.name = name;
+            this.accountId = accountId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUTF(name);
+            writer.WriteInt(accountId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            name = reader.ReadUTF();
+            accountId = reader.ReadInt();
+            if (accountId < 0)
+                throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(name);
+            return sizeof(int);
         }
         
     }

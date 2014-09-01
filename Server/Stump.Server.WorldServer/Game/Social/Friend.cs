@@ -65,13 +65,15 @@ namespace Stump.Server.WorldServer.Game.Social
                     (sbyte)( Character.IsFighting() ? PlayerStateEnum.GAME_TYPE_FIGHT : PlayerStateEnum.GAME_TYPE_ROLEPLAY ),
                     Account.LastConnectionTimeStamp,
                     0, // todo achievement
+                    Character.Id,
                     Character.Name,
                     Character.Level,
                     (sbyte)Character.AlignmentSide,
                     (sbyte)Character.Breed.Id,
                     Character.Sex == SexTypeEnum.SEX_FEMALE,
                     Character.GuildMember == null ? new BasicGuildInformations(0, "") : Character.GuildMember.Guild.GetBasicGuildInformations(),
-                    -1);
+                    -1,
+                    Character.GetPlayerStatus());
             }
 
             return new FriendInformations(

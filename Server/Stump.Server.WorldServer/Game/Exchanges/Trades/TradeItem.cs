@@ -17,8 +17,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
             return new ObjectItem(
                 (byte)Position,
                 (short)Template.Id,
-                0,
-                false,
                 Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
                 Guid,
                 (int)Stack);

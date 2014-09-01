@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:47
+// Generated on 09/01/2014 15:52:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +24,13 @@ namespace Stump.DofusProtocol.Messages
         public short worldY;
         public int mapId;
         public short subAreaId;
+        public Types.BasicGuildInformations guild;
         
         public TaxCollectorAttackedMessage()
         {
         }
         
-        public TaxCollectorAttackedMessage(short firstNameId, short lastNameId, short worldX, short worldY, int mapId, short subAreaId)
+        public TaxCollectorAttackedMessage(short firstNameId, short lastNameId, short worldX, short worldY, int mapId, short subAreaId, Types.BasicGuildInformations guild)
         {
             this.firstNameId = firstNameId;
             this.lastNameId = lastNameId;
@@ -37,6 +38,7 @@ namespace Stump.DofusProtocol.Messages
             this.worldY = worldY;
             this.mapId = mapId;
             this.subAreaId = subAreaId;
+            this.guild = guild;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -47,6 +49,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
+            guild.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -67,11 +70,13 @@ namespace Stump.DofusProtocol.Messages
             subAreaId = reader.ReadShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
+            guild = new Types.BasicGuildInformations();
+            guild.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
+            return sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + guild.GetSerializationSize();
         }
         
     }

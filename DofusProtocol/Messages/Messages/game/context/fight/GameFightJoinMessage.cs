@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:37
+// Generated on 09/01/2014 15:51:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +18,6 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public bool canBeCancelled;
-        public bool canSayReady;
-        public bool isSpectator;
-        public bool isFightStarted;
         public int timeMaxBeforeFightStart;
         public sbyte fightType;
         
@@ -29,35 +25,20 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameFightJoinMessage(bool canBeCancelled, bool canSayReady, bool isSpectator, bool isFightStarted, int timeMaxBeforeFightStart, sbyte fightType)
+        public GameFightJoinMessage(int timeMaxBeforeFightStart, sbyte fightType)
         {
-            this.canBeCancelled = canBeCancelled;
-            this.canSayReady = canSayReady;
-            this.isSpectator = isSpectator;
-            this.isFightStarted = isFightStarted;
             this.timeMaxBeforeFightStart = timeMaxBeforeFightStart;
             this.fightType = fightType;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, canBeCancelled);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, canSayReady);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, isSpectator);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 3, isFightStarted);
-            writer.WriteByte(flag1);
             writer.WriteInt(timeMaxBeforeFightStart);
             writer.WriteSByte(fightType);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            byte flag1 = reader.ReadByte();
-            canBeCancelled = BooleanByteWrapper.GetFlag(flag1, 0);
-            canSayReady = BooleanByteWrapper.GetFlag(flag1, 1);
-            isSpectator = BooleanByteWrapper.GetFlag(flag1, 2);
-            isFightStarted = BooleanByteWrapper.GetFlag(flag1, 3);
             timeMaxBeforeFightStart = reader.ReadInt();
             if (timeMaxBeforeFightStart < 0)
                 throw new Exception("Forbidden value on timeMaxBeforeFightStart = " + timeMaxBeforeFightStart + ", it doesn't respect the following condition : timeMaxBeforeFightStart < 0");
@@ -68,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(bool) + 0 + 0 + 0 + sizeof(int) + sizeof(sbyte);
+            return sizeof(int) + sizeof(sbyte);
         }
         
     }

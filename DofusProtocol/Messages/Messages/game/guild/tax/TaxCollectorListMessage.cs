@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:48
+// Generated on 09/01/2014 15:52:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,6 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte nbcollectorMax;
-        public short taxCollectorHireCost;
         public IEnumerable<Types.TaxCollectorInformations> informations;
         public IEnumerable<Types.TaxCollectorFightersInformation> fightersInformations;
         
@@ -27,10 +26,9 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public TaxCollectorListMessage(sbyte nbcollectorMax, short taxCollectorHireCost, IEnumerable<Types.TaxCollectorInformations> informations, IEnumerable<Types.TaxCollectorFightersInformation> fightersInformations)
+        public TaxCollectorListMessage(sbyte nbcollectorMax, IEnumerable<Types.TaxCollectorInformations> informations, IEnumerable<Types.TaxCollectorFightersInformation> fightersInformations)
         {
             this.nbcollectorMax = nbcollectorMax;
-            this.taxCollectorHireCost = taxCollectorHireCost;
             this.informations = informations;
             this.fightersInformations = fightersInformations;
         }
@@ -38,7 +36,6 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(nbcollectorMax);
-            writer.WriteShort(taxCollectorHireCost);
             var informations_before = writer.Position;
             var informations_count = 0;
             writer.WriteUShort(0);
@@ -73,9 +70,6 @@ namespace Stump.DofusProtocol.Messages
             nbcollectorMax = reader.ReadSByte();
             if (nbcollectorMax < 0)
                 throw new Exception("Forbidden value on nbcollectorMax = " + nbcollectorMax + ", it doesn't respect the following condition : nbcollectorMax < 0");
-            taxCollectorHireCost = reader.ReadShort();
-            if (taxCollectorHireCost < 0)
-                throw new Exception("Forbidden value on taxCollectorHireCost = " + taxCollectorHireCost + ", it doesn't respect the following condition : taxCollectorHireCost < 0");
             var limit = reader.ReadUShort();
             var informations_ = new Types.TaxCollectorInformations[limit];
             for (int i = 0; i < limit; i++)
@@ -96,7 +90,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(short) + sizeof(short) + informations.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + fightersInformations.Sum(x => x.GetSerializationSize());
+            return sizeof(sbyte) + sizeof(short) + informations.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + fightersInformations.Sum(x => x.GetSerializationSize());
         }
         
     }

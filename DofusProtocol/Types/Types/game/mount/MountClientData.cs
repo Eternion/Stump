@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:02
+// Generated on 09/01/2014 15:52:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -172,6 +172,8 @@ namespace Stump.DofusProtocol.Types
             isWild = BooleanByteWrapper.GetFlag(flag1, 2);
             isFecondationReady = BooleanByteWrapper.GetFlag(flag1, 3);
             id = reader.ReadDouble();
+            if (id < -9.007199254740992E15 || id > 9.007199254740992E15)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9.007199254740992E15 || id > 9.007199254740992E15");
             model = reader.ReadInt();
             if (model < 0)
                 throw new Exception("Forbidden value on model = " + model + ", it doesn't respect the following condition : model < 0");
@@ -194,8 +196,14 @@ namespace Stump.DofusProtocol.Types
             if (ownerId < 0)
                 throw new Exception("Forbidden value on ownerId = " + ownerId + ", it doesn't respect the following condition : ownerId < 0");
             experience = reader.ReadDouble();
+            if (experience < -9.007199254740992E15 || experience > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9.007199254740992E15 || experience > 9.007199254740992E15");
             experienceForLevel = reader.ReadDouble();
+            if (experienceForLevel < -9.007199254740992E15 || experienceForLevel > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceForLevel = " + experienceForLevel + ", it doesn't respect the following condition : experienceForLevel < -9.007199254740992E15 || experienceForLevel > 9.007199254740992E15");
             experienceForNextLevel = reader.ReadDouble();
+            if (experienceForNextLevel < -9.007199254740992E15 || experienceForNextLevel > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceForNextLevel = " + experienceForNextLevel + ", it doesn't respect the following condition : experienceForNextLevel < -9.007199254740992E15 || experienceForNextLevel > 9.007199254740992E15");
             level = reader.ReadSByte();
             if (level < 0)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
@@ -236,6 +244,8 @@ namespace Stump.DofusProtocol.Types
             if (boostLimiter < 0)
                 throw new Exception("Forbidden value on boostLimiter = " + boostLimiter + ", it doesn't respect the following condition : boostLimiter < 0");
             boostMax = reader.ReadDouble();
+            if (boostMax < -9.007199254740992E15 || boostMax > 9.007199254740992E15)
+                throw new Exception("Forbidden value on boostMax = " + boostMax + ", it doesn't respect the following condition : boostMax < -9.007199254740992E15 || boostMax > 9.007199254740992E15");
             reproductionCount = reader.ReadInt();
             reproductionCountMax = reader.ReadInt();
             if (reproductionCountMax < 0)

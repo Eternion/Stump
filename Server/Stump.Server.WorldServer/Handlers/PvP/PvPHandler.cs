@@ -16,10 +16,5 @@ namespace Stump.Server.WorldServer.Handlers.PvP
         {
             client.Send(new AlignmentRankUpdateMessage(1, false));
         }
-
-        public static void SendAlignmentSubAreasListMessage(IPacketReceiver client)
-        {
-            client.Send(new AlignmentSubAreasListMessage(new short[0], new short[0]));
-        }
     }
 }

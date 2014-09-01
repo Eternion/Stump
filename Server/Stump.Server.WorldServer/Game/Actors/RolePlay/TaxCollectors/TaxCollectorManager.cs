@@ -135,7 +135,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
             character.Guild.AddTaxCollector(taxCollectorNpc);
 
-            TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Name);
+            TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Id, character.Name);
         }
 
         public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)

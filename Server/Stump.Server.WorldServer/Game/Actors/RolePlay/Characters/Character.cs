@@ -2257,9 +2257,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);
 
-            ContextHandler.SendGameFightStartingMessage(Client, team.Fight.FightType);
-
             Fighter = new CharacterFighter(this, team);
+
+            ContextHandler.SendGameFightStartingMessage(Client, team.Fight.FightType, 0, 0);
 
             OnCharacterContextChanged(true);
 
@@ -2281,7 +2281,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);
 
-            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType);
+            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType, 0, 0);
 
             Spectator = new FightSpectator(this, fight);
 
@@ -2886,7 +2886,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (sbyte) (PvPEnabled ? AlignmentSide : 0),
                 (sbyte) (PvPEnabled ? AlignmentValue : 0),
                 (sbyte) (PvPEnabled ? AlignmentGrade : 0),
-                Dishonor,
                 CharacterPower);
         }
 
@@ -2900,13 +2899,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (sbyte) AlignmentSide,
                 AlignmentValue,
                 AlignmentGrade,
-                Dishonor,
                 CharacterPower,
                 Honor,
                 LowerBoundHonor,
                 UpperBoundHonor,
-                PvPEnabled
-                );
+                PvPEnabled ? (sbyte)1 : (sbyte)0);
         }
 
         #endregion
@@ -2922,6 +2919,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look.GetEntityLook(),
                 (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
+        }
+
+        public PlayerStatus GetPlayerStatus()
+        {
+            return new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
         }
 
         public CharacterMinimalPlusLookInformations GetCharacterMinimalPlusLookInformations()
@@ -2949,7 +2951,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
                 Map.Id,
-                (short) Map.SubArea.Id);
+                (short) Map.SubArea.Id,
+                new PartyCompanionBaseInformations[0]);
         }
 
         public PartyMemberInformations GetPartyMemberInformations()
@@ -2966,12 +2969,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short) Stats[PlayerFields.Prospecting].Total,
                 RegenSpeed,
                 (short) Stats[PlayerFields.Initiative].Total,
-                PvPEnabled,
                 (sbyte) AlignmentSide,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
                 Map.Id,
-                (short) SubArea.Id);
+                (short) SubArea.Id,
+                GetPlayerStatus(),
+                new PartyCompanionMemberInformations[0]);
         }
 
         public PartyGuestInformations GetPartyGuestInformations(Party party)
@@ -2987,7 +2991,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Name,
                 Look.GetEntityLook(),
                 (sbyte) BreedId,
-                Sex == SexTypeEnum.SEX_FEMALE);
+                Sex == SexTypeEnum.SEX_FEMALE,
+                GetPlayerStatus(),
+                new PartyCompanionMemberInformations[0]);
         }
 
         public PartyMemberArenaInformations GetPartyMemberArenaInformations()
@@ -3004,12 +3010,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short) Stats[PlayerFields.Prospecting].Total,
                 RegenSpeed,
                 (short) Stats[PlayerFields.Initiative].Total,
-                PvPEnabled,
                 (sbyte) AlignmentSide,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
                 Map.Id,
                 (short) SubArea.Id,
+                GetPlayerStatus(),
+                new PartyCompanionMemberInformations[0],
                 (short)ArenaRank);
         }
 

@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:37
+// Generated on 09/01/2014 15:51:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,17 +22,19 @@ namespace Stump.DofusProtocol.Messages
         public short ageBonus;
         public short lootShareLimitMalus;
         public IEnumerable<Types.FightResultListEntry> results;
+        public IEnumerable<Types.NamedPartyTeamWithOutcome> namedPartyTeamsOutcomes;
         
         public GameFightEndMessage()
         {
         }
         
-        public GameFightEndMessage(int duration, short ageBonus, short lootShareLimitMalus, IEnumerable<Types.FightResultListEntry> results)
+        public GameFightEndMessage(int duration, short ageBonus, short lootShareLimitMalus, IEnumerable<Types.FightResultListEntry> results, IEnumerable<Types.NamedPartyTeamWithOutcome> namedPartyTeamsOutcomes)
         {
             this.duration = duration;
             this.ageBonus = ageBonus;
             this.lootShareLimitMalus = lootShareLimitMalus;
             this.results = results;
+            this.namedPartyTeamsOutcomes = namedPartyTeamsOutcomes;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -54,6 +56,19 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)results_count);
             writer.Seek((int)results_after);
 
+            var namedPartyTeamsOutcomes_before = writer.Position;
+            var namedPartyTeamsOutcomes_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in namedPartyTeamsOutcomes)
+            {
+                 entry.Serialize(writer);
+                 namedPartyTeamsOutcomes_count++;
+            }
+            var namedPartyTeamsOutcomes_after = writer.Position;
+            writer.Seek((int)namedPartyTeamsOutcomes_before);
+            writer.WriteUShort((ushort)namedPartyTeamsOutcomes_count);
+            writer.Seek((int)namedPartyTeamsOutcomes_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -71,11 +86,19 @@ namespace Stump.DofusProtocol.Messages
                  results_[i].Deserialize(reader);
             }
             results = results_;
+            limit = reader.ReadUShort();
+            var namedPartyTeamsOutcomes_ = new Types.NamedPartyTeamWithOutcome[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 namedPartyTeamsOutcomes_[i] = new Types.NamedPartyTeamWithOutcome();
+                 namedPartyTeamsOutcomes_[i].Deserialize(reader);
+            }
+            namedPartyTeamsOutcomes = namedPartyTeamsOutcomes_;
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + results.Sum(x => sizeof(short) + x.GetSerializationSize());
+            return sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + results.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + namedPartyTeamsOutcomes.Sum(x => x.GetSerializationSize());
         }
         
     }

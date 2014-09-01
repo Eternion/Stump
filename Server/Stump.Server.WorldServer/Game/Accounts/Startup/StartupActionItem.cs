@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Accounts.Startup
 
         public ObjectItemInformationWithQuantity GetObjectItemInformationWithQuantity()
         {
-            return new ObjectItemInformationWithQuantity((short) ItemTemplate.Id, 0, false, ItemTemplate.Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int) Amount);
+            return new ObjectItemInformationWithQuantity((short) ItemTemplate.Id, ItemTemplate.Effects.Select(entry => entry.GetObjectEffect()).ToArray(), (int) Amount);
         }
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 09/01/2014 15:52:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,12 +23,14 @@ namespace Stump.DofusProtocol.Types
         public Types.EntityLook guestLook;
         public sbyte breed;
         public bool sex;
+        public Types.PlayerStatus status;
+        public IEnumerable<Types.PartyCompanionBaseInformations> companions;
         
         public PartyGuestInformations()
         {
         }
         
-        public PartyGuestInformations(int guestId, int hostId, string name, Types.EntityLook guestLook, sbyte breed, bool sex)
+        public PartyGuestInformations(int guestId, int hostId, string name, Types.EntityLook guestLook, sbyte breed, bool sex, Types.PlayerStatus status, IEnumerable<Types.PartyCompanionBaseInformations> companions)
         {
             this.guestId = guestId;
             this.hostId = hostId;
@@ -36,6 +38,8 @@ namespace Stump.DofusProtocol.Types
             this.guestLook = guestLook;
             this.breed = breed;
             this.sex = sex;
+            this.status = status;
+            this.companions = companions;
         }
         
         public virtual void Serialize(IDataWriter writer)
@@ -46,6 +50,21 @@ namespace Stump.DofusProtocol.Types
             guestLook.Serialize(writer);
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
+            writer.WriteShort(status.TypeId);
+            status.Serialize(writer);
+            var companions_before = writer.Position;
+            var companions_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in companions)
+            {
+                 entry.Serialize(writer);
+                 companions_count++;
+            }
+            var companions_after = writer.Position;
+            writer.Seek((int)companions_before);
+            writer.WriteUShort((ushort)companions_count);
+            writer.Seek((int)companions_after);
+
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -61,11 +80,21 @@ namespace Stump.DofusProtocol.Types
             guestLook.Deserialize(reader);
             breed = reader.ReadSByte();
             sex = reader.ReadBoolean();
+            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
+            status.Deserialize(reader);
+            var limit = reader.ReadUShort();
+            var companions_ = new Types.PartyCompanionBaseInformations[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 companions_[i] = new Types.PartyCompanionBaseInformations();
+                 companions_[i].Deserialize(reader);
+            }
+            companions = companions_;
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + guestLook.GetSerializationSize() + sizeof(sbyte) + sizeof(bool);
+            return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + guestLook.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + status.GetSerializationSize() + sizeof(short) + companions.Sum(x => x.GetSerializationSize());
         }
         
     }
