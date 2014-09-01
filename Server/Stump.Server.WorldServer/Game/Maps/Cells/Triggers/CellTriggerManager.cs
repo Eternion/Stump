@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Reflection;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.World.Triggers;
@@ -31,16 +30,24 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
         public CellTriggerRecord GetCellTrigger(int id)
         {
             CellTriggerRecord cellTrigger;
-            if (m_cellTriggers.TryGetValue(id, out cellTrigger))
-                return cellTrigger;
-
-            return cellTrigger;
+            return m_cellTriggers.TryGetValue(id, out cellTrigger) ? cellTrigger : cellTrigger;
         }
 
         public void AddCellTrigger(CellTriggerRecord cellTrigger)
         {
             Database.Insert(cellTrigger);
             m_cellTriggers.Add(cellTrigger.Id, cellTrigger);
+        }
+
+        public void DeleteCellTrigger(int mapId, int cellId)
+        {
+            var trigger = m_cellTriggers.FirstOrDefault(x => x.Value.MapId == mapId && x.Value.CellId == cellId);
+
+            if (trigger.Value == null)
+                return;
+
+            Database.Delete(trigger.Value);
+            m_cellTriggers.Remove(trigger.Key);
         }
     }
 }
