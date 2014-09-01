@@ -184,6 +184,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS, false);
             FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.SELF, false);
 
+            // Entourloupe (2803)
+            FixEffectOnAllLevels(2803, EffectsEnum.Effect_SwitchPosition, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS, false);
+
             #endregion
         }
 
@@ -219,11 +222,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                     fixer(level, spellEffect, false);
                 }
 
-                if (critical)
-                    foreach (EffectDice spellEffect in level.CriticalEffects.Where(entry => entry.EffectId == effect))
-                    {
-                        fixer(level, spellEffect, true);
-                    }
+                if (!critical)
+                    continue;
+
+                foreach (var spellEffect in level.CriticalEffects.Where(entry => entry.EffectId == effect))
+                {
+                    fixer(level, spellEffect, true);
+                }
             }
         }
 
