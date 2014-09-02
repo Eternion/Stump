@@ -37,17 +37,23 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
         {
             Database.Insert(cellTrigger);
             m_cellTriggers.Add(cellTrigger.Id, cellTrigger);
+
+            var trigger = cellTrigger.GenerateTrigger();
+            trigger.Position.Map.AddTrigger(trigger);
         }
 
         public void DeleteCellTrigger(int mapId, int cellId)
         {
-            var trigger = m_cellTriggers.FirstOrDefault(x => x.Value.MapId == mapId && x.Value.CellId == cellId);
+            var cellTrigger = m_cellTriggers.FirstOrDefault(x => x.Value.MapId == mapId && x.Value.CellId == cellId);
 
-            if (trigger.Value == null)
+            if (cellTrigger.Value == null)
                 return;
 
-            Database.Delete(trigger.Value);
-            m_cellTriggers.Remove(trigger.Key);
+            var trigger = cellTrigger.Value.GenerateTrigger();
+            trigger.Position.Map.RemoveTrigger(trigger);
+
+            Database.Delete(cellTrigger.Value);
+            m_cellTriggers.Remove(cellTrigger.Key);
         }
     }
 }

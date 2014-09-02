@@ -126,7 +126,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         public IEnumerable<InteractiveSkillRecord> GetSkills()
         {
-            return Template != null ? Template.Skills : Skills;
+            return Skills.Count > 0 ? Skills : Template.Skills;
         }
 
         public ObjectPosition GetPosition()
