@@ -214,7 +214,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else
             {
-                var cellIdSrc = trigger.IsArgumentDefined("cellidsrc") ? trigger.Get<Cell>("cellidsrc") : character.Cell;
+                var cellIdSrc = trigger.IsArgumentDefined("cellidsrc") ? character.Map.Cells[trigger.Get<short>("cellidsrc")] : character.Cell;
 
                 WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
                 {

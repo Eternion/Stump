@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
         {
             foreach (var skillTemplate in Spawn.GetSkills())
             {
-                int id = InteractiveManager.Instance.PopSkillId();
+                var id = InteractiveManager.Instance.PopSkillId();
 
                 m_skills.Add(id, skillTemplate.GenerateSkill(id, this));
             }
