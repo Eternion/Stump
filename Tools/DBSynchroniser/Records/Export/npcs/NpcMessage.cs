@@ -59,7 +59,7 @@ namespace DBSynchroniser.Records
             
             Id = castedObj.id;
             MessageId = castedObj.messageId;
-            MessageParams = castedObj.messageParams;
+            MessageParams = "";
         }
         
         public virtual object CreateObject(object parent = null)
@@ -67,7 +67,6 @@ namespace DBSynchroniser.Records
             var obj = parent != null ? (NpcMessage)parent : new NpcMessage();
             obj.id = Id;
             obj.messageId = MessageId;
-            obj.messageParams = MessageParams;
             return obj;
         }
         

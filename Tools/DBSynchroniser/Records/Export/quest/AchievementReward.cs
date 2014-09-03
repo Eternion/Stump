@@ -22,7 +22,7 @@ namespace DBSynchroniser.Records
         public uint achievementId;
         public int levelMin;
         public int levelMax;
-        public List<List<uint>> itemsReward;
+        public List<uint> itemsReward;
         public List<uint> emotesReward;
         public List<uint> spellsReward;
         public List<uint> titlesReward;
@@ -65,7 +65,7 @@ namespace DBSynchroniser.Records
 
         [D2OIgnore]
         [Ignore]
-        public List<List<uint>> ItemsReward
+        public List<uint> ItemsReward
         {
             get { return itemsReward; }
             set
@@ -85,7 +85,7 @@ namespace DBSynchroniser.Records
             set
             {
                 m_itemsRewardBin = value;
-                itemsReward = value == null ? null : value.ToObject<List<List<uint>>>();
+                itemsReward = value == null ? null : value.ToObject<List<uint>>();
             }
         }
 

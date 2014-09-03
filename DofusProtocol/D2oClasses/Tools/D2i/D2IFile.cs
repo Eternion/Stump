@@ -30,7 +30,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
     public class D2IFile
     {
         private readonly Dictionary<int, string> m_indexes = new Dictionary<int, string>();
+        private readonly Dictionary<int, int> m_unDiacriticalIndex = new Dictionary<int, int>();
         private readonly Dictionary<string, string> m_textIndexes = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> m_textSortIndexes = new Dictionary<string, string>();
+        private int textCount = 0;
         private readonly string m_uri;
 
         public D2IFile(string uri)
@@ -55,24 +58,27 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
 
                 for (int i = 0; i < indexLen; i += 9)
                 {
-                    int key = reader.ReadInt();
-                    bool state = reader.ReadBoolean();
-                    int dataPos = reader.ReadInt();
-                    var pos = (int)reader.Position;
+                    int key = reader.ReadInt(); //4 byte
+                    bool state = reader.ReadBoolean(); //1 byte
+                    int dataPos = reader.ReadInt(); //4 byte
+                    var pos = (int)reader.Position; //todo: Check cast
+
                     reader.Seek(dataPos, SeekOrigin.Begin);
                     m_indexes.Add(key, reader.ReadUTF());
+                    m_unDiacriticalIndex.Add(key, dataPos);
                     reader.Seek(pos, SeekOrigin.Begin);
                 }
                 indexLen = reader.ReadInt();
 
                 while (indexLen > 0)
                 {
-                    var pos = (int)reader.Position;
+                    var pos = reader.Position;
                     string key = reader.ReadUTF();
                     int dataPos = reader.ReadInt();
 
+                    textCount++;
                     m_textIndexes.Add(key, reader.ReadUTF());
-                    indexLen -= ((int)reader.Position - pos);
+                    indexLen -= ((int)reader.Position - (int)pos);
                     reader.Seek(pos, SeekOrigin.Begin);
                 }
                 indexLen = reader.ReadInt();
@@ -80,6 +86,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
                 while (indexLen > 0)
                 {
                     var pos = (int)reader.Position;
+                    reader.ReadInt();
+
                     indexLen -= ((int)reader.Position - pos);
                 }
             }
