@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 09/02/2014 22:34:39
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,12 +12,10 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class QuestStep : IDataObject, IIndexedData
     {
-        private const String MODULE = "QuestSteps";
+        public const String MODULE = "QuestSteps";
         public uint id;
         public uint questId;
-        [I18NField]
         public uint nameId;
-        [I18NField]
         public uint descriptionId;
         public int dialogId;
         public uint optimalLevel;
@@ -34,74 +32,74 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint QuestId
         {
-            get { return questId; }
-            set { questId = value; }
+            get { return this.questId; }
+            set { this.questId = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public int DialogId
         {
-            get { return dialogId; }
-            set { dialogId = value; }
+            get { return this.dialogId; }
+            set { this.dialogId = value; }
         }
         [D2OIgnore]
         public uint OptimalLevel
         {
-            get { return optimalLevel; }
-            set { optimalLevel = value; }
+            get { return this.optimalLevel; }
+            set { this.optimalLevel = value; }
         }
         [D2OIgnore]
         public double Duration
         {
-            get { return duration; }
-            set { duration = value; }
+            get { return this.duration; }
+            set { this.duration = value; }
         }
         [D2OIgnore]
         public Boolean KamasScaleWithPlayerLevel
         {
-            get { return kamasScaleWithPlayerLevel; }
-            set { kamasScaleWithPlayerLevel = value; }
+            get { return this.kamasScaleWithPlayerLevel; }
+            set { this.kamasScaleWithPlayerLevel = value; }
         }
         [D2OIgnore]
         public double KamasRatio
         {
-            get { return kamasRatio; }
-            set { kamasRatio = value; }
+            get { return this.kamasRatio; }
+            set { this.kamasRatio = value; }
         }
         [D2OIgnore]
         public double XpRatio
         {
-            get { return xpRatio; }
-            set { xpRatio = value; }
+            get { return this.xpRatio; }
+            set { this.xpRatio = value; }
         }
         [D2OIgnore]
         public List<uint> ObjectiveIds
         {
-            get { return objectiveIds; }
-            set { objectiveIds = value; }
+            get { return this.objectiveIds; }
+            set { this.objectiveIds = value; }
         }
         [D2OIgnore]
         public List<uint> RewardsIds
         {
-            get { return rewardsIds; }
-            set { rewardsIds = value; }
+            get { return this.rewardsIds; }
+            set { this.rewardsIds = value; }
         }
     }
 }

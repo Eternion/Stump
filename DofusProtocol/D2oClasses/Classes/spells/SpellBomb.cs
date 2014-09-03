@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 09/02/2014 22:34:45
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class SpellBomb : IDataObject, IIndexedData
     {
-        private const String MODULE = "SpellBombs";
+        public const String MODULE = "SpellBombs";
         public int id;
         public int chainReactionSpellId;
         public int explodSpellId;
@@ -26,38 +26,38 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public int ChainReactionSpellId
         {
-            get { return chainReactionSpellId; }
-            set { chainReactionSpellId = value; }
+            get { return this.chainReactionSpellId; }
+            set { this.chainReactionSpellId = value; }
         }
         [D2OIgnore]
         public int ExplodSpellId
         {
-            get { return explodSpellId; }
-            set { explodSpellId = value; }
+            get { return this.explodSpellId; }
+            set { this.explodSpellId = value; }
         }
         [D2OIgnore]
         public int WallId
         {
-            get { return wallId; }
-            set { wallId = value; }
+            get { return this.wallId; }
+            set { this.wallId = value; }
         }
         [D2OIgnore]
         public int InstantSpellId
         {
-            get { return instantSpellId; }
-            set { instantSpellId = value; }
+            get { return this.instantSpellId; }
+            set { this.instantSpellId = value; }
         }
         [D2OIgnore]
         public int ComboCoeff
         {
-            get { return comboCoeff; }
-            set { comboCoeff = value; }
+            get { return this.comboCoeff; }
+            set { this.comboCoeff = value; }
         }
     }
 }

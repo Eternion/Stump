@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 09/02/2014 22:34:38
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,20 +12,20 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class RideFood : IDataObject
     {
+        public String MODULE = "RideFood";
         public uint gid;
         public uint typeId;
-        public String MODULE = "RideFood";
         [D2OIgnore]
         public uint Gid
         {
-            get { return gid; }
-            set { gid = value; }
+            get { return this.gid; }
+            set { this.gid = value; }
         }
         [D2OIgnore]
         public uint TypeId
         {
-            get { return typeId; }
-            set { typeId = value; }
+            get { return this.typeId; }
+            set { this.typeId = value; }
         }
     }
 }

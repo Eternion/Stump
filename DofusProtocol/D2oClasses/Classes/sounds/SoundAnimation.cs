@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 09/02/2014 22:34:41
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,6 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class SoundAnimation : IDataObject, IIndexedData
     {
+        public String MODULE = "SoundAnimations";
         public uint id;
         public String name;
         public String label;
@@ -24,7 +25,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public int automationFadeOut;
         public Boolean noCutSilence;
         public uint startFrame;
-        public String MODULE = "SoundAnimations";
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -32,74 +32,74 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public String Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return this.name; }
+            set { this.name = value; }
         }
         [D2OIgnore]
         public String Label
         {
-            get { return label; }
-            set { label = value; }
+            get { return this.label; }
+            set { this.label = value; }
         }
         [D2OIgnore]
         public String Filename
         {
-            get { return filename; }
-            set { filename = value; }
+            get { return this.filename; }
+            set { this.filename = value; }
         }
         [D2OIgnore]
         public int Volume
         {
-            get { return volume; }
-            set { volume = value; }
+            get { return this.volume; }
+            set { this.volume = value; }
         }
         [D2OIgnore]
         public int Rolloff
         {
-            get { return rolloff; }
-            set { rolloff = value; }
+            get { return this.rolloff; }
+            set { this.rolloff = value; }
         }
         [D2OIgnore]
         public int AutomationDuration
         {
-            get { return automationDuration; }
-            set { automationDuration = value; }
+            get { return this.automationDuration; }
+            set { this.automationDuration = value; }
         }
         [D2OIgnore]
         public int AutomationVolume
         {
-            get { return automationVolume; }
-            set { automationVolume = value; }
+            get { return this.automationVolume; }
+            set { this.automationVolume = value; }
         }
         [D2OIgnore]
         public int AutomationFadeIn
         {
-            get { return automationFadeIn; }
-            set { automationFadeIn = value; }
+            get { return this.automationFadeIn; }
+            set { this.automationFadeIn = value; }
         }
         [D2OIgnore]
         public int AutomationFadeOut
         {
-            get { return automationFadeOut; }
-            set { automationFadeOut = value; }
+            get { return this.automationFadeOut; }
+            set { this.automationFadeOut = value; }
         }
         [D2OIgnore]
         public Boolean NoCutSilence
         {
-            get { return noCutSilence; }
-            set { noCutSilence = value; }
+            get { return this.noCutSilence; }
+            set { this.noCutSilence = value; }
         }
         [D2OIgnore]
         public uint StartFrame
         {
-            get { return startFrame; }
-            set { startFrame = value; }
+            get { return this.startFrame; }
+            set { this.startFrame = value; }
         }
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 09/02/2014 22:34:41
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,10 +12,10 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class SoundBones : IDataObject, IIndexedData
     {
+        public String MODULE = "SoundBones";
         public uint id;
         public List<String> keys;
         public List<List<SoundAnimation>> values;
-        public String MODULE = "SoundBones";
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -23,20 +23,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public List<String> Keys
         {
-            get { return keys; }
-            set { keys = value; }
+            get { return this.keys; }
+            set { this.keys = value; }
         }
         [D2OIgnore]
         public List<List<SoundAnimation>> Values
         {
-            get { return values; }
-            set { values = value; }
+            get { return this.values; }
+            set { this.values = value; }
         }
     }
 }

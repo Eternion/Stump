@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 09/02/2014 22:34:46
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,19 +12,18 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Hint : IDataObject, IIndexedData
     {
-        private const String MODULE = "Hints";
+        public const String MODULE = "Hints";
         public int id;
         public uint categoryId;
         public uint gfx;
-        [I18NField]
         public uint nameId;
         public uint mapId;
         public uint realMapId;
-        [I18NField]
         public int x;
         public int y;
         public Boolean outdoor;
         public int subareaId;
+        public int worldMapId;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -32,62 +31,68 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint CategoryId
         {
-            get { return categoryId; }
-            set { categoryId = value; }
+            get { return this.categoryId; }
+            set { this.categoryId = value; }
         }
         [D2OIgnore]
         public uint Gfx
         {
-            get { return gfx; }
-            set { gfx = value; }
+            get { return this.gfx; }
+            set { this.gfx = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint MapId
         {
-            get { return mapId; }
-            set { mapId = value; }
+            get { return this.mapId; }
+            set { this.mapId = value; }
         }
         [D2OIgnore]
         public uint RealMapId
         {
-            get { return realMapId; }
-            set { realMapId = value; }
+            get { return this.realMapId; }
+            set { this.realMapId = value; }
         }
         [D2OIgnore]
         public int X
         {
-            get { return x; }
-            set { x = value; }
+            get { return this.x; }
+            set { this.x = value; }
         }
         [D2OIgnore]
         public int Y
         {
-            get { return y; }
-            set { y = value; }
+            get { return this.y; }
+            set { this.y = value; }
         }
         [D2OIgnore]
         public Boolean Outdoor
         {
-            get { return outdoor; }
-            set { outdoor = value; }
+            get { return this.outdoor; }
+            set { this.outdoor = value; }
         }
         [D2OIgnore]
         public int SubareaId
         {
-            get { return subareaId; }
-            set { subareaId = value; }
+            get { return this.subareaId; }
+            set { this.subareaId = value; }
+        }
+        [D2OIgnore]
+        public int WorldMapId
+        {
+            get { return this.worldMapId; }
+            set { this.worldMapId = value; }
         }
     }
 }

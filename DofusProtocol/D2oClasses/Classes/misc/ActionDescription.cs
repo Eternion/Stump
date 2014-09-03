@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:19
+// Generated on 09/02/2014 22:34:36
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -16,7 +16,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint id;
         public uint typeId;
         public String name;
-        [I18NField]
         public uint descriptionId;
         public Boolean trusted;
         public Boolean needInteraction;
@@ -30,56 +29,56 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint TypeId
         {
-            get { return typeId; }
-            set { typeId = value; }
+            get { return this.typeId; }
+            set { this.typeId = value; }
         }
         [D2OIgnore]
         public String Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return this.name; }
+            set { this.name = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public Boolean Trusted
         {
-            get { return trusted; }
-            set { trusted = value; }
+            get { return this.trusted; }
+            set { this.trusted = value; }
         }
         [D2OIgnore]
         public Boolean NeedInteraction
         {
-            get { return needInteraction; }
-            set { needInteraction = value; }
+            get { return this.needInteraction; }
+            set { this.needInteraction = value; }
         }
         [D2OIgnore]
         public uint MaxUsePerFrame
         {
-            get { return maxUsePerFrame; }
-            set { maxUsePerFrame = value; }
+            get { return this.maxUsePerFrame; }
+            set { this.maxUsePerFrame = value; }
         }
         [D2OIgnore]
         public uint MinimalUseInterval
         {
-            get { return minimalUseInterval; }
-            set { minimalUseInterval = value; }
+            get { return this.minimalUseInterval; }
+            set { this.minimalUseInterval = value; }
         }
         [D2OIgnore]
         public Boolean NeedConfirmation
         {
-            get { return needConfirmation; }
-            set { needConfirmation = value; }
+            get { return this.needConfirmation; }
+            set { this.needConfirmation = value; }
         }
     }
 }

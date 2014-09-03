@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:19
+// Generated on 09/02/2014 22:34:37
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -34,92 +34,92 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Grade
         {
-            get { return grade; }
-            set { grade = value; }
+            get { return this.grade; }
+            set { this.grade = value; }
         }
         [D2OIgnore]
         public int MonsterId
         {
-            get { return monsterId; }
-            set { monsterId = value; }
+            get { return this.monsterId; }
+            set { this.monsterId = value; }
         }
         [D2OIgnore]
         public uint Level
         {
-            get { return level; }
-            set { level = value; }
+            get { return this.level; }
+            set { this.level = value; }
         }
         [D2OIgnore]
         public int PaDodge
         {
-            get { return paDodge; }
-            set { paDodge = value; }
+            get { return this.paDodge; }
+            set { this.paDodge = value; }
         }
         [D2OIgnore]
         public int PmDodge
         {
-            get { return pmDodge; }
-            set { pmDodge = value; }
+            get { return this.pmDodge; }
+            set { this.pmDodge = value; }
         }
         [D2OIgnore]
         public int Wisdom
         {
-            get { return wisdom; }
-            set { wisdom = value; }
+            get { return this.wisdom; }
+            set { this.wisdom = value; }
         }
         [D2OIgnore]
         public int EarthResistance
         {
-            get { return earthResistance; }
-            set { earthResistance = value; }
+            get { return this.earthResistance; }
+            set { this.earthResistance = value; }
         }
         [D2OIgnore]
         public int AirResistance
         {
-            get { return airResistance; }
-            set { airResistance = value; }
+            get { return this.airResistance; }
+            set { this.airResistance = value; }
         }
         [D2OIgnore]
         public int FireResistance
         {
-            get { return fireResistance; }
-            set { fireResistance = value; }
+            get { return this.fireResistance; }
+            set { this.fireResistance = value; }
         }
         [D2OIgnore]
         public int WaterResistance
         {
-            get { return waterResistance; }
-            set { waterResistance = value; }
+            get { return this.waterResistance; }
+            set { this.waterResistance = value; }
         }
         [D2OIgnore]
         public int NeutralResistance
         {
-            get { return neutralResistance; }
-            set { neutralResistance = value; }
+            get { return this.neutralResistance; }
+            set { this.neutralResistance = value; }
         }
         [D2OIgnore]
         public int GradeXp
         {
-            get { return gradeXp; }
-            set { gradeXp = value; }
+            get { return this.gradeXp; }
+            set { this.gradeXp = value; }
         }
         [D2OIgnore]
         public int LifePoints
         {
-            get { return lifePoints; }
-            set { lifePoints = value; }
+            get { return this.lifePoints; }
+            set { this.lifePoints = value; }
         }
         [D2OIgnore]
         public int ActionPoints
         {
-            get { return actionPoints; }
-            set { actionPoints = value; }
+            get { return this.actionPoints; }
+            set { this.actionPoints = value; }
         }
         [D2OIgnore]
         public int MovementPoints
         {
-            get { return movementPoints; }
-            set { movementPoints = value; }
+            get { return this.movementPoints; }
+            set { this.movementPoints = value; }
         }
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:16
+// Generated on 09/02/2014 22:34:29
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,9 +12,8 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AlignmentGift : IDataObject, IIndexedData
     {
-        private const String MODULE = "AlignmentGift";
+        public const String MODULE = "AlignmentGift";
         public int id;
-        [I18NField]
         public uint nameId;
         public int effectId;
         public uint gfxId;
@@ -25,26 +24,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public int EffectId
         {
-            get { return effectId; }
-            set { effectId = value; }
+            get { return this.effectId; }
+            set { this.effectId = value; }
         }
         [D2OIgnore]
         public uint GfxId
         {
-            get { return gfxId; }
-            set { gfxId = value; }
+            get { return this.gfxId; }
+            set { this.gfxId = value; }
         }
     }
 }

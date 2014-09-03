@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 09/02/2014 22:34:46
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,20 +12,20 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class MapCoordinates : IDataObject
     {
-        private const String MODULE = "MapCoordinates";
+        public const String MODULE = "MapCoordinates";
         public uint compressedCoords;
         public List<int> mapIds;
         [D2OIgnore]
         public uint CompressedCoords
         {
-            get { return compressedCoords; }
-            set { compressedCoords = value; }
+            get { return this.compressedCoords; }
+            set { this.compressedCoords = value; }
         }
         [D2OIgnore]
         public List<int> MapIds
         {
-            get { return mapIds; }
-            set { mapIds = value; }
+            get { return this.mapIds; }
+            set { this.mapIds = value; }
         }
     }
 }

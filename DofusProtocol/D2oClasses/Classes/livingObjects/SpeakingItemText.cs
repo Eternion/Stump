@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:19
+// Generated on 09/02/2014 22:34:36
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,10 +12,9 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class SpeakingItemText : IDataObject, IIndexedData
     {
-        private const String MODULE = "SpeakingItemsText";
+        public const String MODULE = "SpeakingItemsText";
         public int textId;
         public double textProba;
-        [I18NField]
         public uint textStringId;
         public int textLevel;
         public int textSound;
@@ -27,38 +26,38 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int TextId
         {
-            get { return textId; }
-            set { textId = value; }
+            get { return this.textId; }
+            set { this.textId = value; }
         }
         [D2OIgnore]
         public double TextProba
         {
-            get { return textProba; }
-            set { textProba = value; }
+            get { return this.textProba; }
+            set { this.textProba = value; }
         }
         [D2OIgnore]
         public uint TextStringId
         {
-            get { return textStringId; }
-            set { textStringId = value; }
+            get { return this.textStringId; }
+            set { this.textStringId = value; }
         }
         [D2OIgnore]
         public int TextLevel
         {
-            get { return textLevel; }
-            set { textLevel = value; }
+            get { return this.textLevel; }
+            set { this.textLevel = value; }
         }
         [D2OIgnore]
         public int TextSound
         {
-            get { return textSound; }
-            set { textSound = value; }
+            get { return this.textSound; }
+            set { this.textSound = value; }
         }
         [D2OIgnore]
         public String TextRestriction
         {
-            get { return textRestriction; }
-            set { textRestriction = value; }
+            get { return this.textRestriction; }
+            set { this.textRestriction = value; }
         }
     }
 }

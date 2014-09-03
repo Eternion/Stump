@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 09/02/2014 22:34:31
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,15 +12,11 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Breed : IDataObject, IIndexedData
     {
-        private const String MODULE = "Breeds";
+        public const String MODULE = "Breeds";
         public int id;
-        [I18NField]
         public uint shortNameId;
-        [I18NField]
         public uint longNameId;
-        [I18NField]
         public uint descriptionId;
-        [I18NField]
         public uint gameplayDescriptionId;
         public String maleLook;
         public String femaleLook;
@@ -36,6 +32,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<uint> breedSpellsId;
         public List<uint> maleColors;
         public List<uint> femaleColors;
+        public uint spawnMap;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -43,116 +40,122 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint ShortNameId
         {
-            get { return shortNameId; }
-            set { shortNameId = value; }
+            get { return this.shortNameId; }
+            set { this.shortNameId = value; }
         }
         [D2OIgnore]
         public uint LongNameId
         {
-            get { return longNameId; }
-            set { longNameId = value; }
+            get { return this.longNameId; }
+            set { this.longNameId = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public uint GameplayDescriptionId
         {
-            get { return gameplayDescriptionId; }
-            set { gameplayDescriptionId = value; }
+            get { return this.gameplayDescriptionId; }
+            set { this.gameplayDescriptionId = value; }
         }
         [D2OIgnore]
         public String MaleLook
         {
-            get { return maleLook; }
-            set { maleLook = value; }
+            get { return this.maleLook; }
+            set { this.maleLook = value; }
         }
         [D2OIgnore]
         public String FemaleLook
         {
-            get { return femaleLook; }
-            set { femaleLook = value; }
+            get { return this.femaleLook; }
+            set { this.femaleLook = value; }
         }
         [D2OIgnore]
         public uint CreatureBonesId
         {
-            get { return creatureBonesId; }
-            set { creatureBonesId = value; }
+            get { return this.creatureBonesId; }
+            set { this.creatureBonesId = value; }
         }
         [D2OIgnore]
         public int MaleArtwork
         {
-            get { return maleArtwork; }
-            set { maleArtwork = value; }
+            get { return this.maleArtwork; }
+            set { this.maleArtwork = value; }
         }
         [D2OIgnore]
         public int FemaleArtwork
         {
-            get { return femaleArtwork; }
-            set { femaleArtwork = value; }
+            get { return this.femaleArtwork; }
+            set { this.femaleArtwork = value; }
         }
         [D2OIgnore]
         public List<List<uint>> StatsPointsForStrength
         {
-            get { return statsPointsForStrength; }
-            set { statsPointsForStrength = value; }
+            get { return this.statsPointsForStrength; }
+            set { this.statsPointsForStrength = value; }
         }
         [D2OIgnore]
         public List<List<uint>> StatsPointsForIntelligence
         {
-            get { return statsPointsForIntelligence; }
-            set { statsPointsForIntelligence = value; }
+            get { return this.statsPointsForIntelligence; }
+            set { this.statsPointsForIntelligence = value; }
         }
         [D2OIgnore]
         public List<List<uint>> StatsPointsForChance
         {
-            get { return statsPointsForChance; }
-            set { statsPointsForChance = value; }
+            get { return this.statsPointsForChance; }
+            set { this.statsPointsForChance = value; }
         }
         [D2OIgnore]
         public List<List<uint>> StatsPointsForAgility
         {
-            get { return statsPointsForAgility; }
-            set { statsPointsForAgility = value; }
+            get { return this.statsPointsForAgility; }
+            set { this.statsPointsForAgility = value; }
         }
         [D2OIgnore]
         public List<List<uint>> StatsPointsForVitality
         {
-            get { return statsPointsForVitality; }
-            set { statsPointsForVitality = value; }
+            get { return this.statsPointsForVitality; }
+            set { this.statsPointsForVitality = value; }
         }
         [D2OIgnore]
         public List<List<uint>> StatsPointsForWisdom
         {
-            get { return statsPointsForWisdom; }
-            set { statsPointsForWisdom = value; }
+            get { return this.statsPointsForWisdom; }
+            set { this.statsPointsForWisdom = value; }
         }
         [D2OIgnore]
         public List<uint> BreedSpellsId
         {
-            get { return breedSpellsId; }
-            set { breedSpellsId = value; }
+            get { return this.breedSpellsId; }
+            set { this.breedSpellsId = value; }
         }
         [D2OIgnore]
         public List<uint> MaleColors
         {
-            get { return maleColors; }
-            set { maleColors = value; }
+            get { return this.maleColors; }
+            set { this.maleColors = value; }
         }
         [D2OIgnore]
         public List<uint> FemaleColors
         {
-            get { return femaleColors; }
-            set { femaleColors = value; }
+            get { return this.femaleColors; }
+            set { this.femaleColors = value; }
+        }
+        [D2OIgnore]
+        public uint SpawnMap
+        {
+            get { return this.spawnMap; }
+            set { this.spawnMap = value; }
         }
     }
 }

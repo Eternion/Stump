@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:19
+// Generated on 09/02/2014 22:34:37
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -20,26 +20,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public String Lang
         {
-            get { return lang; }
-            set { lang = value; }
+            get { return this.lang; }
+            set { this.lang = value; }
         }
         [D2OIgnore]
         public int Type
         {
-            get { return type; }
-            set { type = value; }
+            get { return this.type; }
+            set { this.type = value; }
         }
         [D2OIgnore]
         public int OldValue
         {
-            get { return oldValue; }
-            set { oldValue = value; }
+            get { return this.oldValue; }
+            set { this.oldValue = value; }
         }
         [D2OIgnore]
         public int NewValue
         {
-            get { return newValue; }
-            set { newValue = value; }
+            get { return this.newValue; }
+            set { this.newValue = value; }
         }
     }
 }

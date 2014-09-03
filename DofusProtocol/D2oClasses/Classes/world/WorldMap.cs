@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 09/02/2014 22:34:47
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class WorldMap : IDataObject, IIndexedData
     {
-        private const String MODULE = "WorldMaps";
+        public const String MODULE = "WorldMaps";
         public int id;
         public int origineX;
         public int origineY;
@@ -36,98 +36,98 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public int OrigineX
         {
-            get { return origineX; }
-            set { origineX = value; }
+            get { return this.origineX; }
+            set { this.origineX = value; }
         }
         [D2OIgnore]
         public int OrigineY
         {
-            get { return origineY; }
-            set { origineY = value; }
+            get { return this.origineY; }
+            set { this.origineY = value; }
         }
         [D2OIgnore]
         public double MapWidth
         {
-            get { return mapWidth; }
-            set { mapWidth = value; }
+            get { return this.mapWidth; }
+            set { this.mapWidth = value; }
         }
         [D2OIgnore]
         public double MapHeight
         {
-            get { return mapHeight; }
-            set { mapHeight = value; }
+            get { return this.mapHeight; }
+            set { this.mapHeight = value; }
         }
         [D2OIgnore]
         public uint HorizontalChunck
         {
-            get { return horizontalChunck; }
-            set { horizontalChunck = value; }
+            get { return this.horizontalChunck; }
+            set { this.horizontalChunck = value; }
         }
         [D2OIgnore]
         public uint VerticalChunck
         {
-            get { return verticalChunck; }
-            set { verticalChunck = value; }
+            get { return this.verticalChunck; }
+            set { this.verticalChunck = value; }
         }
         [D2OIgnore]
         public Boolean ViewableEverywhere
         {
-            get { return viewableEverywhere; }
-            set { viewableEverywhere = value; }
+            get { return this.viewableEverywhere; }
+            set { this.viewableEverywhere = value; }
         }
         [D2OIgnore]
         public double MinScale
         {
-            get { return minScale; }
-            set { minScale = value; }
+            get { return this.minScale; }
+            set { this.minScale = value; }
         }
         [D2OIgnore]
         public double MaxScale
         {
-            get { return maxScale; }
-            set { maxScale = value; }
+            get { return this.maxScale; }
+            set { this.maxScale = value; }
         }
         [D2OIgnore]
         public double StartScale
         {
-            get { return startScale; }
-            set { startScale = value; }
+            get { return this.startScale; }
+            set { this.startScale = value; }
         }
         [D2OIgnore]
         public int CenterX
         {
-            get { return centerX; }
-            set { centerX = value; }
+            get { return this.centerX; }
+            set { this.centerX = value; }
         }
         [D2OIgnore]
         public int CenterY
         {
-            get { return centerY; }
-            set { centerY = value; }
+            get { return this.centerY; }
+            set { this.centerY = value; }
         }
         [D2OIgnore]
         public int TotalWidth
         {
-            get { return totalWidth; }
-            set { totalWidth = value; }
+            get { return this.totalWidth; }
+            set { this.totalWidth = value; }
         }
         [D2OIgnore]
         public int TotalHeight
         {
-            get { return totalHeight; }
-            set { totalHeight = value; }
+            get { return this.totalHeight; }
+            set { this.totalHeight = value; }
         }
         [D2OIgnore]
         public List<String> Zoom
         {
-            get { return zoom; }
-            set { zoom = value; }
+            get { return this.zoom; }
+            set { this.zoom = value; }
         }
     }
 }

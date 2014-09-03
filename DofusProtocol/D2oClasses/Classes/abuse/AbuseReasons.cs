@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:16
+// Generated on 09/02/2014 22:34:29
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,10 +12,9 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AbuseReasons : IDataObject, IIndexedData
     {
-        private const String MODULE = "AbuseReasons";
+        public const String MODULE = "AbuseReasons";
         public uint _abuseReasonId;
         public uint _mask;
-        [I18NField]
         public int _reasonTextId;
         int IIndexedData.Id
         {
@@ -24,20 +23,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint AbuseReasonId
         {
-            get { return _abuseReasonId; }
-            set { _abuseReasonId = value; }
+            get { return this._abuseReasonId; }
+            set { this._abuseReasonId = value; }
         }
         [D2OIgnore]
         public uint Mask
         {
-            get { return _mask; }
-            set { _mask = value; }
+            get { return this._mask; }
+            set { this._mask = value; }
         }
         [D2OIgnore]
         public int ReasonTextId
         {
-            get { return _reasonTextId; }
-            set { _reasonTextId = value; }
+            get { return this._reasonTextId; }
+            set { this._reasonTextId = value; }
         }
     }
 }
