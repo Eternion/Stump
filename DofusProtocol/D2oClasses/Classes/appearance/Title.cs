@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 09/02/2014 22:34:30
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,10 +12,10 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Title : IDataObject, IIndexedData
     {
-        private const String MODULE = "Titles";
+        public const String MODULE = "Titles";
         public int id;
-        [I18NField]
-        public uint nameId;
+        public uint nameMaleId;
+        public uint nameFemaleId;
         public Boolean visible;
         public int categoryId;
         int IIndexedData.Id
@@ -25,26 +25,32 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
-        public uint NameId
+        public uint NameMaleId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameMaleId; }
+            set { this.nameMaleId = value; }
+        }
+        [D2OIgnore]
+        public uint NameFemaleId
+        {
+            get { return this.nameFemaleId; }
+            set { this.nameFemaleId = value; }
         }
         [D2OIgnore]
         public Boolean Visible
         {
-            get { return visible; }
-            set { visible = value; }
+            get { return this.visible; }
+            set { this.visible = value; }
         }
         [D2OIgnore]
         public int CategoryId
         {
-            get { return categoryId; }
-            set { categoryId = value; }
+            get { return this.categoryId; }
+            set { this.categoryId = value; }
         }
     }
 }

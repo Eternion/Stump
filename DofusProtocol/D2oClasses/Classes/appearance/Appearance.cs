@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 09/02/2014 22:34:30
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -23,20 +23,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint Type
         {
-            get { return type; }
-            set { type = value; }
+            get { return this.type; }
+            set { this.type = value; }
         }
         [D2OIgnore]
         public String Data
         {
-            get { return data; }
-            set { data = value; }
+            get { return this.data; }
+            set { this.data = value; }
         }
     }
 }

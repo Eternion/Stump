@@ -407,11 +407,9 @@ namespace DofusProtocolBuilder.Parsing
 						Fields.Count(entry => entry.Name == ((InvokeExpression)statement).ReturnVariableAssignation) > 0)
 					{
 						(statement as InvokeExpression).Preffix = "(" +
-																 Fields.Where(
-																	 entry =>
-																	 entry.Name ==
-																	 ((InvokeExpression)statement).
-																		 ReturnVariableAssignation).First().Type + ")"; // cast
+																 Fields.First(entry => entry.Name ==
+																                       ((InvokeExpression)statement).
+																                           ReturnVariableAssignation).Type + ")"; // cast
 					}
 
 					// cast to generic type
@@ -420,8 +418,7 @@ namespace DofusProtocolBuilder.Parsing
 						Fields.Count(entry => entry.Name == ((InvokeExpression)statement).Target.Split('.').Last()) > 0)
 					{
 						string generictype =
-							Fields.Where(entry => entry.Name == ((InvokeExpression)statement).Target.Split('.').Last()).
-								First().Type.Split('<').Last().Split('>').First();
+							Fields.First(entry => entry.Name == ((InvokeExpression)statement).Target.Split('.').Last()).Type.Split('<').Last().Split('>').First();
 
 						(statement as InvokeExpression).Args[0] = "(" + generictype + ")" +
 															  (statement as InvokeExpression).Args[0];
@@ -442,7 +439,7 @@ namespace DofusProtocolBuilder.Parsing
 
 		private string GetMatch(string pattern, int index = 1)
 		{
-            var matchedLine = m_fileLines.Where(entry => Regex.IsMatch(entry, pattern, RegexOptions.Multiline)).FirstOrDefault();
+            var matchedLine = m_fileLines.FirstOrDefault(entry => Regex.IsMatch(entry, pattern, RegexOptions.Multiline));
 
 			if (matchedLine == null)
 				return "";

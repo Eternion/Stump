@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 09/02/2014 22:34:46
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,9 +12,8 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Area : IDataObject, IIndexedData
     {
-        private const String MODULE = "Areas";
+        public const String MODULE = "Areas";
         public int id;
-        [I18NField]
         public uint nameId;
         public int superAreaId;
         public Boolean containHouses;
@@ -27,38 +26,38 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public int SuperAreaId
         {
-            get { return superAreaId; }
-            set { superAreaId = value; }
+            get { return this.superAreaId; }
+            set { this.superAreaId = value; }
         }
         [D2OIgnore]
         public Boolean ContainHouses
         {
-            get { return containHouses; }
-            set { containHouses = value; }
+            get { return this.containHouses; }
+            set { this.containHouses = value; }
         }
         [D2OIgnore]
         public Boolean ContainPaddocks
         {
-            get { return containPaddocks; }
-            set { containPaddocks = value; }
+            get { return this.containPaddocks; }
+            set { this.containPaddocks = value; }
         }
         [D2OIgnore]
         public Rectangle Bounds
         {
-            get { return bounds; }
-            set { bounds = value; }
+            get { return this.bounds; }
+            set { this.bounds = value; }
         }
     }
 }

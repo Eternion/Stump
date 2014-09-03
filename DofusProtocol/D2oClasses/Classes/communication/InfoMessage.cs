@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 09/02/2014 22:34:31
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,28 +12,27 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class InfoMessage : IDataObject
     {
-        private const String MODULE = "InfoMessages";
+        public const String MODULE = "InfoMessages";
         public uint typeId;
         public uint messageId;
-        [I18NField]
         public uint textId;
         [D2OIgnore]
         public uint TypeId
         {
-            get { return typeId; }
-            set { typeId = value; }
+            get { return this.typeId; }
+            set { this.typeId = value; }
         }
         [D2OIgnore]
         public uint MessageId
         {
-            get { return messageId; }
-            set { messageId = value; }
+            get { return this.messageId; }
+            set { this.messageId = value; }
         }
         [D2OIgnore]
         public uint TextId
         {
-            get { return textId; }
-            set { textId = value; }
+            get { return this.textId; }
+            set { this.textId = value; }
         }
     }
 }

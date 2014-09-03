@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 09/02/2014 22:34:39
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,9 +12,8 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class QuestCategory : IDataObject, IIndexedData
     {
-        private const String MODULE = "QuestCategory";
+        public const String MODULE = "QuestCategory";
         public uint id;
-        [I18NField]
         public uint nameId;
         public uint order;
         public List<uint> questIds;
@@ -25,26 +24,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint Order
         {
-            get { return order; }
-            set { order = value; }
+            get { return this.order; }
+            set { this.order = value; }
         }
         [D2OIgnore]
         public List<uint> QuestIds
         {
-            get { return questIds; }
-            set { questIds = value; }
+            get { return this.questIds; }
+            set { this.questIds = value; }
         }
     }
 }

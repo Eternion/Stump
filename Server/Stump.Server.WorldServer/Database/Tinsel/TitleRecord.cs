@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Database.Tinsel
         {
             var title = (Title) d2oObject;
             Id = title.id;
-            NameId = title.nameId;
+            NameId = title.nameMaleId;
             Visible = title.visible;
             CategoryId = title.categoryId;
         }

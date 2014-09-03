@@ -53,24 +53,34 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
                 reader.Seek(indexPos, SeekOrigin.Begin);
                 int indexLen = reader.ReadInt();
 
-                for (int i = 0; i < indexLen; i += 8)
+                for (int i = 0; i < indexLen; i += 9)
                 {
                     int key = reader.ReadInt();
+                    bool state = reader.ReadBoolean();
                     int dataPos = reader.ReadInt();
-                    var pos = (int) reader.Position;
+                    var pos = (int)reader.Position;
                     reader.Seek(dataPos, SeekOrigin.Begin);
                     m_indexes.Add(key, reader.ReadUTF());
                     reader.Seek(pos, SeekOrigin.Begin);
                 }
+                indexLen = reader.ReadInt();
 
-                while (reader.BytesAvailable > 0)
+                while (indexLen > 0)
                 {
+                    var pos = (int)reader.Position;
                     string key = reader.ReadUTF();
                     int dataPos = reader.ReadInt();
-                    var pos = (int) reader.Position;
-                    reader.Seek(dataPos, SeekOrigin.Begin);
+
                     m_textIndexes.Add(key, reader.ReadUTF());
+                    indexLen -= ((int)reader.Position - pos);
                     reader.Seek(pos, SeekOrigin.Begin);
+                }
+                indexLen = reader.ReadInt();
+
+                while (indexLen > 0)
+                {
+                    var pos = (int)reader.Position;
+                    indexLen -= ((int)reader.Position - pos);
                 }
             }
         }

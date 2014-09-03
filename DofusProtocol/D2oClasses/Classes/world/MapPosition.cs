@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 09/02/2014 22:34:46
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,13 +12,12 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class MapPosition : IDataObject, IIndexedData
     {
-        private const String MODULE = "MapPositions";
+        public const String MODULE = "MapPositions";
         public int id;
         public int posX;
         public int posY;
         public Boolean outdoor;
         public int capabilities;
-        [I18NField]
         public int nameId;
         public List<AmbientSound> sounds;
         public int subAreaId;
@@ -31,62 +30,62 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public int PosX
         {
-            get { return posX; }
-            set { posX = value; }
+            get { return this.posX; }
+            set { this.posX = value; }
         }
         [D2OIgnore]
         public int PosY
         {
-            get { return posY; }
-            set { posY = value; }
+            get { return this.posY; }
+            set { this.posY = value; }
         }
         [D2OIgnore]
         public Boolean Outdoor
         {
-            get { return outdoor; }
-            set { outdoor = value; }
+            get { return this.outdoor; }
+            set { this.outdoor = value; }
         }
         [D2OIgnore]
         public int Capabilities
         {
-            get { return capabilities; }
-            set { capabilities = value; }
+            get { return this.capabilities; }
+            set { this.capabilities = value; }
         }
         [D2OIgnore]
         public int NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public List<AmbientSound> Sounds
         {
-            get { return sounds; }
-            set { sounds = value; }
+            get { return this.sounds; }
+            set { this.sounds = value; }
         }
         [D2OIgnore]
         public int SubAreaId
         {
-            get { return subAreaId; }
-            set { subAreaId = value; }
+            get { return this.subAreaId; }
+            set { this.subAreaId = value; }
         }
         [D2OIgnore]
         public int WorldMap
         {
-            get { return worldMap; }
-            set { worldMap = value; }
+            get { return this.worldMap; }
+            set { this.worldMap = value; }
         }
         [D2OIgnore]
         public Boolean HasPriorityOnWorldmap
         {
-            get { return hasPriorityOnWorldmap; }
-            set { hasPriorityOnWorldmap = value; }
+            get { return this.hasPriorityOnWorldmap; }
+            set { this.hasPriorityOnWorldmap = value; }
         }
     }
 }

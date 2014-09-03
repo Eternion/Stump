@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 09/02/2014 22:34:38
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,11 +12,10 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Mount : IDataObject, IIndexedData
     {
+        private String MODULE = "Mounts";
         public uint id;
-        [I18NField]
         public uint nameId;
         public String look;
-        private String MODULE = "Mounts";
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -24,20 +23,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public String Look
         {
-            get { return look; }
-            set { look = value; }
+            get { return this.look; }
+            set { this.look = value; }
         }
     }
 }

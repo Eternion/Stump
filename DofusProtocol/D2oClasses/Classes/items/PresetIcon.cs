@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:18
+// Generated on 09/02/2014 22:34:33
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class PresetIcon : IDataObject, IIndexedData
     {
-        private const String MODULE = "PresetIcons";
+        public const String MODULE = "PresetIcons";
         public int id;
         public int order;
         int IIndexedData.Id
@@ -22,14 +22,14 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public int Order
         {
-            get { return order; }
-            set { order = value; }
+            get { return this.order; }
+            set { this.order = value; }
         }
     }
 }

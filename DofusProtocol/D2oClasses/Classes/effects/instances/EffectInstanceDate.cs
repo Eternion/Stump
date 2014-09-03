@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 09/02/2014 22:34:32
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -20,32 +20,32 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Year
         {
-            get { return year; }
-            set { year = value; }
+            get { return this.year; }
+            set { this.year = value; }
         }
         [D2OIgnore]
         public uint Month
         {
-            get { return month; }
-            set { month = value; }
+            get { return this.month; }
+            set { this.month = value; }
         }
         [D2OIgnore]
         public uint Day
         {
-            get { return day; }
-            set { day = value; }
+            get { return this.day; }
+            set { this.day = value; }
         }
         [D2OIgnore]
         public uint Hour
         {
-            get { return hour; }
-            set { hour = value; }
+            get { return this.hour; }
+            set { this.hour = value; }
         }
         [D2OIgnore]
         public uint Minute
         {
-            get { return minute; }
-            set { minute = value; }
+            get { return this.minute; }
+            set { this.minute = value; }
         }
     }
 }

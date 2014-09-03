@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:19
+// Generated on 09/02/2014 22:34:36
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,11 +12,15 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Recipe : IDataObject, IIndexedData
     {
-        private const String MODULE = "Recipes";
+        public const String MODULE = "Recipes";
         public int resultId;
+        public uint resultNameId;
+        public uint resultTypeId;
         public uint resultLevel;
         public List<int> ingredientIds;
         public List<uint> quantities;
+        public int jobId;
+        public int skillId;
         int IIndexedData.Id
         {
             get { return (int)resultId; }
@@ -24,26 +28,50 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int ResultId
         {
-            get { return resultId; }
-            set { resultId = value; }
+            get { return this.resultId; }
+            set { this.resultId = value; }
+        }
+        [D2OIgnore]
+        public uint ResultNameId
+        {
+            get { return this.resultNameId; }
+            set { this.resultNameId = value; }
+        }
+        [D2OIgnore]
+        public uint ResultTypeId
+        {
+            get { return this.resultTypeId; }
+            set { this.resultTypeId = value; }
         }
         [D2OIgnore]
         public uint ResultLevel
         {
-            get { return resultLevel; }
-            set { resultLevel = value; }
+            get { return this.resultLevel; }
+            set { this.resultLevel = value; }
         }
         [D2OIgnore]
         public List<int> IngredientIds
         {
-            get { return ingredientIds; }
-            set { ingredientIds = value; }
+            get { return this.ingredientIds; }
+            set { this.ingredientIds = value; }
         }
         [D2OIgnore]
         public List<uint> Quantities
         {
-            get { return quantities; }
-            set { quantities = value; }
+            get { return this.quantities; }
+            set { this.quantities = value; }
+        }
+        [D2OIgnore]
+        public int JobId
+        {
+            get { return this.jobId; }
+            set { this.jobId = value; }
+        }
+        [D2OIgnore]
+        public int SkillId
+        {
+            get { return this.skillId; }
+            set { this.skillId = value; }
         }
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:16
+// Generated on 09/02/2014 22:34:29
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,13 +12,11 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AlignmentBalance : IDataObject, IIndexedData
     {
-        private const String MODULE = "AlignmentBalance";
+        public const String MODULE = "AlignmentBalance";
         public int id;
         public int startValue;
         public int endValue;
-        [I18NField]
         public uint nameId;
-        [I18NField]
         public uint descriptionId;
         int IIndexedData.Id
         {
@@ -27,32 +25,32 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public int StartValue
         {
-            get { return startValue; }
-            set { startValue = value; }
+            get { return this.startValue; }
+            set { this.startValue = value; }
         }
         [D2OIgnore]
         public int EndValue
         {
-            get { return endValue; }
-            set { endValue = value; }
+            get { return this.endValue; }
+            set { this.endValue = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
     }
 }

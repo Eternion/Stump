@@ -162,8 +162,11 @@
     <Compile Include="Classes\almanax\AlmanaxCalendar.cs" />
     <Compile Include="Classes\ambientSounds\AmbientSound.cs" />
     <Compile Include="Classes\appearance\Appearance.cs" />
+    <Compile Include="Classes\appearance\CreatureBoneOverride.cs" />
+    <Compile Include="Classes\appearance\CreatureBoneType.cs" />
     <Compile Include="Classes\appearance\Ornament.cs" />
     <Compile Include="Classes\appearance\SkinMapping.cs" />
+    <Compile Include="Classes\appearance\SkinPosition.cs" />
     <Compile Include="Classes\appearance\Title.cs" />
     <Compile Include="Classes\appearance\TitleCategory.cs" />
     <Compile Include="Classes\breeds\Breed.cs" />
@@ -196,10 +199,15 @@
     <Compile Include="Classes\interactives\SkillName.cs" />
     <Compile Include="Classes\interactives\StealthBones.cs" />
     <Compile Include="Classes\items\criterion\AccountRightsItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\AchievementItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\AlignmentItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\AlignmentLevelItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\AllianceAvAItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\AllianceItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\AllianceRightsItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\AreaItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\BonesItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\BonusSetItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\BreedItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\CommunityItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\DayItemCriterion.cs" />
@@ -261,7 +269,11 @@
     <Compile Include="Classes\misc\TypeAction.cs" />
     <Compile Include="Classes\misc\Url.cs" />
     <Compile Include="Classes\monsters\AnimFunMonsterData.cs" />
+    <Compile Include="Classes\monsters\Companion.cs" />
+    <Compile Include="Classes\monsters\CompanionCharacteristic.cs" />
+    <Compile Include="Classes\monsters\CompanionSpell.cs" />
     <Compile Include="Classes\monsters\Monster.cs" />
+    <Compile Include="Classes\monsters\MonsterDrop.cs" />
     <Compile Include="Classes\monsters\MonsterGrade.cs" />
     <Compile Include="Classes\monsters\MonsterMiniBoss.cs" />
     <Compile Include="Classes\monsters\MonsterRace.cs" />
@@ -287,6 +299,7 @@
     <Compile Include="Classes\quest\objectives\QuestObjectiveDiscoverSubArea.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveDuelSpecificPlayer.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveFightMonster.cs" />
+    <Compile Include="Classes\quest\objectives\QuestObjectiveFightMonstersOnMap.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveFreeForm.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveGoToNpc.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveMultiFightMonster.cs" />
@@ -296,6 +309,9 @@
     <Compile Include="Classes\quest\QuestObjectiveType.cs" />
     <Compile Include="Classes\quest\QuestStep.cs" />
     <Compile Include="Classes\quest\QuestStepRewards.cs" />
+    <Compile Include="Classes\quest\treasureHunt\LegendaryTreasureHunt.cs" />
+    <Compile Include="Classes\quest\treasureHunt\PointOfInterest.cs" />
+    <Compile Include="Classes\quest\treasureHunt\PointOfInterestCategory.cs" />
     <Compile Include="Classes\servers\Server.cs" />
     <Compile Include="Classes\servers\ServerCommunity.cs" />
     <Compile Include="Classes\servers\ServerGameType.cs" />
@@ -308,6 +324,7 @@
     <Compile Include="Classes\spells\Spell.cs" />
     <Compile Include="Classes\spells\SpellBomb.cs" />
     <Compile Include="Classes\spells\SpellLevel.cs" />
+    <Compile Include="Classes\spells\SpellPair.cs" />
     <Compile Include="Classes\spells\SpellState.cs" />
     <Compile Include="Classes\spells\SpellType.cs" />
     <Compile Include="Classes\world\Area.cs" />
@@ -317,8 +334,11 @@
     <Compile Include="Classes\world\MapCoordinates.cs" />
     <Compile Include="Classes\world\MapPosition.cs" />
     <Compile Include="Classes\world\MapReference.cs" />
+    <Compile Include="Classes\world\MapScrollAction.cs" />
+    <Compile Include="Classes\world\Phoenix.cs" />
     <Compile Include="Classes\world\SubArea.cs" />
     <Compile Include="Classes\world\SuperArea.cs" />
+    <Compile Include="Classes\world\Waypoint.cs" />
     <Compile Include="Classes\world\WorldMap.cs" />
     <Compile Include="IDataObject.cs" />
     <Compile Include="IIndexedData.cs" />
@@ -363,6 +383,7 @@
     <Compile Include="Tools\Ele\EleReader.cs" />
     <Compile Include="Tools\StringPatternDecoder.cs" />
     <Compile Include="Tools\Swl\SwlFile.cs" />
+    <Compile Include="TransformData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Stump.Core\Stump.Core.csproj">

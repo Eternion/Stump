@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 09/02/2014 22:34:38
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,10 +12,9 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AchievementObjective : IDataObject, IIndexedData
     {
-        private const String MODULE = "AchievementObjectives";
+        public const String MODULE = "AchievementObjectives";
         public uint id;
         public uint achievementId;
-        [I18NField]
         public uint nameId;
         public String criterion;
         int IIndexedData.Id
@@ -25,26 +24,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint AchievementId
         {
-            get { return achievementId; }
-            set { achievementId = value; }
+            get { return this.achievementId; }
+            set { this.achievementId = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public String Criterion
         {
-            get { return criterion; }
-            set { criterion = value; }
+            get { return this.criterion; }
+            set { this.criterion = value; }
         }
     }
 }

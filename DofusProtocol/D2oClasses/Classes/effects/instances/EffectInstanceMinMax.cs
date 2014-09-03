@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 09/02/2014 22:34:32
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Min
         {
-            get { return min; }
-            set { min = value; }
+            get { return this.min; }
+            set { this.min = value; }
         }
         [D2OIgnore]
         public uint Max
         {
-            get { return max; }
-            set { max = value; }
+            get { return this.max; }
+            set { this.max = value; }
         }
     }
 }
