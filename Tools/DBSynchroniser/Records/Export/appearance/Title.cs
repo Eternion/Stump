@@ -65,7 +65,7 @@ namespace DBSynchroniser.Records
             var castedObj = (Title)obj;
             
             Id = castedObj.id;
-            NameId = castedObj.nameId;
+            NameId = castedObj.nameMaleId;
             Visible = castedObj.visible;
             CategoryId = castedObj.categoryId;
         }
@@ -74,7 +74,7 @@ namespace DBSynchroniser.Records
         {
             var obj = parent != null ? (Title)parent : new Title();
             obj.id = Id;
-            obj.nameId = NameId;
+            obj.nameMaleId = NameId;
             obj.visible = Visible;
             obj.categoryId = CategoryId;
             return obj;

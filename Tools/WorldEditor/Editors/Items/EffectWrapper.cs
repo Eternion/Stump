@@ -124,7 +124,7 @@ namespace WorldEditor.Editors.Items
 
         public uint ZoneSize
         {
-            get { return WrappedEffect.zoneSize; }
+            get { return (uint)WrappedEffect.zoneSize; }
             set { WrappedEffect.zoneSize = value; }
         }
 
@@ -136,7 +136,7 @@ namespace WorldEditor.Editors.Items
 
         public uint ZoneMinSize
         {
-            get { return WrappedEffect.zoneMinSize; }
+            get { return (uint)WrappedEffect.zoneMinSize; }
             set { WrappedEffect.zoneMinSize = value; }
         }
 
