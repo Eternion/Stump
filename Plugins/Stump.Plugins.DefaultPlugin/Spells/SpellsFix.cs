@@ -3,7 +3,6 @@ using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
@@ -165,27 +164,33 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2830, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
 
             // botte (2795)
-            // all effects are in triple, wtf !!
-            RemoveEffectOnAllLevels(2795, 0);
-            RemoveEffectOnAllLevels(2795, 2);
-            RemoveEffectOnAllLevels(2795, 2);
-            RemoveEffectOnAllLevels(2795, 4);
-            RemoveEffectOnAllLevels(2795, 4);
-            // first effect => all buts bombs
-            // others => bombs only
-            FixEffectOnAllLevels(2795, EffectsEnum.Effect_PushBack_1103, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
-            FixEffectOnAllLevels(2795, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.SELF);
+            // 1 effect per shape size
+            // 1 effect per ally or enemy
+            FixEffectOnAllLevels(2795, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2795, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2795, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2795, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2795, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2795, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2795, 6, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2795, 7, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2795, 8, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            
             // all allies but self
-            FixEffectOnAllLevels(2795, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(2795, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
 
             // Aimantation (2801)
-            RemoveEffectOnAllLevels(2801, 1, false);            
+            //RemoveEffectOnAllLevels(2801, 1, false);            
             // first effect for bombs only, second for all but self and bombs
             FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS, false);
-            FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(2801, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+            FixEffectOnAllLevels(2801, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
 
             // Entourloupe (2803)
             FixEffectOnAllLevels(2803, EffectsEnum.Effect_SwitchPosition, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS, false);
+
+            // Roublardise (2763)
+            FixEffectOnAllLevels(2763, EffectsEnum.Effect_SkipTurn_1031, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
 
             #endregion
         }
@@ -226,6 +231,33 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                     continue;
 
                 foreach (var spellEffect in level.CriticalEffects.Where(entry => entry.EffectId == effect))
+                {
+                    fixer(level, spellEffect, true);
+                }
+            }
+        }
+
+        public static void FixEffectOnAllLevels(int spellId, Predicate<EffectDice> predicate, Action<SpellLevelTemplate, EffectDice, bool> fixer, bool critical = true)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+            {
+                logger.Error("Cannot apply fix on spell {0} : spell do not exists", spellId);
+                return;
+            }
+
+            foreach (var level in spellLevels)
+            {
+                foreach (var spellEffect in level.Effects.Where(entry => predicate(entry)))
+                {
+                    fixer(level, spellEffect, false);
+                }
+
+                if (!critical)
+                    continue;
+
+                foreach (var spellEffect in level.CriticalEffects.Where(entry => predicate(entry)))
                 {
                     fixer(level, spellEffect, true);
                 }

@@ -14,7 +14,6 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
@@ -1523,6 +1522,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
                    spell.Template.Id == (int)SpellIdEnum.DOUBLE || // double
                    spell.Template.Id == (int)SpellIdEnum.PULSION_DE_CHAKRA || // chakra pulsion
+                   spell.Template.Id == (int)SpellIdEnum.CONCENTRATION_DE_CHAKRA || // chakra concentration
                    spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX || // insidious poison
                    spell.Template.Id == (int)SpellIdEnum.PEUR;
         }

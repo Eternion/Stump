@@ -1,9 +1,9 @@
+using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -30,9 +30,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (integerEffect == null)
                 return false;
 
-            foreach (var actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors().OrderByDescending(entry => entry.Position.Point.DistanceToCell(TargetedPoint)))
             {
-                var referenceCell = TargetedCell.Id == actor.Cell.Id ? new MapPoint(CastCell) : TargetedPoint;
+                if (actor.HasState((int)SpellStatesEnum.Unmovable))
+                    continue;
+
+                var referenceCell = TargetedCell.Id == actor.Cell.Id ? CastPoint : TargetedPoint;
 
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
@@ -44,31 +47,42 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 for (var i = 0; i < integerEffect.Value; i++)
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
-                    
 
-                    if (!DamagesDisabled && (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId])))
+                    if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]))
                     {
                         var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (integerEffect.Value - i) + 
                             Caster.Stats[PlayerFields.PushDamageBonus] - actor.Stats[PlayerFields.PushDamageReduction];
 
-                        actor.InflictDirectDamage(pushbackDamages, Caster);
+                        if (!DamagesDisabled)
+                        {
+                            var damage = new Fights.Damage(pushbackDamages)
+                            {
+                                Source = Caster,
+                                School = EffectSchoolEnum.Unknown,
+                                IgnoreDamageBoost = true,
+                                IgnoreDamageReduction = false
+                            };
+
+                            actor.InflictDamage(damage);
+                        }
+
                         break;
                     }
 
-                    if (nextCell == null)
-                        break;
-
-                    if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId]))
+                    if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                     {
                         lastCell = nextCell;
                         break;
                     }
+
                     lastCell = nextCell;
                 }
 
                 var endCell = lastCell;
                 var actorCopy = actor;
-                ActionsHandler.SendGameActionFightSlideMessage(Fight.Clients, Caster, actorCopy, startCell.CellId, endCell.CellId);
+
+                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actorCopy.IsVisibleFor))
+                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
             }

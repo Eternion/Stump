@@ -1,10 +1,12 @@
 
 using System;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.WorldServer.Commands.Matching.Characters;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Monsters;
@@ -15,6 +17,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Spells;
@@ -290,6 +293,34 @@ namespace Stump.Server.WorldServer.Commands
                 throw new ConverterException(string.Format("Cell {0} out of range", outvalue));
 
             return outvalue;
+        };
+
+        public static ConverterHandler<InteractiveTemplate> InteractiveTemplateConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (!int.TryParse(entry, out outvalue))
+                throw new ConverterException(string.Format("'{0}' is not of format 'interactiveId'", entry));
+
+            var interactiveById = InteractiveManager.Instance.GetTemplate(outvalue);
+
+            if (interactiveById == null)
+                throw new ConverterException(string.Format("'{0}' is not a valid interactiveId", entry));
+
+            return interactiveById;
+        };
+
+        public static ConverterHandler<InteractiveSkillTemplate> InteractiveSkillTemplateConverter = (entry, trigger) =>
+        {
+            int outvalue;
+            if (!int.TryParse(entry, out outvalue))
+                throw new ConverterException(string.Format("'{0}' is not of format 'interactiveSkillId'", entry));
+
+            var interactiveSkillById = InteractiveManager.Instance.GetSkillTemplate(outvalue);
+
+            if (interactiveSkillById == null)
+                throw new ConverterException(string.Format("'{0}' is not a valid interactiveSkillId", entry));
+
+            return interactiveSkillById;
         };
     }
 }

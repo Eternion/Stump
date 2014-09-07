@@ -87,5 +87,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         {
             return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
         }
+
+        public override bool IsAffected(FightActor actor)
+        {
+            return true;
+        }
     }
 }
