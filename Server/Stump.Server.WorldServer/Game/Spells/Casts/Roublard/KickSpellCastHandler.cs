@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -20,6 +21,17 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             foreach (var handler in Handlers.OfType<Push>())
             {
                 handler.DamagesDisabled = true;
+            }
+        }
+
+        public override void Execute()
+        {
+            if (!m_initialized)
+                Initialize();
+
+            foreach (var handler in Handlers.OrderByDescending(entry => entry.Dice.DiceNum))
+            {
+                handler.Apply();
             }
         }
     }

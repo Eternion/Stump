@@ -5,7 +5,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -13,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Wall : MarkTrigger
     {
-        private List<SummonedBomb> m_bombs = new List<SummonedBomb>();
+        private readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
         public Wall(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, params MarkShape[] shapes)
             : base(id, caster, castedSpell, originEffect, centerCell, shapes)
@@ -42,6 +41,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
+            if (!IsAffected(trigger))
+                return;
+
             NotifyTriggered(trigger, CastedSpell);
 
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, CastedSpell, trigger.Cell, false);
@@ -73,6 +75,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public override bool DecrementDuration()
         {
             return false;
+        }
+
+        public override bool IsAffected(FightActor actor)
+        {
+            if (!(actor is SummonedBomb))
+                return true;
+
+            var bomb = Bombs.FirstOrDefault();
+            var triggerBomb = (actor as SummonedBomb);
+
+            return bomb == null || bomb.MonsterBombTemplate != triggerBomb.MonsterBombTemplate || !bomb.IsFriendlyWith(triggerBomb);
         }
     }
 }

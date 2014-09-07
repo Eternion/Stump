@@ -141,7 +141,7 @@ namespace ArkalysPlugin.Commands
         {
             Aliases = new[] { "talk" };
             RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à l'espace de discution";
+            Description = "Téléporte à l'espace de discussion";
             ParentCommandType = typeof(TPCommands);
         }
 
@@ -158,7 +158,7 @@ namespace ArkalysPlugin.Commands
             var cell = map.Cells[TalkCell];
 
             trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)TalkDirection));
-            trigger.Reply("Téléporté à l'espace de discution");
+            trigger.Reply("Téléporté à l'espace de discussion");
         }
     }
 

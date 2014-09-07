@@ -12,16 +12,12 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
-using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 
@@ -33,24 +29,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         [Variable] public static int BonusDamageIncreaseLimit = 3;
         [Variable] public static int BombLimit = 3;
 
-        private static Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>()
+        private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>()
         {
             {2, SpellIdEnum.MUR_DE_FEU},
             {3, SpellIdEnum.MUR_D_AIR},
             {4, SpellIdEnum.MUR_D_EAU}
         };        
         
-        private static Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
+        private static readonly Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
         {
             {2, Color.Red},
             {3, Color.Green},
             {4, Color.Blue}
         };
 
-        private List<Wall> m_walls = new List<Wall>(); 
+        private readonly List<Wall> m_walls = new List<Wall>(); 
 
-        private StatsFields m_stats;
-        private bool m_initialized;
+        private readonly StatsFields m_stats;
+        private readonly bool m_initialized;
 
         public SummonedBomb(int id, FightTeam team, SpellBombTemplate spellBombTemplate, MonsterGrade monsterBombTemplate, FightActor summoner, Cell cell)
             : base(team)
@@ -76,16 +72,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void OnTurnStarted(IFight fight, FightActor player)
         {
-            if (player == this)
-            {
-                IncreaseDamageBonus();
-                PassTurn();
-            }
+            if (player != this)
+                return;
+
+            IncreaseDamageBonus();
+            PassTurn();
         }
 
         private void AdjustStats()
         {
-            m_stats.Health.Base = (short)( 10 + ( Summoner.Stats.Vitality / 5d ) );
+            m_stats.Health.Base = (short) (10 + (Summoner.Stats.Health.TotalMax / 3.9d));
         }
         
         public override sealed int Id
@@ -156,7 +152,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override Spell GetSpell(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override bool HasSpell(int id)
@@ -214,23 +210,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void Explode()
         {
             // check reaction
-            var bombs = new List<SummonedBomb>() {this};
-            foreach (var bomb in Summoner.Bombs)
+            var bombs = new List<SummonedBomb> {this};
+            foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(bomb => IsBoundWith(this, bomb)))
             {
-                if (bombs.Contains(bomb))
-                    continue;
-
-                if (!IsBoundWith(this, bomb))
-                    continue;
-
                 bombs.Add(bomb);
-                foreach (var bomb2 in Summoner.Bombs)
+                foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(bomb2 => IsBoundWith(bomb, bomb2)))
                 {
-                    if (bombs.Contains(bomb2))
-                        continue;
-
-                    if (IsBoundWith(bomb, bomb2))
-                        bombs.Add(bomb2);
+                    bombs.Add(bomb2);
                 }
             }
 
@@ -293,6 +279,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool CheckAndBuildWalls()
         {
+            if (Fight.State == FightState.Ended)
+                return false;
+
             var existantWall = Fight.GetTriggers(Cell).OfType<Wall>().Where(x => x.Caster == Summoner);
 
             foreach (var wall in existantWall)
@@ -308,31 +297,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 where x.MonsterBombTemplate == MonsterBombTemplate &&
                       x.Position.Point.IsOnSameLine(Position.Point) && dist >= 2 && dist <= 7
                 select x;
+
             var walls = bombs.Select(x => Tuple.Create(x, x.Position.Point.GetCellsOnLineBetween(Position.Point).Select(y => y.CellId).ToArray())).ToArray();
 
-            foreach (var wall in Walls.ToArray())
+            foreach (var wall in Walls.ToArray().Where(wall => !walls.Any(x => x.Item2.Contains(wall.CenterCell.Id))))
             {
-                if (!walls.Any(x => x.Item2.Contains(wall.CenterCell.Id)))
-                {
-                    Fight.RemoveTrigger(wall);
-                }
+                Fight.RemoveTrigger(wall);
             }
             
             var wallSpell = new Spell((int)wallsSpells[SpellBombTemplate.WallId], (byte) MonsterBombTemplate.GradeId);
             var color = wallsColors[SpellBombTemplate.WallId];
             foreach (var tuple in walls)
             {
-                foreach (var cellId in tuple.Item2)
+                foreach (var wall in from cellId in tuple.Item2 where m_walls.All(x => x.CenterCell.Id != cellId) select Fight.Map.Cells[cellId] into cell select new Wall((short) Fight.PopNextTriggerId(), Summoner, wallSpell, null, cell,
+                    new MarkShape(Fight, cell,
+                        GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, color)))
                 {
-                    if (m_walls.Any(x => x.CenterCell.Id == cellId))
-                        continue;
-
-                    var cell = Fight.Map.Cells[cellId];
-                    var wall = new Wall((short) Fight.PopNextTriggerId(), Summoner, wallSpell, null, cell,
-                        new MarkShape(Fight, cell,
-                            GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, color));
-
-                    Fight.AddTriger(wall);
+                    if (Fight.GetTriggers(wall.CenterCell).OfType<Wall>().All(x => x.Caster != Summoner))
+                        Fight.AddTriger(wall);
 
                     BindWall(wall);
                     tuple.Item1.BindWall(wall);

@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
-using Stump.Server.WorldServer.Game.Fights;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
@@ -36,10 +34,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                             .Select(x => EffectManager.Instance.GetSpellEffectHandler(x, Caster, Spell, TargetedCell,Critical))
                             .ToArray();
 
-            foreach (var handler in Handlers)
+            foreach (var handler in Handlers.OfType<DirectDamage>())
             {
-                if (handler is DirectDamage)
-                    handler.Efficiency = 1 + DamageBonus/100d;
+                handler.Efficiency = 1 + DamageBonus/100d;
             }
         }
     }

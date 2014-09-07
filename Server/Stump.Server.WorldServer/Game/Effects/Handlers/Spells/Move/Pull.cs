@@ -1,6 +1,5 @@
-using Stump.Core.Threading;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -25,13 +24,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (integerEffect == null)
                 return false;
 
-            foreach (FightActor actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors().OrderBy(entry => entry.Position.Point.DistanceToCell(TargetedPoint)))
             {
-                MapPoint referenceCell;
-                if (TargetedCell.Id == actor.Cell.Id)
-                    referenceCell = new MapPoint(CastCell);
-                else
-                    referenceCell = TargetedPoint;
+                if (actor.HasState((int)SpellStatesEnum.Unmovable))
+                    continue;
+
+                var referenceCell = TargetedCell.Id == actor.Cell.Id ? CastPoint : TargetedPoint;
 
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
@@ -40,14 +38,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
-                for (int i = 0; i < integerEffect.Value; i++)
+                for (var i = 0; i < integerEffect.Value; i++)
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
                     if (nextCell == null)
                         break;
 
-                    if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId]))
+                    if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                     {
                         lastCell = nextCell;
                         break;
@@ -62,11 +60,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 }
 
                 var endCell = lastCell;
+                var actorCopy = actor;
+
+                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actorCopy.IsVisibleFor))
+                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
-
-                var actorCopy = actor;
-                ActionsHandler.SendGameActionFightSlideMessage(Fight.Clients, Caster, actorCopy, startCell.CellId, endCell.CellId);
             }
 
             return true;

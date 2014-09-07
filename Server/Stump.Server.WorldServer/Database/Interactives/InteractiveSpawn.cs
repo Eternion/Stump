@@ -1,12 +1,7 @@
 using System.Collections.Generic;
-using System.Data;
 using NLog;
 using Stump.ORM;
-using Stump.ORM.SubSonic.DataProviders;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.ORM.SubSonic.Schema;
-using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -83,7 +78,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
         }
 
         // Primitive properties
-
+        [PrimaryKey("Id")]
         public int Id
         {
             get;
@@ -131,9 +126,9 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         public ObjectPosition GetPosition()
         {
-            Map map = GetMap();
+            var map = GetMap();
 
-            MapElement[] elements = map.Record.FindMapElement(ElementId);
+            var elements = map.Record.FindMapElement(ElementId);
 
             if (elements.Length <= 0)
                 return new ObjectPosition(map, null);
@@ -141,7 +136,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             if (elements.Length > 1)
                 logger.Debug("More than 1 elements found in interactive id = {0}", Id);
 
-            short cell = elements[0].CellId;
+            var cell = elements[0].CellId;
 
             return new ObjectPosition(map, cell);
         }

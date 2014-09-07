@@ -1486,23 +1486,23 @@
         /// <summary>
         /// #1{~1~2 to }#2 (Neutral damage)
         /// </summary>
-        Effect_1012 = 1012,
+        Effect_DamageNeutralRemainingMP = 1012,
         /// <summary>
         /// #1{~1~2 to }#2 (Air damage)
         /// </summary>
-        Effect_1013 = 1013,
+        Effect_DamageAirRemainingMP = 1013,
         /// <summary>
         /// #1{~1~2 to }#2 (Water damage)
         /// </summary>
-        Effect_1014 = 1014,
+        Effect_DamageWaterRemainingMP = 1014,
         /// <summary>
         /// #1{~1~2 to }#2 (Fire damage)
         /// </summary>
-        Effect_1015 = 1015,
+        Effect_DamageFireRemainingMP = 1015,
         /// <summary>
         /// #1{~1~2 to }#2 (Earth damage)
         /// </summary>
-        Effect_1016 = 1016,
+        Effect_DamageEarthRemainingMP = 1016,
         /// <summary>
         /// #1
         /// </summary>
@@ -1558,7 +1558,7 @@
         /// <summary>
         /// Ends turn
         /// </summary>
-        Effect_1031 = 1031,
+        Effect_SkipTurn_1031 = 1031,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1807,7 +1807,7 @@
         /// <summary>
         /// Creates illusions
         /// </summary>
-        Effect_1097 = 1097,
+        Effect_Illusions = 1097,
         /// <summary>
         /// (not found)
         /// </summary>
