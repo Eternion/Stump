@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -17,7 +18,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
+
         public bool DamagesDisabled
+        {
+            get;
+            set;
+        }
+
+        public FightActor SubRangeForActor
         {
             get;
             set;
@@ -43,14 +51,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var pushDirection = referenceCell.OrientationTo(actor.Position.Point, false);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
+                var range = SubRangeForActor == actor ? (integerEffect.Value - 1) : integerEffect.Value;
 
-                for (var i = 0; i < integerEffect.Value; i++)
+                for (var i = 0; i < range; i++)
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
                     if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]))
                     {
-                        var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (integerEffect.Value - i) + 
+                        var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (range - i) + 
                             Caster.Stats[PlayerFields.PushDamageBonus] - actor.Stats[PlayerFields.PushDamageReduction];
 
                         if (!DamagesDisabled)

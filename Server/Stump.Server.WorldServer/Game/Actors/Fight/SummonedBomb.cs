@@ -314,7 +314,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, color)))
                 {
                     if (Fight.GetTriggers(wall.CenterCell).OfType<Wall>().All(x => x.Caster != Summoner))
+                    {
+                        Fight.RemoveTrigger(wall);
                         Fight.AddTriger(wall);
+
+                        var fighter = Fight.GetOneFighter(wall.CenterCell);
+                        if (fighter != null)
+                            Fight.TriggerMarks(wall.CenterCell, fighter, TriggerType.MOVE);
+                    }
 
                     BindWall(wall);
                     tuple.Item1.BindWall(wall);

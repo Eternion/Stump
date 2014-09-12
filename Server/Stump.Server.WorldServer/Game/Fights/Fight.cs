@@ -1674,7 +1674,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var fighter = actor as FightActor;
 
-            if (fighter != null) TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
+            if (fighter != null)
+                TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
         }
 
         public void SwitchFighters(FightActor fighter1, FightActor fighter2)
@@ -1994,12 +1995,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameActionFightMarkCellsMessage(fighter.Character.Client, trigger, trigger.DoesSeeTrigger(fighter));
             }
 
-            if (trigger.TriggerType.HasFlag(TriggerType.CREATION))
-            {
-                var fighters = GetAllFighters(trigger.GetCells());
-                foreach (var fighter in fighters)
-                    trigger.Trigger(fighter);
-            }
+            if (!trigger.TriggerType.HasFlag(TriggerType.CREATION))
+                return;
+
+            var fighters = GetAllFighters(trigger.GetCells());
+            foreach (var fighter in fighters)
+                trigger.Trigger(fighter);
         }
 
         public void RemoveTrigger(MarkTrigger trigger)

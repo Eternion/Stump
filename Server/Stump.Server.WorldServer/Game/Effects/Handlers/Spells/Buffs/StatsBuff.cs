@@ -18,6 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddSummonLimit)]
     [EffectHandler(EffectsEnum.Effect_AddDamageBonus)]
     [EffectHandler(EffectsEnum.Effect_AddDamageBonus_121)]
+    [EffectHandler(EffectsEnum.Effect_AddHealBonus)]
     [EffectHandler(EffectsEnum.Effect_IncreaseDamage_138)]
     [EffectHandler(EffectsEnum.Effect_IncreaseDamage_1054)]
     [EffectHandler(EffectsEnum.Effect_AddDamageBonusPercent)]
@@ -30,6 +31,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddDodge)]
     [EffectHandler(EffectsEnum.Effect_AddCriticalHit)]
     [EffectHandler(EffectsEnum.Effect_AddCriticalMiss)]
+    [EffectHandler(EffectsEnum.Effect_AddMPAttack)]
+    [EffectHandler(EffectsEnum.Effect_AddAPAttack)]
+    [EffectHandler(EffectsEnum.Effect_AddPushDamageBonus)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -83,6 +87,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 case EffectsEnum.Effect_IncreaseDamage_1054:
                 case EffectsEnum.Effect_AddDamageBonusPercent:
                     return PlayerFields.DamageBonusPercent;
+                case EffectsEnum.Effect_AddHealBonus:
+                    return PlayerFields.HealBonus;
                 case EffectsEnum.Effect_AddDamageReflection:
                     return PlayerFields.DamageReflection;
                 case EffectsEnum.Effect_AddPhysicalDamage_137:
@@ -100,6 +106,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.CriticalHit;
                 case EffectsEnum.Effect_AddCriticalMiss:
                     return PlayerFields.CriticalMiss;
+                case EffectsEnum.Effect_AddMPAttack:
+                    return PlayerFields.MPAttack;
+                case EffectsEnum.Effect_AddAPAttack:
+                    return PlayerFields.APAttack;
+                case EffectsEnum.Effect_AddPushDamageBonus:
+                    return PlayerFields.PushDamageBonus;
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }

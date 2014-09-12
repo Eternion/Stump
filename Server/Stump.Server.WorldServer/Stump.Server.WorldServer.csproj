@@ -314,9 +314,11 @@
     <Compile Include="Game\Conditions\ComparaisonOperatorEnum.cs" />
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerRemainingMP.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\ReviveActor.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerBomb.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Bomb.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Illusions.cs" />
@@ -389,6 +391,7 @@
     <Compile Include="Game\Exchanges\Trades\Trader.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\DodgeBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\FractionBuff.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\HealOrMultiplyBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
@@ -453,6 +456,7 @@
     <Compile Include="Game\Social\Friend.cs" />
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
+    <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\BombExplodSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\MagnetSpellCastHandler.cs" />
@@ -460,7 +464,6 @@
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FelineSpiritCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\FortuneSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingChestCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />

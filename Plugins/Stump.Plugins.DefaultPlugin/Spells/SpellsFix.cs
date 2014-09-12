@@ -20,6 +20,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region FECA
 
+            // Reinforced Protection (422)
+            RemoveEffectOnAllLevels(422, 2);
+
             #endregion
 
             #region IOP
@@ -96,6 +99,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region OSAMODAS
+
             // whip (30)
             // kill effect target -> summons
             FixEffectOnAllLevels(30, EffectsEnum.Effect_Kill, (level, effect, critical) =>
@@ -106,6 +110,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                         SpellTargetType.ENEMY_STATIC_SUMMONS |
                         SpellTargetType.ENEMY_SUMMONS : 0);
                 });
+
             #endregion
 
             #region ECAFLIP
@@ -118,9 +123,19 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(102, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
             FixEffectOnAllLevels(102, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
 
-            // Smell (115)
-            // Add MP and Sub AP round 1
-            // Add AP and Sub MP round 2
+            // Fortune (106)
+            FixEffectOnAllLevels(106, 0, (level, effect, critical) => effect.Delay = 3);
+
+            // Odorat (115)
+            FixEffectOnAllLevels(115, 2, (level, effect, critical) => effect.Delay = 1, false);
+            FixEffectOnAllLevels(115, 3, (level, effect, critical) => effect.Delay = 1, false);
+            FixEffectOnAllLevels(115, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            // Tout ou rien (119)
+            FixEffectOnAllLevels(119, 1, (level, effect, critical) => effect.Delay = 1);
+
+            // Roulette (101)
+            FixEffectOnAllLevels(101, 15, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
             #endregion
 
@@ -143,6 +158,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region ROUBLARD
+
             // bombs are shit :)
             // 2822,2845,2830 bomb explosion spell
             // remove all Effect_ReduceEffectsDuration effects and the second damage effect
@@ -166,15 +182,17 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // botte (2795)
             // 1 effect per shape size
             // 1 effect per ally or enemy
+            //Remove Useless effects
+            RemoveEffectOnAllLevels(2795, 4);
+            RemoveEffectOnAllLevels(2795, 4);
+            RemoveEffectOnAllLevels(2795, 5);
+            RemoveEffectOnAllLevels(2795, 5);
+
             FixEffectOnAllLevels(2795, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2795, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2795, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(2795, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
-            FixEffectOnAllLevels(2795, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
-            FixEffectOnAllLevels(2795, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(2795, 6, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
-            FixEffectOnAllLevels(2795, 7, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
-            FixEffectOnAllLevels(2795, 8, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2795, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             
             // all allies but self
             FixEffectOnAllLevels(2795, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
@@ -187,10 +205,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2801, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
 
             // Entourloupe (2803)
-            FixEffectOnAllLevels(2803, EffectsEnum.Effect_SwitchPosition, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS, false);
+            FixEffectOnAllLevels(2803, EffectsEnum.Effect_SwitchPosition, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
 
             // Roublardise (2763)
-            FixEffectOnAllLevels(2763, EffectsEnum.Effect_SkipTurn_1031, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+            FixEffectOnAllLevels(2763, EffectsEnum.Effect_SkipTurn_1031, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
             #endregion
         }
@@ -276,9 +294,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             foreach (var level in spellLevels)
             {
-                level.Effects.Remove(level.Effects[effectIndex]);
+                level.Effects.RemoveAt(effectIndex);
                 if (critical)
-                    level.CriticalEffects.Remove(level.CriticalEffects[effectIndex]);
+                    level.CriticalEffects.RemoveAt(effectIndex);
                 
             }
         }

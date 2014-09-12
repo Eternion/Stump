@@ -57,7 +57,7 @@
         /// <summary>
         /// #3% damage received x#1, or else healed by x#2
         /// </summary>
-        Effect_79 = 79,
+        Effect_HealOrMultiply = 79,
         /// <summary>
         /// HP restored #1{~1~2 to }#2
         /// </summary>
@@ -1185,7 +1185,7 @@
         /// <summary>
         /// Summons the last ally who died with #1{~1~2 to }#2 % of their HP
         /// </summary>
-        Effect_780 = 780,
+        Effect_ReviveAndGiveHPToLastDiedAlly = 780,
         /// <summary>
         /// Minimizes random effects
         /// </summary>
