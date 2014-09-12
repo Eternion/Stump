@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override GameFightFighterInformations GetGameFightFighterInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, casterInfos.alive, casterInfos.stats);
+            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, casterInfos.alive, casterInfos.stats, Name);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

@@ -255,6 +255,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!IsFighterTurn())
                 return false;
 
+            if (HasState((int)SpellStatesEnum.Weakened))
+                return false;
+
             var point = new MapPoint(cell);
 
             if (point.DistanceToCell(Position.Point) > weapon.WeaponRange ||

@@ -144,10 +144,7 @@ namespace Stump.Server.WorldServer.Game.Actors
 
         public ObjectPosition GetPositionBeforeMove()
         {
-            if (m_lastPosition != null)
-                return m_lastPosition;
-
-            return Position;
+            return m_lastPosition ?? Position;
         }
 
         public virtual bool StartMove(Path movementPath)

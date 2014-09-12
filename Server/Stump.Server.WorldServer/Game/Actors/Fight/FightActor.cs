@@ -785,6 +785,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 damage.Amount -= permanentDamages;
             }
 
+            //Heal Or Multiply
+            var healOrMultiplyBuff = GetBuffs(x => x is HealOrMultiplyBuff).FirstOrDefault() as HealOrMultiplyBuff;
+            if (healOrMultiplyBuff != null)
+            {
+                var newDamage = healOrMultiplyBuff.GetDamages(damage.Amount);
+
+                if (newDamage > 0)
+                    damage.Amount = newDamage;
+                else
+                {
+                    Heal(-newDamage, damage.Source);
+                    return 0;
+                }
+
+                permanentDamages = 0;
+            }
+
             if (damage.Amount <= 0)
                 damage.Amount = 0;
 
