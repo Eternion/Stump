@@ -1,16 +1,15 @@
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
-    [EffectHandler(EffectsEnum.Effect_RegainAP)]
-    [EffectHandler(EffectsEnum.Effect_AddAP_111)]
-    public class APBuff : SpellEffectHandler
+    [EffectHandler(EffectsEnum.Effect_AddComboBonus)]
+    public class ComboBonusBuff : SpellEffectHandler
     {
-        public APBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public ComboBonusBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
@@ -19,6 +18,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
+                var bomb = actor as SummonedBomb;
+                if (bomb == null)
+                    continue;
+
                 var integerEffect = GenerateEffect();
 
                 if (integerEffect == null)
@@ -26,11 +29,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 if (Effect.Duration > 1)
                 {
-                    AddStatBuff(actor, integerEffect.Value, PlayerFields.AP, true);
+                    AddStatBuff(actor, integerEffect.Value, PlayerFields.ComboBonus, false);
                 }
                 else
                 {
-                    actor.RegainAP(integerEffect.Value);
+                    bomb.IncreaseDamageBonus(integerEffect.Value);
                 }
             }
 

@@ -171,7 +171,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                         template.Actions.Add(shop);
                     }
 
-                    var item = new NpcItem()
+                    var item = new NpcItem
                     {
                         Item = itemTemplate,
                         CustomPrice = trigger.IsArgumentDefined("customprice") ? (float?)trigger.Get<float>("customprice") : null,

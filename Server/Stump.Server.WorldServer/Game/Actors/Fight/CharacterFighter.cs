@@ -385,6 +385,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return 0;
         }
+
         #endregion
     }
 }

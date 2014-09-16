@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -99,5 +100,9 @@ namespace Stump.Server.WorldServer.Game.Formulas
             return InvokeDropRateModifier(looter, item, rate);
         }
 
+        public static int CalculatePushBackDamages(FightActor source, FightActor target, int range)
+        {
+            return (8 + new AsyncRandom().Next(1, 8) * (source.Level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
+        }
     }
 }

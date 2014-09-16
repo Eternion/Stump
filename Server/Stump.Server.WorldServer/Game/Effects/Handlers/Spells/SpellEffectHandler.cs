@@ -230,7 +230,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
                                     short customActionId)
         {
-            int id = target.PopNextBuffId();
+            var id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable,
                                     customActionId);
 
@@ -244,6 +244,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         {
             var id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger);
+
+            target.AddAndApplyBuff(buff);
+
+            return buff;
+        }
+
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger,
+                                          object token, TriggerBuffApplyHandler applyTrigger)
+        {
+            var id = target.PopNextBuffId();
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger)
+            {
+                Token = token
+            };
 
             target.AddAndApplyBuff(buff);
 

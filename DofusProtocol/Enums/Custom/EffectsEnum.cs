@@ -1231,7 +1231,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_Rewind = 793,
+        Effect_Putsch = 793,
         /// <summary>
         /// Hunting Weapon
         /// </summary>
@@ -1542,7 +1542,7 @@
         /// <summary>
         /// #1{~1~2 to }#2% Combo Damage
         /// </summary>
-        Effect_1027 = 1027,
+        Effect_AddComboBonus = 1027,
         /// <summary>
         /// Trigger powders
         /// </summary>
@@ -1566,7 +1566,7 @@
         /// <summary>
         /// -#1{~1~2 to -}#2% Vitality
         /// </summary>
-        Effect_1033 = 1033,
+        Effect_SubVitalityPercent = 1033,
         /// <summary>
         /// Summons the last ally killed with #1{~1~2 to }#2% of their HP
         /// </summary>
@@ -1815,7 +1815,7 @@
         /// <summary>
         /// Teleports the target to the cell where they started their turn
         /// </summary>
-        Effect_1099 = 1099,
+        Effect_Rewind = 1099,
         /// <summary>
         /// 
         /// </summary>

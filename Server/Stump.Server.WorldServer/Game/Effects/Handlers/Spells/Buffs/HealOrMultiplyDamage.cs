@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         public override bool Apply()
         {
-            foreach (var actor in GetAffectedActors().ToArray())
+            foreach (var actor in GetAffectedActors())
             {
                 var buffId = actor.PopNextBuffId();
                 var buff = new HealOrMultiplyBuff(buffId, actor, Caster, Dice, Spell, Critical, true);

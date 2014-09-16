@@ -52,6 +52,16 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(144, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(144, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
+            // Sword of Fate (146)
+            FixEffectOnAllLevels(146, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(146, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 3);
+
+            // Putsch (147)
+            FixEffectOnAllLevels(147, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
+
+            // Precipitation (149)
+            FixEffectOnAllLevels(149, 2, (level, effect, critical) => effect.Delay = 1, false);
+
             #endregion
 
             #region SADIDA
@@ -90,12 +100,22 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             //Nerf duration => -1
             FixEffectOnAllLevels(131, EffectsEnum.Effect_RestoreHPPercent, (level, effect, critical) => effect.Duration--);
 
+            // Draining Word (123)
+            // target CC => ONLY_SELF
+            FixEffectOnAllLevels(123, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
             #endregion
 
             #region ENUTROF
+
             // corruption (59)
             // effect #4 = only self (state exhausted)
             FixEffectOnAllLevels(59, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            // Chance (42)
+            FixEffectOnAllLevels(42, 1, (level, effect, critical) => effect.Delay = 1, false);
+            FixEffectOnAllLevels(42, 1, (level, effect, critical) => level.MaxStack = 2, false);
+
             #endregion
 
             #region OSAMODAS
@@ -209,6 +229,22 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Roublardise (2763)
             FixEffectOnAllLevels(2763, EffectsEnum.Effect_SkipTurn_1031, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            // Poudre (2805)
+            FixEffectOnAllLevels(2805, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2805, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2805, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+
+            // Dernier Soufle (2810)
+            FixEffectOnAllLevels(2810, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2810, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2810, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            // Rebours (2811)
+            FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Delay = 1);
+            FixEffectOnAllLevels(2811, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2811, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
 
             #endregion
         }
