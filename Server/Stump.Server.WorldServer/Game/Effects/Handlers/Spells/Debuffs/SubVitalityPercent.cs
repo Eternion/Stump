@@ -6,10 +6,10 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
-    [EffectHandler(EffectsEnum.Effect_SubMP)]
-    public class MPDebuff: SpellEffectHandler
+    [EffectHandler(EffectsEnum.Effect_SubVitalityPercent)]
+    public class SubVitalityPercent : SpellEffectHandler
     {
-        public MPDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public SubVitalityPercent(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
@@ -23,14 +23,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration > 1)
-                {
-                    AddStatBuff(actor, (short)(-(integerEffect.Value)), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
-                }
-                else
-                {
-                    actor.LostMP(integerEffect.Value);
-                }
+                var bonus = actor.Stats.Health.TotalMax * ( integerEffect.Value / 100d );
+
+                AddStatBuff(actor, (short) bonus, PlayerFields.Vitality, true, (short) EffectsEnum.Effect_SubVitalityPercent);
             }
 
             return true;

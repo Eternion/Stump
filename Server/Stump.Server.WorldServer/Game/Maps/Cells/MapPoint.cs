@@ -195,6 +195,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return (DirectionsEnum) (uint) orientation;
         }
 
+        public DirectionsEnum GetOppositeDirection(DirectionsEnum direction)
+        {
+            return (DirectionsEnum) (((int)direction + 4)%8);
+        }
+
         public IEnumerable<MapPoint> GetAllCellsInRectangle(MapPoint oppositeCell, bool skipStartAndEndCells = true, Func<MapPoint, bool> predicate = null)
         {
             int x1 = Math.Min(oppositeCell.X, X),

@@ -202,6 +202,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnDead(FightActor killedBy)
         {
+            KillAllSummons();
             RemoveAndDispellAllBuffs();
 
             var handler = Dead;
@@ -782,7 +783,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 }
 
                 permanentDamages = CalculateErosionDamage(damageWithoutArmor);
-                damage.Amount -= permanentDamages;
             }
 
             //Heal Or Multiply
@@ -814,7 +814,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
 
-            OnLifePointsChanged(-(damage.Amount + permanentDamages), permanentDamages, damage.Source);
+            OnLifePointsChanged(-damage.Amount, permanentDamages, damage.Source);
 
             if (IsDead())
                 OnDead(damage.Source);
@@ -1067,7 +1067,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual bool RollAPLose(FightActor from)
         {
             var apAttack = from.Stats[PlayerFields.APAttack].Total > 1 ? from.Stats[PlayerFields.APAttack].TotalSafe : 1;
-            var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
+            var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
 
             var prob = (apAttack/(double) apDodge)*
                        ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
@@ -1085,7 +1085,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual bool RollMPLose(FightActor from)
         {
             var mpAttack = from.Stats[PlayerFields.MPAttack].Total > 1 ? from.Stats[PlayerFields.MPAttack].TotalSafe : 1;
-            var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
+            var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
 
             var prob = (mpAttack/(double) mpDodge)*
                        ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );

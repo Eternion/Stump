@@ -237,7 +237,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (handler == null)
                 return;
 
-            handler.DamageBonus = currentBonus;
+            handler.DamageBonus = currentBonus + Stats[PlayerFields.ComboBonus].TotalSafe;
             handler.Initialize();
 
             OnSpellCasting(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
@@ -268,6 +268,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Look.Rescale(1.2);
 
             return true;
+        }
+
+        public void IncreaseDamageBonus(int bonus)
+        {
+            Stats[PlayerFields.ComboBonus].Context += bonus;
         }
 
         protected override void OnPositionChanged(ObjectPosition position)

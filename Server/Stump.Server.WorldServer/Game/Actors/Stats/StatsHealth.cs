@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                var result = TotalMax - DamageTaken;
+                var result = TotalMax - DamageTaken + PermanentDamages;
 
                 return result < 0 ? 0 : result;
             }

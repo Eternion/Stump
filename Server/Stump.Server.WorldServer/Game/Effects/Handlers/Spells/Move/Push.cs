@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -59,8 +58,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                     if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]))
                     {
-                        var pushbackDamages = (8 + new AsyncRandom().Next(1, 8) * (Caster.Level / 50)) * (range - i) + 
-                            Caster.Stats[PlayerFields.PushDamageBonus] - actor.Stats[PlayerFields.PushDamageReduction];
+                        var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, (range - i));
 
                         if (!DamagesDisabled)
                         {
