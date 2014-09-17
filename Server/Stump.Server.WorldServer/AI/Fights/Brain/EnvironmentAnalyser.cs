@@ -40,20 +40,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             var cell = Fighter.Position.Point.GetAdjacentCells(CellInformationProvider.IsCellWalkable).FirstOrDefault();
 
-            if (cell != null)
-                return CellInformationProvider.GetCellInformation(cell.CellId).Cell;
-            else
-                return null;
+            return cell != null ? CellInformationProvider.GetCellInformation(cell.CellId).Cell : null;
         }
 
         public Cell GetCellToCastSpell(FightActor target, Spell spell)
         {
             var cell = target.Position.Point.GetAdjacentCells(CellInformationProvider.IsCellWalkable).OrderBy(entry => entry.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();
 
-            if (cell == null)
-                return default(Cell);
-
-            return CellInformationProvider.GetCellInformation(cell.CellId).Cell;
+            return cell == null ? default(Cell) : CellInformationProvider.GetCellInformation(cell.CellId).Cell;
         }
 
         public Cell GetCellToFlee()
@@ -65,30 +59,27 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             var currentCellIndice = fighters.Sum(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)); 
             Cell betterCell = null;
             long betterCellIndice = 0;
-            for (int i = 0; i < movementsCells.Length; i++)
+            foreach (var c in movementsCells)
             {
-                if (!CellInformationProvider.IsCellWalkable(movementsCells[i].Id))
+                if (!CellInformationProvider.IsCellWalkable(c.Id))
                     continue;
 
-                long indice = fighters.Sum(entry => entry.Position.Point.DistanceToCell(new MapPoint(movementsCells[i])));
+                var indice = fighters.Sum(entry => entry.Position.Point.DistanceToCell(new MapPoint(c)));
 
                 if (betterCellIndice < indice)
                 {
                     betterCellIndice = indice;
-                    betterCell = movementsCells[i];
+                    betterCell = c;
                 }
                 else if (betterCellIndice == indice && rand.Next(2) == 0)
                     // random factory
                 {
                     betterCellIndice = indice;
-                    betterCell = movementsCells[i];
+                    betterCell = c;
                 }
             }
 
-            if (currentCellIndice == betterCellIndice)
-                return Fighter.Cell;
-
-            return betterCell;
+            return currentCellIndice == betterCellIndice ? Fighter.Cell : betterCell;
         }
 
         public Cell[] GetMovementCells()

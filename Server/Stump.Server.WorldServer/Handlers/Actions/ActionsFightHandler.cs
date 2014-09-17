@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -124,6 +123,21 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightExchangePositionsMessage(IPacketReceiver client, FightActor caster, FightActor target)
         {
             client.Send(new GameActionFightExchangePositionsMessage((short)ActionsEnum.ACTION_CHARACTER_EXCHANGE_PLACES, caster.Id, target.Id, caster.Cell.Id, target.Cell.Id));
+        }
+
+        public static void SendGameActionFightCarryCharacterMessage(IPacketReceiver client, FightActor caster, FightActor target)
+        {
+            client.Send(new GameActionFightCarryCharacterMessage((short)ActionsEnum.ACTION_CARRY_CHARACTER, caster.Id, target.Id, target.Cell.Id));
+        }
+
+        public static void SendGameActionFightThrowCharacterMessage(IPacketReceiver client, FightActor caster, FightActor target, Cell cell)
+        {
+            client.Send(new GameActionFightThrowCharacterMessage((short)ActionsEnum.ACTION_THROW_CARRIED_CHARACTER, caster.Id, target.Id, cell.Id));
+        }
+
+        public static void SendGameActionFightDropCharacterMessage(IPacketReceiver client, FightActor caster, FightActor target, Cell cell)
+        {
+            client.Send(new GameActionFightDropCharacterMessage((short)ActionsEnum.ACTION_NO_MORE_CARRIED, caster.Id, target.Id, cell.Id));
         }
     }
 }

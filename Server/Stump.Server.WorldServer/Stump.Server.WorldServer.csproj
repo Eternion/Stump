@@ -321,6 +321,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerRemainingMP.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\SubVitalityPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\CarryActor.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\ReviveActor.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerBomb.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Bomb.cs" />
