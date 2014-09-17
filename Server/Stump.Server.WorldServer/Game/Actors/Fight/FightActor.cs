@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
@@ -24,6 +25,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -1471,6 +1473,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #endregion
 
         #region States
+
         private readonly List<SpellState> m_states = new List<SpellState>();
 
         public void AddState(SpellState state)
@@ -1502,7 +1505,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return m_states.Any(entry => entry.PreventsFight);
         }
-
 
         #region Invisibility
 
@@ -1585,6 +1587,93 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         
             if (lastState == GameActionFightInvisibilityStateEnum.INVISIBLE)
                 Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, this));
+        }
+
+        #endregion
+
+        #region Carry/Throw
+
+        private FightActor m_carriedActor;
+
+        public bool IsCarrying()
+        {
+            return m_carriedActor != null;
+        }
+
+        public FightActor GetCarriedActor()
+        {
+            return m_carriedActor;
+        }
+
+        public void CarryActor(FightActor target, EffectBase effect, Spell spell)
+        {
+            var stateCarried = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Carried);
+            var stateCarrying = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Carrying);
+
+            if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
+                return;
+
+            var actorBuffId = PopNextBuffId();
+            var targetBuffId = target.PopNextBuffId();
+
+            var actorBuff = new StateBuff(actorBuffId, this, this, effect, spell, false, stateCarrying);
+            var targetBuff = new StateBuff(targetBuffId, target, this, effect, spell, false, stateCarried);
+
+            AddAndApplyBuff(actorBuff);
+            target.AddAndApplyBuff(targetBuff);
+
+            ActionsHandler.SendGameActionFightCarryCharacterMessage(Fight.Clients, this, target);        
+
+            target.Position = Position;
+            m_carriedActor = target;
+        }
+
+        public void ThrowActor(FightActor target, Cell cell, bool drop = true)
+        {
+            var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carrying).FirstOrDefault();
+            var targetState = target.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carried).FirstOrDefault();
+
+            if (actorState == null || targetState == null)
+                return;
+
+            actorState.Dispell();
+            targetState.Dispell();
+
+            if (drop)
+                ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, target, cell);
+            else
+                ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, target, cell);
+                
+            target.Position.Cell = cell;
+            m_carriedActor = null;
+        }
+
+        public override bool StartMove(Path movementPath)
+        {
+            if (!HasState((int) SpellStatesEnum.Carried))
+                return base.StartMove(movementPath);
+
+            var carryingActor = Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
+
+            if (carryingActor != null)
+            {
+                carryingActor.ThrowActor(this, movementPath.StartCell);
+            }
+
+            return base.StartMove(movementPath);
+        }
+
+        public override bool StopMove()
+        {
+            if (!base.StopMove())
+                return false;
+
+            if (IsCarrying())
+            {
+                m_carriedActor.Position = Position;
+            }
+
+            return true;
         }
 
         #endregion
@@ -1706,7 +1795,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CanTackle(FightActor fighter)
         {
-            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter);
+            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && fighter.Position.Cell != Position.Cell;
         }
 
         public virtual bool CanPlay()

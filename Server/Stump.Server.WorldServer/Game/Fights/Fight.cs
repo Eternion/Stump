@@ -1587,7 +1587,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null)
             {
                 var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.CanTackle(fighter)).Select(entry => entry.Cell.Id).ToList();
-                var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
+                var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.Position.Cell != fighter.Cell && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
 
                 for (var i = 0; i < cells.Length; i++)
                 {
@@ -1610,6 +1610,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     }
                     if (!obstaclesCells.Contains(cells[i].Id))
                         continue;
+
                     if (character != null)
                     {
                         // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
@@ -1874,20 +1875,20 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Placement)
             {
-                if (!IsDeathTemporarily)
-                    fighter.Stats.Health.DamageTaken += (short)(fighter.LifePoints - 1);
+                var characterFighter = ((CharacterFighter)fighter);
+
+                if (characterFighter != null)
+                    characterFighter.ResetFightProperties();
 
                 if (CheckFightEnd())
                     return;
 
                 fighter.Team.RemoveFighter(fighter);
 
-                if (!(fighter is CharacterFighter))
+                if (characterFighter == null)
                     return;
 
-                var character = ((CharacterFighter) fighter).Character;
-
-                character.RejoinMap();
+                characterFighter.Character.RejoinMap();
             }
             else
             {
@@ -1918,7 +1919,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     m_leavers.Add(fighter);
 
                     fighter.Die();
-                }     
+                } 
             }
         }
 

@@ -41,11 +41,11 @@
         /// <summary>
         /// Carry a player
         /// </summary>
-        Effect_50 = 50,
+        Effect_Carry = 50,
         /// <summary>
         /// Throw a player
         /// </summary>
-        Effect_51 = 51,
+        Effect_Throw = 51,
         /// <summary>
         /// Steals #1{~1~2 to }#2 MP
         /// </summary>

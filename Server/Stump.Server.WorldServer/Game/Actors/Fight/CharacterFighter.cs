@@ -20,7 +20,6 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -104,9 +103,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private void InitializeCharacterFighter()
         {
             m_damageTakenBeforeFight = Stats.Health.DamageTaken;
-
-            if (Fight.IsDeathTemporarily)
-                Stats.Health.DamageTaken = 0;
         }
 
         public override ObjectPosition GetLeaderBladePosition()
