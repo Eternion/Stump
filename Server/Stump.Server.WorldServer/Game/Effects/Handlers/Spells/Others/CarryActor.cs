@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         public override bool Apply()
         {
             if (Caster.IsCarrying())
-                Caster.ThrowActor(Caster.GetCarriedActor(), TargetedCell);
+                Caster.ThrowActor(TargetedCell);
 
             return true;
         }

@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Handlers.Actions
 {
@@ -40,10 +41,16 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         {
             client.Send(new GameActionFightInvisibilityMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, (sbyte)state));
         }
-        
+
+
+        public static void SendGameActionFightDispellSpellMessage(IPacketReceiver client, FightActor source, FightActor target, Spell spell)
+        {
+            client.Send(new GameActionFightDispellSpellMessage(406, source.Id, target.Id, spell.Id));
+        }
+
         public static void SendGameActionFightDispellEffectMessage(IPacketReceiver client, FightActor source, FightActor target, Buff buff)
         {
-            client.Send(new GameActionFightDispellEffectMessage(514, source.Id, target.Id, buff.Id));
+            client.Send(new GameActionFightDispellEffectMessage((short)ActionsEnum.ACTION_CHARACTER_BOOST_DISPELLED, source.Id, target.Id, buff.Id));
         }
 
         public static void SendGameActionFightReflectDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)

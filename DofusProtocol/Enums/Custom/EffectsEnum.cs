@@ -1227,7 +1227,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_792 = 792,
+        Effect_Frikt = 792,
         /// <summary>
         /// #1
         /// </summary>
