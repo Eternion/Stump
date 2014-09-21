@@ -187,7 +187,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] {Caster} : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && IsValidTarget(entry)).ToArray();
+            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] {Caster} : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
@@ -198,7 +198,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
                 return new[] {Caster};
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry)).ToArray();
+            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry) && !entry.IsCarried()).ToArray();
         }
 
         

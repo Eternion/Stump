@@ -1600,9 +1600,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return m_carriedActor != null;
         }
 
+        public bool IsCarried()
+        {
+            return GetCarryingActor() != null;
+        }
+
         public FightActor GetCarriedActor()
         {
             return m_carriedActor;
+        }
+
+        public FightActor GetCarryingActor()
+        {
+            return Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
         }
 
         public void CarryActor(FightActor target, EffectBase effect, Spell spell)
@@ -1616,35 +1626,56 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
 
-            var actorBuff = new StateBuff(actorBuffId, this, this, effect, spell, false, stateCarrying);
-            var targetBuff = new StateBuff(targetBuffId, target, this, effect, spell, false, stateCarried);
+            var actorBuff = new StateBuff(actorBuffId, this, this, effect, spell, false, stateCarrying)
+            {
+                Duration = -1
+            };
+
+            var targetBuff = new StateBuff(targetBuffId, target, this, effect, spell, false, stateCarried)
+            {
+                Duration = -1
+            };
 
             AddAndApplyBuff(actorBuff);
             target.AddAndApplyBuff(targetBuff);
 
             ActionsHandler.SendGameActionFightCarryCharacterMessage(Fight.Clients, this, target);        
 
-            target.Position = Position;
+            target.Position.Cell = Position.Cell;
             m_carriedActor = target;
+
+            m_carriedActor.Dead += OnCarryingActorDead;
+            Dead += OnCarryingActorDead;
         }
 
-        public void ThrowActor(FightActor target, Cell cell, bool drop = true)
+        public void ThrowActor(Cell cell, bool drop = false)
         {
+            if (!Map.IsCellFree(cell.Id))
+                return;
+
             var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carrying).FirstOrDefault();
-            var targetState = target.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carried).FirstOrDefault();
+            var targetState = m_carriedActor.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carried).FirstOrDefault();
 
             if (actorState == null || targetState == null)
                 return;
 
-            actorState.Dispell();
-            targetState.Dispell();
+            RemoveAndDispellBuff(actorState);
+            m_carriedActor.RemoveAndDispellBuff(targetState);
+
+            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
             if (drop)
-                ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, target, cell);
+                ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
             else
-                ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, target, cell);
-                
-            target.Position.Cell = cell;
+                ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
+
+            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+
+            m_carriedActor.Position.Cell = cell;
+
+            m_carriedActor.Dead -= OnCarryingActorDead;
+            Dead -= OnCarryingActorDead;
+
             m_carriedActor = null;
         }
 
@@ -1653,12 +1684,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!HasState((int) SpellStatesEnum.Carried))
                 return base.StartMove(movementPath);
 
-            var carryingActor = Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
+            var carryingActor = GetCarryingActor();
 
-            if (carryingActor != null)
-            {
-                carryingActor.ThrowActor(this, movementPath.StartCell);
-            }
+            if (carryingActor == null)
+                return base.StartMove(movementPath);
+
+            movementPath.CutPath(1, true);
+            carryingActor.ThrowActor(movementPath.StartCell);
 
             return base.StartMove(movementPath);
         }
@@ -1670,10 +1702,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (IsCarrying())
             {
-                m_carriedActor.Position = Position;
+                m_carriedActor.Position.Cell = Position.Cell;
             }
 
             return true;
+        }
+
+        private void OnCarryingActorDead(FightActor actor, FightActor killer)
+        {
+            ThrowActor(Cell, true);
         }
 
         #endregion

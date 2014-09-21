@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             foreach (var actor in GetAffectedActors().OrderByDescending(entry => entry.Position.Point.DistanceToCell(TargetedPoint)))
             {
-                if (actor.HasState((int)SpellStatesEnum.Unmovable))
+                if (actor.HasState((int)SpellStatesEnum.Unmovable) || actor.HasState((int)SpellStatesEnum.Rooted))
                     continue;
 
                 var referenceCell = TargetedCell.Id == actor.Cell.Id ? CastPoint : TargetedPoint;
@@ -75,6 +75,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                         break;
                     }
+
+                    if (actor.IsCarrying())
+                        actor.ThrowActor(Map.Cells[lastCell.CellId], true);
 
                     if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                     {

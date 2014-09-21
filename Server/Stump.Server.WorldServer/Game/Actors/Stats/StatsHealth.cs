@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             set
             {
                 m_realDamageTaken = value;
-                m_damageTaken = value > TotalMax ? TotalMax : value;
+                m_damageTaken = value > TotalMaxWithoutPermanentDamages ? TotalMaxWithoutPermanentDamages : value;
                 OnModified();
             }
         }
@@ -80,17 +80,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         public int PermanentDamages
         {
             get { return m_permanentDamages; }
-            set { 
-                if (TotalMax - value < 0)
+            set {
+                if (TotalMaxWithoutPermanentDamages - value < 0)
                     m_permanentDamages = Base + Equiped + Given + Context + ( Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0 ) - 1;
                 else
                 {
                     m_permanentDamages = value;
                 }
 
-                if (TotalSafe > TotalMax)
+                if (TotalSafe > TotalMaxWithoutPermanentDamages)
                 {
-                    DamageTaken += TotalSafe - TotalMax;
+                    DamageTaken += (TotalSafe - TotalMaxWithoutPermanentDamages);
                 }
 
                 OnModified();
@@ -115,9 +115,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                var result = TotalMax - DamageTaken;
-                if (result > 0)
-                    result += PermanentDamages;
+                var result = TotalMaxWithoutPermanentDamages - DamageTaken;
 
                 return result < 0 ? 0 : result;
             }
@@ -133,6 +131,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                 var result = Base + Equiped + Given + Context + ( Owner.Stats != null ? Owner.Stats[PlayerFields.Vitality].Total : 0 ) - PermanentDamages;
 
                 return result < 0 ? 0 : result;
+            }
+        }
+
+        /// <summary>
+        ///   TotalMax without PermanentDamages
+        /// </summary>
+        public int TotalMaxWithoutPermanentDamages
+        {
+            get
+            {
+                return TotalMax + PermanentDamages;
             }
         }
 

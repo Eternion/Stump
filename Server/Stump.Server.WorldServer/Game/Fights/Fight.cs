@@ -1768,9 +1768,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             m_buffs.Remove(buff);
 
-            if (buff.Duration > 0)
-                ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
-
+            ActionsHandler.SendGameActionFightDispellSpellMessage(Clients, target, target, buff.Spell);
+            ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
         }
 
         #endregion

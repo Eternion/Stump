@@ -18,10 +18,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
             var target = GetAffectedActors().FirstOrDefault();
 
-            if (target != null)
-            {
-                Caster.ExchangePositions(target);
-            }
+            if (target == null)
+                return false;
+
+            if (target.HasState((int) SpellStatesEnum.Unmovable) || target.HasState((int) SpellStatesEnum.Rooted))
+                return false;
+
+            if (target.IsCarrying())
+                return false;
+
+            Caster.ExchangePositions(target);
 
             return true;
         }
