@@ -42,13 +42,13 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         public Cell TargetedCell
         {
             get;
-            private set;
+            protected set;
         }
 
         public MapPoint TargetedPoint
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool Critical

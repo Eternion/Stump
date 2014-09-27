@@ -160,6 +160,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, spell, target, critical, silentCast);
         }
 
+        protected virtual void OnSpellCasted(Spell spell, FightActor target, FightSpellCastCriticalEnum critical, bool silentCast)
+        {
+            if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
+                VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            {
+                ShowCell(Cell, false);
+
+                if (!IsInvisibleSpellCast(spell))
+                    if (!DispellInvisibilityBuff())
+                        SetInvisibilityState(VisibleStateEnum.VISIBLE);
+            }
+
+            SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
+
+            var handler = SpellCasted;
+            if (handler != null)
+                handler(this, spell, target.Cell, critical, silentCast);
+        }
+
         public event Action<FightActor, Spell, Cell> SpellCastFailed;
 
         protected virtual void OnSpellCastFailed(Spell spell, Cell cell)
@@ -698,6 +717,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+
             handler.Initialize();
 
             OnSpellCasting(spell, cell, critical, handler.SilentCast);
@@ -877,48 +897,48 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 case EffectSchoolEnum.Neutral:
                     damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Strength].TotalSafe +
+                                    ((100 + Stats[PlayerFields.Strength].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.PhysicalDamage].TotalSafe +
-                                     Stats[PlayerFields.NeutralDamageBonus].TotalSafe));
+                                     Stats[PlayerFields.NeutralDamageBonus].TotalSafe)));
                     break;
                 case EffectSchoolEnum.Earth:
                     damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Strength].TotalSafe +
+                                    ((100 + Stats[PlayerFields.Strength].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.PhysicalDamage].TotalSafe +
-                                     Stats[PlayerFields.EarthDamageBonus].TotalSafe));
+                                     Stats[PlayerFields.EarthDamageBonus].TotalSafe)));
                     break;
                 case EffectSchoolEnum.Air:
                     damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Agility].TotalSafe +
+                                    ((100 + Stats[PlayerFields.Agility].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.AirDamageBonus].TotalSafe));
+                                     Stats[PlayerFields.AirDamageBonus].TotalSafe)));
                     break;
                 case EffectSchoolEnum.Water:
                     damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Chance].TotalSafe +
+                                    ((100 + Stats[PlayerFields.Chance].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.WaterDamageBonus].TotalSafe));
+                                     Stats[PlayerFields.WaterDamageBonus].TotalSafe)));
                     break;
                 case EffectSchoolEnum.Fire:
                     damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Intelligence].TotalSafe +
+                                    ((100 + Stats[PlayerFields.Intelligence].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.FireDamageBonus].TotalSafe));
+                                     Stats[PlayerFields.FireDamageBonus].TotalSafe)));
                     break;
             }
 
@@ -1276,6 +1296,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 RemoveAndDispellBuff(buff);
             }
+
+            ActionsHandler.SendGameActionFightDispellSpellMessage(Fight.Clients, this, this, spellId);
         }
 
         public void RemoveAndDispellAllBuffs()
@@ -1645,7 +1667,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_carriedActor = target;
 
             m_carriedActor.Dead += OnCarryingActorDead;
+            m_carriedActor.FighterLeft += OnCarryingActorLeft;
             Dead += OnCarryingActorDead;
+            FighterLeft += OnCarryingActorLeft;
         }
 
         public void ThrowActor(Cell cell, bool drop = false)
@@ -1659,29 +1683,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actorState == null || targetState == null)
                 return;
 
-            RemoveAndDispellBuff(actorState);
-            m_carriedActor.RemoveAndDispellBuff(targetState);
-
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
             if (drop)
-                ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
+                ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, m_carriedActor, cell);   
             else
                 ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
 
-            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+            RemoveAndDispellBuff(actorState);
+            m_carriedActor.RemoveAndDispellBuff(targetState);
 
             m_carriedActor.Position.Cell = cell;
 
+            Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, m_carriedActor));
+
+            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+
             m_carriedActor.Dead -= OnCarryingActorDead;
+            m_carriedActor.FighterLeft -= OnCarryingActorLeft;
             Dead -= OnCarryingActorDead;
+            FighterLeft -= OnCarryingActorLeft;
 
             m_carriedActor = null;
         }
 
         public override bool StartMove(Path movementPath)
         {
-            if (!HasState((int) SpellStatesEnum.Carried))
+            if (!IsCarried())
                 return base.StartMove(movementPath);
 
             var carryingActor = GetCarryingActor();
@@ -1689,7 +1717,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (carryingActor == null)
                 return base.StartMove(movementPath);
 
-            movementPath.CutPath(1, true);
+            //movementPath.CutPath(1, true);
+
             carryingActor.ThrowActor(movementPath.StartCell);
 
             return base.StartMove(movementPath);
@@ -1709,6 +1738,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         private void OnCarryingActorDead(FightActor actor, FightActor killer)
+        {
+            ThrowActor(Cell, true);
+        }
+
+        private void OnCarryingActorLeft(FightActor fighter)
         {
             ThrowActor(Cell, true);
         }
@@ -1832,7 +1866,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CanTackle(FightActor fighter)
         {
-            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && fighter.Position.Cell != Position.Cell;
+            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.Rooted) && fighter.Position.Cell != Position.Cell;
         }
 
         public virtual bool CanPlay()

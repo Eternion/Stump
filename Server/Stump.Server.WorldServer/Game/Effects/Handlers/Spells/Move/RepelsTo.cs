@@ -23,6 +23,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target == null)
                 return false;
 
+            if (target.HasState((int)SpellStatesEnum.Unmovable) || target.HasState((int)SpellStatesEnum.Rooted))
+                return false;
+
             var startCell = target.Cell;
             var endCell = TargetedCell;
             var cells = new MapPoint(startCell).GetCellsOnLineBetween(TargetedPoint);
@@ -43,6 +46,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             }
 
             target.Cell = endCell;
+
+            if (target.IsCarrying())
+                target.ThrowActor(Map.Cells[startCell.Id], true);
 
             Fight.ForEach(entry => ActionsHandler.SendGameActionFightSlideMessage(entry.Client, Caster, target, startCell.Id, target.Cell.Id));
 

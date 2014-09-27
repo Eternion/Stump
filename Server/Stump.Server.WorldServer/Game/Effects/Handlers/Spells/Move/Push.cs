@@ -76,9 +76,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                         break;
                     }
 
-                    if (actor.IsCarrying())
-                        actor.ThrowActor(Map.Cells[lastCell.CellId], true);
-
                     if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                     {
                         lastCell = nextCell;
@@ -90,6 +87,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 var endCell = lastCell;
                 var actorCopy = actor;
+
+                if (actor.IsCarrying())
+                    actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
                 foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actorCopy.IsVisibleFor))
                     ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);

@@ -21,6 +21,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 Caster.CarryActor(affectedActor, Effect, Spell);
             }
 
+            TargetedCell = CastCell;
+
             return true;
         }
     }
