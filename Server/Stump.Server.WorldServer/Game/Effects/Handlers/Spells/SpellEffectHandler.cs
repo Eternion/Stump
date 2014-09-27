@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public Cell TargetedCell
         {
             get;
-            private set;
+            protected set;
         }
 
         public MapPoint TargetedPoint
@@ -187,7 +187,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] {Caster} : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
+            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
@@ -215,6 +215,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public void SetAffectedActors(IEnumerable<FightActor> actors)
         {
             m_customAffectedActors = actors.ToArray();
+        }
+
+        public void AddAffectedActor(FightActor actor)
+        {
+            var tmpActors = new List<FightActor>();
+            if (m_customAffectedActors != null)
+                tmpActors = m_customAffectedActors.ToList();
+
+            tmpActors.Add(actor);
+            m_customAffectedActors = tmpActors.ToArray();
         }
 
         public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable)

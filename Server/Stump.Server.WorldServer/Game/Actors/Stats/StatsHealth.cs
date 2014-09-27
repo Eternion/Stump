@@ -88,9 +88,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                     m_permanentDamages = value;
                 }
 
-                if (TotalSafe > TotalMaxWithoutPermanentDamages)
+                if (TotalSafe > TotalMax)
                 {
-                    DamageTaken += (TotalSafe - TotalMaxWithoutPermanentDamages);
+                    DamageTaken += (TotalSafe - TotalMax);
                 }
 
                 OnModified();

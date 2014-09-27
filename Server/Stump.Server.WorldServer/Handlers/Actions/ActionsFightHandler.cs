@@ -8,7 +8,6 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Handlers.Actions
 {
@@ -43,9 +42,9 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         }
 
 
-        public static void SendGameActionFightDispellSpellMessage(IPacketReceiver client, FightActor source, FightActor target, Spell spell)
+        public static void SendGameActionFightDispellSpellMessage(IPacketReceiver client, FightActor source, FightActor target, int spellId)
         {
-            client.Send(new GameActionFightDispellSpellMessage(406, source.Id, target.Id, spell.Id));
+            client.Send(new GameActionFightDispellSpellMessage(406, source.Id, target.Id, spellId));
         }
 
         public static void SendGameActionFightDispellEffectMessage(IPacketReceiver client, FightActor source, FightActor target, Buff buff)

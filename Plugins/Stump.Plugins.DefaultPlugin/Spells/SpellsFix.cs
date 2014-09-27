@@ -177,6 +177,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region PANDAWA
+
+            #endregion
+
             #region ROUBLARD
 
             // bombs are shit :)

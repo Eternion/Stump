@@ -1768,7 +1768,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             m_buffs.Remove(buff);
 
-            ActionsHandler.SendGameActionFightDispellSpellMessage(Clients, target, target, buff.Spell);
             ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
         }
 
