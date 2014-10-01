@@ -183,25 +183,42 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region ROUBLARD
 
-            // bombs are shit :)
             // 2822,2845,2830 bomb explosion spell
             // remove all Effect_ReduceEffectsDuration effects and the second damage effect
             // the kill effect is on the caster (the bomb)
-            RemoveEffectOnAllLevels(2822, EffectsEnum.Effect_ReduceEffectsDuration, false);
             RemoveEffectOnAllLevels(2822, 0, false);
+            RemoveEffectOnAllLevels(2822, 0, false);
+            RemoveEffectOnAllLevels(2822, 0, false);
+            RemoveEffectOnAllLevels(2822, 3, false);
             FixEffectOnAllLevels(2822, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
 
             // same here and we remove the second LostMP effect
-            RemoveEffectOnAllLevels(2845, EffectsEnum.Effect_ReduceEffectsDuration, false);
             RemoveEffectOnAllLevels(2845, 0, false);
-            RemoveEffectOnAllLevels(2845, 2, false);
+            RemoveEffectOnAllLevels(2845, 0, false);
+            RemoveEffectOnAllLevels(2845, 0, false);
+            RemoveEffectOnAllLevels(2845, 3, false);
+            RemoveEffectOnAllLevels(2845, 5, false);
             FixEffectOnAllLevels(2845, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
             
             // same here and we remove the second LostAP effect
-            RemoveEffectOnAllLevels(2830, EffectsEnum.Effect_ReduceEffectsDuration, false);
             RemoveEffectOnAllLevels(2830, 0, false);
-            RemoveEffectOnAllLevels(2830, 2, false);
+            RemoveEffectOnAllLevels(2830, 0, false);
+            RemoveEffectOnAllLevels(2830, 0, false);
+            RemoveEffectOnAllLevels(2830, 3, false);
+            RemoveEffectOnAllLevels(2830, 5, false);
             FixEffectOnAllLevels(2830, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            //2825,2829,2833 wall spell
+            //Fire wall
+            RemoveEffectOnAllLevels(2825, 0, false);
+
+            //Air wall
+            RemoveEffectOnAllLevels(2829, 0, false);
+            RemoveEffectOnAllLevels(2829, 1, false);
+
+            //Water wall
+            RemoveEffectOnAllLevels(2833, 0, false);
+            RemoveEffectOnAllLevels(2833, 1, false);
 
             // botte (2795)
             // 1 effect per shape size
@@ -237,7 +254,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Poudre (2805)
             FixEffectOnAllLevels(2805, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2805, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
-            FixEffectOnAllLevels(2805, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            RemoveEffectOnAllLevels(2805, 2);
+
+            // Rémission (2809)
+            FixEffectOnAllLevels(2809, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.ENEMY_BOMBS);
+            FixEffectOnAllLevels(2809, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
 
             // Dernier Soufle (2810)
             FixEffectOnAllLevels(2810, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
@@ -249,6 +270,18 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Delay = 1);
             FixEffectOnAllLevels(2811, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2811, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
+
+            // Surcharge (2812)
+            FixEffectOnAllLevels(2812, 0, (level, effect, critical) => level.MaxStack = 0, false);
+            FixEffectOnAllLevels(2812, 0, (level, effect, critical) => effect.Delay = 1, false);
+            FixEffectOnAllLevels(2812, 0, (level, effect, critical) => effect.Duration = 2, false);
+            FixEffectOnAllLevels(2812, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS | SpellTargetType.ENEMY_BOMBS, false);
+            FixEffectOnAllLevels(2812, 1, (level, effect, critical) => effect.Delay = 2, false);
+            FixEffectOnAllLevels(2812, 1, (level, effect, critical) => effect.Duration = 2, false);
+            FixEffectOnAllLevels(2812, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS | SpellTargetType.ENEMY_BOMBS, false);
+            FixEffectOnAllLevels(2812, 2, (level, effect, critical) => effect.Delay = 3, false);
+            FixEffectOnAllLevels(2812, 2, (level, effect, critical) => effect.Duration = 2, false);
+            FixEffectOnAllLevels(2812, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS | SpellTargetType.ENEMY_BOMBS, false);
 
             #endregion
         }

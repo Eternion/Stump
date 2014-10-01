@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -50,10 +51,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             handler.MarkTrigger = this;
             handler.Initialize();
             var bonus = Bombs.Sum(x => x.DamageBonusPercent);
-            foreach (var effect in handler.GetEffectHandlers())
+
+            foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
             {
                 effect.Efficiency = 1 + bonus/100d;
             }
+
             handler.Execute();
         }
 

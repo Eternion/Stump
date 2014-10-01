@@ -18,6 +18,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && (x as SummonedBomb).Summoner == Caster).Where(bomb => bomb.IsAlive()))
             {
+                if (bomb.HasState((int) SpellStatesEnum.Unmovable))
+                    bomb.RemoveSpellBuffs((int)SpellIdEnum.POUDRE);
+
                 (bomb as SummonedBomb).Explode();
             }
 

@@ -723,7 +723,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             leaverResult = null;
             var list = new List<IFightResult>();
-            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)))
+            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb)))
             {
                 var result =
                     fighter.GetFightResult(fighter.Team == leaver.Team
@@ -1123,6 +1123,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             character.RealLook.RemoveAuras();
             character.RefreshActor();
 
+            if (character.ArenaPopup != null)
+                character.ArenaPopup.Deny();
+
             Clients.Add(character.Client);
 
             SendGameFightJoinMessage(fighter);
@@ -1338,6 +1341,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (FighterPlaying.IsDead() || FighterPlaying.MustSkipTurn())
             {
+                FighterPlaying.ResetUsedPoints();
                 PassTurn();
                 return;
             }

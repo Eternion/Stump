@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Core.Mathematics;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -720,12 +721,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             handler.Initialize();
 
-            OnSpellCasting(spell, cell, critical, handler.SilentCast);
+            OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
             UseAP((short)spellLevel.ApCost);
 
             handler.Execute();
 
-            OnSpellCasted(spell, cell, critical, handler.SilentCast);
+            OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast);
 
             return true;
         }
@@ -897,48 +898,48 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 case EffectSchoolEnum.Neutral:
                     damage = (int) (damage*
-                                    ((100 + Stats[PlayerFields.Strength].TotalSafe +
+                                    (100 + Stats[PlayerFields.Strength].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.PhysicalDamage].TotalSafe +
-                                     Stats[PlayerFields.NeutralDamageBonus].TotalSafe)));
+                                     Stats[PlayerFields.NeutralDamageBonus].TotalSafe));
                     break;
                 case EffectSchoolEnum.Earth:
                     damage = (int) (damage*
-                                    ((100 + Stats[PlayerFields.Strength].TotalSafe +
+                                    (100 + Stats[PlayerFields.Strength].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.PhysicalDamage].TotalSafe +
-                                     Stats[PlayerFields.EarthDamageBonus].TotalSafe)));
+                                     Stats[PlayerFields.EarthDamageBonus].TotalSafe));
                     break;
                 case EffectSchoolEnum.Air:
                     damage = (int) (damage*
-                                    ((100 + Stats[PlayerFields.Agility].TotalSafe +
+                                    (100 + Stats[PlayerFields.Agility].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.AirDamageBonus].TotalSafe)));
+                                     Stats[PlayerFields.AirDamageBonus].TotalSafe));
                     break;
                 case EffectSchoolEnum.Water:
                     damage = (int) (damage*
-                                    ((100 + Stats[PlayerFields.Chance].TotalSafe +
+                                    (100 + Stats[PlayerFields.Chance].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.WaterDamageBonus].TotalSafe)));
+                                     Stats[PlayerFields.WaterDamageBonus].TotalSafe));
                     break;
                 case EffectSchoolEnum.Fire:
                     damage = (int) (damage*
-                                    ((100 + Stats[PlayerFields.Intelligence].TotalSafe +
+                                    (100 + Stats[PlayerFields.Intelligence].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
                                     (Stats[PlayerFields.DamageBonus].TotalSafe +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.FireDamageBonus].TotalSafe)));
+                                     Stats[PlayerFields.FireDamageBonus].TotalSafe));
                     break;
             }
 
@@ -1086,38 +1087,34 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int)(spellBonus * (1 + (Stats[PlayerFields.Wisdom].TotalSafe / 100d)) + Stats[PlayerFields.DamageReflection].TotalSafe);
         }
 
-        public virtual bool RollAPLose(FightActor from)
+        public virtual bool RollAPLose(FightActor from, int value)
         {
             var apAttack = from.Stats[PlayerFields.APAttack].Total > 1 ? from.Stats[PlayerFields.APAttack].TotalSafe : 1;
             var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
-
-            var prob = (apAttack/(double) apDodge)*
-                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
+            var prob = ((Stats.AP.Total-value)/(double) (Stats.AP.TotalMax))*(apAttack/(double) apDodge) /2d;
 
             if (prob < 0.10)
                 prob = 0.10;
             else if (prob > 0.90)
                 prob = 0.90;
 
-            var rnd = new AsyncRandom().NextDouble();
+            var rnd = new CryptoRandom().NextDouble();
 
             return rnd < prob;
         }
 
-        public virtual bool RollMPLose(FightActor from)
+        public virtual bool RollMPLose(FightActor from, int value)
         {
             var mpAttack = from.Stats[PlayerFields.MPAttack].Total > 1 ? from.Stats[PlayerFields.MPAttack].TotalSafe : 1;
             var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
-
-            var prob = (mpAttack/(double) mpDodge)*
-                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
+            var prob = ((Stats.MP.Total - value) / (double)(Stats.MP.TotalMax)) * (mpAttack / (double)mpDodge) / 2d;
 
             if (prob < 0.10)
                 prob = 0.10;
             else if (prob > 0.90)
-                prob = 0.90;
+                prob = 0.90 - (0.10 * value);
 
-            var rnd = new AsyncRandom().NextDouble();
+            var rnd = new CryptoRandom().NextDouble();
 
             return rnd < prob;
         }
@@ -1139,7 +1136,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return 0;
 
             var percentLost = 0d;
-            for (int i = 0; i < tacklers.Length; i++)
+            for (var i = 0; i < tacklers.Length; i++)
             {
                 var fightActor = tacklers[i];
 
@@ -1296,8 +1293,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 RemoveAndDispellBuff(buff);
             }
-
-            ActionsHandler.SendGameActionFightDispellSpellMessage(Fight.Clients, this, this, spellId);
         }
 
         public void RemoveAndDispellAllBuffs()
@@ -1691,7 +1686,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
 
             RemoveAndDispellBuff(actorState);
+            RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
             m_carriedActor.RemoveAndDispellBuff(targetState);
+            m_carriedActor.RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
 
             m_carriedActor.Position.Cell = cell;
 
@@ -1866,7 +1863,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CanTackle(FightActor fighter)
         {
-            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.Rooted) && fighter.Position.Cell != Position.Cell;
+            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.Rooted) && !fighter.HasState((int)SpellStatesEnum.Rooted) && fighter.Position.Cell != Position.Cell;
         }
 
         public virtual bool CanPlay()
