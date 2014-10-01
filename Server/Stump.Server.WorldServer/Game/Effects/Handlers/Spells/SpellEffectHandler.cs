@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -294,6 +295,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             target.AddAndApplyBuff(buff);
 
             return buff;
+        }
+
+        public bool RemoveStateBuff(FightActor target, SpellStatesEnum stateId)
+        {
+            var state = target.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)stateId).FirstOrDefault();
+            if (state == null)
+                return false;
+
+            target.RemoveAndDispellBuff(state);
+
+            return true;
         }
 
         public virtual bool RequireSilentCast()

@@ -463,6 +463,7 @@
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\VertigoCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\BombExplodSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />

@@ -1,10 +1,10 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
@@ -21,13 +21,60 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             foreach (var actor in GetAffectedActors())
             {
                 var buffId = actor.PopNextBuffId();
-                var buff = new TriggerBuff(buffId, actor, Caster, Dice, Spell, false, false,
-                    BuffTriggerType.AFTER_ATTACKED, FriktBuffTrigger);
+                
 
-                actor.AddAndApplyBuff(buff);
+                if (Spell.Id == (int)SpellIdEnum.FRICTION)
+                {
+                    var spell = new Spell(Dice.DiceNum, 1);
+                    var effect = spell.CurrentSpellLevel.Effects[0];
+
+                    var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
+                        BuffTriggerType.AFTER_ATTACKED, FriktBuffTrigger)
+                    {
+                        Duration = (short)Dice.Duration
+                    };
+
+                    actor.AddAndApplyBuff(buff);
+                }
+                else
+                {
+                    var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
+                    var effect = spell.CurrentSpellLevel.Effects[0];
+
+                    var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
+                        BuffTriggerType.AFTER_ATTACKED, SuppressionBuffTrigger)
+                    {
+                        Duration = (short)Dice.Duration
+                    };
+
+                    actor.AddAndApplyBuff(buff);
+                }
             }
 
             return true;
+        }
+
+        private static void SuppressionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            var damage = token as Fights.Damage;
+            if (damage == null)
+                return;
+
+            if (damage.Source == null)
+                return;
+
+            var source = damage.Source;
+            var target = buff.Target;
+
+            if (damage.Source == target)
+                return;
+
+            if (!target.Position.Point.IsAdjacentTo(source.Position.Point))
+                return;
+
+            var effect = new Push(buff.Dice, target, buff.Spell, target.Cell, buff.Critical);
+            effect.AddAffectedActor(source);
+            effect.Apply();
         }
 
         private static void FriktBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
@@ -54,14 +101,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (!target.Position.Point.IsOnSameLine(source.Position.Point))
                 return;
 
-            var casterDirection = target.Position.Point.OrientationTo(source.Position.Point, false);
-            var targetedCell = target.Map.Cells[target.Position.Point.GetNearestCellInDirection(casterDirection).CellId];
-
-            if (!target.Fight.IsCellFree(targetedCell))
-                return;
-
-            target.Position.Cell = targetedCell;
-            target.Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, source, target, targetedCell));
+            var effect = new Pull(buff.Dice, source, buff.Spell, source.Cell, buff.Critical);
+            effect.AddAffectedActor(target);
+            effect.Apply();
         }
     }
 }

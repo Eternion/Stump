@@ -50,10 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration > 0)
-                {
-                    AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true);
-                }
+                AddStatBuff(actor, integerEffect.Value, GetEffectCaracteristic(Effect.EffectId), true);
             }
 
             return true;

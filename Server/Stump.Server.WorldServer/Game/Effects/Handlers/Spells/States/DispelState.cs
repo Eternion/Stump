@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
     [EffectHandler(EffectsEnum.Effect_DispelState)]
     public class DispelState : SpellEffectHandler
@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     return false;
                 }
 
-                AddStateBuff(affectedActor, state.Id == (int)SpellStatesEnum.Invulnerable, state);
+                RemoveStateBuff(affectedActor, (SpellStatesEnum)state.Id);
             }
 
             return true;

@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public void Accept()
         {
-            Cancel();
+            //Cancel();
             WaitingCharacter.ToggleReady(true);
         }
 

@@ -28,13 +28,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return false;
 
                 if (Effect.Duration > 1)
-                {
                     AddStatBuff(actor, integerEffect.Value, PlayerFields.ComboBonus, false);
-                }
                 else
-                {
                     bomb.IncreaseDamageBonus(integerEffect.Value);
-                }
             }
 
             return true;
