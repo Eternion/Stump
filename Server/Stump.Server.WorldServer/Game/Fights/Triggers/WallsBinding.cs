@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,12 +13,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         protected virtual void OnRemoved()
         {
-            Action<WallsBinding> handler = Removed;
+            var handler = Removed;
             if (handler != null) handler(this);
         }
 
         private readonly Color m_color;
-        private List<Wall> m_walls = new List<Wall>();
+        private readonly List<Wall> m_walls = new List<Wall>();
 
         public WallsBinding(SummonedBomb bomb1, SummonedBomb bomb2, Color color)
         {
@@ -97,6 +96,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                         new MarkShape(Bomb1.Fight, cell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, m_color));
 
                     Bomb1.Fight.AddTriger(wall);
+                    m_walls.Add(wall);
 
                     var fighter = Bomb1.Fight.GetOneFighter(wall.CenterCell);
                     if (fighter != null)
@@ -110,8 +110,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public void Delete()
         {
-            foreach (var wall in m_walls)
-            {
+            foreach (var wall in m_walls.ToArray())
+            {  
                 wall.Remove();
             }
             m_walls.Clear();
