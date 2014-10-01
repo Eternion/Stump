@@ -313,6 +313,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     binding.AdjustWalls();
             }
 
+            foreach (var binding in m_wallsBinding)
+            {
+                if (binding.IntersectOtherWalls)
+                    binding.AdjustWalls();
+            }
+
             foreach (var bomb in Summoner.Bombs)
             {
                 if (bomb != this && m_wallsBinding.All(x => x.Bomb1 != bomb && x.Bomb2 != bomb) && IsBoundWith(bomb))
