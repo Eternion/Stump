@@ -422,6 +422,7 @@
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
     <Compile Include="Game\Fights\Triggers\Wall.cs" />
+    <Compile Include="Game\Fights\Triggers\WallsBinding.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
     <Compile Include="Game\Guilds\GuildEmblem.cs" />

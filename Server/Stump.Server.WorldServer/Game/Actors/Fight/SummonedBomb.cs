@@ -43,7 +43,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {4, Color.Blue}
         };
 
-        private readonly List<Wall> m_walls = new List<Wall>(); 
+        private readonly List<WallsBinding> m_wallsBinding = new List<WallsBinding>();
+        private readonly Color m_color;
 
         private readonly StatsFields m_stats;
         private readonly bool m_initialized;
@@ -60,6 +61,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             SpellBombTemplate = spellBombTemplate;
             m_stats = new StatsFields(this);
             m_stats.Initialize(monsterBombTemplate);
+            WallSpell = new Spell((int) wallsSpells[SpellBombTemplate.WallId], (byte) MonsterBombTemplate.GradeId);
+            m_color = wallsColors[SpellBombTemplate.WallId];
             AdjustStats();
 
             ExplodSpell = new Spell(spellBombTemplate.ExplodReactionSpell, (byte)MonsterBombTemplate.GradeId);
@@ -118,6 +121,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get;
             private set;
         }
+
+        public Spell WallSpell
+        {
+            get;
+            private set;
+        }
+
         public int DamageBonusPercent
         {
             get;
@@ -145,9 +155,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return m_stats; }
         }
 
-        public ReadOnlyCollection<Wall> Walls
+        public ReadOnlyCollection<WallsBinding> Walls
         {
-            get { return m_walls.AsReadOnly(); }
+            get { return m_wallsBinding.AsReadOnly(); }
         }
 
         public override Spell GetSpell(int id)
@@ -202,9 +212,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private static bool IsBoundWith(SummonedBomb bomb1, SummonedBomb bomb2)
         {
             var dist = bomb1.Position.Point.DistanceToCell(bomb2.Position.Point);
-            return dist <= 2 || 
-                (dist <= 7 && bomb1.MonsterBombTemplate == bomb2.MonsterBombTemplate &&
-                bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point));
+            return dist > 2 &&
+                dist <= 7 && bomb1.MonsterBombTemplate == bomb2.MonsterBombTemplate &&
+                bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point);
+        }
+
+        public bool IsBoundWith(SummonedBomb bomb)
+        {
+            return IsBoundWith(this, bomb);
         }
 
         public void Explode()
@@ -287,67 +302,36 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Fight.State == FightState.Ended)
                 return false;
 
-            var existantWall = Fight.GetTriggers(Cell).OfType<Wall>().Where(x => x.Caster == Summoner);
-
-            foreach (var wall in existantWall)
+            foreach (var binding in m_wallsBinding.ToArray())
             {
-                Fight.RemoveTrigger(wall);
-            }
-
-            if (Summoner.Bombs.Count <= 0)
-                return false;
-
-            var bombs = from x in Summoner.Bombs
-                let dist = x.Position.Point.DistanceToCell(Position.Point)
-                where x.MonsterBombTemplate == MonsterBombTemplate &&
-                      x.Position.Point.IsOnSameLine(Position.Point) && dist >= 2 && dist <= 7
-                select x;
-
-            var walls = bombs.Select(x => Tuple.Create(x, x.Position.Point.GetCellsOnLineBetween(Position.Point).Select(y => y.CellId).ToArray())).ToArray();
-
-            foreach (var wall in Walls.ToArray().Where(wall => !walls.Any(x => x.Item2.Contains(wall.CenterCell.Id))))
-            {
-                Fight.RemoveTrigger(wall);
-            }
-            
-            var wallSpell = new Spell((int)wallsSpells[SpellBombTemplate.WallId], (byte) MonsterBombTemplate.GradeId);
-            var color = wallsColors[SpellBombTemplate.WallId];
-            foreach (var tuple in walls)
-            {
-                foreach (var wall in from cellId in tuple.Item2 where m_walls.All(x => x.CenterCell.Id != cellId) select Fight.Map.Cells[cellId] into cell select new Wall((short) Fight.PopNextTriggerId(), Summoner, wallSpell, null, cell,
-                    new MarkShape(Fight, cell,
-                        GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, color)))
+                if (!binding.IsValid())
                 {
-                    if (Fight.GetTriggers(wall.CenterCell).OfType<Wall>().All(x => x.Caster != Summoner))
-                    {
-                        Fight.RemoveTrigger(wall);
-                        Fight.AddTriger(wall);
+                    binding.Delete();
+                }
 
-                        var fighter = Fight.GetOneFighter(wall.CenterCell);
-                        if (fighter != null)
-                            Fight.TriggerMarks(wall.CenterCell, fighter, TriggerType.MOVE);
-                    }
+                else if (binding.MustBeAdjusted())
+                    binding.AdjustWalls();
+            }
 
-                    BindWall(wall);
-                    tuple.Item1.BindWall(wall);
+            foreach (var bomb in Summoner.Bombs)
+            {
+                if (bomb != this && m_wallsBinding.All(x => x.Bomb1 != bomb && x.Bomb2 != bomb) && IsBoundWith(bomb))
+                {
+                    var binding = new WallsBinding(this, bomb, m_color);
+                    binding.Removed += OnWallsRemoved;
+                    binding.AdjustWalls();
+                    m_wallsBinding.Add(binding);
                 }
             }
 
             return true;
         }
 
-        public void BindWall(Wall wall)
+        private void OnWallsRemoved(WallsBinding obj)
         {
-            m_walls.Add(wall);
-            wall.Removed += OnWallRemoved;
-            wall.BindToBomb(this);
+            m_wallsBinding.Remove(obj);
         }
-
-        private void OnWallRemoved(MarkTrigger obj)
-        {
-            m_walls.Remove((Wall)obj);
-        }
-
+        
         public override bool CanTackle(FightActor fighter)
         {
             return false;
@@ -369,9 +353,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Summoner.RemoveBomb(this);
 
-            foreach (var wall in m_walls.ToArray())
+            foreach (var binding in m_wallsBinding.ToArray())
             {
-                Fight.RemoveTrigger(wall);
+                binding.Delete();
             }
         }
 
