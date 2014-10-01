@@ -253,6 +253,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return;
 
             handler.DamageBonus = currentBonus + Stats[PlayerFields.ComboBonus].TotalSafe;
+            handler.Summoner = Summoner;
             handler.Initialize();
 
             OnSpellCasting(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
@@ -291,10 +292,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         protected override void OnPositionChanged(ObjectPosition position)
-        {
-            base.OnPositionChanged(position);
+        {        
             if (m_initialized)
                 CheckAndBuildWalls();
+
+            base.OnPositionChanged(position);
         }
 
         public bool CheckAndBuildWalls()
@@ -308,20 +310,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 {
                     binding.Delete();
                 }
-
                 else if (binding.MustBeAdjusted())
                     binding.AdjustWalls();
             }
 
+            foreach (var binding in m_wallsBinding.Where(binding => binding.IntersectOtherWalls))
+            {
+                binding.AdjustWalls();
+            }
+
             foreach (var bomb in Summoner.Bombs)
             {
-                if (bomb != this && m_wallsBinding.All(x => x.Bomb1 != bomb && x.Bomb2 != bomb) && IsBoundWith(bomb))
-                {
-                    var binding = new WallsBinding(this, bomb, m_color);
-                    binding.Removed += OnWallsRemoved;
-                    binding.AdjustWalls();
-                    m_wallsBinding.Add(binding);
-                }
+                if (bomb == this || !m_wallsBinding.All(x => x.Bomb1 != bomb && x.Bomb2 != bomb) || !IsBoundWith(bomb))
+                    continue;
+
+                var binding = new WallsBinding(this, bomb, m_color);
+                binding.Removed += OnWallsRemoved;
+                binding.AdjustWalls();
+                m_wallsBinding.Add(binding);
             }
 
             return true;

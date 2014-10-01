@@ -406,7 +406,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                Cell cell, FightSpellCastCriticalEnum critical, bool silentCast,
                                                                Spell spell)
         {
-            client.Send(new GameActionFightSpellCastMessage((short) actionId, caster.Id, target == null ? 0 : target.Id, cell.Id, (sbyte) (critical),
+            client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, target == null ? 0 : target.Id, silentCast ? (short)-1 : cell.Id, (sbyte)(critical),
                                                             silentCast, (short) spell.Id, (sbyte) spell.CurrentLevel));
         }
 
