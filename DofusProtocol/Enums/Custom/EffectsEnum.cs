@@ -1602,7 +1602,7 @@
         /// <summary>
         /// Advances #1 cell(s)
         /// </summary>
-        Effect_1042 = 1042,
+        Effect_Advance = 1042,
         /// <summary>
         /// Attract to the selected cell
         /// </summary>

@@ -118,6 +118,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get;
             private set;
         }
+
         public int DamageBonusPercent
         {
             get;
@@ -238,6 +239,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return;
 
             handler.DamageBonus = currentBonus + Stats[PlayerFields.ComboBonus].TotalSafe;
+            handler.Summoner = Summoner;
             handler.Initialize();
 
             OnSpellCasting(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
@@ -249,7 +251,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public static void ExplodeInReaction(ICollection<SummonedBomb> bombs)
         {
-            var bonus = bombs.Sum(x => x.DamageBonusPercent);
+            var bonus = bombs.Where(x => !x.HasState((int)SpellStatesEnum.Unmovable)).Sum(x => x.DamageBonusPercent);
 
             foreach (var bomb in bombs)
             {
@@ -365,6 +367,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy)
         {
+            if (HasState((int) SpellStatesEnum.Unmovable))
+            {
+                var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
+                RemoveState(state);
+
+                Explode();
+                
+                return;
+            }      
+
             base.OnDead(killedBy);
 
             Summoner.RemoveBomb(this);

@@ -374,7 +374,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public FightActor GetLastDeadFighter()
         {
-            return m_deadFighters.LastOrDefault();
+            return m_deadFighters.LastOrDefault(x => x.IsDead());
         }
 
         public FightTeamInformations GetFightTeamInformations()

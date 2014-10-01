@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
         public override bool Apply()
         {
-            foreach (FightActor actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors())
             {
                 var integerEffect = GenerateEffect();
 
@@ -30,9 +30,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
                 var value = 0;
 
-                for (int i = 0; i < integerEffect.Value && value < actor.MP; i++)
+                for (var i = 0; i < integerEffect.Value && value < actor.MP; i++)
                 {
-                    if (actor.RollMPLose(Caster))
+                    if (actor.RollMPLose(Caster, value))
                     {
                         value++;
                     }
@@ -49,7 +49,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 if (value <= 0)
                     return false;
 
-                AddStatBuff(actor, (short)( -value ), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
+                //AddStatBuff(actor, (short)( -value ), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
+                actor.LostMP((short)value);
                 if (Effect.Duration > 0)
                 {
                     AddStatBuff(Caster, (short)(value), PlayerFields.MP, true, (short)EffectsEnum.Effect_AddMP_128);

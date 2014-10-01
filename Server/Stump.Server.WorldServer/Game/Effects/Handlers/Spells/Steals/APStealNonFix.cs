@@ -30,9 +30,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 
                 var value = 0;
 
-                for (int i = 0; i < integerEffect.Value && value < actor.AP; i++)
+                for (var i = 0; i < integerEffect.Value && value < actor.AP; i++)
                 {
-                    if (actor.RollAPLose(Caster))
+                    if (actor.RollAPLose(Caster, value))
                     {
                         value++;
                     }
@@ -49,7 +49,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 if (value <= 0)
                     return false;
 
-                AddStatBuff(actor, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
+                //AddStatBuff(actor, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
+                actor.LostAP((short)value);
                 if (Effect.Duration > 0)
                 {
                     AddStatBuff(Caster, (short)(value), PlayerFields.AP, true, (short)EffectsEnum.Effect_AddAP_111);

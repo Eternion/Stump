@@ -9,6 +9,7 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_PullForward)]
+    [EffectHandler(EffectsEnum.Effect_Advance)]
     public class Pull : SpellEffectHandler
     {
         public Pull(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -28,12 +29,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (actor.HasState((int)SpellStatesEnum.Unmovable) || actor.HasState((int)SpellStatesEnum.Rooted))
                     continue;
 
-                var referenceCell = TargetedCell.Id == actor.Cell.Id ? CastPoint : TargetedPoint;
-
-                if (referenceCell.CellId == actor.Position.Cell.Id)
+                if (TargetedPoint.CellId == actor.Position.Cell.Id)
                     continue;
 
-                var pushDirection = actor.Position.Point.OrientationTo(referenceCell, false);
+                var pushDirection = actor.Position.Point.OrientationTo(TargetedPoint, false);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
@@ -44,16 +43,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     if (nextCell == null)
                         break;
 
+                    if (!Fight.IsCellFree(Map.Cells[nextCell.CellId]))
+                    {
+                        break;
+                    }
+
                     if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                     {
                         lastCell = nextCell;
                         break;
                     } 
-                    
-                    if (!Fight.IsCellFree(Map.Cells[nextCell.CellId]))
-                    {
-                        break;
-                    }
 
                     lastCell = nextCell;
                 }
