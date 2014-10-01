@@ -42,8 +42,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 IsCritical = Critical
             };
 
-            damages.BaseMaxDamages = buff.Target.UsedMP * damages.BaseMaxDamages; 
-            damages.BaseMinDamages = buff.Target.UsedMP * damages.BaseMinDamages;
+            damages.GenerateDamages();
+            damages.Amount = buff.Target.UsedMP * damages.BaseMaxDamages;
 
             buff.Target.InflictDamage(damages);
         }

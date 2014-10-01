@@ -2173,7 +2173,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 target.IsAway)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
-            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
+            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy() )
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (target == this)
@@ -2184,7 +2184,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
-
 
         public FighterRefusedReasonEnum CanAgress(Character target)
         {

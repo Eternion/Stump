@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                     for (var i = 0; i < integerEffect.Value && value < actor.AP; i++)
                     {
-                        if (actor.RollAPLose(Caster))
+                        if (actor.RollAPLose(Caster, value))
                         {
                             value++;
                         }
