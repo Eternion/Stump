@@ -325,12 +325,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     continue;
 
                 var binding = new WallsBinding(this, bomb, m_color);
-                binding.Removed += OnWallsRemoved;
                 binding.AdjustWalls();
-                m_wallsBinding.Add(binding);
+                AddWallsBinding(binding);
+                bomb.AddWallsBinding(binding);
             }
 
             return true;
+        }
+
+        public void AddWallsBinding(WallsBinding binding)
+        {
+            binding.Removed += OnWallsRemoved;
+            m_wallsBinding.Add(binding);
         }
 
         private void OnWallsRemoved(WallsBinding obj)
