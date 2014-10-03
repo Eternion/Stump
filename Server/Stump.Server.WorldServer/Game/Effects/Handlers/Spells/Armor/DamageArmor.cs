@@ -70,21 +70,21 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
         {
             switch ((SpellIdEnum)spellId)
             {
-                case SpellIdEnum.AqueousArmour:
-                case SpellIdEnum.AqueousArmour_50:
+                case SpellIdEnum.ARMURE_AQUEUSE_18:
+                case SpellIdEnum.ARMURE_AQUEUSE_451:
                     yield return PlayerFields.WaterDamageArmor;
                     break;
-                case SpellIdEnum.EarthArmour:
-                case SpellIdEnum.EarthArmour_52:
+                case SpellIdEnum.ARMURE_TERRESTRE_453:
+                case SpellIdEnum.ARMURE_TERRESTRE_6:
                     yield return PlayerFields.EarthDamageArmor;
                     yield return PlayerFields.NeutralDamageArmor;
                     break;
-                case SpellIdEnum.WindArmour:
-                case SpellIdEnum.WindArmour_53:
+                case SpellIdEnum.ARMURE_VENTEUSE_14:
+                case SpellIdEnum.ARMURE_VENTEUSE_454:
                     yield return PlayerFields.AirDamageArmor;
                     break;
-                case SpellIdEnum.GlowingArmour:
-                case SpellIdEnum.GlowingArmour_51:
+                case SpellIdEnum.ARMURE_INCANDESCENTE_452:
+                case SpellIdEnum.ARMURE_INCANDESCENTE_1:
                     yield return PlayerFields.FireDamageArmor;
                     break;
                 default:

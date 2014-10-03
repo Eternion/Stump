@@ -195,6 +195,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return (DirectionsEnum) (uint) orientation;
         }
 
+        public DirectionsEnum GetOppositeDirection(DirectionsEnum direction)
+        {
+            return (DirectionsEnum) (((int)direction + 4)%8);
+        }
+
         public IEnumerable<MapPoint> GetAllCellsInRectangle(MapPoint oppositeCell, bool skipStartAndEndCells = true, Func<MapPoint, bool> predicate = null)
         {
             int x1 = Math.Min(oppositeCell.X, X),
@@ -208,6 +213,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
                         var cell = GetPoint(x, y);
                         if (cell != null && ( predicate == null || predicate(cell) )) yield return cell;
                     }
+        }
+
+        public bool IsOnSameLine(MapPoint point)
+        {
+            return point.X == X || point.Y == Y;
         }
 
         public MapPoint[] GetCellsOnLineBetween(MapPoint destination)
@@ -317,10 +327,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             }
 
             if (mapPoint != null)
-                if (IsInMap(mapPoint.X, mapPoint.Y))
-                    return mapPoint;
-                else
-                    return null;
+                return IsInMap(mapPoint.X, mapPoint.Y) ? mapPoint : null;
 
             return null;
         }
@@ -379,18 +386,18 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         {
             m_initialized = true;
 
-            int posX = 0;
-            int posY = 0;
-            int cellCount = 0;
+            var posX = 0;
+            var posY = 0;
+            var cellCount = 0;
 
-            for (int x = 0; x < MapHeight; x++)
+            for (var x = 0; x < MapHeight; x++)
             {
-                for (int y = 0; y < MapWidth; y++)
+                for (var y = 0; y < MapWidth; y++)
                     OrthogonalGridReference[cellCount++] = new MapPoint(posX + y, posY + y);
 
                 posX++;
 
-                for (int y = 0; y < MapWidth; y++)
+                for (var y = 0; y < MapWidth; y++)
                     OrthogonalGridReference[cellCount++] = new MapPoint(posX + y, posY + y);
 
                 posY--;

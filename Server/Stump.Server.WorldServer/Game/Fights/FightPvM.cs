@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected override IEnumerable<IFightResult> GenerateResults()
         {
             var results = new List<IFightResult>();
-            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
+            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb)).Select(entry => entry.GetFightResult()));
 
             if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
                 results.Add(new TaxCollectorProspectingResult(Map.TaxCollector, this));
@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (var team in m_teams)
             {
                 IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead()).ToList();
-                var looters = results.OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
+                var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
                 var teamPP = team.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
 

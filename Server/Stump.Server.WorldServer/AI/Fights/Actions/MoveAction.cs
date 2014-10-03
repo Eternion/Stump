@@ -65,10 +65,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
                 return RunStatus.Failure;
 
             Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-            bool success = Fighter.StartMove(path);
+            var success = Fighter.StartMove(path);
             var lastPos = Fighter.Cell.Id;
 
-            int tries = 0;
+            var tries = 0;
             // re-attempt to move if we didn't reach the cell i.e as we trigger a trap
             while (success && Fighter.Cell.Id != DestinationId && Fighter.CanMove() && tries <= MaxMovesTries)
             {

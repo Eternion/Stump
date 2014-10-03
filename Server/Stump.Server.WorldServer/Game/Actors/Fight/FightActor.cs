@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Core.Mathematics;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -14,6 +15,7 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
@@ -24,6 +26,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -158,6 +161,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, spell, target, critical, silentCast);
         }
 
+        protected virtual void OnSpellCasted(Spell spell, FightActor target, FightSpellCastCriticalEnum critical, bool silentCast)
+        {
+            if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
+                VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            {
+                ShowCell(Cell, false);
+
+                if (!IsInvisibleSpellCast(spell))
+                    if (!DispellInvisibilityBuff())
+                        SetInvisibilityState(VisibleStateEnum.VISIBLE);
+            }
+
+            SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
+
+            var handler = SpellCasted;
+            if (handler != null)
+                handler(this, spell, target.Cell, critical, silentCast);
+        }
+
         public event Action<FightActor, Spell, Cell> SpellCastFailed;
 
         protected virtual void OnSpellCastFailed(Spell spell, Cell cell)
@@ -202,6 +224,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnDead(FightActor killedBy)
         {
+            KillAllSummons();
             RemoveAndDispellAllBuffs();
 
             var handler = Dead;
@@ -330,6 +353,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
             set;
+        }
+
+        public virtual bool IsVisibleInTimeline
+        {
+            get { return true; }
         }
 
         #region Stats
@@ -690,14 +718,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+
             handler.Initialize();
 
-            OnSpellCasting(spell, cell, critical, handler.SilentCast);
+            OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
             UseAP((short)spellLevel.ApCost);
 
             handler.Execute();
 
-            OnSpellCasted(spell, cell, critical, handler.SilentCast);
+            OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast);
 
             return true;
         }
@@ -777,7 +806,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 }
 
                 permanentDamages = CalculateErosionDamage(damageWithoutArmor);
-                damage.Amount -= permanentDamages;
+            }
+
+            //Heal Or Multiply
+            var healOrMultiplyBuff = GetBuffs(x => x is HealOrMultiplyBuff).FirstOrDefault() as HealOrMultiplyBuff;
+            if (healOrMultiplyBuff != null)
+            {
+                var newDamage = healOrMultiplyBuff.GetDamages(damage.Amount);
+
+                if (newDamage > 0)
+                    damage.Amount = newDamage;
+                else
+                {
+                    Heal(-newDamage, damage.Source);
+                    return 0;
+                }
+
+                permanentDamages = 0;
             }
 
             if (damage.Amount <= 0)
@@ -792,7 +837,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
 
-            OnLifePointsChanged(-(damage.Amount + permanentDamages), permanentDamages, damage.Source);
+            OnLifePointsChanged(-damage.Amount, permanentDamages, damage.Source);
 
             if (IsDead())
                 OnDead(damage.Source);
@@ -980,7 +1025,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (erosion > 50)
                 erosion = 50;
 
-            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.Truce).Any())
+            if (GetBuffs(x => x.Spell.Id == (int) SpellIdEnum.TRÊVE).Any())
                 erosion -= 10;
 
             return (int)( damages * ( erosion / 100d ) );
@@ -1042,45 +1087,41 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int)(spellBonus * (1 + (Stats[PlayerFields.Wisdom].TotalSafe / 100d)) + Stats[PlayerFields.DamageReflection].TotalSafe);
         }
 
-        public virtual bool RollAPLose(FightActor from)
+        public virtual bool RollAPLose(FightActor from, int value)
         {
             var apAttack = from.Stats[PlayerFields.APAttack].Total > 1 ? from.Stats[PlayerFields.APAttack].TotalSafe : 1;
-            var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
-
-            var prob = (apAttack/(double) apDodge)*
-                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
+            var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
+            var prob = ((Stats.AP.Total-value)/(double) (Stats.AP.TotalMax))*(apAttack/(double) apDodge) /2d;
 
             if (prob < 0.10)
                 prob = 0.10;
             else if (prob > 0.90)
                 prob = 0.90;
 
-            var rnd = new AsyncRandom().NextDouble();
+            var rnd = new CryptoRandom().NextDouble();
 
             return rnd < prob;
         }
 
-        public virtual bool RollMPLose(FightActor from)
+        public virtual bool RollMPLose(FightActor from, int value)
         {
             var mpAttack = from.Stats[PlayerFields.MPAttack].Total > 1 ? from.Stats[PlayerFields.MPAttack].TotalSafe : 1;
-            var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
-
-            var prob = (mpAttack/(double) mpDodge)*
-                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
+            var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
+            var prob = ((Stats.MP.Total - value) / (double)(Stats.MP.TotalMax)) * (mpAttack / (double)mpDodge) / 2d;
 
             if (prob < 0.10)
                 prob = 0.10;
             else if (prob > 0.90)
-                prob = 0.90;
+                prob = 0.90 - (0.10 * value);
 
-            var rnd = new AsyncRandom().NextDouble();
+            var rnd = new CryptoRandom().NextDouble();
 
             return rnd < prob;
         }
 
         public FightActor[] GetTacklers()
         {
-            return OpposedTeam.GetAllFighters(entry => entry.IsAlive() && entry.IsVisibleFor(this) && entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
+            return OpposedTeam.GetAllFighters(entry => entry.CanTackle(this) && entry.Position.Point.IsAdjacentTo(Position.Point)).ToArray();
         }
 
         public virtual int GetTackledMP()
@@ -1095,7 +1136,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return 0;
 
             var percentLost = 0d;
-            for (int i = 0; i < tacklers.Length; i++)
+            for (var i = 0; i < tacklers.Length; i++)
             {
                 var fightActor = tacklers[i];
 
@@ -1361,6 +1402,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #region Summons
 
         private readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
+        private readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
         public int SummonedCount
         {
@@ -1368,14 +1410,30 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
-        public ReadOnlyCollection<SummonedFighter> GetSummons()
+        public int BombsCount
         {
-            return m_summons.AsReadOnly();
+            get;
+            set;
         }
+
+        public ReadOnlyCollection<SummonedFighter> Summons
+        {
+            get { return m_summons.AsReadOnly(); }
+        }
+        public ReadOnlyCollection<SummonedBomb> Bombs
+        {
+            get { return m_bombs.AsReadOnly(); }
+        }
+
 
         public bool CanSummon()
         {
             return SummonedCount < Stats[PlayerFields.SummonLimit].Total;
+        }
+
+        public bool CanSummonBomb()
+        {
+            return BombsCount < SummonedBomb.BombLimit;
         }
 
         public void AddSummon(SummonedFighter summon)
@@ -1395,9 +1453,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_summons.Remove(summon);
         }
 
+        public void AddBomb(SummonedBomb bomb)
+        {
+            if (bomb.MonsterBombTemplate.Template.UseBombSlot)
+                BombsCount++;
+
+            m_bombs.Add(bomb);
+        }
+
+        public void RemoveBomb(SummonedBomb bomb)
+        {
+            if (bomb.MonsterBombTemplate.Template.UseBombSlot)
+                BombsCount--;
+
+            m_bombs.Remove(bomb);
+        }
+
         public void RemoveAllSummons()
         {
             m_summons.Clear();
+            m_bombs.Clear();
         }
 
         public void KillAllSummons()
@@ -1406,11 +1481,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 summon.Die();
             }
+            foreach (var bomb in m_bombs.ToArray())
+            {
+                bomb.Die();
+            }
         }
 
         #endregion
 
         #region States
+
         private readonly List<SpellState> m_states = new List<SpellState>();
 
         public void AddState(SpellState state)
@@ -1442,7 +1522,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return m_states.Any(entry => entry.PreventsFight);
         }
-
 
         #region Invisibility
 
@@ -1477,10 +1556,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Trap) || // traps
                    spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
-                   spell.Template.Id == (int)SpellIdEnum.Double || // double
-                   spell.Template.Id == (int)SpellIdEnum.ChakraImpulse || // chakra pulsion
-                   spell.Template.Id == (int)SpellIdEnum.InsidiousPoison || // insidious poison
-                   spell.Template.Id == (int)SpellIdEnum.Fear;
+                   spell.Template.Id == (int)SpellIdEnum.DOUBLE || // double
+                   spell.Template.Id == (int)SpellIdEnum.PULSION_DE_CHAKRA || // chakra pulsion
+                   spell.Template.Id == (int)SpellIdEnum.CONCENTRATION_DE_CHAKRA || // chakra concentration
+                   spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX || // insidious poison
+                   spell.Template.Id == (int)SpellIdEnum.PEUR;
         }
 
         public bool DispellInvisibilityBuff()
@@ -1524,6 +1604,144 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         
             if (lastState == GameActionFightInvisibilityStateEnum.INVISIBLE)
                 Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, this));
+        }
+
+        #endregion
+
+        #region Carry/Throw
+
+        private FightActor m_carriedActor;
+
+        public bool IsCarrying()
+        {
+            return m_carriedActor != null;
+        }
+
+        public bool IsCarried()
+        {
+            return GetCarryingActor() != null;
+        }
+
+        public FightActor GetCarriedActor()
+        {
+            return m_carriedActor;
+        }
+
+        public FightActor GetCarryingActor()
+        {
+            return Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
+        }
+
+        public void CarryActor(FightActor target, EffectBase effect, Spell spell)
+        {
+            var stateCarried = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Carried);
+            var stateCarrying = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Carrying);
+
+            if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
+                return;
+
+            var actorBuffId = PopNextBuffId();
+            var targetBuffId = target.PopNextBuffId();
+
+            var actorBuff = new StateBuff(actorBuffId, this, this, effect, spell, false, stateCarrying)
+            {
+                Duration = -1
+            };
+
+            var targetBuff = new StateBuff(targetBuffId, target, this, effect, spell, false, stateCarried)
+            {
+                Duration = -1
+            };
+
+            AddAndApplyBuff(actorBuff);
+            target.AddAndApplyBuff(targetBuff);
+
+            ActionsHandler.SendGameActionFightCarryCharacterMessage(Fight.Clients, this, target);        
+
+            target.Position.Cell = Position.Cell;
+            m_carriedActor = target;
+
+            m_carriedActor.Dead += OnCarryingActorDead;
+            m_carriedActor.FighterLeft += OnCarryingActorLeft;
+            Dead += OnCarryingActorDead;
+            FighterLeft += OnCarryingActorLeft;
+        }
+
+        public void ThrowActor(Cell cell, bool drop = false)
+        {
+            if (!Map.IsCellFree(cell.Id))
+                return;
+
+            var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carrying).FirstOrDefault();
+            var targetState = m_carriedActor.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carried).FirstOrDefault();
+
+            if (actorState == null || targetState == null)
+                return;
+
+            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+
+            if (drop)
+                ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, m_carriedActor, cell);   
+            else
+                ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
+
+            RemoveAndDispellBuff(actorState);
+            RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
+            m_carriedActor.RemoveAndDispellBuff(targetState);
+            m_carriedActor.RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
+
+            m_carriedActor.Position.Cell = cell;
+
+            Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, m_carriedActor));
+
+            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+
+            m_carriedActor.Dead -= OnCarryingActorDead;
+            m_carriedActor.FighterLeft -= OnCarryingActorLeft;
+            Dead -= OnCarryingActorDead;
+            FighterLeft -= OnCarryingActorLeft;
+
+            m_carriedActor = null;
+        }
+
+        public override bool StartMove(Path movementPath)
+        {
+            if (!IsCarried())
+                return base.StartMove(movementPath);
+
+            var carryingActor = GetCarryingActor();
+
+            if (carryingActor == null)
+                return base.StartMove(movementPath);
+
+            //movementPath.CutPath(1, true);
+
+            carryingActor.ThrowActor(movementPath.StartCell);
+
+            return base.StartMove(movementPath);
+        }
+
+        public override bool StopMove()
+        {
+            if (!base.StopMove())
+                return false;
+
+            if (IsCarrying())
+            {
+                m_carriedActor.Position.Cell = Position.Cell;
+            }
+
+            return true;
+        }
+
+        private void OnCarryingActorDead(FightActor actor, FightActor killer)
+        {
+            ThrowActor(Cell, true);
+        }
+
+        private void OnCarryingActorLeft(FightActor fighter)
+        {
+            ThrowActor(Cell, true);
         }
 
         #endregion
@@ -1641,6 +1859,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override bool CanMove()
         {
             return IsFighterTurn() && IsAlive() && MP > 0;
+        }
+
+        public virtual bool CanTackle(FightActor fighter)
+        {
+            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.Rooted) && !fighter.HasState((int)SpellStatesEnum.Rooted) && fighter.Position.Cell != Position.Cell;
         }
 
         public virtual bool CanPlay()

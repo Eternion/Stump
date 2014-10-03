@@ -1,7 +1,10 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -142,6 +145,81 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 WorldServer.Instance.DBAccessor.Database.Update(from.Record);
                 trigger.ReplyBold("{0} -> {1} = RESET", from.Id, transition);
             });
+        }
+    }
+
+    public class TransitionAddTriggerCommand : AddRemoveSubCommand
+    {
+        public TransitionAddTriggerCommand()
+        {
+            Aliases = new[] {"trigger"};
+            Description = "Add a trigger to the current map";
+            RequiredRole = RoleEnum.Administrator;
+            ParentCommandType = typeof (TransitionsCommands);
+            AddParameter("cellidsrc", "cellsrc", "Cell source", isOptional: true, converter: ParametersConverter.CellConverter);
+            AddParameter("map", "map", "Map destination", converter: ParametersConverter.MapConverter);
+            AddParameter<short>("celliddst", "celldst", "Cell destination");
+        }
+
+        public override void ExecuteAdd(TriggerBase trigger)
+        {
+            var character = trigger is GameTrigger ? (trigger as GameTrigger).Character : null;
+
+            if (character == null)
+                return;
+
+            var map = trigger.Get<Map>("map");
+
+            if (map == null)
+            {
+                trigger.ReplyError("Map '{0}' doesn't exist", trigger.Get<int>("mapid"));
+            }
+            else
+            {
+                var cellIdSrc = trigger.IsArgumentDefined("cellidsrc") ? character.Map.Cells[trigger.Get<short>("cellidsrc")] : character.Cell;
+                var cellIdDst = map.Cells[trigger.Get<short>("celliddst")];
+
+                var record = new CellTriggerRecord
+                {
+                    CellId = cellIdSrc.Id,
+                    MapId = character.Map.Id,
+                    Type = "Teleport",
+                    TriggerType = CellTriggerType.END_MOVE_ON,
+                    Parameter0 = cellIdDst.Id.ToString(),
+                    Parameter1 = map.Id.ToString()
+                };
+
+                WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+                {
+                    CellTriggerManager.Instance.AddCellTrigger(record);
+                    trigger.ReplyBold("Add CellTrigger from map {0}({1}) to {2}({3})", record.MapId, record.CellId, record.Parameter1, record.Parameter0);
+                });
+            }
+        }
+
+        public override void ExecuteRemove(TriggerBase trigger)
+        {
+            var character = trigger is GameTrigger ? (trigger as GameTrigger).Character : null;
+
+            if (character == null)
+                return;
+
+            var map = trigger.Get<Map>("map");
+
+            if (map == null)
+            {
+                trigger.ReplyError("Map '{0}' doesn't exist", trigger.Get<int>("mapid"));
+            }
+            else
+            {
+                var cellIdSrc = trigger.IsArgumentDefined("cellidsrc") ? character.Map.Cells[trigger.Get<short>("cellidsrc")] : character.Cell;
+
+                WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+                {
+                    CellTriggerManager.Instance.DeleteCellTrigger(character.Map.Id, cellIdSrc.Id);
+                    trigger.ReplyBold("Delete CellTrigger from map {0}({1})", character.Map.Id, cellIdSrc.Id);
+                });
+            }
         }
     }
 }

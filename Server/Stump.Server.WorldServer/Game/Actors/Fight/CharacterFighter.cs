@@ -20,7 +20,6 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -104,9 +103,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private void InitializeCharacterFighter()
         {
             m_damageTakenBeforeFight = Stats.Health.DamageTaken;
-
-            if (Fight.IsDeathTemporarily)
-                Stats.Health.DamageTaken = 0;
         }
 
         public override ObjectPosition GetLeaderBladePosition()
@@ -210,21 +206,27 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             switch (result)
             {
                 case SpellCastResult.NO_LOS:
+                    // Impossible de lancer ce sort : un obstacle gène votre vue !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 174);
                     break;
                 case SpellCastResult.HAS_NOT_SPELL:
+                    // Impossible de lancer ce sort : vous ne le possédez pas !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 169);
                     break;
                 case SpellCastResult.NOT_ENOUGH_AP:
+                    // Impossible de lancer ce sort : Vous avez %1 PA disponible(s) et il vous en faut %2 pour ce sort !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 170, AP, spell.CurrentSpellLevel.ApCost);
                     break;
                 case SpellCastResult.UNWALKABLE_CELL:
-                case SpellCastResult.CELL_NOT_FREE:
+                    // Impossible de lancer ce sort : la cellule visée n'est pas disponible !
                     Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 172);
                     break;
+                case SpellCastResult.CELL_NOT_FREE:
+                    //Impossible de lancer ce sort : la cellule visée n'est pas valide !
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 193);
+                    break;
                 default:
-                    BasicHandler.SendTextInformationMessage(Character.Client,
-                        TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
+                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 175);
                     Character.SendServerMessage("(" + result + ")", Color.Red);
                     break;
             }
@@ -247,6 +249,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public bool CanUseWeapon(Cell cell, WeaponTemplate weapon)
         {
             if (!IsFighterTurn())
+                return false;
+
+            if (HasState((int)SpellStatesEnum.Weakened))
                 return false;
 
             var point = new MapPoint(cell);
@@ -376,6 +381,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return 0;
         }
+
         #endregion
     }
 }

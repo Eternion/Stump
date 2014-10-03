@@ -44,6 +44,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             RemoveTrigger = removeTrigger;
         }
 
+        public object Token
+        {
+            get;
+            set;
+        }
+
         public BuffTriggerType Trigger
         {
             get;
@@ -71,13 +77,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public override void Apply()
         {
             if (ApplyTrigger != null)
-                ApplyTrigger(this, BuffTriggerType.UNKNOWN, null);
+                ApplyTrigger(this, BuffTriggerType.UNKNOWN, Token);
         }
 
         public void Apply(BuffTriggerType trigger)
         {
             if (ApplyTrigger != null)
-                ApplyTrigger(this, trigger, null);
+                ApplyTrigger(this, trigger, Token);
         }
 
         public void Apply(BuffTriggerType trigger, object token)

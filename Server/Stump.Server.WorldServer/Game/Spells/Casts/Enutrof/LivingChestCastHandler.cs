@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
-    [SpellCastHandler(SpellIdEnum.LivingChest)]
+    [SpellCastHandler(SpellIdEnum.COFFRE_ANIMÉ)]
     public class LivingChestCastHandler : DefaultSpellCastHandler
     {
         public LivingChestCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
