@@ -157,6 +157,7 @@ namespace Stump.DofusProtocol.Enums
         KWISMAS = 153,
         WRAPPING_PAPER = 154,
         DOFUS_SHOP = 217,
+        TOKEN_SCROLL = 245,
 		END
 	}
 

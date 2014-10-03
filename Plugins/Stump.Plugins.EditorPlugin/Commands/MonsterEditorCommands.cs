@@ -140,13 +140,13 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 if (spawn.Map != null)
                     spawn.Map.RemoveMonsterSpawn(spawn);
 
-                if (spawn.SubArea != null)
+                if (spawn.SubArea == null)
+                    continue;
+
+                foreach (var map in spawn.SubArea.Maps)
                 {
-                    foreach (var map in spawn.SubArea.Maps)
-                    {
-                        map.RemoveMonsterSpawn(spawn);
-                    }
-                }            
+                    map.RemoveMonsterSpawn(spawn);
+                }
             }
 
             WorldServer.Instance.IOTaskPool.AddMessage(

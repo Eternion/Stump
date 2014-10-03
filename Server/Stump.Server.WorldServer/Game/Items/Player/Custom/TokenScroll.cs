@@ -1,17 +1,13 @@
-﻿using Stump.Core.Attributes;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemId(ItemIdEnum.TokenScroll)]
+    [ItemType(ItemTypeEnum.TOKEN_SCROLL)]
     public sealed class TokenScroll : BasePlayerItem
     {
-        [Variable]
-        private const uint WonTokens = 100;
-
         public TokenScroll(Character owner, PlayerItemRecord record)
             : base(owner, record)
         {
@@ -22,18 +18,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             Owner.Area.AddMessage(() =>
             {
                 var tokens = Owner.Inventory.Tokens;
+                var wonTokens = (uint) Template.Price;
 
                 if (tokens != null)
                 {
-                    tokens.Stack += WonTokens;
+                    tokens.Stack += wonTokens;
                     Owner.Inventory.RefreshItem(tokens); 
                 }
                 else
-                    Owner.Inventory.AddItem(Inventory.TokenTemplate, (int)WonTokens);
+                    Owner.Inventory.AddItem(Inventory.TokenTemplate, (int)wonTokens);
 
 
                 Owner.Inventory.Save();
-                Owner.SendServerMessage(string.Format("Vous avez reçu {0} Jetons en utilisant votre {1}", WonTokens, Template.Name));
+                Owner.SendServerMessage(string.Format("Vous avez reçu {0} Jetons en utilisant votre {1}", wonTokens, Template.Name));
             });
 
             return 1;

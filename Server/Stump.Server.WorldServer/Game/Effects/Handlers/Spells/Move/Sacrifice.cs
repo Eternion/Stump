@@ -1,19 +1,18 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_DamageIntercept)]
     public class Sacrifice : SpellEffectHandler
     {
-        private FightActor m_target;
+        private List<FightActor> m_targets;
 
         public Sacrifice(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
@@ -22,27 +21,34 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
-            m_target = GetAffectedActors().FirstOrDefault();
-            if (m_target == null)
-                return true;
+            foreach (var actor in GetAffectedActors())
+            {
+                //m_targets.Add(actor);
 
-            AddTriggerBuff(m_target, false, BuffTriggerType.BEFORE_ATTACKED, TriggerBuffApply);
-            AddTriggerBuff(m_target, false, BuffTriggerType.AFTER_ATTACKED, PostTriggerBuffApply);
+                AddTriggerBuff(actor, false, BuffTriggerType.BEFORE_ATTACKED, TriggerBuffApply);
+                AddTriggerBuff(actor, false, BuffTriggerType.AFTER_ATTACKED, PostTriggerBuffApply);
+            }
 
             return true;
         }
 
         public void TriggerBuffApply(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            if (m_target.IsSacrificeProtected)
+            var target = buff.Target;
+
+            if (target == null)
                 return;
-            m_target.IsSacrificeProtected = true;
+
+            if (target.IsSacrificeProtected)
+                return;
+
+            target.IsSacrificeProtected = true;
 
             var damage = token as Fights.Damage;
             if (damage == null)
                 return;
 
-            Caster.ExchangePositions(m_target);
+            Caster.ExchangePositions(target);
 
             // first, apply damage to sacrifier
             Caster.InflictDamage(damage);
@@ -52,7 +58,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public void PostTriggerBuffApply(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            m_target.IsSacrificeProtected = false;
+            var target = buff.Target;
+
+            if (target == null)
+                return;
+
+            target.IsSacrificeProtected = false;
         }
     }
 }

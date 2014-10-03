@@ -16,9 +16,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         protected void NotifyTriggered(FightActor target, Spell triggeredSpell)
         {
-            Action<MarkTrigger, FightActor, Spell> handler = Triggered;
+            var handler = Triggered;
             if (handler != null)
                 handler(this, target, triggeredSpell);
+        }
+
+        public event Action<MarkTrigger> Removed;
+
+        public void NotifyRemoved()
+        {
+            var handler = Removed;
+            if (handler != null)
+                handler(this);
         }
 
         protected MarkTrigger(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, params MarkShape[] shapes)
@@ -101,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public abstract GameActionMark GetGameActionMark();
         public abstract GameActionMark GetHiddenGameActionMark();
         public abstract bool DoesSeeTrigger(FightActor fighter);
-
         public abstract bool DecrementDuration();
+        public abstract bool IsAffected(FightActor actor);
     }
 }

@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
         public virtual bool Teleport(Map map, Cell cell)
         {
-            return Teleport(new ObjectPosition(map, cell), true);
+            return Teleport(new ObjectPosition(map, cell));
         }
 
         public virtual bool Teleport(ObjectPosition destination, bool performCheck = true)

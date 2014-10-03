@@ -19,9 +19,22 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         protected virtual void OnFighterAdded(FightActor fighter)
         {
+            fighter.Dead += OnFighterDead;
+            fighter.FighterLeft += OnFighterLeave;
+
             var handler = FighterAdded;
             if (handler != null)
                 handler(this, fighter);
+        }
+
+        private void OnFighterDead(FightActor actor, FightActor killer)
+        {
+            m_deadFighters.Add(actor);
+        }
+
+        private void OnFighterLeave(FightActor actor)
+        {
+            m_deadFighters.Remove(actor);
         }
 
         public event Action<FightTeam, FightOptionsEnum> TeamOptionsChanged;
@@ -37,6 +50,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         protected virtual void OnFighterRemoved(FightActor fighter)
         {
+            fighter.Dead -= OnFighterDead;
+            fighter.FighterLeft -= OnFighterLeave;
+
             var handler = FighterRemoved;
             if (handler != null)
                 handler(this, fighter);
@@ -45,9 +61,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         #endregion
 
         private readonly List<FightActor> m_fighters = new List<FightActor>();
-        private readonly List<FightActor> m_leavers = new List<FightActor>();
+        private readonly List<FightActor> m_leavers = new List<FightActor>();  
+        private readonly List<FightActor> m_deadFighters = new List<FightActor>();
         private readonly object m_locker = new object();
-
+                       
         protected FightTeam(TeamEnum id, Cell[] placementCells)
         {
             Id = id;
@@ -207,7 +224,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public bool AreAllDead()
         {
-            return m_fighters.Count <= 0 || m_fighters.All(entry => entry.IsDead() || entry.HasLeft());
+            return m_fighters.Count <= 0 || m_fighters.Where(x => !(x is SummonedFighter) && !(x is SummonedBomb)).All(entry => entry.IsDead() || entry.HasLeft());
         }
 
         public bool IsFull()
@@ -353,6 +370,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         public IEnumerable<T> GetAllFighters<T>(Predicate<T> predicate) where T : FightActor
         {
             return m_fighters.OfType<T>().Where(entry => predicate(entry));
+        }
+
+        public FightActor GetLastDeadFighter()
+        {
+            return m_deadFighters.LastOrDefault(x => x.IsDead());
         }
 
         public FightTeamInformations GetFightTeamInformations()

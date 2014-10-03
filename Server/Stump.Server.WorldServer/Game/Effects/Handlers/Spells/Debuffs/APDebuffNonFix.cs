@@ -9,6 +9,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_RemoveAP)]
     [EffectHandler(EffectsEnum.Effect_LosingAP)]
+    [EffectHandler(EffectsEnum.Effect_SubAP_1079)]
     public class APDebuffNonFix : SpellEffectHandler
     {
         public APDebuffNonFix(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -36,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         actor.RemoveAndDispellBuff(buff);
                 }
 
-                var value = integerEffect.Value;
+                short value;
 
                 // Effect_RemoveAP ignore resistance
                 // if (Effect.EffectId != EffectsEnum.Effect_RemoveAP) // note : was i wrong ?
@@ -45,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                     for (var i = 0; i < integerEffect.Value && value < actor.AP; i++)
                     {
-                        if (actor.RollAPLose(Caster))
+                        if (actor.RollAPLose(Caster, value))
                         {
                             value++;
                         }

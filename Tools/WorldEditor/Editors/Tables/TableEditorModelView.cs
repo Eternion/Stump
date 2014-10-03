@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using DBSynchroniser;
 using Stump.Core.I18N;
 using Stump.Core.Reflection;
@@ -36,6 +37,8 @@ using WorldEditor.Editors.Files.D2O;
 using WorldEditor.Helpers;
 using WorldEditor.Helpers.Converters;
 using WorldEditor.Loaders.I18N;
+using CheckBox = System.Windows.Controls.CheckBox;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace WorldEditor.Editors.Tables
 {
@@ -535,19 +538,32 @@ namespace WorldEditor.Editors.Tables
             var idProperty = 
                 m_table.Type.GetProperties().FirstOrDefault(x => x.GetCustomAttribute<PrimaryKeyAttribute>() != null);
 
+            var names = new Dictionary<string, int>();
             foreach (var row in m_rows)
             {
                 var nameId = nameProperty.GetValue(row);
-                var id = idProperty.GetValue(row);
+                var id = (int)idProperty.GetValue(row);
                 var nameRecord = I18NDataManager.Instance.GetText(nameId is uint ? (uint) nameId : (uint) (int) nameId);
                 if (nameRecord == null)
                     continue;
 
                 var name = !string.IsNullOrEmpty(nameRecord.English) ? nameRecord.English : nameRecord.French;
 
-                var formattedName = name.Trim().ToUpper().Replace(" ", "_").Replace("\"", "").Replace("'", "_");
-                builder.AppendLine(string.Format("\t\t{0} = {1},", formattedName, id));
+                var formattedName = name.Trim().ToUpper().Replace(" ", "_").Replace("\"", "").Replace("'", "_").Replace('-','_').
+                    Replace("(", "_").Replace(")", "_").Replace("[", "_").Replace("]", "_");
+                if (names.ContainsKey(formattedName))
+                {
+                    var otherId = names[formattedName];
+                    names.Add(formattedName + "_" + otherId, otherId);
+                    names.Remove(formattedName);
+                    names.Add(formattedName + "_" + id, id);
+                }
+                else names.Add(formattedName, id);
             }
+
+            foreach(var keyPair in names.OrderBy(x => x.Value))
+                builder.AppendLine(string.Format("\t\t{0} = {1},", keyPair.Key, keyPair.Value));
+
             builder.AppendLine("\t}");
             builder.AppendLine("}");
 

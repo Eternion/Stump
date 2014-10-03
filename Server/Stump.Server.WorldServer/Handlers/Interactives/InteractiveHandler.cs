@@ -1,4 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
@@ -39,6 +42,16 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
         public static void SendInteractiveUsedMessage(IPacketReceiver client, Character user, InteractiveObject interactiveObject, Skill skill)
         {
             client.Send(new InteractiveUsedMessage(user.Id, interactiveObject.Id, (short) skill.Id, (short) skill.GetDuration(user)));
+        }
+
+        public static void SendStatedElementUpdatedMessage(IPacketReceiver client, int elementId, short elementCellId, int state)
+        {
+            client.Send(new StatedElementUpdatedMessage(new StatedElement(elementId, elementCellId, state)));
+        }
+
+        public static void SendMapObstacleUpdatedMessage(IPacketReceiver client, IEnumerable<MapObstacle> obstacles)
+        {
+            client.Send(new MapObstacleUpdateMessage(obstacles));
         }
     }
 }
