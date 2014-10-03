@@ -97,14 +97,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
                     Bomb1.Fight.AddTriger(wall);
                     m_walls.Add(wall);
-
-                    var fighter = Bomb1.Fight.GetOneFighter(wall.CenterCell);
-                    if (fighter != null)
-                        Bomb1.Fight.TriggerMarks(wall.CenterCell, fighter, TriggerType.MOVE);
                 }
                 else IntersectOtherWalls = true;
 
             }
+
+            foreach (var wall in m_walls)
+            {
+                var fighter = Bomb1.Fight.GetOneFighter(wall.CenterCell);
+                if (fighter != null)
+                    Bomb1.Fight.TriggerMarks(wall.CenterCell, fighter, TriggerType.MOVE);
+            }
+
             Length = dist > 0 ? (int)dist - 1 : 0;
         }
 

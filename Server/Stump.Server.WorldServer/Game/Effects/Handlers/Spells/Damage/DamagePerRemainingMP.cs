@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     IsCritical = Critical
                 };
 
-                var percent = 100 - ((Caster.Stats.MP.Used/Caster.Stats.MP.TotalMax)*100);
+                var percent = 100 - ((Caster.Stats.MP.Total / Caster.Stats.MP.TotalMax) * 100);
                 damages.BaseMaxDamages = damages.BaseMaxDamages * ((100 - percent) / 100);
                 damages.BaseMinDamages = damages.BaseMinDamages * ((100 - percent) / 100);
 
