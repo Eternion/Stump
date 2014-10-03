@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
-    [SpellCastHandler(SpellIdEnum.FelineSpirit)]
+    [SpellCastHandler(SpellIdEnum.ESPRIT_FÉLIN)]
     public class FelineSpiritCastHandler : DefaultSpellCastHandler
     {
         public FelineSpiritCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical) : base(caster, spell, targetedCell, critical)

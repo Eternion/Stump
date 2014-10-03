@@ -189,7 +189,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     if (Fighter.AP == 0)
                         yield break;
 
-                    if (possibleCast.MPToUse > Fighter.MP)
+                    if (Fighter.MP != -1 && possibleCast.MPToUse > Fighter.MP)
                         continue;
 
                     if (possibleCast.IsSummoningSpell)

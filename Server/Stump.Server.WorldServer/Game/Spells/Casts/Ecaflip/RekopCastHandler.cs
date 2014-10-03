@@ -8,7 +8,8 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
-    [SpellCastHandler(SpellIdEnum.Rekop)]
+    [SpellCastHandler(SpellIdEnum.REKOP)]
+    [SpellCastHandler(SpellIdEnum.REKOP_DU_DOPEUL)]
     public class RekopCastHandler : DefaultSpellCastHandler
     {
         public RekopCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical) : base(caster, spell, targetedCell, critical)

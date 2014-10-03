@@ -9,6 +9,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_LosingMP)]
     [EffectHandler(EffectsEnum.Effect_LostMP)]
+    [EffectHandler(EffectsEnum.Effect_SubMP_1080)]
     public class MPDebuffNonFix : SpellEffectHandler
     {
         public MPDebuffNonFix(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -25,16 +26,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                var value = integerEffect.Value;
+                short value;
 
                 // Effect_LosingMP ignore resistance
-                if (Effect.EffectId != EffectsEnum.Effect_LosingMP)
+                //if (Effect.EffectId != EffectsEnum.Effect_LosingMP)
                 {
                     value = 0;
 
                     for (var i = 0; i < integerEffect.Value && value < actor.MP; i++)
                     {
-                        if (actor.RollMPLose(Caster))
+                        if (actor.RollMPLose(Caster, value))
                         {
                             value++;
                         }

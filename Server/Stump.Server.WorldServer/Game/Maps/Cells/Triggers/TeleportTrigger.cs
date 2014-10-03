@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
         private void RefreshPosition()
         {
-            Map map = Game.World.Instance.GetMap(DestinationMapId);
+            Map map = World.Instance.GetMap(DestinationMapId);
 
             if (map == null)
                 throw new Exception(string.Format("Cannot load CellTeleport id={0}, DestinationMapId {1} isn't found", Record.Id, DestinationMapId));

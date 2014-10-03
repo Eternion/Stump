@@ -31,7 +31,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             m_stats = new StatsFields(this);
             m_stats.Initialize(TaxCollectorNpc);
-
             
             Cell cell;
             if (!Fight.FindRandomFreeCell(this, out cell, false))

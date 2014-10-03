@@ -41,18 +41,18 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public static readonly short[] TAX_COLLECTOR_SPELLS =
         {
-            (short) SpellIdEnum.Rock,
-            (short) SpellIdEnum.Wave,
-            (short) SpellIdEnum.Cyclone,
-            (short) SpellIdEnum.Flame,
-            (short) SpellIdEnum.Destabilization,
-            (short) SpellIdEnum.Unbewitchment,
-            (short) SpellIdEnum.HealingWord_54,
-            (short) SpellIdEnum.AqueousArmour_50,
-            (short) SpellIdEnum.EarthArmour_52,
-            (short) SpellIdEnum.WindArmour_53,
-            (short) SpellIdEnum.GlowingArmour_51,
-            (short) SpellIdEnum.MassCompulsion,
+            (short) SpellIdEnum.ROCHER,
+            (short) SpellIdEnum.VAGUE,
+            (short) SpellIdEnum.CYCLONE,
+            (short) SpellIdEnum.FLAMME,
+            (short) SpellIdEnum.DÉSTABILISATION,
+            (short) SpellIdEnum.DÉSENVOUTEMENT,
+            (short) SpellIdEnum.MOT_SOIGNANT_459,
+            (short) SpellIdEnum.ARMURE_AQUEUSE_451,
+            (short) SpellIdEnum.ARMURE_TERRESTRE_453,
+            (short) SpellIdEnum.ARMURE_VENTEUSE_454,
+            (short) SpellIdEnum.ARMURE_INCANDESCENTE_452,
+            (short) SpellIdEnum.COMPULSION_DE_MASSE,
         };
 
         [Variable(true)] public static int MaxMembersNumber = 50;

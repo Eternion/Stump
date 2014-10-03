@@ -130,6 +130,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+        public void Rescale(double factor)
+        {
+            if (m_scales.Count == 0)
+                AddScale((short) (100*factor));
+            else
+            {
+                SetScales(m_scales.Select(x => (short) (x*factor)).ToArray());
+            }
+        }
+
         public void AddColor(int index, Color color)
         {
             m_colors.Add(index, color);
