@@ -68,9 +68,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             ExplodSpell = new Spell(spellBombTemplate.ExplodReactionSpell, (byte)MonsterBombTemplate.GradeId);
 
             Fight.TurnStarted += OnTurnStarted;
+            Team.FighterAdded += OnFighterAdded;
+
+            m_initialized = true;
+        }
+
+        private void OnFighterAdded(FightTeam team, FightActor actor)
+        {
+            if (actor != this)
+                return;
 
             CheckAndBuildWalls();
-            m_initialized = true;
         }
 
         private void OnTurnStarted(IFight fight, FightActor player)
@@ -209,12 +217,38 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     100d + Summoner.Stats[PlayerFields.DamageBonus].Total);
         }
 
+        private static bool IsAnotherBombInLine(SummonedBomb bomb1, IEnumerable<short> cells)
+        {
+            foreach (var cell in cells)
+            {
+                var bomb = bomb1.Fight.GetOneFighter<SummonedBomb>(x => x.Cell.Id == cell);
+                if (bomb != null && bomb.IsFriendlyWith(bomb1) && bomb.MonsterBombTemplate == bomb1.MonsterBombTemplate)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void CheckForBetterBounding()
+        {
+            foreach (var wall in Walls.ToArray())
+            {
+                var cells = wall.Bomb1.Position.Point.GetCellsOnLineBetween(wall.Bomb2.Position.Point).Select(y => y.CellId);
+                if (IsAnotherBombInLine(this, cells))
+                    wall.Delete();
+            }
+        }
+
         private static bool IsBoundWith(SummonedBomb bomb1, SummonedBomb bomb2)
         {
+            bomb1.CheckForBetterBounding();
+            bomb2.CheckForBetterBounding();
+
             var dist = bomb1.Position.Point.DistanceToCell(bomb2.Position.Point);
-            return dist > 2 &&
-                dist <= 7 && bomb1.MonsterBombTemplate == bomb2.MonsterBombTemplate &&
-                bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point);
+
+            return dist > 1 &&
+                         dist <= 7 && bomb1.MonsterBombTemplate == bomb2.MonsterBombTemplate &&
+                         bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point);
         }
 
         public bool IsBoundWith(SummonedBomb bomb)
@@ -308,7 +342,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 if (!binding.IsValid())
                 {
+                    var bomb1 = binding.Bomb1;
+                    var bomb2 = binding.Bomb2;
+
                     binding.Delete();
+
+                    bomb1.CheckAndBuildWalls();
+                    bomb2.CheckAndBuildWalls();
                 }
                 else if (binding.MustBeAdjusted())
                     binding.AdjustWalls();
@@ -319,7 +359,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 binding.AdjustWalls();
             }
 
-            foreach (var bomb in Summoner.Bombs)
+            foreach (var bomb in Summoner.Bombs.ToArray())
             {
                 if (bomb == this || !m_wallsBinding.All(x => x.Bomb1 != bomb && x.Bomb2 != bomb) || !IsBoundWith(bomb))
                     continue;
