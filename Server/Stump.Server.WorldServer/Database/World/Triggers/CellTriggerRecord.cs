@@ -24,6 +24,7 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
         private bool m_mustRefreshPosition;
         private ObjectPosition m_position;
 
+        [PrimaryKey("Id")]
         public int Id
         {
             get;

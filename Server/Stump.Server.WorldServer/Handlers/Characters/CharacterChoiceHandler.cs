@@ -100,8 +100,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 return;
             }
 
-            if (character.Relook)
+            if (character.Relook > 0)
             {
+                if (character.Relook == 2)
+                    character.Sex = character.Sex == SexTypeEnum.SEX_MALE ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
+
                 /* Set Look */
                 var head = BreedManager.Instance.GetHead(message.cosmeticId);
 
@@ -112,7 +115,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 }
 
                 character.Head = head.Id;
-                character.Relook = false;
+                character.Relook = 0;
 
                 WorldServer.Instance.DBAccessor.Database.Update(character);
             }
@@ -277,7 +280,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                                                                             characterRecord.Name, characterRecord.EntityLook.GetEntityLook(),
-                                                                            (sbyte) characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE));
+                                                                            (sbyte) characterRecord.Breed,
+                                                                            characterRecord.Relook == 2 ? characterRecord.Sex == SexTypeEnum.SEX_MALE : characterRecord.Sex != SexTypeEnum.SEX_MALE));
 
                 if (characterRecord.Rename)
                 {
@@ -289,7 +293,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     charactersToRecolor.Add(new CharacterToRecolorInformation(characterRecord.Id, characterRecord.EntityLook.GetEntityLook().indexedColors));
                 }
 
-                if (characterRecord.Relook)
+                if (characterRecord.Relook > 0)
                 {
                     charactersToRelook.Add(new CharacterToRelookInformation(characterRecord.Id, characterRecord.Head));
                 }
