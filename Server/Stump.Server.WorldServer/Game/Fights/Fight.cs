@@ -1593,6 +1593,9 @@ namespace Stump.Server.WorldServer.Game.Fights
                 var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.CanTackle(fighter)).Select(entry => entry.Cell.Id).ToList();
                 var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.Position.Cell != fighter.Cell && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
 
+                if (fighter.MP < path.MPCost)
+                    path.CutPath(fighter.MP + 1);
+
                 for (var i = 0; i < cells.Length; i++)
                 {
                     // if there is a trap on the way we trigger it
@@ -1894,6 +1897,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
             else
             {
+                fighter.Die();
+
                 if (fighter is CharacterFighter && (fighter as CharacterFighter).Character.IsLoggedIn)
                 {
                     // wait the character to be ready
@@ -1919,8 +1924,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                     fighter.Team.RemoveFighter(fighter);
                     fighter.Team.AddLeaver(fighter);
                     m_leavers.Add(fighter);
-
-                    fighter.Die();
                 } 
             }
         }
@@ -1950,8 +1953,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             fighter.Team.RemoveFighter(fighter);
             fighter.Team.AddLeaver(fighter);
             m_leavers.Add(fighter);
-
-            fighter.Die();
         }
 
         protected virtual void OnPlayerLoggout(Character character)

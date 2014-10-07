@@ -69,28 +69,28 @@ namespace Stump.Server.BaseServer.Database
 
         public T Generate<TArg>(string discriminator, TArg parameter)
         {
-            CheckBeforeGenerate(discriminator, Assembly.GetCallingAssembly());
+            CheckBeforeGenerate(discriminator, typeof(T).Assembly);
 
             return ((Func<TArg, T>)m_constructors[discriminator])(parameter);
         }
 
         public T Generate<TArg1, TArg2>(string discriminator, TArg1 parameter1, TArg2 parameter2)
         {
-            CheckBeforeGenerate(discriminator, Assembly.GetCallingAssembly());
+            CheckBeforeGenerate(discriminator, typeof(T).Assembly);
 
             return ( (Func<TArg1, TArg2, T>)m_constructors[discriminator] )(parameter1, parameter2);
         }
 
         public T Generate<TArg1, TArg2, TArg3>(string discriminator, TArg1 parameter1, TArg2 parameter2, TArg3 parameter3)
         {
-            CheckBeforeGenerate(discriminator, Assembly.GetCallingAssembly());
+            CheckBeforeGenerate(discriminator, typeof(T).Assembly);
 
             return ( (Func<TArg1, TArg2, TArg3, T>)m_constructors[discriminator] )(parameter1, parameter2, parameter3);
         }
 
         public T Generate<TArg1, TArg2, TArg3, TArg4>(string discriminator, TArg1 parameter1, TArg2 parameter2, TArg3 parameter3, TArg4 parameter4)
         {
-            CheckBeforeGenerate(discriminator, Assembly.GetCallingAssembly());
+            CheckBeforeGenerate(discriminator, typeof(T).Assembly);
 
             return ( (Func<TArg1, TArg2, TArg3, TArg4, T>)m_constructors[discriminator] )(parameter1, parameter2, parameter3, parameter4);
         }

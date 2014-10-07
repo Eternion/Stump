@@ -56,6 +56,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
         public void Dissociate()
         {
+            if (Owner.IsInExchange())
+                return;
+
             var effects = new List<EffectBase> { MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect };
             var effectsLiving = new List<EffectBase> { MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect };
 
