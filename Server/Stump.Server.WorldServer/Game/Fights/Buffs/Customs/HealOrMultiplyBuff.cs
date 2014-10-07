@@ -26,12 +26,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public int GetDamages(int damage)
         {
             var valueDamage = Convert.ToInt32(Effect.GetValues()[0]);
-            var valueHeal = Convert.ToInt32(Effect.GetValues()[1]);
 
             if (new Random().Next(0, 2) == 0)
                 return (damage * valueDamage);
 
-            return -(damage * valueHeal);
+            return -damage;
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()

@@ -346,7 +346,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool BlockSight
         {
-            get { return !IsDead(); }
+            get { return IsAlive() && VisibleState != GameActionFightInvisibilityStateEnum.INVISIBLE; }
         }
 
         public bool IsSacrificeProtected
@@ -758,6 +758,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual int InflictDamage(Damage damage)
         {
             OnBeforeDamageInflicted(damage);
+            damage.Source.TriggerBuffs(BuffTriggerType.BEFORE_ATTACK, damage);
             TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
 
             damage.GenerateDamages();
@@ -765,6 +766,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.Invulnerable))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
+                damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
                 TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
                 return 0;
             }
@@ -818,7 +820,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     damage.Amount = newDamage;
                 else
                 {
-                    Heal(-newDamage, damage.Source);
+                    Heal(-newDamage, damage.Source, false);
                     return 0;
                 }
 
@@ -843,6 +845,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 OnDead(damage.Source);
 
             OnDamageInflicted(damage);
+            damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
             TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
 
             return damage.Amount;
@@ -1669,7 +1672,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void ThrowActor(Cell cell, bool drop = false)
         {
-            if (!Map.IsCellFree(cell.Id))
+            var actor = Fight.GetOneFighter(cell);
+            if (actor != null && !drop)
                 return;
 
             var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carrying).FirstOrDefault();
@@ -1716,7 +1720,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             //movementPath.CutPath(1, true);
 
-            carryingActor.ThrowActor(movementPath.StartCell);
+            carryingActor.ThrowActor(movementPath.StartCell, true);
 
             return base.StartMove(movementPath);
         }
