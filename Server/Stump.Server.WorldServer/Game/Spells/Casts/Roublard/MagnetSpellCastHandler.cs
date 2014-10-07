@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
             foreach (var handler in Handlers.OfType<Pull>())
             {
-                //handler.CastPoint = TargetedPoint;
+                handler.CastPoint = handler.TargetedPoint;
             }
         }
     }

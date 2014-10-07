@@ -92,7 +92,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public bool Generated
         {
             get;
-            private set;
+            set;
         }
 
         public Spell Spell
