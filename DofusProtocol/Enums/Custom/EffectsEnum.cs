@@ -1189,7 +1189,7 @@
         /// <summary>
         /// Minimizes random effects
         /// </summary>
-        Effect_781 = 781,
+        Effect_MinimizeEffects = 781,
         /// <summary>
         /// Maximizes random effects
         /// </summary>
