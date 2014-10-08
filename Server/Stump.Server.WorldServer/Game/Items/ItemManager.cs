@@ -181,12 +181,11 @@ namespace Stump.Server.WorldServer.Game.Items
             var guid = BankItemRecord.PopNextId();
             var record = new BankItemRecord // create the associated record
                         {
-                            Id = guid,
                             OwnerAccountId = character.Account.Id,
                             Template = item.Template,
                             Stack = (uint)amount,
                             Effects = new List<EffectBase>(item.Effects),
-                            IsNew = true,
+                            IsNew = true
                         };
 
             return new BankItem(character, record);
