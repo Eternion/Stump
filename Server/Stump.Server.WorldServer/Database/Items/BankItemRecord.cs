@@ -34,5 +34,12 @@ namespace Stump.Server.WorldServer.Database.Items
                 IsDirty = true;
             }
         }
+
+        public override void BeforeSave(bool insert)
+        {
+            base.BeforeSave(insert);
+            if (IsNew)
+                Id = 0;
+        }
     }
 }

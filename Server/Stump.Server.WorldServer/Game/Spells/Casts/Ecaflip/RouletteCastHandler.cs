@@ -39,6 +39,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                 Initialize();
 
             Handler.Apply();
+            Handlers[15].Apply();
         }
     }
 }
