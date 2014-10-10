@@ -38,7 +38,8 @@ namespace Stump.Server.WorldServer.Database.Items
         public override void BeforeSave(bool insert)
         {
             base.BeforeSave(insert);
-            Id = 0;
+            if (IsNew)
+                Id = 0;
         }
     }
 }

@@ -1193,7 +1193,7 @@
         /// <summary>
         /// Maximizes random effects
         /// </summary>
-        Effect_782 = 782,
+        Effect_MaximizeEffects = 782,
         /// <summary>
         /// Repels to the targeted cell
         /// </summary>
