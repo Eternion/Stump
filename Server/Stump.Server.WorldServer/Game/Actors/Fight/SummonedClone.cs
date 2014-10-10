@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
@@ -17,6 +18,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Caster = caster;
             Look = caster.Look.Clone();
             m_stats = caster.Stats.CloneAndChangeOwner(this);
+
+            m_stats.Health.DamageTaken = 0;
+            SetInvisibilityState(GameActionFightInvisibilityStateEnum.VISIBLE);
         }
 
         public FightActor Caster

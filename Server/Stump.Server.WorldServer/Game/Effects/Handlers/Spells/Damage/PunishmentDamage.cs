@@ -44,6 +44,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 else
                 {
                     damages.Source = Caster;
+                    damages.IgnoreDamageBoost = true;
                     actor.InflictDamage(damages);
                 }
             }

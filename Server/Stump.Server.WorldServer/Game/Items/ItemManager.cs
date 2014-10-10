@@ -186,7 +186,7 @@ namespace Stump.Server.WorldServer.Game.Items
                             Template = item.Template,
                             Stack = (uint)amount,
                             Effects = new List<EffectBase>(item.Effects),
-                            IsNew = true,
+                            IsNew = true
                         };
 
             return new BankItem(character, record);

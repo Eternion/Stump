@@ -29,10 +29,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (actor.HasState((int)SpellStatesEnum.Unmovable) || actor.HasState((int)SpellStatesEnum.Rooted))
                     continue;
 
-                if (TargetedPoint.CellId == actor.Position.Cell.Id)
+                var referenceCell = TargetedCell.Id == actor.Cell.Id ? CastPoint : TargetedPoint;
+
+                if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
 
-                var pushDirection = actor.Position.Point.OrientationTo(TargetedPoint, false);
+                var pushDirection = actor.Position.Point.OrientationTo(referenceCell, false);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 

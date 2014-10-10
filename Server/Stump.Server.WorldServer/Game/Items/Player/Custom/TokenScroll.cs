@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
                 if (tokens != null)
                 {
                     tokens.Stack += wonTokens;
-                    Owner.Inventory.RefreshItem(tokens); 
+                    Owner.Inventory.RefreshItem(tokens);
                 }
                 else
                     Owner.Inventory.AddItem(Inventory.TokenTemplate, (int)wonTokens);

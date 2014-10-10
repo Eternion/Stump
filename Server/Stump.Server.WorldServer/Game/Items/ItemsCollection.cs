@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Extensions;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 
