@@ -62,17 +62,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            var bankItem = TryGetItem(item.Template, item.Effects);
-
-            if (bankItem != null)
-            {
-                bankItem.Stack += (uint)amount;
-            }
-            else
-            {
-                bankItem = ItemManager.Instance.CreateBankItem(Owner, item, amount);
-                AddItem(bankItem);
-            }
+            var bankItem = ItemManager.Instance.CreateBankItem(Owner, item, amount);
+            AddItem(bankItem);
 
             Owner.Inventory.RemoveItem(item, amount);
 
@@ -108,19 +99,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount > item.Stack)
                 amount = (int)item.Stack;
 
-            var playerItem = Owner.Inventory.TryGetItem(item.Template, item.Effects,
-                CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-
-            if (playerItem != null)
-            {
-                playerItem.Stack += (uint)amount;
-                Owner.Inventory.RefreshItem(playerItem);
-            }
-            else
-            {
-                playerItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, amount, new List<EffectBase>(item.Effects));
-                Owner.Inventory.AddItem(playerItem);
-            }
+            var playerItem = ItemManager.Instance.CreatePlayerItem(Owner, item.Template, amount, new List<EffectBase>(item.Effects));
+            Owner.Inventory.AddItem(playerItem);
 
             RemoveItem(item, amount);
 
