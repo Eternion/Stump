@@ -338,25 +338,28 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Fight.State == FightState.Ended)
                 return false;
 
+            // if the current bomb is in a wall we destroy it to create 2 new walls
+            foreach (var bomb in Summoner.Bombs)
+            {
+                var toDelete = new List<WallsBinding>();
+                if (bomb != this)
+                    toDelete.AddRange(bomb.m_wallsBinding.Where(binding => binding.Contains(Cell)));
+
+                foreach (var binding in toDelete)
+                {
+                    binding.Delete();
+                }
+            }
+
+            // check all wall bindings if they are still valid or if they must be adjusted (resized)
             foreach (var binding in m_wallsBinding.ToArray())
             {
                 if (!binding.IsValid())
                 {
-                    var bomb1 = binding.Bomb1;
-                    var bomb2 = binding.Bomb2;
-
                     binding.Delete();
-
-                    bomb1.CheckAndBuildWalls();
-                    bomb2.CheckAndBuildWalls();
                 }
                 else if (binding.MustBeAdjusted())
                     binding.AdjustWalls();
-            }
-
-            foreach (var binding in m_wallsBinding.Where(binding => binding.IntersectOtherWalls))
-            {
-                binding.AdjustWalls();
             }
 
             foreach (var bomb in Summoner.Bombs.ToArray())
