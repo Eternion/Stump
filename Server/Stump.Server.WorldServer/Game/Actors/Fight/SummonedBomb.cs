@@ -217,36 +217,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     100d + Summoner.Stats[PlayerFields.DamageBonus].Total);
         }
 
-        private static bool IsAnotherBombInLine(SummonedBomb bomb1, IEnumerable<short> cells)
-        {
-            foreach (var cell in cells)
-            {
-                var bomb = bomb1.Fight.GetOneFighter<SummonedBomb>(x => x.Cell.Id == cell);
-                if (bomb != null && bomb.IsFriendlyWith(bomb1) && bomb.MonsterBombTemplate == bomb1.MonsterBombTemplate)
-                    return true;
-            }
-
-            return false;
-        }
-
-        private void CheckForBetterBounding()
-        {
-            foreach (var wall in Walls.ToArray())
-            {
-                var cells = wall.Bomb1.Position.Point.GetCellsOnLineBetween(wall.Bomb2.Position.Point).Select(y => y.CellId);
-                if (IsAnotherBombInLine(this, cells))
-                    wall.Delete();
-            }
-        }
-
         private static bool IsBoundWith(SummonedBomb bomb1, SummonedBomb bomb2)
         {
-            bomb1.CheckForBetterBounding();
-            bomb2.CheckForBetterBounding();
-
             var dist = bomb1.Position.Point.DistanceToCell(bomb2.Position.Point);
 
-            return dist > 1 &&
+            return dist > 2 &&
                          dist <= 7 && bomb1.MonsterBombTemplate == bomb2.MonsterBombTemplate &&
                          bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point);
         }
@@ -352,25 +327,35 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             // check all wall bindings if they are still valid or if they must be adjusted (resized)
-            foreach (var binding in m_wallsBinding.ToArray())
+            var unvalidBindings = new List<WallsBinding>();
+            foreach (var binding in m_wallsBinding)
             {
                 if (!binding.IsValid())
                 {
-                    binding.Delete();
+                    unvalidBindings.Add(binding);
                 }
                 else if (binding.MustBeAdjusted())
                     binding.AdjustWalls();
             }
 
-            foreach (var bomb in Summoner.Bombs.ToArray())
+            foreach (var binding in unvalidBindings)
             {
-                if (bomb == this || !m_wallsBinding.All(x => x.Bomb1 != bomb && x.Bomb2 != bomb) || !IsBoundWith(bomb))
+                binding.Delete();
+            }
+
+            // we check all possible combinations each time because there are too many cases
+            // since there is only 3 bombs, it's 6 iterations so still cheap
+            var bombs = Summoner.Bombs.ToArray();
+            foreach (var bomb1 in bombs)
+                foreach(var bomb2 in bombs)
+            {
+                if (bomb1 == bomb2 || !bomb1.m_wallsBinding.All(x => x.Bomb1 != bomb2 && x.Bomb2 != bomb2) || !IsBoundWith(bomb1, bomb2))
                     continue;
 
-                var binding = new WallsBinding(this, bomb, m_color);
+                var binding = new WallsBinding(bomb1, bomb2, m_color);
                 binding.AdjustWalls();
-                AddWallsBinding(binding);
-                bomb.AddWallsBinding(binding);
+                bomb1.AddWallsBinding(binding);
+                bomb2.AddWallsBinding(binding);
             }
 
             return true;
