@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
@@ -19,6 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         private readonly Color m_color;
         private readonly List<Wall> m_walls = new List<Wall>();
+        private readonly List<WallsBinding> m_intersections = new List<WallsBinding>(); 
 
         public WallsBinding(SummonedBomb bomb1, SummonedBomb bomb2, Color color)
         {
@@ -45,15 +48,22 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             private set;
         }
 
-        public bool IntersectOtherWalls // set to true when the walls intersect another wall collection
+        public ReadOnlyCollection<WallsBinding> Intersections 
         {
-            get;
-            private set;
+            get
+            {
+                return m_intersections.AsReadOnly();
+            }
         }
 
         public bool IsValid()
         {
             return Bomb1.IsBoundWith(Bomb2);
+        }
+
+        public bool Contains(Cell cell)
+        {
+            return m_walls.Any(x => x.CenterCell == cell);
         }
 
         public bool MustBeAdjusted()
@@ -81,24 +91,31 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 m_walls.Remove(wall);
             }
 
-            IntersectOtherWalls = false;
             foreach (var cellId in cells)
             {
                 if (m_walls.Any(x => x.CenterCell.Id == cellId))
                     continue;
 
                 var cell = Bomb1.Fight.Cells[cellId];
+                var existantWall = Bomb1.Fight.GetTriggers(cell).OfType<Wall>().FirstOrDefault(x => x.Caster == Bomb1.Summoner);
 
-                if (Bomb1.Fight.GetTriggers(cell).OfType<Wall>().All(x => x.Caster != Bomb1.Summoner))
+                if (existantWall == null)
                 {
                     var wall = new Wall((short) Bomb1.Fight.PopNextTriggerId(), Bomb1.Summoner, Bomb1.WallSpell, null,
-                        cell,
+                        cell, this,
                         new MarkShape(Bomb1.Fight, cell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, 0, m_color));
 
                     Bomb1.Fight.AddTriger(wall);
                     m_walls.Add(wall);
                 }
-                else IntersectOtherWalls = true;
+                else
+                {
+                    if (!m_intersections.Contains(existantWall.WallBinding))
+                    {
+                        m_intersections.Add(existantWall.WallBinding);
+                        existantWall.WallBinding.Removed += OnIntersectionRemoved;
+                    }
+                }
 
             }
 
@@ -112,6 +129,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             Length = dist > 0 ? (int)dist - 1 : 0;
         }
 
+        private void OnIntersectionRemoved(WallsBinding obj)
+        {
+            obj.Removed -= OnIntersectionRemoved;
+            m_intersections.Remove(obj);
+
+            AdjustWalls();
+        }
+
         public void Delete()
         {
             foreach (var wall in m_walls.ToArray())
@@ -122,4 +147,5 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             OnRemoved();
         }
     }
+
 }
