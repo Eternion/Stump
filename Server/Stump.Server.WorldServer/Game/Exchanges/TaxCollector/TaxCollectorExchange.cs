@@ -28,6 +28,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
             get;
             private set;
         }
+
         public ExchangeTypeEnum ExchangeType
         {
             get { return ExchangeTypeEnum.TAXCOLLECTOR; }
@@ -51,7 +52,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.TaxCollector
             //Attention, la fenêtre d'échange se fermera automatiquement dans %1 minutes.
             Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 139, 2);
         }
-
 
         public void Close()
         {

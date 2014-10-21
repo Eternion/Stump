@@ -128,17 +128,25 @@ namespace Stump.Server.WorldServer.Game.Items
             return m_itemCtorByTypes.TryGetValue((ItemTypeEnum) record.Template.Type.Id, out ctor) ? ctor(character, record) : new DefaultItem(character, record);
         }
 
-        public MerchantItem CreateMerchantItem(BasePlayerItem item, int quantity, uint price)
+        public MerchantItem CreateMerchantItem(Character character, BasePlayerItem item, int amount, uint price)
         {
-            if (quantity < 0)
-                throw new ArgumentException("quantity < 0", "quantity");
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
 
-            var guid = PlayerItemRecord.PopNextId();
 
-            var newitem =
-                new MerchantItem(item.Owner, guid, item.Template, item.Effects, (uint)quantity, price);
+            var guid = PlayerMerchantItemRecord.PopNextId();
+            var record = new PlayerMerchantItemRecord // create the associated record
+            {
+                Id = guid,
+                OwnerId = character.Id,
+                Price = price,
+                Template = item.Template,
+                Stack = (uint)amount,
+                Effects = new List<EffectBase>(item.Effects),
+                IsNew = true
+            };
 
-            return newitem;
+            return new MerchantItem(record);
         }
 
         public TaxCollectorItem CreateTaxCollectorItem(TaxCollectorNpc owner, ItemTemplate template, int amount)

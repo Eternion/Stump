@@ -5,7 +5,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;

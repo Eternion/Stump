@@ -118,6 +118,7 @@
     <Compile Include="Npcs\NpcRestatScript.cs" />
     <Compile Include="OrbsManager.cs" />
     <Compile Include="Prestige\PrestigeNpc.cs" />
+    <Compile Include="Security\Security.cs" />
     <Compile Include="SmithMagic\SmithMagicPotionItem.cs" />
     <Compile Include="Votes\VoteNotificationHandler.cs" />
     <Compile Include="Votes\VoteNotificationMessage.cs" />

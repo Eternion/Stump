@@ -24,10 +24,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
             var summon = new SummonedClone(Fight.GetNextContextualId(), Caster, TargetedCell);
             
-            ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
-
             Caster.AddSummon(summon);
             Caster.Team.AddFighter(summon);
+
+            ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 
             return true;
         }

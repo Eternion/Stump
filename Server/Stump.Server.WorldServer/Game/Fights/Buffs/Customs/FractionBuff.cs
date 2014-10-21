@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             damage.Amount = (damage.Amount / Fighters.Length);
             damage.IgnoreDamageReduction = true;
 
-            foreach (var actor in Fighters)
+            foreach (var actor in Fighters.Where(x => x.IsAlive()))
             {
                 var damagePerFighter = new FractionDamage(damage.Amount)
                 {
