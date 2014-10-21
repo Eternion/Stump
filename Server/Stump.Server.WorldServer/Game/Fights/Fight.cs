@@ -185,6 +185,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        bool CanKickPlayer
+        {
+            get;
+        }
+
         /// <summary>
         /// Do not modify, just read
         /// </summary>
@@ -536,6 +541,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         public virtual bool IsDeathTemporarily
         {
             get { return false; }
+        }
+
+        public virtual bool CanKickPlayer
+        {
+            get { return true; }
         }
 
         #endregion

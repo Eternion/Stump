@@ -253,6 +253,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 !client.Character.Fighter.IsTeamLeader())
                 return;
 
+            if (!client.Character.Fight.CanKickPlayer)
+                return;
+
             var target = client.Character.Fight.GetOneFighter<CharacterFighter>(message.targetId);
 
             if (target == null)

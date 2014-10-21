@@ -151,7 +151,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             if (Bag.IsDirty)
                 Bag.Save();
 
-            WorldServer.Instance.DBAccessor.Database.Update(m_record);
+            WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Update(m_record));
         }
 
         public bool IsMerchantOwner(WorldAccount account)
