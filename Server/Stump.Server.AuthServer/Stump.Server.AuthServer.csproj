@@ -185,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\ServerCommands.cs" />
+    <Compile Include="Database\Accounts\ClientKeyBan.cs" />
     <Compile Include="Database\Accounts\UserGroupRecord.cs" />
     <Compile Include="Database\Accounts\UserGroupServer.cs" />
     <Compile Include="Database\I18n\LangTextUI.cs" />

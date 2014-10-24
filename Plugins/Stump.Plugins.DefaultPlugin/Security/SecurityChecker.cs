@@ -9,7 +9,7 @@ using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Handlers;
 
-namespace Stump.Plugins.DefaultPlugin.AntiBot
+namespace Stump.Plugins.DefaultPlugin.Security
 {
     public static class SecurityCheckerRegister
     {
