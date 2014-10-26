@@ -17,6 +17,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Caster = caster;
             Look = caster.Look.Clone();
             m_stats = caster.Stats.CloneAndChangeOwner(this);
+
+            m_stats.Health.DamageTaken = 0;
         }
 
         public FightActor Caster
@@ -53,15 +55,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override GameFightFighterInformations GetGameFightFighterInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            casterInfos.contextualId = Id;
-            return casterInfos;
+            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, casterInfos.alive, casterInfos.stats, Name);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
         {
-            var casterInfos = Caster.GetFightTeamMemberInformations();
-            casterInfos.id = Id;
-            return casterInfos;
+            return new FightTeamMemberInformations(Id);
         }
     }
 }

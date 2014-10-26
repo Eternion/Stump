@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges.Merchant;
 using Stump.Server.WorldServer.Game.Exchanges.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
@@ -102,16 +103,6 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             if (client.Character.IsInExchange())
                 client.Character.Exchanger.MoveItem(message.objectUID, message.quantity);
-            else if (client.Character.IsInMerchantDialog() && message.quantity <= 0) // todo : merchant bag exchange
-            {
-                // he is modifying his merchant bag and remove an item
-                var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
-                if (merchantItem == null)
-                    return;
-
-                if (client.Character.MerchantBag.MoveToInventory(merchantItem))
-                    SendExchangeShopStockMovementRemovedMessage(client, merchantItem);
-            }
         }
 
         [WorldHandler(ExchangeReadyMessage.Id)]
@@ -157,59 +148,43 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeRequestOnShopStockMessage.Id)]
         public static void HandleExchangeRequestOnShopStockMessage(WorldClient client, ExchangeRequestOnShopStockMessage message)
         {
-            SendExchangeShopStockStartedMessage(client, client.Character.MerchantBag);
+            if (client.Character.IsBusy())
+                return;
+
+            var exchange = new MerchantExchange(client.Character);
+            exchange.Open();
         }
 
         [WorldHandler(ExchangeObjectMovePricedMessage.Id)]
         public static void HandleExchangeObjectMovePricedMessage(WorldClient client, ExchangeObjectMovePricedMessage message)
         {
-            if (message.quantity <= 0 || message.price <= 0)
+            if (message.price <= 0)
                 return;
 
-            var item = client.Character.Inventory.TryGetItem(message.objectUID);
-
-            if (item == null) 
+            if (!client.Character.IsInExchange())
                 return;
 
-            if (client.Character.IsBusy())
-                return;
+            var merchantExchanger = client.Character.Exchanger as CharacterMerchant;
 
-            client.Character.Inventory.MoveToMerchantBag(item, message.quantity, (uint) message.price);
+            if (merchantExchanger != null)
+                merchantExchanger.MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
         }
 
         [WorldHandler(ExchangeObjectModifyPricedMessage.Id)]
         public static void HandleExchangeObjectModifyPricedMessage(WorldClient client, ExchangeObjectModifyPricedMessage message)
         {
-            if (client.Character.IsBusy())
-                return;
-
             if (message.price <= 0)
                 return;
 
-            var merchantItem = client.Character.MerchantBag.TryGetItem(message.objectUID);
-
-            if (merchantItem == null)
+            if (!client.Character.IsInExchange())
                 return;
 
-            merchantItem.Price = (uint)message.price;
+            var merchantExchanger = client.Character.Exchanger as CharacterMerchant;
 
-            if (message.quantity == merchantItem.Stack || message.quantity == 0)
-            {
-                SendExchangeShopStockMovementUpdatedMessage(client, merchantItem);
+            if (merchantExchanger == null)
                 return;
-            }
 
-            if (message.quantity < merchantItem.Stack)
-                client.Character.MerchantBag.MoveToInventory(merchantItem,
-                                                             (int)(merchantItem.Stack - message.quantity));
-            else
-            {
-                var playerItem = client.Character.Inventory.TryGetItem(merchantItem.Template);
-                if (playerItem != null)
-                    client.Character.Inventory.MoveToMerchantBag(playerItem,
-                                                                 (int) (message.quantity - merchantItem.Stack),
-                                                                 (uint) message.price);
-            }
+            merchantExchanger.ModifyItem(message.objectUID, message.quantity, (uint)message.price);
         }
 
         [WorldHandler(ExchangeStartAsVendorMessage.Id)]

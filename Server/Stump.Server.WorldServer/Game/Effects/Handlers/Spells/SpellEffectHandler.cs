@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NLog.Targets;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
@@ -57,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public Cell TargetedCell
         {
             get;
-            private set;
+            protected set;
         }
 
         public MapPoint TargetedPoint
@@ -188,7 +187,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] {Caster} : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && IsValidTarget(entry)).ToArray();
+            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
@@ -199,7 +198,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
                 return new[] {Caster};
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry)).ToArray();
+            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry) && !entry.IsCarried()).ToArray();
         }
 
         
@@ -218,6 +217,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             m_customAffectedActors = actors.ToArray();
         }
 
+        public void AddAffectedActor(FightActor actor)
+        {
+            var tmpActors = new List<FightActor>();
+            if (m_customAffectedActors != null)
+                tmpActors = m_customAffectedActors.ToList();
+
+            tmpActors.Add(actor);
+            m_customAffectedActors = tmpActors.ToArray();
+        }
+
         public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable)
         {
             var id = target.PopNextBuffId();
@@ -231,7 +240,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
                                     short customActionId)
         {
-            int id = target.PopNextBuffId();
+            var id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable,
                                     customActionId);
 
@@ -245,6 +254,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         {
             var id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger);
+
+            target.AddAndApplyBuff(buff);
+
+            return buff;
+        }
+
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger,
+                                          object token, TriggerBuffApplyHandler applyTrigger)
+        {
+            var id = target.PopNextBuffId();
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger)
+            {
+                Token = token
+            };
 
             target.AddAndApplyBuff(buff);
 
@@ -271,6 +294,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             target.AddAndApplyBuff(buff);
 
             return buff;
+        }
+
+        public bool RemoveStateBuff(FightActor target, SpellStatesEnum stateId)
+        {
+            var state = target.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)stateId).FirstOrDefault();
+            if (state == null)
+                return false;
+
+            target.RemoveAndDispellBuff(state);
+
+            return true;
         }
 
         public virtual bool RequireSilentCast()

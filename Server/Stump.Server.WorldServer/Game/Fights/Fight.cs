@@ -185,6 +185,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        bool CanKickPlayer
+        {
+            get;
+        }
+
         /// <summary>
         /// Do not modify, just read
         /// </summary>
@@ -242,6 +247,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         void AcknowledgeAction();
         IEnumerable<MarkTrigger> GetTriggers();
         bool ShouldTriggerOnMove(Cell cell);
+        bool ShouldTriggerOnMove(Cell cell, FightActor actor);
         MarkTrigger[] GetTriggers(Cell cell);
         void AddTriger(MarkTrigger trigger);
         void RemoveTrigger(MarkTrigger trigger);
@@ -537,6 +543,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return false; }
         }
 
+        public virtual bool CanKickPlayer
+        {
+            get { return true; }
+        }
+
         #endregion
 
         #region Phases
@@ -722,7 +733,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             leaverResult = null;
             var list = new List<IFightResult>();
-            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)))
+            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb)))
             {
                 var result =
                     fighter.GetFightResult(fighter.Team == leaver.Team
@@ -1122,6 +1133,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             character.RealLook.RemoveAuras();
             character.RefreshActor();
 
+            if (character.ArenaPopup != null)
+                character.ArenaPopup.Deny();
+
             Clients.Add(character.Client);
 
             SendGameFightJoinMessage(fighter);
@@ -1337,6 +1351,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (FighterPlaying.IsDead() || FighterPlaying.MustSkipTurn())
             {
+                FighterPlaying.ResetUsedPoints();
                 PassTurn();
                 return;
             }
@@ -1586,7 +1601,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null)
             {
                 var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.CanTackle(fighter)).Select(entry => entry.Cell.Id).ToList();
-                var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
+                var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.Position.Cell != fighter.Cell && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
+
+                if (fighter.MP < path.MPCost)
+                    path.CutPath(fighter.MP + 1);
 
                 for (var i = 0; i < cells.Length; i++)
                 {
@@ -1609,6 +1627,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     }
                     if (!obstaclesCells.Contains(cells[i].Id))
                         continue;
+
                     if (character != null)
                     {
                         // "Impossible d'emprunter ce chemin : un obstacle bloque le passage !"
@@ -1673,7 +1692,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var fighter = actor as FightActor;
 
-            if (fighter != null) TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
+            if (fighter != null)
+                TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
         }
 
         public void SwitchFighters(FightActor fighter1, FightActor fighter2)
@@ -1765,9 +1785,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             m_buffs.Remove(buff);
 
-            if (buff.Duration > 0)
-                ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
-
+            ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
         }
 
         #endregion
@@ -1872,23 +1890,25 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Placement)
             {
-                if (!IsDeathTemporarily)
-                    fighter.Stats.Health.DamageTaken += (short)(fighter.LifePoints - 1);
+                var characterFighter = ((CharacterFighter)fighter);
+
+                if (characterFighter != null)
+                    characterFighter.ResetFightProperties();
 
                 if (CheckFightEnd())
                     return;
 
                 fighter.Team.RemoveFighter(fighter);
 
-                if (!(fighter is CharacterFighter))
+                if (characterFighter == null)
                     return;
 
-                var character = ((CharacterFighter) fighter).Character;
-
-                character.RejoinMap();
+                characterFighter.Character.RejoinMap();
             }
             else
             {
+                fighter.Die();
+
                 if (fighter is CharacterFighter && (fighter as CharacterFighter).Character.IsLoggedIn)
                 {
                     // wait the character to be ready
@@ -1914,9 +1934,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     fighter.Team.RemoveFighter(fighter);
                     fighter.Team.AddLeaver(fighter);
                     m_leavers.Add(fighter);
-
-                    fighter.Die();
-                }     
+                } 
             }
         }
 
@@ -1945,8 +1963,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             fighter.Team.RemoveFighter(fighter);
             fighter.Team.AddLeaver(fighter);
             m_leavers.Add(fighter);
-
-            fighter.Die();
         }
 
         protected virtual void OnPlayerLoggout(Character character)
@@ -1973,6 +1989,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.ContainsCell(cell));
         }
 
+        public bool ShouldTriggerOnMove(Cell cell, FightActor actor)
+        {
+            return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.ContainsCell(cell) && entry.IsAffected(actor));
+        }
+
         public MarkTrigger[] GetTriggers(Cell cell)
         {
             return m_triggers.Where(entry => entry.CenterCell.Id == cell.Id).ToArray();
@@ -1988,12 +2009,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameActionFightMarkCellsMessage(fighter.Character.Client, trigger, trigger.DoesSeeTrigger(fighter));
             }
 
-            if (trigger.TriggerType.HasFlag(TriggerType.CREATION))
-            {
-                var fighters = GetAllFighters(trigger.GetCells());
-                foreach (var fighter in fighters)
-                    trigger.Trigger(fighter);
-            }
+            if (!trigger.TriggerType.HasFlag(TriggerType.CREATION))
+                return;
+
+            var fighters = GetAllFighters(trigger.GetCells());
+            foreach (var fighter in fighters)
+                trigger.Trigger(fighter);
         }
 
         public void RemoveTrigger(MarkTrigger trigger)

@@ -1,11 +1,8 @@
 using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
@@ -33,12 +30,12 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         private void RefreshPosition()
         {
-            Map map = Game.World.Instance.GetMap(MapId);
+            var map = World.Instance.GetMap(MapId);
 
             if (map == null)
                 throw new Exception(string.Format("Cannot load SkillTeleport id={0}, map {1} isn't found", Id, MapId));
 
-            Cell cell = map.Cells[CellId];
+            var cell = map.Cells[CellId];
 
             m_position = new ObjectPosition(map, cell, Direction);
         }

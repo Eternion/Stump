@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
          
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
-            client.Send(new GameActionFightSummonMessage(summon is SummonedClone ? (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE : (short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
+            client.Send(new GameActionFightSummonMessage((summon is SummonedClone || summon is SummonedImage) ? (short) ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE : (short) ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
         }        
         
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedBomb summon)
@@ -40,10 +40,16 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         {
             client.Send(new GameActionFightInvisibilityMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, (sbyte)state));
         }
-        
+
+
+        public static void SendGameActionFightDispellSpellMessage(IPacketReceiver client, FightActor source, FightActor target, int spellId)
+        {
+            client.Send(new GameActionFightDispellSpellMessage(406, source.Id, target.Id, spellId));
+        }
+
         public static void SendGameActionFightDispellEffectMessage(IPacketReceiver client, FightActor source, FightActor target, Buff buff)
         {
-            client.Send(new GameActionFightDispellEffectMessage(514, source.Id, target.Id, buff.Id));
+            client.Send(new GameActionFightDispellEffectMessage((short)ActionsEnum.ACTION_CHARACTER_BOOST_DISPELLED, source.Id, target.Id, buff.Id));
         }
 
         public static void SendGameActionFightReflectDamagesMessage(IPacketReceiver client, FightActor source, FightActor target, int amount)
@@ -123,6 +129,21 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightExchangePositionsMessage(IPacketReceiver client, FightActor caster, FightActor target)
         {
             client.Send(new GameActionFightExchangePositionsMessage((short)ActionsEnum.ACTION_CHARACTER_EXCHANGE_PLACES, caster.Id, target.Id, caster.Cell.Id, target.Cell.Id));
+        }
+
+        public static void SendGameActionFightCarryCharacterMessage(IPacketReceiver client, FightActor caster, FightActor target)
+        {
+            client.Send(new GameActionFightCarryCharacterMessage((short)ActionsEnum.ACTION_CARRY_CHARACTER, caster.Id, target.Id, target.Cell.Id));
+        }
+
+        public static void SendGameActionFightThrowCharacterMessage(IPacketReceiver client, FightActor caster, FightActor target, Cell cell)
+        {
+            client.Send(new GameActionFightThrowCharacterMessage((short)ActionsEnum.ACTION_THROW_CARRIED_CHARACTER, caster.Id, target.Id, cell.Id));
+        }
+
+        public static void SendGameActionFightDropCharacterMessage(IPacketReceiver client, FightActor caster, FightActor target, Cell cell)
+        {
+            client.Send(new GameActionFightDropCharacterMessage((short)ActionsEnum.ACTION_NO_MORE_CARRIED, caster.Id, target.Id, cell.Id));
         }
     }
 }

@@ -22,6 +22,7 @@ using NLog;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
+using Stump.Server.AuthServer.Database.Accounts;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
@@ -408,7 +409,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(UnBanIPMessage message)
         {
-            IpBan ipBan = AccountManager.FindIpBan(message.IPRange);
+            var ipBan = AccountManager.FindIpBan(message.IPRange);
             if (ipBan == null)
             {
                 Client.SendError(string.Format("IP ban {0} not found", message.IPRange), message);
@@ -420,6 +421,61 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
+        private void Handle(BanClientKeyMessage message)
+        {
+            var key = AccountManager.FindClientKeyBan(message.ClientKey);
+            if (key != null)
+            {
+                key.BanReason = message.BanReason;
+                key.BannedBy = message.BannerAccountId;
+                key.Duration = message.BanEndDate.HasValue ? (int?)(message.BanEndDate - DateTime.Now).Value.TotalMinutes : null;
+                key.Date = DateTime.Now;
+
+                Database.Update(key);
+            }
+            else
+            {
+                var record = new ClientKeyBan
+                {
+                    ClientKey = message.ClientKey,
+                    BanReason = message.BanReason,
+                    BannedBy = message.BannerAccountId,
+                    Duration = message.BanEndDate.HasValue ? (int?)(message.BanEndDate - DateTime.Now).Value.TotalMinutes : null,
+                    Date = DateTime.Now
+                };
+
+                Database.Insert(record);
+                AccountManager.Instance.AddClientKeyBan(record);
+            }
+
+            Client.ReplyRequest(new CommonOKMessage(), message);
+        }
+
+        private void Handle(UnBanClientKeyMessage message)
+        {
+            var keyBan = AccountManager.FindClientKeyBan(message.ClientKey);
+            if (keyBan == null)
+            {
+                Client.SendError(string.Format("ClientKey ban {0} not found", message.ClientKey), message);
+            }
+            else
+            {
+                Database.Delete(keyBan);
+                Client.ReplyRequest(new CommonOKMessage(), message);
+            }
+        }
+
+        private void Handle(BanClientKeyRequestMessage message)
+        {
+            var key = AccountManager.FindMatchingClientKeyBan(message.ClientKey);
+            if (key != null && key.GetRemainingTime() > TimeSpan.Zero)
+            {              
+                Client.ReplyRequest(new BanClientKeyAnswerMessage(true, key.GetEndDate()), message);
+                return;
+            }
+
+            Client.ReplyRequest(new BanClientKeyAnswerMessage(), message);
+        }
 
         private void Handle(GroupsRequestMessage message)
         {

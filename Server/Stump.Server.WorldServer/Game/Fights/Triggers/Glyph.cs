@@ -1,15 +1,11 @@
 using System.Drawing;
 using System.Linq;
-using MongoDB.Driver.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
@@ -85,6 +81,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         }
 
         public override bool DoesSeeTrigger(FightActor fighter)
+        {
+            return true;
+        }
+
+        public override bool IsAffected(FightActor actor)
         {
             return true;
         }

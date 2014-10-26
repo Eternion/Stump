@@ -25,6 +25,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
         {
         }
 
+        [PrimaryKey("Id")]
         public int Id
         {
             get;

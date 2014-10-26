@@ -91,12 +91,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             return m_cellsPath.Select(entry => entry.Id);
         }
 
-        public void CutPath(int index)
+        public void CutPath(int index, bool skip = false)
         {
             if (index > m_cellsPath.Length - 1)
                 return;
 
-            m_cellsPath = m_cellsPath.Take(index).ToArray();
+            m_cellsPath = skip ? m_cellsPath.Skip(index).ToArray() : m_cellsPath.Take(index).ToArray();
+
             m_path = m_cellsPath.Select(entry => new MapPoint(entry)).ToArray();
 
             m_endPathPosition = new ObjectPosition(Map, EndCell, GetEndCellDirection());
@@ -112,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
             // build the path
             var path = new List<ObjectPosition>();
-            for (int i = 1; i < m_cellsPath.Length; i++)
+            for (var i = 1; i < m_cellsPath.Length; i++)
             {
                 path.Add(new ObjectPosition(Map, m_cellsPath[i - 1], m_path[i - 1].OrientationToAdjacent(m_path[i])));
             }
@@ -120,15 +121,15 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             path.Add(new ObjectPosition(Map, m_cellsPath[m_cellsPath.Length - 1], path[path.Count - 1].Direction));
 
             // compress it
-            if (path.Count > 0)
+            if (path.Count <= 0)
+                return path.ToArray();
+
+            var i2 = path.Count - 2; // we don't touch to the last vector
+            while (i2 > 0)
             {
-                int i = path.Count - 2; // we don't touch to the last vector
-                while (i > 0)
-                {
-                    if (path[i].Direction == path[i - 1].Direction)
-                        path.RemoveAt(i);
-                    i--;
-                }
+                if (path[i2].Direction == path[i2 - 1].Direction)
+                    path.RemoveAt(i2);
+                i2--;
             }
 
             return path.ToArray();
@@ -138,11 +139,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
         {
             var completePath = new List<Cell>();
 
-            for (int i = 0; i < m_compressedPath.Length - 1; i++)
+            for (var i = 0; i < m_compressedPath.Length - 1; i++)
             {
                 completePath.Add(m_compressedPath[i].Cell);
 
-                int l = 0;
+                var l = 0;
                 var nextPoint = m_compressedPath[i].Point;
                 while (( nextPoint = nextPoint.GetNearestCellInDirection(m_compressedPath[i].Direction) ) != null &&
                       nextPoint.CellId != m_compressedPath[i + 1].Cell.Id)
