@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
+using Stump.Server.AuthServer.Database.Accounts;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Messages;
@@ -44,11 +43,12 @@ namespace Stump.Server.AuthServer.Managers
         public static int CacheTimeout = 300;
 
         [Variable]
-        public static int IpBanRefreshTime = 60;
+        public static int BansRefreshTime = 60;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
-        private List<IpBan> m_ipBans = new List<IpBan>(); 
+        private List<IpBan> m_ipBans = new List<IpBan>();
+        private List<ClientKeyBan> m_keyBans = new List<ClientKeyBan>(); 
         private SimpleTimerEntry m_timer;
         private SimpleTimerEntry m_bansTimer;
 
@@ -61,8 +61,9 @@ namespace Stump.Server.AuthServer.Managers
         {
             base.Initialize();
             m_timer = AuthServer.Instance.IOTaskPool.CallPeriodically(CacheTimeout * 60 / 4, TimerTick);
-            m_bansTimer = AuthServer.Instance.IOTaskPool.CallPeriodically(IpBanRefreshTime * 1000, RefreshIpBans);
+            m_bansTimer = AuthServer.Instance.IOTaskPool.CallPeriodically(BansRefreshTime * 1000, RefreshBans);
             m_ipBans = Database.Fetch<IpBan>(IpBanRelator.FetchQuery);
+            m_keyBans = Database.Fetch<ClientKeyBan>(ClientKeyBanRelator.FetchQuery);
         }
 
         public override void TearDown()
@@ -82,12 +83,15 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        private void RefreshIpBans()
+        private void RefreshBans()
         {
             lock (m_ipBans)
             {
                 m_ipBans.Clear();
+                m_keyBans.Clear();
+
                 m_ipBans.AddRange(Database.Query<IpBan>(IpBanRelator.FetchQuery));
+                m_keyBans.AddRange(Database.Query<ClientKeyBan>(ClientKeyBanRelator.FetchQuery));
             }
         }
 
@@ -96,6 +100,14 @@ namespace Stump.Server.AuthServer.Managers
             lock (m_ipBans)
             {
                 m_ipBans.Add(ban);
+            }
+        }
+
+        public void AddClientKeyBan(ClientKeyBan ban)
+        {
+            lock (m_keyBans)
+            {
+                m_keyBans.Add(ban);
             }
         }
 
@@ -128,6 +140,24 @@ namespace Stump.Server.AuthServer.Managers
             lock (m_ipBans)
             {
                 return m_ipBans.FirstOrDefault(x => x.IPAsString == ip);
+            }
+        }
+
+        public ClientKeyBan FindClientKeyBan(string key)
+        {
+            lock (m_keyBans)
+            {
+                return m_keyBans.FirstOrDefault(x => x.ClientKey == key);
+            }
+        }
+
+        public ClientKeyBan FindMatchingClientKeyBan(string key)
+        {
+            lock (m_keyBans)
+            {
+                var bans = m_keyBans.Where(entry => entry.ClientKey == key);
+
+                return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
             }
         }
 

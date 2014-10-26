@@ -378,11 +378,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Dialog is ZaapDialog;
         }
 
-        public bool IsInMerchantDialog()
-        {
-            return Dialog is MerchantShopDialog;
-        }
-
         #endregion
 
         #region Party
@@ -1828,13 +1823,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool StartMove(Path movementPath)
         {
-            if (!IsFighting() && !MustBeJailed() && IsInJail())
-            {
-                Teleport(Breed.GetStartPosition());
-                return false;
-            }
+            if (IsFighting() || MustBeJailed() || !IsInJail())
+                return IsFighting() ? Fighter.StartMove(movementPath) : base.StartMove(movementPath);
 
-            return IsFighting() ? Fighter.StartMove(movementPath) : base.StartMove(movementPath);
+            Teleport(Breed.GetStartPosition());
+            return false;
         }
 
         public override bool StopMove()
@@ -2175,7 +2168,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 target.IsAway)
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
-            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy())
+            if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy() )
                 return FighterRefusedReasonEnum.IM_OCCUPIED;
 
             if (target == this)
@@ -2186,7 +2179,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
-
 
         public FighterRefusedReasonEnum CanAgress(Character target)
         {

@@ -79,6 +79,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     return PlayerFields.DodgeAPProbability;
                 case EffectsEnum.Effect_SubDodgeMPProbability:
                     return PlayerFields.DodgeMPProbability;
+                case EffectsEnum.Effect_SubVitality:
+                    return PlayerFields.Vitality;
 
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));

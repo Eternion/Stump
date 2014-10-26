@@ -1,5 +1,4 @@
 ﻿using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -17,16 +16,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         public override bool Apply()
         {
-            foreach (FightActor actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors())
             {
                 var integerEffect = GenerateEffect();
 
                 if (integerEffect == null)
                     return false;
 
-                var bonus = actor.Stats.Health.TotalMax * ( integerEffect.Value / 100d );
+                var bonus = (int)(actor.Stats.Health.TotalMax * (integerEffect.Value / 100d));
 
-                AddStatBuff(actor, (short) bonus, PlayerFields.Health, true, (short) EffectsEnum.Effect_AddVitality);
+                if (Effect.Duration > 0)
+                    AddStatBuff(actor, (short)bonus, PlayerFields.Health, true,
+                        (short)EffectsEnum.Effect_AddVitalityPercent);
+                else
+                    actor.Stats[PlayerFields.Health].Context += bonus;
             }
 
             return true;

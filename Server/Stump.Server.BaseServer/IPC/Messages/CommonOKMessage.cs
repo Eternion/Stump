@@ -23,7 +23,6 @@ namespace Stump.Server.BaseServer.IPC.Messages
     {
         public CommonOKMessage()
         {
-            
         }
     }
 }

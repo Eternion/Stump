@@ -1,4 +1,6 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System;
+using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -17,20 +19,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         public override bool Apply()
         {
-            foreach (var actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors().ToArray())
             {
                 var damages = new Fights.Damage(Dice) {MarkTrigger = MarkTrigger};
                 damages.GenerateDamages();
 
-                var damageRate = 0d;
-                var life = (double)Caster.LifePoints / Caster.MaxLifePoints;
-
-                if (life <= 0.5)
-                    damageRate = 2 * life;
-                else if (life > 0.5)
-                    damageRate = 1 + (life - 0.5) * -2;
-
-                damages.Amount = (int)(Caster.LifePoints * damageRate * damages.Amount / 100d);
+                var damagesPercent = Critical ? 0.30d : 0.25d;
+                damages.Amount = (int)((damagesPercent * Math.Pow(Math.Cos(2 * Math.PI * (0.5 - Caster.LifePoints / (double)Caster.MaxLifePoints)) + 1, 2)) / 4 * Caster.MaxLifePoints);
 
                // spell reflected
                 var buff = actor.GetBestReflectionBuff();
@@ -48,6 +43,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 }
                 else
                 {
+                    damages.Source = Caster;
+                    damages.IgnoreDamageBoost = true;
                     actor.InflictDamage(damages);
                 }
             }

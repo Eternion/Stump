@@ -90,42 +90,6 @@ namespace ArkalysPlugin.Commands
         }
     }
 
-    public class BankTPCommand : InGameSubCommand
-    {
-        [Variable(true)]
-        public static int BankMap;
-
-        [Variable(true)]
-        public static short BankCell;
-
-        [Variable(true)]
-        public static byte BankDirection;
-
-        public BankTPCommand()
-        {
-            Aliases = new[] { "bank", "banque" };
-            RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à la banque";
-            ParentCommandType = typeof (TPCommands);
-        }
-
-        public override void Execute(GameTrigger trigger)
-        {
-            var map = World.Instance.GetMap(BankMap);
-
-            if (map == null)
-            {
-                trigger.ReplyError("Map {0} not found", BankMap);
-                return;
-            }
-
-            var cell = map.Cells[BankCell];
-
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)BankDirection));
-            trigger.Reply("Téléporté à la banque");
-        }
-    }
-
     public class TalkTPCommand : InGameSubCommand
     {
         [Variable(true)]
@@ -141,7 +105,7 @@ namespace ArkalysPlugin.Commands
         {
             Aliases = new[] { "talk" };
             RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à l'espace de discution";
+            Description = "Téléporte à l'espace de discussion";
             ParentCommandType = typeof(TPCommands);
         }
 
@@ -158,7 +122,7 @@ namespace ArkalysPlugin.Commands
             var cell = map.Cells[TalkCell];
 
             trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)TalkDirection));
-            trigger.Reply("Téléporté à l'espace de discution");
+            trigger.Reply("Téléporté à l'espace de discussion");
         }
     }
 

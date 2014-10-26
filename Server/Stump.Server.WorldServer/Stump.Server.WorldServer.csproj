@@ -149,6 +149,7 @@
     <Compile Include="Commands\Commands\GodCommand.cs" />
     <Compile Include="Commands\Commands\GuildCommand.cs" />
     <Compile Include="Commands\Commands\InfoCommand.cs" />
+    <Compile Include="Commands\Commands\InteractivesCommands.cs" />
     <Compile Include="Commands\Commands\ItemCommand.cs" />
     <Compile Include="Commands\Commands\JailCommands.cs" />
     <Compile Include="Commands\Commands\KickCommand.cs" />
@@ -245,6 +246,7 @@
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
     <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
+    <Compile Include="Game\Actors\Fight\SummonedImage.cs" />
     <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
     <Compile Include="Game\Actors\Interfaces\IContextDependant.cs" />
@@ -276,6 +278,8 @@
     <Compile Include="Game\Conditions\Criterions\BonesCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\HasOrnament.cs" />
+    <Compile Include="Game\Conditions\Criterions\HasTitleCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\MapCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestDoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestStartableCriterion.cs" />
@@ -312,11 +316,21 @@
     <Compile Include="Game\Conditions\ComparaisonOperatorEnum.cs" />
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Frikt.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Putsch.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerRemainingMP.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\VitalityPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\RandModifier.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\States\DispelState.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\SubVitalityPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\CarryActor.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\ReviveActor.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerBomb.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Bomb.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Summon\Illusions.cs" />
     <Compile Include="Game\Exchanges\Bank\BankDialog.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildCreationPanel.cs" />
     <Compile Include="Game\Dialogs\Guilds\GuildModificationPanel.cs" />
@@ -334,6 +348,8 @@
     <Compile Include="Game\Exchanges\Bank\BankCustomer.cs" />
     <Compile Include="Game\Exchanges\IExchange.cs" />
     <Compile Include="Game\Exchanges\Exchanger.cs" />
+    <Compile Include="Game\Exchanges\Merchant\CharacterMerchant.cs" />
+    <Compile Include="Game\Exchanges\Merchant\MerchantExchange.cs" />
     <Compile Include="Game\Exchanges\TaxCollector\TaxCollectorExchange.cs" />
     <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
@@ -386,6 +402,7 @@
     <Compile Include="Game\Exchanges\Trades\Trader.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\DodgeBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\FractionBuff.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\HealOrMultiplyBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
@@ -410,6 +427,7 @@
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
     <Compile Include="Game\Fights\Triggers\Wall.cs" />
+    <Compile Include="Game\Fights\Triggers\WallsBinding.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
     <Compile Include="Game\Guilds\Guild.cs" />
     <Compile Include="Game\Guilds\GuildEmblem.cs" />
@@ -442,6 +460,7 @@
     <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
+    <Compile Include="Game\Maps\Cells\Triggers\AnimateTrigger.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Social\ChatEntry.cs" />
@@ -449,13 +468,16 @@
     <Compile Include="Game\Social\Friend.cs" />
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
+    <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Pandawa\VertigoCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\BombExplodSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Roublard\MagnetSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Sram\ChakraConcentrationCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FelineSpiritCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\FortuneSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingChestCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
@@ -476,6 +498,7 @@
     <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
     <Compile Include="Handlers\Prism\PrismHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
+    <Compile Include="Handlers\Security\SecurityHandler.cs" />
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
     <Compile Include="Handlers\TaxCollector\TaxCollectorHandler.cs" />
     <Compile Include="Handlers\Titles\TitleHandler.cs" />
@@ -761,6 +784,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Matching\Items\" />
+    <Folder Include="Game\Spells\Casts\Sacrieur\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

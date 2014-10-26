@@ -246,7 +246,7 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private void SpawnInteractives()
+        public void SpawnInteractives()
         {
             foreach (var interactive in InteractiveManager.Instance.GetInteractiveSpawns())
             {

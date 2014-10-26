@@ -3,10 +3,10 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Double
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
     [EffectHandler(EffectsEnum.Effect_Double)]
     public class Double : SpellEffectHandler
@@ -24,10 +24,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Double
 
             var summon = new SummonedClone(Fight.GetNextContextualId(), Caster, TargetedCell);
             
-            ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
-
             Caster.AddSummon(summon);
             Caster.Team.AddFighter(summon);
+
+            ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 
             return true;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -23,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         public override bool Apply()
         {
-            foreach (var actor in GetAffectedActors())
+            foreach (var actor in GetAffectedActors().ToArray())
             {
                 if (Effect.Duration > 0)
                 {
@@ -33,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 {
                     var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell);
                     damage.GenerateDamages();
-                    damage.Amount = (int)((actor.MaxLifePoints * (damage.Amount / 100d)));
+                    damage.Amount = (int)((actor.LifePoints * (damage.Amount / 100d)));
                     damage.IgnoreDamageBoost = true;
                     damage.MarkTrigger = MarkTrigger;
                     damage.IsCritical = Critical;

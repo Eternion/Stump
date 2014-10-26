@@ -422,6 +422,8 @@ namespace Stump.Server.WorldServer.Game.Effects
                     EffectsEnum.Effect_RemoveAP, 
                     
                     EffectsEnum.Effect_RemainingFights,
+
+                    EffectsEnum.Effect_HealHP_108
                 };
 
         #endregion
