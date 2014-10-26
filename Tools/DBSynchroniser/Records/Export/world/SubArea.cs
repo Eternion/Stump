@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:51
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("SubArea", "com.ankamagames.dofus.datacenter.world")]
     public class SubAreaRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "SubAreas";
+        public const String MODULE = "SubAreas";
         public int id;
         [I18NField]
         public uint nameId;
@@ -28,6 +28,14 @@ namespace DBSynchroniser.Records
         public List<int> shape;
         public List<uint> customWorldMap;
         public int packId;
+        public uint level;
+        public Boolean isConquestVillage;
+        public Boolean basicAccountAllowed;
+        public Boolean displayOnWorldMap;
+        public List<uint> monsters;
+        public List<uint> entranceMapIds;
+        public List<uint> exitMapIds;
+        public Boolean capturable;
 
         int ID2ORecord.Id
         {
@@ -195,6 +203,119 @@ namespace DBSynchroniser.Records
             set { packId = value; }
         }
 
+        [D2OIgnore]
+        public uint Level
+        {
+            get { return level; }
+            set { level = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean IsConquestVillage
+        {
+            get { return isConquestVillage; }
+            set { isConquestVillage = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean BasicAccountAllowed
+        {
+            get { return basicAccountAllowed; }
+            set { basicAccountAllowed = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean DisplayOnWorldMap
+        {
+            get { return displayOnWorldMap; }
+            set { displayOnWorldMap = value; }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> Monsters
+        {
+            get { return monsters; }
+            set
+            {
+                monsters = value;
+                m_monstersBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_monstersBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] MonstersBin
+        {
+            get { return m_monstersBin; }
+            set
+            {
+                m_monstersBin = value;
+                monsters = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> EntranceMapIds
+        {
+            get { return entranceMapIds; }
+            set
+            {
+                entranceMapIds = value;
+                m_entranceMapIdsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_entranceMapIdsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] EntranceMapIdsBin
+        {
+            get { return m_entranceMapIdsBin; }
+            set
+            {
+                m_entranceMapIdsBin = value;
+                entranceMapIds = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> ExitMapIds
+        {
+            get { return exitMapIds; }
+            set
+            {
+                exitMapIds = value;
+                m_exitMapIdsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_exitMapIdsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] ExitMapIdsBin
+        {
+            get { return m_exitMapIdsBin; }
+            set
+            {
+                m_exitMapIdsBin = value;
+                exitMapIds = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
+        public Boolean Capturable
+        {
+            get { return capturable; }
+            set { capturable = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SubArea)obj;
@@ -208,6 +329,14 @@ namespace DBSynchroniser.Records
             Shape = castedObj.shape;
             CustomWorldMap = castedObj.customWorldMap;
             PackId = castedObj.packId;
+            Level = castedObj.level;
+            IsConquestVillage = castedObj.isConquestVillage;
+            BasicAccountAllowed = castedObj.basicAccountAllowed;
+            DisplayOnWorldMap = castedObj.displayOnWorldMap;
+            Monsters = castedObj.monsters;
+            EntranceMapIds = castedObj.entranceMapIds;
+            ExitMapIds = castedObj.exitMapIds;
+            Capturable = castedObj.capturable;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -222,6 +351,14 @@ namespace DBSynchroniser.Records
             obj.shape = Shape;
             obj.customWorldMap = CustomWorldMap;
             obj.packId = PackId;
+            obj.level = Level;
+            obj.isConquestVillage = IsConquestVillage;
+            obj.basicAccountAllowed = BasicAccountAllowed;
+            obj.displayOnWorldMap = DisplayOnWorldMap;
+            obj.monsters = Monsters;
+            obj.entranceMapIds = EntranceMapIds;
+            obj.exitMapIds = ExitMapIds;
+            obj.capturable = Capturable;
             return obj;
         }
         
@@ -232,6 +369,9 @@ namespace DBSynchroniser.Records
             m_boundsBin = bounds == null ? null : bounds.ToBinary();
             m_shapeBin = shape == null ? null : shape.ToBinary();
             m_customWorldMapBin = customWorldMap == null ? null : customWorldMap.ToBinary();
+            m_monstersBin = monsters == null ? null : monsters.ToBinary();
+            m_entranceMapIdsBin = entranceMapIds == null ? null : entranceMapIds.ToBinary();
+            m_exitMapIdsBin = exitMapIds == null ? null : exitMapIds.ToBinary();
         
         }
     }

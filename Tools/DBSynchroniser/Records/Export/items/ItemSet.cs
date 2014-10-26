@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:48
+// Generated on 10/26/2014 23:31:13
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("ItemSet", "com.ankamagames.dofus.datacenter.items")]
     public class ItemSetRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "ItemSets";
+        public const String MODULE = "ItemSets";
         public uint id;
         public List<uint> items;
         [I18NField]

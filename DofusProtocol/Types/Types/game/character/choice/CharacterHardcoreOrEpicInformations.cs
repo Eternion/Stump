@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2014 15:52:49
+// Generated on 10/26/2014 23:30:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,9 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
-    public class CharacterHardcoreInformations : CharacterBaseInformations
+    public class CharacterHardcoreOrEpicInformations : CharacterBaseInformations
     {
-        public const short Id = 86;
+        public const short Id = 474;
         public override short TypeId
         {
             get { return Id; }
@@ -21,11 +21,11 @@ namespace Stump.DofusProtocol.Types
         public short deathCount;
         public byte deathMaxLevel;
         
-        public CharacterHardcoreInformations()
+        public CharacterHardcoreOrEpicInformations()
         {
         }
         
-        public CharacterHardcoreInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, sbyte deathState, short deathCount, byte deathMaxLevel)
+        public CharacterHardcoreOrEpicInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, sbyte deathState, short deathCount, byte deathMaxLevel)
          : base(id, level, name, entityLook, breed, sex)
         {
             this.deathState = deathState;

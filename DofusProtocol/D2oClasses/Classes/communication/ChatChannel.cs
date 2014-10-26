@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:31
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,6 +14,7 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         public const String MODULE = "ChatChannels";
         public uint id;
+        [I18NField]
         public uint nameId;
         public uint descriptionId;
         public String shortcut;

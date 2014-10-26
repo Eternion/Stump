@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:47
+// Generated on 10/26/2014 23:31:13
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("EmblemSymbol", "com.ankamagames.dofus.datacenter.guild")]
     public class EmblemSymbolRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "EmblemSymbols";
+        public const String MODULE = "EmblemSymbols";
         public int id;
         public int iconId;
         public int skinId;

@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2014 15:52:11
+// Generated on 10/26/2014 23:29:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class MimicryObjectAssociatedMessage : Message
+    public class MimicryObjectAssociatedMessage : SymbioticObjectAssociatedMessage
     {
         public const uint Id = 6462;
         public override uint MessageId
@@ -18,32 +18,29 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int hostUID;
         
         public MimicryObjectAssociatedMessage()
         {
         }
         
         public MimicryObjectAssociatedMessage(int hostUID)
+         : base(hostUID)
         {
-            this.hostUID = hostUID;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(hostUID);
+            base.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            hostUID = reader.ReadInt();
-            if (hostUID < 0)
-                throw new Exception("Forbidden value on hostUID = " + hostUID + ", it doesn't respect the following condition : hostUID < 0");
+            base.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int);
+            return base.GetSerializationSize();
         }
         
     }

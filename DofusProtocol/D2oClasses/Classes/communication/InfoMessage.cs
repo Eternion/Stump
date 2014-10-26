@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:31
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,6 +15,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public const String MODULE = "InfoMessages";
         public uint typeId;
         public uint messageId;
+        [I18NField]
         public uint textId;
         [D2OIgnore]
         public uint TypeId

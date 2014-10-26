@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:29
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,6 +15,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public const String MODULE = "AbuseReasons";
         public uint _abuseReasonId;
         public uint _mask;
+        [I18NField]
         public int _reasonTextId;
         int IIndexedData.Id
         {

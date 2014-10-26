@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:51
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,11 +17,14 @@ namespace DBSynchroniser.Records
     [D2OClass("Dungeon", "com.ankamagames.dofus.datacenter.world")]
     public class DungeonRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Dungeons";
+        public const String MODULE = "Dungeons";
         public int id;
         [I18NField]
         public uint nameId;
         public int optimalPlayerLevel;
+        public List<int> mapIds;
+        public int entranceMapId;
+        public int exitMapId;
 
         int ID2ORecord.Id
         {
@@ -52,6 +55,46 @@ namespace DBSynchroniser.Records
             set { optimalPlayerLevel = value; }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<int> MapIds
+        {
+            get { return mapIds; }
+            set
+            {
+                mapIds = value;
+                m_mapIdsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_mapIdsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] MapIdsBin
+        {
+            get { return m_mapIdsBin; }
+            set
+            {
+                m_mapIdsBin = value;
+                mapIds = value == null ? null : value.ToObject<List<int>>();
+            }
+        }
+
+        [D2OIgnore]
+        public int EntranceMapId
+        {
+            get { return entranceMapId; }
+            set { entranceMapId = value; }
+        }
+
+        [D2OIgnore]
+        public int ExitMapId
+        {
+            get { return exitMapId; }
+            set { exitMapId = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Dungeon)obj;
@@ -59,6 +102,9 @@ namespace DBSynchroniser.Records
             Id = castedObj.id;
             NameId = castedObj.nameId;
             OptimalPlayerLevel = castedObj.optimalPlayerLevel;
+            MapIds = castedObj.mapIds;
+            EntranceMapId = castedObj.entranceMapId;
+            ExitMapId = castedObj.exitMapId;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -67,11 +113,15 @@ namespace DBSynchroniser.Records
             obj.id = Id;
             obj.nameId = NameId;
             obj.optimalPlayerLevel = OptimalPlayerLevel;
+            obj.mapIds = MapIds;
+            obj.entranceMapId = EntranceMapId;
+            obj.exitMapId = ExitMapId;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
+            m_mapIdsBin = mapIds == null ? null : mapIds.ToBinary();
         
         }
     }

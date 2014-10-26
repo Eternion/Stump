@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:46
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,10 +14,10 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         public const String MODULE = "SpellStates";
         public int id;
+        [I18NField]
         public uint nameId;
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
-        public Boolean critical;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -45,12 +45,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.preventsFight; }
             set { this.preventsFight = value; }
-        }
-        [D2OIgnore]
-        public Boolean Critical
-        {
-            get { return this.critical; }
-            set { this.critical = value; }
         }
     }
 }

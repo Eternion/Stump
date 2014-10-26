@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:31
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,6 +14,7 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         public const String MODULE = "Effects";
         public int id;
+        [I18NField]
         public uint descriptionId;
         public int iconId;
         public int characteristic;
@@ -24,6 +25,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean forceMinMax;
         public Boolean boost;
         public Boolean active;
+        [I18NField]
         public uint theoreticalDescriptionId;
         public uint theoreticalPattern;
         public Boolean showInSet;

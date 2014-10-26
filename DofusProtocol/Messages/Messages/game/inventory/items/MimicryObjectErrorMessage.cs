@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2014 15:52:11
+// Generated on 10/26/2014 23:29:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class MimicryObjectErrorMessage : ObjectErrorMessage
+    public class MimicryObjectErrorMessage : SymbioticObjectErrorMessage
     {
         public const uint Id = 6461;
         public override uint MessageId
@@ -19,36 +19,32 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public bool preview;
-        public sbyte errorCode;
         
         public MimicryObjectErrorMessage()
         {
         }
         
-        public MimicryObjectErrorMessage(sbyte reason, bool preview, sbyte errorCode)
-         : base(reason)
+        public MimicryObjectErrorMessage(sbyte reason, sbyte errorCode, bool preview)
+         : base(reason, errorCode)
         {
             this.preview = preview;
-            this.errorCode = errorCode;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
             writer.WriteBoolean(preview);
-            writer.WriteSByte(errorCode);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             preview = reader.ReadBoolean();
-            errorCode = reader.ReadSByte();
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(bool) + sizeof(sbyte);
+            return base.GetSerializationSize() + sizeof(bool);
         }
         
     }

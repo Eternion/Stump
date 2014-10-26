@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("SpellBomb", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellBombRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "SpellBombs";
+        public const String MODULE = "SpellBombs";
         public int id;
         public int chainReactionSpellId;
         public int explodSpellId;

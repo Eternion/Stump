@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2014 15:51:48
+// Generated on 10/26/2014 23:29:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,19 +21,17 @@ namespace Stump.DofusProtocol.Messages
         public short serverId;
         public string address;
         public ushort port;
-        public bool canCreateNewCharacter;
         public string ticket;
         
         public SelectedServerDataMessage()
         {
         }
         
-        public SelectedServerDataMessage(short serverId, string address, ushort port, bool canCreateNewCharacter, string ticket)
+        public SelectedServerDataMessage(short serverId, string address, ushort port, string ticket)
         {
             this.serverId = serverId;
             this.address = address;
             this.port = port;
-            this.canCreateNewCharacter = canCreateNewCharacter;
             this.ticket = ticket;
         }
         
@@ -42,7 +40,6 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(serverId);
             writer.WriteUTF(address);
             writer.WriteUShort(port);
-            writer.WriteBoolean(canCreateNewCharacter);
             writer.WriteUTF(ticket);
         }
         
@@ -53,13 +50,12 @@ namespace Stump.DofusProtocol.Messages
             port = reader.ReadUShort();
             if (port < 0 || port > 65535)
                 throw new Exception("Forbidden value on port = " + port + ", it doesn't respect the following condition : port < 0 || port > 65535");
-            canCreateNewCharacter = reader.ReadBoolean();
             ticket = reader.ReadUTF();
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(short) + Encoding.UTF8.GetByteCount(address) + sizeof(ushort) + sizeof(bool) + sizeof(short) + Encoding.UTF8.GetByteCount(ticket);
+            return sizeof(short) + sizeof(short) + Encoding.UTF8.GetByteCount(address) + sizeof(ushort) + sizeof(short) + Encoding.UTF8.GetByteCount(ticket);
         }
         
     }

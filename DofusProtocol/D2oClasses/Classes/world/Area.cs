@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:46
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,11 +14,14 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         public const String MODULE = "Areas";
         public int id;
+        [I18NField]
         public uint nameId;
         public int superAreaId;
         public Boolean containHouses;
         public Boolean containPaddocks;
         public Rectangle bounds;
+        public uint worldmapId;
+        public Boolean hasWorldMap;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -58,6 +61,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.bounds; }
             set { this.bounds = value; }
+        }
+        [D2OIgnore]
+        public uint WorldmapId
+        {
+            get { return this.worldmapId; }
+            set { this.worldmapId = value; }
+        }
+        [D2OIgnore]
+        public Boolean HasWorldMap
+        {
+            get { return this.hasWorldMap; }
+            set { this.hasWorldMap = value; }
         }
     }
 }

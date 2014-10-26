@@ -47,11 +47,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             set;
         }
 
-        public Boolean Critical
-        {
-            get;
-            set;
-        }
 
         #region IAssignedByD2O Members
 
@@ -62,7 +57,6 @@ namespace Stump.Server.WorldServer.Database.Spells
             NameId = state.nameId;
             PreventsSpellCast = state.preventsSpellCast;
             PreventsFight = state.preventsFight;
-            Critical = state.critical;
         }
 
         #endregion

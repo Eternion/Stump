@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,8 +17,9 @@ namespace DBSynchroniser.Records
     [D2OClass("NpcAction", "com.ankamagames.dofus.datacenter.npcs")]
     public class NpcActionRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "NpcActions";
+        public const String MODULE = "NpcActions";
         public int id;
+        public int realId;
         [I18NField]
         public uint nameId;
 
@@ -37,6 +38,13 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public int RealId
+        {
+            get { return realId; }
+            set { realId = value; }
+        }
+
+        [D2OIgnore]
         [I18NField]
         public uint NameId
         {
@@ -49,6 +57,7 @@ namespace DBSynchroniser.Records
             var castedObj = (NpcAction)obj;
             
             Id = castedObj.id;
+            RealId = castedObj.realId;
             NameId = castedObj.nameId;
         }
         
@@ -56,6 +65,7 @@ namespace DBSynchroniser.Records
         {
             var obj = parent != null ? (NpcAction)parent : new NpcAction();
             obj.id = Id;
+            obj.realId = RealId;
             obj.nameId = NameId;
             return obj;
         }

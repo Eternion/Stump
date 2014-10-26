@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:51
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,11 +17,12 @@ namespace DBSynchroniser.Records
     [D2OClass("SuperArea", "com.ankamagames.dofus.datacenter.world")]
     public class SuperAreaRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "SuperAreas";
+        public const String MODULE = "SuperAreas";
         public int id;
         [I18NField]
         public uint nameId;
         public uint worldmapId;
+        public Boolean hasWorldMap;
 
         int ID2ORecord.Id
         {
@@ -52,6 +53,13 @@ namespace DBSynchroniser.Records
             set { worldmapId = value; }
         }
 
+        [D2OIgnore]
+        public Boolean HasWorldMap
+        {
+            get { return hasWorldMap; }
+            set { hasWorldMap = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SuperArea)obj;
@@ -59,6 +67,7 @@ namespace DBSynchroniser.Records
             Id = castedObj.id;
             NameId = castedObj.nameId;
             WorldmapId = castedObj.worldmapId;
+            HasWorldMap = castedObj.hasWorldMap;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -67,6 +76,7 @@ namespace DBSynchroniser.Records
             obj.id = Id;
             obj.nameId = NameId;
             obj.worldmapId = WorldmapId;
+            obj.hasWorldMap = HasWorldMap;
             return obj;
         }
         

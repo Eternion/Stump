@@ -154,6 +154,7 @@
     <Compile Include="Messages\authorized\ConsoleMessage.cs" />
     <Compile Include="Messages\common\basic\BasicPingMessage.cs" />
     <Compile Include="Messages\common\basic\BasicPongMessage.cs" />
+    <Compile Include="Messages\common\basic\BasicStatMessage.cs" />
     <Compile Include="Messages\common\NetworkDataContainerMessage.cs" />
     <Compile Include="Messages\connection\CredentialsAcknowledgementMessage.cs" />
     <Compile Include="Messages\connection\HelloConnectMessage.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="Messages\game\approach\AuthenticationTicketMessage.cs" />
     <Compile Include="Messages\game\approach\AuthenticationTicketRefusedMessage.cs" />
     <Compile Include="Messages\game\approach\HelloGameMessage.cs" />
+    <Compile Include="Messages\game\approach\ReloginTokenStatusMessage.cs" />
     <Compile Include="Messages\game\approach\ServerOptionalFeaturesMessage.cs" />
     <Compile Include="Messages\game\approach\ServerSessionConstantsMessage.cs" />
     <Compile Include="Messages\game\approach\ServerSettingsMessage.cs" />
@@ -293,6 +295,7 @@
     <Compile Include="Messages\game\basic\BasicWhoIsMessage.cs" />
     <Compile Include="Messages\game\basic\BasicWhoIsNoMatchMessage.cs" />
     <Compile Include="Messages\game\basic\BasicWhoIsRequestMessage.cs" />
+    <Compile Include="Messages\game\basic\CurrentServerStatusUpdateMessage.cs" />
     <Compile Include="Messages\game\basic\NumericWhoIsMessage.cs" />
     <Compile Include="Messages\game\basic\NumericWhoIsRequestMessage.cs" />
     <Compile Include="Messages\game\basic\SequenceNumberMessage.cs" />
@@ -404,6 +407,7 @@
     <Compile Include="Messages\game\context\fight\GameFightUpdateTeamMessage.cs" />
     <Compile Include="Messages\game\context\fight\SlaveSwitchContextMessage.cs" />
     <Compile Include="Messages\game\context\GameCautiousMapMovementMessage.cs" />
+    <Compile Include="Messages\game\context\GameCautiousMapMovementRequestMessage.cs" />
     <Compile Include="Messages\game\context\GameContextCreateErrorMessage.cs" />
     <Compile Include="Messages\game\context\GameContextCreateMessage.cs" />
     <Compile Include="Messages\game\context\GameContextCreateRequestMessage.cs" />
@@ -452,6 +456,7 @@
     <Compile Include="Messages\game\context\mount\MountUnSetMessage.cs" />
     <Compile Include="Messages\game\context\mount\MountXpRatioMessage.cs" />
     <Compile Include="Messages\game\context\mount\PaddockBuyRequestMessage.cs" />
+    <Compile Include="Messages\game\context\mount\PaddockBuyResultMessage.cs" />
     <Compile Include="Messages\game\context\mount\PaddockMoveItemRequestMessage.cs" />
     <Compile Include="Messages\game\context\mount\PaddockRemoveItemRequestMessage.cs" />
     <Compile Include="Messages\game\context\mount\PaddockSellRequestMessage.cs" />
@@ -464,9 +469,11 @@
     <Compile Include="Messages\game\context\roleplay\death\GameRolePlayFreeSoulRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\death\GameRolePlayGameOverMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\death\GameRolePlayPlayerLifeStatusMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\death\WarnOnPermaDeathMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\delay\GameRolePlayDelayedActionFinishedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\delay\GameRolePlayDelayedActionMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\delay\GameRolePlayDelayedObjectUseMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\document\ComicReadingBeginMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\document\DocumentReadingBeginMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\emote\EmoteAddMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\emote\EmoteListMessage.cs" />
@@ -485,6 +492,7 @@
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUnregisterMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUpdatePlayerInfosMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayAggressionMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayAttackMonsterRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayFightRequestCanceledMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayPlayerFightFriendlyAnsweredMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayPlayerFightFriendlyAnswerMessage.cs" />
@@ -646,12 +654,15 @@
     <Compile Include="Messages\game\context\roleplay\stats\StatsUpgradeResultMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\StopToListenRunningFightRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\TeleportOnSameMapMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\treasureHunt\PortalDialogQuestionMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\treasureHunt\PortalUseRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntAvailableRetryCountUpdateMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntDigRequestAnswerFailedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntDigRequestAnswerMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntDigRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntFinishedMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntFlagRemoveRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntFlagRequestAnswerMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntFlagRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntGiveUpRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntLegendaryRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\treasureHunt\TreasureHuntMessage.cs" />
@@ -692,6 +703,9 @@
     <Compile Include="Messages\game\friend\SpouseGetInformationsMessage.cs" />
     <Compile Include="Messages\game\friend\SpouseInformationsMessage.cs" />
     <Compile Include="Messages\game\friend\SpouseStatusMessage.cs" />
+    <Compile Include="Messages\game\friend\WarnOnPermaDeathStateMessage.cs" />
+    <Compile Include="Messages\game\guest\GuestLimitationMessage.cs" />
+    <Compile Include="Messages\game\guest\GuestModeMessage.cs" />
     <Compile Include="Messages\game\guild\ChallengeFightJoinRefusedMessage.cs" />
     <Compile Include="Messages\game\guild\GuildChangeMemberParametersMessage.cs" />
     <Compile Include="Messages\game\guild\GuildCharacsUpgradeRequestMessage.cs" />
@@ -826,6 +840,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMoveKamaMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMoveMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMovePricedMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectsAddedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertAllFromInvMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertAllToInvMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertExistingFromInvMessage.cs" />
@@ -891,6 +906,8 @@
     <Compile Include="Messages\game\inventory\items\ExchangeObjectPutInBagMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ExchangeObjectRemovedFromBagMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ExchangeObjectRemovedMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\ExchangeObjectsModifiedMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\ExchangeObjectsRemovedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\GoldAddedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\InventoryContentAndPresetMessage.cs" />
     <Compile Include="Messages\game\inventory\items\InventoryContentMessage.cs" />
@@ -923,7 +940,15 @@
     <Compile Include="Messages\game\inventory\items\ObjectUseMultipleMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectUseOnCellMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ObjectUseOnCharacterMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\ObtainedItemMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\ObtainedItemWithBonusMessage.cs" />
     <Compile Include="Messages\game\inventory\items\SetUpdateMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\SymbioticObjectAssociatedMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\SymbioticObjectAssociateRequestMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\SymbioticObjectErrorMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\WrapperObjectAssociatedMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\WrapperObjectDissociateRequestMessage.cs" />
+    <Compile Include="Messages\game\inventory\items\WrapperObjectErrorMessage.cs" />
     <Compile Include="Messages\game\inventory\KamasUpdateMessage.cs" />
     <Compile Include="Messages\game\inventory\ObjectAveragePricesErrorMessage.cs" />
     <Compile Include="Messages\game\inventory\ObjectAveragePricesGetMessage.cs" />
@@ -946,6 +971,9 @@
     <Compile Include="Messages\game\inventory\storage\StorageObjectsRemoveMessage.cs" />
     <Compile Include="Messages\game\inventory\storage\StorageObjectsUpdateMessage.cs" />
     <Compile Include="Messages\game\inventory\storage\StorageObjectUpdateMessage.cs" />
+    <Compile Include="Messages\game\look\AccessoryPreviewErrorMessage.cs" />
+    <Compile Include="Messages\game\look\AccessoryPreviewMessage.cs" />
+    <Compile Include="Messages\game\look\AccessoryPreviewRequestMessage.cs" />
     <Compile Include="Messages\game\moderation\PopupWarningMessage.cs" />
     <Compile Include="Messages\game\modificator\AreaFightModificatorUpdateMessage.cs" />
     <Compile Include="Messages\game\packs\PackRestrictedSubAreaMessage.cs" />
@@ -963,6 +991,7 @@
     <Compile Include="Messages\game\prism\PrismInfoCloseMessage.cs" />
     <Compile Include="Messages\game\prism\PrismInfoInValidMessage.cs" />
     <Compile Include="Messages\game\prism\PrismInfoJoinLeaveRequestMessage.cs" />
+    <Compile Include="Messages\game\prism\PrismModuleExchangeRequestMessage.cs" />
     <Compile Include="Messages\game\prism\PrismSetSabotagedRefusedMessage.cs" />
     <Compile Include="Messages\game\prism\PrismSetSabotagedRequestMessage.cs" />
     <Compile Include="Messages\game\prism\PrismSettingsErrorMessage.cs" />
@@ -993,7 +1022,9 @@
     <Compile Include="Messages\game\social\ContactLookMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookRequestByIdMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookRequestMessage.cs" />
+    <Compile Include="Messages\game\startup\StartupActionAddMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionFinishedMessage.cs" />
+    <Compile Include="Messages\game\startup\StartupActionsAllAttributionMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionsExecuteMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionsListMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionsObjetAttributionMessage.cs" />
@@ -1018,7 +1049,9 @@
     <Compile Include="Messages\secure\TrustStatusMessage.cs" />
     <Compile Include="Messages\security\CheckFileMessage.cs" />
     <Compile Include="Messages\security\CheckFileRequestMessage.cs" />
+    <Compile Include="Messages\security\CheckIntegrityMessage.cs" />
     <Compile Include="Messages\security\ClientKeyMessage.cs" />
+    <Compile Include="Messages\security\RawDataMessage.cs" />
     <Compile Include="Messages\server\basic\SystemMessageDisplayMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadCurrentSpeedMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadErrorMessage.cs" />

@@ -173,6 +173,7 @@
     <Compile Include="Custom\PlayerFields.cs" />
     <Compile Include="Custom\ZoneIdEnum.cs" />
     <Compile Include="Custom\SpellTargetType.cs" />
+    <Compile Include="Export\AccessoryPreviewErrorEnum.cs" />
     <Compile Include="Export\AggressableStatusEnum.cs" />
     <Compile Include="Export\AlignmentSideEnum.cs" />
     <Compile Include="Export\AllianceRightsBitEnum.cs" />
@@ -209,9 +210,11 @@
     <Compile Include="Export\GameActionMarkTypeEnum.cs" />
     <Compile Include="Export\GameContextEnum.cs" />
     <Compile Include="Export\GameHierarchyEnum.cs" />
+    <Compile Include="Export\GuestLimitationEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
     <Compile Include="Export\GuildRightsBitEnum.cs" />
     <Compile Include="Export\HardcoreDeathStateEnum.cs" />
+    <Compile Include="Export\HardcoreOrEpicDeathStateEnum.cs" />
     <Compile Include="Export\IdentificationFailureReasonEnum.cs" />
     <Compile Include="Export\ListAddFailureEnum.cs" />
     <Compile Include="Export\MapObstacleStateEnum.cs" />
@@ -245,6 +248,7 @@
     <Compile Include="Export\SocialContactCategoryEnum.cs" />
     <Compile Include="Export\SocialGroupCreationResultEnum.cs" />
     <Compile Include="Export\SocialGroupInvitationStateEnum.cs" />
+    <Compile Include="Export\StatisticTypeEnum.cs" />
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Export\SubscriptionRequiredEnum.cs" />
     <Compile Include="Export\TaxCollectorErrorReasonEnum.cs" />
@@ -254,6 +258,8 @@
     <Compile Include="Export\TeleporterTypeEnum.cs" />
     <Compile Include="Export\TextInformationTypeEnum.cs" />
     <Compile Include="Export\TreasureHuntDigRequestEnum.cs" />
+    <Compile Include="Export\TreasureHuntFlagRequestEnum.cs" />
+    <Compile Include="Export\TreasureHuntFlagStateEnum.cs" />
     <Compile Include="Export\TreasureHuntRequestEnum.cs" />
     <Compile Include="Export\TreasureHuntTypeEnum.cs" />
     <Compile Include="Export\UpdatableMountBoostEnum.cs" />

@@ -150,6 +150,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimFunData.cs" />
+    <Compile Include="AnimFunMonsterData.cs" />
+    <Compile Include="AnimFunNpcData.cs" />
     <Compile Include="Classes\abuse\AbuseReasons.cs" />
     <Compile Include="Classes\alignments\AlignmentBalance.cs" />
     <Compile Include="Classes\alignments\AlignmentEffect.cs" />
@@ -177,6 +179,7 @@
     <Compile Include="Classes\communication\Emoticon.cs" />
     <Compile Include="Classes\communication\InfoMessage.cs" />
     <Compile Include="Classes\communication\Smiley.cs" />
+    <Compile Include="Classes\documents\Comic.cs" />
     <Compile Include="Classes\documents\Document.cs" />
     <Compile Include="Classes\effects\Effect.cs" />
     <Compile Include="Classes\effects\EffectInstance.cs" />
@@ -244,6 +247,7 @@
     <Compile Include="Classes\items\criterion\StaticCriterionItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SubareaItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SubscribeItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\SubscriptionDurationItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\UnusableItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\WeightItemCriterion.cs" />
     <Compile Include="Classes\items\Incarnation.cs" />
@@ -252,6 +256,7 @@
     <Compile Include="Classes\items\ItemSet.cs" />
     <Compile Include="Classes\items\ItemType.cs" />
     <Compile Include="Classes\items\PresetIcon.cs" />
+    <Compile Include="Classes\items\VeteranReward.cs" />
     <Compile Include="Classes\items\Weapon.cs" />
     <Compile Include="Classes\jobs\Job.cs" />
     <Compile Include="Classes\jobs\Recipe.cs" />
@@ -268,7 +273,6 @@
     <Compile Include="Classes\misc\Tips.cs" />
     <Compile Include="Classes\misc\TypeAction.cs" />
     <Compile Include="Classes\misc\Url.cs" />
-    <Compile Include="Classes\monsters\AnimFunMonsterData.cs" />
     <Compile Include="Classes\monsters\Companion.cs" />
     <Compile Include="Classes\monsters\CompanionCharacteristic.cs" />
     <Compile Include="Classes\monsters\CompanionSpell.cs" />
@@ -283,7 +287,6 @@
     <Compile Include="Classes\mounts\MountBone.cs" />
     <Compile Include="Classes\mounts\RideFood.cs" />
     <Compile Include="Classes\notifications\Notification.cs" />
-    <Compile Include="Classes\npcs\AnimFunNpcData.cs" />
     <Compile Include="Classes\npcs\Npc.cs" />
     <Compile Include="Classes\npcs\NpcAction.cs" />
     <Compile Include="Classes\npcs\NpcMessage.cs" />

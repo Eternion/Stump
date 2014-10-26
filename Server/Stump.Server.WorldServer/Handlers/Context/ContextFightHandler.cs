@@ -312,7 +312,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor playingTurn, int waitTime)
         {
-            client.Send(new GameFightTurnResumeMessage(playingTurn.Id, waitTime));
+            client.Send(new GameFightTurnResumeMessage(playingTurn.Id, waitTime, playingTurn.Fight.GetTurnTimeLeft()));
         }
 
         public static void SendChallengeFightJoinRefusedMessage(IPacketReceiver client, Character character,

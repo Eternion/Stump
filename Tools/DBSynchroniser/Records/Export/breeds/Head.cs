@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:46
+// Generated on 10/26/2014 23:31:13
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,12 +17,13 @@ namespace DBSynchroniser.Records
     [D2OClass("Head", "com.ankamagames.dofus.datacenter.breeds")]
     public class HeadRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Heads";
+        public const String MODULE = "Heads";
         public int id;
         public String skins;
         public String assetId;
         public uint breed;
         public uint gender;
+        public String label;
         public uint order;
 
         int ID2ORecord.Id
@@ -70,6 +71,14 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [NullString]
+        public String Label
+        {
+            get { return label; }
+            set { label = value; }
+        }
+
+        [D2OIgnore]
         public uint Order
         {
             get { return order; }
@@ -85,6 +94,7 @@ namespace DBSynchroniser.Records
             AssetId = castedObj.assetId;
             Breed = castedObj.breed;
             Gender = castedObj.gender;
+            Label = castedObj.label;
             Order = castedObj.order;
         }
         
@@ -96,6 +106,7 @@ namespace DBSynchroniser.Records
             obj.assetId = AssetId;
             obj.breed = Breed;
             obj.gender = Gender;
+            obj.label = Label;
             obj.order = Order;
             return obj;
         }

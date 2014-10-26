@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("ServerCommunity", "com.ankamagames.dofus.datacenter.servers")]
     public class ServerCommunityRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "ServerCommunities";
+        public const String MODULE = "ServerCommunities";
         public int id;
         [I18NField]
         public uint nameId;

@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2014 15:52:53
+// Generated on 10/26/2014 23:30:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,20 +21,20 @@ namespace Stump.DofusProtocol.Types
         public int lastTimeSlotModificationAuthorGuildId;
         public int lastTimeSlotModificationAuthorId;
         public string lastTimeSlotModificationAuthorName;
-        public bool hasTeleporterModule;
+        public IEnumerable<int> modulesItemIds;
         
         public AllianceInsiderPrismInformation()
         {
         }
         
-        public AllianceInsiderPrismInformation(sbyte typeId, sbyte state, int nextVulnerabilityDate, int placementDate, int rewardTokenCount, int lastTimeSlotModificationDate, int lastTimeSlotModificationAuthorGuildId, int lastTimeSlotModificationAuthorId, string lastTimeSlotModificationAuthorName, bool hasTeleporterModule)
+        public AllianceInsiderPrismInformation(sbyte typeId, sbyte state, int nextVulnerabilityDate, int placementDate, int rewardTokenCount, int lastTimeSlotModificationDate, int lastTimeSlotModificationAuthorGuildId, int lastTimeSlotModificationAuthorId, string lastTimeSlotModificationAuthorName, IEnumerable<int> modulesItemIds)
          : base(typeId, state, nextVulnerabilityDate, placementDate, rewardTokenCount)
         {
             this.lastTimeSlotModificationDate = lastTimeSlotModificationDate;
             this.lastTimeSlotModificationAuthorGuildId = lastTimeSlotModificationAuthorGuildId;
             this.lastTimeSlotModificationAuthorId = lastTimeSlotModificationAuthorId;
             this.lastTimeSlotModificationAuthorName = lastTimeSlotModificationAuthorName;
-            this.hasTeleporterModule = hasTeleporterModule;
+            this.modulesItemIds = modulesItemIds;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -44,7 +44,19 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(lastTimeSlotModificationAuthorGuildId);
             writer.WriteInt(lastTimeSlotModificationAuthorId);
             writer.WriteUTF(lastTimeSlotModificationAuthorName);
-            writer.WriteBoolean(hasTeleporterModule);
+            var modulesItemIds_before = writer.Position;
+            var modulesItemIds_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in modulesItemIds)
+            {
+                 writer.WriteInt(entry);
+                 modulesItemIds_count++;
+            }
+            var modulesItemIds_after = writer.Position;
+            writer.Seek((int)modulesItemIds_before);
+            writer.WriteUShort((ushort)modulesItemIds_count);
+            writer.Seek((int)modulesItemIds_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -60,12 +72,18 @@ namespace Stump.DofusProtocol.Types
             if (lastTimeSlotModificationAuthorId < 0)
                 throw new Exception("Forbidden value on lastTimeSlotModificationAuthorId = " + lastTimeSlotModificationAuthorId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorId < 0");
             lastTimeSlotModificationAuthorName = reader.ReadUTF();
-            hasTeleporterModule = reader.ReadBoolean();
+            var limit = reader.ReadUShort();
+            var modulesItemIds_ = new int[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 modulesItemIds_[i] = reader.ReadInt();
+            }
+            modulesItemIds = modulesItemIds_;
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(lastTimeSlotModificationAuthorName) + sizeof(bool);
+            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(lastTimeSlotModificationAuthorName) + sizeof(short) + modulesItemIds.Sum(x => sizeof(int));
         }
         
     }

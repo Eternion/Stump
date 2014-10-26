@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:49
+// Generated on 10/26/2014 23:31:14
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("LivingObjectSkinJntMood", "com.ankamagames.dofus.datacenter.livingObjects")]
     public class LivingObjectSkinJntMoodRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "LivingObjectSkinJntMood";
+        public const String MODULE = "LivingObjectSkinJntMood";
         public int skinId;
         public List<List<int>> moods;
 

@@ -1921,12 +1921,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DisplayNotification(string text, NotificationEnum notification = NotificationEnum.INFORMATION)
         {
-            Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}, true));
+            Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}));
         }
 
         public void DisplayNotification(NotificationEnum notification, params object[] parameters)
         {
-            Client.Send(new NotificationByServerMessage((ushort)notification, parameters.Select(entry => entry.ToString()), true));
+            Client.Send(new NotificationByServerMessage((ushort)notification, parameters.Select(entry => entry.ToString())));
         }
 
         public void DisplayNotification(Notification notification)

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:49
+// Generated on 10/26/2014 23:31:14
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +17,13 @@ namespace DBSynchroniser.Records
     [D2OClass("Pet", "com.ankamagames.dofus.datacenter.livingObjects")]
     public class PetRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Pets";
+        public const String MODULE = "Pets";
         public int id;
         public List<int> foodItems;
         public List<int> foodTypes;
+        public int minDurationBeforeMeal;
+        public int maxDurationBeforeMeal;
+        public List<EffectInstance> possibleEffects;
 
         int ID2ORecord.Id
         {
@@ -88,6 +91,46 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        public int MinDurationBeforeMeal
+        {
+            get { return minDurationBeforeMeal; }
+            set { minDurationBeforeMeal = value; }
+        }
+
+        [D2OIgnore]
+        public int MaxDurationBeforeMeal
+        {
+            get { return maxDurationBeforeMeal; }
+            set { maxDurationBeforeMeal = value; }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<EffectInstance> PossibleEffects
+        {
+            get { return possibleEffects; }
+            set
+            {
+                possibleEffects = value;
+                m_possibleEffectsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_possibleEffectsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] PossibleEffectsBin
+        {
+            get { return m_possibleEffectsBin; }
+            set
+            {
+                m_possibleEffectsBin = value;
+                possibleEffects = value == null ? null : value.ToObject<List<EffectInstance>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Pet)obj;
@@ -95,6 +138,9 @@ namespace DBSynchroniser.Records
             Id = castedObj.id;
             FoodItems = castedObj.foodItems;
             FoodTypes = castedObj.foodTypes;
+            MinDurationBeforeMeal = castedObj.minDurationBeforeMeal;
+            MaxDurationBeforeMeal = castedObj.maxDurationBeforeMeal;
+            PossibleEffects = castedObj.possibleEffects;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -103,6 +149,9 @@ namespace DBSynchroniser.Records
             obj.id = Id;
             obj.foodItems = FoodItems;
             obj.foodTypes = FoodTypes;
+            obj.minDurationBeforeMeal = MinDurationBeforeMeal;
+            obj.maxDurationBeforeMeal = MaxDurationBeforeMeal;
+            obj.possibleEffects = PossibleEffects;
             return obj;
         }
         
@@ -110,6 +159,7 @@ namespace DBSynchroniser.Records
         {
             m_foodItemsBin = foodItems == null ? null : foodItems.ToBinary();
             m_foodTypesBin = foodTypes == null ? null : foodTypes.ToBinary();
+            m_possibleEffectsBin = possibleEffects == null ? null : possibleEffects.ToBinary();
         
         }
     }

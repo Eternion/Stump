@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:49
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,11 +17,12 @@ namespace DBSynchroniser.Records
     [D2OClass("MonsterRace", "com.ankamagames.dofus.datacenter.monsters")]
     public class MonsterRaceRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "MonsterRaces";
+        public const String MODULE = "MonsterRaces";
         public int id;
         public int superRaceId;
         [I18NField]
         public uint nameId;
+        public List<uint> monsters;
 
         int ID2ORecord.Id
         {
@@ -52,6 +53,32 @@ namespace DBSynchroniser.Records
             set { nameId = value; }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> Monsters
+        {
+            get { return monsters; }
+            set
+            {
+                monsters = value;
+                m_monstersBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_monstersBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] MonstersBin
+        {
+            get { return m_monstersBin; }
+            set
+            {
+                m_monstersBin = value;
+                monsters = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (MonsterRace)obj;
@@ -59,6 +86,7 @@ namespace DBSynchroniser.Records
             Id = castedObj.id;
             SuperRaceId = castedObj.superRaceId;
             NameId = castedObj.nameId;
+            Monsters = castedObj.monsters;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -67,11 +95,13 @@ namespace DBSynchroniser.Records
             obj.id = Id;
             obj.superRaceId = SuperRaceId;
             obj.nameId = NameId;
+            obj.monsters = Monsters;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
+            m_monstersBin = monsters == null ? null : monsters.ToBinary();
         
         }
     }
