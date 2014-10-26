@@ -217,28 +217,27 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     100d + Summoner.Stats[PlayerFields.DamageBonus].Total);
         }
 
-        private static bool IsBoundWith(SummonedBomb bomb1, SummonedBomb bomb2)
-        {
-            var dist = bomb1.Position.Point.DistanceToCell(bomb2.Position.Point);
-
-            return dist > 2 &&
-                         dist <= 7 && bomb1.MonsterBombTemplate == bomb2.MonsterBombTemplate &&
-                         bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point);
-        }
 
         public bool IsBoundWith(SummonedBomb bomb)
         {
-            return IsBoundWith(this, bomb);
+            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+
+            return dist > 2 && dist <= 7 && // check the distance
+                MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
+                Position.Point.IsOnSameLine(bomb.Position.Point) && // bombs are in alignment
+                Summoner.Bombs.All(x => x == this || x == bomb || MonsterBombTemplate != bomb.MonsterBombTemplate || // there are no others bombs from the same type between them
+                    !x.Position.Point.IsBetween(Position.Point, bomb.Position.Point));
         }
 
         public void Explode()
         {
             // check reaction
             var bombs = new List<SummonedBomb> {this};
-            foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(bomb => IsBoundWith(this, bomb)))
+            foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(IsBoundWith))
             {
                 bombs.Add(bomb);
-                foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(bomb2 => IsBoundWith(bomb, bomb2)))
+                SummonedBomb bomb1 = bomb;
+                foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(bomb1.IsBoundWith))
                 {
                     bombs.Add(bomb2);
                 }
@@ -349,7 +348,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             foreach (var bomb1 in bombs)
                 foreach(var bomb2 in bombs)
             {
-                if (bomb1 == bomb2 || !bomb1.m_wallsBinding.All(x => x.Bomb1 != bomb2 && x.Bomb2 != bomb2) || !IsBoundWith(bomb1, bomb2))
+                if (bomb1 == bomb2 || !bomb1.m_wallsBinding.All(x => x.Bomb1 != bomb2 && x.Bomb2 != bomb2) || !bomb1.IsBoundWith(bomb2))
                     continue;
 
                 var binding = new WallsBinding(bomb1, bomb2, m_color);

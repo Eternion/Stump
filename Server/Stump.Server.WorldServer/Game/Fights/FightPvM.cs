@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.StartPlacement();
 
-            m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
+            m_placementTimer = Map.Area.CallDelayed(FightConfiguration.PlacementPhaseTime, StartFighting);
         }
 
         public override void StartFighting()
@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public override int GetPlacementTimeLeft()
         {
-            var timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
+            var timeleft = FightConfiguration.PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
 
             if (timeleft < 0)
                 timeleft = 0;
