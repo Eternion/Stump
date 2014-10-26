@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Npc", "com.ankamagames.dofus.datacenter.npcs")]
     public class NpcRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Npcs";
+        public const String MODULE = "Npcs";
         public int id;
         [I18NField]
         public uint nameId;
@@ -28,6 +28,7 @@ namespace DBSynchroniser.Records
         public String look;
         public int tokenShop;
         public List<AnimFunNpcData> animFunList;
+        public Boolean fastAnimsFun;
 
         int ID2ORecord.Id
         {
@@ -177,6 +178,13 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        public Boolean FastAnimsFun
+        {
+            get { return fastAnimsFun; }
+            set { fastAnimsFun = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Npc)obj;
@@ -190,6 +198,7 @@ namespace DBSynchroniser.Records
             Look = castedObj.look;
             TokenShop = castedObj.tokenShop;
             AnimFunList = castedObj.animFunList;
+            FastAnimsFun = castedObj.fastAnimsFun;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -204,6 +213,7 @@ namespace DBSynchroniser.Records
             obj.look = Look;
             obj.tokenShop = TokenShop;
             obj.animFunList = AnimFunList;
+            obj.fastAnimsFun = FastAnimsFun;
             return obj;
         }
         

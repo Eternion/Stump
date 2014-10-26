@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:33
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -19,8 +19,10 @@ namespace Stump.DofusProtocol.D2oClasses
         public const uint QUEST_CATEGORY = 3;
         public const uint OTHER_CATEGORY = 4;
         public int id;
+        [I18NField]
         public uint nameId;
         public uint typeId;
+        [I18NField]
         public uint descriptionId;
         public int iconId;
         public uint level;

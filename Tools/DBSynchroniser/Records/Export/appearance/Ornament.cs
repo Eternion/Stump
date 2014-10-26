@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:46
+// Generated on 10/26/2014 23:31:12
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Ornament", "com.ankamagames.dofus.datacenter.appearance")]
     public class OrnamentRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Ornaments";
+        public const String MODULE = "Ornaments";
         public int id;
         [I18NField]
         public uint nameId;

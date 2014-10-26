@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:49
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Monster", "com.ankamagames.dofus.datacenter.monsters")]
     public class MonsterRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Monsters";
+        public const String MODULE = "Monsters";
         public int id;
         [I18NField]
         public uint nameId;
@@ -31,6 +31,17 @@ namespace DBSynchroniser.Records
         public Boolean canTackle;
         public List<AnimFunMonsterData> animFunList;
         public Boolean isBoss;
+        public List<MonsterDrop> drops;
+        public List<uint> subareas;
+        public List<uint> spells;
+        public int favoriteSubareaId;
+        public Boolean isMiniBoss;
+        public Boolean isQuestMonster;
+        public uint correspondingMiniBossId;
+        public double speedAdjust = 0.0;
+        public int creatureBoneId;
+        public Boolean canBePushed;
+        public Boolean fastAnimsFun;
 
         int ID2ORecord.Id
         {
@@ -163,6 +174,140 @@ namespace DBSynchroniser.Records
             set { isBoss = value; }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<MonsterDrop> Drops
+        {
+            get { return drops; }
+            set
+            {
+                drops = value;
+                m_dropsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_dropsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] DropsBin
+        {
+            get { return m_dropsBin; }
+            set
+            {
+                m_dropsBin = value;
+                drops = value == null ? null : value.ToObject<List<MonsterDrop>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> Subareas
+        {
+            get { return subareas; }
+            set
+            {
+                subareas = value;
+                m_subareasBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_subareasBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] SubareasBin
+        {
+            get { return m_subareasBin; }
+            set
+            {
+                m_subareasBin = value;
+                subareas = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> Spells
+        {
+            get { return spells; }
+            set
+            {
+                spells = value;
+                m_spellsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_spellsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] SpellsBin
+        {
+            get { return m_spellsBin; }
+            set
+            {
+                m_spellsBin = value;
+                spells = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
+        public int FavoriteSubareaId
+        {
+            get { return favoriteSubareaId; }
+            set { favoriteSubareaId = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean IsMiniBoss
+        {
+            get { return isMiniBoss; }
+            set { isMiniBoss = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean IsQuestMonster
+        {
+            get { return isQuestMonster; }
+            set { isQuestMonster = value; }
+        }
+
+        [D2OIgnore]
+        public uint CorrespondingMiniBossId
+        {
+            get { return correspondingMiniBossId; }
+            set { correspondingMiniBossId = value; }
+        }
+
+        [D2OIgnore]
+        public double SpeedAdjust
+        {
+            get { return speedAdjust; }
+            set { speedAdjust = value; }
+        }
+
+        [D2OIgnore]
+        public int CreatureBoneId
+        {
+            get { return creatureBoneId; }
+            set { creatureBoneId = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean CanBePushed
+        {
+            get { return canBePushed; }
+            set { canBePushed = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean FastAnimsFun
+        {
+            get { return fastAnimsFun; }
+            set { fastAnimsFun = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Monster)obj;
@@ -179,6 +324,17 @@ namespace DBSynchroniser.Records
             CanTackle = castedObj.canTackle;
             AnimFunList = castedObj.animFunList;
             IsBoss = castedObj.isBoss;
+            Drops = castedObj.drops;
+            Subareas = castedObj.subareas;
+            Spells = castedObj.spells;
+            FavoriteSubareaId = castedObj.favoriteSubareaId;
+            IsMiniBoss = castedObj.isMiniBoss;
+            IsQuestMonster = castedObj.isQuestMonster;
+            CorrespondingMiniBossId = castedObj.correspondingMiniBossId;
+            SpeedAdjust = castedObj.speedAdjust;
+            CreatureBoneId = castedObj.creatureBoneId;
+            CanBePushed = castedObj.canBePushed;
+            FastAnimsFun = castedObj.fastAnimsFun;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -196,6 +352,17 @@ namespace DBSynchroniser.Records
             obj.canTackle = CanTackle;
             obj.animFunList = AnimFunList;
             obj.isBoss = IsBoss;
+            obj.drops = Drops;
+            obj.subareas = Subareas;
+            obj.spells = Spells;
+            obj.favoriteSubareaId = FavoriteSubareaId;
+            obj.isMiniBoss = IsMiniBoss;
+            obj.isQuestMonster = IsQuestMonster;
+            obj.correspondingMiniBossId = CorrespondingMiniBossId;
+            obj.speedAdjust = SpeedAdjust;
+            obj.creatureBoneId = CreatureBoneId;
+            obj.canBePushed = CanBePushed;
+            obj.fastAnimsFun = FastAnimsFun;
             return obj;
         }
         
@@ -203,6 +370,9 @@ namespace DBSynchroniser.Records
         {
             m_gradesBin = grades == null ? null : grades.ToBinary();
             m_animFunListBin = animFunList == null ? null : animFunList.ToBinary();
+            m_dropsBin = drops == null ? null : drops.ToBinary();
+            m_subareasBin = subareas == null ? null : subareas.ToBinary();
+            m_spellsBin = spells == null ? null : spells.ToBinary();
         
         }
     }

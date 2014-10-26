@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,12 +17,12 @@ namespace DBSynchroniser.Records
     [D2OClass("SoundUi", "com.ankamagames.dofus.datacenter.sounds")]
     public class SoundUiRecord : ID2ORecord, ISaveIntercepter
     {
+        public String MODULE = "SoundUi";
         public uint id;
         public String uiName;
         public String openFile;
         public String closeFile;
         public List<SoundUiElement> subElements;
-        public String MODULE = "SoundUi";
 
         int ID2ORecord.Id
         {

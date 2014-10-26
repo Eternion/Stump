@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:48
+// Generated on 10/26/2014 23:31:13
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("ItemType", "com.ankamagames.dofus.datacenter.items")]
     public class ItemTypeRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "ItemTypes";
+        public const String MODULE = "ItemTypes";
         public int id;
         [I18NField]
         public uint nameId;
@@ -26,6 +26,7 @@ namespace DBSynchroniser.Records
         public uint gender;
         public String rawZone;
         public Boolean needUseConfirm;
+        public Boolean mimickable;
 
         int ID2ORecord.Id
         {
@@ -85,6 +86,13 @@ namespace DBSynchroniser.Records
             set { needUseConfirm = value; }
         }
 
+        [D2OIgnore]
+        public Boolean Mimickable
+        {
+            get { return mimickable; }
+            set { mimickable = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (ItemType)obj;
@@ -96,6 +104,7 @@ namespace DBSynchroniser.Records
             Gender = castedObj.gender;
             RawZone = castedObj.rawZone;
             NeedUseConfirm = castedObj.needUseConfirm;
+            Mimickable = castedObj.mimickable;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -108,6 +117,7 @@ namespace DBSynchroniser.Records
             obj.gender = Gender;
             obj.rawZone = RawZone;
             obj.needUseConfirm = NeedUseConfirm;
+            obj.mimickable = Mimickable;
             return obj;
         }
         

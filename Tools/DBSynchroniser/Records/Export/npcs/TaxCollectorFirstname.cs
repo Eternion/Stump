@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("TaxCollectorFirstname", "com.ankamagames.dofus.datacenter.npcs")]
     public class TaxCollectorFirstnameRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "TaxCollectorFirstnames";
+        public const String MODULE = "TaxCollectorFirstnames";
         public int id;
         [I18NField]
         public uint firstnameId;

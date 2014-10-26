@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:46
+// Generated on 10/26/2014 23:27:54
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -16,9 +16,11 @@ namespace Stump.DofusProtocol.D2oClasses
         public int id;
         public uint categoryId;
         public uint gfx;
+        [I18NField]
         public uint nameId;
         public uint mapId;
         public uint realMapId;
+        [I18NField]
         public int x;
         public int y;
         public Boolean outdoor;

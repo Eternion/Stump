@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,9 +17,10 @@ namespace DBSynchroniser.Records
     [D2OClass("SpellLevel", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellLevelRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "SpellLevels";
+        public const String MODULE = "SpellLevels";
         public uint id;
         public uint spellId;
+        public uint grade;
         public uint spellBreed;
         public uint apCost;
         public uint minRange;
@@ -67,6 +68,13 @@ namespace DBSynchroniser.Records
         {
             get { return spellId; }
             set { spellId = value; }
+        }
+
+        [D2OIgnore]
+        public uint Grade
+        {
+            get { return grade; }
+            set { grade = value; }
         }
 
         [D2OIgnore]
@@ -340,6 +348,7 @@ namespace DBSynchroniser.Records
             
             Id = castedObj.id;
             SpellId = castedObj.spellId;
+            Grade = castedObj.grade;
             SpellBreed = castedObj.spellBreed;
             ApCost = castedObj.apCost;
             MinRange = castedObj.minRange;
@@ -374,6 +383,7 @@ namespace DBSynchroniser.Records
             var obj = parent != null ? (SpellLevel)parent : new SpellLevel();
             obj.id = Id;
             obj.spellId = SpellId;
+            obj.grade = Grade;
             obj.spellBreed = SpellBreed;
             obj.apCost = ApCost;
             obj.minRange = MinRange;

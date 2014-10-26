@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +17,10 @@ namespace DBSynchroniser.Records
     [D2OClass("SoundBones", "com.ankamagames.dofus.datacenter.sounds")]
     public class SoundBonesRecord : ID2ORecord, ISaveIntercepter
     {
+        public String MODULE = "SoundBones";
         public uint id;
         public List<String> keys;
         public List<List<SoundAnimation>> values;
-        public String MODULE = "SoundBones";
 
         int ID2ORecord.Id
         {

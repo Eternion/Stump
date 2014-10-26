@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:38
+// Generated on 10/26/2014 23:27:52
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,6 +14,7 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         private String MODULE = "Mounts";
         public uint id;
+        [I18NField]
         public uint nameId;
         public String look;
         int IIndexedData.Id

@@ -32,7 +32,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
         private readonly Dictionary<int, string> m_indexes = new Dictionary<int, string>();
         private readonly Dictionary<int, int> m_unDiacriticalIndex = new Dictionary<int, int>();
         private readonly Dictionary<string, string> m_textIndexes = new Dictionary<string, string>();
-        private readonly Dictionary<string, string> m_textSortIndexes = new Dictionary<string, string>();
+        private readonly Dictionary<int, int> m_textSortIndexes = new Dictionary<int, int>();
         private int textCount = 0;
         private readonly string m_uri;
 
@@ -61,11 +61,15 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
                     int key = reader.ReadInt(); //4 byte
                     bool state = reader.ReadBoolean(); //1 byte
                     int dataPos = reader.ReadInt(); //4 byte
-                    var pos = (int)reader.Position; //todo: Check cast
 
+                    if (state)
+                        i += 4;
+
+                    m_unDiacriticalIndex.Add(key, state ? reader.ReadInt() : dataPos);
+
+                        var pos = (int) reader.Position;
                     reader.Seek(dataPos, SeekOrigin.Begin);
                     m_indexes.Add(key, reader.ReadUTF());
-                    m_unDiacriticalIndex.Add(key, dataPos);
                     reader.Seek(pos, SeekOrigin.Begin);
                 }
                 indexLen = reader.ReadInt();
@@ -75,18 +79,21 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2i
                     var pos = reader.Position;
                     string key = reader.ReadUTF();
                     int dataPos = reader.ReadInt();
+                    indexLen -= ((int)reader.Position - (int)pos);
 
                     textCount++;
+                    pos = (int)reader.Position;
+                    reader.Seek(dataPos, SeekOrigin.Begin);
                     m_textIndexes.Add(key, reader.ReadUTF());
-                    indexLen -= ((int)reader.Position - (int)pos);
                     reader.Seek(pos, SeekOrigin.Begin);
                 }
                 indexLen = reader.ReadInt();
 
+                var j = 0;
                 while (indexLen > 0)
                 {
                     var pos = (int)reader.Position;
-                    reader.ReadInt();
+                    m_textSortIndexes.Add(reader.ReadInt(), ++j);
 
                     indexLen -= ((int)reader.Position - pos);
                 }

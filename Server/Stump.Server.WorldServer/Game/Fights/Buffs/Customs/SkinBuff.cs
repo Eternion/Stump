@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)( Dispellable ? 1 : 0 ), (short) Spell.Id, 0, 0);
+            return new FightTemporaryBoostEffect(Id, Target.Id, Duration, (sbyte)( Dispellable ? 1 : 0 ), (short) Spell.Id, Effect.Id, 0, 0);
         }
     }
 }

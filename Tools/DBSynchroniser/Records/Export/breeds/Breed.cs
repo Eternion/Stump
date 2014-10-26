@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:46
+// Generated on 10/26/2014 23:31:13
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Breed", "com.ankamagames.dofus.datacenter.breeds")]
     public class BreedRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Breeds";
+        public const String MODULE = "Breeds";
         public int id;
         [I18NField]
         public uint shortNameId;
@@ -41,6 +41,7 @@ namespace DBSynchroniser.Records
         public List<uint> breedSpellsId;
         public List<uint> maleColors;
         public List<uint> femaleColors;
+        public uint spawnMap;
 
         int ID2ORecord.Id
         {
@@ -359,6 +360,13 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        public uint SpawnMap
+        {
+            get { return spawnMap; }
+            set { spawnMap = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Breed)obj;
@@ -382,6 +390,7 @@ namespace DBSynchroniser.Records
             BreedSpellsId = castedObj.breedSpellsId;
             MaleColors = castedObj.maleColors;
             FemaleColors = castedObj.femaleColors;
+            SpawnMap = castedObj.spawnMap;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -406,6 +415,7 @@ namespace DBSynchroniser.Records
             obj.breedSpellsId = BreedSpellsId;
             obj.maleColors = MaleColors;
             obj.femaleColors = FemaleColors;
+            obj.spawnMap = SpawnMap;
             return obj;
         }
         

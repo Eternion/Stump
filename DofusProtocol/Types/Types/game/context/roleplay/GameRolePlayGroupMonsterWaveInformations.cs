@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2014 15:52:51
+// Generated on 10/26/2014 23:30:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +40,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in alternatives)
             {
+                 writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
                  alternatives_count++;
             }
@@ -60,7 +61,7 @@ namespace Stump.DofusProtocol.Types
             var alternatives_ = new Types.GroupMonsterStaticInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 alternatives_[i] = new Types.GroupMonsterStaticInformations();
+                 alternatives_[i] = Types.ProtocolTypeManager.GetInstance<Types.GroupMonsterStaticInformations>(reader.ReadShort());
                  alternatives_[i].Deserialize(reader);
             }
             alternatives = alternatives_;
@@ -68,7 +69,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(uint) + sizeof(short) + alternatives.Sum(x => x.GetSerializationSize());
+            return base.GetSerializationSize() + sizeof(uint) + sizeof(short) + alternatives.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

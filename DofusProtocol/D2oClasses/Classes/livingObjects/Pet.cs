@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:36
+// Generated on 10/26/2014 23:27:47
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -16,6 +16,9 @@ namespace Stump.DofusProtocol.D2oClasses
         public int id;
         public List<int> foodItems;
         public List<int> foodTypes;
+        public int minDurationBeforeMeal;
+        public int maxDurationBeforeMeal;
+        public List<EffectInstance> possibleEffects;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -37,6 +40,24 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.foodTypes; }
             set { this.foodTypes = value; }
+        }
+        [D2OIgnore]
+        public int MinDurationBeforeMeal
+        {
+            get { return this.minDurationBeforeMeal; }
+            set { this.minDurationBeforeMeal = value; }
+        }
+        [D2OIgnore]
+        public int MaxDurationBeforeMeal
+        {
+            get { return this.maxDurationBeforeMeal; }
+            set { this.maxDurationBeforeMeal = value; }
+        }
+        [D2OIgnore]
+        public List<EffectInstance> PossibleEffects
+        {
+            get { return this.possibleEffects; }
+            set { this.possibleEffects = value; }
         }
     }
 }

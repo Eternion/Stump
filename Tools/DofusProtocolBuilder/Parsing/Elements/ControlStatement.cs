@@ -11,7 +11,7 @@ namespace DofusProtocolBuilder.Parsing.Elements
     public class ControlStatement : IStatement
     {
         public static string Pattern =
-            @"\b(?<type>if|else if|else|while|break|return);?\s*(?<condition>\(?\s*[^;]*\s*\)?)?";
+            @"\b(?<type>if|else if|else|while|for each|for|break|return);?\s*(?<condition>\(?\s*[^;]*\s*\)?)?";
 
         public ControlType ControlType
         {

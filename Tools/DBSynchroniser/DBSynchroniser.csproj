@@ -98,8 +98,11 @@
     <Compile Include="Records\Export\almanax\AlmanaxCalendar.cs" />
     <Compile Include="Records\Export\ambientSounds\AmbientSound.cs" />
     <Compile Include="Records\Export\appearance\Appearance.cs" />
+    <Compile Include="Records\Export\appearance\CreatureBoneOverride.cs" />
+    <Compile Include="Records\Export\appearance\CreatureBoneType.cs" />
     <Compile Include="Records\Export\appearance\Ornament.cs" />
     <Compile Include="Records\Export\appearance\SkinMapping.cs" />
+    <Compile Include="Records\Export\appearance\SkinPosition.cs" />
     <Compile Include="Records\Export\appearance\Title.cs" />
     <Compile Include="Records\Export\appearance\TitleCategory.cs" />
     <Compile Include="Records\Export\breeds\Breed.cs" />
@@ -110,6 +113,7 @@
     <Compile Include="Records\Export\communication\Emoticon.cs" />
     <Compile Include="Records\Export\communication\InfoMessage.cs" />
     <Compile Include="Records\Export\communication\Smiley.cs" />
+    <Compile Include="Records\Export\documents\Comic.cs" />
     <Compile Include="Records\Export\documents\Document.cs" />
     <Compile Include="Records\Export\effects\Effect.cs" />
     <Compile Include="Records\Export\externalnotifications\ExternalNotification.cs" />
@@ -118,8 +122,6 @@
     <Compile Include="Records\Export\guild\EmblemSymbolCategory.cs" />
     <Compile Include="Records\Export\guild\RankName.cs" />
     <Compile Include="Records\Export\houses\House.cs" />
-    <Compile Include="Records\Icons\IconRecord.cs" />
-    <Compile Include="Records\ID2ORecord.cs" />
     <Compile Include="Records\Export\interactives\Interactive.cs" />
     <Compile Include="Records\Export\interactives\SkillName.cs" />
     <Compile Include="Records\Export\interactives\StealthBones.cs" />
@@ -129,12 +131,11 @@
     <Compile Include="Records\Export\items\ItemSet.cs" />
     <Compile Include="Records\Export\items\ItemType.cs" />
     <Compile Include="Records\Export\items\PresetIcon.cs" />
+    <Compile Include="Records\Export\items\VeteranReward.cs" />
     <Compile Include="Records\Export\items\Weapon.cs" />
     <Compile Include="Records\Export\jobs\Job.cs" />
     <Compile Include="Records\Export\jobs\Recipe.cs" />
     <Compile Include="Records\Export\jobs\Skill.cs" />
-    <Compile Include="Records\Langs\LangText.cs" />
-    <Compile Include="Records\Langs\LangTextUi.cs" />
     <Compile Include="Records\Export\livingObjects\LivingObjectSkinJntMood.cs" />
     <Compile Include="Records\Export\livingObjects\Pet.cs" />
     <Compile Include="Records\Export\livingObjects\SpeakingItemsTrigger.cs" />
@@ -147,6 +148,9 @@
     <Compile Include="Records\Export\misc\Tips.cs" />
     <Compile Include="Records\Export\misc\TypeAction.cs" />
     <Compile Include="Records\Export\misc\Url.cs" />
+    <Compile Include="Records\Export\monsters\Companion.cs" />
+    <Compile Include="Records\Export\monsters\CompanionCharacteristic.cs" />
+    <Compile Include="Records\Export\monsters\CompanionSpell.cs" />
     <Compile Include="Records\Export\monsters\Monster.cs" />
     <Compile Include="Records\Export\monsters\MonsterMiniBoss.cs" />
     <Compile Include="Records\Export\monsters\MonsterRace.cs" />
@@ -171,6 +175,9 @@
     <Compile Include="Records\Export\quest\QuestObjectiveType.cs" />
     <Compile Include="Records\Export\quest\QuestStep.cs" />
     <Compile Include="Records\Export\quest\QuestStepRewards.cs" />
+    <Compile Include="Records\Export\quest\treasureHunt\LegendaryTreasureHunt.cs" />
+    <Compile Include="Records\Export\quest\treasureHunt\PointOfInterest.cs" />
+    <Compile Include="Records\Export\quest\treasureHunt\PointOfInterestCategory.cs" />
     <Compile Include="Records\Export\servers\Server.cs" />
     <Compile Include="Records\Export\servers\ServerCommunity.cs" />
     <Compile Include="Records\Export\servers\ServerGameType.cs" />
@@ -183,6 +190,7 @@
     <Compile Include="Records\Export\spells\Spell.cs" />
     <Compile Include="Records\Export\spells\SpellBomb.cs" />
     <Compile Include="Records\Export\spells\SpellLevel.cs" />
+    <Compile Include="Records\Export\spells\SpellPair.cs" />
     <Compile Include="Records\Export\spells\SpellState.cs" />
     <Compile Include="Records\Export\spells\SpellType.cs" />
     <Compile Include="Records\Export\world\Area.cs" />
@@ -192,9 +200,16 @@
     <Compile Include="Records\Export\world\MapCoordinates.cs" />
     <Compile Include="Records\Export\world\MapPosition.cs" />
     <Compile Include="Records\Export\world\MapReference.cs" />
+    <Compile Include="Records\Export\world\MapScrollAction.cs" />
+    <Compile Include="Records\Export\world\Phoenix.cs" />
     <Compile Include="Records\Export\world\SubArea.cs" />
     <Compile Include="Records\Export\world\SuperArea.cs" />
+    <Compile Include="Records\Export\world\Waypoint.cs" />
     <Compile Include="Records\Export\world\WorldMap.cs" />
+    <Compile Include="Records\Icons\IconRecord.cs" />
+    <Compile Include="Records\ID2ORecord.cs" />
+    <Compile Include="Records\Langs\LangText.cs" />
+    <Compile Include="Records\Langs\LangTextUi.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

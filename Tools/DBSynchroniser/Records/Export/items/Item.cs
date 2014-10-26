@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:48
+// Generated on 10/26/2014 23:31:13
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Item", "com.ankamagames.dofus.datacenter.items")]
     public class ItemRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Items";
+        public const String MODULE = "Items";
         public const uint EQUIPEMENT_CATEGORY = 0;
         public const uint CONSUMABLES_CATEGORY = 1;
         public const uint RESSOURCES_CATEGORY = 2;
@@ -36,6 +36,7 @@ namespace DBSynchroniser.Records
         public int useAnimationId;
         public Boolean usable;
         public Boolean targetable;
+        public Boolean exchangeable;
         public double price;
         public Boolean twoHanded;
         public Boolean etheral;
@@ -47,6 +48,8 @@ namespace DBSynchroniser.Records
         public Boolean nonUsableOnAnother;
         public uint appearanceId;
         public Boolean secretRecipe;
+        public List<uint> dropMonsterIds;
+        public uint recipeSlots;
         public List<uint> recipeIds;
         public Boolean bonusIsSecret;
         public List<EffectInstance> possibleEffects;
@@ -141,6 +144,13 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public Boolean Exchangeable
+        {
+            get { return exchangeable; }
+            set { exchangeable = value; }
+        }
+
+        [D2OIgnore]
         public double Price
         {
             get { return price; }
@@ -217,6 +227,39 @@ namespace DBSynchroniser.Records
         {
             get { return secretRecipe; }
             set { secretRecipe = value; }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> DropMonsterIds
+        {
+            get { return dropMonsterIds; }
+            set
+            {
+                dropMonsterIds = value;
+                m_dropMonsterIdsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_dropMonsterIdsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] DropMonsterIdsBin
+        {
+            get { return m_dropMonsterIdsBin; }
+            set
+            {
+                m_dropMonsterIdsBin = value;
+                dropMonsterIds = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
+        public uint RecipeSlots
+        {
+            get { return recipeSlots; }
+            set { recipeSlots = value; }
         }
 
         [D2OIgnore]
@@ -333,6 +376,7 @@ namespace DBSynchroniser.Records
             UseAnimationId = castedObj.useAnimationId;
             Usable = castedObj.usable;
             Targetable = castedObj.targetable;
+            Exchangeable = castedObj.exchangeable;
             Price = castedObj.price;
             TwoHanded = castedObj.twoHanded;
             Etheral = castedObj.etheral;
@@ -344,6 +388,8 @@ namespace DBSynchroniser.Records
             NonUsableOnAnother = castedObj.nonUsableOnAnother;
             AppearanceId = castedObj.appearanceId;
             SecretRecipe = castedObj.secretRecipe;
+            DropMonsterIds = castedObj.dropMonsterIds;
+            RecipeSlots = castedObj.recipeSlots;
             RecipeIds = castedObj.recipeIds;
             BonusIsSecret = castedObj.bonusIsSecret;
             PossibleEffects = castedObj.possibleEffects;
@@ -366,6 +412,7 @@ namespace DBSynchroniser.Records
             obj.useAnimationId = UseAnimationId;
             obj.usable = Usable;
             obj.targetable = Targetable;
+            obj.exchangeable = Exchangeable;
             obj.price = Price;
             obj.twoHanded = TwoHanded;
             obj.etheral = Etheral;
@@ -377,6 +424,8 @@ namespace DBSynchroniser.Records
             obj.nonUsableOnAnother = NonUsableOnAnother;
             obj.appearanceId = AppearanceId;
             obj.secretRecipe = SecretRecipe;
+            obj.dropMonsterIds = DropMonsterIds;
+            obj.recipeSlots = RecipeSlots;
             obj.recipeIds = RecipeIds;
             obj.bonusIsSecret = BonusIsSecret;
             obj.possibleEffects = PossibleEffects;
@@ -388,6 +437,7 @@ namespace DBSynchroniser.Records
         
         public virtual void BeforeSave(bool insert)
         {
+            m_dropMonsterIdsBin = dropMonsterIds == null ? null : dropMonsterIds.ToBinary();
             m_recipeIdsBin = recipeIds == null ? null : recipeIds.ToBinary();
             m_possibleEffectsBin = possibleEffects == null ? null : possibleEffects.ToBinary();
             m_favoriteSubAreasBin = favoriteSubAreas == null ? null : favoriteSubAreas.ToBinary();

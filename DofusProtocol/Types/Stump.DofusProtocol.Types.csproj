@@ -184,8 +184,9 @@
     <Compile Include="Types\game\character\CharacterMinimalInformations.cs" />
     <Compile Include="Types\game\character\CharacterMinimalPlusLookAndGradeInformations.cs" />
     <Compile Include="Types\game\character\CharacterMinimalPlusLookInformations.cs" />
+    <Compile Include="Types\game\character\choice\AbstractCharacterToRefurbishInformation.cs" />
     <Compile Include="Types\game\character\choice\CharacterBaseInformations.cs" />
-    <Compile Include="Types\game\character\choice\CharacterHardcoreInformations.cs" />
+    <Compile Include="Types\game\character\choice\CharacterHardcoreOrEpicInformations.cs" />
     <Compile Include="Types\game\character\choice\CharacterToRecolorInformation.cs" />
     <Compile Include="Types\game\character\choice\CharacterToRelookInformation.cs" />
     <Compile Include="Types\game\character\restriction\ActorRestrictionsInformations.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Types\game\context\roleplay\GameRolePlayNpcWithQuestInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayPortalInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayPrismInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\GameRolePlayTreasureHintInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GroupMonsterStaticInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GroupMonsterStaticInformationsWithAlternatives.cs" />
     <Compile Include="Types\game\context\roleplay\GuildInAllianceInformations.cs" />
@@ -298,10 +300,12 @@
     <Compile Include="Types\game\context\roleplay\quest\QuestObjectiveInformations.cs" />
     <Compile Include="Types\game\context\roleplay\quest\QuestObjectiveInformationsWithCompletion.cs" />
     <Compile Include="Types\game\context\roleplay\treasureHunt\PortalInformation.cs" />
+    <Compile Include="Types\game\context\roleplay\treasureHunt\TreasureHuntFlag.cs" />
     <Compile Include="Types\game\context\roleplay\treasureHunt\TreasureHuntStep.cs" />
     <Compile Include="Types\game\context\roleplay\treasureHunt\TreasureHuntStepDig.cs" />
     <Compile Include="Types\game\context\roleplay\treasureHunt\TreasureHuntStepFight.cs" />
     <Compile Include="Types\game\context\roleplay\treasureHunt\TreasureHuntStepFollowDirection.cs" />
+    <Compile Include="Types\game\context\roleplay\treasureHunt\TreasureHuntStepFollowDirectionToHint.cs" />
     <Compile Include="Types\game\context\roleplay\treasureHunt\TreasureHuntStepFollowDirectionToPOI.cs" />
     <Compile Include="Types\game\context\TaxCollectorStaticExtendedInformations.cs" />
     <Compile Include="Types\game\context\TaxCollectorStaticInformations.cs" />

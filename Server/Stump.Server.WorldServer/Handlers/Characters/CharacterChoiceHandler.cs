@@ -285,12 +285,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 if (characterRecord.Recolor)
                 {
-                    charactersToRecolor.Add(new CharacterToRecolorInformation(characterRecord.Id, characterRecord.EntityLook.GetEntityLook().indexedColors));
+                    // todo : cosmetic
+                    charactersToRecolor.Add(new CharacterToRecolorInformation(characterRecord.Id, characterRecord.EntityLook.GetEntityLook().indexedColors, characterRecord.Head));
                 }
 
                 if (characterRecord.Relook)
                 {
-                    charactersToRelook.Add(new CharacterToRelookInformation(characterRecord.Id, characterRecord.Head));
+                    charactersToRelook.Add(new CharacterToRelookInformation(characterRecord.Id, characterRecord.EntityLook.GetEntityLook().indexedColors, characterRecord.Head));
                 }
 
                 /*if (!(characterRecord.Recolor && characterRecord.Rename))
@@ -308,7 +309,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)
         {
-            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations()));
+            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations(), false));
         }
 
         public static void SendCharacterCapabilitiesMessage(WorldClient client)

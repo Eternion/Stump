@@ -1,6 +1,6 @@
 
 
-// Generated on 09/02/2014 22:34:32
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,6 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class EffectInstance : IDataObject, IIndexedData
     {
+        public uint effectUid;
         public uint effectId;
         public int targetId;
         public String targetMask;
@@ -32,7 +33,13 @@ namespace Stump.DofusProtocol.D2oClasses
         public String rawZone;
         int IIndexedData.Id
         {
-            get { return (int)effectId; }
+            get { return (int)effectUid; }
+        }
+        [D2OIgnore]
+        public uint EffectUid
+        {
+            get { return this.effectUid; }
+            set { this.effectUid = value; }
         }
         [D2OIgnore]
         public uint EffectId

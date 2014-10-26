@@ -179,6 +179,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.Account.SubscriptionEnd > DateTime.Now
                     ? client.Account.SubscriptionEnd.GetUnixTimeStampLong()
                     : 0,
+                0d,
                 (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
 
             client.LookingOfServers = true;
@@ -277,7 +278,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 (short) world.Id,
                 world.Address,
                 world.Port,
-                (client.UserGroup.Role >= world.RequiredRole || client.UserGroup.AvailableServers.Contains(world.Id)),
+                //(client.UserGroup.Role >= world.RequiredRole || client.UserGroup.AvailableServers.Contains(world.Id)),
                 client.Account.Ticket));
 
             client.Disconnect();

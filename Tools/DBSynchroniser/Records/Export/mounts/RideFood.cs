@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,9 +17,9 @@ namespace DBSynchroniser.Records
     [D2OClass("RideFood", "com.ankamagames.dofus.datacenter.mounts")]
     public class RideFoodRecord : ID2ORecord, ISaveIntercepter
     {
+        public String MODULE = "RideFood";
         public uint gid;
         public uint typeId;
-        public String MODULE = "RideFood";
 
         int ID2ORecord.Id
         {

@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2014 15:51:57
+// Generated on 10/26/2014 23:29:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,29 +18,35 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public int remainingTime;
         
         public GameFightTurnResumeMessage()
         {
         }
         
-        public GameFightTurnResumeMessage(int id, int waitTime)
+        public GameFightTurnResumeMessage(int id, int waitTime, int remainingTime)
          : base(id, waitTime)
         {
+            this.remainingTime = remainingTime;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
+            writer.WriteInt(remainingTime);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
+            remainingTime = reader.ReadInt();
+            if (remainingTime < 0)
+                throw new Exception("Forbidden value on remainingTime = " + remainingTime + ", it doesn't respect the following condition : remainingTime < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize();
+            return base.GetSerializationSize() + sizeof(int);
         }
         
     }
