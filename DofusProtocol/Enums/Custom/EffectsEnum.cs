@@ -1566,7 +1566,7 @@
         /// <summary>
         /// -#1{~1~2 to -}#2% Vitality
         /// </summary>
-        Effect_1033 = 1033,
+        Effect_SubVitalityPercent = 1033,
         /// <summary>
         /// Summons the last ally killed with #1{~1~2 to }#2% of their HP
         /// </summary>

@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
 {
@@ -76,7 +77,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
             foreach (var handler in Handlers)
             {
-                handler.Apply();
+                if (handler.Dice.Delay <= 0)
+                    handler.Apply();
+                else
+                {
+                    var triggerBuff = new TriggerBuff(
+                }
             }
         }
 

@@ -287,7 +287,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected override void OnPositionChanged(ObjectPosition position)
         {
             base.OnPositionChanged(position);
-            if (m_initialized)
+            if (m_initialized && Position != null && Fight.State == FightState.Fighting)
                 CheckAndBuildWalls();
         }
 
