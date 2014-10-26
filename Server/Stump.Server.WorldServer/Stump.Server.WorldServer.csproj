@@ -314,6 +314,7 @@
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerBomb.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Bomb.cs" />
     <Compile Include="Game\Exchanges\Bank\BankDialog.cs" />

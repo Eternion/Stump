@@ -182,7 +182,16 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(2801, 1, false);            
             // first effect for bombs only, second for all but self and bombs
             FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS, false);
-            FixEffectOnAllLevels(2801, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(2801, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.SELF, false);
+
+            // Dernier Souffle (2810)
+            // bonus combo -> for bombs only
+            // %dmg -> allies
+            // vitality debuff -> caster
+            FixEffectOnAllLevels(2810, EffectsEnum.Effect_1027, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2810, EffectsEnum.Effect_IncreaseDamage_138, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2810, EffectsEnum.Effect_SubVitalityPercent, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
 
             #endregion
         }
