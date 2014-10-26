@@ -124,7 +124,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         {
             return (uint) (Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y));
         }
-
         public bool IsAdjacentTo(MapPoint point)
         {
             return DistanceToCell(point) == 1;
@@ -218,6 +217,22 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public bool IsOnSameLine(MapPoint point)
         {
             return point.X == X || point.Y == Y;
+        }
+
+        /// <summary>
+        /// Returns true whenever this point is between points A and B
+        /// </summary>
+        /// <returns></returns>
+        public bool IsBetween(MapPoint A, MapPoint B)
+        {
+            // check colinearity
+            if ((X - A.X)*(B.Y - Y) - (Y - A.Y)*(B.X - X) != 0)
+                return false;
+
+            var min = new Point(Math.Min(A.X, B.X), Math.Min(A.Y, B.Y));
+            var max = new Point(Math.Max(A.X, B.X), Math.Max(A.Y, B.Y));
+            // check position
+            return  (X >= min.X && X <= max.X && Y >= min.Y && Y <= max.Y);
         }
 
         public MapPoint[] GetCellsOnLineBetween(MapPoint destination)

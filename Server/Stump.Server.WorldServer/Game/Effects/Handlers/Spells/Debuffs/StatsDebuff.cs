@@ -13,7 +13,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
     [EffectHandler(EffectsEnum.Effect_SubStrength)]
     [EffectHandler(EffectsEnum.Effect_SubWisdom)]
     [EffectHandler(EffectsEnum.Effect_SubVitality)]
-    [EffectHandler(EffectsEnum.Effect_SubVitalityPercent)]
     [EffectHandler(EffectsEnum.Effect_SubRange)]
     [EffectHandler(EffectsEnum.Effect_SubRange_135)]
     [EffectHandler(EffectsEnum.Effect_SubCriticalHit)]
