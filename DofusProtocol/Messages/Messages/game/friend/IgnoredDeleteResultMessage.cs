@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:29:32
+// Generated on 10/27/2014 19:57:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,30 +18,41 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public bool success;
+        public bool session;
         public string name;
         
         public IgnoredDeleteResultMessage()
         {
         }
         
-        public IgnoredDeleteResultMessage(string name)
+        public IgnoredDeleteResultMessage(bool success, bool session, string name)
         {
+            this.success = success;
+            this.session = session;
             this.name = name;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, success);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, session);
+            writer.WriteByte(flag1);
             writer.WriteUTF(name);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            success = BooleanByteWrapper.GetFlag(flag1, 0);
+            session = BooleanByteWrapper.GetFlag(flag1, 1);
             name = reader.ReadUTF();
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(name);
+            return sizeof(bool) + 0 + sizeof(short) + Encoding.UTF8.GetByteCount(name);
         }
         
     }

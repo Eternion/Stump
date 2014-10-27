@@ -145,8 +145,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BooleanByteWrapper.cs" />
+    <Compile Include="Custom\ErrorMessage.cs" />
+    <Compile Include="Custom\OverrideMessageAttribute.cs" />
     <Compile Include="Custom\RawDataMessageFixed.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MessageDefinition.cs" />
     <Compile Include="MessageReceiver.cs" />
     <Compile Include="Messages\authorized\AdminCommandMessage.cs" />
     <Compile Include="Messages\authorized\AdminQuietCommandMessage.cs" />

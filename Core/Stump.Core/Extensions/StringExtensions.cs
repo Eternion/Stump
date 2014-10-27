@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,6 +11,22 @@ namespace Stump.Core.Extensions
 {
     public static class StringExtensions
     {
+        public static string RemoveAccents(this string source)
+        {
+            return string.Concat(
+                source.Normalize(NormalizationForm.FormD)
+                      .Where(ch => CharUnicodeInfo.GetUnicodeCategory(ch) !=
+                                   UnicodeCategory.NonSpacingMark)
+                ).Normalize(NormalizationForm.FormC);
+        }
+
+        public static bool HasAccents(this string source)
+        {
+            return
+                source.Normalize(NormalizationForm.FormD)
+                      .Any(x => CharUnicodeInfo.GetUnicodeCategory(x) == UnicodeCategory.NonSpacingMark);
+        }
+
         public static string FirstLetterUpper(this string source)
         {
             if (string.IsNullOrEmpty(source))

@@ -179,7 +179,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                     var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Name);
 
-                    var match = Regex.Match(statement.Value, @"getFlag\([_\w\d]+,(\d+)\)");
+                    var match = Regex.Match(statement.Value, @"getFlag\([_\w\d]+,\s?(\d+)\)");
 
                     if (match.Success)
                     {

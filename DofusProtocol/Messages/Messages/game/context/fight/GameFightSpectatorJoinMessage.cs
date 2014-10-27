@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:29:22
+// Generated on 10/27/2014 19:57:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameFightSpectatorJoinMessage(int timeMaxBeforeFightStart, sbyte fightType, IEnumerable<Types.NamedPartyTeam> namedPartyTeams)
-         : base(timeMaxBeforeFightStart, fightType)
+        public GameFightSpectatorJoinMessage(bool canBeCancelled, bool canSayReady, bool isFightStarted, int timeMaxBeforeFightStart, sbyte fightType, IEnumerable<Types.NamedPartyTeam> namedPartyTeams)
+         : base(canBeCancelled, canSayReady, isFightStarted, timeMaxBeforeFightStart, fightType)
         {
             this.namedPartyTeams = namedPartyTeams;
         }

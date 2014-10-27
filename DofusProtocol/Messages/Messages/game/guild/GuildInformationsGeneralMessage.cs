@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:29:33
+// Generated on 10/27/2014 19:57:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,8 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public bool enabled;
+        public bool abandonnedPaddock;
         public byte level;
         public double expLevelFloor;
         public double experience;
@@ -30,8 +32,10 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GuildInformationsGeneralMessage(byte level, double expLevelFloor, double experience, double expNextLevelFloor, int creationDate, short nbTotalMembers, short nbConnectedMembers)
+        public GuildInformationsGeneralMessage(bool enabled, bool abandonnedPaddock, byte level, double expLevelFloor, double experience, double expNextLevelFloor, int creationDate, short nbTotalMembers, short nbConnectedMembers)
         {
+            this.enabled = enabled;
+            this.abandonnedPaddock = abandonnedPaddock;
             this.level = level;
             this.expLevelFloor = expLevelFloor;
             this.experience = experience;
@@ -43,6 +47,10 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, enabled);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, abandonnedPaddock);
+            writer.WriteByte(flag1);
             writer.WriteByte(level);
             writer.WriteDouble(expLevelFloor);
             writer.WriteDouble(experience);
@@ -54,6 +62,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            enabled = BooleanByteWrapper.GetFlag(flag1, 0);
+            abandonnedPaddock = BooleanByteWrapper.GetFlag(flag1, 1);
             level = reader.ReadByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
@@ -79,7 +90,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(byte) + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int) + sizeof(short) + sizeof(short);
+            return sizeof(bool) + 0 + sizeof(byte) + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int) + sizeof(short) + sizeof(short);
         }
         
     }
