@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         [Variable] public static int BonusDamageIncrease = 25;
         [Variable] public static int BonusDamageIncreaseLimit = 3;
         [Variable] public static int BombLimit = 3;
-        [Variable] public static int WallMinSize = 2;
+        [Variable] public static int WallMinSize = 1;
         [Variable] public static int WallMaxSize = 6;
         [Variable] public static int ExplosionZone = 2;
 
@@ -225,7 +225,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var dist = Position.Point.DistanceToCell(bomb.Position.Point);
 
-            return dist > WallMinSize && dist < WallMaxSize && // check the distance
+            return dist > WallMinSize && dist <= (WallMaxSize + 1) && // check the distance
                 MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
                 Position.Point.IsOnSameLine(bomb.Position.Point) && // bombs are in alignment
                 Summoner.Bombs.All(x => x == this || x == bomb || MonsterBombTemplate != bomb.MonsterBombTemplate || // there are no others bombs from the same type between them

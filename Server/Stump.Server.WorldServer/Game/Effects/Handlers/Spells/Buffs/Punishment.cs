@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         private void OnActorAttacked(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var buffs = buff.Target.GetBuffs(entry => entry.Spell == Spell).OfType<StatBuff>();
+            var buffs = buff.Target.GetBuffs(entry => entry.Spell.Id == Spell.Id).OfType<StatBuff>();
 
             var currentBonus = buffs.Where(entry => entry.Duration == Effect.Duration).Sum(entry => entry.Value);
             var limit = Dice.DiceFace;
