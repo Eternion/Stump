@@ -24,7 +24,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(422, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Delay = 1);
-            FixEffectOnAllLevels(422, 2, (level, effect, critical) => level.MaxStack = 0);
 
             #endregion
 
@@ -117,7 +116,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Chance (42)
             FixEffectOnAllLevels(42, 1, (level, effect, critical) => effect.Delay = 1, false);
-            FixEffectOnAllLevels(42, 1, (level, effect, critical) => level.MaxStack = 2, false);
 
             #endregion
 
@@ -275,7 +273,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2811, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
 
             // Surcharge (2812)
-            FixEffectOnAllLevels(2812, 0, (level, effect, critical) => level.MaxStack = 0, false);
             FixEffectOnAllLevels(2812, 0, (level, effect, critical) => effect.Delay = 1, false);
             FixEffectOnAllLevels(2812, 0, (level, effect, critical) => effect.Duration = 2, false);
             FixEffectOnAllLevels(2812, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS | SpellTargetType.ENEMY_BOMBS, false);

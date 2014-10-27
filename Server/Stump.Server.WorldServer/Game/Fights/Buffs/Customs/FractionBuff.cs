@@ -21,10 +21,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
         }
 
+        private FightActor[] m_fighters;
+
         public FightActor[] Fighters
         {
-            get;
-            set;
+            get { return m_fighters.Where(x => x.IsAlive()).ToArray(); }
+            set { m_fighters = value; }
         }
 
         public IFight Fight
@@ -61,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             damage.Amount = (damage.Amount / Fighters.Length);
             damage.IgnoreDamageReduction = true;
 
-            foreach (var actor in Fighters.Where(x => x.IsAlive()))
+            foreach (var actor in Fighters)
             {
                 var damagePerFighter = new FractionDamage(damage.Amount)
                 {

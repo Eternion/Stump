@@ -1256,7 +1256,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            AddBuff(buff);
+            AddBuff(buff, freeIdIfFail, bypassMaxStack);
 
             if (!(buff is TriggerBuff) ||
                 ((buff as TriggerBuff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
@@ -1265,9 +1265,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public bool AddBuff(Buff buff, bool freeIdIfFail = true)
+        public bool AddBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
         {
-            if (BuffMaxStackReached(buff))
+            if (BuffMaxStackReached(buff) && !bypassMaxStack)
             {
                 if (freeIdIfFail)
                     FreeBuffId(buff.Id);
