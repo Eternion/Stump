@@ -18,6 +18,7 @@
 //  *************************************************************************/
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Linq;
@@ -49,7 +50,21 @@ namespace Stump.Tools.Sniffer
         {
             foreach (var field in obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
-                if (field.FieldType.GetInterface("IEnumerable") != null && field.FieldType != typeof(string))
+                if (field.FieldType == typeof (byte[]))
+                {
+                    var bytes = field.GetValue(obj) as byte[];
+                    var fieldNode = new TreeNode(field.Name);
+                    fieldNode.Nodes.Add(new TreeNode(bytes != null ? string.Join(" ", bytes.Select(x => x.ToString("X2"))) : "null"));
+                    node.Nodes.Add(fieldNode);
+                }
+                else if (field.FieldType == typeof (IEnumerable<sbyte>))
+                {
+                    var bytes = field.GetValue(obj) as IEnumerable<sbyte>;
+                    var fieldNode = new TreeNode(field.Name);
+                    fieldNode.Nodes.Add(new TreeNode(bytes != null ? string.Join(" ", bytes.Select(x => x.ToString("X2"))) : "null"));
+                    node.Nodes.Add(fieldNode);
+                }
+                else if (field.FieldType.GetInterface("IEnumerable") != null && field.FieldType != typeof (string))
                 {
                     TreeNode collectionNode = node.Nodes.Add(field.Name);
                     var list = field.GetValue(obj) as IEnumerable;

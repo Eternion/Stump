@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:29:18
+// Generated on 10/27/2014 19:57:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,8 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public bool self;
+        public bool verbose;
         public sbyte position;
         public string accountNickname;
         public int accountId;
@@ -31,8 +33,10 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public BasicWhoIsMessage(sbyte position, string accountNickname, int accountId, string playerName, int playerId, short areaId, IEnumerable<Types.AbstractSocialGroupInfos> socialGroups, sbyte playerState)
+        public BasicWhoIsMessage(bool self, bool verbose, sbyte position, string accountNickname, int accountId, string playerName, int playerId, short areaId, IEnumerable<Types.AbstractSocialGroupInfos> socialGroups, sbyte playerState)
         {
+            this.self = self;
+            this.verbose = verbose;
             this.position = position;
             this.accountNickname = accountNickname;
             this.accountId = accountId;
@@ -45,6 +49,10 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, self);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, verbose);
+            writer.WriteByte(flag1);
             writer.WriteSByte(position);
             writer.WriteUTF(accountNickname);
             writer.WriteInt(accountId);
@@ -70,6 +78,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            self = BooleanByteWrapper.GetFlag(flag1, 0);
+            verbose = BooleanByteWrapper.GetFlag(flag1, 1);
             position = reader.ReadSByte();
             accountNickname = reader.ReadUTF();
             accountId = reader.ReadInt();
@@ -95,7 +106,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(accountNickname) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(int) + sizeof(short) + sizeof(short) + socialGroups.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(sbyte);
+            return sizeof(bool) + 0 + sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(accountNickname) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(int) + sizeof(short) + sizeof(short) + socialGroups.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(sbyte);
         }
         
     }
