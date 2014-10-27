@@ -28,6 +28,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         [Variable] public static int BonusDamageIncrease = 25;
         [Variable] public static int BonusDamageIncreaseLimit = 3;
         [Variable] public static int BombLimit = 3;
+        [Variable] public static int WallMinSize = 2;
+        [Variable] public static int WallMaxSize = 6;
+        [Variable] public static int ExplosionZone = 2;
 
         private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>()
         {
@@ -222,22 +225,29 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var dist = Position.Point.DistanceToCell(bomb.Position.Point);
 
-            return dist > 2 && dist <= 7 && // check the distance
+            return dist > WallMinSize && dist < WallMaxSize && // check the distance
                 MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
                 Position.Point.IsOnSameLine(bomb.Position.Point) && // bombs are in alignment
                 Summoner.Bombs.All(x => x == this || x == bomb || MonsterBombTemplate != bomb.MonsterBombTemplate || // there are no others bombs from the same type between them
                     !x.Position.Point.IsBetween(Position.Point, bomb.Position.Point));
         }
 
+        public bool IsInExplosionZone(SummonedBomb bomb)
+        {
+            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+
+            return dist <= ExplosionZone;
+        }
+
         public void Explode()
         {
             // check reaction
             var bombs = new List<SummonedBomb> {this};
-            foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(IsBoundWith))
+            foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(x => IsBoundWith(x) || IsInExplosionZone(x)))
             {
                 bombs.Add(bomb);
                 SummonedBomb bomb1 = bomb;
-                foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(bomb1.IsBoundWith))
+                foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(x => bomb1.IsBoundWith(x) || bomb1.IsInExplosionZone(x)))
                 {
                     bombs.Add(bomb2);
                 }
