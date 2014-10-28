@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             var character = client.Character;
 
             /* Send informations about it */
-            client.Send(new BasicWhoIsMessage((sbyte) character.UserGroup.Role, character.Client.WorldAccount.Nickname, character.Account.Id, character.Name,
+            client.Send(new BasicWhoIsMessage(character == client.Character, message.verbose, (sbyte) character.UserGroup.Role, character.Client.WorldAccount.Nickname, character.Account.Id, character.Name,
                 character.Id, (short) character.Map.SubArea.Id, new AbstractSocialGroupInfos[0],
                 character.IsInFight() ? (sbyte)PlayerStateEnum.GAME_TYPE_FIGHT : (sbyte)PlayerStateEnum.GAME_TYPE_ROLEPLAY));
         }
@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             else
             {
                 /* Send info about it */
-                client.Send(new BasicWhoIsMessage((sbyte)character.UserGroup.Role, character.Client.WorldAccount.Nickname, character.Account.Id, character.Name,
+                client.Send(new BasicWhoIsMessage(character == client.Character, message.verbose, (sbyte)character.UserGroup.Role, character.Client.WorldAccount.Nickname, character.Account.Id, character.Name,
                     character.Id, (short)character.Map.SubArea.Id, new AbstractSocialGroupInfos[0],
                     character.IsInFight() ? (sbyte)PlayerStateEnum.GAME_TYPE_FIGHT : (sbyte)PlayerStateEnum.GAME_TYPE_ROLEPLAY));
             }

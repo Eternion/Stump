@@ -302,7 +302,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildInformationsGeneralMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new GuildInformationsGeneralMessage(guild.Level, guild.ExperienceLevelFloor, guild.Experience,
+            client.Send(new GuildInformationsGeneralMessage(true, false, guild.Level, guild.ExperienceLevelFloor, guild.Experience,
                 guild.ExperienceNextLevelFloor, guild.CreationDate.GetUnixTimeStamp(), (short)guild.Members.Count(), (short)guild.Members.Count(x => x.IsConnected))); 
         }
 

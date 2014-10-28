@@ -297,9 +297,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, results, new NamedPartyTeamWithOutcome[0]));
         }
 
-        public static void SendGameFightJoinMessage(IPacketReceiver client, int timeMaxBeforeFightStart, FightTypeEnum fightTypeEnum)
+        public static void SendGameFightJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
+                                                    bool isSpectator, bool isFightStarted, int timeMaxBeforeFightStart,
+                                                    FightTypeEnum fightTypeEnum)
         {
-            client.Send(new GameFightJoinMessage(timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
+            client.Send(new GameFightJoinMessage(canBeCancelled, canSayReady, isFightStarted,
+                                                 timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
         }
 
         public static void SendGameFightSpectateMessage(IPacketReceiver client, IFight fight)
@@ -312,7 +315,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor playingTurn, int waitTime)
         {
-            client.Send(new GameFightTurnResumeMessage(playingTurn.Id, waitTime, playingTurn.Fight.GetTurnTimeLeft()));
+            client.Send(new GameFightTurnResumeMessage(playingTurn.Fight.Id, playingTurn.Id, waitTime));
         }
 
         public static void SendChallengeFightJoinRefusedMessage(IPacketReceiver client, Character character,

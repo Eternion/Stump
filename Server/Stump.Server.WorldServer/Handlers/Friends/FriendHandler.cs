@@ -175,7 +175,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
 
         public static void SendIgnoredDeleteResultMessage(IPacketReceiver client, bool success, bool session, string name)
         {
-            client.Send(new IgnoredDeleteResultMessage(name));
+            client.Send(new IgnoredDeleteResultMessage(success, session, name));
         }
 
         public static void SendIgnoredListMessage(IPacketReceiver client, IEnumerable<Ignored> ignoreds)

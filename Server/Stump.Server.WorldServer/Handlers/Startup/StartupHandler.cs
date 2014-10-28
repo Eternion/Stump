@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Handlers.Startup
 
         public static void SendStartupActionFinishedMessage(IPacketReceiver client, StartupAction action)
         {
-            client.Send(new StartupActionFinishedMessage(action.Id));
+            //client.Send(new StartupActionFinishedMessage(action.Id));
         }
     }
 }

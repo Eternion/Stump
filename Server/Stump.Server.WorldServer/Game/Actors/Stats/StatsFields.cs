@@ -189,6 +189,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.MagicDamage, new StatsData(Owner, PlayerFields.MagicDamage, 0));
             Fields.Add(PlayerFields.PhysicalDamageReduction, new StatsData(Owner, PlayerFields.PhysicalDamageReduction, 0));
             Fields.Add(PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0));
+            Fields.Add(PlayerFields.GlyphBonusPercent, new StatsData(Owner, PlayerFields.GlyphBonusPercent, 0));
 
             // custom fields
             Fields.Add(PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0));
@@ -269,6 +270,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.MagicDamage, new StatsData(Owner, PlayerFields.MagicDamage, 0));
             Fields.Add(PlayerFields.PhysicalDamageReduction, new StatsData(Owner, PlayerFields.PhysicalDamageReduction, 0));
             Fields.Add(PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0));
+            Fields.Add(PlayerFields.GlyphBonusPercent, new StatsData(Owner, PlayerFields.GlyphBonusPercent, 0));
             // custom fields
 
             Fields.Add(PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0));
