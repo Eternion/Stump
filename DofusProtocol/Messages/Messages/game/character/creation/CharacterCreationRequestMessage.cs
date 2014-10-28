@@ -1,6 +1,6 @@
 
 
-// Generated on 10/27/2014 19:57:36
+// Generated on 10/28/2014 16:36:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,19 +42,10 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(name);
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
-            var colors_before = writer.Position;
-            var colors_count = 0;
-            writer.WriteUShort(0);
             foreach (var entry in colors)
             {
                  writer.WriteInt(entry);
-                 colors_count++;
             }
-            var colors_after = writer.Position;
-            writer.Seek((int)colors_before);
-            writer.WriteUShort((ushort)colors_count);
-            writer.Seek((int)colors_after);
-
             writer.WriteInt(cosmeticId);
         }
         
@@ -65,9 +56,8 @@ namespace Stump.DofusProtocol.Messages
             if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Steamer)
                 throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Steamer");
             sex = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
-            var colors_ = new int[limit];
-            for (int i = 0; i < limit; i++)
+            var colors_ = new int[5];
+            for (int i = 0; i < 5; i++)
             {
                  colors_[i] = reader.ReadInt();
             }

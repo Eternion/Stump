@@ -45,7 +45,7 @@ namespace DofusProtocolBuilder.Profiles
 
                         {@"Vector\.([\w_\d]+) = new ([\w_\d]+)();", "$1 = new List<$2>();"},
                         // convert "Vector." to List (C#) (and its props)
-                        {@"new Vector\.<([\d\w]+)>\((\d+), (true|false)\)", "new List<$1>($2)"},
+                        {@"new Vector\.<([\d\w]+)>\((\d+),\s?(true|false)\)", "new List<$1>($2)"},
                         {@"new Vector\.<([\d\w]+)>", "new List<$1>()"},
                         {@"(__AS3__\.vec\.)?Vector\.", "List"},
                         {@"\.push\(", @".Add("},
