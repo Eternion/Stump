@@ -96,7 +96,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             Account account;
 
             /* Invalid password */
-            if (!CredentialManager.Instance.DecryptCredentials(out account, message.credentials))
+            if (!CredentialManager.Instance.DecryptCredentials(out account, message))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
                 client.DisconnectLater(1000);
@@ -171,6 +171,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
         {
             client.Send(new IdentificationSuccessMessage(
+                client.UserGroup.IsGameMaster,
+                wasAlreadyConnected,
                 client.Account.Login,
                 client.Account.Nickname,
                 client.Account.Id,
@@ -274,7 +276,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Account.LastConnectionWorld = world.Id;
             client.SaveNow();
 
-            client.Send(new SelectedServerDataMessage(
+            client.Send(new SelectedServerDataMessage(false, true,
                 (short) world.Id,
                 world.Address,
                 world.Port,

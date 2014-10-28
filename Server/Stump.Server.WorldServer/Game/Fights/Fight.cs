@@ -2077,12 +2077,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
         }
 
         protected virtual void SendGameFightJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, false, IsStarted, GetPlacementTimeLeft(), FightType);
         }
 
         #endregion
