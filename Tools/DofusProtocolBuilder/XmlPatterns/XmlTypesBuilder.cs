@@ -135,7 +135,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                                                                     ( (AssignationStatement)entry ).Name == arrayMatch.Groups[1].Value
                                                                 let entryMatch =
                                                                     Regex.Match(( (AssignationStatement)entry ).Value,
-                                                                                @"new List<[\d\w\._]+>\(([\d]+)\)")
+                                                                                @"new List<[\d\w\._]+>\(([\d]+)")
                                                                 where entryMatch.Success
                                                                 select entryMatch.Groups[1].Value;
 
