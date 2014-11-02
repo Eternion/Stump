@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Stump.Plugins.DefaultPlugin.Global.Placements
+namespace DBSynchroniser.Maps.Placements
 {
     public class PlacementComplexityCalculator
     {
