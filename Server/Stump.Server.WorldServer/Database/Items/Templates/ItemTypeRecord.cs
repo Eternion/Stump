@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
@@ -77,6 +78,18 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        public uint ZoneEfficiencyPercent
+        {
+            get;
+            set;
+        }
+
+        public uint ZoneMaxEfficiency
+        {
+            get;
+            set;
+        }
+
         public SpellShapeEnum ZoneShape
         {
             get;
@@ -112,10 +125,12 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
                 ZoneMinSize = 0;
                 ZoneSize = 0;
                 ZoneShape = 0;
+                ZoneEfficiencyPercent = 0;
+                ZoneMaxEfficiency = 0;
                 return;
             }
 
-            char chr = rawZone[0];
+            var chr = rawZone[0];
             SpellShapeEnum shape;
             switch (chr)
             {
@@ -140,21 +155,51 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             }
             ZoneShape = shape;
 
-            if (rawZone.Length > 1)
-            {
-                int comma = rawZone.IndexOf(",", StringComparison.Ordinal);
-                if (comma != -1)
-                {
-                    ZoneSize = uint.Parse(rawZone.Substring(1, rawZone.Length - comma - 1));
-                    ZoneMinSize = uint.Parse(rawZone.Substring(comma + 1, rawZone.Length - (comma + 1)));
-                }
+            var zone = rawZone.Substring(1).Split(',');
+            var efficiencyZone = ZoneShape == SpellShapeEnum.C || ZoneShape == SpellShapeEnum.X || ZoneShape == SpellShapeEnum.Q || ZoneShape == SpellShapeEnum.plus || ZoneShape == SpellShapeEnum.sharp;
 
-                ZoneSize = uint.Parse(rawZone.Substring(1));
-            }
-            else
+            var totalZone = zone.Count(x => !string.IsNullOrEmpty(x));
+            switch (totalZone)
             {
-                ZoneSize = 0;
-                ZoneMinSize = 0;
+                case 1:
+                    ZoneSize = uint.Parse(zone[0]);
+                    break;
+                case 2:
+                    ZoneSize = uint.Parse(zone[0]);
+                    if (efficiencyZone)
+                    {
+                        ZoneMinSize = uint.Parse(zone[1]);
+                    }
+                    else
+                    {
+                        ZoneEfficiencyPercent = uint.Parse(zone[1]);
+                    }
+                    break;
+                case 3:
+                    ZoneSize = uint.Parse(zone[0]);
+                    if (efficiencyZone)
+                    {
+                        ZoneMinSize = uint.Parse(zone[1]);
+                        ZoneEfficiencyPercent = uint.Parse(zone[2]);
+                    }
+                    else
+                    {
+                        ZoneEfficiencyPercent = uint.Parse(zone[1]);
+                        ZoneMaxEfficiency = uint.Parse(zone[2]);
+                    }
+                    break;
+                case 4:
+                    ZoneSize = uint.Parse(zone[0]);
+                    ZoneMinSize = uint.Parse(zone[1]);
+                    ZoneEfficiencyPercent = uint.Parse(zone[2]);
+                    ZoneMaxEfficiency = uint.Parse(zone[3]);
+                    break;
+                default:
+                    ZoneMinSize = 0;
+                    ZoneSize = 0;
+                    ZoneEfficiencyPercent = 0;
+                    ZoneMaxEfficiency = 0;
+                    break;
             }
         }
     }
