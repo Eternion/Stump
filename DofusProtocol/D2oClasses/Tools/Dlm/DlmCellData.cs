@@ -31,6 +31,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
         private byte m_moveZone;
         private sbyte m_rawFloor;
         private byte m_speed;
+        private byte m_arrow;
 
         public DlmCellData(short id)
         {
@@ -41,6 +42,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
             m_speed = 0;
             m_mapChangeData = 0;
             m_moveZone = 0;
+            m_arrow = 0;
         }
 
         public short Floor
@@ -113,7 +115,31 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
             set { m_losMov = value; }
         }
 
+        public byte Arrow
+        {
+            get { return m_arrow; }
+            set { m_arrow = value; }
+        }
 
+        public bool UseTopArrow
+        {
+            get { return (m_arrow & 1) != 0; }
+        }
+
+        public bool UseBottomArrow
+        {
+            get { return (m_arrow & 2) != 0; }
+        }   
+     
+        public bool UseRightArrow
+        {
+            get { return (m_arrow & 4) != 0; }
+        }     
+   
+        public bool UseLeftArrow
+        {
+            get { return (m_arrow & 8) != 0; }
+        }
         public static DlmCellData ReadFromStream(short id, byte version, IDataReader reader)
         {
             var cell = new DlmCellData(id);
@@ -133,6 +159,11 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
             if (version > 5)
             {
                 cell.m_moveZone = reader.ReadByte();
+            }
+
+            if (version > 7)
+            {
+                cell.m_arrow = (byte)(15 & reader.ReadByte());
             }
 
             return cell;

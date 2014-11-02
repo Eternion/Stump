@@ -31,6 +31,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
 
         public const int CellCount = 560;
 
+
         public DlmMap()
         {
             
@@ -193,6 +194,10 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Dlm
                 Version = reader.ReadByte(),
                 Id = reader.ReadInt()
             };
+
+            if (map.Version > DlmReader.VERSION)
+                throw new Exception(string.Format("Reader outdated for this map (old version:{0} new version:{1})",
+                    DlmReader.VERSION, map.Version));
 
             if (map.Version >= 7)
             {
