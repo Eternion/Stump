@@ -42,9 +42,9 @@ namespace Stump.Server.WorldServer.Handlers.Startup
             client.Send(new StartupActionsListMessage(actions.Select(entry => entry.GetStartupActionAddObject())));
         }
 
-        public static void SendStartupActionFinishedMessage(IPacketReceiver client, StartupAction action, bool success)
+        public static void SendStartupActionFinishedMessage(IPacketReceiver client, StartupAction action)
         {
-            client.Send(new StartupActionFinishedMessage(success, true, action.Id));
+            //client.Send(new StartupActionFinishedMessage(action.Id));
         }
     }
 }

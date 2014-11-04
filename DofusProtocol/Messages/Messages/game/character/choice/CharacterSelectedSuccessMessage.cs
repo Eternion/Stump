@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:33
+// Generated on 10/28/2014 16:36:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,30 +19,34 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public Types.CharacterBaseInformations infos;
+        public bool isCollectingStats;
         
         public CharacterSelectedSuccessMessage()
         {
         }
         
-        public CharacterSelectedSuccessMessage(Types.CharacterBaseInformations infos)
+        public CharacterSelectedSuccessMessage(Types.CharacterBaseInformations infos, bool isCollectingStats)
         {
             this.infos = infos;
+            this.isCollectingStats = isCollectingStats;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             infos.Serialize(writer);
+            writer.WriteBoolean(isCollectingStats);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             infos = new Types.CharacterBaseInformations();
             infos.Deserialize(reader);
+            isCollectingStats = reader.ReadBoolean();
         }
         
         public override int GetSerializationSize()
         {
-            return infos.GetSerializationSize();
+            return infos.GetSerializationSize() + sizeof(bool);
         }
         
     }

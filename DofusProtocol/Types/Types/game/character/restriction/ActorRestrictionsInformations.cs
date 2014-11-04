@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:58
+// Generated on 10/28/2014 16:38:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,6 @@ namespace Stump.DofusProtocol.Types
         public bool cantTrade;
         public bool cantBeAttackedByMutant;
         public bool cantRun;
-        public bool forceSlowWalk;
         public bool cantMinimize;
         public bool cantMove;
         public bool cantAggress;
@@ -43,14 +42,13 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public ActorRestrictionsInformations(bool cantBeAggressed, bool cantBeChallenged, bool cantTrade, bool cantBeAttackedByMutant, bool cantRun, bool forceSlowWalk, bool cantMinimize, bool cantMove, bool cantAggress, bool cantChallenge, bool cantExchange, bool cantAttack, bool cantChat, bool cantBeMerchant, bool cantUseObject, bool cantUseTaxCollector, bool cantUseInteractive, bool cantSpeakToNPC, bool cantChangeZone, bool cantAttackMonster, bool cantWalk8Directions)
+        public ActorRestrictionsInformations(bool cantBeAggressed, bool cantBeChallenged, bool cantTrade, bool cantBeAttackedByMutant, bool cantRun, bool cantMinimize, bool cantMove, bool cantAggress, bool cantChallenge, bool cantExchange, bool cantAttack, bool cantChat, bool cantBeMerchant, bool cantUseObject, bool cantUseTaxCollector, bool cantUseInteractive, bool cantSpeakToNPC, bool cantChangeZone, bool cantAttackMonster, bool cantWalk8Directions)
         {
             this.cantBeAggressed = cantBeAggressed;
             this.cantBeChallenged = cantBeChallenged;
             this.cantTrade = cantTrade;
             this.cantBeAttackedByMutant = cantBeAttackedByMutant;
             this.cantRun = cantRun;
-            this.forceSlowWalk = forceSlowWalk;
             this.cantMinimize = cantMinimize;
             this.cantMove = cantMove;
             this.cantAggress = cantAggress;
@@ -76,7 +74,6 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 2, cantTrade);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 3, cantBeAttackedByMutant);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 4, cantRun);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 5, forceSlowWalk);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 6, cantMinimize);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 7, cantMove);
             writer.WriteByte(flag1);
@@ -107,7 +104,6 @@ namespace Stump.DofusProtocol.Types
             cantTrade = BooleanByteWrapper.GetFlag(flag1, 2);
             cantBeAttackedByMutant = BooleanByteWrapper.GetFlag(flag1, 3);
             cantRun = BooleanByteWrapper.GetFlag(flag1, 4);
-            forceSlowWalk = BooleanByteWrapper.GetFlag(flag1, 5);
             cantMinimize = BooleanByteWrapper.GetFlag(flag1, 6);
             cantMove = BooleanByteWrapper.GetFlag(flag1, 7);
             byte flag2 = reader.ReadByte();
@@ -129,7 +125,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0;
+            return sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0;
         }
         
     }

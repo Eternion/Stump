@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:50
+// Generated on 10/28/2014 16:36:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +43,6 @@ namespace Stump.DofusProtocol.Messages
             if (genericId < 0)
                 throw new Exception("Forbidden value on genericId = " + genericId + ", it doesn't respect the following condition : genericId < 0");
             averagePrice = reader.ReadInt();
-            if (averagePrice < 0)
-                throw new Exception("Forbidden value on averagePrice = " + averagePrice + ", it doesn't respect the following condition : averagePrice < 0");
         }
         
         public override int GetSerializationSize()

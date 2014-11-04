@@ -11,6 +11,12 @@ package
 		{
 			try 
 			{
+				var file:File = File.applicationDirectory.resolvePath("test.txt");
+				var stream:FileStream = new FileStream();
+				stream.open(file, FileMode.WRITE);
+				stream.writeUTFBytes("test");
+				stream.close();
+				
 				var BuildInfos = getDefinitionByName("com.ankamagames.dofus::BuildInfos");
 				var AirScanner = getDefinitionByName("com.ankamagames.jerakine.utils.system::AirScanner");
 				var ClientInstallTypeEnum = getDefinitionByName("com.ankamagames.dofus.network.enums::ClientInstallTypeEnum");

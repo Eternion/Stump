@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Effect : IDataObject, IIndexedData
     {
-        private const String MODULE = "Effects";
+        public const String MODULE = "Effects";
         public int id;
         [I18NField]
         public uint descriptionId;
@@ -25,10 +25,14 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean forceMinMax;
         public Boolean boost;
         public Boolean active;
+        [I18NField]
+        public uint theoreticalDescriptionId;
+        public uint theoreticalPattern;
         public Boolean showInSet;
         public int bonusType;
         public Boolean useInFight;
         public uint effectPriority;
+        public int elementId;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -36,92 +40,110 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public int IconId
         {
-            get { return iconId; }
-            set { iconId = value; }
+            get { return this.iconId; }
+            set { this.iconId = value; }
         }
         [D2OIgnore]
         public int Characteristic
         {
-            get { return characteristic; }
-            set { characteristic = value; }
+            get { return this.characteristic; }
+            set { this.characteristic = value; }
         }
         [D2OIgnore]
         public uint Category
         {
-            get { return category; }
-            set { category = value; }
+            get { return this.category; }
+            set { this.category = value; }
         }
         [D2OIgnore]
         public String Operator
         {
-            get { return @operator; }
-            set { @operator = value; }
+            get { return this.@operator; }
+            set { this.@operator = value; }
         }
         [D2OIgnore]
         public Boolean ShowInTooltip
         {
-            get { return showInTooltip; }
-            set { showInTooltip = value; }
+            get { return this.showInTooltip; }
+            set { this.showInTooltip = value; }
         }
         [D2OIgnore]
         public Boolean UseDice
         {
-            get { return useDice; }
-            set { useDice = value; }
+            get { return this.useDice; }
+            set { this.useDice = value; }
         }
         [D2OIgnore]
         public Boolean ForceMinMax
         {
-            get { return forceMinMax; }
-            set { forceMinMax = value; }
+            get { return this.forceMinMax; }
+            set { this.forceMinMax = value; }
         }
         [D2OIgnore]
         public Boolean Boost
         {
-            get { return boost; }
-            set { boost = value; }
+            get { return this.boost; }
+            set { this.boost = value; }
         }
         [D2OIgnore]
         public Boolean Active
         {
-            get { return active; }
-            set { active = value; }
+            get { return this.active; }
+            set { this.active = value; }
+        }
+        [D2OIgnore]
+        public uint TheoreticalDescriptionId
+        {
+            get { return this.theoreticalDescriptionId; }
+            set { this.theoreticalDescriptionId = value; }
+        }
+        [D2OIgnore]
+        public uint TheoreticalPattern
+        {
+            get { return this.theoreticalPattern; }
+            set { this.theoreticalPattern = value; }
         }
         [D2OIgnore]
         public Boolean ShowInSet
         {
-            get { return showInSet; }
-            set { showInSet = value; }
+            get { return this.showInSet; }
+            set { this.showInSet = value; }
         }
         [D2OIgnore]
         public int BonusType
         {
-            get { return bonusType; }
-            set { bonusType = value; }
+            get { return this.bonusType; }
+            set { this.bonusType = value; }
         }
         [D2OIgnore]
         public Boolean UseInFight
         {
-            get { return useInFight; }
-            set { useInFight = value; }
+            get { return this.useInFight; }
+            set { this.useInFight = value; }
         }
         [D2OIgnore]
         public uint EffectPriority
         {
-            get { return effectPriority; }
-            set { effectPriority = value; }
+            get { return this.effectPriority; }
+            set { this.effectPriority = value; }
+        }
+        [D2OIgnore]
+        public int ElementId
+        {
+            get { return this.elementId; }
+            set { this.elementId = value; }
         }
     }
 }

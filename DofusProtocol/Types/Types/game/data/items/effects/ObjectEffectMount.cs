@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:02
+// Generated on 10/28/2014 16:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +48,8 @@ namespace Stump.DofusProtocol.Types
             if (mountId < 0)
                 throw new Exception("Forbidden value on mountId = " + mountId + ", it doesn't respect the following condition : mountId < 0");
             date = reader.ReadDouble();
+            if (date < -9.007199254740992E15 || date > 9.007199254740992E15)
+                throw new Exception("Forbidden value on date = " + date + ", it doesn't respect the following condition : date < -9.007199254740992E15 || date > 9.007199254740992E15");
             modelId = reader.ReadShort();
             if (modelId < 0)
                 throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");

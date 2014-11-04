@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:30
+// Generated on 10/28/2014 16:36:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +25,15 @@ namespace Stump.DofusProtocol.Messages
         public int accountId;
         public sbyte communityId;
         public string secretQuestion;
-        public double subscriptionEndDate;
         public double accountCreation;
+        public double subscriptionElapsedDuration;
+        public double subscriptionEndDate;
         
         public IdentificationSuccessMessage()
         {
         }
         
-        public IdentificationSuccessMessage(bool hasRights, bool wasAlreadyConnected, string login, string nickname, int accountId, sbyte communityId, string secretQuestion, double subscriptionEndDate, double accountCreation)
+        public IdentificationSuccessMessage(bool hasRights, bool wasAlreadyConnected, string login, string nickname, int accountId, sbyte communityId, string secretQuestion, double accountCreation, double subscriptionElapsedDuration, double subscriptionEndDate)
         {
             this.hasRights = hasRights;
             this.wasAlreadyConnected = wasAlreadyConnected;
@@ -41,8 +42,9 @@ namespace Stump.DofusProtocol.Messages
             this.accountId = accountId;
             this.communityId = communityId;
             this.secretQuestion = secretQuestion;
-            this.subscriptionEndDate = subscriptionEndDate;
             this.accountCreation = accountCreation;
+            this.subscriptionElapsedDuration = subscriptionElapsedDuration;
+            this.subscriptionEndDate = subscriptionEndDate;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -56,8 +58,9 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(accountId);
             writer.WriteSByte(communityId);
             writer.WriteUTF(secretQuestion);
-            writer.WriteDouble(subscriptionEndDate);
             writer.WriteDouble(accountCreation);
+            writer.WriteDouble(subscriptionElapsedDuration);
+            writer.WriteDouble(subscriptionEndDate);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -74,17 +77,20 @@ namespace Stump.DofusProtocol.Messages
             if (communityId < 0)
                 throw new Exception("Forbidden value on communityId = " + communityId + ", it doesn't respect the following condition : communityId < 0");
             secretQuestion = reader.ReadUTF();
-            subscriptionEndDate = reader.ReadDouble();
-            if (subscriptionEndDate < 0)
-                throw new Exception("Forbidden value on subscriptionEndDate = " + subscriptionEndDate + ", it doesn't respect the following condition : subscriptionEndDate < 0");
             accountCreation = reader.ReadDouble();
-            if (accountCreation < 0)
-                throw new Exception("Forbidden value on accountCreation = " + accountCreation + ", it doesn't respect the following condition : accountCreation < 0");
+            if (accountCreation < 0 || accountCreation > 9.007199254740992E15)
+                throw new Exception("Forbidden value on accountCreation = " + accountCreation + ", it doesn't respect the following condition : accountCreation < 0 || accountCreation > 9.007199254740992E15");
+            subscriptionElapsedDuration = reader.ReadDouble();
+            if (subscriptionElapsedDuration < 0 || subscriptionElapsedDuration > 9.007199254740992E15)
+                throw new Exception("Forbidden value on subscriptionElapsedDuration = " + subscriptionElapsedDuration + ", it doesn't respect the following condition : subscriptionElapsedDuration < 0 || subscriptionElapsedDuration > 9.007199254740992E15");
+            subscriptionEndDate = reader.ReadDouble();
+            if (subscriptionEndDate < 0 || subscriptionEndDate > 9.007199254740992E15)
+                throw new Exception("Forbidden value on subscriptionEndDate = " + subscriptionEndDate + ", it doesn't respect the following condition : subscriptionEndDate < 0 || subscriptionEndDate > 9.007199254740992E15");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(bool) + 0 + sizeof(short) + Encoding.UTF8.GetByteCount(login) + sizeof(short) + Encoding.UTF8.GetByteCount(nickname) + sizeof(int) + sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(secretQuestion) + sizeof(double) + sizeof(double);
+            return sizeof(bool) + 0 + sizeof(short) + Encoding.UTF8.GetByteCount(login) + sizeof(short) + Encoding.UTF8.GetByteCount(nickname) + sizeof(int) + sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(secretQuestion) + sizeof(double) + sizeof(double) + sizeof(double);
         }
         
     }

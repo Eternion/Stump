@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:46
+// Generated on 10/28/2014 16:36:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +55,8 @@ namespace Stump.DofusProtocol.Messages
             if (experienceGivenPercent < 0 || experienceGivenPercent > 100)
                 throw new Exception("Forbidden value on experienceGivenPercent = " + experienceGivenPercent + ", it doesn't respect the following condition : experienceGivenPercent < 0 || experienceGivenPercent > 100");
             rights = reader.ReadUInt();
-            if (rights < 0 || rights > 4294967295)
-                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4294967295");
+            if (rights < 0 || rights > 4.294967295E9)
+                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4.294967295E9");
         }
         
         public override int GetSerializationSize()

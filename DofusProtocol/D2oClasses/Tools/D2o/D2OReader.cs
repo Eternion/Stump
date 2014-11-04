@@ -49,6 +49,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
         private Dictionary<int, D2OClassDefinition> m_classes;
         private int m_headeroffset;
         private Dictionary<int, int> m_indextable = new Dictionary<int, int>();
+        private Dictionary<string, D2OSearchEntry> m_searchEntries = new Dictionary<string, D2OSearchEntry>(); 
         private int m_indextablelen;
         private IDataReader m_reader;
         private int m_contentOffset = 0;
@@ -127,6 +128,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 ReadHeader();
                 ReadIndexTable();
                 ReadClassesTable();
+                ReadSearchTable();
             }
         }
 
@@ -234,6 +236,44 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
             {
                 keyPair.Key.VectorTypes = keyPair.Value.Select(tuple => Tuple.Create(tuple.Item1, FindNETType(tuple.Item2))).ToArray();
             }
+        }
+
+        private void ReadSearchTable()
+        {
+            var tableLen = m_reader.ReadInt();
+            var contentOffset = (int)(m_reader.Position + 4 + tableLen);
+            while (tableLen > 0)
+            {
+                var bytesAvailable = m_reader.BytesAvailable;
+
+                var searchEntry = new D2OSearchEntry(m_reader.ReadUTF(), m_reader.ReadInt() + contentOffset, (D2OFieldType) m_reader.ReadInt(),
+                    m_reader.ReadInt());
+
+                m_searchEntries.Add(searchEntry.FieldName, searchEntry);
+                tableLen -= (int)(bytesAvailable - m_reader.BytesAvailable);
+            }
+        }
+
+        private Dictionary<int, object> BuildSortIndex(string field)
+        {
+            D2OSearchEntry searchEntry;
+            if (!m_searchEntries.TryGetValue(field, out searchEntry))
+                throw new Exception(string.Format("{0} is not a search field", field));
+
+            var result = new Dictionary<int, object>();
+            m_reader.Seek(searchEntry.FieldIndex, SeekOrigin.Begin);
+            for (int i = 0; i < searchEntry.FieldCount; i++)
+            {
+                var obj = ReadField(m_reader, searchEntry.FieldType);
+                var count = m_reader.ReadInt()/4;
+                for (int j = 0; j < count; j++)
+                {
+                    result.Add(m_reader.ReadInt(), obj);
+                }
+
+            }
+
+            return result;
         }
 
         private Type FindNETType(string typeName)
@@ -533,6 +573,27 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 default:
                     return ReadFieldObject(reader);
             }
+        }
+
+        private object ReadField(IDataReader reader, D2OFieldType typeId)
+        {
+            switch (typeId)
+            {
+                case D2OFieldType.Int:
+                    return ReadFieldInt(reader);
+                case D2OFieldType.Bool:
+                    return ReadFieldBool(reader);
+                case D2OFieldType.String:
+                    return ReadFieldUTF(reader);
+                case D2OFieldType.Double:
+                    return ReadFieldDouble(reader);
+                case D2OFieldType.I18N:
+                    return ReadFieldI18n(reader);
+                case D2OFieldType.UInt:
+                    return ReadFieldUInt(reader);
+                default:
+                    return ReadFieldObject(reader);
+            }        
         }
 
 

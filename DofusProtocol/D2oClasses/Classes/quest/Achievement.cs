@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 10/26/2014 23:27:52
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Achievement : IDataObject, IIndexedData
     {
-        private const String MODULE = "Achievements";
+        public const String MODULE = "Achievements";
         public uint id;
         [I18NField]
         public uint nameId;
@@ -35,80 +35,80 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint CategoryId
         {
-            get { return categoryId; }
-            set { categoryId = value; }
+            get { return this.categoryId; }
+            set { this.categoryId = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public int IconId
         {
-            get { return iconId; }
-            set { iconId = value; }
+            get { return this.iconId; }
+            set { this.iconId = value; }
         }
         [D2OIgnore]
         public uint Points
         {
-            get { return points; }
-            set { points = value; }
+            get { return this.points; }
+            set { this.points = value; }
         }
         [D2OIgnore]
         public uint Level
         {
-            get { return level; }
-            set { level = value; }
+            get { return this.level; }
+            set { this.level = value; }
         }
         [D2OIgnore]
         public uint Order
         {
-            get { return order; }
-            set { order = value; }
+            get { return this.order; }
+            set { this.order = value; }
         }
         [D2OIgnore]
         public double KamasRatio
         {
-            get { return kamasRatio; }
-            set { kamasRatio = value; }
+            get { return this.kamasRatio; }
+            set { this.kamasRatio = value; }
         }
         [D2OIgnore]
         public double ExperienceRatio
         {
-            get { return experienceRatio; }
-            set { experienceRatio = value; }
+            get { return this.experienceRatio; }
+            set { this.experienceRatio = value; }
         }
         [D2OIgnore]
         public Boolean KamasScaleWithPlayerLevel
         {
-            get { return kamasScaleWithPlayerLevel; }
-            set { kamasScaleWithPlayerLevel = value; }
+            get { return this.kamasScaleWithPlayerLevel; }
+            set { this.kamasScaleWithPlayerLevel = value; }
         }
         [D2OIgnore]
         public List<int> ObjectiveIds
         {
-            get { return objectiveIds; }
-            set { objectiveIds = value; }
+            get { return this.objectiveIds; }
+            set { this.objectiveIds = value; }
         }
         [D2OIgnore]
         public List<int> RewardIds
         {
-            get { return rewardIds; }
-            set { rewardIds = value; }
+            get { return this.rewardIds; }
+            set { this.rewardIds = value; }
         }
     }
 }

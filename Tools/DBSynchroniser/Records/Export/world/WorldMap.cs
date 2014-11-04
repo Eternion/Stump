@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:51
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,8 +17,10 @@ namespace DBSynchroniser.Records
     [D2OClass("WorldMap", "com.ankamagames.dofus.datacenter.world")]
     public class WorldMapRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "WorldMaps";
+        public const String MODULE = "WorldMaps";
         public int id;
+        [I18NField]
+        public uint nameId;
         public int origineX;
         public int origineY;
         public double mapWidth;
@@ -47,6 +49,14 @@ namespace DBSynchroniser.Records
         {
             get { return id; }
             set { id = value; }
+        }
+
+        [D2OIgnore]
+        [I18NField]
+        public uint NameId
+        {
+            get { return nameId; }
+            set { nameId = value; }
         }
 
         [D2OIgnore]
@@ -178,6 +188,7 @@ namespace DBSynchroniser.Records
             var castedObj = (WorldMap)obj;
             
             Id = castedObj.id;
+            NameId = castedObj.nameId;
             OrigineX = castedObj.origineX;
             OrigineY = castedObj.origineY;
             MapWidth = castedObj.mapWidth;
@@ -199,6 +210,7 @@ namespace DBSynchroniser.Records
         {
             var obj = parent != null ? (WorldMap)parent : new WorldMap();
             obj.id = Id;
+            obj.nameId = NameId;
             obj.origineX = OrigineX;
             obj.origineY = OrigineY;
             obj.mapWidth = MapWidth;

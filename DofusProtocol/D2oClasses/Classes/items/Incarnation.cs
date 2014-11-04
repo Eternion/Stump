@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:18
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Incarnation : IDataObject, IIndexedData
     {
-        private const String MODULE = "Incarnation";
+        public const String MODULE = "Incarnation";
         public uint id;
         public String lookMale;
         public String lookFemale;
@@ -23,20 +23,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public String LookMale
         {
-            get { return lookMale; }
-            set { lookMale = value; }
+            get { return this.lookMale; }
+            set { this.lookMale = value; }
         }
         [D2OIgnore]
         public String LookFemale
         {
-            get { return lookFemale; }
-            set { lookFemale = value; }
+            get { return this.lookFemale; }
+            set { this.lookFemale = value; }
         }
     }
 }

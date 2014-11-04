@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:19
+// Generated on 10/26/2014 23:27:47
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class SpeakingItemsTrigger : IDataObject, IIndexedData
     {
-        private const String MODULE = "SpeakingItemsTriggers";
+        public const String MODULE = "SpeakingItemsTriggers";
         public int triggersId;
         public List<int> textIds;
         public List<int> states;
@@ -23,20 +23,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int TriggersId
         {
-            get { return triggersId; }
-            set { triggersId = value; }
+            get { return this.triggersId; }
+            set { this.triggersId = value; }
         }
         [D2OIgnore]
         public List<int> TextIds
         {
-            get { return textIds; }
-            set { textIds = value; }
+            get { return this.textIds; }
+            set { this.textIds = value; }
         }
         [D2OIgnore]
         public List<int> States
         {
-            get { return states; }
-            set { states = value; }
+            get { return this.states; }
+            set { this.states = value; }
         }
     }
 }

@@ -320,12 +320,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                       Look.GetEntityLook(),
                                                       GetEntityDispositionInformations(client),
                                                       (sbyte)Team.Id,
+                                                      0,
                                                       IsAlive(),
                                                       GetGameFightMinimalStats(client),
                                                       Name,
+                                                      Character.GetPlayerStatus(),
                                                       Character.Level,
                                                       Character.GetActorAlignmentInformations(),
                                                       (sbyte) Character.Breed.Id);
+        }
+
+        public override GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
+        {
+            return new GameFightFighterLightInformations(
+                Character.Sex == SexTypeEnum.SEX_FEMALE,
+                IsAlive(),
+                Id,
+                0,
+                Level,
+                (sbyte)Character.Breed.Id);
         }
 
         public override string ToString()

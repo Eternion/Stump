@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:01
+// Generated on 10/28/2014 16:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +20,7 @@ namespace Stump.DofusProtocol.Types
         public IEnumerable<int> quantities;
         public IEnumerable<int> types;
         public float taxPercentage;
+        public float taxModificationPercentage;
         public int maxItemLevel;
         public int maxItemPerAccount;
         public int npcContextualId;
@@ -29,11 +30,12 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public SellerBuyerDescriptor(IEnumerable<int> quantities, IEnumerable<int> types, float taxPercentage, int maxItemLevel, int maxItemPerAccount, int npcContextualId, short unsoldDelay)
+        public SellerBuyerDescriptor(IEnumerable<int> quantities, IEnumerable<int> types, float taxPercentage, float taxModificationPercentage, int maxItemLevel, int maxItemPerAccount, int npcContextualId, short unsoldDelay)
         {
             this.quantities = quantities;
             this.types = types;
             this.taxPercentage = taxPercentage;
+            this.taxModificationPercentage = taxModificationPercentage;
             this.maxItemLevel = maxItemLevel;
             this.maxItemPerAccount = maxItemPerAccount;
             this.npcContextualId = npcContextualId;
@@ -69,6 +71,7 @@ namespace Stump.DofusProtocol.Types
             writer.Seek((int)types_after);
 
             writer.WriteFloat(taxPercentage);
+            writer.WriteFloat(taxModificationPercentage);
             writer.WriteInt(maxItemLevel);
             writer.WriteInt(maxItemPerAccount);
             writer.WriteInt(npcContextualId);
@@ -92,6 +95,7 @@ namespace Stump.DofusProtocol.Types
             }
             types = types_;
             taxPercentage = reader.ReadFloat();
+            taxModificationPercentage = reader.ReadFloat();
             maxItemLevel = reader.ReadInt();
             if (maxItemLevel < 0)
                 throw new Exception("Forbidden value on maxItemLevel = " + maxItemLevel + ", it doesn't respect the following condition : maxItemLevel < 0");
@@ -106,7 +110,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(short) + quantities.Sum(x => sizeof(int)) + sizeof(short) + types.Sum(x => sizeof(int)) + sizeof(float) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short);
+            return sizeof(short) + quantities.Sum(x => sizeof(int)) + sizeof(short) + types.Sum(x => sizeof(int)) + sizeof(float) + sizeof(float) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short);
         }
         
     }

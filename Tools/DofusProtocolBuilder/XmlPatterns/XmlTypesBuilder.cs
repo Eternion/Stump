@@ -135,7 +135,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                                                                     ( (AssignationStatement)entry ).Name == arrayMatch.Groups[1].Value
                                                                 let entryMatch =
                                                                     Regex.Match(( (AssignationStatement)entry ).Value,
-                                                                                @"new List<[\d\w\._]+>\(([\d]+)\)")
+                                                                                @"new List<[\d\w\._]+>\(([\d]+)")
                                                                 where entryMatch.Success
                                                                 select entryMatch.Groups[1].Value;
 
@@ -179,7 +179,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                     var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Name);
 
-                    var match = Regex.Match(statement.Value, @"getFlag\([_\w\d]+,(\d+)\)");
+                    var match = Regex.Match(statement.Value, @"getFlag\([_\w\d]+,\s?(\d+)\)");
 
                     if (match.Success)
                     {

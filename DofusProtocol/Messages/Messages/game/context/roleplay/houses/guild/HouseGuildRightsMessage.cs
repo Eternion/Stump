@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:41
+// Generated on 10/28/2014 16:36:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +48,8 @@ namespace Stump.DofusProtocol.Messages
             guildInfo = new Types.GuildInformations();
             guildInfo.Deserialize(reader);
             rights = reader.ReadUInt();
-            if (rights < 0 || rights > 4294967295)
-                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4294967295");
+            if (rights < 0 || rights > 4.294967295E9)
+                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4.294967295E9");
         }
         
         public override int GetSerializationSize()

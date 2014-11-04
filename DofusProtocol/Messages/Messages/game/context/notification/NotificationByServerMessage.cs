@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:39
+// Generated on 10/28/2014 16:36:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,17 +20,15 @@ namespace Stump.DofusProtocol.Messages
         
         public ushort id;
         public IEnumerable<string> parameters;
-        public bool forceOpen;
         
         public NotificationByServerMessage()
         {
         }
         
-        public NotificationByServerMessage(ushort id, IEnumerable<string> parameters, bool forceOpen)
+        public NotificationByServerMessage(ushort id, IEnumerable<string> parameters)
         {
             this.id = id;
             this.parameters = parameters;
-            this.forceOpen = forceOpen;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -49,7 +47,6 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)parameters_count);
             writer.Seek((int)parameters_after);
 
-            writer.WriteBoolean(forceOpen);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -64,12 +61,11 @@ namespace Stump.DofusProtocol.Messages
                  parameters_[i] = reader.ReadUTF();
             }
             parameters = parameters_;
-            forceOpen = reader.ReadBoolean();
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(ushort) + sizeof(short) + parameters.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(bool);
+            return sizeof(ushort) + sizeof(short) + parameters.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x));
         }
         
     }

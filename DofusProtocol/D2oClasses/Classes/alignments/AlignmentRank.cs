@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AlignmentRank : IDataObject, IIndexedData
     {
-        private const String MODULE = "AlignmentRank";
+        public const String MODULE = "AlignmentRank";
         public int id;
         public uint orderId;
         [I18NField]
@@ -29,44 +29,44 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint OrderId
         {
-            get { return orderId; }
-            set { orderId = value; }
+            get { return this.orderId; }
+            set { this.orderId = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public int MinimumAlignment
         {
-            get { return minimumAlignment; }
-            set { minimumAlignment = value; }
+            get { return this.minimumAlignment; }
+            set { this.minimumAlignment = value; }
         }
         [D2OIgnore]
         public int ObjectsStolen
         {
-            get { return objectsStolen; }
-            set { objectsStolen = value; }
+            get { return this.objectsStolen; }
+            set { this.objectsStolen = value; }
         }
         [D2OIgnore]
         public List<int> Gifts
         {
-            get { return gifts; }
-            set { gifts = value; }
+            get { return this.gifts; }
+            set { this.gifts = value; }
         }
     }
 }

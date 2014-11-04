@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:29
+// Generated on 10/28/2014 16:36:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,17 +19,17 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public IEnumerable<string> aliases;
-        public IEnumerable<string> arguments;
+        public IEnumerable<string> args;
         public IEnumerable<string> descriptions;
         
         public ConsoleCommandsListMessage()
         {
         }
         
-        public ConsoleCommandsListMessage(IEnumerable<string> aliases, IEnumerable<string> arguments, IEnumerable<string> descriptions)
+        public ConsoleCommandsListMessage(IEnumerable<string> aliases, IEnumerable<string> args, IEnumerable<string> descriptions)
         {
             this.aliases = aliases;
-            this.arguments = arguments;
+            this.args = args;
             this.descriptions = descriptions;
         }
         
@@ -48,18 +48,18 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)aliases_count);
             writer.Seek((int)aliases_after);
 
-            var arguments_before = writer.Position;
-            var arguments_count = 0;
+            var args_before = writer.Position;
+            var args_count = 0;
             writer.WriteUShort(0);
-            foreach (var entry in arguments)
+            foreach (var entry in args)
             {
                  writer.WriteUTF(entry);
-                 arguments_count++;
+                 args_count++;
             }
-            var arguments_after = writer.Position;
-            writer.Seek((int)arguments_before);
-            writer.WriteUShort((ushort)arguments_count);
-            writer.Seek((int)arguments_after);
+            var args_after = writer.Position;
+            writer.Seek((int)args_before);
+            writer.WriteUShort((ushort)args_count);
+            writer.Seek((int)args_after);
 
             var descriptions_before = writer.Position;
             var descriptions_count = 0;
@@ -86,12 +86,12 @@ namespace Stump.DofusProtocol.Messages
             }
             aliases = aliases_;
             limit = reader.ReadUShort();
-            var arguments_ = new string[limit];
+            var args_ = new string[limit];
             for (int i = 0; i < limit; i++)
             {
-                 arguments_[i] = reader.ReadUTF();
+                 args_[i] = reader.ReadUTF();
             }
-            arguments = arguments_;
+            args = args_;
             limit = reader.ReadUShort();
             var descriptions_ = new string[limit];
             for (int i = 0; i < limit; i++)
@@ -103,7 +103,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + aliases.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(short) + arguments.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(short) + descriptions.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x));
+            return sizeof(short) + aliases.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(short) + args.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(short) + descriptions.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x));
         }
         
     }

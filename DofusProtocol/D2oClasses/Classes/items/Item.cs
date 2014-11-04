@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:18
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Item : IDataObject, IIndexedData
     {
-        private const String MODULE = "Items";
+        public const String MODULE = "Items";
         public const uint EQUIPEMENT_CATEGORY = 0;
         public const uint CONSUMABLES_CATEGORY = 1;
         public const uint RESSOURCES_CATEGORY = 2;
@@ -31,6 +31,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int useAnimationId;
         public Boolean usable;
         public Boolean targetable;
+        public Boolean exchangeable;
         public double price;
         public Boolean twoHanded;
         public Boolean etheral;
@@ -42,6 +43,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean nonUsableOnAnother;
         public uint appearanceId;
         public Boolean secretRecipe;
+        public List<uint> dropMonsterIds;
+        public uint recipeSlots;
         public List<uint> recipeIds;
         public Boolean bonusIsSecret;
         public List<EffectInstance> possibleEffects;
@@ -55,170 +58,188 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint TypeId
         {
-            get { return typeId; }
-            set { typeId = value; }
+            get { return this.typeId; }
+            set { this.typeId = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public int IconId
         {
-            get { return iconId; }
-            set { iconId = value; }
+            get { return this.iconId; }
+            set { this.iconId = value; }
         }
         [D2OIgnore]
         public uint Level
         {
-            get { return level; }
-            set { level = value; }
+            get { return this.level; }
+            set { this.level = value; }
         }
         [D2OIgnore]
         public uint RealWeight
         {
-            get { return realWeight; }
-            set { realWeight = value; }
+            get { return this.realWeight; }
+            set { this.realWeight = value; }
         }
         [D2OIgnore]
         public Boolean Cursed
         {
-            get { return cursed; }
-            set { cursed = value; }
+            get { return this.cursed; }
+            set { this.cursed = value; }
         }
         [D2OIgnore]
         public int UseAnimationId
         {
-            get { return useAnimationId; }
-            set { useAnimationId = value; }
+            get { return this.useAnimationId; }
+            set { this.useAnimationId = value; }
         }
         [D2OIgnore]
         public Boolean Usable
         {
-            get { return usable; }
-            set { usable = value; }
+            get { return this.usable; }
+            set { this.usable = value; }
         }
         [D2OIgnore]
         public Boolean Targetable
         {
-            get { return targetable; }
-            set { targetable = value; }
+            get { return this.targetable; }
+            set { this.targetable = value; }
+        }
+        [D2OIgnore]
+        public Boolean Exchangeable
+        {
+            get { return this.exchangeable; }
+            set { this.exchangeable = value; }
         }
         [D2OIgnore]
         public double Price
         {
-            get { return price; }
-            set { price = value; }
+            get { return this.price; }
+            set { this.price = value; }
         }
         [D2OIgnore]
         public Boolean TwoHanded
         {
-            get { return twoHanded; }
-            set { twoHanded = value; }
+            get { return this.twoHanded; }
+            set { this.twoHanded = value; }
         }
         [D2OIgnore]
         public Boolean Etheral
         {
-            get { return etheral; }
-            set { etheral = value; }
+            get { return this.etheral; }
+            set { this.etheral = value; }
         }
         [D2OIgnore]
         public int ItemSetId
         {
-            get { return itemSetId; }
-            set { itemSetId = value; }
+            get { return this.itemSetId; }
+            set { this.itemSetId = value; }
         }
         [D2OIgnore]
         public String Criteria
         {
-            get { return criteria; }
-            set { criteria = value; }
+            get { return this.criteria; }
+            set { this.criteria = value; }
         }
         [D2OIgnore]
         public String CriteriaTarget
         {
-            get { return criteriaTarget; }
-            set { criteriaTarget = value; }
+            get { return this.criteriaTarget; }
+            set { this.criteriaTarget = value; }
         }
         [D2OIgnore]
         public Boolean HideEffects
         {
-            get { return hideEffects; }
-            set { hideEffects = value; }
+            get { return this.hideEffects; }
+            set { this.hideEffects = value; }
         }
         [D2OIgnore]
         public Boolean Enhanceable
         {
-            get { return enhanceable; }
-            set { enhanceable = value; }
+            get { return this.enhanceable; }
+            set { this.enhanceable = value; }
         }
         [D2OIgnore]
         public Boolean NonUsableOnAnother
         {
-            get { return nonUsableOnAnother; }
-            set { nonUsableOnAnother = value; }
+            get { return this.nonUsableOnAnother; }
+            set { this.nonUsableOnAnother = value; }
         }
         [D2OIgnore]
         public uint AppearanceId
         {
-            get { return appearanceId; }
-            set { appearanceId = value; }
+            get { return this.appearanceId; }
+            set { this.appearanceId = value; }
         }
         [D2OIgnore]
         public Boolean SecretRecipe
         {
-            get { return secretRecipe; }
-            set { secretRecipe = value; }
+            get { return this.secretRecipe; }
+            set { this.secretRecipe = value; }
+        }
+        [D2OIgnore]
+        public List<uint> DropMonsterIds
+        {
+            get { return this.dropMonsterIds; }
+            set { this.dropMonsterIds = value; }
+        }
+        [D2OIgnore]
+        public uint RecipeSlots
+        {
+            get { return this.recipeSlots; }
+            set { this.recipeSlots = value; }
         }
         [D2OIgnore]
         public List<uint> RecipeIds
         {
-            get { return recipeIds; }
-            set { recipeIds = value; }
+            get { return this.recipeIds; }
+            set { this.recipeIds = value; }
         }
         [D2OIgnore]
         public Boolean BonusIsSecret
         {
-            get { return bonusIsSecret; }
-            set { bonusIsSecret = value; }
+            get { return this.bonusIsSecret; }
+            set { this.bonusIsSecret = value; }
         }
         [D2OIgnore]
         public List<EffectInstance> PossibleEffects
         {
-            get { return possibleEffects; }
-            set { possibleEffects = value; }
+            get { return this.possibleEffects; }
+            set { this.possibleEffects = value; }
         }
         [D2OIgnore]
         public List<uint> FavoriteSubAreas
         {
-            get { return favoriteSubAreas; }
-            set { favoriteSubAreas = value; }
+            get { return this.favoriteSubAreas; }
+            set { this.favoriteSubAreas = value; }
         }
         [D2OIgnore]
         public uint FavoriteSubAreasBonus
         {
-            get { return favoriteSubAreasBonus; }
-            set { favoriteSubAreasBonus = value; }
+            get { return this.favoriteSubAreasBonus; }
+            set { this.favoriteSubAreasBonus = value; }
         }
         [D2OIgnore]
         public uint Weight
         {
-            get { return weight; }
-            set { weight = value; }
+            get { return this.weight; }
+            set { this.weight = value; }
         }
     }
 }

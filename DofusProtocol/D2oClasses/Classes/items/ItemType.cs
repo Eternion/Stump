@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:18
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class ItemType : IDataObject, IIndexedData
     {
-        private const String MODULE = "ItemTypes";
+        public const String MODULE = "ItemTypes";
         public int id;
         [I18NField]
         public uint nameId;
@@ -21,6 +21,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint gender;
         public String rawZone;
         public Boolean needUseConfirm;
+        public Boolean mimickable;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -28,44 +29,50 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint SuperTypeId
         {
-            get { return superTypeId; }
-            set { superTypeId = value; }
+            get { return this.superTypeId; }
+            set { this.superTypeId = value; }
         }
         [D2OIgnore]
         public Boolean Plural
         {
-            get { return plural; }
-            set { plural = value; }
+            get { return this.plural; }
+            set { this.plural = value; }
         }
         [D2OIgnore]
         public uint Gender
         {
-            get { return gender; }
-            set { gender = value; }
+            get { return this.gender; }
+            set { this.gender = value; }
         }
         [D2OIgnore]
         public String RawZone
         {
-            get { return rawZone; }
-            set { rawZone = value; }
+            get { return this.rawZone; }
+            set { this.rawZone = value; }
         }
         [D2OIgnore]
         public Boolean NeedUseConfirm
         {
-            get { return needUseConfirm; }
-            set { needUseConfirm = value; }
+            get { return this.needUseConfirm; }
+            set { this.needUseConfirm = value; }
+        }
+        [D2OIgnore]
+        public Boolean Mimickable
+        {
+            get { return this.mimickable; }
+            set { this.mimickable = value; }
         }
     }
 }

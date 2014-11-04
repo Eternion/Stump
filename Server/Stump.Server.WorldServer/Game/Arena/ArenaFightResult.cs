@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             var loot = new DofusProtocol.Types.FightLoot(items, kamas);
 
-            return new FightResultPlayerListEntry((short) Outcome, loot, Id, Alive, (byte)Level,
+            return new FightResultPlayerListEntry((short) Outcome, 0, loot, Id, Alive, (byte)Level,
                 new FightResultAdditionalData[0]);
         }
 

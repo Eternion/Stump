@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,12 +17,13 @@ namespace DBSynchroniser.Records
     [D2OClass("AchievementReward", "com.ankamagames.dofus.datacenter.quest")]
     public class AchievementRewardRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "AchievementRewards";
+        public const String MODULE = "AchievementRewards";
         public uint id;
         public uint achievementId;
         public int levelMin;
         public int levelMax;
-        public List<List<uint>> itemsReward;
+        public List<uint> itemsReward;
+        public List<uint> itemsQuantityReward;
         public List<uint> emotesReward;
         public List<uint> spellsReward;
         public List<uint> titlesReward;
@@ -65,7 +66,7 @@ namespace DBSynchroniser.Records
 
         [D2OIgnore]
         [Ignore]
-        public List<List<uint>> ItemsReward
+        public List<uint> ItemsReward
         {
             get { return itemsReward; }
             set
@@ -85,7 +86,33 @@ namespace DBSynchroniser.Records
             set
             {
                 m_itemsRewardBin = value;
-                itemsReward = value == null ? null : value.ToObject<List<List<uint>>>();
+                itemsReward = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> ItemsQuantityReward
+        {
+            get { return itemsQuantityReward; }
+            set
+            {
+                itemsQuantityReward = value;
+                m_itemsQuantityRewardBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_itemsQuantityRewardBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] ItemsQuantityRewardBin
+        {
+            get { return m_itemsQuantityRewardBin; }
+            set
+            {
+                m_itemsQuantityRewardBin = value;
+                itemsQuantityReward = value == null ? null : value.ToObject<List<uint>>();
             }
         }
 
@@ -202,6 +229,7 @@ namespace DBSynchroniser.Records
             LevelMin = castedObj.levelMin;
             LevelMax = castedObj.levelMax;
             ItemsReward = castedObj.itemsReward;
+            ItemsQuantityReward = castedObj.itemsQuantityReward;
             EmotesReward = castedObj.emotesReward;
             SpellsReward = castedObj.spellsReward;
             TitlesReward = castedObj.titlesReward;
@@ -216,6 +244,7 @@ namespace DBSynchroniser.Records
             obj.levelMin = LevelMin;
             obj.levelMax = LevelMax;
             obj.itemsReward = ItemsReward;
+            obj.itemsQuantityReward = ItemsQuantityReward;
             obj.emotesReward = EmotesReward;
             obj.spellsReward = SpellsReward;
             obj.titlesReward = TitlesReward;
@@ -226,6 +255,7 @@ namespace DBSynchroniser.Records
         public virtual void BeforeSave(bool insert)
         {
             m_itemsRewardBin = itemsReward == null ? null : itemsReward.ToBinary();
+            m_itemsQuantityRewardBin = itemsQuantityReward == null ? null : itemsQuantityReward.ToBinary();
             m_emotesRewardBin = emotesReward == null ? null : emotesReward.ToBinary();
             m_spellsRewardBin = spellsReward == null ? null : spellsReward.ToBinary();
             m_titlesRewardBin = titlesReward == null ? null : titlesReward.ToBinary();

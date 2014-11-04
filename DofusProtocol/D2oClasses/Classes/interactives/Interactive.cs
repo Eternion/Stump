@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:18
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Interactive : IDataObject, IIndexedData
     {
-        private const String MODULE = "Interactives";
+        public const String MODULE = "Interactives";
         public int id;
         [I18NField]
         public uint nameId;
@@ -25,26 +25,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public int ActionId
         {
-            get { return actionId; }
-            set { actionId = value; }
+            get { return this.actionId; }
+            set { this.actionId = value; }
         }
         [D2OIgnore]
         public Boolean DisplayTooltip
         {
-            get { return displayTooltip; }
-            set { displayTooltip = value; }
+            get { return this.displayTooltip; }
+            set { this.displayTooltip = value; }
         }
     }
 }

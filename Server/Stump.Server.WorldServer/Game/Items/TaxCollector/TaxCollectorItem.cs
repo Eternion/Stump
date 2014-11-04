@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         public override ObjectItem GetObjectItem()
         {
             return new ObjectItem((int)CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
-                (short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
+                (short)Template.Id, Effects.Select(x => x.GetObjectEffect()), Guid, (int)Stack);
         }
 
         public ObjectItemQuantity GetObjectItemQuantity()

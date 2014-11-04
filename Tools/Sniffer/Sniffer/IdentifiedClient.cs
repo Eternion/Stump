@@ -4,8 +4,10 @@ using System;
 using PcapDotNet.Packets.Ethernet;
 using PcapDotNet.Packets.IpV4;
 using PcapDotNet.Packets.Transport;
+using Sniffer;
 using Stump.Core.IO;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Messages.Custom;
 
 namespace Stump.Tools.Sniffer
 {
@@ -101,7 +103,7 @@ namespace Stump.Tools.Sniffer
                 return;
 
             if (m_currentMessage == null)
-                m_currentMessage = new MessagePart();
+                m_currentMessage = new MessagePart(true);
 
             // if message is complete
             if (m_currentMessage.Build(m_buffer))
@@ -120,10 +122,23 @@ namespace Stump.Tools.Sniffer
                         OnNewMessage(message, m_name);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     if (m_currentMessage.MessageId == 5632)
                         Debug.Print("Message = {0}", m_currentMessage.Data);
+
+                    var fullData = new List<byte>
+                    {
+                        (byte) ((m_currentMessage.Header & 0xFF00) >> 8),
+                        (byte) (m_currentMessage.Header & 0xFF)
+                    };
+                    fullData.AddRange(m_currentMessage.Data);
+                    message = new ErrorMessage(fullData.ToArray(), ex.Message);
+
+                    if (OnNewMessage != null)
+                    {
+                        OnNewMessage(message, m_name);
+                    }
                 }
 
                 m_currentMessage = null;

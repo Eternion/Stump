@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:55
+// Generated on 10/28/2014 16:37:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,53 +18,44 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public short subAreaId;
         public double fightId;
-        public IEnumerable<Types.CharacterMinimalPlusLookAndGradeInformations> charactersDescription;
+        public Types.CharacterMinimalPlusLookInformations attacker;
         
         public PrismFightAttackerAddMessage()
         {
         }
         
-        public PrismFightAttackerAddMessage(double fightId, IEnumerable<Types.CharacterMinimalPlusLookAndGradeInformations> charactersDescription)
+        public PrismFightAttackerAddMessage(short subAreaId, double fightId, Types.CharacterMinimalPlusLookInformations attacker)
         {
+            this.subAreaId = subAreaId;
             this.fightId = fightId;
-            this.charactersDescription = charactersDescription;
+            this.attacker = attacker;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteShort(subAreaId);
             writer.WriteDouble(fightId);
-            var charactersDescription_before = writer.Position;
-            var charactersDescription_count = 0;
-            writer.WriteUShort(0);
-            foreach (var entry in charactersDescription)
-            {
-                 entry.Serialize(writer);
-                 charactersDescription_count++;
-            }
-            var charactersDescription_after = writer.Position;
-            writer.Seek((int)charactersDescription_before);
-            writer.WriteUShort((ushort)charactersDescription_count);
-            writer.Seek((int)charactersDescription_after);
-
+            writer.WriteShort(attacker.TypeId);
+            attacker.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            subAreaId = reader.ReadShort();
+            if (subAreaId < 0)
+                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             fightId = reader.ReadDouble();
-            var limit = reader.ReadUShort();
-            var charactersDescription_ = new Types.CharacterMinimalPlusLookAndGradeInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 charactersDescription_[i] = new Types.CharacterMinimalPlusLookAndGradeInformations();
-                 charactersDescription_[i].Deserialize(reader);
-            }
-            charactersDescription = charactersDescription_;
+            if (fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15");
+            attacker = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
+            attacker.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(double) + sizeof(short) + charactersDescription.Sum(x => x.GetSerializationSize());
+            return sizeof(short) + sizeof(double) + sizeof(short) + attacker.GetSerializationSize();
         }
         
     }

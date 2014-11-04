@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:01
+// Generated on 10/28/2014 16:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public ObjectItemToSellInNpcShop(short objectGID, short powerRate, bool overMax, IEnumerable<Types.ObjectEffect> effects, int objectPrice, string buyCriterion)
-         : base(objectGID, powerRate, overMax, effects)
+        public ObjectItemToSellInNpcShop(short objectGID, IEnumerable<Types.ObjectEffect> effects, int objectPrice, string buyCriterion)
+         : base(objectGID, effects)
         {
             this.objectPrice = objectPrice;
             this.buyCriterion = buyCriterion;

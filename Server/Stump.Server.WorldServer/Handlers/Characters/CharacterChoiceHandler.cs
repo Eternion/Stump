@@ -186,11 +186,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
             //ContextHandler.SendSpellForgottenMessage(client);
 
-            ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 21).Select(entry => (sbyte)entry).ToList());
+            ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 21).Select(entry => (byte)entry).ToList());
             ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
 
             PvPHandler.SendAlignmentRankUpdateMessage(client);
-            PvPHandler.SendAlignmentSubAreasListMessage(client);
 
             InventoryHandler.SendSpellListMessage(client, true);
             
@@ -262,8 +261,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
             client.Send(new CharactersListMessage(
-                            false,
-                            characters
+                            characters,
+                            false
                             ));
         }
 
@@ -290,12 +289,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 if (characterRecord.Recolor)
                 {
-                    charactersToRecolor.Add(new CharacterToRecolorInformation(characterRecord.Id, characterRecord.EntityLook.GetEntityLook().indexedColors));
+                    // todo : cosmetic
+                    charactersToRecolor.Add(new CharacterToRecolorInformation(characterRecord.Id, characterRecord.EntityLook.GetEntityLook().indexedColors, characterRecord.Head));
                 }
 
                 if (characterRecord.Relook > 0)
                 {
-                    charactersToRelook.Add(new CharacterToRelookInformation(characterRecord.Id, characterRecord.Head));
+                    charactersToRelook.Add(new CharacterToRelookInformation(characterRecord.Id, characterRecord.EntityLook.GetEntityLook().indexedColors, characterRecord.Head));
                 }
 
                 /*if (!(characterRecord.Recolor && characterRecord.Rename))
@@ -303,8 +303,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                     unusableCharacters.Add(characterRecord.Id);
                 }*/
             }
-            client.Send(new CharactersListWithModificationsMessage(false,
-                                                                   characterBaseInformations,
+            client.Send(new CharactersListWithModificationsMessage(characterBaseInformations,
+                                                                   false,
                                                                    charactersToRecolor,
                                                                    charactersToRename,
                                                                    unusableCharacters,
@@ -313,12 +313,17 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)
         {
-            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations()));
+            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations(), false));
         }
 
         public static void SendCharacterCapabilitiesMessage(WorldClient client)
         {
             client.Send(new CharacterCapabilitiesMessage(4095));
+        }
+
+        public static void SendCharacterLoadingCompleteMessage(WorldClient client)
+        {
+            client.Send(new CharacterLoadingCompleteMessage());
         }
     }
 }

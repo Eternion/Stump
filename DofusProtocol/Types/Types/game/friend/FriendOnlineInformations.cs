@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:02
+// Generated on 10/28/2014 16:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
+        public int playerId;
         public string playerName;
         public short level;
         public sbyte alignmentSide;
@@ -24,14 +25,16 @@ namespace Stump.DofusProtocol.Types
         public bool sex;
         public Types.BasicGuildInformations guildInfo;
         public sbyte moodSmileyId;
+        public Types.PlayerStatus status;
         
         public FriendOnlineInformations()
         {
         }
         
-        public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, int lastConnection, int achievementPoints, string playerName, short level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, sbyte moodSmileyId)
+        public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, int lastConnection, int achievementPoints, int playerId, string playerName, short level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, sbyte moodSmileyId, Types.PlayerStatus status)
          : base(accountId, accountName, playerState, lastConnection, achievementPoints)
         {
+            this.playerId = playerId;
             this.playerName = playerName;
             this.level = level;
             this.alignmentSide = alignmentSide;
@@ -39,11 +42,13 @@ namespace Stump.DofusProtocol.Types
             this.sex = sex;
             this.guildInfo = guildInfo;
             this.moodSmileyId = moodSmileyId;
+            this.status = status;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
+            writer.WriteInt(playerId);
             writer.WriteUTF(playerName);
             writer.WriteShort(level);
             writer.WriteSByte(alignmentSide);
@@ -51,11 +56,16 @@ namespace Stump.DofusProtocol.Types
             writer.WriteBoolean(sex);
             guildInfo.Serialize(writer);
             writer.WriteSByte(moodSmileyId);
+            writer.WriteShort(status.TypeId);
+            status.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
+            playerId = reader.ReadInt();
+            if (playerId < 0)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             playerName = reader.ReadUTF();
             level = reader.ReadShort();
             if (level < 0 || level > 200)
@@ -68,11 +78,13 @@ namespace Stump.DofusProtocol.Types
             guildInfo = new Types.BasicGuildInformations();
             guildInfo.Deserialize(reader);
             moodSmileyId = reader.ReadSByte();
+            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
+            status.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + guildInfo.GetSerializationSize() + sizeof(sbyte);
+            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + guildInfo.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + status.GetSerializationSize();
         }
         
     }

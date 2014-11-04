@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:40
+
+// Generated on 10/26/2014 23:03:56
 using System;
 using System.Collections.Generic;
 
@@ -7,6 +8,7 @@ namespace Stump.DofusProtocol.Enums
 {
     public enum FighterRefusedReasonEnum
     {
+        FIGHTER_REFUSED = -1,
         FIGHTER_ACCEPTED = 0,
         CHALLENGE_FULL = 1,
         TEAM_FULL = 2,
@@ -25,7 +27,11 @@ namespace Stump.DofusProtocol.Enums
         TEAM_LIMITED_BY_MAINCHARACTER = 15,
         MULTIACCOUNT_NOT_ALLOWED = 16,
         GHOST_REFUSED = 17,
-        NEED_DISHONOR = 18,
         RESTRICTED_ACCOUNT = 19,
+        WRONG_ALLIANCE = 20,
+        AVA_ZONE = 21,
+        COMPANION_REFUSED = 22,
+        NOT_ENOUGH_ROOM = 23,
+        GUEST_ACCOUNT = 24,
     }
 }

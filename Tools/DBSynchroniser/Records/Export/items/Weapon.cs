@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:48
+// Generated on 10/26/2014 23:31:14
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +20,7 @@ namespace DBSynchroniser.Records
         public int apCost;
         public int minRange;
         public int range;
+        public uint maxCastPerTurn;
         public Boolean castInLine;
         public Boolean castInDiagonal;
         public Boolean castTestLos;
@@ -48,6 +49,13 @@ namespace DBSynchroniser.Records
         {
             get { return range; }
             set { range = value; }
+        }
+
+        [D2OIgnore]
+        public uint MaxCastPerTurn
+        {
+            get { return maxCastPerTurn; }
+            set { maxCastPerTurn = value; }
         }
 
         [D2OIgnore]
@@ -100,6 +108,7 @@ namespace DBSynchroniser.Records
             ApCost = castedObj.apCost;
             MinRange = castedObj.minRange;
             Range = castedObj.range;
+            MaxCastPerTurn = castedObj.maxCastPerTurn;
             CastInLine = castedObj.castInLine;
             CastInDiagonal = castedObj.castInDiagonal;
             CastTestLos = castedObj.castTestLos;
@@ -115,6 +124,7 @@ namespace DBSynchroniser.Records
             obj.apCost = ApCost;
             obj.minRange = MinRange;
             obj.range = Range;
+            obj.maxCastPerTurn = MaxCastPerTurn;
             obj.castInLine = CastInLine;
             obj.castInDiagonal = CastInDiagonal;
             obj.castTestLos = CastTestLos;

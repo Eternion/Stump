@@ -107,10 +107,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
-            return new GameFightTaxCollectorInformations(Id,
+            return new GameFightTaxCollectorInformations(
+                Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
                 (sbyte)Team.Id,
+                0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
                 TaxCollectorNpc.FirstNameId,

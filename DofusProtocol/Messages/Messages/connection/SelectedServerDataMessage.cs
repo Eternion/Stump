@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:30
+// Generated on 10/28/2014 16:36:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,48 +18,55 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public bool ssl;
+        public bool canCreateNewCharacter;
         public short serverId;
         public string address;
         public ushort port;
-        public bool canCreateNewCharacter;
         public string ticket;
         
         public SelectedServerDataMessage()
         {
         }
         
-        public SelectedServerDataMessage(short serverId, string address, ushort port, bool canCreateNewCharacter, string ticket)
+        public SelectedServerDataMessage(bool ssl, bool canCreateNewCharacter, short serverId, string address, ushort port, string ticket)
         {
+            this.ssl = ssl;
+            this.canCreateNewCharacter = canCreateNewCharacter;
             this.serverId = serverId;
             this.address = address;
             this.port = port;
-            this.canCreateNewCharacter = canCreateNewCharacter;
             this.ticket = ticket;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, ssl);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, canCreateNewCharacter);
+            writer.WriteByte(flag1);
             writer.WriteShort(serverId);
             writer.WriteUTF(address);
             writer.WriteUShort(port);
-            writer.WriteBoolean(canCreateNewCharacter);
             writer.WriteUTF(ticket);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            ssl = BooleanByteWrapper.GetFlag(flag1, 0);
+            canCreateNewCharacter = BooleanByteWrapper.GetFlag(flag1, 1);
             serverId = reader.ReadShort();
             address = reader.ReadUTF();
             port = reader.ReadUShort();
             if (port < 0 || port > 65535)
                 throw new Exception("Forbidden value on port = " + port + ", it doesn't respect the following condition : port < 0 || port > 65535");
-            canCreateNewCharacter = reader.ReadBoolean();
             ticket = reader.ReadUTF();
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(short) + Encoding.UTF8.GetByteCount(address) + sizeof(ushort) + sizeof(bool) + sizeof(short) + Encoding.UTF8.GetByteCount(ticket);
+            return sizeof(bool) + 0 + sizeof(short) + sizeof(short) + Encoding.UTF8.GetByteCount(address) + sizeof(ushort) + sizeof(short) + Encoding.UTF8.GetByteCount(ticket);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Server : IDataObject, IIndexedData
     {
-        private const String MODULE = "Servers";
+        public const String MODULE = "Servers";
         public int id;
         [I18NField]
         public uint nameId;
@@ -31,56 +31,56 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint CommentId
         {
-            get { return commentId; }
-            set { commentId = value; }
+            get { return this.commentId; }
+            set { this.commentId = value; }
         }
         [D2OIgnore]
         public double OpeningDate
         {
-            get { return openingDate; }
-            set { openingDate = value; }
+            get { return this.openingDate; }
+            set { this.openingDate = value; }
         }
         [D2OIgnore]
         public String Language
         {
-            get { return language; }
-            set { language = value; }
+            get { return this.language; }
+            set { this.language = value; }
         }
         [D2OIgnore]
         public int PopulationId
         {
-            get { return populationId; }
-            set { populationId = value; }
+            get { return this.populationId; }
+            set { this.populationId = value; }
         }
         [D2OIgnore]
         public uint GameTypeId
         {
-            get { return gameTypeId; }
-            set { gameTypeId = value; }
+            get { return this.gameTypeId; }
+            set { this.gameTypeId = value; }
         }
         [D2OIgnore]
         public int CommunityId
         {
-            get { return communityId; }
-            set { communityId = value; }
+            get { return this.communityId; }
+            set { this.communityId = value; }
         }
         [D2OIgnore]
         public List<String> RestrictedToLanguages
         {
-            get { return restrictedToLanguages; }
-            set { restrictedToLanguages = value; }
+            get { return this.restrictedToLanguages; }
+            set { this.restrictedToLanguages = value; }
         }
     }
 }

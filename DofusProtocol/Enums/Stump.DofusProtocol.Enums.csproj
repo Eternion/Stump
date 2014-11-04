@@ -129,6 +129,35 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-uptodate|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug-uptodate\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-uptodate|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug-uptodate\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-uptodate|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug-uptodate\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -141,6 +170,8 @@
   <ItemGroup>
     <Compile Include="Custom\AcquaintanceErrorEnum.cs" />
     <Compile Include="Custom\ActionsEnum.cs" />
+    <Compile Include="Custom\GuildCreationResultEnum.cs" />
+    <Compile Include="Custom\GuildInvitationStateEnum.cs" />
     <Compile Include="Custom\InteractiveTypeEnum.cs" />
     <Compile Include="Custom\ItemSuperTypeEnum.cs" />
     <Compile Include="Custom\NotificationEnum.cs" />
@@ -171,7 +202,10 @@
     <Compile Include="Custom\PlayerFields.cs" />
     <Compile Include="Custom\ZoneIdEnum.cs" />
     <Compile Include="Custom\SpellTargetType.cs" />
+    <Compile Include="Export\AccessoryPreviewErrorEnum.cs" />
+    <Compile Include="Export\AggressableStatusEnum.cs" />
     <Compile Include="Export\AlignmentSideEnum.cs" />
+    <Compile Include="Export\AllianceRightsBitEnum.cs" />
     <Compile Include="Export\BreedEnum.cs" />
     <Compile Include="Export\BuildTypeEnum.cs" />
     <Compile Include="Export\CharacterCreationResultEnum.cs" />
@@ -188,6 +222,7 @@
     <Compile Include="Export\CrafterDirectoryParamBitEnum.cs" />
     <Compile Include="Export\CraftResultEnum.cs" />
     <Compile Include="Export\DebugLevelEnum.cs" />
+    <Compile Include="Export\DelayedActionTypeEnum.cs" />
     <Compile Include="Export\DialogTypeEnum.cs" />
     <Compile Include="Export\DirectionsEnum.cs" />
     <Compile Include="Export\ExchangeErrorEnum.cs" />
@@ -204,11 +239,11 @@
     <Compile Include="Export\GameActionMarkTypeEnum.cs" />
     <Compile Include="Export\GameContextEnum.cs" />
     <Compile Include="Export\GameHierarchyEnum.cs" />
-    <Compile Include="Export\GuildCreationResultEnum.cs" />
+    <Compile Include="Export\GuestLimitationEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
-    <Compile Include="Export\GuildInvitationStateEnum.cs" />
     <Compile Include="Export\GuildRightsBitEnum.cs" />
     <Compile Include="Export\HardcoreDeathStateEnum.cs" />
+    <Compile Include="Export\HardcoreOrEpicDeathStateEnum.cs" />
     <Compile Include="Export\IdentificationFailureReasonEnum.cs" />
     <Compile Include="Export\ListAddFailureEnum.cs" />
     <Compile Include="Export\MapObstacleStateEnum.cs" />
@@ -219,15 +254,20 @@
     <Compile Include="Export\ObjectErrorEnum.cs" />
     <Compile Include="Export\PartStateEnum.cs" />
     <Compile Include="Export\PartyJoinErrorEnum.cs" />
+    <Compile Include="Export\PartyNameErrorEnum.cs" />
     <Compile Include="Export\PartyTypeEnum.cs" />
     <Compile Include="Export\PaymentTypeEnum.cs" />
     <Compile Include="Export\PlayableBreedEnum.cs" />
     <Compile Include="Export\PlayerLifeStatusEnum.cs" />
     <Compile Include="Export\PlayerStateEnum.cs" />
+    <Compile Include="Export\PlayerStatusEnum.cs" />
     <Compile Include="Export\PresetDeleteResultEnum.cs" />
     <Compile Include="Export\PresetSaveResultEnum.cs" />
     <Compile Include="Export\PresetSaveUpdateErrorEnum.cs" />
     <Compile Include="Export\PresetUseResultEnum.cs" />
+    <Compile Include="Export\PrismListenEnum.cs" />
+    <Compile Include="Export\PrismSetSabotagedRefusedReasonEnum.cs" />
+    <Compile Include="Export\PrismStateEnum.cs" />
     <Compile Include="Export\PvpArenaStepEnum.cs" />
     <Compile Include="Export\PvpArenaTypeEnum.cs" />
     <Compile Include="Export\SequenceTypeEnum.cs" />
@@ -235,14 +275,22 @@
     <Compile Include="Export\ServerStatusEnum.cs" />
     <Compile Include="Export\ShortcutBarEnum.cs" />
     <Compile Include="Export\SocialContactCategoryEnum.cs" />
-    <Compile Include="Export\SubareaUpdateEventEnum.cs" />
+    <Compile Include="Export\SocialGroupCreationResultEnum.cs" />
+    <Compile Include="Export\SocialGroupInvitationStateEnum.cs" />
+    <Compile Include="Export\StatisticTypeEnum.cs" />
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Export\SubscriptionRequiredEnum.cs" />
     <Compile Include="Export\TaxCollectorErrorReasonEnum.cs" />
+    <Compile Include="Export\TaxCollectorStateEnum.cs" />
     <Compile Include="Export\TeamEnum.cs" />
     <Compile Include="Export\TeamTypeEnum.cs" />
     <Compile Include="Export\TeleporterTypeEnum.cs" />
     <Compile Include="Export\TextInformationTypeEnum.cs" />
+    <Compile Include="Export\TreasureHuntDigRequestEnum.cs" />
+    <Compile Include="Export\TreasureHuntFlagRequestEnum.cs" />
+    <Compile Include="Export\TreasureHuntFlagStateEnum.cs" />
+    <Compile Include="Export\TreasureHuntRequestEnum.cs" />
+    <Compile Include="Export\TreasureHuntTypeEnum.cs" />
     <Compile Include="Export\UpdatableMountBoostEnum.cs" />
     <Compile Include="Extensions\DirectionsEnumExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

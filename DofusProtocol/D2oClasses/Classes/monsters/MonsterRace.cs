@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 10/26/2014 23:27:52
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,11 +12,12 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class MonsterRace : IDataObject, IIndexedData
     {
-        private const String MODULE = "MonsterRaces";
+        public const String MODULE = "MonsterRaces";
         public int id;
         public int superRaceId;
         [I18NField]
         public uint nameId;
+        public List<uint> monsters;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -24,20 +25,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public int SuperRaceId
         {
-            get { return superRaceId; }
-            set { superRaceId = value; }
+            get { return this.superRaceId; }
+            set { this.superRaceId = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
+        }
+        [D2OIgnore]
+        public List<uint> Monsters
+        {
+            get { return this.monsters; }
+            set { this.monsters = value; }
         }
     }
 }

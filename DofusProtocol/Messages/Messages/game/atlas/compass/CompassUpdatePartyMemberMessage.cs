@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:33
+// Generated on 10/28/2014 16:36:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public CompassUpdatePartyMemberMessage(sbyte type, short worldX, short worldY, int memberId)
-         : base(type, worldX, worldY)
+        public CompassUpdatePartyMemberMessage(sbyte type, Types.MapCoordinates coords, int memberId)
+         : base(type, coords)
         {
             this.memberId = memberId;
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:53
+// Generated on 10/28/2014 16:37:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,12 +49,12 @@ namespace Stump.DofusProtocol.Messages
             if (msgId < 0)
                 throw new Exception("Forbidden value on msgId = " + msgId + ", it doesn't respect the following condition : msgId < 0");
             timeStamp = reader.ReadUInt();
-            if (timeStamp < 0 || timeStamp > 4294967295)
-                throw new Exception("Forbidden value on timeStamp = " + timeStamp + ", it doesn't respect the following condition : timeStamp < 0 || timeStamp > 4294967295");
+            if (timeStamp < 0 || timeStamp > 4.294967295E9)
+                throw new Exception("Forbidden value on timeStamp = " + timeStamp + ", it doesn't respect the following condition : timeStamp < 0 || timeStamp > 4.294967295E9");
             owner = reader.ReadUTF();
             objectGenericId = reader.ReadUInt();
-            if (objectGenericId < 0 || objectGenericId > 4294967295)
-                throw new Exception("Forbidden value on objectGenericId = " + objectGenericId + ", it doesn't respect the following condition : objectGenericId < 0 || objectGenericId > 4294967295");
+            if (objectGenericId < 0 || objectGenericId > 4.294967295E9)
+                throw new Exception("Forbidden value on objectGenericId = " + objectGenericId + ", it doesn't respect the following condition : objectGenericId < 0 || objectGenericId > 4.294967295E9");
         }
         
         public override int GetSerializationSize()

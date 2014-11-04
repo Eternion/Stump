@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:47
+// Generated on 10/26/2014 23:31:13
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Smiley", "com.ankamagames.dofus.datacenter.communication")]
     public class SmileyRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Smileys";
+        public const String MODULE = "Smileys";
         public uint id;
         public uint order;
         public String gfxId;

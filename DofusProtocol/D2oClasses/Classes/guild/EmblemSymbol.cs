@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class EmblemSymbol : IDataObject, IIndexedData
     {
-        private const String MODULE = "EmblemSymbols";
+        public const String MODULE = "EmblemSymbols";
         public int id;
         public int iconId;
         public int skinId;
@@ -26,38 +26,38 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public int IconId
         {
-            get { return iconId; }
-            set { iconId = value; }
+            get { return this.iconId; }
+            set { this.iconId = value; }
         }
         [D2OIgnore]
         public int SkinId
         {
-            get { return skinId; }
-            set { skinId = value; }
+            get { return this.skinId; }
+            set { this.skinId = value; }
         }
         [D2OIgnore]
         public int Order
         {
-            get { return order; }
-            set { order = value; }
+            get { return this.order; }
+            set { this.order = value; }
         }
         [D2OIgnore]
         public int CategoryId
         {
-            get { return categoryId; }
-            set { categoryId = value; }
+            get { return this.categoryId; }
+            set { this.categoryId = value; }
         }
         [D2OIgnore]
         public Boolean Colorizable
         {
-            get { return colorizable; }
-            set { colorizable = value; }
+            get { return this.colorizable; }
+            set { this.colorizable = value; }
         }
     }
 }

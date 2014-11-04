@@ -4,6 +4,7 @@ using System.Linq;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
@@ -12,8 +13,8 @@ namespace Stump.Server.WorldServer.Handlers.Basic
 {
     public class BasicHandler : WorldHandlerContainer
     {
-        [WorldHandler(BasicSwitchModeRequestMessage.Id)]
-        public static void HandleBasicSwitchModeRequestMessage(WorldClient client, BasicSwitchModeRequestMessage message)
+        [WorldHandler(BasicSetAwayModeRequestMessage.Id)]
+        public static void HandleBasicSwitchModeRequestMessage(WorldClient client, BasicSetAwayModeRequestMessage message)
         {
             client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, client.Character.ToggleAway() ? (short) 37 : (short) 38);
         }
@@ -25,8 +26,9 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             var character = client.Character;
 
             /* Send informations about it */
-            client.Send(new BasicWhoIsMessage(true, (sbyte) character.UserGroup.Role,
-                                              character.Client.WorldAccount.Nickname, character.Name, (short) character.Map.SubArea.Id));
+            client.Send(new BasicWhoIsMessage(character == client.Character, message.verbose, (sbyte) character.UserGroup.Role, character.Client.WorldAccount.Nickname, character.Account.Id, character.Name,
+                character.Id, (short) character.Map.SubArea.Id, new AbstractSocialGroupInfos[0],
+                character.IsInFight() ? (sbyte)PlayerStateEnum.GAME_TYPE_FIGHT : (sbyte)PlayerStateEnum.GAME_TYPE_ROLEPLAY));
         }
 
         [WorldHandler(BasicWhoIsRequestMessage.Id)]
@@ -43,10 +45,9 @@ namespace Stump.Server.WorldServer.Handlers.Basic
             else
             {
                 /* Send info about it */
-                client.Send(new BasicWhoIsMessage(message.search == client.Character.Name,
-                                                  (sbyte) character.UserGroup.Role,
-                                                  character.Client.WorldAccount.Nickname, character.Name,
-                                                  (short) character.Map.SubArea.Id));
+                client.Send(new BasicWhoIsMessage(character == client.Character, message.verbose, (sbyte)character.UserGroup.Role, character.Client.WorldAccount.Nickname, character.Account.Id, character.Name,
+                    character.Id, (short)character.Map.SubArea.Id, new AbstractSocialGroupInfos[0],
+                    character.IsInFight() ? (sbyte)PlayerStateEnum.GAME_TYPE_FIGHT : (sbyte)PlayerStateEnum.GAME_TYPE_ROLEPLAY));
             }
         }
 

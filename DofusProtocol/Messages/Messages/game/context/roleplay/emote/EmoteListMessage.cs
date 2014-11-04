@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:40
+// Generated on 10/28/2014 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<sbyte> emoteIds;
+        public IEnumerable<byte> emoteIds;
         
         public EmoteListMessage()
         {
         }
         
-        public EmoteListMessage(IEnumerable<sbyte> emoteIds)
+        public EmoteListMessage(IEnumerable<byte> emoteIds)
         {
             this.emoteIds = emoteIds;
         }
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in emoteIds)
             {
-                 writer.WriteSByte(entry);
+                 writer.WriteByte(entry);
                  emoteIds_count++;
             }
             var emoteIds_after = writer.Position;
@@ -49,17 +49,17 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            var emoteIds_ = new sbyte[limit];
+            var emoteIds_ = new byte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 emoteIds_[i] = reader.ReadSByte();
+                 emoteIds_[i] = reader.ReadByte();
             }
             emoteIds = emoteIds_;
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + emoteIds.Sum(x => sizeof(sbyte));
+            return sizeof(short) + emoteIds.Sum(x => sizeof(byte));
         }
         
     }

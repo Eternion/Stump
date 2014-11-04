@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:49
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("MonsterMiniBoss", "com.ankamagames.dofus.datacenter.monsters")]
     public class MonsterMiniBossRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "MonsterMiniBoss";
+        public const String MODULE = "MonsterMiniBoss";
         public int id;
         public int monsterReplacingId;
 

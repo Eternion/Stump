@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:02
+// Generated on 10/28/2014 16:38:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,12 +29,13 @@ namespace Stump.DofusProtocol.Types
         public sbyte moodSmileyId;
         public int accountId;
         public int achievementPoints;
+        public Types.PlayerStatus status;
         
         public GuildMember()
         {
         }
         
-        public GuildMember(int id, byte level, string name, sbyte breed, bool sex, short rank, double givenExperience, sbyte experienceGivenPercent, uint rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, sbyte moodSmileyId, int accountId, int achievementPoints)
+        public GuildMember(int id, byte level, string name, sbyte breed, bool sex, short rank, double givenExperience, sbyte experienceGivenPercent, uint rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, sbyte moodSmileyId, int accountId, int achievementPoints, Types.PlayerStatus status)
          : base(id, level, name)
         {
             this.breed = breed;
@@ -49,6 +50,7 @@ namespace Stump.DofusProtocol.Types
             this.moodSmileyId = moodSmileyId;
             this.accountId = accountId;
             this.achievementPoints = achievementPoints;
+            this.status = status;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -66,6 +68,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(moodSmileyId);
             writer.WriteInt(accountId);
             writer.WriteInt(achievementPoints);
+            writer.WriteShort(status.TypeId);
+            status.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -77,14 +81,14 @@ namespace Stump.DofusProtocol.Types
             if (rank < 0)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0");
             givenExperience = reader.ReadDouble();
-            if (givenExperience < 0)
-                throw new Exception("Forbidden value on givenExperience = " + givenExperience + ", it doesn't respect the following condition : givenExperience < 0");
+            if (givenExperience < 0 || givenExperience > 9.007199254740992E15)
+                throw new Exception("Forbidden value on givenExperience = " + givenExperience + ", it doesn't respect the following condition : givenExperience < 0 || givenExperience > 9.007199254740992E15");
             experienceGivenPercent = reader.ReadSByte();
             if (experienceGivenPercent < 0 || experienceGivenPercent > 100)
                 throw new Exception("Forbidden value on experienceGivenPercent = " + experienceGivenPercent + ", it doesn't respect the following condition : experienceGivenPercent < 0 || experienceGivenPercent > 100");
             rights = reader.ReadUInt();
-            if (rights < 0 || rights > 4294967295)
-                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4294967295");
+            if (rights < 0 || rights > 4.294967295E9)
+                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4.294967295E9");
             connected = reader.ReadSByte();
             if (connected < 0)
                 throw new Exception("Forbidden value on connected = " + connected + ", it doesn't respect the following condition : connected < 0");
@@ -97,11 +101,13 @@ namespace Stump.DofusProtocol.Types
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
             achievementPoints = reader.ReadInt();
+            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
+            status.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + sizeof(double) + sizeof(sbyte) + sizeof(uint) + sizeof(sbyte) + sizeof(sbyte) + sizeof(ushort) + sizeof(sbyte) + sizeof(int) + sizeof(int);
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + sizeof(double) + sizeof(sbyte) + sizeof(uint) + sizeof(sbyte) + sizeof(sbyte) + sizeof(ushort) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(short) + status.GetSerializationSize();
         }
         
     }

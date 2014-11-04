@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public virtual FightResultListEntry GetFightResultListEntry()
         {
-            return new FightResultFighterListEntry((short) Outcome, Loot.GetFightLoot(), Id, Alive);
+            return new FightResultFighterListEntry((short) Outcome, 0, Loot.GetFightLoot(), Id, Alive);
         }
 
         public virtual void Apply()

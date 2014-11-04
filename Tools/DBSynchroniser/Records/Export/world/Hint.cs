@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:51
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Hint", "com.ankamagames.dofus.datacenter.world")]
     public class HintRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Hints";
+        public const String MODULE = "Hints";
         public int id;
         public uint categoryId;
         public uint gfx;
@@ -30,6 +30,7 @@ namespace DBSynchroniser.Records
         public int y;
         public Boolean outdoor;
         public int subareaId;
+        public int worldMapId;
 
         int ID2ORecord.Id
         {
@@ -110,6 +111,13 @@ namespace DBSynchroniser.Records
             set { subareaId = value; }
         }
 
+        [D2OIgnore]
+        public int WorldMapId
+        {
+            get { return worldMapId; }
+            set { worldMapId = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Hint)obj;
@@ -124,6 +132,7 @@ namespace DBSynchroniser.Records
             Y = castedObj.y;
             Outdoor = castedObj.outdoor;
             SubareaId = castedObj.subareaId;
+            WorldMapId = castedObj.worldMapId;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -139,6 +148,7 @@ namespace DBSynchroniser.Records
             obj.y = Y;
             obj.outdoor = Outdoor;
             obj.subareaId = SubareaId;
+            obj.worldMapId = WorldMapId;
             return obj;
         }
         

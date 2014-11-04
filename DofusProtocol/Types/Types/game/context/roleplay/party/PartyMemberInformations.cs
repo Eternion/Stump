@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 10/28/2014 16:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,18 +22,19 @@ namespace Stump.DofusProtocol.Types
         public short prospecting;
         public byte regenRate;
         public short initiative;
-        public bool pvpEnabled;
         public sbyte alignmentSide;
         public short worldX;
         public short worldY;
         public int mapId;
         public short subAreaId;
+        public Types.PlayerStatus status;
+        public IEnumerable<Types.PartyCompanionMemberInformations> companions;
         
         public PartyMemberInformations()
         {
         }
         
-        public PartyMemberInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, int lifePoints, int maxLifePoints, short prospecting, byte regenRate, short initiative, bool pvpEnabled, sbyte alignmentSide, short worldX, short worldY, int mapId, short subAreaId)
+        public PartyMemberInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, int lifePoints, int maxLifePoints, short prospecting, byte regenRate, short initiative, sbyte alignmentSide, short worldX, short worldY, int mapId, short subAreaId, Types.PlayerStatus status, IEnumerable<Types.PartyCompanionMemberInformations> companions)
          : base(id, level, name, entityLook, breed, sex)
         {
             this.lifePoints = lifePoints;
@@ -41,12 +42,13 @@ namespace Stump.DofusProtocol.Types
             this.prospecting = prospecting;
             this.regenRate = regenRate;
             this.initiative = initiative;
-            this.pvpEnabled = pvpEnabled;
             this.alignmentSide = alignmentSide;
             this.worldX = worldX;
             this.worldY = worldY;
             this.mapId = mapId;
             this.subAreaId = subAreaId;
+            this.status = status;
+            this.companions = companions;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -57,12 +59,26 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(prospecting);
             writer.WriteByte(regenRate);
             writer.WriteShort(initiative);
-            writer.WriteBoolean(pvpEnabled);
             writer.WriteSByte(alignmentSide);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
+            writer.WriteShort(status.TypeId);
+            status.Serialize(writer);
+            var companions_before = writer.Position;
+            var companions_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in companions)
+            {
+                 entry.Serialize(writer);
+                 companions_count++;
+            }
+            var companions_after = writer.Position;
+            writer.Seek((int)companions_before);
+            writer.WriteUShort((ushort)companions_count);
+            writer.Seek((int)companions_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -83,7 +99,6 @@ namespace Stump.DofusProtocol.Types
             initiative = reader.ReadShort();
             if (initiative < 0)
                 throw new Exception("Forbidden value on initiative = " + initiative + ", it doesn't respect the following condition : initiative < 0");
-            pvpEnabled = reader.ReadBoolean();
             alignmentSide = reader.ReadSByte();
             worldX = reader.ReadShort();
             if (worldX < -255 || worldX > 255)
@@ -95,11 +110,21 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
+            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
+            status.Deserialize(reader);
+            var limit = reader.ReadUShort();
+            var companions_ = new Types.PartyCompanionMemberInformations[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 companions_[i] = new Types.PartyCompanionMemberInformations();
+                 companions_[i].Deserialize(reader);
+            }
+            companions = companions_;
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(byte) + sizeof(short) + sizeof(bool) + sizeof(sbyte) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(byte) + sizeof(short) + sizeof(sbyte) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + status.GetSerializationSize() + sizeof(short) + companions.Sum(x => x.GetSerializationSize());
         }
         
     }

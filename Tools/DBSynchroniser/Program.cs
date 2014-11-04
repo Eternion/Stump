@@ -5,9 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using DBSynchroniser.Maps.Placements;
 using DBSynchroniser.Records;
 using DBSynchroniser.Records.Icons;
 using DBSynchroniser.Records.Langs;
+using DBSynchroniser.Records.Maps;
 using Stump.Core.Attributes;
 using Stump.Core.I18N;
 using Stump.Core.Reflection;
@@ -16,6 +18,7 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2i;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses.Tools.D2p;
+using Stump.DofusProtocol.D2oClasses.Tools.Dlm;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer;
@@ -56,6 +59,8 @@ namespace DBSynchroniser
 
         [Variable(true)] public static string D2IOutput = "./generate_d2i";
 
+        [Variable(true)] public static string MapDecryptionKey = "649ae451ca33ec53bbcbcc33becf15f4";
+
         private static readonly Dictionary<string, Languages> m_stringToLang = new Dictionary<string, Languages>
         {
             {"fr", Languages.French},       
@@ -78,7 +83,9 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Load langs (on stump_data)", LoadLangsWithWarning),
             Tuple.Create<string, Action>("Load icons files (on stump_data)", LoadIconsWithWarnings),
             Tuple.Create<string, Action>("Generate client files (from stump_data)", GenerateFiles),
-            Tuple.Create<string, Action>("Synchronise world database (stump_data->stump_world)", SyncDatabases)
+            Tuple.Create<string, Action>("Synchronise world database (stump_data->stump_world)", SyncDatabases),
+            Tuple.Create<string, Action>("Import maps (on stump_data)", LoadMapsWithWarning),
+            Tuple.Create<string, Action>("Fix fight placement (on stump_data)", PlacementsFix.ApplyFix),
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -652,6 +659,39 @@ namespace DBSynchroniser
                 EndCounter();
             }
         }
+        private static void LoadMapsWithWarning()
+        {
+            Console.WriteLine("WARNING IT WILL ERASE TABLES 'maps'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
+
+            ImportMaps();
+        }
+
+
+        public static void ImportMaps()
+        {
+            Console.WriteLine("Import maps");
+            Database.Database.Execute("DELETE FROM maps");
+            Database.Database.Execute("ALTER TABLE maps AUTO_INCREMENT=1");
+
+            InitializeCounter();
+            string mapsfilePath = Path.Combine(FindDofusPath(), "content", "maps", "maps0.d2p");
+            var d2pFile = new D2pFile(mapsfilePath);
+            var entries = d2pFile.ReadAllFiles();
+            var i = 0;
+            foreach (var mapBytes in entries.Values)
+            {
+                var mapFile = new DlmReader(mapBytes) { DecryptionKey = MapDecryptionKey };
+                var record = new MapRecord(mapFile.ReadMap());
+
+                Database.Database.Insert(record);
+
+                UpdateCounter(i++, entries.Count);
+            }
+            EndCounter();
+
+        }
 
         private static void ExecutePatch(string file, Database database)
         {
@@ -697,21 +737,21 @@ namespace DBSynchroniser
 
         private static int m_cursorLeft;
         private static int m_cursorTop;
-        private static void InitializeCounter()
+        public static void InitializeCounter()
         {
             m_cursorLeft = Console.CursorLeft;
             m_cursorTop = Console.CursorTop;
         }
 
 
-        private static void UpdateCounter(int i, int count)
+        public static void UpdateCounter(int i, int count)
         {
             Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
             Console.Write("{0}/{1} ({2}%)", i, count,
                 (int) ((i/(double) count)*100d));
         }
 
-        private static void EndCounter()
+        public static void EndCounter()
         {
             Console.SetCursorPosition(m_cursorLeft, m_cursorTop);
             Console.Write(new string(' ', Console.BufferWidth - m_cursorLeft));

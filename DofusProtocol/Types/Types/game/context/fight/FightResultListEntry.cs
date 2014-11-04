@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 10/28/2014 16:38:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,21 +18,24 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short outcome;
+        public uint wave;
         public Types.FightLoot rewards;
         
         public FightResultListEntry()
         {
         }
         
-        public FightResultListEntry(short outcome, Types.FightLoot rewards)
+        public FightResultListEntry(short outcome, uint wave, Types.FightLoot rewards)
         {
             this.outcome = outcome;
+            this.wave = wave;
             this.rewards = rewards;
         }
         
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(outcome);
+            writer.WriteUInt(wave);
             rewards.Serialize(writer);
         }
         
@@ -41,13 +44,16 @@ namespace Stump.DofusProtocol.Types
             outcome = reader.ReadShort();
             if (outcome < 0)
                 throw new Exception("Forbidden value on outcome = " + outcome + ", it doesn't respect the following condition : outcome < 0");
+            wave = reader.ReadUInt();
+            if (wave < 0 || wave > 4.294967295E9)
+                throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0 || wave > 4.294967295E9");
             rewards = new Types.FightLoot();
             rewards.Deserialize(reader);
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(short) + rewards.GetSerializationSize();
+            return sizeof(short) + sizeof(uint) + rewards.GetSerializationSize();
         }
         
     }

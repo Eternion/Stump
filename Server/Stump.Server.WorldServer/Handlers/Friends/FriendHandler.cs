@@ -58,15 +58,16 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         [WorldHandler(FriendDeleteRequestMessage.Id)]
         public static void HandleFriendDeleteRequestMessage(WorldClient client, FriendDeleteRequestMessage message)
         {
-            var friend = client.Character.FriendsBook.Friends.FirstOrDefault(entry => entry.Account.Nickname == message.name);
+            var friend = client.Character.FriendsBook.Friends.FirstOrDefault(entry => entry.Account.Id == message.accountId);
 
             if (friend == null)
             {
-                SendFriendDeleteResultMessage(client, false, message.name);
+                SendFriendDeleteResultMessage(client, false, "");
                 return;
             }
 
             client.Character.FriendsBook.RemoveFriend(friend);
+            SendFriendDeleteResultMessage(client, true, friend.Character.Name);
         }
 
         [WorldHandler(IgnoredAddRequestMessage.Id)]
@@ -104,11 +105,11 @@ namespace Stump.Server.WorldServer.Handlers.Friends
         [WorldHandler(IgnoredDeleteRequestMessage.Id)]
         public static void HandleIgnoredDeleteRequestMessage(WorldClient client, IgnoredDeleteRequestMessage message)
         {
-            var ignored = client.Character.FriendsBook.Ignoreds.FirstOrDefault(entry => entry.Account.Nickname == message.name);
+            var ignored = client.Character.FriendsBook.Ignoreds.FirstOrDefault(entry => entry.Account.Id == message.accountId);
 
             if (ignored == null)
             {
-                SendIgnoredDeleteResultMessage(client, false, false, message.name);
+                SendIgnoredDeleteResultMessage(client, false, false, "");
                 return;
             }
 
