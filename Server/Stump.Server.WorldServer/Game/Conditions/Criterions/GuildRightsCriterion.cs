@@ -1,4 +1,5 @@
 ﻿using System;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
@@ -7,7 +8,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
     {
         public const string Identifier = "Px";
 
-        public int RankId
+        public GuildRightsBitEnum Right
         {
             get;
             set;
@@ -15,17 +16,17 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override bool Eval(Character character)
         {
-            return character.GuildMember != null && (character.GuildMember.RankId == RankId);
+            return character.GuildMember != null && character.GuildMember.HasRight(Right);
         }
 
         public override void Build()
         {
-            int rank;
+            int right;
 
-            if (!int.TryParse(Literal, out rank))
-                throw new Exception(string.Format("Cannot build GuildRightsCriterion, {0} is not a valid rank", Literal));
+            if (!int.TryParse(Literal, out right))
+                throw new Exception(string.Format("Cannot build GuildRightsCriterion, {0} is not a valid right", Literal));
 
-            RankId = rank;
+            Right = (GuildRightsBitEnum)right;
         }
 
         public override string ToString()

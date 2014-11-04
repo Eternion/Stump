@@ -290,7 +290,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             client.Send(new GuildLeftMessage());
         }
 
-        public static void SendGuildCreationResultMessage(IPacketReceiver client, GuildCreationResultEnum result)
+        public static void SendGuildCreationResultMessage(IPacketReceiver client, SocialGroupCreationResultEnum result)
         {
             client.Send(new GuildCreationResultMessage((sbyte)result));
         }
