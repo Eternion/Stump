@@ -472,6 +472,7 @@
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ShieldItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\SpawnTaxCollectorItem.cs" />
     <Compile Include="Game\Items\Player\Custom\TokenScroll.cs" />
     <Compile Include="Game\Items\Player\DefaultItem.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\BoundLivingObjectItem.cs" />
