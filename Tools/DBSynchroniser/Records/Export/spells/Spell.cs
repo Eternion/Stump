@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Spell", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Spells";
+        public const String MODULE = "Spells";
         public int id;
         [I18NField]
         public uint nameId;
@@ -31,6 +31,7 @@ namespace DBSynchroniser.Records
         public int iconId;
         public List<uint> spellLevels;
         public Boolean useParamCache = true;
+        public Boolean verbose_cast;
 
         int ID2ORecord.Id
         {
@@ -139,6 +140,13 @@ namespace DBSynchroniser.Records
             set { useParamCache = value; }
         }
 
+        [D2OIgnore]
+        public Boolean Verbose_cast
+        {
+            get { return verbose_cast; }
+            set { verbose_cast = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Spell)obj;
@@ -154,6 +162,7 @@ namespace DBSynchroniser.Records
             IconId = castedObj.iconId;
             SpellLevels = castedObj.spellLevels;
             UseParamCache = castedObj.useParamCache;
+            Verbose_cast = castedObj.verbose_cast;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -170,6 +179,7 @@ namespace DBSynchroniser.Records
             obj.iconId = IconId;
             obj.spellLevels = SpellLevels;
             obj.useParamCache = UseParamCache;
+            obj.verbose_cast = Verbose_cast;
             return obj;
         }
         

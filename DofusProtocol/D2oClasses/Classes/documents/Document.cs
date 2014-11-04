@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -31,44 +31,44 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint TypeId
         {
-            get { return typeId; }
-            set { typeId = value; }
+            get { return this.typeId; }
+            set { this.typeId = value; }
         }
         [D2OIgnore]
         public uint TitleId
         {
-            get { return titleId; }
-            set { titleId = value; }
+            get { return this.titleId; }
+            set { this.titleId = value; }
         }
         [D2OIgnore]
         public uint AuthorId
         {
-            get { return authorId; }
-            set { authorId = value; }
+            get { return this.authorId; }
+            set { this.authorId = value; }
         }
         [D2OIgnore]
         public uint SubTitleId
         {
-            get { return subTitleId; }
-            set { subTitleId = value; }
+            get { return this.subTitleId; }
+            set { this.subTitleId = value; }
         }
         [D2OIgnore]
         public uint ContentId
         {
-            get { return contentId; }
-            set { contentId = value; }
+            get { return this.contentId; }
+            set { this.contentId = value; }
         }
         [D2OIgnore]
         public String ContentCSS
         {
-            get { return contentCSS; }
-            set { contentCSS = value; }
+            get { return this.contentCSS; }
+            set { this.contentCSS = value; }
         }
     }
 }

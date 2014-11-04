@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:43
+// Generated on 10/28/2014 16:36:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +19,7 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte partyType;
+        public string partyName;
         public int fromId;
         public string fromName;
         public int leaderId;
@@ -29,10 +30,11 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyInvitationDetailsMessage(int partyId, sbyte partyType, int fromId, string fromName, int leaderId, IEnumerable<Types.PartyInvitationMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests)
+        public PartyInvitationDetailsMessage(int partyId, sbyte partyType, string partyName, int fromId, string fromName, int leaderId, IEnumerable<Types.PartyInvitationMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests)
          : base(partyId)
         {
             this.partyType = partyType;
+            this.partyName = partyName;
             this.fromId = fromId;
             this.fromName = fromName;
             this.leaderId = leaderId;
@@ -44,6 +46,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteSByte(partyType);
+            writer.WriteUTF(partyName);
             writer.WriteInt(fromId);
             writer.WriteUTF(fromName);
             writer.WriteInt(leaderId);
@@ -81,6 +84,7 @@ namespace Stump.DofusProtocol.Messages
             partyType = reader.ReadSByte();
             if (partyType < 0)
                 throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
+            partyName = reader.ReadUTF();
             fromId = reader.ReadInt();
             if (fromId < 0)
                 throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0");
@@ -108,7 +112,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(fromName) + sizeof(int) + sizeof(short) + members.Sum(x => x.GetSerializationSize()) + sizeof(short) + guests.Sum(x => x.GetSerializationSize());
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(partyName) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(fromName) + sizeof(int) + sizeof(short) + members.Sum(x => x.GetSerializationSize()) + sizeof(short) + guests.Sum(x => x.GetSerializationSize());
         }
         
     }

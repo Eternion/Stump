@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:38
+// Generated on 10/28/2014 16:36:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,33 +20,27 @@ namespace Stump.DofusProtocol.Messages
         
         public short challengeId;
         public int targetId;
-        public int baseXpBonus;
-        public int extraXpBonus;
-        public int baseDropBonus;
-        public int extraDropBonus;
+        public int xpBonus;
+        public int dropBonus;
         
         public ChallengeInfoMessage()
         {
         }
         
-        public ChallengeInfoMessage(short challengeId, int targetId, int baseXpBonus, int extraXpBonus, int baseDropBonus, int extraDropBonus)
+        public ChallengeInfoMessage(short challengeId, int targetId, int xpBonus, int dropBonus)
         {
             this.challengeId = challengeId;
             this.targetId = targetId;
-            this.baseXpBonus = baseXpBonus;
-            this.extraXpBonus = extraXpBonus;
-            this.baseDropBonus = baseDropBonus;
-            this.extraDropBonus = extraDropBonus;
+            this.xpBonus = xpBonus;
+            this.dropBonus = dropBonus;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteShort(challengeId);
             writer.WriteInt(targetId);
-            writer.WriteInt(baseXpBonus);
-            writer.WriteInt(extraXpBonus);
-            writer.WriteInt(baseDropBonus);
-            writer.WriteInt(extraDropBonus);
+            writer.WriteInt(xpBonus);
+            writer.WriteInt(dropBonus);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -55,23 +49,17 @@ namespace Stump.DofusProtocol.Messages
             if (challengeId < 0)
                 throw new Exception("Forbidden value on challengeId = " + challengeId + ", it doesn't respect the following condition : challengeId < 0");
             targetId = reader.ReadInt();
-            baseXpBonus = reader.ReadInt();
-            if (baseXpBonus < 0)
-                throw new Exception("Forbidden value on baseXpBonus = " + baseXpBonus + ", it doesn't respect the following condition : baseXpBonus < 0");
-            extraXpBonus = reader.ReadInt();
-            if (extraXpBonus < 0)
-                throw new Exception("Forbidden value on extraXpBonus = " + extraXpBonus + ", it doesn't respect the following condition : extraXpBonus < 0");
-            baseDropBonus = reader.ReadInt();
-            if (baseDropBonus < 0)
-                throw new Exception("Forbidden value on baseDropBonus = " + baseDropBonus + ", it doesn't respect the following condition : baseDropBonus < 0");
-            extraDropBonus = reader.ReadInt();
-            if (extraDropBonus < 0)
-                throw new Exception("Forbidden value on extraDropBonus = " + extraDropBonus + ", it doesn't respect the following condition : extraDropBonus < 0");
+            xpBonus = reader.ReadInt();
+            if (xpBonus < 0)
+                throw new Exception("Forbidden value on xpBonus = " + xpBonus + ", it doesn't respect the following condition : xpBonus < 0");
+            dropBonus = reader.ReadInt();
+            if (dropBonus < 0)
+                throw new Exception("Forbidden value on dropBonus = " + dropBonus + ", it doesn't respect the following condition : dropBonus < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int);
+            return sizeof(short) + sizeof(int) + sizeof(int) + sizeof(int);
         }
         
     }

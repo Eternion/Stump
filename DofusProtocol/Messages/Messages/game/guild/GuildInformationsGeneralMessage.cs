@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:47
+// Generated on 10/28/2014 16:36:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,12 +25,14 @@ namespace Stump.DofusProtocol.Messages
         public double experience;
         public double expNextLevelFloor;
         public int creationDate;
+        public short nbTotalMembers;
+        public short nbConnectedMembers;
         
         public GuildInformationsGeneralMessage()
         {
         }
         
-        public GuildInformationsGeneralMessage(bool enabled, bool abandonnedPaddock, byte level, double expLevelFloor, double experience, double expNextLevelFloor, int creationDate)
+        public GuildInformationsGeneralMessage(bool enabled, bool abandonnedPaddock, byte level, double expLevelFloor, double experience, double expNextLevelFloor, int creationDate, short nbTotalMembers, short nbConnectedMembers)
         {
             this.enabled = enabled;
             this.abandonnedPaddock = abandonnedPaddock;
@@ -39,6 +41,8 @@ namespace Stump.DofusProtocol.Messages
             this.experience = experience;
             this.expNextLevelFloor = expNextLevelFloor;
             this.creationDate = creationDate;
+            this.nbTotalMembers = nbTotalMembers;
+            this.nbConnectedMembers = nbConnectedMembers;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -52,6 +56,8 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteDouble(experience);
             writer.WriteDouble(expNextLevelFloor);
             writer.WriteInt(creationDate);
+            writer.WriteShort(nbTotalMembers);
+            writer.WriteShort(nbConnectedMembers);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -63,22 +69,28 @@ namespace Stump.DofusProtocol.Messages
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
             expLevelFloor = reader.ReadDouble();
-            if (expLevelFloor < 0)
-                throw new Exception("Forbidden value on expLevelFloor = " + expLevelFloor + ", it doesn't respect the following condition : expLevelFloor < 0");
+            if (expLevelFloor < 0 || expLevelFloor > 9.007199254740992E15)
+                throw new Exception("Forbidden value on expLevelFloor = " + expLevelFloor + ", it doesn't respect the following condition : expLevelFloor < 0 || expLevelFloor > 9.007199254740992E15");
             experience = reader.ReadDouble();
-            if (experience < 0)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0");
+            if (experience < 0 || experience > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
             expNextLevelFloor = reader.ReadDouble();
-            if (expNextLevelFloor < 0)
-                throw new Exception("Forbidden value on expNextLevelFloor = " + expNextLevelFloor + ", it doesn't respect the following condition : expNextLevelFloor < 0");
+            if (expNextLevelFloor < 0 || expNextLevelFloor > 9.007199254740992E15)
+                throw new Exception("Forbidden value on expNextLevelFloor = " + expNextLevelFloor + ", it doesn't respect the following condition : expNextLevelFloor < 0 || expNextLevelFloor > 9.007199254740992E15");
             creationDate = reader.ReadInt();
             if (creationDate < 0)
                 throw new Exception("Forbidden value on creationDate = " + creationDate + ", it doesn't respect the following condition : creationDate < 0");
+            nbTotalMembers = reader.ReadShort();
+            if (nbTotalMembers < 0)
+                throw new Exception("Forbidden value on nbTotalMembers = " + nbTotalMembers + ", it doesn't respect the following condition : nbTotalMembers < 0");
+            nbConnectedMembers = reader.ReadShort();
+            if (nbConnectedMembers < 0)
+                throw new Exception("Forbidden value on nbConnectedMembers = " + nbConnectedMembers + ", it doesn't respect the following condition : nbConnectedMembers < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(bool) + 0 + sizeof(byte) + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int);
+            return sizeof(bool) + 0 + sizeof(byte) + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int) + sizeof(short) + sizeof(short);
         }
         
     }

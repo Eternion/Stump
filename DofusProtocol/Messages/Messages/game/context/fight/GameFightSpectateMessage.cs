@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:37
+// Generated on 10/28/2014 16:36:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +21,18 @@ namespace Stump.DofusProtocol.Messages
         public IEnumerable<Types.FightDispellableEffectExtendedInformations> effects;
         public IEnumerable<Types.GameActionMark> marks;
         public short gameTurn;
+        public int fightStart;
         
         public GameFightSpectateMessage()
         {
         }
         
-        public GameFightSpectateMessage(IEnumerable<Types.FightDispellableEffectExtendedInformations> effects, IEnumerable<Types.GameActionMark> marks, short gameTurn)
+        public GameFightSpectateMessage(IEnumerable<Types.FightDispellableEffectExtendedInformations> effects, IEnumerable<Types.GameActionMark> marks, short gameTurn, int fightStart)
         {
             this.effects = effects;
             this.marks = marks;
             this.gameTurn = gameTurn;
+            this.fightStart = fightStart;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -62,6 +64,7 @@ namespace Stump.DofusProtocol.Messages
             writer.Seek((int)marks_after);
 
             writer.WriteShort(gameTurn);
+            writer.WriteInt(fightStart);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -85,11 +88,14 @@ namespace Stump.DofusProtocol.Messages
             gameTurn = reader.ReadShort();
             if (gameTurn < 0)
                 throw new Exception("Forbidden value on gameTurn = " + gameTurn + ", it doesn't respect the following condition : gameTurn < 0");
+            fightStart = reader.ReadInt();
+            if (fightStart < 0)
+                throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + effects.Sum(x => x.GetSerializationSize()) + sizeof(short) + marks.Sum(x => x.GetSerializationSize()) + sizeof(short);
+            return sizeof(short) + effects.Sum(x => x.GetSerializationSize()) + sizeof(short) + marks.Sum(x => x.GetSerializationSize()) + sizeof(short) + sizeof(int);
         }
         
     }

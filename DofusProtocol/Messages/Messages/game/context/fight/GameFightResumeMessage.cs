@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:37
+// Generated on 10/28/2014 16:36:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +26,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameFightResumeMessage(IEnumerable<Types.FightDispellableEffectExtendedInformations> effects, IEnumerable<Types.GameActionMark> marks, short gameTurn, IEnumerable<Types.GameFightSpellCooldown> spellCooldowns, sbyte summonCount, sbyte bombCount)
-         : base(effects, marks, gameTurn)
+        public GameFightResumeMessage(IEnumerable<Types.FightDispellableEffectExtendedInformations> effects, IEnumerable<Types.GameActionMark> marks, short gameTurn, int fightStart, IEnumerable<Types.GameFightSpellCooldown> spellCooldowns, sbyte summonCount, sbyte bombCount)
+         : base(effects, marks, gameTurn, fightStart)
         {
             this.spellCooldowns = spellCooldowns;
             this.summonCount = summonCount;

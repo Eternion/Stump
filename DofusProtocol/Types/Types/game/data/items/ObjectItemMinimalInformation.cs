@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:01
+// Generated on 10/28/2014 16:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,19 +18,15 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short objectGID;
-        public short powerRate;
-        public bool overMax;
         public IEnumerable<Types.ObjectEffect> effects;
         
         public ObjectItemMinimalInformation()
         {
         }
         
-        public ObjectItemMinimalInformation(short objectGID, short powerRate, bool overMax, IEnumerable<Types.ObjectEffect> effects)
+        public ObjectItemMinimalInformation(short objectGID, IEnumerable<Types.ObjectEffect> effects)
         {
             this.objectGID = objectGID;
-            this.powerRate = powerRate;
-            this.overMax = overMax;
             this.effects = effects;
         }
         
@@ -38,8 +34,6 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteShort(objectGID);
-            writer.WriteShort(powerRate);
-            writer.WriteBoolean(overMax);
             var effects_before = writer.Position;
             var effects_count = 0;
             writer.WriteUShort(0);
@@ -62,8 +56,6 @@ namespace Stump.DofusProtocol.Types
             objectGID = reader.ReadShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
-            powerRate = reader.ReadShort();
-            overMax = reader.ReadBoolean();
             var limit = reader.ReadUShort();
             var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
@@ -76,7 +68,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(bool) + sizeof(short) + effects.Sum(x => sizeof(short) + x.GetSerializationSize());
+            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + effects.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

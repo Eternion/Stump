@@ -98,15 +98,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, source, reduction);
         }
 
-        public event Action<FightActor, FightActor, int> DamageReflected;
+        public event Action<FightActor, FightActor> DamageReflected;
 
-        protected internal virtual void OnDamageReflected(FightActor target, int reflected)
+        protected internal virtual void OnDamageReflected(FightActor target)
         {
-            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, (int)reflected);
+            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target);
 
             var handler = DamageReflected;
             if (handler != null)
-                handler(this, target, reflected);
+                handler(this, target);
         }
 
         public event Action<FightActor> FighterLeft;
@@ -807,7 +807,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     if (reflected > 0)
                     {
                         damage.Source.InflictDirectDamage(reflected, this);
-                        OnDamageReflected(damage.Source, reflected);
+                        OnDamageReflected(damage.Source);
                     }
                 }
 
@@ -1991,8 +1991,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
                 (sbyte)Team.Id,
+                0,
                 IsAlive(),
                 GetGameFightMinimalStats(client));
+        }
+
+        public virtual GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
+        {
+            return new GameFightFighterLightInformations(
+                true,
+                IsAlive(),
+                Id,
+                0,
+                Level,
+                (sbyte)BreedEnum.UNDEFINED);
         }
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)

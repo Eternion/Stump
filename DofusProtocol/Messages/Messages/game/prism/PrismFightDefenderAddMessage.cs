@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:55
+// Generated on 10/28/2014 16:37:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,39 +18,44 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public short subAreaId;
         public double fightId;
-        public Types.CharacterMinimalPlusLookAndGradeInformations fighterMovementInformations;
-        public bool inMain;
+        public Types.CharacterMinimalPlusLookInformations defender;
         
         public PrismFightDefenderAddMessage()
         {
         }
         
-        public PrismFightDefenderAddMessage(double fightId, Types.CharacterMinimalPlusLookAndGradeInformations fighterMovementInformations, bool inMain)
+        public PrismFightDefenderAddMessage(short subAreaId, double fightId, Types.CharacterMinimalPlusLookInformations defender)
         {
+            this.subAreaId = subAreaId;
             this.fightId = fightId;
-            this.fighterMovementInformations = fighterMovementInformations;
-            this.inMain = inMain;
+            this.defender = defender;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteShort(subAreaId);
             writer.WriteDouble(fightId);
-            fighterMovementInformations.Serialize(writer);
-            writer.WriteBoolean(inMain);
+            writer.WriteShort(defender.TypeId);
+            defender.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            subAreaId = reader.ReadShort();
+            if (subAreaId < 0)
+                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             fightId = reader.ReadDouble();
-            fighterMovementInformations = new Types.CharacterMinimalPlusLookAndGradeInformations();
-            fighterMovementInformations.Deserialize(reader);
-            inMain = reader.ReadBoolean();
+            if (fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15");
+            defender = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
+            defender.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(double) + fighterMovementInformations.GetSerializationSize() + sizeof(bool);
+            return sizeof(short) + sizeof(double) + sizeof(short) + defender.GetSerializationSize();
         }
         
     }

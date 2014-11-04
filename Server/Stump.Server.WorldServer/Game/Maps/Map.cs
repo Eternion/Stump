@@ -1553,7 +1553,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             return new MapComplementaryInformationsWithCoordsMessage(
                 (short)SubArea.Id,
                 Id,
-                0,
                 new HouseInformations[0],
                 m_actors.Where(entry => entry.CanBeSee(character)).Select(entry => entry.GetGameContextActorInformations(character) as GameRolePlayActorInformations),
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),

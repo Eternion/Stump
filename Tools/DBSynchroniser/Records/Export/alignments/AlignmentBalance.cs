@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:46
+// Generated on 10/26/2014 23:31:12
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("AlignmentBalance", "com.ankamagames.dofus.datacenter.alignments")]
     public class AlignmentBalanceRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "AlignmentBalance";
+        public const String MODULE = "AlignmentBalance";
         public int id;
         public int startValue;
         public int endValue;

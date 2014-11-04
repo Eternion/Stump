@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 10/28/2014 16:38:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte teamId;
+        public uint wave;
         public bool alive;
         public Types.GameFightMinimalStats stats;
         
@@ -25,10 +26,11 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, bool alive, Types.GameFightMinimalStats stats)
+        public GameFightFighterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, uint wave, bool alive, Types.GameFightMinimalStats stats)
          : base(contextualId, look, disposition)
         {
             this.teamId = teamId;
+            this.wave = wave;
             this.alive = alive;
             this.stats = stats;
         }
@@ -37,6 +39,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteSByte(teamId);
+            writer.WriteUInt(wave);
             writer.WriteBoolean(alive);
             writer.WriteShort(stats.TypeId);
             stats.Serialize(writer);
@@ -48,6 +51,9 @@ namespace Stump.DofusProtocol.Types
             teamId = reader.ReadSByte();
             if (teamId < 0)
                 throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
+            wave = reader.ReadUInt();
+            if (wave < 0 || wave > 4.294967295E9)
+                throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0 || wave > 4.294967295E9");
             alive = reader.ReadBoolean();
             stats = Types.ProtocolTypeManager.GetInstance<Types.GameFightMinimalStats>(reader.ReadShort());
             stats.Deserialize(reader);
@@ -55,7 +61,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + stats.GetSerializationSize();
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(uint) + sizeof(bool) + sizeof(short) + stats.GetSerializationSize();
         }
         
     }

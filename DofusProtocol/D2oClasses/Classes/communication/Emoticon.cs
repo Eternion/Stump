@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Emoticon : IDataObject, IIndexedData
     {
-        private const String MODULE = "Emoticons";
+        public const String MODULE = "Emoticons";
         public uint id;
         [I18NField]
         public uint nameId;
@@ -34,74 +34,74 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint ShortcutId
         {
-            get { return shortcutId; }
-            set { shortcutId = value; }
+            get { return this.shortcutId; }
+            set { this.shortcutId = value; }
         }
         [D2OIgnore]
         public uint Order
         {
-            get { return order; }
-            set { order = value; }
+            get { return this.order; }
+            set { this.order = value; }
         }
         [D2OIgnore]
         public String DefaultAnim
         {
-            get { return defaultAnim; }
-            set { defaultAnim = value; }
+            get { return this.defaultAnim; }
+            set { this.defaultAnim = value; }
         }
         [D2OIgnore]
         public Boolean Persistancy
         {
-            get { return persistancy; }
-            set { persistancy = value; }
+            get { return this.persistancy; }
+            set { this.persistancy = value; }
         }
         [D2OIgnore]
         public Boolean Eight_directions
         {
-            get { return eight_directions; }
-            set { eight_directions = value; }
+            get { return this.eight_directions; }
+            set { this.eight_directions = value; }
         }
         [D2OIgnore]
         public Boolean Aura
         {
-            get { return aura; }
-            set { aura = value; }
+            get { return this.aura; }
+            set { this.aura = value; }
         }
         [D2OIgnore]
         public List<String> Anims
         {
-            get { return anims; }
-            set { anims = value; }
+            get { return this.anims; }
+            set { this.anims = value; }
         }
         [D2OIgnore]
         public uint Cooldown
         {
-            get { return cooldown; }
-            set { cooldown = value; }
+            get { return this.cooldown; }
+            set { this.cooldown = value; }
         }
         [D2OIgnore]
         public uint Duration
         {
-            get { return duration; }
-            set { duration = value; }
+            get { return this.duration; }
+            set { this.duration = value; }
         }
         [D2OIgnore]
         public uint Weight
         {
-            get { return weight; }
-            set { weight = value; }
+            get { return this.weight; }
+            set { this.weight = value; }
         }
     }
 }

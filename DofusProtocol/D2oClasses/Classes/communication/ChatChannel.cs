@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class ChatChannel : IDataObject, IIndexedData
     {
-        private const String MODULE = "ChatChannels";
+        public const String MODULE = "ChatChannels";
         public uint id;
         [I18NField]
         public uint nameId;
@@ -28,44 +28,44 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public String Shortcut
         {
-            get { return shortcut; }
-            set { shortcut = value; }
+            get { return this.shortcut; }
+            set { this.shortcut = value; }
         }
         [D2OIgnore]
         public String ShortcutKey
         {
-            get { return shortcutKey; }
-            set { shortcutKey = value; }
+            get { return this.shortcutKey; }
+            set { this.shortcutKey = value; }
         }
         [D2OIgnore]
         public Boolean IsPrivate
         {
-            get { return isPrivate; }
-            set { isPrivate = value; }
+            get { return this.isPrivate; }
+            set { this.isPrivate = value; }
         }
         [D2OIgnore]
         public Boolean AllowObjects
         {
-            get { return allowObjects; }
-            set { allowObjects = value; }
+            get { return this.allowObjects; }
+            set { this.allowObjects = value; }
         }
     }
 }

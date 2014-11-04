@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -16,7 +16,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public const int AMBIENT_TYPE_AMBIENT = 2;
         public const int AMBIENT_TYPE_FIGHT = 3;
         public const int AMBIENT_TYPE_BOSS = 4;
-        private const String MODULE = "AmbientSounds";
+        public const String MODULE = "AmbientSounds";
         public int id;
         public uint volume;
         public int criterionId;
@@ -31,44 +31,44 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint Volume
         {
-            get { return volume; }
-            set { volume = value; }
+            get { return this.volume; }
+            set { this.volume = value; }
         }
         [D2OIgnore]
         public int CriterionId
         {
-            get { return criterionId; }
-            set { criterionId = value; }
+            get { return this.criterionId; }
+            set { this.criterionId = value; }
         }
         [D2OIgnore]
         public uint SilenceMin
         {
-            get { return silenceMin; }
-            set { silenceMin = value; }
+            get { return this.silenceMin; }
+            set { this.silenceMin = value; }
         }
         [D2OIgnore]
         public uint SilenceMax
         {
-            get { return silenceMax; }
-            set { silenceMax = value; }
+            get { return this.silenceMax; }
+            set { this.silenceMax = value; }
         }
         [D2OIgnore]
         public int Channel
         {
-            get { return channel; }
-            set { channel = value; }
+            get { return this.channel; }
+            set { this.channel = value; }
         }
         [D2OIgnore]
         public int Type_id
         {
-            get { return type_id; }
-            set { type_id = value; }
+            get { return this.type_id; }
+            set { this.type_id = value; }
         }
     }
 }

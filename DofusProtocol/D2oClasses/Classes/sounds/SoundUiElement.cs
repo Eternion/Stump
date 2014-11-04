@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,12 +12,12 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class SoundUiElement : IDataObject, IIndexedData
     {
+        public String MODULE = "SoundUiElement";
         public uint id;
         public String name;
         public uint hookId;
         public String file;
         public uint volume;
-        public String MODULE = "SoundUiElement";
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -25,32 +25,32 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public String Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return this.name; }
+            set { this.name = value; }
         }
         [D2OIgnore]
         public uint HookId
         {
-            get { return hookId; }
-            set { hookId = value; }
+            get { return this.hookId; }
+            set { this.hookId = value; }
         }
         [D2OIgnore]
         public String File
         {
-            get { return file; }
-            set { file = value; }
+            get { return this.file; }
+            set { this.file = value; }
         }
         [D2OIgnore]
         public uint Volume
         {
-            get { return volume; }
-            set { volume = value; }
+            get { return this.volume; }
+            set { this.volume = value; }
         }
     }
 }

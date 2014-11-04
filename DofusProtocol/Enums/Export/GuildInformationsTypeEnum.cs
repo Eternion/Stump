@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:40
+
+// Generated on 10/26/2014 23:03:56
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +13,8 @@ namespace Stump.DofusProtocol.Enums
         INFO_BOOSTS = 3,
         INFO_PADDOCKS = 4,
         INFO_HOUSES = 5,
-        INFO_TAX_COLLECTOR = 6,
-        INFO_TAX_COLLECTOR_LEAVE = 7,
+        INFO_TAX_COLLECTOR_GUILD_ONLY = 6,
+        INFO_TAX_COLLECTOR_ALLIANCE = 7,
+        INFO_TAX_COLLECTOR_LEAVE = 8,
     }
 }

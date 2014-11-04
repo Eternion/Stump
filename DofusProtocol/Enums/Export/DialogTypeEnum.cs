@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:40
+
+// Generated on 10/26/2014 23:03:56
 using System;
 using System.Collections.Generic;
 
@@ -19,5 +20,8 @@ namespace Stump.DofusProtocol.Enums
         DIALOG_SPELL_FORGET = 9,
         DIALOG_TELEPORTER = 10,
         DIALOG_EXCHANGE = 11,
+        DIALOG_ALLIANCE_INVITATION = 12,
+        DIALOG_ALLIANCE_CREATE = 13,
+        DIALOG_ALLIANCE_RENAME = 14,
     }
 }

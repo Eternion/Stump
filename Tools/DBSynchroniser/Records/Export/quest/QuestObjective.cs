@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +17,14 @@ namespace DBSynchroniser.Records
     [D2OClass("QuestObjective", "com.ankamagames.dofus.datacenter.quest")]
     public class QuestObjectiveRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "QuestObjectives";
+        public const String MODULE = "QuestObjectives";
         public uint id;
         public uint stepId;
         public uint typeId;
         public int dialogId;
         public List<uint> parameters;
         public Point coords;
+        public int mapId;
 
         int ID2ORecord.Id
         {
@@ -112,6 +113,13 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        public int MapId
+        {
+            get { return mapId; }
+            set { mapId = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (QuestObjective)obj;
@@ -122,6 +130,7 @@ namespace DBSynchroniser.Records
             DialogId = castedObj.dialogId;
             Parameters = castedObj.parameters;
             Coords = castedObj.coords;
+            MapId = castedObj.mapId;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -133,6 +142,7 @@ namespace DBSynchroniser.Records
             obj.dialogId = DialogId;
             obj.parameters = Parameters;
             obj.coords = Coords;
+            obj.mapId = MapId;
             return obj;
         }
         

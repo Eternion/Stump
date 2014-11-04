@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:33
+// Generated on 10/28/2014 16:36:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,25 +19,23 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte type;
-        public short worldX;
-        public short worldY;
+        public Types.MapCoordinates coords;
         
         public CompassUpdateMessage()
         {
         }
         
-        public CompassUpdateMessage(sbyte type, short worldX, short worldY)
+        public CompassUpdateMessage(sbyte type, Types.MapCoordinates coords)
         {
             this.type = type;
-            this.worldX = worldX;
-            this.worldY = worldY;
+            this.coords = coords;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(type);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
+            writer.WriteShort(coords.TypeId);
+            coords.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -45,17 +43,13 @@ namespace Stump.DofusProtocol.Messages
             type = reader.ReadSByte();
             if (type < 0)
                 throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
+            coords = Types.ProtocolTypeManager.GetInstance<Types.MapCoordinates>(reader.ReadShort());
+            coords.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(short) + sizeof(short);
+            return sizeof(sbyte) + sizeof(short) + coords.GetSerializationSize();
         }
         
     }

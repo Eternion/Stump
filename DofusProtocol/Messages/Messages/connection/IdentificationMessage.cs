@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:30
+// Generated on 10/28/2014 16:36:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,12 +25,13 @@ namespace Stump.DofusProtocol.Messages
         public string lang;
         public IEnumerable<sbyte> credentials;
         public short serverId;
+        public double sessionOptionalSalt;
         
         public IdentificationMessage()
         {
         }
         
-        public IdentificationMessage(bool autoconnect, bool useCertificate, bool useLoginToken, Types.VersionExtended version, string lang, IEnumerable<sbyte> credentials, short serverId)
+        public IdentificationMessage(bool autoconnect, bool useCertificate, bool useLoginToken, Types.VersionExtended version, string lang, IEnumerable<sbyte> credentials, short serverId, double sessionOptionalSalt)
         {
             this.autoconnect = autoconnect;
             this.useCertificate = useCertificate;
@@ -39,6 +40,7 @@ namespace Stump.DofusProtocol.Messages
             this.lang = lang;
             this.credentials = credentials;
             this.serverId = serverId;
+            this.sessionOptionalSalt = sessionOptionalSalt;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -64,6 +66,7 @@ namespace Stump.DofusProtocol.Messages
             writer.Seek((int)credentials_after);
 
             writer.WriteShort(serverId);
+            writer.WriteDouble(sessionOptionalSalt);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -83,11 +86,14 @@ namespace Stump.DofusProtocol.Messages
             }
             credentials = credentials_;
             serverId = reader.ReadShort();
+            sessionOptionalSalt = reader.ReadDouble();
+            if (sessionOptionalSalt < -9.007199254740992E15 || sessionOptionalSalt > 9.007199254740992E15)
+                throw new Exception("Forbidden value on sessionOptionalSalt = " + sessionOptionalSalt + ", it doesn't respect the following condition : sessionOptionalSalt < -9.007199254740992E15 || sessionOptionalSalt > 9.007199254740992E15");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(bool) + 0 + 0 + version.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(lang) + sizeof(short) + credentials.Sum(x => sizeof(sbyte)) + sizeof(short);
+            return sizeof(bool) + 0 + 0 + version.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(lang) + sizeof(short) + credentials.Sum(x => sizeof(sbyte)) + sizeof(short) + sizeof(double);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 10/26/2014 23:27:54
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,11 +12,12 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class SuperArea : IDataObject, IIndexedData
     {
-        private const String MODULE = "SuperAreas";
+        public const String MODULE = "SuperAreas";
         public int id;
         [I18NField]
         public uint nameId;
         public uint worldmapId;
+        public Boolean hasWorldMap;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -24,20 +25,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint WorldmapId
         {
-            get { return worldmapId; }
-            set { worldmapId = value; }
+            get { return this.worldmapId; }
+            set { this.worldmapId = value; }
+        }
+        [D2OIgnore]
+        public Boolean HasWorldMap
+        {
+            get { return this.hasWorldMap; }
+            set { this.hasWorldMap = value; }
         }
     }
 }

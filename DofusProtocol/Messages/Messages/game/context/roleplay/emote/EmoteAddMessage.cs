@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:40
+// Generated on 10/28/2014 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,32 +18,32 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public sbyte emoteId;
+        public byte emoteId;
         
         public EmoteAddMessage()
         {
         }
         
-        public EmoteAddMessage(sbyte emoteId)
+        public EmoteAddMessage(byte emoteId)
         {
             this.emoteId = emoteId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteSByte(emoteId);
+            writer.WriteByte(emoteId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            emoteId = reader.ReadSByte();
-            if (emoteId < 0)
-                throw new Exception("Forbidden value on emoteId = " + emoteId + ", it doesn't respect the following condition : emoteId < 0");
+            emoteId = reader.ReadByte();
+            if (emoteId < 0 || emoteId > 255)
+                throw new Exception("Forbidden value on emoteId = " + emoteId + ", it doesn't respect the following condition : emoteId < 0 || emoteId > 255");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte);
+            return sizeof(byte);
         }
         
     }

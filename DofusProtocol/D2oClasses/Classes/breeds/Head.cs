@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,12 +12,13 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Head : IDataObject, IIndexedData
     {
-        private const String MODULE = "Heads";
+        public const String MODULE = "Heads";
         public int id;
         public String skins;
         public String assetId;
         public uint breed;
         public uint gender;
+        public String label;
         public uint order;
         int IIndexedData.Id
         {
@@ -26,38 +27,44 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public String Skins
         {
-            get { return skins; }
-            set { skins = value; }
+            get { return this.skins; }
+            set { this.skins = value; }
         }
         [D2OIgnore]
         public String AssetId
         {
-            get { return assetId; }
-            set { assetId = value; }
+            get { return this.assetId; }
+            set { this.assetId = value; }
         }
         [D2OIgnore]
         public uint Breed
         {
-            get { return breed; }
-            set { breed = value; }
+            get { return this.breed; }
+            set { this.breed = value; }
         }
         [D2OIgnore]
         public uint Gender
         {
-            get { return gender; }
-            set { gender = value; }
+            get { return this.gender; }
+            set { this.gender = value; }
+        }
+        [D2OIgnore]
+        public String Label
+        {
+            get { return this.label; }
+            set { this.label = value; }
         }
         [D2OIgnore]
         public uint Order
         {
-            get { return order; }
-            set { order = value; }
+            get { return this.order; }
+            set { this.order = value; }
         }
     }
 }

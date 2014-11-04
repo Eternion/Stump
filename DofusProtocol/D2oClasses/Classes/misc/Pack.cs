@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:19
+// Generated on 10/26/2014 23:27:47
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Pack : IDataObject, IIndexedData
     {
-        private const String MODULE = "Pack";
+        public const String MODULE = "Pack";
         public int id;
         public String name;
         public Boolean hasSubAreas;
@@ -23,20 +23,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public String Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return this.name; }
+            set { this.name = value; }
         }
         [D2OIgnore]
         public Boolean HasSubAreas
         {
-            get { return hasSubAreas; }
-            set { hasSubAreas = value; }
+            get { return this.hasSubAreas; }
+            set { this.hasSubAreas = value; }
         }
     }
 }

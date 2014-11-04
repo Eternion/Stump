@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public override ObjectItem GetObjectItem()
         {
-            return new ObjectItem(63, (short) Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid, (int) Stack);
+            return new ObjectItem(63, (short) Template.Id, Effects.Select(x => x.GetObjectEffect()), Guid, (int) Stack);
         }
     }
 }

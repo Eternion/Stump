@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
             var values = Effect.GetValues();
 
-            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
+            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, Effect.Id, 0, (short)values[0], (short)values[1], (short)values[2], 0);
         }
 
         public int DispatchDamages(Damage damage)

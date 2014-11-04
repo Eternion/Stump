@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,13 +12,12 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class SpellState : IDataObject, IIndexedData
     {
-        private const String MODULE = "SpellStates";
+        public const String MODULE = "SpellStates";
         public int id;
         [I18NField]
         public uint nameId;
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
-        public Boolean critical;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -26,32 +25,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public Boolean PreventsSpellCast
         {
-            get { return preventsSpellCast; }
-            set { preventsSpellCast = value; }
+            get { return this.preventsSpellCast; }
+            set { this.preventsSpellCast = value; }
         }
         [D2OIgnore]
         public Boolean PreventsFight
         {
-            get { return preventsFight; }
-            set { preventsFight = value; }
-        }
-        [D2OIgnore]
-        public Boolean Critical
-        {
-            get { return critical; }
-            set { critical = value; }
+            get { return this.preventsFight; }
+            set { this.preventsFight = value; }
         }
     }
 }

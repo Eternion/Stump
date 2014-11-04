@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,12 +12,13 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AchievementReward : IDataObject, IIndexedData
     {
-        private const String MODULE = "AchievementRewards";
+        public const String MODULE = "AchievementRewards";
         public uint id;
         public uint achievementId;
         public int levelMin;
         public int levelMax;
-        public List<List<uint>> itemsReward;
+        public List<uint> itemsReward;
+        public List<uint> itemsQuantityReward;
         public List<uint> emotesReward;
         public List<uint> spellsReward;
         public List<uint> titlesReward;
@@ -29,56 +30,62 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint AchievementId
         {
-            get { return achievementId; }
-            set { achievementId = value; }
+            get { return this.achievementId; }
+            set { this.achievementId = value; }
         }
         [D2OIgnore]
         public int LevelMin
         {
-            get { return levelMin; }
-            set { levelMin = value; }
+            get { return this.levelMin; }
+            set { this.levelMin = value; }
         }
         [D2OIgnore]
         public int LevelMax
         {
-            get { return levelMax; }
-            set { levelMax = value; }
+            get { return this.levelMax; }
+            set { this.levelMax = value; }
         }
         [D2OIgnore]
-        public List<List<uint>> ItemsReward
+        public List<uint> ItemsReward
         {
-            get { return itemsReward; }
-            set { itemsReward = value; }
+            get { return this.itemsReward; }
+            set { this.itemsReward = value; }
+        }
+        [D2OIgnore]
+        public List<uint> ItemsQuantityReward
+        {
+            get { return this.itemsQuantityReward; }
+            set { this.itemsQuantityReward = value; }
         }
         [D2OIgnore]
         public List<uint> EmotesReward
         {
-            get { return emotesReward; }
-            set { emotesReward = value; }
+            get { return this.emotesReward; }
+            set { this.emotesReward = value; }
         }
         [D2OIgnore]
         public List<uint> SpellsReward
         {
-            get { return spellsReward; }
-            set { spellsReward = value; }
+            get { return this.spellsReward; }
+            set { this.spellsReward = value; }
         }
         [D2OIgnore]
         public List<uint> TitlesReward
         {
-            get { return titlesReward; }
-            set { titlesReward = value; }
+            get { return this.titlesReward; }
+            set { this.titlesReward = value; }
         }
         [D2OIgnore]
         public List<uint> OrnamentsReward
         {
-            get { return ornamentsReward; }
-            set { ornamentsReward = value; }
+            get { return this.ornamentsReward; }
+            set { this.ornamentsReward = value; }
         }
     }
 }

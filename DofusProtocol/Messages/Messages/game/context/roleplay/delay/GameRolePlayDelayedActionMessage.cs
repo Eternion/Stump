@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:40
+// Generated on 10/28/2014 16:36:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,24 +20,24 @@ namespace Stump.DofusProtocol.Messages
         
         public int delayedCharacterId;
         public sbyte delayTypeId;
-        public int delayDuration;
+        public double delayEndTime;
         
         public GameRolePlayDelayedActionMessage()
         {
         }
         
-        public GameRolePlayDelayedActionMessage(int delayedCharacterId, sbyte delayTypeId, int delayDuration)
+        public GameRolePlayDelayedActionMessage(int delayedCharacterId, sbyte delayTypeId, double delayEndTime)
         {
             this.delayedCharacterId = delayedCharacterId;
             this.delayTypeId = delayTypeId;
-            this.delayDuration = delayDuration;
+            this.delayEndTime = delayEndTime;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(delayedCharacterId);
             writer.WriteSByte(delayTypeId);
-            writer.WriteInt(delayDuration);
+            writer.WriteDouble(delayEndTime);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -46,14 +46,14 @@ namespace Stump.DofusProtocol.Messages
             delayTypeId = reader.ReadSByte();
             if (delayTypeId < 0)
                 throw new Exception("Forbidden value on delayTypeId = " + delayTypeId + ", it doesn't respect the following condition : delayTypeId < 0");
-            delayDuration = reader.ReadInt();
-            if (delayDuration < 0)
-                throw new Exception("Forbidden value on delayDuration = " + delayDuration + ", it doesn't respect the following condition : delayDuration < 0");
+            delayEndTime = reader.ReadDouble();
+            if (delayEndTime < 0 || delayEndTime > 9.007199254740992E15)
+                throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9.007199254740992E15");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(sbyte) + sizeof(int);
+            return sizeof(int) + sizeof(sbyte) + sizeof(double);
         }
         
     }

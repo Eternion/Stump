@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:40
+// Generated on 10/28/2014 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public sbyte emoteId;
+        public byte emoteId;
         public double emoteStartTime;
         
         public EmotePlayAbstractMessage()
         {
         }
         
-        public EmotePlayAbstractMessage(sbyte emoteId, double emoteStartTime)
+        public EmotePlayAbstractMessage(byte emoteId, double emoteStartTime)
         {
             this.emoteId = emoteId;
             this.emoteStartTime = emoteStartTime;
@@ -33,21 +33,23 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteSByte(emoteId);
+            writer.WriteByte(emoteId);
             writer.WriteDouble(emoteStartTime);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            emoteId = reader.ReadSByte();
-            if (emoteId < 0)
-                throw new Exception("Forbidden value on emoteId = " + emoteId + ", it doesn't respect the following condition : emoteId < 0");
+            emoteId = reader.ReadByte();
+            if (emoteId < 0 || emoteId > 255)
+                throw new Exception("Forbidden value on emoteId = " + emoteId + ", it doesn't respect the following condition : emoteId < 0 || emoteId > 255");
             emoteStartTime = reader.ReadDouble();
+            if (emoteStartTime < -9.007199254740992E15 || emoteStartTime > 9.007199254740992E15)
+                throw new Exception("Forbidden value on emoteStartTime = " + emoteStartTime + ", it doesn't respect the following condition : emoteStartTime < -9.007199254740992E15 || emoteStartTime > 9.007199254740992E15");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(double);
+            return sizeof(byte) + sizeof(double);
         }
         
     }

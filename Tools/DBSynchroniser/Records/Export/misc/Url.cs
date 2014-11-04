@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:49
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Url", "com.ankamagames.dofus.datacenter.misc")]
     public class UrlRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Url";
+        public const String MODULE = "Url";
         public int id;
         public int browserId;
         public String url;

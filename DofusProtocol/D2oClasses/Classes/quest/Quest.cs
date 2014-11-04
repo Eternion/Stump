@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Quest : IDataObject, IIndexedData
     {
-        private const String MODULE = "Quests";
+        public const String MODULE = "Quests";
         public uint id;
         [I18NField]
         public uint nameId;
@@ -31,62 +31,62 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public List<uint> StepIds
         {
-            get { return stepIds; }
-            set { stepIds = value; }
+            get { return this.stepIds; }
+            set { this.stepIds = value; }
         }
         [D2OIgnore]
         public uint CategoryId
         {
-            get { return categoryId; }
-            set { categoryId = value; }
+            get { return this.categoryId; }
+            set { this.categoryId = value; }
         }
         [D2OIgnore]
         public Boolean IsRepeatable
         {
-            get { return isRepeatable; }
-            set { isRepeatable = value; }
+            get { return this.isRepeatable; }
+            set { this.isRepeatable = value; }
         }
         [D2OIgnore]
         public uint RepeatType
         {
-            get { return repeatType; }
-            set { repeatType = value; }
+            get { return this.repeatType; }
+            set { this.repeatType = value; }
         }
         [D2OIgnore]
         public uint RepeatLimit
         {
-            get { return repeatLimit; }
-            set { repeatLimit = value; }
+            get { return this.repeatLimit; }
+            set { this.repeatLimit = value; }
         }
         [D2OIgnore]
         public Boolean IsDungeonQuest
         {
-            get { return isDungeonQuest; }
-            set { isDungeonQuest = value; }
+            get { return this.isDungeonQuest; }
+            set { this.isDungeonQuest = value; }
         }
         [D2OIgnore]
         public uint LevelMin
         {
-            get { return levelMin; }
-            set { levelMin = value; }
+            get { return this.levelMin; }
+            set { this.levelMin = value; }
         }
         [D2OIgnore]
         public uint LevelMax
         {
-            get { return levelMax; }
-            set { levelMax = value; }
+            get { return this.levelMax; }
+            set { this.levelMax = value; }
         }
     }
 }

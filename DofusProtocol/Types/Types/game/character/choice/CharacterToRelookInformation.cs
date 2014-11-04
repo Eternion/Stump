@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:58
+// Generated on 10/28/2014 16:38:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
-    public class CharacterToRelookInformation : AbstractCharacterInformation
+    public class CharacterToRelookInformation : AbstractCharacterToRefurbishInformation
     {
         public const short Id = 399;
         public override short TypeId
@@ -17,35 +17,29 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int cosmeticId;
         
         public CharacterToRelookInformation()
         {
         }
         
-        public CharacterToRelookInformation(int id, int cosmeticId)
-         : base(id)
+        public CharacterToRelookInformation(int id, IEnumerable<int> colors, int cosmeticId)
+         : base(id, colors, cosmeticId)
         {
-            this.cosmeticId = cosmeticId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(cosmeticId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            cosmeticId = reader.ReadInt();
-            if (cosmeticId < 0)
-                throw new Exception("Forbidden value on cosmeticId = " + cosmeticId + ", it doesn't respect the following condition : cosmeticId < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int);
+            return base.GetSerializationSize();
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:34
+// Generated on 10/28/2014 16:36:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,17 +46,17 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             experienceCharacter = reader.ReadDouble();
-            if (experienceCharacter < 0)
-                throw new Exception("Forbidden value on experienceCharacter = " + experienceCharacter + ", it doesn't respect the following condition : experienceCharacter < 0");
+            if (experienceCharacter < 0 || experienceCharacter > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceCharacter = " + experienceCharacter + ", it doesn't respect the following condition : experienceCharacter < 0 || experienceCharacter > 9.007199254740992E15");
             experienceMount = reader.ReadDouble();
-            if (experienceMount < 0)
-                throw new Exception("Forbidden value on experienceMount = " + experienceMount + ", it doesn't respect the following condition : experienceMount < 0");
+            if (experienceMount < 0 || experienceMount > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceMount = " + experienceMount + ", it doesn't respect the following condition : experienceMount < 0 || experienceMount > 9.007199254740992E15");
             experienceGuild = reader.ReadDouble();
-            if (experienceGuild < 0)
-                throw new Exception("Forbidden value on experienceGuild = " + experienceGuild + ", it doesn't respect the following condition : experienceGuild < 0");
+            if (experienceGuild < 0 || experienceGuild > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceGuild = " + experienceGuild + ", it doesn't respect the following condition : experienceGuild < 0 || experienceGuild > 9.007199254740992E15");
             experienceIncarnation = reader.ReadDouble();
-            if (experienceIncarnation < 0)
-                throw new Exception("Forbidden value on experienceIncarnation = " + experienceIncarnation + ", it doesn't respect the following condition : experienceIncarnation < 0");
+            if (experienceIncarnation < 0 || experienceIncarnation > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceIncarnation = " + experienceIncarnation + ", it doesn't respect the following condition : experienceIncarnation < 0 || experienceIncarnation > 9.007199254740992E15");
         }
         
         public override int GetSerializationSize()

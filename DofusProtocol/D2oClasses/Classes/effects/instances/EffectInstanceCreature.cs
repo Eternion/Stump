@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -16,8 +16,8 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint MonsterFamilyId
         {
-            get { return monsterFamilyId; }
-            set { monsterFamilyId = value; }
+            get { return this.monsterFamilyId; }
+            set { this.monsterFamilyId = value; }
         }
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:20
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,13 +12,14 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class QuestObjective : IDataObject, IIndexedData
     {
-        private const String MODULE = "QuestObjectives";
+        public const String MODULE = "QuestObjectives";
         public uint id;
         public uint stepId;
         public uint typeId;
         public int dialogId;
         public List<uint> parameters;
         public Point coords;
+        public int mapId;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -26,38 +27,44 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint StepId
         {
-            get { return stepId; }
-            set { stepId = value; }
+            get { return this.stepId; }
+            set { this.stepId = value; }
         }
         [D2OIgnore]
         public uint TypeId
         {
-            get { return typeId; }
-            set { typeId = value; }
+            get { return this.typeId; }
+            set { this.typeId = value; }
         }
         [D2OIgnore]
         public int DialogId
         {
-            get { return dialogId; }
-            set { dialogId = value; }
+            get { return this.dialogId; }
+            set { this.dialogId = value; }
         }
         [D2OIgnore]
         public List<uint> Parameters
         {
-            get { return parameters; }
-            set { parameters = value; }
+            get { return this.parameters; }
+            set { this.parameters = value; }
         }
         [D2OIgnore]
         public Point Coords
         {
-            get { return coords; }
-            set { coords = value; }
+            get { return this.coords; }
+            set { this.coords = value; }
+        }
+        [D2OIgnore]
+        public int MapId
+        {
+            get { return this.mapId; }
+            set { this.mapId = value; }
         }
     }
 }

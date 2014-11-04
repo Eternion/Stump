@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AlignmentTitle : IDataObject, IIndexedData
     {
-        private const String MODULE = "AlignmentTitles";
+        public const String MODULE = "AlignmentTitles";
         public int sideId;
         public List<int> namesId;
         public List<int> shortsId;
@@ -23,20 +23,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int SideId
         {
-            get { return sideId; }
-            set { sideId = value; }
+            get { return this.sideId; }
+            set { this.sideId = value; }
         }
         [D2OIgnore]
         public List<int> NamesId
         {
-            get { return namesId; }
-            set { namesId = value; }
+            get { return this.namesId; }
+            set { this.namesId = value; }
         }
         [D2OIgnore]
         public List<int> ShortsId
         {
-            get { return shortsId; }
-            set { shortsId = value; }
+            get { return this.shortsId; }
+            set { this.shortsId = value; }
         }
     }
 }

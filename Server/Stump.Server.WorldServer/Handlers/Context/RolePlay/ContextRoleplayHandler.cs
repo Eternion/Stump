@@ -64,14 +64,10 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var redFighters = fight.ChallengersTeam.GetAllFighters().ToArray();
             var blueFighters = fight.DefendersTeam.GetAllFighters().ToArray();
 
-            var fighters = redFighters.Concat(blueFighters).ToArray();
-
             client.Send(new MapRunningFightDetailsMessage(
                 fight.Id,
-                fighters.Select(entry => entry.GetMapRunningFighterName()),
-                fighters.Select(entry => (short)entry.Level),
-                (sbyte) redFighters.Length,
-                fighters.Select(entry => entry.IsAlive())));
+                redFighters.Select(entry => entry.GetGameFightFighterLightInformations()),
+                blueFighters.Select(entry => entry.GetGameFightFighterLightInformations())));
         }
 
         public static void SendCurrentMapMessage(IPacketReceiver client, int mapId)

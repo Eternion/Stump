@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,13 +17,12 @@ namespace DBSynchroniser.Records
     [D2OClass("SpellState", "com.ankamagames.dofus.datacenter.spells")]
     public class SpellStateRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "SpellStates";
+        public const String MODULE = "SpellStates";
         public int id;
         [I18NField]
         public uint nameId;
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
-        public Boolean critical;
 
         int ID2ORecord.Id
         {
@@ -61,13 +60,6 @@ namespace DBSynchroniser.Records
             set { preventsFight = value; }
         }
 
-        [D2OIgnore]
-        public Boolean Critical
-        {
-            get { return critical; }
-            set { critical = value; }
-        }
-
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SpellState)obj;
@@ -76,7 +68,6 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
             PreventsSpellCast = castedObj.preventsSpellCast;
             PreventsFight = castedObj.preventsFight;
-            Critical = castedObj.critical;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -86,7 +77,6 @@ namespace DBSynchroniser.Records
             obj.nameId = NameId;
             obj.preventsSpellCast = PreventsSpellCast;
             obj.preventsFight = PreventsFight;
-            obj.critical = Critical;
             return obj;
         }
         

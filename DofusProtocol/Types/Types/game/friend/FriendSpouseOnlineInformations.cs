@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:02
+// Generated on 10/28/2014 16:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,6 @@ namespace Stump.DofusProtocol.Types
         
         public bool inFight;
         public bool followSpouse;
-        public bool pvpEnabled;
         public int mapId;
         public short subAreaId;
         
@@ -27,12 +26,11 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FriendSpouseOnlineInformations(int spouseAccountId, int spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide, bool inFight, bool followSpouse, bool pvpEnabled, int mapId, short subAreaId)
+        public FriendSpouseOnlineInformations(int spouseAccountId, int spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide, bool inFight, bool followSpouse, int mapId, short subAreaId)
          : base(spouseAccountId, spouseId, spouseName, spouseLevel, breed, sex, spouseEntityLook, guildInfo, alignmentSide)
         {
             this.inFight = inFight;
             this.followSpouse = followSpouse;
-            this.pvpEnabled = pvpEnabled;
             this.mapId = mapId;
             this.subAreaId = subAreaId;
         }
@@ -43,7 +41,6 @@ namespace Stump.DofusProtocol.Types
             byte flag1 = 0;
             flag1 = BooleanByteWrapper.SetFlag(flag1, 0, inFight);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, followSpouse);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, pvpEnabled);
             writer.WriteByte(flag1);
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
@@ -55,7 +52,6 @@ namespace Stump.DofusProtocol.Types
             byte flag1 = reader.ReadByte();
             inFight = BooleanByteWrapper.GetFlag(flag1, 0);
             followSpouse = BooleanByteWrapper.GetFlag(flag1, 1);
-            pvpEnabled = BooleanByteWrapper.GetFlag(flag1, 2);
             mapId = reader.ReadInt();
             if (mapId < 0)
                 throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
@@ -66,7 +62,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(bool) + 0 + 0 + sizeof(int) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(bool) + 0 + sizeof(int) + sizeof(short);
         }
         
     }

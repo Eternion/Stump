@@ -245,13 +245,15 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 (sbyte)party.MembersLimit,
                 party.Members.Select(party.GetPartyMemberInformations),
                 party.Guests.Select(party.GetPartyGuestInformations),
-                party.Restricted));
+                party.Restricted,
+                "(no name)"));
         }
 
         public static void SendPartyInvitationMessage(WorldClient client, Game.Parties.Party party, Character from)
         {
             client.Send(new PartyInvitationMessage(party.Id,
                 (sbyte)party.Type,
+                "(no name)",
                 (sbyte)party.MembersLimit,
                 from.Id,
                 from.Name,
@@ -264,6 +266,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             client.Send(new PartyInvitationDetailsMessage(
                 invitation.Party.Id,
                 (sbyte)invitation.Party.Type,
+                "(no name)",
                 invitation.Source.Id,
                 invitation.Source.Name,
                 invitation.Party.Leader.Id,

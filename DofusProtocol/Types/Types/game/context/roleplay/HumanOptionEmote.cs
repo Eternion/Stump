@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 10/28/2014 16:38:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public sbyte emoteId;
+        public byte emoteId;
         public double emoteStartTime;
         
         public HumanOptionEmote()
         {
         }
         
-        public HumanOptionEmote(sbyte emoteId, double emoteStartTime)
+        public HumanOptionEmote(byte emoteId, double emoteStartTime)
         {
             this.emoteId = emoteId;
             this.emoteStartTime = emoteStartTime;
@@ -33,20 +33,24 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteSByte(emoteId);
+            writer.WriteByte(emoteId);
             writer.WriteDouble(emoteStartTime);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            emoteId = reader.ReadSByte();
+            emoteId = reader.ReadByte();
+            if (emoteId < 0 || emoteId > 255)
+                throw new Exception("Forbidden value on emoteId = " + emoteId + ", it doesn't respect the following condition : emoteId < 0 || emoteId > 255");
             emoteStartTime = reader.ReadDouble();
+            if (emoteStartTime < -9.007199254740992E15 || emoteStartTime > 9.007199254740992E15)
+                throw new Exception("Forbidden value on emoteStartTime = " + emoteStartTime + ", it doesn't respect the following condition : emoteStartTime < -9.007199254740992E15 || emoteStartTime > 9.007199254740992E15");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(double);
+            return base.GetSerializationSize() + sizeof(byte) + sizeof(double);
         }
         
     }

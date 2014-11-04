@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:33
+// Generated on 10/28/2014 16:36:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,21 +20,24 @@ namespace Stump.DofusProtocol.Messages
         
         public string lang;
         public sbyte community;
+        public sbyte gameType;
         
         public ServerSettingsMessage()
         {
         }
         
-        public ServerSettingsMessage(string lang, sbyte community)
+        public ServerSettingsMessage(string lang, sbyte community, sbyte gameType)
         {
             this.lang = lang;
             this.community = community;
+            this.gameType = gameType;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteUTF(lang);
             writer.WriteSByte(community);
+            writer.WriteSByte(gameType);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -43,11 +46,14 @@ namespace Stump.DofusProtocol.Messages
             community = reader.ReadSByte();
             if (community < 0)
                 throw new Exception("Forbidden value on community = " + community + ", it doesn't respect the following condition : community < 0");
+            gameType = reader.ReadSByte();
+            if (gameType < 0)
+                throw new Exception("Forbidden value on gameType = " + gameType + ", it doesn't respect the following condition : gameType < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(lang) + sizeof(sbyte);
+            return sizeof(short) + Encoding.UTF8.GetByteCount(lang) + sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

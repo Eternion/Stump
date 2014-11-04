@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:51
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("Area", "com.ankamagames.dofus.datacenter.world")]
     public class AreaRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Areas";
+        public const String MODULE = "Areas";
         public int id;
         [I18NField]
         public uint nameId;
@@ -25,6 +25,8 @@ namespace DBSynchroniser.Records
         public Boolean containHouses;
         public Boolean containPaddocks;
         public Rectangle bounds;
+        public uint worldmapId;
+        public Boolean hasWorldMap;
 
         int ID2ORecord.Id
         {
@@ -95,6 +97,20 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        public uint WorldmapId
+        {
+            get { return worldmapId; }
+            set { worldmapId = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean HasWorldMap
+        {
+            get { return hasWorldMap; }
+            set { hasWorldMap = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Area)obj;
@@ -105,6 +121,8 @@ namespace DBSynchroniser.Records
             ContainHouses = castedObj.containHouses;
             ContainPaddocks = castedObj.containPaddocks;
             Bounds = castedObj.bounds;
+            WorldmapId = castedObj.worldmapId;
+            HasWorldMap = castedObj.hasWorldMap;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -116,6 +134,8 @@ namespace DBSynchroniser.Records
             obj.containHouses = ContainHouses;
             obj.containPaddocks = ContainPaddocks;
             obj.bounds = Bounds;
+            obj.worldmapId = WorldmapId;
+            obj.hasWorldMap = HasWorldMap;
             return obj;
         }
         

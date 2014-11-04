@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -18,20 +18,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public double Date
         {
-            get { return date; }
-            set { date = value; }
+            get { return this.date; }
+            set { this.date = value; }
         }
         [D2OIgnore]
         public uint ModelId
         {
-            get { return modelId; }
-            set { modelId = value; }
+            get { return this.modelId; }
+            set { this.modelId = value; }
         }
         [D2OIgnore]
         public uint MountId
         {
-            get { return mountId; }
-            set { mountId = value; }
+            get { return this.mountId; }
+            set { this.mountId = value; }
         }
     }
 }

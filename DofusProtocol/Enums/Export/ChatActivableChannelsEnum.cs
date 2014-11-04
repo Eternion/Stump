@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:39
+
+// Generated on 10/26/2014 23:03:55
 using System;
 using System.Collections.Generic;
 
@@ -10,7 +11,7 @@ namespace Stump.DofusProtocol.Enums
         CHANNEL_GLOBAL = 0,
         CHANNEL_TEAM = 1,
         CHANNEL_GUILD = 2,
-        CHANNEL_ALIGN = 3,
+        CHANNEL_ALLIANCE = 3,
         CHANNEL_PARTY = 4,
         CHANNEL_SALES = 5,
         CHANNEL_SEEK = 6,

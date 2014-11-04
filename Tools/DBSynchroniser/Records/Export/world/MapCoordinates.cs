@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:51
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("MapCoordinates", "com.ankamagames.dofus.datacenter.world")]
     public class MapCoordinatesRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "MapCoordinates";
+        public const String MODULE = "MapCoordinates";
         public uint compressedCoords;
         public List<int> mapIds;
 

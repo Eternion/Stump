@@ -80,10 +80,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
                 (sbyte)Team.Id,
+                0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
                 (short)Monster.Template.Id,
                 (sbyte)Monster.GradeId);
+        }
+
+        public override GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
+        {
+            return new GameFightFighterMonsterLightInformations(
+                true,
+                IsAlive(),
+                Id,
+                0,
+                Level,
+                (sbyte)BreedEnum.MONSTER,
+                (short)Monster.Template.Id);
         }
 
         public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)

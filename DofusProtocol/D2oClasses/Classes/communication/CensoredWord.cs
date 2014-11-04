@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class CensoredWord : IDataObject, IIndexedData
     {
-        private const String MODULE = "CensoredWords";
+        public const String MODULE = "CensoredWords";
         public uint id;
         public uint listId;
         public String language;
@@ -25,32 +25,32 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public uint Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint ListId
         {
-            get { return listId; }
-            set { listId = value; }
+            get { return this.listId; }
+            set { this.listId = value; }
         }
         [D2OIgnore]
         public String Language
         {
-            get { return language; }
-            set { language = value; }
+            get { return this.language; }
+            set { this.language = value; }
         }
         [D2OIgnore]
         public String Word
         {
-            get { return word; }
-            set { word = value; }
+            get { return this.word; }
+            set { this.word = value; }
         }
         [D2OIgnore]
         public Boolean DeepLooking
         {
-            get { return deepLooking; }
-            set { deepLooking = value; }
+            get { return this.deepLooking; }
+            set { this.deepLooking = value; }
         }
     }
 }

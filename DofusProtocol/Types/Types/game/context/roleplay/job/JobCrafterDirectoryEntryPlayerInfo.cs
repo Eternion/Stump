@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 10/28/2014 16:38:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,12 +27,13 @@ namespace Stump.DofusProtocol.Types
         public short worldY;
         public int mapId;
         public short subAreaId;
+        public Types.PlayerStatus status;
         
         public JobCrafterDirectoryEntryPlayerInfo()
         {
         }
         
-        public JobCrafterDirectoryEntryPlayerInfo(int playerId, string playerName, sbyte alignmentSide, sbyte breed, bool sex, bool isInWorkshop, short worldX, short worldY, int mapId, short subAreaId)
+        public JobCrafterDirectoryEntryPlayerInfo(int playerId, string playerName, sbyte alignmentSide, sbyte breed, bool sex, bool isInWorkshop, short worldX, short worldY, int mapId, short subAreaId, Types.PlayerStatus status)
         {
             this.playerId = playerId;
             this.playerName = playerName;
@@ -44,6 +45,7 @@ namespace Stump.DofusProtocol.Types
             this.worldY = worldY;
             this.mapId = mapId;
             this.subAreaId = subAreaId;
+            this.status = status;
         }
         
         public virtual void Serialize(IDataWriter writer)
@@ -58,6 +60,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
             writer.WriteShort(subAreaId);
+            writer.WriteShort(status.TypeId);
+            status.Serialize(writer);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -82,11 +86,13 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
+            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
+            status.Deserialize(reader);
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + sizeof(bool) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
+            return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + sizeof(bool) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + status.GetSerializationSize();
         }
         
     }

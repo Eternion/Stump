@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AlmanaxCalendar : IDataObject, IIndexedData
     {
-        private const String MODULE = "AlmanaxCalendars";
+        public const String MODULE = "AlmanaxCalendars";
         public int id;
         [I18NField]
         public uint nameId;
@@ -26,26 +26,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public uint DescId
         {
-            get { return descId; }
-            set { descId = value; }
+            get { return this.descId; }
+            set { this.descId = value; }
         }
         [D2OIgnore]
         public int NpcId
         {
-            get { return npcId; }
-            set { npcId = value; }
+            get { return this.npcId; }
+            set { this.npcId = value; }
         }
     }
 }

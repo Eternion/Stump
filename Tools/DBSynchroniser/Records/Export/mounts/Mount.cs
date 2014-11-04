@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:49
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,11 +17,11 @@ namespace DBSynchroniser.Records
     [D2OClass("Mount", "com.ankamagames.dofus.datacenter.mounts")]
     public class MountRecord : ID2ORecord, ISaveIntercepter
     {
+        private String MODULE = "Mounts";
         public uint id;
         [I18NField]
         public uint nameId;
         public String look;
-        private String MODULE = "Mounts";
 
         int ID2ORecord.Id
         {

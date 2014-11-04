@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:58
+// Generated on 10/28/2014 16:37:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +26,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightTriggeredEffect(int uid, int targetId, short turnDuration, sbyte dispelable, short spellId, int parentBoostUid, int arg1, int arg2, int arg3, short delay)
-         : base(uid, targetId, turnDuration, dispelable, spellId, parentBoostUid)
+        public FightTriggeredEffect(int uid, int targetId, short turnDuration, sbyte dispelable, short spellId, int effectId, int parentBoostUid, int arg1, int arg2, int arg3, short delay)
+         : base(uid, targetId, turnDuration, dispelable, spellId, effectId, parentBoostUid)
         {
             this.arg1 = arg1;
             this.arg2 = arg2;

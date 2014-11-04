@@ -1450,6 +1450,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public PrestigeItem GetPrestigeItem()
         {
+            if (!PrestigeManager.Instance.PrestigeEnabled)
+                return null;
+
             return Inventory.TryGetItem(PrestigeManager.BonusItem) as PrestigeItem;
         }
 
@@ -1914,12 +1917,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DisplayNotification(string text, NotificationEnum notification = NotificationEnum.INFORMATION)
         {
-            Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}, true));
+            Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}));
         }
 
         public void DisplayNotification(NotificationEnum notification, params object[] parameters)
         {
-            Client.Send(new NotificationByServerMessage((ushort)notification, parameters.Select(entry => entry.ToString()), true));
+            Client.Send(new NotificationByServerMessage((ushort)notification, parameters.Select(entry => entry.ToString())));
         }
 
         public void DisplayNotification(Notification notification)
@@ -2249,9 +2252,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);
 
-            ContextHandler.SendGameFightStartingMessage(Client, team.Fight.FightType);
-
             Fighter = new CharacterFighter(this, team);
+
+            ContextHandler.SendGameFightStartingMessage(Client, team.Fight.FightType, 0, 0);
 
             OnCharacterContextChanged(true);
 
@@ -2273,7 +2276,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);
 
-            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType);
+            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType, 0, 0);
 
             Spectator = new FightSpectator(this, fight);
 
@@ -2821,6 +2824,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ChatHistory = new ChatHistory(this);
 
             m_recordLoaded = true;
+            CharacterHandler.SendCharacterLoadingCompleteMessage(Client);
         }
 
         private void UnLoadRecord()
@@ -2878,7 +2882,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (sbyte) (PvPEnabled ? AlignmentSide : 0),
                 (sbyte) (PvPEnabled ? AlignmentValue : 0),
                 (sbyte) (PvPEnabled ? AlignmentGrade : 0),
-                Dishonor,
                 CharacterPower);
         }
 
@@ -2892,13 +2895,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (sbyte) AlignmentSide,
                 AlignmentValue,
                 AlignmentGrade,
-                Dishonor,
                 CharacterPower,
                 Honor,
                 LowerBoundHonor,
                 UpperBoundHonor,
-                PvPEnabled
-                );
+                PvPEnabled ? (sbyte)1 : (sbyte)0);
         }
 
         #endregion
@@ -2914,6 +2915,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look.GetEntityLook(),
                 (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE);
+        }
+
+        public PlayerStatus GetPlayerStatus()
+        {
+            return new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
         }
 
         public CharacterMinimalPlusLookInformations GetCharacterMinimalPlusLookInformations()
@@ -2941,7 +2947,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
                 Map.Id,
-                (short) Map.SubArea.Id);
+                (short) Map.SubArea.Id,
+                new PartyCompanionBaseInformations[0]);
         }
 
         public PartyMemberInformations GetPartyMemberInformations()
@@ -2958,12 +2965,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short) Stats[PlayerFields.Prospecting].Total,
                 RegenSpeed,
                 (short) Stats[PlayerFields.Initiative].Total,
-                PvPEnabled,
                 (sbyte) AlignmentSide,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
                 Map.Id,
-                (short) SubArea.Id);
+                (short) SubArea.Id,
+                GetPlayerStatus(),
+                new PartyCompanionMemberInformations[0]);
         }
 
         public PartyGuestInformations GetPartyGuestInformations(Party party)
@@ -2979,7 +2987,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Name,
                 Look.GetEntityLook(),
                 (sbyte) BreedId,
-                Sex == SexTypeEnum.SEX_FEMALE);
+                Sex == SexTypeEnum.SEX_FEMALE,
+                GetPlayerStatus(),
+                new PartyCompanionMemberInformations[0]);
         }
 
         public PartyMemberArenaInformations GetPartyMemberArenaInformations()
@@ -2996,12 +3006,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short) Stats[PlayerFields.Prospecting].Total,
                 RegenSpeed,
                 (short) Stats[PlayerFields.Initiative].Total,
-                PvPEnabled,
                 (sbyte) AlignmentSide,
                 (short) Map.Position.X,
                 (short) Map.Position.Y,
                 Map.Id,
                 (short) SubArea.Id,
+                GetPlayerStatus(),
+                new PartyCompanionMemberInformations[0],
                 (short)ArenaRank);
         }
 

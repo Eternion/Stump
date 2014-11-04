@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:18
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,6 +15,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int apCost;
         public int minRange;
         public int range;
+        public uint maxCastPerTurn;
         public Boolean castInLine;
         public Boolean castInDiagonal;
         public Boolean castTestLos;
@@ -24,56 +25,62 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int ApCost
         {
-            get { return apCost; }
-            set { apCost = value; }
+            get { return this.apCost; }
+            set { this.apCost = value; }
         }
         [D2OIgnore]
         public int MinRange
         {
-            get { return minRange; }
-            set { minRange = value; }
+            get { return this.minRange; }
+            set { this.minRange = value; }
         }
         [D2OIgnore]
         public int Range
         {
-            get { return range; }
-            set { range = value; }
+            get { return this.range; }
+            set { this.range = value; }
+        }
+        [D2OIgnore]
+        public uint MaxCastPerTurn
+        {
+            get { return this.maxCastPerTurn; }
+            set { this.maxCastPerTurn = value; }
         }
         [D2OIgnore]
         public Boolean CastInLine
         {
-            get { return castInLine; }
-            set { castInLine = value; }
+            get { return this.castInLine; }
+            set { this.castInLine = value; }
         }
         [D2OIgnore]
         public Boolean CastInDiagonal
         {
-            get { return castInDiagonal; }
-            set { castInDiagonal = value; }
+            get { return this.castInDiagonal; }
+            set { this.castInDiagonal = value; }
         }
         [D2OIgnore]
         public Boolean CastTestLos
         {
-            get { return castTestLos; }
-            set { castTestLos = value; }
+            get { return this.castTestLos; }
+            set { this.castTestLos = value; }
         }
         [D2OIgnore]
         public int CriticalHitProbability
         {
-            get { return criticalHitProbability; }
-            set { criticalHitProbability = value; }
+            get { return this.criticalHitProbability; }
+            set { this.criticalHitProbability = value; }
         }
         [D2OIgnore]
         public int CriticalHitBonus
         {
-            get { return criticalHitBonus; }
-            set { criticalHitBonus = value; }
+            get { return this.criticalHitBonus; }
+            set { this.criticalHitBonus = value; }
         }
         [D2OIgnore]
         public int CriticalFailureProbability
         {
-            get { return criticalFailureProbability; }
-            set { criticalFailureProbability = value; }
+            get { return this.criticalFailureProbability; }
+            set { this.criticalFailureProbability = value; }
         }
     }
 }

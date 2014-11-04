@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 10/28/2014 16:38:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightResultMutantListEntry(short outcome, Types.FightLoot rewards, int id, bool alive, ushort level)
-         : base(outcome, rewards, id, alive)
+        public FightResultMutantListEntry(short outcome, uint wave, Types.FightLoot rewards, int id, bool alive, ushort level)
+         : base(outcome, wave, rewards, id, alive)
         {
             this.level = level;
         }

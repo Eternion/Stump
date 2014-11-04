@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:01
+// Generated on 10/28/2014 16:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public ObjectItemInformationWithQuantity(short objectGID, short powerRate, bool overMax, IEnumerable<Types.ObjectEffect> effects, int quantity)
-         : base(objectGID, powerRate, overMax, effects)
+        public ObjectItemInformationWithQuantity(short objectGID, IEnumerable<Types.ObjectEffect> effects, int quantity)
+         : base(objectGID, effects)
         {
             this.quantity = quantity;
         }

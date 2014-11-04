@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("SoundAnimation", "com.ankamagames.dofus.datacenter.sounds")]
     public class SoundAnimationRecord : ID2ORecord, ISaveIntercepter
     {
+        public String MODULE = "SoundAnimations";
         public uint id;
         public String name;
         public String label;
@@ -29,7 +30,6 @@ namespace DBSynchroniser.Records
         public int automationFadeOut;
         public Boolean noCutSilence;
         public uint startFrame;
-        public String MODULE = "SoundAnimations";
 
         int ID2ORecord.Id
         {

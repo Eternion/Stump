@@ -1,5 +1,6 @@
 
-// Generated on 03/25/2013 19:24:39
+
+// Generated on 10/26/2014 23:03:55
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +13,7 @@ namespace Stump.DofusProtocol.Enums
         CHAT_ERROR_INTERIOR_MONOLOGUE = 2,
         CHAT_ERROR_NO_GUILD = 3,
         CHAT_ERROR_NO_PARTY = 4,
-        CHAT_ERROR_ALIGN = 5,
+        CHAT_ERROR_ALLIANCE = 5,
         CHAT_ERROR_INVALID_MAP = 6,
         CHAT_ERROR_NO_PARTY_ARENA = 7,
         CHAT_ERROR_NO_TEAM = 8,

@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:40
+// Generated on 10/28/2014 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public EmotePlayMessage(sbyte emoteId, double emoteStartTime, int actorId, int accountId)
+        public EmotePlayMessage(byte emoteId, double emoteStartTime, int actorId, int accountId)
          : base(emoteId, emoteStartTime)
         {
             this.actorId = actorId;

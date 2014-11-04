@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:46
+// Generated on 10/26/2014 23:31:12
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +17,12 @@ namespace DBSynchroniser.Records
     [D2OClass("Title", "com.ankamagames.dofus.datacenter.appearance")]
     public class TitleRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "Titles";
+        public const String MODULE = "Titles";
         public int id;
         [I18NField]
-        public uint nameId;
+        public uint nameMaleId;
+        [I18NField]
+        public uint nameFemaleId;
         public Boolean visible;
         public int categoryId;
 
@@ -40,10 +42,18 @@ namespace DBSynchroniser.Records
 
         [D2OIgnore]
         [I18NField]
-        public uint NameId
+        public uint NameMaleId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return nameMaleId; }
+            set { nameMaleId = value; }
+        }
+
+        [D2OIgnore]
+        [I18NField]
+        public uint NameFemaleId
+        {
+            get { return nameFemaleId; }
+            set { nameFemaleId = value; }
         }
 
         [D2OIgnore]
@@ -65,7 +75,8 @@ namespace DBSynchroniser.Records
             var castedObj = (Title)obj;
             
             Id = castedObj.id;
-            NameId = castedObj.nameId;
+            NameMaleId = castedObj.nameMaleId;
+            NameFemaleId = castedObj.nameFemaleId;
             Visible = castedObj.visible;
             CategoryId = castedObj.categoryId;
         }
@@ -74,7 +85,8 @@ namespace DBSynchroniser.Records
         {
             var obj = parent != null ? (Title)parent : new Title();
             obj.id = Id;
-            obj.nameId = NameId;
+            obj.nameMaleId = NameMaleId;
+            obj.nameFemaleId = NameFemaleId;
             obj.visible = Visible;
             obj.categoryId = CategoryId;
             return obj;

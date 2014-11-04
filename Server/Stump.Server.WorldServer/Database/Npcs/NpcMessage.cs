@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Database.Npcs
             var message = (DofusProtocol.D2oClasses.NpcMessage) d2oObject;
             Id = message.id;
             MessageId = message.messageId;
-            ParametersCSV = message.messageParams;
+            ParametersCSV = "";
         }
 
         #endregion

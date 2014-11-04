@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class AlignmentSide : IDataObject, IIndexedData
     {
-        private const String MODULE = "AlignmentSides";
+        public const String MODULE = "AlignmentSides";
         public int id;
         [I18NField]
         public uint nameId;
@@ -24,20 +24,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public Boolean CanConquest
         {
-            get { return canConquest; }
-            set { canConquest = value; }
+            get { return this.canConquest; }
+            set { this.canConquest = value; }
         }
     }
 }

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:50
+// Generated on 10/26/2014 23:31:15
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("AchievementCategory", "com.ankamagames.dofus.datacenter.quest")]
     public class AchievementCategoryRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "AchievementCategories";
+        public const String MODULE = "AchievementCategories";
         public uint id;
         [I18NField]
         public uint nameId;

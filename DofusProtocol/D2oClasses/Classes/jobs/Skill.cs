@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:19
+// Generated on 10/26/2014 23:27:47
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class Skill : IDataObject, IIndexedData
     {
-        private const String MODULE = "Skills";
+        public const String MODULE = "Skills";
         public int id;
         [I18NField]
         public uint nameId;
@@ -34,80 +34,80 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public int ParentJobId
         {
-            get { return parentJobId; }
-            set { parentJobId = value; }
+            get { return this.parentJobId; }
+            set { this.parentJobId = value; }
         }
         [D2OIgnore]
         public Boolean IsForgemagus
         {
-            get { return isForgemagus; }
-            set { isForgemagus = value; }
+            get { return this.isForgemagus; }
+            set { this.isForgemagus = value; }
         }
         [D2OIgnore]
         public int ModifiableItemType
         {
-            get { return modifiableItemType; }
-            set { modifiableItemType = value; }
+            get { return this.modifiableItemType; }
+            set { this.modifiableItemType = value; }
         }
         [D2OIgnore]
         public int GatheredRessourceItem
         {
-            get { return gatheredRessourceItem; }
-            set { gatheredRessourceItem = value; }
+            get { return this.gatheredRessourceItem; }
+            set { this.gatheredRessourceItem = value; }
         }
         [D2OIgnore]
         public List<int> CraftableItemIds
         {
-            get { return craftableItemIds; }
-            set { craftableItemIds = value; }
+            get { return this.craftableItemIds; }
+            set { this.craftableItemIds = value; }
         }
         [D2OIgnore]
         public int InteractiveId
         {
-            get { return interactiveId; }
-            set { interactiveId = value; }
+            get { return this.interactiveId; }
+            set { this.interactiveId = value; }
         }
         [D2OIgnore]
         public String UseAnimation
         {
-            get { return useAnimation; }
-            set { useAnimation = value; }
+            get { return this.useAnimation; }
+            set { this.useAnimation = value; }
         }
         [D2OIgnore]
         public Boolean IsRepair
         {
-            get { return isRepair; }
-            set { isRepair = value; }
+            get { return this.isRepair; }
+            set { this.isRepair = value; }
         }
         [D2OIgnore]
         public int Cursor
         {
-            get { return cursor; }
-            set { cursor = value; }
+            get { return this.cursor; }
+            set { this.cursor = value; }
         }
         [D2OIgnore]
         public Boolean AvailableInHouse
         {
-            get { return availableInHouse; }
-            set { availableInHouse = value; }
+            get { return this.availableInHouse; }
+            set { this.availableInHouse = value; }
         }
         [D2OIgnore]
         public uint LevelMin
         {
-            get { return levelMin; }
-            set { levelMin = value; }
+            get { return this.levelMin; }
+            set { this.levelMin = value; }
         }
     }
 }

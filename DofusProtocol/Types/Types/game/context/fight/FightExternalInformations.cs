@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:59
+// Generated on 10/28/2014 16:38:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public int fightId;
+        public sbyte fightType;
         public int fightStart;
         public bool fightSpectatorLocked;
         public IEnumerable<Types.FightTeamLightInformations> fightTeams;
@@ -27,9 +28,10 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightExternalInformations(int fightId, int fightStart, bool fightSpectatorLocked, IEnumerable<Types.FightTeamLightInformations> fightTeams, IEnumerable<Types.FightOptionsInformations> fightTeamsOptions)
+        public FightExternalInformations(int fightId, sbyte fightType, int fightStart, bool fightSpectatorLocked, IEnumerable<Types.FightTeamLightInformations> fightTeams, IEnumerable<Types.FightOptionsInformations> fightTeamsOptions)
         {
             this.fightId = fightId;
+            this.fightType = fightType;
             this.fightStart = fightStart;
             this.fightSpectatorLocked = fightSpectatorLocked;
             this.fightTeams = fightTeams;
@@ -39,6 +41,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(fightId);
+            writer.WriteSByte(fightType);
             writer.WriteInt(fightStart);
             writer.WriteBoolean(fightSpectatorLocked);
             foreach (var entry in fightTeams)
@@ -54,6 +57,9 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             fightId = reader.ReadInt();
+            fightType = reader.ReadSByte();
+            if (fightType < 0)
+                throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
             fightStart = reader.ReadInt();
             if (fightStart < 0)
                 throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");
@@ -76,7 +82,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(bool) + sizeof(short) + fightTeams.Sum(x => x.GetSerializationSize()) + sizeof(short) + fightTeamsOptions.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(sbyte) + sizeof(int) + sizeof(bool) + sizeof(short) + fightTeams.Sum(x => x.GetSerializationSize()) + sizeof(short) + fightTeamsOptions.Sum(x => x.GetSerializationSize());
         }
         
     }

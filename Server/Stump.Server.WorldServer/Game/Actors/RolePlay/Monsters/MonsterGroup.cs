@@ -227,11 +227,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return new GameRolePlayGroupMonsterInformations(Id,
                                                             Leader.Look.GetEntityLook(),
                                                             GetEntityDispositionInformations(),
+                                                            false,
+                                                            false,
+                                                            false,
                                                             GetGroupMonsterStaticInformations(),
                                                             AgeBonus > ClientStarsBonusLimit ? ClientStarsBonusLimit : AgeBonus,
                                                             0,
-                                                            -1,
-                                                            false);
+                                                            -1);
         }
 
         public GroupMonsterStaticInformations GetGroupMonsterStaticInformations()

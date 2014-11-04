@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 10/28/2014 16:38:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +9,10 @@ using Stump.Core.IO;
 
 namespace Stump.DofusProtocol.Types
 {
-    public class BasicGuildInformations
+    public class BasicGuildInformations : AbstractSocialGroupInfos
     {
         public const short Id = 365;
-        public virtual short TypeId
+        public override short TypeId
         {
             get { return Id; }
         }
@@ -30,23 +30,25 @@ namespace Stump.DofusProtocol.Types
             this.guildName = guildName;
         }
         
-        public virtual void Serialize(IDataWriter writer)
+        public override void Serialize(IDataWriter writer)
         {
+            base.Serialize(writer);
             writer.WriteInt(guildId);
             writer.WriteUTF(guildName);
         }
         
-        public virtual void Deserialize(IDataReader reader)
+        public override void Deserialize(IDataReader reader)
         {
+            base.Deserialize(reader);
             guildId = reader.ReadInt();
             if (guildId < 0)
                 throw new Exception("Forbidden value on guildId = " + guildId + ", it doesn't respect the following condition : guildId < 0");
             guildName = reader.ReadUTF();
         }
         
-        public virtual int GetSerializationSize()
+        public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(guildName);
+            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(guildName);
         }
         
     }

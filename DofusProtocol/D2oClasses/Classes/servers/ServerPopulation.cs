@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:21
+// Generated on 10/26/2014 23:27:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class ServerPopulation : IDataObject, IIndexedData
     {
-        private const String MODULE = "ServerPopulations";
+        public const String MODULE = "ServerPopulations";
         public int id;
         [I18NField]
         public uint nameId;
@@ -24,20 +24,20 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public uint NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public int Weight
         {
-            get { return weight; }
-            set { weight = value; }
+            get { return this.weight; }
+            set { this.weight = value; }
         }
     }
 }

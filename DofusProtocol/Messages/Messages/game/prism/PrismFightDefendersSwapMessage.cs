@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:55
+// Generated on 10/28/2014 16:37:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public short subAreaId;
         public double fightId;
         public int fighterId1;
         public int fighterId2;
@@ -26,8 +27,9 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PrismFightDefendersSwapMessage(double fightId, int fighterId1, int fighterId2)
+        public PrismFightDefendersSwapMessage(short subAreaId, double fightId, int fighterId1, int fighterId2)
         {
+            this.subAreaId = subAreaId;
             this.fightId = fightId;
             this.fighterId1 = fighterId1;
             this.fighterId2 = fighterId2;
@@ -35,6 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteShort(subAreaId);
             writer.WriteDouble(fightId);
             writer.WriteInt(fighterId1);
             writer.WriteInt(fighterId2);
@@ -42,7 +45,12 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
+            subAreaId = reader.ReadShort();
+            if (subAreaId < 0)
+                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             fightId = reader.ReadDouble();
+            if (fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15");
             fighterId1 = reader.ReadInt();
             if (fighterId1 < 0)
                 throw new Exception("Forbidden value on fighterId1 = " + fighterId1 + ", it doesn't respect the following condition : fighterId1 < 0");
@@ -53,7 +61,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(double) + sizeof(int) + sizeof(int);
+            return sizeof(short) + sizeof(double) + sizeof(int) + sizeof(int);
         }
         
     }

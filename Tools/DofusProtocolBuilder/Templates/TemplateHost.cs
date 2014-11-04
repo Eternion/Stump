@@ -146,7 +146,7 @@ namespace DofusProtocolBuilder.Templates
         public bool LoadIncludeText(string requestFileName, out string content, out string location)
         {
             content = String.Empty;
-            location = String.Empty;
+            location = "Helper.tt";
 
             //If the argument is the fully qualified path of an existing file,
             //then we are done.

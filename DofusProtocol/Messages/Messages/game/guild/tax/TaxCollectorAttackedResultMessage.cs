@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:42:47
+// Generated on 10/28/2014 16:36:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,21 +20,24 @@ namespace Stump.DofusProtocol.Messages
         
         public bool deadOrAlive;
         public Types.TaxCollectorBasicInformations basicInfos;
+        public Types.BasicGuildInformations guild;
         
         public TaxCollectorAttackedResultMessage()
         {
         }
         
-        public TaxCollectorAttackedResultMessage(bool deadOrAlive, Types.TaxCollectorBasicInformations basicInfos)
+        public TaxCollectorAttackedResultMessage(bool deadOrAlive, Types.TaxCollectorBasicInformations basicInfos, Types.BasicGuildInformations guild)
         {
             this.deadOrAlive = deadOrAlive;
             this.basicInfos = basicInfos;
+            this.guild = guild;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteBoolean(deadOrAlive);
             basicInfos.Serialize(writer);
+            guild.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,11 +45,13 @@ namespace Stump.DofusProtocol.Messages
             deadOrAlive = reader.ReadBoolean();
             basicInfos = new Types.TaxCollectorBasicInformations();
             basicInfos.Deserialize(reader);
+            guild = new Types.BasicGuildInformations();
+            guild.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(bool) + basicInfos.GetSerializationSize();
+            return sizeof(bool) + basicInfos.GetSerializationSize() + guild.GetSerializationSize();
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:00
+// Generated on 10/28/2014 16:38:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +25,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightTaxCollectorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, bool alive, Types.GameFightMinimalStats stats, short firstNameId, short lastNameId, short level)
-         : base(contextualId, look, disposition, teamId, alive, stats)
+        public GameFightTaxCollectorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, uint wave, bool alive, Types.GameFightMinimalStats stats, short firstNameId, short lastNameId, short level)
+         : base(contextualId, look, disposition, teamId, wave, alive, stats)
         {
             this.firstNameId = firstNameId;
             this.lastNameId = lastNameId;

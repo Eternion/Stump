@@ -60,19 +60,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public ObjectItemToSell GetObjectItemToSell()
         {
-            return new ObjectItemToSell((short)Template.Id, 0, false,
+            return new ObjectItemToSell((short)Template.Id,
                                  Effects.Select(x => x.GetObjectEffect()),
                                  Guid, (int)Stack, (int)Price);
         }
         public override ObjectItem GetObjectItem()
         {
-            return new ObjectItem(63, (short) Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid,
+            return new ObjectItem(63, (short) Template.Id, 
+                Effects.Select(x => x.GetObjectEffect()), Guid,
                 (int) Stack);
         }
 
         public ObjectItemToSellInHumanVendorShop GetObjectItemToSellInHumanVendorShop()
         {
-            return new ObjectItemToSellInHumanVendorShop((short)Template.Id, 0, false,
+            return new ObjectItemToSellInHumanVendorShop((short)Template.Id,
                                  Effects.Select(x => x.GetObjectEffect()),
                                  Guid, (int)Stack, (int)Price, (int)Template.Price);
         }

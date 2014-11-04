@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class House : IDataObject, IIndexedData
     {
-        private const String MODULE = "Houses";
+        public const String MODULE = "Houses";
         public int typeId;
         public uint defaultPrice;
         [I18NField]
@@ -27,32 +27,32 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int TypeId
         {
-            get { return typeId; }
-            set { typeId = value; }
+            get { return this.typeId; }
+            set { this.typeId = value; }
         }
         [D2OIgnore]
         public uint DefaultPrice
         {
-            get { return defaultPrice; }
-            set { defaultPrice = value; }
+            get { return this.defaultPrice; }
+            set { this.defaultPrice = value; }
         }
         [D2OIgnore]
         public int NameId
         {
-            get { return nameId; }
-            set { nameId = value; }
+            get { return this.nameId; }
+            set { this.nameId = value; }
         }
         [D2OIgnore]
         public int DescriptionId
         {
-            get { return descriptionId; }
-            set { descriptionId = value; }
+            get { return this.descriptionId; }
+            set { this.descriptionId = value; }
         }
         [D2OIgnore]
         public int GfxId
         {
-            get { return gfxId; }
-            set { gfxId = value; }
+            get { return this.gfxId; }
+            set { this.gfxId = value; }
         }
     }
 }

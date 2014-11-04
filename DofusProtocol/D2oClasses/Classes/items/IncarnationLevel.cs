@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:18
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,7 +12,7 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class IncarnationLevel : IDataObject, IIndexedData
     {
-        private const String MODULE = "IncarnationLevels";
+        public const String MODULE = "IncarnationLevels";
         public int id;
         public int incarnationId;
         public int level;
@@ -24,26 +24,26 @@ namespace Stump.DofusProtocol.D2oClasses
         [D2OIgnore]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.id; }
+            set { this.id = value; }
         }
         [D2OIgnore]
         public int IncarnationId
         {
-            get { return incarnationId; }
-            set { incarnationId = value; }
+            get { return this.incarnationId; }
+            set { this.incarnationId = value; }
         }
         [D2OIgnore]
         public int Level
         {
-            get { return level; }
-            set { level = value; }
+            get { return this.level; }
+            set { this.level = value; }
         }
         [D2OIgnore]
         public uint RequiredXp
         {
-            get { return requiredXp; }
-            set { requiredXp = value; }
+            get { return this.requiredXp; }
+            set { this.requiredXp = value; }
         }
     }
 }

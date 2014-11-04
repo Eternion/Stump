@@ -1,6 +1,6 @@
 
 
-// Generated on 03/02/2014 20:43:02
+// Generated on 10/28/2014 16:38:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +40,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in allyCharactersInformations)
             {
+                 writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
                  allyCharactersInformations_count++;
             }
@@ -53,6 +54,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in enemyCharactersInformations)
             {
+                 writer.WriteShort(entry.TypeId);
                  entry.Serialize(writer);
                  enemyCharactersInformations_count++;
             }
@@ -70,7 +72,7 @@ namespace Stump.DofusProtocol.Types
             var allyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 allyCharactersInformations_[i] = new Types.CharacterMinimalPlusLookInformations();
+                 allyCharactersInformations_[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
                  allyCharactersInformations_[i].Deserialize(reader);
             }
             allyCharactersInformations = allyCharactersInformations_;
@@ -78,7 +80,7 @@ namespace Stump.DofusProtocol.Types
             var enemyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
-                 enemyCharactersInformations_[i] = new Types.CharacterMinimalPlusLookInformations();
+                 enemyCharactersInformations_[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
                  enemyCharactersInformations_[i].Deserialize(reader);
             }
             enemyCharactersInformations = enemyCharactersInformations_;
@@ -86,7 +88,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + allyCharactersInformations.Sum(x => x.GetSerializationSize()) + sizeof(short) + enemyCharactersInformations.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(short) + allyCharactersInformations.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + enemyCharactersInformations.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

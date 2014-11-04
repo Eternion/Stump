@@ -21,7 +21,6 @@ namespace Stump.Server.WorldServer.Handlers.Initialization
                                 false, // cantTrade
                                 false, // cantBeAttackedByMutant
                                 false, // cantRun
-                                false, // forceSlowWalk
                                 false, // cantMinimize
                                 false, // cantMove
 

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2013 14:03:17
+// Generated on 10/26/2014 23:27:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -12,104 +12,142 @@ namespace Stump.DofusProtocol.D2oClasses
     [Serializable]
     public class EffectInstance : IDataObject, IIndexedData
     {
+        public uint effectUid;
         public uint effectId;
         public int targetId;
+        public String targetMask;
         public int duration;
         public int delay;
         public int random;
         public int group;
         public int modificator;
         public Boolean trigger;
+        public String triggers;
         public Boolean hidden;
-        [D2OIgnore]
-        public uint zoneSize;
-        [D2OIgnore]
+        public int order;
+        public Object zoneSize;
         public uint zoneShape;
-        [D2OIgnore]
-        public uint zoneMinSize;
+        public Object zoneMinSize;
+        public Object zoneEfficiencyPercent;
+        public Object zoneMaxEfficiency;
         public String rawZone;
         int IIndexedData.Id
         {
-            get { return (int)effectId; }
+            get { return (int)effectUid; }
+        }
+        [D2OIgnore]
+        public uint EffectUid
+        {
+            get { return this.effectUid; }
+            set { this.effectUid = value; }
         }
         [D2OIgnore]
         public uint EffectId
         {
-            get { return effectId; }
-            set { effectId = value; }
+            get { return this.effectId; }
+            set { this.effectId = value; }
         }
         [D2OIgnore]
         public int TargetId
         {
-            get { return targetId; }
-            set { targetId = value; }
+            get { return this.targetId; }
+            set { this.targetId = value; }
+        }
+        [D2OIgnore]
+        public String TargetMask
+        {
+            get { return this.targetMask; }
+            set { this.targetMask = value; }
         }
         [D2OIgnore]
         public int Duration
         {
-            get { return duration; }
-            set { duration = value; }
+            get { return this.duration; }
+            set { this.duration = value; }
         }
         [D2OIgnore]
         public int Delay
         {
-            get { return delay; }
-            set { delay = value; }
+            get { return this.delay; }
+            set { this.delay = value; }
         }
         [D2OIgnore]
         public int Random
         {
-            get { return random; }
-            set { random = value; }
+            get { return this.random; }
+            set { this.random = value; }
         }
         [D2OIgnore]
         public int Group
         {
-            get { return group; }
-            set { group = value; }
+            get { return this.group; }
+            set { this.group = value; }
         }
         [D2OIgnore]
         public int Modificator
         {
-            get { return modificator; }
-            set { modificator = value; }
+            get { return this.modificator; }
+            set { this.modificator = value; }
         }
         [D2OIgnore]
         public Boolean Trigger
         {
-            get { return trigger; }
-            set { trigger = value; }
+            get { return this.trigger; }
+            set { this.trigger = value; }
+        }
+        [D2OIgnore]
+        public String Triggers
+        {
+            get { return this.triggers; }
+            set { this.triggers = value; }
         }
         [D2OIgnore]
         public Boolean Hidden
         {
-            get { return hidden; }
-            set { hidden = value; }
+            get { return this.hidden; }
+            set { this.hidden = value; }
         }
         [D2OIgnore]
-        public uint ZoneSize
+        public int Order
         {
-            get { return zoneSize; }
-            set { zoneSize = value; }
+            get { return this.order; }
+            set { this.order = value; }
+        }
+        [D2OIgnore]
+        public Object ZoneSize
+        {
+            get { return this.zoneSize; }
+            set { this.zoneSize = value; }
         }
         [D2OIgnore]
         public uint ZoneShape
         {
-            get { return zoneShape; }
-            set { zoneShape = value; }
+            get { return this.zoneShape; }
+            set { this.zoneShape = value; }
         }
         [D2OIgnore]
-        public uint ZoneMinSize
+        public Object ZoneMinSize
         {
-            get { return zoneMinSize; }
-            set { zoneMinSize = value; }
+            get { return this.zoneMinSize; }
+            set { this.zoneMinSize = value; }
         }
-
+        [D2OIgnore]
+        public Object ZoneEfficiencyPercent
+        {
+            get { return this.zoneEfficiencyPercent; }
+            set { this.zoneEfficiencyPercent = value; }
+        }
+        [D2OIgnore]
+        public Object ZoneMaxEfficiency
+        {
+            get { return this.zoneMaxEfficiency; }
+            set { this.zoneMaxEfficiency = value; }
+        }
         [D2OIgnore]
         public String RawZone
         {
-            get { return rawZone; }
-            set { rawZone = value; }
+            get { return this.rawZone; }
+            set { this.rawZone = value; }
         }
     }
 }

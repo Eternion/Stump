@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;

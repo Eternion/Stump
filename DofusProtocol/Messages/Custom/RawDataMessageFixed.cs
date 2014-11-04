@@ -21,6 +21,7 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages.Custom
 {
+    [OverrideMessage]
     public class RawDataMessageFixed : Message
     {
         public const uint Id = 6253;

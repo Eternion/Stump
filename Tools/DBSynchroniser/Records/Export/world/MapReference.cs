@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/02/2013 14:55:51
+// Generated on 10/26/2014 23:31:16
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +17,7 @@ namespace DBSynchroniser.Records
     [D2OClass("MapReference", "com.ankamagames.dofus.datacenter.world")]
     public class MapReferenceRecord : ID2ORecord, ISaveIntercepter
     {
-        private const String MODULE = "MapReferences";
+        public const String MODULE = "MapReferences";
         public int id;
         public uint mapId;
         public int cellId;
