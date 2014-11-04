@@ -110,29 +110,29 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public GuildCreationResultEnum CreateGuild(Character character, string name, NetworkGuildEmblem emblem)
+        public SocialGroupCreationResultEnum CreateGuild(Character character, string name, NetworkGuildEmblem emblem)
         {
             var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.Guildalogem));
             if (guildalogemme == null)
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 
             if (!Regex.IsMatch(name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
             {
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_INVALID;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_INVALID;
             }
 
             if (DoesNameExist(name))
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
             if (DoesEmblemExist(emblem))
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
 
             character.Inventory.RemoveItem(guildalogemme, 1);
             character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, guildalogemme.Template.Id);
 
             var guild = CreateGuild(name);
             if (guild == null)
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_CANCEL;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_CANCEL;
 
             guild.Emblem.ChangeEmblem(emblem);
 
@@ -140,13 +140,13 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (!guild.TryAddMember(character, out member))
             {
                 DeleteGuild(guild);
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_CANCEL;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_CANCEL;
             }
 
             character.GuildMember = member;
             character.RefreshActor();
 
-            return GuildCreationResultEnum.GUILD_CREATE_OK;
+            return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK;
         }
 
         public bool DeleteGuild(Guild guild)

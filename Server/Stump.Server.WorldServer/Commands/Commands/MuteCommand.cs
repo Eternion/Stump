@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
