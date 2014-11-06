@@ -58,6 +58,9 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
             
             var result = GuildManager.Instance.CreateGuild(Character, guildName, emblem);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
+
+            if (result == SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK)
+                Close();
         }
     }
 }
