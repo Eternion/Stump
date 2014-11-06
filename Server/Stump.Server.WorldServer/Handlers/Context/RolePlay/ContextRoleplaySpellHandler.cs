@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
@@ -14,7 +13,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(SpellUpgradeRequestMessage.Id)]
         public static void HandleSpellUpgradeRequestMessage(WorldClient client, SpellUpgradeRequestMessage message)
         {
-            client.Character.Spells.BoostSpell(message.spellId);
+            client.Character.Spells.BoostSpell(message.spellId, (ushort)message.spellLevel);
             client.Character.RefreshStats();
         }
 
