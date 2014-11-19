@@ -119,10 +119,10 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             Character.Inventory.AddItem(item);
             if (Token != null)
             {
-                Character.Area.AddMessage(() =>
+                WorldServer.Instance.IOTaskPool.AddMessage(() =>
                 {
                     Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
-                    WorldServer.Instance.IOTaskPool.AddMessage(() => Character.Inventory.Save());
+                    Character.Inventory.Save();
                 });
             }
             else

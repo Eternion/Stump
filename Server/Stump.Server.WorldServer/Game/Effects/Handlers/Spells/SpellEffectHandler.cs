@@ -286,12 +286,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public StateBuff AddStateBuff(FightActor target, bool dispelable, SpellState state)
+        public StateBuff AddStateBuff(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state)
         {
             var id = target.PopNextBuffId();
             var buff = new StateBuff(id, target, Caster, Dice, Spell, dispelable, state);
 
-            target.AddAndApplyBuff(buff);
+            target.AddAndApplyBuff(buff, true, bypassMaxStack);
 
             return buff;
         }

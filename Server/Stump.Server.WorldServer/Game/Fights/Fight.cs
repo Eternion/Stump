@@ -2213,7 +2213,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor GetOneFighter(Cell cell)
         {
-            return Fighters.FirstOrDefault(entry => entry.IsAlive() && Equals(entry.Cell, cell));
+            return Fighters.FirstOrDefault(entry => entry.IsAlive() && entry.Cell.Id == cell.Id);
         }
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
