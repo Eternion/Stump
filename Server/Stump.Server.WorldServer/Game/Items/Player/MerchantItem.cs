@@ -26,6 +26,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public MerchantItem(PlayerMerchantItemRecord record)
             : base(record)
         {
+            Record = record;
         }
 
         public MerchantItem(Character owner, int guid, ItemTemplate template, List<EffectBase> effects, uint stack, uint price)
@@ -73,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             return new ObjectItemToSellInHumanVendorShop((short)Template.Id, 0, false,
                                  Effects.Select(x => x.GetObjectEffect()),
-                                 Guid, (int) Stack, (int) Price, 0);
+                                 Guid, (int)Stack, (int)Price, (int)Template.Price);
         }
 
         #endregion

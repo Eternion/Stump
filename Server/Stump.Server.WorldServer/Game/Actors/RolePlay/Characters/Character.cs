@@ -378,11 +378,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Dialog is ZaapDialog;
         }
 
-        public bool IsInMerchantDialog()
-        {
-            return Dialog is MerchantShopDialog;
-        }
-
         #endregion
 
         #region Party

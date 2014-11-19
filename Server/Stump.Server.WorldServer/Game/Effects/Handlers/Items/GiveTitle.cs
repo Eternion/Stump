@@ -45,6 +45,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             if (integerEffect == null)
                 return false;
 
+            UsedItems = NumberOfUses;
             Target.AddTitle(integerEffect.Value);
 
             return true;

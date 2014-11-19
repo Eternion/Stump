@@ -185,6 +185,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        bool CanKickPlayer
+        {
+            get;
+        }
+
         /// <summary>
         /// Do not modify, just read
         /// </summary>
@@ -288,14 +293,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         int GetPlacementTimeLeft();
     }
 
-    public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, IFight
-        where TRedTeam : FightTeam
-        where TBlueTeam : FightTeam
+    // this is necessary since we can't read static field dynamically in a generic class
+    public static class FightConfiguration
     {
-        protected readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        #region Config
-
+        
         [Variable]
         public static int PlacementPhaseTime = 30000;
 
@@ -316,6 +317,16 @@ namespace Stump.Server.WorldServer.Game.Fights
         /// </summary>
         [Variable]
         public static int EndFightTimeOut = 10000;
+    }
+
+    public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, IFight
+        where TRedTeam : FightTeam
+        where TBlueTeam : FightTeam
+    {
+        protected readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        #region Config
+
 
         #endregion
 
@@ -536,6 +547,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         public virtual bool IsDeathTemporarily
         {
             get { return false; }
+        }
+
+        public virtual bool CanKickPlayer
+        {
+            get { return true; }
         }
 
         #endregion
@@ -1347,7 +1363,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
-                                                         TurnTime);
+                                                         FightConfiguration.TurnTime);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
@@ -1355,7 +1371,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();
 
             TurnStartTime = DateTime.Now;
-            m_turnTimer = Map.Area.CallDelayed(TurnTime, StopTurn);
+            m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
 
             var evnt = TurnStarted;
             if (evnt != null)
@@ -2177,7 +2193,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var time = ( DateTime.Now - TurnStartTime ).TotalMilliseconds;
 
-            return time > 0 ? (TurnTime - (int)time) : 0;
+            return time > 0 ? (FightConfiguration.TurnTime - (int)time) : 0;
         }
 
         public sbyte GetNextContextualId()
@@ -2197,7 +2213,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightActor GetOneFighter(Cell cell)
         {
-            return Fighters.FirstOrDefault(entry => entry.IsAlive() && Equals(entry.Cell, cell));
+            return Fighters.FirstOrDefault(entry => entry.IsAlive() && entry.Cell.Id == cell.Id);
         }
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
