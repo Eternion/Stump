@@ -36,6 +36,11 @@ namespace Stump.Server.WorldServer.Game.Arena
             get { return true; }
         }
 
+        public override bool CanKickPlayer
+        {
+            get { return false; }
+        }
+
         public override void StartPlacement()
         {            
              ContextHandler.SendGameRolePlayArenaRegistrationStatusMessage(Clients, false,
@@ -43,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             base.StartPlacement();
 
-            m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
+            m_placementTimer = Map.Area.CallDelayed(FightConfiguration.PlacementPhaseTime, StartFighting);
         }
 
         public override void StartFighting()
@@ -63,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         public override int GetPlacementTimeLeft()
         {
-            var timeleft = PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
+            var timeleft = FightConfiguration.PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
 
             if (timeleft < 0)
                 timeleft = 0;
@@ -86,7 +91,8 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected override IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver, out IFightResult leaverResult)
         {
-            var rankLose = CalculateRankLoose(leaver);
+            var rankLoose = CalculateRankLoose(leaver);
+
             leaverResult = null;
 
             var list = new List<IFightResult>();
@@ -96,7 +102,7 @@ namespace Stump.Server.WorldServer.Game.Arena
                     ? FightOutcomeEnum.RESULT_LOST
                     : FightOutcomeEnum.RESULT_VICTORY;
 
-                var result = new ArenaFightResult(fighter, outcome, new FightLoot(), fighter == leaver ? rankLose : 0, false);
+                var result = new ArenaFightResult(fighter, outcome, new FightLoot(), fighter == leaver ? rankLoose : 0, false);
 
                 if (fighter == leaver)
                     leaverResult = result;
@@ -119,9 +125,6 @@ namespace Stump.Server.WorldServer.Game.Arena
 
             if (characterFighter.Character.ArenaParty != null)
                 characterFighter.Character.LeaveParty(characterFighter.Character.ArenaParty);
-
-            if (State != FightState.Placement)
-                return;
 
             var rankLoose = CalculateRankLoose(characterFighter);
             characterFighter.Character.UpdateArenaProperties(rankLoose, false);

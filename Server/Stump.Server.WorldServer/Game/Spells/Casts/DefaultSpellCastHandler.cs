@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
@@ -83,7 +84,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                     handler.SetAffectedActors(affectedActors);
 
                     var id = Caster.PopNextBuffId();
-                    var buff = new TriggerBuff(id, Caster, Caster, handler.Dice, Spell, false, false, BuffTriggerType.BUFF_ENDED, BuffTrigger)
+                    var buff = new DelayBuff(id, Caster, Caster, handler.Dice, Spell, false, false, BuffTrigger)
                     {
                         Duration = (short)handler.Dice.Delay,
                         Token = handler
@@ -97,7 +98,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             }
         }
 
-        public void BuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        public void BuffTrigger(DelayBuff buff, object token)
         {
             if (token is SpellEffectHandler)
                 (token as SpellEffectHandler).Apply();

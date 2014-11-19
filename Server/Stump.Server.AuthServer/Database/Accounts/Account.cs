@@ -201,6 +201,13 @@ namespace Stump.Server.AuthServer.Database
             }
         }
 
+        [NullString]
+        public string LastClientKey
+        {
+            get;
+            set;
+        }
+
         public int? LastConnectionWorld
         {
             get;
@@ -306,6 +313,7 @@ namespace Stump.Server.AuthServer.Database
                            BanReason = BanReason,
                            LastConnection = m_loadedLastConnection,
                            LastConnectionIp = m_loadedLastConnectionIP,
+                           LastClientKey = LastClientKey,
                            SubscriptionEndDate = SubscriptionEnd,
                            Characters = WorldCharacters.Select(entry => new WorldCharacterData(entry.CharacterId, entry.WorldId)).ToList(),
                            Tokens = Tokens,

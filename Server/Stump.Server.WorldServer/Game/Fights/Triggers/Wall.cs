@@ -15,9 +15,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
     {
         private readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
-        public Wall(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, params MarkShape[] shapes)
+        public Wall(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, WallsBinding binding, params MarkShape[] shapes)
             : base(id, caster, castedSpell, originEffect, centerCell, shapes)
         {
+            WallBinding = binding;
+        }
+
+        public WallsBinding WallBinding
+        {
+            get;
+            private set;
         }
 
         public override GameActionMarkTypeEnum Type

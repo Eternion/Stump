@@ -21,10 +21,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
         }
 
+        private FightActor[] m_fighters;
+
         public FightActor[] Fighters
         {
-            get;
-            set;
+            get { return m_fighters.Where(x => x.IsAlive()).ToArray(); }
+            set { m_fighters = value; }
         }
 
         public IFight Fight

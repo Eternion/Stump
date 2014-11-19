@@ -151,6 +151,13 @@ namespace Stump.Server.BaseServer.IPC.Objects
             set;
         }
 
+        [ProtoMember(25)]
+        public string LastClientKey
+        {
+            get;
+            set;
+        }
+
         public bool IsSubscribe
         {
             get { return SubscriptionEndDate > DateTime.Now; }

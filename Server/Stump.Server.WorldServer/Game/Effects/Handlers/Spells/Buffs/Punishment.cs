@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         private void OnActorAttacked(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var buffs = buff.Target.GetBuffs(entry => entry.Spell == Spell).OfType<StatBuff>();
+            var buffs = buff.Target.GetBuffs(entry => entry.Spell.Id == Spell.Id).OfType<StatBuff>();
 
             var currentBonus = buffs.Where(entry => entry.Duration == Effect.Duration).Sum(entry => entry.Value);
             var limit = Dice.DiceFace;
@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 Spell, (short)bonus, caracteristic, false, true, (short)GetBuffEffectId(caracteristic)) 
                 {Duration = Dice.Value};
 
-            buff.Target.AddAndApplyBuff(statBuff);
+            buff.Target.AddAndApplyBuff(statBuff, true, true);
         }
 
         private static PlayerFields GetPunishmentBoostType(short punishementAction)
@@ -65,6 +65,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.Chance;
                 case ActionsEnum.ACTION_CHARACTER_BOOST_WISDOM:
                     return PlayerFields.Wisdom;
+                case ActionsEnum.ACTION_CHARACTER_BOOST_DAMAGES_PERCENT:
+                    return PlayerFields.DamageBonusPercent;
                 case ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY:
                 case (ActionsEnum)407: // **** magic numbers
                     return PlayerFields.Vitality;
@@ -90,6 +92,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return EffectsEnum.Effect_AddVitality;
                 case PlayerFields.Wisdom:
                     return EffectsEnum.Effect_AddWisdom;
+                case PlayerFields.DamageBonusPercent:
+                    return EffectsEnum.Effect_AddDamageBonusPercent;
                 default:
                     throw new Exception(string.Format("Buff Effect not found for caracteristic {0}", caracteristic));
             }

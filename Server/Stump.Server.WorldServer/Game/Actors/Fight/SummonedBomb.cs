@@ -25,9 +25,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SummonedBomb : FightActor, INamedActor
     {
-        [Variable] public static int BonusDamageIncrease = 25;
+        [Variable] public static int BonusDamageStart = 40;
+        [Variable] public static int BonusDamageIncrease = 20;
         [Variable] public static int BonusDamageIncreaseLimit = 3;
         [Variable] public static int BombLimit = 3;
+        [Variable] public static int WallMinSize = 1;
+        [Variable] public static int WallMaxSize = 6;
+        [Variable] public static int ExplosionZone = 2;
 
         private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>()
         {
@@ -83,11 +87,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void OnTurnStarted(IFight fight, FightActor player)
         {
-            if (player != this)
-                return;
+            if (player == Summoner)
+                IncreaseDamageBonus();
 
-            IncreaseDamageBonus();
-            PassTurn();
+            if (player == this)
+                PassTurn();
         }
 
         private void AdjustStats()
@@ -217,53 +221,34 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     100d + Summoner.Stats[PlayerFields.DamageBonus].Total);
         }
 
-        private static bool IsAnotherBombInLine(SummonedBomb bomb1, IEnumerable<short> cells)
-        {
-            foreach (var cell in cells)
-            {
-                var bomb = bomb1.Fight.GetOneFighter<SummonedBomb>(x => x.Cell.Id == cell);
-                if (bomb != null && bomb.IsFriendlyWith(bomb1) && bomb.MonsterBombTemplate == bomb1.MonsterBombTemplate)
-                    return true;
-            }
-
-            return false;
-        }
-
-        private void CheckForBetterBounding()
-        {
-            foreach (var wall in Walls.ToArray())
-            {
-                var cells = wall.Bomb1.Position.Point.GetCellsOnLineBetween(wall.Bomb2.Position.Point).Select(y => y.CellId);
-                if (IsAnotherBombInLine(this, cells))
-                    wall.Delete();
-            }
-        }
-
-        private static bool IsBoundWith(SummonedBomb bomb1, SummonedBomb bomb2)
-        {
-            bomb1.CheckForBetterBounding();
-            bomb2.CheckForBetterBounding();
-
-            var dist = bomb1.Position.Point.DistanceToCell(bomb2.Position.Point);
-
-            return dist > 1 &&
-                         dist <= 7 && bomb1.MonsterBombTemplate == bomb2.MonsterBombTemplate &&
-                         bomb1.Position.Point.IsOnSameLine(bomb2.Position.Point);
-        }
 
         public bool IsBoundWith(SummonedBomb bomb)
         {
-            return IsBoundWith(this, bomb);
+            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+
+            return dist > WallMinSize && dist <= (WallMaxSize + 1) && // check the distance
+                MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
+                Position.Point.IsOnSameLine(bomb.Position.Point) && // bombs are in alignment
+                Summoner.Bombs.All(x => x == this || x == bomb || MonsterBombTemplate != bomb.MonsterBombTemplate || // there are no others bombs from the same type between them
+                    !x.Position.Point.IsBetween(Position.Point, bomb.Position.Point));
+        }
+
+        public bool IsInExplosionZone(SummonedBomb bomb)
+        {
+            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+
+            return dist <= ExplosionZone;
         }
 
         public void Explode()
         {
             // check reaction
             var bombs = new List<SummonedBomb> {this};
-            foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(bomb => IsBoundWith(this, bomb)))
+            foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(x => IsBoundWith(x) || IsInExplosionZone(x)))
             {
                 bombs.Add(bomb);
-                foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(bomb2 => IsBoundWith(bomb, bomb2)))
+                var bomb1 = bomb;
+                foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(x => bomb1.IsBoundWith(x) || bomb1.IsInExplosionZone(x)))
                 {
                     bombs.Add(bomb2);
                 }
@@ -295,6 +280,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler.Execute();
 
             OnSpellCasted(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
+
+            foreach (var client in Fight.Clients)
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, handler.DamageBonus);
         }
 
         public static void ExplodeInReaction(ICollection<SummonedBomb> bombs)
@@ -312,10 +300,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (DamageBonusTurns >= BonusDamageIncreaseLimit)
                 return false;
 
-            DamageBonusPercent += BonusDamageIncrease;
+            DamageBonusPercent += BonusDamageStart + (BonusDamageIncrease * DamageBonusTurns);
             DamageBonusTurns++;
 
             Look.Rescale(1.2);
+
+            foreach (var client in Fight.Clients)
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, DamageBonusPercent);
 
             return true;
         }
@@ -327,7 +318,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnPositionChanged(ObjectPosition position)
         {        
-            if (m_initialized)
+            if (m_initialized && Position != null && Fight.State == FightState.Fighting)
                 CheckAndBuildWalls();
 
             base.OnPositionChanged(position);
@@ -338,36 +329,49 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Fight.State == FightState.Ended)
                 return false;
 
-            foreach (var binding in m_wallsBinding.ToArray())
+            // if the current bomb is in a wall we destroy it to create 2 new walls
+            foreach (var bomb in Summoner.Bombs)
+            {
+                var toDelete = new List<WallsBinding>();
+                if (bomb != this)
+                    toDelete.AddRange(bomb.m_wallsBinding.Where(binding => binding.Contains(Cell)));
+
+                foreach (var binding in toDelete)
+                {
+                    binding.Delete();
+                }
+            }
+
+            // check all wall bindings if they are still valid or if they must be adjusted (resized)
+            var unvalidBindings = new List<WallsBinding>();
+            foreach (var binding in m_wallsBinding)
             {
                 if (!binding.IsValid())
                 {
-                    var bomb1 = binding.Bomb1;
-                    var bomb2 = binding.Bomb2;
-
-                    binding.Delete();
-
-                    bomb1.CheckAndBuildWalls();
-                    bomb2.CheckAndBuildWalls();
+                    unvalidBindings.Add(binding);
                 }
                 else if (binding.MustBeAdjusted())
                     binding.AdjustWalls();
             }
 
-            foreach (var binding in m_wallsBinding.Where(binding => binding.IntersectOtherWalls))
+            foreach (var binding in unvalidBindings)
             {
-                binding.AdjustWalls();
+                binding.Delete();
             }
 
-            foreach (var bomb in Summoner.Bombs.ToArray())
+            // we check all possible combinations each time because there are too many cases
+            // since there is only 3 bombs, it's 6 iterations so still cheap
+            var bombs = Summoner.Bombs.ToArray();
+            foreach (var bomb1 in bombs)
+                foreach(var bomb2 in bombs)
             {
-                if (bomb == this || !m_wallsBinding.All(x => x.Bomb1 != bomb && x.Bomb2 != bomb) || !IsBoundWith(bomb))
+                if (bomb1 == bomb2 || !bomb1.m_wallsBinding.All(x => x.Bomb1 != bomb2 && x.Bomb2 != bomb2) || !bomb1.IsBoundWith(bomb2))
                     continue;
 
-                var binding = new WallsBinding(this, bomb, m_color);
+                var binding = new WallsBinding(bomb1, bomb2, m_color);
                 binding.AdjustWalls();
-                AddWallsBinding(binding);
-                bomb.AddWallsBinding(binding);
+                bomb1.AddWallsBinding(binding);
+                bomb2.AddWallsBinding(binding);
             }
 
             return true;
@@ -401,6 +405,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy)
         {
+            if (HasState((int) SpellStatesEnum.Unmovable))
+            {
+                var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
+                RemoveState(state);
+
+                Explode();
+            }      
+
             base.OnDead(killedBy);
 
             Summoner.RemoveBomb(this);
@@ -409,6 +421,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 binding.Delete();
             }
+
+            Fight.TurnStarted -= OnTurnStarted;
+            Team.FighterAdded -= OnFighterAdded;
         }
 
 

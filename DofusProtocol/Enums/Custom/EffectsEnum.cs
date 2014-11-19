@@ -1189,11 +1189,11 @@
         /// <summary>
         /// Minimizes random effects
         /// </summary>
-        Effect_MinimizeEffects = 781,
+        Effect_RandDownModifier = 781,
         /// <summary>
         /// Maximizes random effects
         /// </summary>
-        Effect_782 = 782,
+        Effect_RandUpModifier = 782,
         /// <summary>
         /// Repels to the targeted cell
         /// </summary>

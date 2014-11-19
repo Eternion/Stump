@@ -85,6 +85,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
                 var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(source, target, BackCellsCount);
                 var pushDamage = new Damage(pushbackDamages)
                 {
+                    Source = target,
                     School = EffectSchoolEnum.Unknown,
                     IgnoreDamageBoost = true,
                     IgnoreDamageReduction = false

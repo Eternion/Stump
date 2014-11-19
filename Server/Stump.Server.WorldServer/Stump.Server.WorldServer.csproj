@@ -278,6 +278,8 @@
     <Compile Include="Game\Conditions\Criterions\BonesCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\HasOrnament.cs" />
+    <Compile Include="Game\Conditions\Criterions\HasTitleCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\MapCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestDoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestStartableCriterion.cs" />
@@ -321,7 +323,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerRemainingMP.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\MinimizeEffects.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\RandModifier.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\DispelState.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\SubVitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\CarryActor.cs" />
@@ -346,6 +348,8 @@
     <Compile Include="Game\Exchanges\Bank\BankCustomer.cs" />
     <Compile Include="Game\Exchanges\IExchange.cs" />
     <Compile Include="Game\Exchanges\Exchanger.cs" />
+    <Compile Include="Game\Exchanges\Merchant\CharacterMerchant.cs" />
+    <Compile Include="Game\Exchanges\Merchant\MerchantExchange.cs" />
     <Compile Include="Game\Exchanges\TaxCollector\TaxCollectorExchange.cs" />
     <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
@@ -402,6 +406,7 @@
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
+    <Compile Include="Game\Fights\Buffs\DelayBuff.cs" />
     <Compile Include="Game\Fights\Damage.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
     <Compile Include="Game\Fights\FightAgression.cs" />
@@ -494,6 +499,7 @@
     <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
     <Compile Include="Handlers\Prism\PrismHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
+    <Compile Include="Handlers\Security\SecurityHandler.cs" />
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
     <Compile Include="Handlers\TaxCollector\TaxCollectorHandler.cs" />
     <Compile Include="Handlers\Titles\TitleHandler.cs" />

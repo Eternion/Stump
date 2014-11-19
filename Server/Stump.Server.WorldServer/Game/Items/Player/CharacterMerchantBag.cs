@@ -57,12 +57,26 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return (int)resultTax;
         }
 
-        public bool MoveToInventory(MerchantItem item)
+        public bool StoreItem(BasePlayerItem item, int amount, uint price)
         {
-            return MoveToInventory(item, (int)item.Stack);
+            if (!Owner.Inventory.HasItem(item) || amount <= 0)
+                return false;
+
+            if (item.IsLinkedToPlayer() || item.IsLinkedToAccount())
+                return false;
+
+            if (amount > item.Stack)
+                amount = (int)item.Stack;
+
+            var merchantItem = ItemManager.Instance.CreateMerchantItem(Owner, item, amount, price);
+            AddItem(merchantItem);
+
+            Owner.Inventory.RemoveItem(item, amount);
+
+            return true;
         }
 
-        public bool MoveToInventory(MerchantItem item, int quantity)
+        public bool TakeBack(MerchantItem item, int quantity)
         {
             if (quantity <= 0)
                 return false;
@@ -76,7 +90,27 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             Owner.Inventory.AddItem(newItem);
 
-            Owner.Area.AddMessage(Save);
+            WorldServer.Instance.IOTaskPool.AddMessage(Save);
+
+            return true;
+        }
+
+        public bool ModifyItem(MerchantItem item, int quantity, uint price)
+        {
+            item.Price = price;
+            InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
+
+            if (quantity > item.Stack)
+            {
+                var playerItem = Owner.Inventory.TryGetItem(item.Template);
+                if (playerItem != null)
+                    StoreItem(playerItem, (int) (quantity - item.Stack), price);
+            }
+
+            if (quantity > 0 && quantity < item.Stack)
+                TakeBack(item, (int) (item.Stack - quantity));
+
+            WorldServer.Instance.IOTaskPool.AddMessage(Save);
 
             return true;
         }
