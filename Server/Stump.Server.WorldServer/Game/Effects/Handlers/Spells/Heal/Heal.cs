@@ -46,7 +46,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             if (integerEffect == null)
                 return;
 
-            buff.Target.Heal(integerEffect.Value, buff.Caster);
+            if (buff.Target.IsAlive())
+                buff.Target.Heal(integerEffect.Value, buff.Caster);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Reinforced Protection (422)
             FixEffectOnAllLevels(422, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
-            FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Delay = 1);
 
             #endregion

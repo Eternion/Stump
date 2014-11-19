@@ -102,7 +102,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             set;
         }
 
-
         public virtual BuffType Type
         {
             get
