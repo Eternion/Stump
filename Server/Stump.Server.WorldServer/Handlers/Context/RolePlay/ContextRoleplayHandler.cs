@@ -34,6 +34,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
             if (fightCount > 0)
                 SendMapFightCountMessage(client, fightCount);
+
+            if (message.mapId == 150328)
+                client.Send(new PaddockPropertiesMessage(new PaddockInformations(10, 10)));
         }
 
         [WorldHandler(MapRunningFightListRequestMessage.Id)]
