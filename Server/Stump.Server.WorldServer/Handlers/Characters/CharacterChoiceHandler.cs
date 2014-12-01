@@ -19,6 +19,7 @@ using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Friends;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.Server.WorldServer.Handlers.Mounts;
 using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 using Stump.Server.WorldServer.Handlers.Startup;
@@ -201,6 +202,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             //Guild
             if (client.Character.GuildMember != null)
                 GuildHandler.SendGuildMembershipMessage(client,client.Character.GuildMember);
+
+            //Mount
+            if (client.Character.Mount != null)
+                MountHandler.SendMountSetMessage(client, client.Character.Mount.GetMountClientData());
 
             FriendHandler.SendFriendWarnOnConnectionStateMessage(client, client.Character.FriendsBook.WarnOnConnection);
             FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);

@@ -39,6 +39,7 @@ using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Mounts;
 using Stump.Server.WorldServer.Game.Notifications;
 using Stump.Server.WorldServer.Game.Parties;
 using Stump.Server.WorldServer.Game.Shortcuts;
@@ -675,6 +676,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get
             {
+                if (!IsRiding())
+                    return null;
+
+                var mountLook = Mount.Model.EntityLook.Clone();
+                var playerLook = RealLook.Clone();
+
+                playerLook.BonesID = 2;
+                mountLook.SetRiderLook(playerLook);
+
+                return mountLook;
+            }
+        }
+
+        public ActorLook MountItemLook
+        {
+            get
+            {
                 var petSkin = GetEquipedMount();
                 if (petSkin == -1)
                     return null;
@@ -682,6 +700,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 var mountLook = new ActorLook { BonesID = (short)petSkin };
                 var playerLook = RealLook.Clone();
 
+                //KramKram
                 if (petSkin == 1792)
                 {
                     mountLook.AddColor(1, Color.FromArgb(212, 246, 212));
@@ -697,7 +716,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override ActorLook Look
         {
-            get { return GetEquipedMount() != -1 ? MountLook : (CustomLookActivated && CustomLook != null ? CustomLook : RealLook); }
+            get { return IsRiding() ? MountLook : (GetEquipedMount() != -1 ? MountItemLook : (CustomLookActivated && CustomLook != null ? CustomLook : RealLook)); }
         }
 
         public override SexTypeEnum Sex
@@ -1097,10 +1116,26 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Mount
 
+        public Mount Mount
+        {
+            get;
+            set;
+        }
+
         public int GetEquipedMount()
         {
             var petSkin = Inventory.GetPetSkin();
             return (petSkin != null && petSkin.Item1.HasValue && !petSkin.Item2) ? petSkin.Item1.Value : -1;
+        }
+
+        public bool HasEquipedMount()
+        {
+            return Mount != null;
+        }
+
+        public bool IsRiding()
+        {
+            return HasEquipedMount() && Mount.IsRiding;
         }
 
         #endregion
@@ -2743,6 +2778,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     if (GuildMember != null && GuildMember.IsDirty)
                         GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
 
+                    if (Mount != null)
+                        Mount.Save(WorldServer.Instance.DBAccessor.Database);
+
                     m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
                     m_record.CellId = Cell.Id;
                     m_record.Direction = Direction;
@@ -2808,6 +2846,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             MerchantBag.LoadMerchantBag();
 
             GuildMember = GuildManager.Instance.TryGetGuildMember(Id);
+
+            Mount = MountManager.Instance.TryGetMount(Id) != null ? new Mount(this) : null;
 
             Spells = new SpellInventory(this);
             Spells.LoadSpells();
