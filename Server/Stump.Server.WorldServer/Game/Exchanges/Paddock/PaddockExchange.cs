@@ -1,17 +1,19 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using MapPaddock = Stump.Server.WorldServer.Game.Maps.Paddocks.Paddock;
 
-namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
+namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 {
-    public class MerchantExchange : IExchange
+    public class PaddockExchange : IExchange
     {
-        private readonly CharacterMerchant m_merchant;
+        private readonly PaddockExchanger m_paddock;
 
-        public MerchantExchange(Character character)
+        public PaddockExchange(Character character, MapPaddock paddock)
         {
             Character = character;
-            m_merchant = new CharacterMerchant(character, this);
+            Paddock = paddock;
+            m_paddock = new PaddockExchanger(character, paddock, this);
         }
 
         public Character Character
@@ -20,9 +22,15 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
             private set;
         }
 
+        public MapPaddock Paddock
+        {
+            get;
+            private set;
+        }
+
         public ExchangeTypeEnum ExchangeType
         {
-            get { return ExchangeTypeEnum.SHOP_STOCK; }
+            get { return ExchangeTypeEnum.MOUNT_STABLE; }
         }
 
         public DialogTypeEnum DialogType
@@ -34,12 +42,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
 
         public void Open()
         {
-            Character.SetDialoger(m_merchant);
+            Character.SetDialoger(m_paddock);
 
-            InventoryHandler.SendExchangeStartedMessage(Character.Client, ExchangeType);
-            InventoryHandler.SendExchangeShopStockStartedMessage(Character.Client, Character.MerchantBag);
+            InventoryHandler.SendExchangeStartOkMountMessage(Character.Client, Paddock.StabledMounts, Paddock.PaddockedMounts);
         }
-
         public void Close()
         {
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);

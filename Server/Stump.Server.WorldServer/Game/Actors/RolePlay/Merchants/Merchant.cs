@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             Bag = new MerchantBag(this);
 
             if (record.Map == null)
-                throw new Exception("Merchant's map not found");
+                throw new Exception(string.Format("Merchant's map({0}) not found", record.MapId));
 
             Position = new ObjectPosition(
                 record.Map,
