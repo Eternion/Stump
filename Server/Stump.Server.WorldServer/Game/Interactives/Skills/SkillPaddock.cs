@@ -1,8 +1,8 @@
-﻿using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
-using Stump.Server.BaseServer.Database;
+﻿using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Exchanges.Paddock;
+using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
@@ -21,7 +21,15 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override void Execute(Character character)
         {
-            character.Client.Send(new ExchangeStartOkMountMessage(new MountClientData[0], new MountClientData[0]));
+            if (character.IsBusy())
+                return;
+
+            var paddock = PaddockManager.Instance.GetPaddock(InteractiveObject.Map.Id);
+            if (paddock == null)
+                return;
+
+            var exchange = new PaddockExchange(character, paddock);
+            exchange.Open();
         }
     }
 }

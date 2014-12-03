@@ -6,7 +6,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
-namespace Stump.Server.WorldServer.Game.Mounts
+namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
     public class MountManager : DataManager<MountManager>
     {

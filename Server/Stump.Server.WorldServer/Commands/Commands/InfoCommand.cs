@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Commands;

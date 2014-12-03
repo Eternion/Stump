@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System.IO;
+using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Mounts;
@@ -6,7 +7,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Mounts;
 
-namespace Stump.Server.WorldServer.Game.Mounts
+namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
     public class Mount
     {
@@ -291,6 +292,21 @@ namespace Stump.Server.WorldServer.Game.Mounts
             Owner.RefreshActor();
 
             MountHandler.SendMountRidingMessage(Owner.Client, IsRiding);
+
+            if (!IsRiding)
+            {
+                //Vous descendez de votre monture.
+                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+            }
+        }
+
+        public void Dismount()
+        {
+            IsRiding = false;
+
+            Owner.RefreshActor();
+
+            MountHandler.SendMountRidingMessage(Owner.Client, false);
         }
 
         public void AddXP(long experience)
@@ -326,6 +342,8 @@ namespace Stump.Server.WorldServer.Game.Mounts
 
             return (long)(amount * XP_PER_GAP[0][1] * 0.01);
         }
+
+        #region Network
 
         public MountClientData GetMountClientData()
         {
@@ -365,6 +383,13 @@ namespace Stump.Server.WorldServer.Game.Mounts
                 effectList = new ObjectEffectInteger[0]
             };
         }
+
+        public MountInformationsForPaddock GetMountInformationsForPaddock()
+        {
+            return new MountInformationsForPaddock(Model.Id, Name, Owner.Name);
+        }
+
+        #endregion
 
         public void Save(ORM.Database database)
         {

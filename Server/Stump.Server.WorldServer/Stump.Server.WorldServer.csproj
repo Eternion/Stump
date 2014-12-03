@@ -244,6 +244,7 @@
     <Compile Include="Database\World\Maps\MapElement.cs" />
     <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
     <Compile Include="Database\World\WorldMapMerchant.cs" />
+    <Compile Include="Database\World\WorldMapPaddock.cs" />
     <Compile Include="Database\World\WorldMapTaxCollector.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
@@ -353,6 +354,8 @@
     <Compile Include="Game\Exchanges\Exchanger.cs" />
     <Compile Include="Game\Exchanges\Merchant\CharacterMerchant.cs" />
     <Compile Include="Game\Exchanges\Merchant\MerchantExchange.cs" />
+    <Compile Include="Game\Exchanges\Paddock\PaddockExchanger.cs" />
+    <Compile Include="Game\Exchanges\Paddock\PaddockExchange.cs" />
     <Compile Include="Game\Exchanges\TaxCollector\TaxCollectorExchange.cs" />
     <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
@@ -466,10 +469,12 @@
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
     <Compile Include="Game\Maps\Cells\Triggers\AnimateTrigger.cs" />
+    <Compile Include="Game\Maps\Paddocks\Paddock.cs" />
+    <Compile Include="Game\Maps\Paddocks\PaddockManager.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
-    <Compile Include="Game\Mounts\Mount.cs" />
-    <Compile Include="Game\Mounts\MountManager.cs" />
+    <Compile Include="Game\Actors\RolePlay\Mounts\Mount.cs" />
+    <Compile Include="Game\Actors\RolePlay\Mounts\MountManager.cs" />
     <Compile Include="Game\Social\ChatEntry.cs" />
     <Compile Include="Game\Social\ChatHistory.cs" />
     <Compile Include="Game\Social\Friend.cs" />
