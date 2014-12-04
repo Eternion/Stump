@@ -19,12 +19,12 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
         [Variable] public static readonly double BossBonusFactor = 1.8;
 
         [Variable]
-        public static readonly double StatsFactor = 7;
+        public static readonly double StatsFactor = 80;
 
-        private static readonly int[] m_thresholds = new[]
-            {
-                100, 350, 600
-            };
+        private static readonly int[] m_thresholds =
+        {
+            100, 350, 600
+        };
 
         [Initialization(typeof(MonsterManager), Silent = true)]
         public static void ApplyFix()

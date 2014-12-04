@@ -1409,7 +1409,7 @@
         /// <summary>
         /// Belongs to: #4
         /// </summary>
-        Effect_987 = 987,
+        Effect_BelongsTo = 987,
         /// <summary>
         /// Made by: #4
         /// </summary>
@@ -1425,11 +1425,11 @@
         /// <summary>
         /// !! Invalid Certificate !!
         /// </summary>
-        Effect_994 = 994,
+        Effect_InvalidCertificate = 994,
         /// <summary>
         /// View mount characteristics
         /// </summary>
-        Effect_995 = 995,
+        Effect_ViewMountCharacteristics = 995,
         /// <summary>
         /// Belongs to: #4
         /// </summary>
@@ -1437,11 +1437,11 @@
         /// <summary>
         /// Name: #4
         /// </summary>
-        Effect_997 = 997,
+        Effect_Name = 997,
         /// <summary>
         /// Validity: #1d #2h #3m
         /// </summary>
-        Effect_998 = 998,
+        Effect_Validity = 998,
         Effect_999 = 999,
         /// <summary>
         /// 2
