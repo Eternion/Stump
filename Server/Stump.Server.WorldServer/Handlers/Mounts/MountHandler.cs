@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 
 namespace Stump.Server.WorldServer.Handlers.Mounts
 {
@@ -11,21 +12,33 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
         public static void HandleMountToggleRidingRequestMessage(WorldClient client, MountToggleRidingRequestMessage message)
         {
             if (client.Character.HasEquipedMount())
-                client.Character.Mount.ToggleRiding();
+                client.Character.Mount.ToggleRiding(client.Character);
         }
 
         [WorldHandler(MountRenameRequestMessage.Id)]
         public static void HandleMountRenameRequestMessage(WorldClient client, MountRenameRequestMessage message)
         {
             if (client.Character.HasEquipedMount())
-                client.Character.Mount.RenameMount(message.name);
+                client.Character.Mount.RenameMount(client.Character, message.name);
         }
 
         [WorldHandler(MountSetXpRatioRequestMessage.Id)]
         public static void HandleMountSetXpRatioRequestMessage(WorldClient client, MountSetXpRatioRequestMessage message)
         {
             if (client.Character.HasEquipedMount())
-                client.Character.Mount.SetGivenExperience(message.xpRatio);
+                client.Character.Mount.SetGivenExperience(client.Character, message.xpRatio);
+        }
+
+        [WorldHandler(MountInformationRequestMessage.Id)]
+        public static void HandleMountInformationRequestMessage(WorldClient client, MountInformationRequestMessage message)
+        {
+            var record = MountManager.Instance.TryGetMountById((int)message.id);
+            if (record == null)
+                return;
+
+            var mount = new Mount(record);
+
+            SendMountDataMessage(client, mount.GetMountClientData());
         }
 
         public static void SendMountDataMessage(IPacketReceiver client, MountClientData mountClientData)

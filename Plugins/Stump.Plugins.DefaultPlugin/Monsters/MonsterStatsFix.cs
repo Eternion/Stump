@@ -19,7 +19,7 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
         [Variable] public static readonly double BossBonusFactor = 1.8;
 
         [Variable]
-        public static readonly double StatsFactor = 80;
+        public static readonly double StatsFactor = 7;
 
         private static readonly int[] m_thresholds =
         {
@@ -33,7 +33,7 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
 
             foreach (var grade in MonsterManager.Instance.GetMonsterGrades())
             {
-                bool extraHp = grade.LifePoints / (double)grade.Level > 10;
+                var extraHp = grade.LifePoints / (double)grade.Level > 10;
 
                 grade.TackleEvade = (short) ((int) (grade.Level / 10d)  * (extraHp ? 2 : 1));
                 grade.TackleBlock = grade.TackleEvade;
@@ -60,10 +60,14 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
 
             var total = (double)stats.Length;
 
-            monster.Strength += (short)GetPointsByInvest((int)Math.Floor(points*(stats.Count(x => x == PlayerFields.Strength)/total)));
-            monster.Agility += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Agility) / total )));
-            monster.Chance += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Chance) / total )));
-            monster.Intelligence += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Intelligence) / total )));
+            if (monster.Strength == 0)
+                monster.Strength += (short)GetPointsByInvest((int)Math.Floor(points*(stats.Count(x => x == PlayerFields.Strength)/total)));
+            if (monster.Agility == 0)
+                monster.Agility += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Agility) / total )));
+            if (monster.Chance == 0)
+                monster.Chance += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Chance) / total )));
+            if (monster.Intelligence == 0)
+                monster.Intelligence += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Intelligence) / total )));
         }
 
         private static PlayerFields[] GetMonsterMainStats(MonsterGrade monster)

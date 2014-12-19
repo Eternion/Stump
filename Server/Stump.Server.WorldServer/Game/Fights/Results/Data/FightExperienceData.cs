@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
                 Character.GuildMember.AddXP(ExperienceForGuild);
 
             if (Character.HasEquipedMount() && ExperienceForMount > 0)
-                Character.Mount.AddXP(ExperienceForMount);
+                Character.Mount.AddXP(Character, ExperienceForMount);
         }
     }
 }
