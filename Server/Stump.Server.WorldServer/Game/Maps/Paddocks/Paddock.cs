@@ -21,8 +21,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
             if (record.Map == null)
                 throw new Exception(string.Format("Paddock's map({0}) not found", record.MapId));
 
-            StabledMounts = new List<Mount>();
-            PaddockedMounts = new List<Mount>();
+            StabledMounts = record.StabledMounts.Select(x => MountManager.Instance.GetMountById(x)).ToList();
+            PaddockedMounts = record.PaddockedMounts.Select(x => MountManager.Instance.GetMountById(x)).ToList();
         }
 
         public WorldMapPaddockRecord Record
@@ -107,7 +107,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 
         public void Save()
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Update(m_record));
+            Record.PaddockedMounts = PaddockedMounts.Select(x => x.Id).ToList();
+            Record.StabledMounts = StabledMounts.Select(x => x.Id).ToList();
+
+            WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Update(Record));
 
             IsRecordDirty = false;
         }

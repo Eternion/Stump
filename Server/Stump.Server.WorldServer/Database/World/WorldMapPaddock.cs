@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Stump.Core.IO;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Maps;
 
@@ -20,6 +18,10 @@ namespace Stump.Server.WorldServer.Database.World
     {
         private Guild m_guild;
         private Map m_map;
+        private List<int> m_paddockedMounts = new List<int>();
+        private string m_paddockedMountsCSV;
+        private List<int> m_stabledMounts = new List<int>();
+        private string m_stabledMountsCSV;
 
         [PrimaryKey("Id")]
         public int Id
@@ -116,6 +118,62 @@ namespace Stump.Server.WorldServer.Database.World
         {
             get;
             set;
+        }
+
+        [Ignore]
+        public List<int> StabledMounts
+        {
+            get
+            {
+                return m_stabledMounts;
+            }
+            set
+            {
+                m_stabledMounts = value;
+                m_stabledMountsCSV = m_stabledMounts.ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string StabledMountsCSV
+        {
+            get
+            {
+                return m_stabledMountsCSV;
+            }
+            set
+            {
+                m_stabledMountsCSV = value;
+                m_stabledMounts = !string.IsNullOrEmpty(m_stabledMountsCSV) ? m_stabledMountsCSV.FromCSV<int>(",").ToList() : new List<int>();
+            }
+        }
+
+        [Ignore]
+        public List<int> PaddockedMounts
+        {
+            get
+            {
+                return m_paddockedMounts;
+            }
+            set
+            {
+                m_paddockedMounts = value;
+                m_paddockedMountsCSV = m_paddockedMounts.ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string PaddockedMountsCSV
+        {
+            get
+            {
+                return m_paddockedMountsCSV;
+            }
+            set
+            {
+                m_paddockedMountsCSV = value;
+                m_paddockedMounts = !string.IsNullOrEmpty(m_paddockedMountsCSV) ? m_paddockedMountsCSV.FromCSV<int>(",").ToList() : new List<int>();
+            }
         }
     }
 }

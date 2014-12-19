@@ -1,6 +1,6 @@
-﻿using System.IO;
-using NLog;
+﻿using NLog;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -28,8 +28,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         public Mount(Character character)
         {
             Record = MountManager.Instance.TryGetMount(character.Id);
-            Owner = character;
-            Experience = ExperienceManager.Instance.GetMountLevelExperience(1);
+            Level = ExperienceManager.Instance.GetMountLevel(Experience);
+            ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
+            ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
+        }
+
+        public Mount(MountRecord record)
+        {
+            Record = record;
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
@@ -43,10 +49,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 OwnerId = character.Id,
                 IsNew = true,
                 ModelId = modelid,
+                State = MountStateEnum.EQUIPED, 
                 Experience = ExperienceManager.Instance.GetMountLevelExperience(1)
             };
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
-            Owner = character;
             Sex = sex;
             Name = Model.Name;
         }
@@ -59,12 +65,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             set;
         }
 
-        public Character Owner
-        {
-            get;
-            private set;
-        }
-
         public bool IsDirty
         {
             get;
@@ -75,6 +75,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         {
             get { return Record.Id; }
             private set { Record.Id = value; }
+        }
+
+        public int OwnerId
+        {
+            get { return Record.OwnerId; }
+            private set { Record.OwnerId = value; }
         }
 
         public bool IsRiding
@@ -92,6 +98,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 IsDirty = true;
             }
 
+        }
+
+        public MountStateEnum State
+        {
+            get { return Record.State; }
+            set
+            {
+                Record.State = value;
+                IsDirty = true;
+            }
         }
 
         public MountTemplate Model
@@ -169,7 +185,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public int StaminaMax
         {
-            get { return 1000; }
+            get { return 10000; }
         }
 
         public int Maturity
@@ -184,27 +200,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public int MaturityForAdult
         {
-            get { return 1000; }
+            get { return 10000; }
         }
 
         public int Energy
         {
-            get { return Record.Maturity; }
+            get { return Record.Energy; }
             protected set
             {
-                Record.Maturity = value;
+                Record.Energy = value;
                 IsDirty = true;
             }
         }
 
         public int EnergyMax
         {
-            get { return Record.Maturity; }
-            protected set
-            {
-                Record.Maturity = value;
-                IsDirty = true;
-            }
+            get { return 7400; }
         }
 
         public int Serenity
@@ -219,7 +230,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public int SerenityMax
         {
-            get { return 1000; }
+            get { return 10000; }
+        }
+
+        public int AggressivityMax
+        {
+            get { return -10000; }
         }
 
         public int Love
@@ -234,7 +250,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public int LoveMax
         {
-            get { return 1000; }
+            get { return 10000; }
         }
 
         public int ReproductionCount
@@ -249,7 +265,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public int ReproductionCountMax
         {
-            get { return 10; }
+            get { return 80; }
         }
 
         public int PodsMax
@@ -259,57 +275,57 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public int FecondationTime
         {
-            get { return Record.Model.FecondationTime; }
+            get { return 0; }
         }
 
         #endregion
 
-        public void RenameMount(string name)
+        public void RenameMount(Character character, string name)
         {
             Name = name;
 
-            MountHandler.SendMountRenamedMessage(Owner.Client, Id, name);
+            MountHandler.SendMountRenamedMessage(character.Client, Id, name);
         }
 
-        public void SetGivenExperience(sbyte xp)
+        public void SetGivenExperience(Character character, sbyte xp)
         {
             GivenExperience = xp > 90 ? (sbyte)90 : (xp < 0 ? (sbyte)0 : xp);
 
-            MountHandler.SendMountXpRatioMessage(Owner.Client, GivenExperience);
+            MountHandler.SendMountXpRatioMessage(character.Client, GivenExperience);
         }
 
-        public void ToggleRiding()
+        public void ToggleRiding(Character character)
         {
-            if (Owner.IsBusy() || Owner.IsInFight())
+            if (character.IsBusy() || character.IsInFight())
             {
                 //Une action est déjà en cours. Impossible de monter ou de descendre de votre monture.
-                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
+                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 355);
                 return;
             }
 
             IsRiding = !IsRiding;
 
-            Owner.RefreshActor();
+            character.RefreshActor();
 
-            MountHandler.SendMountRidingMessage(Owner.Client, IsRiding);
+            MountHandler.SendMountRidingMessage(character.Client, IsRiding);
 
             if (!IsRiding)
             {
                 //Vous descendez de votre monture.
-                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
             }
         }
 
-        public void Dismount()
+        public void Dismount(Character character)
         {
             IsRiding = false;
 
-            Owner.RefreshActor();
+            character.RefreshActor();
 
-            MountHandler.SendMountRidingMessage(Owner.Client, false);
+            MountHandler.SendMountRidingMessage(character.Client, false);
         }
 
-        public void AddXP(long experience)
+        public void AddXP(Character character, long experience)
         {
             Experience += experience;
 
@@ -319,15 +335,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 return;
 
             Level = level;
-            OnLevelChanged();
+            OnLevelChanged(character);
         }
 
-        protected virtual void OnLevelChanged()
+        protected virtual void OnLevelChanged(Character character)
         {
             ExperienceLevelFloor = ExperienceManager.Instance.GetGuildLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
 
-            MountHandler.SendMountSetMessage(Owner.Client, GetMountClientData());
+            MountHandler.SendMountSetMessage(character.Client, GetMountClientData());
         }
 
         public long AdjustGivenExperience(Character giver, long amount)
@@ -358,7 +374,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 ancestor = new int[0],
                 behaviors = new int[0],
                 name = Name,
-                ownerId = Owner.Id,
+                ownerId = Record.OwnerId,
                 experience = Experience,
                 experienceForLevel = ExperienceLevelFloor,
                 experienceForNextLevel = ExperienceNextLevelFloor,
@@ -372,7 +388,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 energyMax = EnergyMax,
                 serenity = Serenity,
                 serenityMax = SerenityMax,
-                aggressivityMax = 100,
+                aggressivityMax = AggressivityMax,
                 love = Love,
                 loveMax = LoveMax,
                 fecondationTime = FecondationTime,
@@ -386,7 +402,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public MountInformationsForPaddock GetMountInformationsForPaddock()
         {
-            return new MountInformationsForPaddock(Model.Id, Name, Owner.Name);
+            return new MountInformationsForPaddock(Model.Id, Name, "");
         }
 
         #endregion

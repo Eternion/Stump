@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Pool;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Mounts;
@@ -72,8 +73,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         {
             lock (m_lock)
             {
-                return m_mountRecords.FirstOrDefault(x => x.Value.OwnerId == characterId).Value;
+                return m_mountRecords.FirstOrDefault(x => x.Value.State == MountStateEnum.EQUIPED && x.Value.OwnerId == characterId).Value;
             }
+        }
+
+        public MountRecord TryGetMountById(int mountId)
+        {
+            lock (m_lock)
+            {
+                return m_mountRecords.FirstOrDefault(x => x.Value.Id == mountId).Value;
+            }
+        }
+
+        public Mount GetMountById(int mountId)
+        {
+            var record = TryGetMountById(mountId);
+            return record == null ? null : new Mount(record);
         }
     }
 }

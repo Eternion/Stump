@@ -263,6 +263,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 case StableExchangeActionsEnum.STABLE_TO_INVENTORY:
                     exchanger.StableToInventory(message.rideId);
                     break;
+                case StableExchangeActionsEnum.INVENTORY_TO_STABLE:
+                     exchanger.InventoryToStable(message.rideId);
+                    break;
                 case StableExchangeActionsEnum.STABLE_TO_PADDOCK:
                     exchanger.StableToPaddock(message.rideId);
                     break;
@@ -280,6 +283,12 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                     break;
                 case StableExchangeActionsEnum.PADDOCK_TO_INVENTORY:
                     exchanger.PaddockToInventory(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.INVENTORY_TO_EQUIP:
+                    exchanger.InventoryToEquip(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.INVENTORY_TO_PADDOCK:
+                    exchanger.InventoryToPaddock(message.rideId);
                     break;
             }
         }

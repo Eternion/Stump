@@ -1,6 +1,4 @@
 ﻿using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -41,24 +39,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             trigger.Character.Mount = mount;
             MountHandler.SendMountSetMessage(source, mount.GetMountClientData());
-        }
-    }
-
-    public class MountStableCommand : InGameSubCommand
-    {
-        public MountStableCommand()
-        {
-            Aliases = new[] { "stable" };
-            RequiredRole = RoleEnum.Administrator;
-            Description = "Open stable panel";
-            ParentCommandType = typeof(MountCommands);
-        }
-
-        public override void Execute(GameTrigger trigger)
-        {
-            var source = trigger.GetSource() as WorldClient;
-
-            source.Send(new ExchangeStartOkMountMessage(new MountClientData[0], new MountClientData[0]));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
@@ -26,6 +27,19 @@ namespace Stump.Server.WorldServer.Database.Mounts
         }
 
         public int OwnerId
+        {
+            get;
+            set;
+        }
+
+        [Ignore]
+        public MountStateEnum State
+        {
+            get { return (MountStateEnum)StateId; }
+            set { StateId = (short)value; }
+        }
+
+        public short StateId
         {
             get;
             set;
