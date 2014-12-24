@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 
 namespace Stump.Server.WorldServer.Handlers.Mounts
@@ -20,6 +21,20 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
         {
             if (client.Character.HasEquipedMount())
                 client.Character.Mount.RenameMount(client.Character, message.name);
+        }
+
+        [WorldHandler(MountReleaseRequestMessage.Id)]
+        public static void HandleMountReleaseRequestMessage(WorldClient client, MountReleaseRequestMessage message)
+        {
+            if (client.Character.HasEquipedMount())
+                client.Character.Mount.Release(client.Character);
+        }
+
+        [WorldHandler(MountSterilizeRequestMessage.Id)]
+        public static void HandleMountSterilizeRequestMessage(WorldClient client, MountSterilizeRequestMessage message)
+        {
+            if (client.Character.HasEquipedMount())
+                client.Character.Mount.Sterelize(client.Character);
         }
 
         [WorldHandler(MountSetXpRatioRequestMessage.Id)]
@@ -65,6 +80,16 @@ namespace Stump.Server.WorldServer.Handlers.Mounts
         {
             if (client.Character.HasEquipedMount())
                 client.Send(new MountRenamedMessage(mountId, name));
+        }
+
+        public static void SendMountReleaseMessage(WorldClient client, int mountId)
+        {
+            client.Send(new MountReleasedMessage(mountId));
+        }
+
+        public static void SendMountSterelizeMessage(WorldClient client, int mountId)
+        {
+            client.Send(new MountSterilizedMessage(mountId));
         }
 
         public static void SendMountXpRatioMessage(WorldClient client, sbyte xp)

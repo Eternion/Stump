@@ -1,4 +1,5 @@
 ﻿using NLog;
+using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Types;
@@ -24,6 +25,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             new double[] {60, 1.5},
             new double[] {70, 1}
         };
+
+        [Variable(true)]
+        public static int RequiredLevel = 60;
 
         public Mount(Character character)
         {
@@ -287,6 +291,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             MountHandler.SendMountRenamedMessage(character.Client, Id, name);
         }
 
+        public void Release(Character character)
+        {
+            Dismount(character);
+
+            MountHandler.SendMountUnSetMessage(character.Client);
+            MountHandler.SendMountReleaseMessage(character.Client, character.Mount.Id);
+
+            MountManager.Instance.DeleteMount(character.Mount);
+            character.Mount = null;
+        }
+
+        public void Sterelize(Character character)
+        {
+            character.Mount.ReproductionCount = -1;
+            MountHandler.SendMountSterelizeMessage(character.Client, character.Mount.Id);
+        }
+
         public void SetGivenExperience(Character character, sbyte xp)
         {
             GivenExperience = xp > 90 ? (sbyte)90 : (xp < 0 ? (sbyte)0 : xp);
@@ -402,7 +423,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public MountInformationsForPaddock GetMountInformationsForPaddock()
         {
-            return new MountInformationsForPaddock(Model.Id, Name, "");
+            var character = CharacterManager.Instance.GetCharacterById(OwnerId);
+            return new MountInformationsForPaddock(Model.Id, Name, character.Name);
         }
 
         #endregion
