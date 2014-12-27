@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook)
+            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
             {
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
                 return 0;
@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook)
+            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
             {
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
                 return 0;
@@ -62,14 +62,37 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook)
+            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
             {
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
                 return 0;
             }
 
-            Owner.Record.Relook = true;
+            Owner.Record.Relook = 1;
             Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 58);
+
+            return 1;
+        }
+    }
+
+    [ItemId(ItemIdEnum.SexchangePotion)]
+    public class SexChangePotion : BasePlayerItem
+    {
+        public SexChangePotion(Character owner, PlayerItemRecord record)
+            : base(owner, record)
+        {
+        }
+
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
+        {
+            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
+            {
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
+                return 0;
+            }
+
+            Owner.Record.Relook = 2;
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 44);
 
             return 1;
         }

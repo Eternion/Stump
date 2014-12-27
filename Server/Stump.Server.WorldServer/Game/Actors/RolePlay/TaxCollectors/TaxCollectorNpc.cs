@@ -375,7 +375,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             if (Bag.IsDirty)
                 Bag.Save();
 
-            WorldServer.Instance.DBAccessor.Database.Update(m_record);
+            WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Update(m_record));
         }
 
         #endregion

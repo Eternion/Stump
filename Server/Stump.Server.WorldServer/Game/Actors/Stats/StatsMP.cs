@@ -1,4 +1,3 @@
-using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 

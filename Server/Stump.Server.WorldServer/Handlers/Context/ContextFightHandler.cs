@@ -253,6 +253,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 !client.Character.Fighter.IsTeamLeader())
                 return;
 
+            if (!client.Character.Fight.CanKickPlayer)
+                return;
+
             var target = client.Character.Fight.GetOneFighter<CharacterFighter>(message.targetId);
 
             if (target == null)
@@ -406,7 +409,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                Cell cell, FightSpellCastCriticalEnum critical, bool silentCast,
                                                                Spell spell)
         {
-            client.Send(new GameActionFightSpellCastMessage((short) actionId, caster.Id, target == null ? 0 : target.Id, cell.Id, (sbyte) (critical),
+            client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, target == null ? 0 : target.Id, silentCast ? (short)-1 : cell.Id, (sbyte)(critical),
                                                             silentCast, (short) spell.Id, (sbyte) spell.CurrentLevel));
         }
 
@@ -425,7 +428,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameActionFightModifyEffectsDurationMessage(IPacketReceiver client, FightActor source, FightActor target, short delta)
         {
-            client.Send(new GameActionFightModifyEffectsDurationMessage((short)ActionsEnum.ACTION_CHARACTER_UPDATE_BOOST, source.Id, target.Id, delta));
+            client.Send(new GameActionFightModifyEffectsDurationMessage((short)ActionsEnum.ACTION_CHARACTER_BOOST_DISPELLED, source.Id, target.Id, delta));
         }
 
         public static void SendGameActionFightDispellableEffectMessage(IPacketReceiver client, Buff buff, bool update = false)

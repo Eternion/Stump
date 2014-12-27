@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.StartPlacement();
 
-            m_placementTimer = Map.Area.CallDelayed(PlacementPhaseTime, StartFighting);
+            m_placementTimer = Map.Area.CallDelayed(FightConfiguration.PlacementPhaseTime, StartFighting);
         }
 
         public override void StartFighting()
@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
-            return GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)).Select(fighter => fighter.GetFightResult());
+            return GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb)).Select(fighter => fighter.GetFightResult());
         }
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public TimeSpan GetPlacementTimeLeft()
         {
-            var timeleft = TimeSpan.FromMilliseconds(PlacementPhaseTime) - ( DateTime.Now - CreationTime );
+            var timeleft = TimeSpan.FromMilliseconds(FightConfiguration.PlacementPhaseTime) - ( DateTime.Now - CreationTime );
 
             if (timeleft < TimeSpan.Zero)
                 timeleft = TimeSpan.Zero;

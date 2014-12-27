@@ -20,6 +20,20 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             foreach (var handler in Handlers.OfType<Push>())
             {
                 handler.DamagesDisabled = true;
+                var fighter = Fight.GetFirstFighter<SummonedBomb>(TargetedCell);
+                if (fighter != null && fighter.IsFriendlyWith(Caster))
+                    handler.SubRangeForActor = fighter;
+            }
+        }
+
+        public override void Execute()
+        {
+            if (!m_initialized)
+                Initialize();
+
+            foreach (var handler in Handlers.OrderByDescending(entry => entry.Dice.DiceNum))
+            {
+                handler.Apply();
             }
         }
     }

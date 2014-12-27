@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public long GetCharacterNextLevelExperience(byte level)
         {
             if (!m_records.ContainsKey((byte) (level + 1)))
-                return long.MaxValue;
+                level--;
 
             var exp = m_records[(byte) (level + 1)].CharacterExp;
 

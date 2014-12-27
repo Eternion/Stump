@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
             var result = Character.Guild.SetGuildName(Character, guildName);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
 
-            if (result == GuildCreationResultEnum.GUILD_CREATE_OK)
+            if (result == SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK)
                 Close();
         }
 
@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
             var result = Character.Guild.SetGuildEmblem(Character, emblem);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
 
-            if (result == GuildCreationResultEnum.GUILD_CREATE_OK)
+            if (result == SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK)
                 Close();
         }
     }

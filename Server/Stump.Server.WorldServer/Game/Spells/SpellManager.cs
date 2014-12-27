@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using NLog;
 using Stump.Core.Reflection;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Characters;

@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
         {                        
             if (Character.Guild != null)
             {
-                GuildHandler.SendGuildCreationResultMessage(Character.Client, GuildCreationResultEnum.GUILD_CREATE_ERROR_ALREADY_IN_GUILD);
+                GuildHandler.SendGuildCreationResultMessage(Character.Client, SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_ALREADY_IN_GROUP);
                 return;
             }
 
@@ -52,12 +52,15 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
         {
             if (Character.Guild != null)
             {
-                GuildHandler.SendGuildCreationResultMessage(Character.Client, GuildCreationResultEnum.GUILD_CREATE_ERROR_ALREADY_IN_GUILD);
+                GuildHandler.SendGuildCreationResultMessage(Character.Client, SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_ALREADY_IN_GROUP);
                 return;
             }
             
             var result = GuildManager.Instance.CreateGuild(Character, guildName, emblem);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
+
+            if (result == SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK)
+                Close();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -15,12 +16,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         public override bool Apply()
         {
-            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && (x as SummonedBomb).Summoner == Caster))
+            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && (x as SummonedBomb).Summoner == Caster).Where(bomb => bomb.IsAlive()))
             {
-                if (bomb.IsAlive())
-                {
-                    (bomb as SummonedBomb).Explode();
-                }
+                if (bomb.HasState((int) SpellStatesEnum.Unmovable))
+                    bomb.RemoveSpellBuffs((int)SpellIdEnum.POUDRE);
+
+                (bomb as SummonedBomb).Explode();
             }
 
             return true;

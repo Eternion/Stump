@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
                 foreach (var effectHandler in handler.GetEffectHandlers())
                 {
-                    effectHandler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : (SpellShapeEnum) effectHandler.Effect.ZoneShape, shape.Size);
+                    effectHandler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : effectHandler.Effect.ZoneShape, shape.Size);
                 }
 
                 handler.Execute();
@@ -80,12 +80,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override GameActionMark GetHiddenGameActionMark()
         {
-            return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte)Type, new GameActionMarkedCell[0]);
+            return new GameActionMark(Caster.Id, -1, Id, (sbyte)Type, new GameActionMarkedCell[0]);
         }
 
         public override GameActionMark GetGameActionMark()
         {
             return new GameActionMark(Caster.Id, CastedSpell.Id, Id, (sbyte) Type, Shapes.Select(entry => entry.GetGameActionMarkedCell()));
+        }
+
+        public override bool IsAffected(FightActor actor)
+        {
+            return true;
         }
     }
 }

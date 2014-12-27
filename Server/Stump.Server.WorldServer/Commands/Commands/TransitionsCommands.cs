@@ -1,9 +1,7 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Patterns;
-using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
@@ -214,7 +212,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
             else
             {
-                var cellIdSrc = trigger.IsArgumentDefined("cellidsrc") ? trigger.Get<Cell>("cellidsrc") : character.Cell;
+                var cellIdSrc = trigger.IsArgumentDefined("cellidsrc") ? character.Map.Cells[trigger.Get<short>("cellidsrc")] : character.Cell;
 
                 WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
                 {

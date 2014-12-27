@@ -182,6 +182,84 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
+    public class BanKeyCommand : CommandBase
+    {
+        public BanKeyCommand()
+        {
+            Aliases = new[] { "bankey" };
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Ban a clientkey";
+
+            AddParameter<string>("key", "key", "The key to ban");
+            AddParameter<int>("time", "time", "Ban duration (in minutes)", isOptional: true);
+            AddParameter("reason", "r", "Reason of ban", "No reason");
+            AddParameter<bool>("life", "l", "Specify a life ban", isOptional: true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var key = trigger.Get<string>("key");
+            var reason = trigger.Get<string>("reason");
+
+            if (!IPCAccessor.Instance.IsConnected)
+            {
+                trigger.ReplyError("IPC service not operational !");
+                return;
+            }
+
+            var message = new BanClientKeyMessage
+            {
+                ClientKey = key,
+                BanReason = reason,
+            };
+
+            var source = trigger.GetSource() as WorldClient;
+            if (source != null)
+                message.BannerAccountId = source.Account.Id;
+
+            if (trigger.IsArgumentDefined("time"))
+                message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(trigger.Get<int>("time"));
+            else if (trigger.IsArgumentDefined("life"))
+                message.BanEndDate = null;
+            else
+            {
+                trigger.ReplyError("No ban duration given");
+                return;
+            }
+
+            IPCAccessor.Instance.SendRequest(message,
+                ok => trigger.Reply("ClientKey {0} banned", key),
+                error => trigger.ReplyError("ClientKey {0} not banned : {1}", key, error.Message));
+        }
+    }
+
+    public class UnBanKeyCommand : CommandBase
+    {
+        public UnBanKeyCommand()
+        {
+            Aliases = new[] { "unbankey" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Unban a clientKey";
+
+            AddParameter<string>("key", "key", "The key to unban");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var key = trigger.Get<string>("key");
+
+            if (!IPCAccessor.Instance.IsConnected)
+            {
+                trigger.ReplyError("IPC service not operational !");
+                return;
+            }
+
+            IPCAccessor.Instance.SendRequest(new UnBanClientKeyMessage(key),
+                ok => trigger.Reply("Key {0} unbanned", key),
+                error => trigger.ReplyError("Key {0} not unbanned : {1}", key, error.Message));
+        }
+    }
+
     public class BanInfoCommand : CommandBase
     {
         public BanInfoCommand()

@@ -74,49 +74,49 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             return record == null ? "(no name)" : TextManager.Instance.GetText(record.NameId);
         }
 
-        public void AddTaxCollectorSpawn(Character character, bool lazySave = true)
+        public bool AddTaxCollectorSpawn(Character character, bool lazySave = true)
         {
             if (!character.GuildMember.HasRight(GuildRightsBitEnum.GUILD_RIGHT_HIRE_TAX_COLLECTOR))
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NO_RIGHTS));
-                return;
+                return false;
             }
 
             if (character.Guild.TaxCollectors.Count() >= character.Guild.MaxTaxCollectors)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_MAX_REACHED));
-                return;
+                return false;
             }
 
             if (character.Position.Map.TaxCollector != null)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ALREADY_ONE));
-                return;
+                return false;
             }
 
             if (((double)character.Guild.TaxCollectors.Count(x => x.SubArea == character.SubArea) /
                           character.SubArea.Maps.Count(x => x.AllowCollector)) * 100 > TaxCollectorNpc.MaxTaxCollectorsPercentPerArea)
             {
                 character.SendServerMessage("Impossible de poser un percepteur, vous possédez déjà 25% de la zone.", Color.Red);
-                return;
+                return false;
             }
 
             if (character.Inventory.Kamas < character.Guild.HireCost)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_ENOUGH_KAMAS));
-                return;
+                return false;
             }
 
             if (!character.Position.Map.AllowCollector)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_CANT_HIRE_HERE));
-                return;
+                return false;
             }
 
             if (character.IsInFight())
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_ERROR_UNKNOWN));
-                return;
+                return false;
             }
 
             character.Inventory.SubKamas(character.Guild.HireCost);
@@ -136,6 +136,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             character.Guild.AddTaxCollector(taxCollectorNpc);
 
             TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Id, character.Name);
+
+            return true;
         }
 
         public void RemoveTaxCollectorSpawn(TaxCollectorNpc taxCollector, bool lazySave = true)

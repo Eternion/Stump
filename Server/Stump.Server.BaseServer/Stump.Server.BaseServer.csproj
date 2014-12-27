@@ -286,6 +286,9 @@
     <Compile Include="IPC\Messages\AccountRequestMessage.cs" />
     <Compile Include="IPC\Messages\AddCharacterMessage.cs" />
     <Compile Include="IPC\Messages\BanAccountMessage.cs" />
+    <Compile Include="IPC\Messages\BanClientKeyAnswerMessage.cs" />
+    <Compile Include="IPC\Messages\BanClientKeyMessage.cs" />
+    <Compile Include="IPC\Messages\BanClientKeyRequestMessage.cs" />
     <Compile Include="IPC\Messages\BanIPMessage.cs" />
     <Compile Include="IPC\Messages\ChangeStateMessage.cs" />
     <Compile Include="IPC\Messages\CreateAccountMessage.cs" />
@@ -300,6 +303,7 @@
     <Compile Include="IPC\Messages\CommonOKMessage.cs" />
     <Compile Include="IPC\Messages\ServerUpdateMessage.cs" />
     <Compile Include="IPC\Messages\UnBanAccountMessage.cs" />
+    <Compile Include="IPC\Messages\UnBanClientKeyMessage.cs" />
     <Compile Include="IPC\Messages\UnBanIPMessage.cs" />
     <Compile Include="IPC\IPCMessageSerializer.cs" />
     <Compile Include="IPC\Messages\UpdateAccountMessage.cs" />

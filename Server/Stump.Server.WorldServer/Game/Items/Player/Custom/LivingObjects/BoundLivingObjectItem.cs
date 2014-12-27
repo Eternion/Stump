@@ -56,16 +56,36 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
         public void Dissociate()
         {
-            var effects = new List<EffectBase> { MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect, new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0) };
+            if (Owner.IsInExchange())
+                return;
+
+            var effects = new List<EffectBase> { MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect };
+            var effectsLiving = new List<EffectBase> { MoodEffect, ExperienceEffect, CategoryEffect, SelectedLevelEffect };
 
             if (LastMealEffect != null)
+            {
                 effects.Add(LastMealEffect);
+                effectsLiving.Add(LastMealEffect);
+            }
 
-            var livingObject = ItemManager.Instance.CreatePlayerItem(Owner, m_livingObjectTemplate, 1, effects);
+            if (!Template.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
+                effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
+
+            if (!Template.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981))
+                effects.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_981, 0));
 
             Effects.RemoveAll(effects.Contains);
             Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_LivingObjectId);
             var newInstance = Owner.Inventory.RefreshItemInstance(this);
+
+            if (m_livingObjectTemplate.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_982))
+                effectsLiving.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_982, 0));
+
+            if (m_livingObjectTemplate.Effects.Exists(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981))
+                effectsLiving.Add(new EffectInteger(EffectsEnum.Effect_NonExchangeable_981, 0));
+
+            var livingObject = ItemManager.Instance.CreatePlayerItem(Owner, m_livingObjectTemplate, 1, effectsLiving);
+
             Owner.Inventory.AddItem(livingObject);
 
             Owner.UpdateLook();

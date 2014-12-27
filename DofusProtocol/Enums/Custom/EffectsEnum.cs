@@ -41,11 +41,11 @@
         /// <summary>
         /// Carry a player
         /// </summary>
-        Effect_50 = 50,
+        Effect_Carry = 50,
         /// <summary>
         /// Throw a player
         /// </summary>
-        Effect_51 = 51,
+        Effect_Throw = 51,
         /// <summary>
         /// Steals #1{~1~2 to }#2 MP
         /// </summary>
@@ -57,7 +57,7 @@
         /// <summary>
         /// #3% damage received x#1, or else healed by x#2
         /// </summary>
-        Effect_79 = 79,
+        Effect_HealOrMultiply = 79,
         /// <summary>
         /// HP restored #1{~1~2 to }#2
         /// </summary>
@@ -1185,15 +1185,15 @@
         /// <summary>
         /// Summons the last ally who died with #1{~1~2 to }#2 % of their HP
         /// </summary>
-        Effect_780 = 780,
+        Effect_ReviveAndGiveHPToLastDiedAlly = 780,
         /// <summary>
         /// Minimizes random effects
         /// </summary>
-        Effect_781 = 781,
+        Effect_RandDownModifier = 781,
         /// <summary>
         /// Maximizes random effects
         /// </summary>
-        Effect_782 = 782,
+        Effect_RandUpModifier = 782,
         /// <summary>
         /// Repels to the targeted cell
         /// </summary>
@@ -1227,11 +1227,11 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_792 = 792,
+        Effect_Frikt = 792,
         /// <summary>
         /// #1
         /// </summary>
-        Effect_Rewind = 793,
+        Effect_Putsch = 793,
         /// <summary>
         /// Hunting Weapon
         /// </summary>
@@ -1486,23 +1486,23 @@
         /// <summary>
         /// #1{~1~2 to }#2 (Neutral damage)
         /// </summary>
-        Effect_1012 = 1012,
+        Effect_DamageNeutralRemainingMP = 1012,
         /// <summary>
         /// #1{~1~2 to }#2 (Air damage)
         /// </summary>
-        Effect_1013 = 1013,
+        Effect_DamageAirRemainingMP = 1013,
         /// <summary>
         /// #1{~1~2 to }#2 (Water damage)
         /// </summary>
-        Effect_1014 = 1014,
+        Effect_DamageWaterRemainingMP = 1014,
         /// <summary>
         /// #1{~1~2 to }#2 (Fire damage)
         /// </summary>
-        Effect_1015 = 1015,
+        Effect_DamageFireRemainingMP = 1015,
         /// <summary>
         /// #1{~1~2 to }#2 (Earth damage)
         /// </summary>
-        Effect_1016 = 1016,
+        Effect_DamageEarthRemainingMP = 1016,
         /// <summary>
         /// #1
         /// </summary>
@@ -1542,7 +1542,7 @@
         /// <summary>
         /// #1{~1~2 to }#2% Combo Damage
         /// </summary>
-        Effect_1027 = 1027,
+        Effect_AddComboBonus = 1027,
         /// <summary>
         /// Trigger powders
         /// </summary>
@@ -1558,7 +1558,7 @@
         /// <summary>
         /// Ends turn
         /// </summary>
-        Effect_1031 = 1031,
+        Effect_SkipTurn_1031 = 1031,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1566,7 +1566,7 @@
         /// <summary>
         /// -#1{~1~2 to -}#2% Vitality
         /// </summary>
-        Effect_1033 = 1033,
+        Effect_SubVitalityPercent = 1033,
         /// <summary>
         /// Summons the last ally killed with #1{~1~2 to }#2% of their HP
         /// </summary>
@@ -1602,7 +1602,7 @@
         /// <summary>
         /// Advances #1 cell(s)
         /// </summary>
-        Effect_1042 = 1042,
+        Effect_Advance = 1042,
         /// <summary>
         /// Attract to the selected cell
         /// </summary>
@@ -1807,7 +1807,7 @@
         /// <summary>
         /// Creates illusions
         /// </summary>
-        Effect_1097 = 1097,
+        Effect_Illusions = 1097,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1815,7 +1815,7 @@
         /// <summary>
         /// Teleports the target to the cell where they started their turn
         /// </summary>
-        Effect_1099 = 1099,
+        Effect_Rewind = 1099,
         /// <summary>
         /// 
         /// </summary>
