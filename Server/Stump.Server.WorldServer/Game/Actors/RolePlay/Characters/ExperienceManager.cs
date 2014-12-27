@@ -13,6 +13,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private KeyValuePair<byte, ExperienceTableEntry> m_highestCharacterLevel;
         private KeyValuePair<byte, ExperienceTableEntry> m_highestGrade;
         private KeyValuePair<byte, ExperienceTableEntry> m_highestGuildLevel;
+        private KeyValuePair<byte, ExperienceTableEntry> m_highestMountLevel; 
 
         public byte HighestCharacterLevel
         {
@@ -206,6 +207,60 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Mount
+        /// <summary>
+        ///     Get the experience requiered to access the given mount level
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public long GetMountLevelExperience(byte level)
+        {
+            if (!m_records.ContainsKey(level))
+                throw new Exception("Level " + level + " not found");
+
+            var exp = m_records[level].MountExp;
+
+            if (!exp.HasValue)
+                throw new Exception("Mount level " + level + " is not defined");
+
+            return exp.Value;
+        }
+
+        /// <summary>
+        ///     Get the experience to reach the next mount level
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public long GetMountNextLevelExperience(byte level)
+        {
+            if (!m_records.ContainsKey((byte)(level + 1)))
+                return long.MaxValue;
+
+            var exp = m_records[(byte)(level + 1)].MountExp;
+
+            if (!exp.HasValue)
+                throw new Exception("Mount level " + level + " is not defined");
+
+            return exp.Value;
+        }
+
+        public byte GetMountLevel(long experience)
+        {
+            try
+            {
+                if (experience >= m_highestMountLevel.Value.MountExp)
+                    return m_highestMountLevel.Key;
+
+                return (byte)(m_records.First(entry => entry.Value.MountExp > experience).Key - 1);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception(string.Format("Experience {0} isn't bind to a mount level", experience), ex);
+            }
+        }
+
+        #endregion
+
         [Initialization(InitializationPass.Fourth)]
         public override void Initialize()
         {
@@ -221,6 +276,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_highestCharacterLevel = m_records.OrderByDescending(entry => entry.Value.CharacterExp).FirstOrDefault();
             m_highestGrade = m_records.OrderByDescending(entry => entry.Value.AlignmentHonor).FirstOrDefault();
             m_highestGuildLevel = m_records.OrderByDescending(entry => entry.Value.GuildExp).FirstOrDefault();
+            m_highestMountLevel = m_records.OrderByDescending(entry => entry.Value.MountExp).FirstOrDefault();
         }
     }
 }

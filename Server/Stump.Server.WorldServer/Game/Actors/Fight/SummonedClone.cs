@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SummonedClone : SummonedFighter
     {
-        private readonly StatsFields m_stats;
+        protected readonly StatsFields m_stats;
 
         public SummonedClone(int id, FightActor caster, Cell cell)
             : base(id, caster.Team, new List<Spell>(), caster, cell)
@@ -53,10 +53,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return m_stats; }
         }
 
-        public override GameFightFighterInformations GetGameFightFighterInformations()
+        public GameFightFighterNamedInformations GetGameFightFighterNamedInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
             return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, casterInfos.alive, casterInfos.stats, Name, new PlayerStatus());
+        }
+
+        public override GameFightFighterInformations GetGameFightFighterInformations()
+        {
+            var casterInfos = Caster.GetGameFightFighterInformations();
+            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, casterInfos.alive, casterInfos.stats);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
