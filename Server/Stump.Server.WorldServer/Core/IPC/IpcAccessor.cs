@@ -27,6 +27,8 @@ using Stump.Core.Threading;
 using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
+using Stump.Server.WorldServer.Game.Accounts;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Core.IPC
 {
@@ -417,14 +419,33 @@ namespace Stump.Server.WorldServer.Core.IPC
                 var client = clients[index];
                 isLogged = client.Character != null;
                 // dirty but whatever
-                if (isLogged && index == 0) 
-                    client.Character.Saved += chr => OnCharacterSaved(message);
-
+                if (isLogged && index == 0)
+                {
+                    Action<Character> ev = null;
+                    ev = chr =>
+                    {
+                        client.Character.Saved -= ev;
+                        OnCharacterSaved(message);
+                    };
+                    client.Character.Saved += ev;
+                }
                 client.Disconnect();
             }
 
-            if (!isLogged)
+            Character character;
+            if (AccountManager.Instance.IsAccountBlocked(message.AccountId, out character))
+            {
+                Action<Character> ev = null;
+                    ev = chr =>
+                    {
+                        character.AccountUnblocked -= ev;
+                        ReplyRequest(new DisconnectedClientMessage(true), message);    
+                    };
+                character.AccountUnblocked += ev;
+            }
+            else if (!isLogged)
                 ReplyRequest(new DisconnectedClientMessage(clients.Any()), message);
+
         }
 
         private void OnCharacterSaved(DisconnectClientMessage request)

@@ -37,6 +37,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Wisdom.Base = (short)( m_stats.Wisdom.Base * ( 1 + ( Summoner.Level / 100d ) ) );
         }
 
+        public override int CalculateArmorValue(int reduction)
+        {
+            return (int)(reduction * (100 + 5 * Summoner.Level) / 100d);
+        }
+
         public MonsterGrade Monster
         {
             get;
