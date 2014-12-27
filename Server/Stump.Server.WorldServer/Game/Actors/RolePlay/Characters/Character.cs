@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
@@ -136,9 +137,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public event Action<Character> Saved;
+        private bool m_isLocalSaving;
 
         private void OnSaved()
         {
+            UnBlockAccount();
+
             var handler = Saved;
             if (handler != null) handler(this);
         }
@@ -149,6 +153,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             var handler = LifeRegened;
             if (handler != null) handler(this, regenedLife);
+        }
+
+        public event Action<Character> AccountUnblocked;
+
+        private void OnAccountUnblocked()
+        {
+            Action<Character> handler = AccountUnblocked;
+            if (handler != null) handler(this);
         }
 
         #endregion
@@ -2654,6 +2666,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public bool IsAccountBlocked
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         ///   Spawn the character on the map. It can be called once.
         /// </summary>
@@ -2738,6 +2756,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         {
                             try
                             {
+                                BlockAccount();
                                 SaveNow();
                                 UnLoadRecord();
                             }
@@ -2752,6 +2771,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SaveLater()
         {
+            BlockAccount();
             WorldServer.Instance.IOTaskPool.AddMessage(SaveNow);
         }
 
@@ -2869,6 +2889,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
 
             m_recordLoaded = false;
+        }
+
+        private void BlockAccount()
+        {
+            AccountManager.Instance.BlockAccount(Client.WorldAccount, this);
+            IsAccountBlocked = true;
+        }
+
+        private void UnBlockAccount()
+        {
+            if (!IsAccountBlocked)
+                return;
+
+            AccountManager.Instance.UnBlockAccount(Client.WorldAccount);
+            IsAccountBlocked = false;
+
+            OnAccountUnblocked();
         }
 
         #endregion
