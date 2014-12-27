@@ -20,7 +20,6 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Handlers.Basic;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -104,9 +103,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private void InitializeCharacterFighter()
         {
             m_damageTakenBeforeFight = Stats.Health.DamageTaken;
-
-            if (Fight.IsDeathTemporarily)
-                Stats.Health.DamageTaken = 0;
         }
 
         public override ObjectPosition GetLeaderBladePosition()
@@ -255,6 +251,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!IsFighterTurn())
                 return false;
 
+            if (HasState((int)SpellStatesEnum.Weakened))
+                return false;
+
             var point = new MapPoint(cell);
 
             if (point.DistanceToCell(Position.Point) > weapon.WeaponRange ||
@@ -388,13 +387,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             damage.GenerateDamages();
             OnBeforeDamageInflicted(damage);
+
+            damage.Source.TriggerBuffs(BuffTriggerType.BEFORE_ATTACK, damage);
             TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
+
             OnDamageReducted(damage.Source, damage.Amount);
+
+            damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
             TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+
             OnDamageInflicted(damage);
 
             return 0;
         }
+
         #endregion
     }
 }

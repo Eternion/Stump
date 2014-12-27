@@ -536,19 +536,19 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
         }
 
-        public GuildCreationResultEnum SetGuildName(Character character, string name)
+        public SocialGroupCreationResultEnum SetGuildName(Character character, string name)
         {
             var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GuildNameChangePotion));
             if (potion == null)
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 
             if (!Regex.IsMatch(name, "^([A-Z][a-z\u00E0-\u00FC']{2,14}(\\s|-)?)([A-Z]?[a-z\u00E0-\u00FC']{1,15}(\\s|-)?){0,2}([A-Z]?[a-z\u00E0-\u00FC']{1,15})?$", RegexOptions.Compiled))
             {
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_INVALID;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_INVALID;
             }
 
             if (GuildManager.Instance.DoesNameExist(name))
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
             character.Inventory.RemoveItem(potion, 1);
             character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, potion.Template.Id);
@@ -569,17 +569,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 client.Character.RefreshActor();
             }
 
-            return GuildCreationResultEnum.GUILD_CREATE_OK;
+            return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK;
         }
 
-        public GuildCreationResultEnum SetGuildEmblem(Character character, NetworkGuildEmblem emblem)
+        public SocialGroupCreationResultEnum SetGuildEmblem(Character character, NetworkGuildEmblem emblem)
         {
             var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GuildEmblemChangePotion));
             if (potion == null)
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 
             if (GuildManager.Instance.DoesEmblemExist(emblem))
-                return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
 
             character.Inventory.RemoveItem(potion, 1);
             character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, potion.Template.Id);
@@ -600,7 +600,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 client.Character.RefreshActor();
             }
 
-            return GuildCreationResultEnum.GUILD_CREATE_OK;
+            return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_OK;
         }
 
         public void SetBoss(GuildMember guildMember)

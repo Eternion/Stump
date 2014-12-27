@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 Character.Area.AddMessage(() =>
                 {
                     Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
-                    Character.Inventory.Save();
+                    WorldServer.Instance.IOTaskPool.AddMessage(() => Character.Inventory.Save());
                 });
             }
             else

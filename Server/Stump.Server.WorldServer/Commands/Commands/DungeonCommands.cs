@@ -32,38 +32,55 @@ namespace Stump.Server.WorldServer.Commands.Commands
             ParentCommandType = typeof (DungeonCommands);
             AddParameter("subarea", "s", "Sub area to turn into dungeon", isOptional: true,
                 converter: ParametersConverter.SubAreaConverter);
+            AddParameter("map", "m", "Map to turn into dungeon", isOptional: true,
+                converter: ParametersConverter.MapConverter);
         }
 
         public override void Execute(TriggerBase trigger)
         {
             SubArea subarea;
-            if (!trigger.IsArgumentDefined("subarea"))
-                if (trigger is GameTrigger)
-                    subarea = (trigger as GameTrigger).Character.SubArea;
-                else
-                {
-                    trigger.ReplyError("No sub area defined");
-                    return;
-                }
-            else
-                subarea = trigger.Get<SubArea>("subarea");
+            Map map;
+            MonsterSpawn[] spawns;
 
-            var spawns = subarea.Maps.SelectMany(x => x.MonsterSpawns).Distinct().ToArray();
-
-            foreach (var map in subarea.Maps)
+            if (trigger.IsArgumentDefined("map"))
             {
+                map = trigger.Get<Map>("map");
+                subarea = null;
+
+                spawns = map.MonsterSpawns.ToArray();
                 map.DisableClassicalMonsterSpawns();
+            }
+            else
+            {
+                if (!trigger.IsArgumentDefined("subarea"))
+                    if (trigger is GameTrigger)
+                        subarea = (trigger as GameTrigger).Character.SubArea;
+                    else
+                    {
+                        trigger.ReplyError("No sub area defined");
+                        return;
+                    }
+                else
+                    subarea = trigger.Get<SubArea>("subarea");
+                map = null;
+
+                spawns = subarea.Maps.SelectMany(x => x.MonsterSpawns).Distinct().ToArray();
+
+                foreach (var submap in subarea.Maps)
+                {
+                    submap.DisableClassicalMonsterSpawns();
+                }
             }
 
             foreach (var spawn in spawns)
             {
-                if (spawn.Map != null)
+                if (map != null)
                     spawn.Map.RemoveMonsterSpawn(spawn);
-                if (spawn.SubArea == null)
+                if (subarea == null)
                     continue;
 
-                foreach (var map in spawn.SubArea.Maps)
-                    map.RemoveMonsterSpawn(spawn);
+                foreach (var submap in spawn.SubArea.Maps)
+                    submap.RemoveMonsterSpawn(spawn);
             }
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
@@ -75,7 +92,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 }
 
                 // do something else ?
-                trigger.ReplyBold("{0} is now a dungeon", subarea.Record.Name);
+                var name = subarea == null ? string.Format("{0}/{1}", map.Position.X, map.Position.Y) : subarea.Record.Name;
+                trigger.ReplyBold("{0} is now a dungeon", name);
             });
         }
     }

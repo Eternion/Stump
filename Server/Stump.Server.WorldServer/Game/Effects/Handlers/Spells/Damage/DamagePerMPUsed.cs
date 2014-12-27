@@ -32,6 +32,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
+            var usedMP = buff.Target.UsedMP;
+            if (usedMP <= 0)
+                return;
+
             var damages = new Fights.Damage(Dice)
             {
                 Source = buff.Caster,
@@ -42,8 +46,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 IsCritical = Critical
             };
 
-            damages.BaseMaxDamages = buff.Target.UsedMP * damages.BaseMaxDamages; 
-            damages.BaseMinDamages = buff.Target.UsedMP * damages.BaseMinDamages;
+            damages.GenerateDamages();
+            damages.Amount = usedMP * damages.BaseMaxDamages;
 
             buff.Target.InflictDamage(damages);
         }

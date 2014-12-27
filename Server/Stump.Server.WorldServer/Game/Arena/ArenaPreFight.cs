@@ -182,6 +182,9 @@ namespace Stump.Server.WorldServer.Game.Arena
                 var character1 = character;
                 character.Area.AddMessage(() =>
                 {
+                    if (character1.ArenaPopup != null)
+                        character1.ArenaPopup.Cancel();
+
                     lock(m_charactersMaps)
                         m_charactersMaps.Add(character1, character1.Map);
 

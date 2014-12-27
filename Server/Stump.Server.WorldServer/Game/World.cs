@@ -112,7 +112,6 @@ namespace Stump.Server.WorldServer.Game
             m_superAreas = Database.Query<SuperAreaRecord>(SuperAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
 
             SetLinks();
-
         }
 
         public void SpawnSpaces()
@@ -246,7 +245,7 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private void SpawnInteractives()
+        public void SpawnInteractives()
         {
             foreach (var interactive in InteractiveManager.Instance.GetInteractiveSpawns())
             {

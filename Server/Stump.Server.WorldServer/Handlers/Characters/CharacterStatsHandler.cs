@@ -10,7 +10,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 {
     public partial class CharacterHandler
     {
-        
         public static void SendLifePointsRegenBeginMessage(IPacketReceiver client, byte regenRate)
         {
             client.Send(new LifePointsRegenBeginMessage(regenRate));

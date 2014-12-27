@@ -1,8 +1,8 @@
 
-dofus.ankamagames.kernel.Kernel.as@255
-"if(!(_loc4_ == -1) && _loc4_ > BuildTypeEnum.INTERNAL)"
+dofus.ankamagames.jerakine.utils.crypto.Signature.as@208
+"return result"
 ->
-"if(!(_loc4_ == -1) && _loc4_ > -1)"
+"return true"
 
 dofus.ankamagames.dofus.logic.connection.managers.AuthentificationManager@169
 "_loc2_.initIdentificationMessage(_loc2_.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(this._lva.username,this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false);"

@@ -86,15 +86,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             m_spells.Remove(id);
             m_spellsToDelete.Enqueue(spell.Record);
 
-            if (spell.CurrentLevel > 1)
-            {
-                var resetPoints = 0;
-                for (var i = 1; i < spell.CurrentLevel; i++)
-                {
-                    resetPoints += i;
-                }
-                Owner.SpellsPoints += (ushort)resetPoints;
-            }
+            Owner.SpellsPoints += (ushort)CalculateSpellPoints(spell.CurrentLevel);
 
             InventoryHandler.SendSpellListMessage(Owner.Client, true);
             return true;
@@ -110,7 +102,16 @@ namespace Stump.Server.WorldServer.Game.Spells
             return UnLearnSpell(spell.Id);
         }
 
-        public bool CanBoostSpell(Spell spell, bool send = true)
+        public int CalculateSpellPoints(int level, int currentLevel = 1)
+        {
+            var spentPoints = 0;
+            if (currentLevel > 1)
+                spentPoints = CalculateSpellPoints(currentLevel);
+
+            return ((level * (level - 1)) / 2) - spentPoints;
+        }
+
+        public bool CanBoostSpell(Spell spell, ushort level, bool send = true)
         {
             if (Owner.IsFighting())
             {
@@ -119,21 +120,21 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return false;
             }
 
-            if (spell.CurrentLevel >= 6)
+            if (spell.CurrentLevel >= level || level > 6)
             {
                 if (send)
                     ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
                 return false;
             }
 
-            if (Owner.SpellsPoints < spell.CurrentLevel)
+            if (Owner.SpellsPoints < CalculateSpellPoints(level, spell.CurrentLevel))
             {
                 if (send)
                     ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
                 return false;
             }
 
-            if (spell.ByLevel[spell.CurrentLevel + 1].MinPlayerLevel > Owner.Level)
+            if (spell.ByLevel[level].MinPlayerLevel > Owner.Level)
             {
                 if (send)
                     ContextRoleplayHandler.SendSpellUpgradeFailureMessage(Owner.Client);
@@ -143,7 +144,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             return true;
         }
 
-        public bool BoostSpell(int id)
+        public bool BoostSpell(int id, ushort level)
         {
             var spell = GetSpell(id);
 
@@ -153,11 +154,11 @@ namespace Stump.Server.WorldServer.Game.Spells
                 return false;
             }
 
-            if (!CanBoostSpell(spell))
+            if (!CanBoostSpell(spell, level))
                 return false;
 
-            Owner.SpellsPoints -= spell.CurrentLevel;
-            spell.CurrentLevel++;
+            Owner.SpellsPoints -= (ushort)CalculateSpellPoints(level, spell.CurrentLevel);
+            spell.CurrentLevel = (byte)level;
 
             ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(Owner.Client, spell);
 

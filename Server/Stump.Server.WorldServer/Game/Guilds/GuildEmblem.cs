@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public NetworkGuildEmblem GetNetworkGuildEmblem()
         {
-            return new NetworkGuildEmblem()
+            return new NetworkGuildEmblem
             {
                 backgroundColor = Record.EmblemBackgroundColor,
                 backgroundShape = Record.EmblemBackgroundShape,

@@ -10,10 +10,12 @@ namespace Stump.Server.WorldServer.Game.Interactives
 {
     public class InteractiveManager : DataManager<InteractiveManager>
     {
-        private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
+        private UniqueIdProvider m_idProviderSpawn = new UniqueIdProvider();
+        private readonly UniqueIdProvider m_idProviderSkill = new UniqueIdProvider();
         private Dictionary<int, InteractiveSpawn> m_interactivesSpawns;
         private Dictionary<int, InteractiveTemplate> m_interactivesTemplates;
         private Dictionary<int, InteractiveSkillTemplate> m_skillsTemplates;
+        private Dictionary<int, InteractiveSkillRecord> m_interactivesSkills;
 
         [Initialization(InitializationPass.Fourth)]
         public override void Initialize()
@@ -23,16 +25,27 @@ namespace Stump.Server.WorldServer.Game.Interactives
             m_interactivesSpawns = Database.Query<InteractiveSpawn, InteractiveSpawnSkills, InteractiveSkillRecord, InteractiveSpawn>
                 (new InteractiveSpawnRelator().Map, InteractiveSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_skillsTemplates = Database.Query<InteractiveSkillTemplate>(InteractiveSkillTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_interactivesSkills =
+                Database.Query<InteractiveSkillRecord>(InteractiveSkillRelator.FetchQuery).ToDictionary(entry => entry.Id);
+
+            m_idProviderSpawn = m_interactivesSpawns.Any()
+                ? new UniqueIdProvider(m_interactivesSpawns.Select(x => x.Value.Id).Max())
+                : new UniqueIdProvider(0);
         }
 
         public int PopSkillId()
         {
-            return m_idProvider.Pop();
+            return m_idProviderSkill.Pop();
+        }
+
+        public int PopSpawnId()
+        {
+            return m_idProviderSpawn.Pop();
         }
 
         public void FreeSkillId(int id)
         {
-            m_idProvider.Push(id);
+            m_idProviderSkill.Push(id);
         }
 
         public IEnumerable<InteractiveSpawn> GetInteractiveSpawns()
@@ -48,25 +61,30 @@ namespace Stump.Server.WorldServer.Game.Interactives
         public InteractiveTemplate GetTemplate(int id)
         {
             InteractiveTemplate template;
-            if (m_interactivesTemplates.TryGetValue(id, out template))
-                return template;
-
-            return template;
+            return m_interactivesTemplates.TryGetValue(id, out template) ? template : template;
         }
 
         public InteractiveSkillTemplate GetSkillTemplate(int id)
         {
             InteractiveSkillTemplate template;
-            if (m_skillsTemplates.TryGetValue(id, out template))
-                return template;
-
-            return template;
+            return m_skillsTemplates.TryGetValue(id, out template) ? template : template;
         }
 
-        public void AddInteractiveSpawn(InteractiveSpawn spawn)
+        public void AddInteractiveSpawn(InteractiveSpawn spawn, InteractiveSkillRecord skill, InteractiveSpawnSkills spawnSkill)
         {
             Database.Insert(spawn);
+            Database.Insert(skill);
+            Database.Insert(spawnSkill);
+
             m_interactivesSpawns.Add(spawn.Id, spawn);
+
+            spawn.GetMap().SpawnInteractive(spawn);
+        }
+
+        public void RemoveInteractiveSpawn(InteractiveSpawn spawn)
+        {
+            Database.Delete(spawn);
+            m_interactivesSpawns.Remove(spawn.Id);
         }
     }
 }

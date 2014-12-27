@@ -22,6 +22,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
             AdjustStats();
+
+            Frozen = !template.Template.CanPlay;
         }
 
         private void AdjustStats()

@@ -21,10 +21,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
         }
 
+        private FightActor[] m_fighters;
+
         public FightActor[] Fighters
         {
-            get;
-            set;
+            get { return m_fighters.Where(x => x.IsAlive()).ToArray(); }
+            set { m_fighters = value; }
         }
 
         public IFight Fight
@@ -52,9 +54,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public int DispatchDamages(Damage damage)
         {
             damage.GenerateDamages();
-
-            if (Fighters.Count() < 2)
-                return damage.Amount;
 
             var percentResistance = GetAveragePercentResistance(Fighters, damage.School, Fight.IsPvP);
             var fixResistance = GetAverageFixResistance(Fighters, damage.School, Fight.IsPvP);

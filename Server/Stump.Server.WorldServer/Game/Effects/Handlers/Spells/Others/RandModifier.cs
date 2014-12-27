@@ -1,11 +1,8 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.D2oClasses;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
@@ -29,17 +26,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             return true;
         }
 
-
         private void DamageModifier(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)
                 return;
 
-            if (Dice.EffectId == EffectsEnum.Effect_RandDownModifier)
-                damage.EffectGenerationType = EffectGenerationType.MinEffects;
-            else
-                damage.EffectGenerationType = EffectGenerationType.MaxEffects;
+            damage.EffectGenerationType = Dice.EffectId == EffectsEnum.Effect_RandDownModifier ?
+                EffectGenerationType.MinEffects : EffectGenerationType.MaxEffects;
+
+            damage.Generated = false;
+            damage.GenerateDamages();
         }
     }
 }

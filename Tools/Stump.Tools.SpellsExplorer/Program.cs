@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using Stump.Core.Attributes;
 using Stump.Core.I18N;
-using Stump.DofusProtocol.Enums;
+using Stump.Core.Xml.Config;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer;
@@ -16,7 +19,20 @@ namespace Stump.Tools.SpellsExplorer
 {
     internal static class Program
     {
+        public const string ConfigFile = "config.xml";
+        private static XmlConfig m_config;
+
         private static DatabaseAccessor m_databaseAccessor;
+
+        [Variable]
+        public static readonly DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
+        {
+            DbName = "stump_world",
+            Host = "localhost",
+            User = "root",
+            Password = "",
+            ProviderName = "MySql.Data.MySqlClient",
+        };
 
         private const Languages SecondaryLanguage = Languages.French;
 
@@ -26,10 +42,19 @@ namespace Stump.Tools.SpellsExplorer
             Console.BufferHeight = 1024;
             Console.WindowWidth = 90;
             Console.WindowHeight = 45;
-            
+
+            Console.WriteLine("Load {0}...", ConfigFile);
+            m_config = new XmlConfig(ConfigFile);
+            m_config.AddAssembly(Assembly.GetExecutingAssembly());
+
+            if (!File.Exists(ConfigFile))
+                m_config.Create();
+            else
+                m_config.Load();
+
             Console.WriteLine("Initializing Database...");
-            m_databaseAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration);
-            m_databaseAccessor.RegisterMappingAssembly(typeof(WorldServer).Assembly);
+            m_databaseAccessor = new DatabaseAccessor(DatabaseConfiguration);
+            m_databaseAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
             m_databaseAccessor.Initialize();
 
             Console.WriteLine("Opening Database...");
@@ -63,6 +88,41 @@ namespace Stump.Tools.SpellsExplorer
                                                 x =>
                                                     SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
                                                                 .Effects.Any(y => (int) y.Targets == flag)))
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                    }
+                                        
+                    if (pattern.StartsWith("delay"))
+                    {
+                        foreach (
+                            var spell in
+                                SpellManager.Instance.GetSpellTemplates()
+                                            .Where(
+                                                x =>
+                                                    SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => (int) y.Delay != 0)))
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                    }
+                                        
+                    if (pattern.StartsWith("mod"))
+                    {
+                        foreach (
+                            var spell in
+                                SpellManager.Instance.GetSpellTemplates()
+                                            .Where(
+                                                x =>
+                                                    SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => (int) y.Modificator != 0)))
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                    }                                        
+                    if (pattern.StartsWith("group"))
+                    {
+                        foreach (
+                            var spell in
+                                SpellManager.Instance.GetSpellTemplates()
+                                            .Where(
+                                                x =>
+                                                    SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => (int) y.Group != 0)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
 
@@ -140,8 +200,8 @@ namespace Stump.Tools.SpellsExplorer
             {
                 Console.WriteLine("Effect \"{0}\" ({1}, {2})", TextManager.Instance.GetText(effect.Template.DescriptionId), effect.EffectId, (int)effect.EffectId);
                 Console.WriteLine("DiceFace = {0}, DiceNum = {1}, Value = {2}", effect.DiceFace, effect.DiceNum, effect.Value);
-                Console.WriteLine("Hidden = {0}, Modificator = {1}, Random = {2}, Trigger = {3}", effect.Hidden, effect.Modificator, effect.Random, effect.Trigger);
-                Console.WriteLine("ZoneShape = {0}, ZoneSize = {1}-{2}, Duration = {3}, Target = {4}", (SpellShapeEnum)effect.ZoneShape, effect.ZoneMinSize, effect.ZoneSize, effect.Duration, effect.Targets);
+                Console.WriteLine("Hidden = {0}, Modificator = {1}, Random = {2}, Trigger = {3}, Delay = {4}", effect.Hidden, effect.Modificator, effect.Random, effect.Trigger, effect.Delay);
+                Console.WriteLine("ZoneShape = {0}, ZoneSize = {1}-{2}, Duration = {3}, Target = {4}, Group = {5}", effect.ZoneShape, effect.ZoneMinSize, effect.ZoneSize, effect.Duration, effect.Targets, effect.Group);
                 Console.WriteLine("Template.Active = {0}, Template.BonusType = {1}, Template.Boost = {2}", effect.Template.Active, effect.Template.BonusType, effect.Template.Boost);
                 Console.WriteLine("Template.Category = {0}, Template.Characteristic = {1}, Template.ForceMinMax = {2}", effect.Template.Category, effect.Template.Characteristic, effect.Template.ForceMinMax);
                 Console.WriteLine("Template.Operator = {0}, Template.Id = {1}, Template.ShowInSet = {2}", effect.Template.Operator, effect.Template.Id, effect.Template.ShowInSet);

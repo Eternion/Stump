@@ -456,35 +456,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
         }
 
-        public MerchantItem MoveToMerchantBag(BasePlayerItem item, int quantity, uint price)
-        {
-            if (!HasItem(item))
-                return null;
-
-            if (quantity > item.Stack || quantity == 0)
-                return null;
-
-            if (item.IsLinkedToPlayer() || item.IsLinkedToAccount())
-                return null;
-
-            RemoveItem(item, quantity);
-
-            var existingItem = Owner.MerchantBag.FirstOrDefault(x => x.MustStackWith(item));
-
-            if (existingItem != null)
-            {
-                existingItem.Price = price;
-                Owner.MerchantBag.StackItem(existingItem, (int)quantity);
-
-                return existingItem;
-            }
-
-            var merchantItem = ItemManager.Instance.CreateMerchantItem(item, quantity, price);
-            Owner.MerchantBag.AddItem(merchantItem);
-
-            return merchantItem;
-        }
-
         private void UnEquipedDouble(IItem itemToEquip)
         {
             if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHY || itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS_SHOP)

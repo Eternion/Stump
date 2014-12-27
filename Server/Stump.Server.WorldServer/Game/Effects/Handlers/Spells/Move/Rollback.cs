@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
-            var fighters = Fight.GetAllFighters(x => x.IsAlive() && !(x is SummonedMonster));
+            var fighters = Fight.GetAllFighters(x => x.IsAlive() && !(x is SummonedFighter) && !(x is SummonedBomb));
             foreach (var fighter in fighters)
             {
                 var newCell = fighter.FightStartPosition.Cell;

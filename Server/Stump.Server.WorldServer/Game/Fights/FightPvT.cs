@@ -280,7 +280,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var looters = ChallengersTeam.GetAllFightersWithLeavers<CharacterFighter>().Select(entry => entry.GetFightResult()).OrderByDescending(entry => entry.Prospecting);
 
             results.AddRange(looters);
-            results.AddRange(DefendersTeam.GetAllFightersWithLeavers().Where(entry => !(entry is SummonedFighter)).Select(entry => entry.GetFightResult()));
+            results.AddRange(DefendersTeam.GetAllFightersWithLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb)).Select(entry => entry.GetFightResult()));
 
             if (Winners != ChallengersTeam)
                 return results;

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
@@ -50,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
         {
             foreach (var skillTemplate in Spawn.GetSkills())
             {
-                int id = InteractiveManager.Instance.PopSkillId();
+                var id = InteractiveManager.Instance.PopSkillId();
 
                 m_skills.Add(id, skillTemplate.GenerateSkill(id, this));
             }
@@ -59,10 +58,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
         public Skill GetSkill(int id)
         {
             Skill result;
-            if (!m_skills.TryGetValue(id, out result))
-                return null;
-
-            return result;
+            return !m_skills.TryGetValue(id, out result) ? null : result;
         }
 
         public IEnumerable<Skill> GetSkills()

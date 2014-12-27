@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Core.Mathematics;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -14,6 +15,7 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
@@ -24,6 +26,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -95,15 +98,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, source, reduction);
         }
 
-        public event Action<FightActor, FightActor, int> DamageReflected;
+        public event Action<FightActor, FightActor> DamageReflected;
 
-        protected internal virtual void OnDamageReflected(FightActor target, int reflected)
+        protected internal virtual void OnDamageReflected(FightActor target)
         {
             ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target);
 
             var handler = DamageReflected;
             if (handler != null)
-                handler(this, target, reflected);
+                handler(this, target);
         }
 
         public event Action<FightActor> FighterLeft;
@@ -158,6 +161,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, spell, target, critical, silentCast);
         }
 
+        protected virtual void OnSpellCasted(Spell spell, FightActor target, FightSpellCastCriticalEnum critical, bool silentCast)
+        {
+            if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
+                VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            {
+                ShowCell(Cell, false);
+
+                if (!IsInvisibleSpellCast(spell))
+                    if (!DispellInvisibilityBuff())
+                        SetInvisibilityState(VisibleStateEnum.VISIBLE);
+            }
+
+            SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
+
+            var handler = SpellCasted;
+            if (handler != null)
+                handler(this, spell, target.Cell, critical, silentCast);
+        }
+
         public event Action<FightActor, Spell, Cell> SpellCastFailed;
 
         protected virtual void OnSpellCastFailed(Spell spell, Cell cell)
@@ -202,6 +224,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnDead(FightActor killedBy)
         {
+            KillAllSummons();
             RemoveAndDispellAllBuffs();
 
             var handler = Dead;
@@ -323,7 +346,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool BlockSight
         {
-            get { return !IsDead(); }
+            get { return IsAlive() && VisibleState != GameActionFightInvisibilityStateEnum.INVISIBLE; }
         }
 
         public bool IsSacrificeProtected
@@ -695,14 +718,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+
             handler.Initialize();
 
-            OnSpellCasting(spell, cell, critical, handler.SilentCast);
+            OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
             UseAP((short)spellLevel.ApCost);
 
             handler.Execute();
 
-            OnSpellCasted(spell, cell, critical, handler.SilentCast);
+            OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast);
 
             return true;
         }
@@ -734,6 +758,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual int InflictDamage(Damage damage)
         {
             OnBeforeDamageInflicted(damage);
+            damage.Source.TriggerBuffs(BuffTriggerType.BEFORE_ATTACK, damage);
             TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
 
             damage.GenerateDamages();
@@ -741,6 +766,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState((int)SpellStatesEnum.Invulnerable))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
+                damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
                 TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
                 return 0;
             }
@@ -762,27 +788,47 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (!damage.IgnoreDamageReduction)
             {
-                var damageWithoutArmor = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, false);
-                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, true);
+                var isPoisonSpell = IsPoisonSpellCast(damage.Spell);
+                var damageWithoutArmor = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, false, isPoisonSpell);
+                damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, true, isPoisonSpell);
 
                 var reduction = CalculateArmorReduction(damage.School);
+
+                if (isPoisonSpell)
+                    reduction = 0;
 
                 if (reduction > 0)
                     OnDamageReducted(damage.Source, reduction);
 
-                if (damage.Source != null && !damage.ReflectedDamages)
+                if (damage.Source != null && !damage.ReflectedDamages && !isPoisonSpell)
                 {
                     var reflected = CalculateDamageReflection(damage.Amount);
 
                     if (reflected > 0)
                     {
                         damage.Source.InflictDirectDamage(reflected, this);
-                        OnDamageReflected(damage.Source, reflected);
+                        OnDamageReflected(damage.Source);
                     }
                 }
 
                 permanentDamages = CalculateErosionDamage(damageWithoutArmor);
-                damage.Amount -= permanentDamages;
+            }
+
+            //Heal Or Multiply
+            var healOrMultiplyBuff = GetBuffs(x => x is HealOrMultiplyBuff).FirstOrDefault() as HealOrMultiplyBuff;
+            if (healOrMultiplyBuff != null)
+            {
+                var newDamage = healOrMultiplyBuff.GetDamages(damage.Amount);
+
+                if (newDamage > 0)
+                    damage.Amount = newDamage;
+                else
+                {
+                    Heal(-newDamage, damage.Source, false);
+                    return 0;
+                }
+
+                permanentDamages = 0;
             }
 
             if (damage.Amount <= 0)
@@ -797,12 +843,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
 
-            OnLifePointsChanged(-(damage.Amount + permanentDamages), permanentDamages, damage.Source);
+            OnLifePointsChanged(-damage.Amount, permanentDamages, damage.Source);
 
             if (IsDead())
                 OnDead(damage.Source);
 
             OnDamageInflicted(damage);
+            damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
             TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
 
             return damage.Amount;
@@ -909,11 +956,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return damage;
         }
 
-        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor)
+        public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor, bool poison)
         {           
-            var percentResistance = CalculateTotalResistances(type, true);
-            var fixResistance = CalculateTotalResistances(type, false);
-            var armorResistance = withArmor ? CalculateArmorReduction(type) : 0;
+            var percentResistance = CalculateTotalResistances(type, true, poison);
+            var fixResistance = CalculateTotalResistances(type, false, poison);
+            var armorResistance = withArmor && !poison ? CalculateArmorReduction(type) : 0;
 
             percentResistance = percentResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : percentResistance;
             fixResistance = fixResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : fixResistance;
@@ -924,7 +971,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return result;
         }
 
-        public virtual int CalculateTotalResistances(EffectSchoolEnum type, bool percent)
+        public virtual int CalculateTotalResistances(EffectSchoolEnum type, bool percent, bool poison)
         {
             var pvp = Fight.IsPvP;
 
@@ -932,25 +979,29 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 case EffectSchoolEnum.Neutral:
                     if (percent)
-                        return Stats[PlayerFields.NeutralResistPercent].Total + (pvp ? Stats[PlayerFields.PvpNeutralResistPercent].Total : 0);
+                        return Stats[PlayerFields.NeutralResistPercent].Base + Stats[PlayerFields.NeutralResistPercent].Equiped + Stats[PlayerFields.NeutralResistPercent].Given + (poison ? 0 : Stats[PlayerFields.NeutralResistPercent].Context) + (pvp ? Stats[PlayerFields.PvpNeutralResistPercent].Total : 0);
 
-                    return Stats[PlayerFields.NeutralElementReduction].Total + (pvp ? Stats[PlayerFields.PvpNeutralElementReduction].Total : 0) + Stats[PlayerFields.PhysicalDamageReduction];
+                    return Stats[PlayerFields.NeutralElementReduction].Base + Stats[PlayerFields.NeutralElementReduction].Equiped + Stats[PlayerFields.NeutralElementReduction].Given + (poison ? 0 : Stats[PlayerFields.NeutralElementReduction].Context) + (pvp ? Stats[PlayerFields.PvpNeutralElementReduction].Total : 0) + Stats[PlayerFields.PhysicalDamageReduction];
                 case EffectSchoolEnum.Earth:
                     if (percent)
-                        return Stats[PlayerFields.EarthResistPercent].Total + (pvp ? Stats[PlayerFields.PvpEarthResistPercent].Total : 0);
-                    return Stats[PlayerFields.EarthElementReduction].Total + (pvp ? Stats[PlayerFields.PvpEarthElementReduction].Total : 0) + Stats[PlayerFields.PhysicalDamageReduction];
+                        return Stats[PlayerFields.EarthResistPercent].Base + Stats[PlayerFields.EarthResistPercent].Equiped + Stats[PlayerFields.EarthResistPercent].Given + (poison ? 0 : Stats[PlayerFields.EarthResistPercent].Context) + (pvp ? Stats[PlayerFields.PvpEarthResistPercent].Total : 0);
+
+                    return Stats[PlayerFields.EarthElementReduction].Base + Stats[PlayerFields.EarthElementReduction].Equiped + Stats[PlayerFields.EarthElementReduction].Given + (poison ? 0 : Stats[PlayerFields.EarthElementReduction].Context) + (pvp ? Stats[PlayerFields.PvpEarthElementReduction].Total : 0) + Stats[PlayerFields.PhysicalDamageReduction];
                 case EffectSchoolEnum.Air:
                     if (percent)
-                        return Stats[PlayerFields.AirResistPercent].Total + (pvp ? Stats[PlayerFields.PvpAirResistPercent].Total : 0);
-                    return Stats[PlayerFields.AirElementReduction].Total + (pvp ? Stats[PlayerFields.PvpAirElementReduction].Total : 0) + Stats[PlayerFields.MagicDamageReduction];
+                        return Stats[PlayerFields.AirResistPercent].Base + Stats[PlayerFields.AirResistPercent].Equiped + Stats[PlayerFields.AirResistPercent].Given + (poison ? 0 : Stats[PlayerFields.AirResistPercent].Context) + (pvp ? Stats[PlayerFields.PvpAirElementReduction].Total : 0);
+
+                    return Stats[PlayerFields.AirElementReduction].Base + Stats[PlayerFields.AirElementReduction].Equiped + Stats[PlayerFields.AirElementReduction].Given + (poison ? 0 : Stats[PlayerFields.AirElementReduction].Context) + (pvp ? Stats[PlayerFields.PvpAirElementReduction].Total : 0) + Stats[PlayerFields.MagicDamageReduction];
                 case EffectSchoolEnum.Water:
                     if (percent)
-                        return Stats[PlayerFields.WaterResistPercent].Total + (pvp ? Stats[PlayerFields.PvpWaterResistPercent].Total : 0);
-                    return Stats[PlayerFields.WaterElementReduction].Total + (pvp ? Stats[PlayerFields.PvpWaterElementReduction].Total : 0) + Stats[PlayerFields.MagicDamageReduction];
+                        return Stats[PlayerFields.WaterResistPercent].Base + Stats[PlayerFields.WaterResistPercent].Equiped + Stats[PlayerFields.WaterResistPercent].Given + (poison ? 0 : Stats[PlayerFields.WaterResistPercent].Context) + (pvp ? Stats[PlayerFields.PvpWaterElementReduction].Total : 0);
+
+                    return Stats[PlayerFields.WaterElementReduction].Base + Stats[PlayerFields.WaterElementReduction].Equiped + Stats[PlayerFields.WaterElementReduction].Given + (poison ? 0 : Stats[PlayerFields.WaterElementReduction].Context) + (pvp ? Stats[PlayerFields.PvpWaterElementReduction].Total : 0) + Stats[PlayerFields.MagicDamageReduction];
                 case EffectSchoolEnum.Fire:
                     if (percent)
-                        return Stats[PlayerFields.FireResistPercent].Total + (pvp ? Stats[PlayerFields.PvpFireResistPercent].Total : 0);
-                    return Stats[PlayerFields.FireElementReduction].Total + (pvp ? Stats[PlayerFields.PvpFireElementReduction].Total : 0) + Stats[PlayerFields.MagicDamageReduction];
+                        return Stats[PlayerFields.FireResistPercent].Base + Stats[PlayerFields.FireResistPercent].Equiped + Stats[PlayerFields.FireResistPercent].Given + (poison ? 0 : Stats[PlayerFields.FireResistPercent].Context) + (pvp ? Stats[PlayerFields.PvpFireResistPercent].Total : 0);
+
+                    return Stats[PlayerFields.FireElementReduction].Base + Stats[PlayerFields.FireElementReduction].Equiped + Stats[PlayerFields.FireElementReduction].Given + (poison ? 0 : Stats[PlayerFields.FireElementReduction].Context) + (pvp ? Stats[PlayerFields.PvpFireElementReduction].Total : 0) + Stats[PlayerFields.MagicDamageReduction];
                 default:
                     return 0;
             }
@@ -1047,38 +1098,34 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int)(spellBonus * (1 + (Stats[PlayerFields.Wisdom].TotalSafe / 100d)) + Stats[PlayerFields.DamageReflection].TotalSafe);
         }
 
-        public virtual bool RollAPLose(FightActor from)
+        public virtual bool RollAPLose(FightActor from, int value)
         {
             var apAttack = from.Stats[PlayerFields.APAttack].Total > 1 ? from.Stats[PlayerFields.APAttack].TotalSafe : 1;
-            var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
-
-            var prob = (apAttack/(double) apDodge)*
-                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
+            var apDodge = Stats[PlayerFields.DodgeAPProbability].Total > 1 ? Stats[PlayerFields.DodgeAPProbability].TotalSafe : 1;
+            var prob = ((Stats.AP.Total-value)/(double) (Stats.AP.TotalMax))*(apAttack/(double) apDodge) /2d;
 
             if (prob < 0.10)
                 prob = 0.10;
             else if (prob > 0.90)
                 prob = 0.90;
 
-            var rnd = new AsyncRandom().NextDouble();
+            var rnd = new CryptoRandom().NextDouble();
 
             return rnd < prob;
         }
 
-        public virtual bool RollMPLose(FightActor from)
+        public virtual bool RollMPLose(FightActor from, int value)
         {
             var mpAttack = from.Stats[PlayerFields.MPAttack].Total > 1 ? from.Stats[PlayerFields.MPAttack].TotalSafe : 1;
-            var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? from.Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
-
-            var prob = (mpAttack/(double) mpDodge)*
-                       ( ( Stats.AP.Total / (double)( Stats.AP.TotalMax ) ) / 2d );
+            var mpDodge = Stats[PlayerFields.DodgeMPProbability].Total > 1 ? Stats[PlayerFields.DodgeMPProbability].TotalSafe : 1;
+            var prob = ((Stats.MP.Total - value) / (double)(Stats.MP.TotalMax)) * (mpAttack / (double)mpDodge) / 2d;
 
             if (prob < 0.10)
                 prob = 0.10;
             else if (prob > 0.90)
-                prob = 0.90;
+                prob = 0.90 - (0.10 * value);
 
-            var rnd = new AsyncRandom().NextDouble();
+            var rnd = new CryptoRandom().NextDouble();
 
             return rnd < prob;
         }
@@ -1100,7 +1147,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return 0;
 
             var percentLost = 0d;
-            for (int i = 0; i < tacklers.Length; i++)
+            for (var i = 0; i < tacklers.Length; i++)
             {
                 var fightActor = tacklers[i];
 
@@ -1199,9 +1246,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return buff.Spell.CurrentSpellLevel.MaxStack > 0 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell && entry.Effect.EffectId == buff.Effect.EffectId);
         }
 
-        public bool AddAndApplyBuff(Buff buff, bool freeIdIfFail = true)
+        public bool AddAndApplyBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
         {
-            if (BuffMaxStackReached(buff))
+            if (BuffMaxStackReached(buff) && !bypassMaxStack)
             {
                 if (freeIdIfFail)
                     FreeBuffId(buff.Id);
@@ -1209,7 +1256,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            AddBuff(buff);
+            AddBuff(buff, freeIdIfFail, bypassMaxStack);
 
             if (!(buff is TriggerBuff) ||
                 ((buff as TriggerBuff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
@@ -1218,9 +1265,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public bool AddBuff(Buff buff, bool freeIdIfFail = true)
+        public bool AddBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
         {
-            if (BuffMaxStackReached(buff))
+            if (BuffMaxStackReached(buff) && !bypassMaxStack)
             {
                 if (freeIdIfFail)
                     FreeBuffId(buff.Id);
@@ -1454,6 +1501,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #endregion
 
         #region States
+
         private readonly List<SpellState> m_states = new List<SpellState>();
 
         public void AddState(SpellState state)
@@ -1486,7 +1534,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return m_states.Any(entry => entry.PreventsFight);
         }
 
-
         #region Invisibility
 
         public GameActionFightInvisibilityStateEnum VisibleState
@@ -1511,6 +1558,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnVisibleStateChanged(source, lastState);
         }
 
+        public bool IsPoisonSpellCast(Spell spell)
+        {
+            return spell.Template.Id == (int) SpellIdEnum.POISON_INSIDIEUX ||
+                   spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX_DU_DOPEUL ||
+                   spell.Template.Id == (int)SpellIdEnum.POISON_PARALYSANT ||
+                   spell.Template.Id == (int)SpellIdEnum.POISON_PARALYSANT_DU_DOPEUL ||
+                   spell.Template.Id == (int)SpellIdEnum.FLECHETTE_EMPOISONNÉE ||
+                   spell.Template.Id == (int)SpellIdEnum.FLÈCHE_EMPOISONNÉE ||
+                   spell.Template.Id == (int)SpellIdEnum.BROUILLARD_EMPOISONNÉ ||
+                   spell.Template.Id == (int)SpellIdEnum.TOURBE_EMPOISONNÉE ||
+                   spell.Template.Id == (int)SpellIdEnum.GRAINE_EMPOISONNÉE ||
+                   spell.Template.Id == (int)SpellIdEnum.RONCE_EMPOISONNÉE ||
+                   spell.Template.Id == (int)SpellIdEnum.PIÈGE_EMPOISONNÉ ||
+                   spell.Template.Id == (int)SpellIdEnum.PIÈGE_EMPOISONNÉ_DU_DOPEUL ||
+                   spell.Template.Id == (int)SpellIdEnum.VENT_EMPOISONNÉ ||
+                   spell.Template.Id == (int)SpellIdEnum.VENT_EMPOISONNÉ_DU_DOPEUL ||
+                   spell.Template.Id == (int)SpellIdEnum.TREMBLEMENT ||
+                   spell.Template.Id == (int)SpellIdEnum.RONCE_INSOLENTE;
+        }
+
         public bool IsInvisibleSpellCast(Spell spell)
         {
             var spellLevel = spell.CurrentSpellLevel;
@@ -1522,8 +1589,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    spellLevel.Effects.Any(entry => entry.EffectId == EffectsEnum.Effect_Summon) || // summons
                    spell.Template.Id == (int)SpellIdEnum.DOUBLE || // double
                    spell.Template.Id == (int)SpellIdEnum.PULSION_DE_CHAKRA || // chakra pulsion
+                   spell.Template.Id == (int)SpellIdEnum.CONCENTRATION_DE_CHAKRA || // chakra concentration
                    spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX || // insidious poison
-                   spell.Template.Id == (int)SpellIdEnum.PEUR;
+                   spell.Template.Id == (int)SpellIdEnum.PEUR || //Fear
+                   spell.Template.Id == (int)SpellIdEnum.POISSE; //Jinx
         }
 
         public bool DispellInvisibilityBuff()
@@ -1567,6 +1636,139 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         
             if (lastState == GameActionFightInvisibilityStateEnum.INVISIBLE)
                 Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, this));
+        }
+
+        #endregion
+
+        #region Carry/Throw
+
+        private FightActor m_carriedActor;
+
+        public bool IsCarrying()
+        {
+            return m_carriedActor != null;
+        }
+
+        public bool IsCarried()
+        {
+            return GetCarryingActor() != null;
+        }
+
+        public FightActor GetCarriedActor()
+        {
+            return m_carriedActor;
+        }
+
+        public FightActor GetCarryingActor()
+        {
+            return Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
+        }
+
+        public void CarryActor(FightActor target, EffectBase effect, Spell spell)
+        {
+            var stateCarried = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Carried);
+            var stateCarrying = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Carrying);
+
+            if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
+                return;
+
+            var actorBuffId = PopNextBuffId();
+            var targetBuffId = target.PopNextBuffId();
+
+            var actorBuff = new StateBuff(actorBuffId, this, this, effect, spell, false, stateCarrying)
+            {
+                Duration = -1
+            };
+
+            var targetBuff = new StateBuff(targetBuffId, target, this, effect, spell, false, stateCarried)
+            {
+                Duration = -1
+            };
+
+            AddAndApplyBuff(actorBuff);
+            target.AddAndApplyBuff(targetBuff);
+
+            ActionsHandler.SendGameActionFightCarryCharacterMessage(Fight.Clients, this, target);        
+
+            target.Position.Cell = Position.Cell;
+            m_carriedActor = target;
+
+            m_carriedActor.Dead += OnCarryingActorDead;
+            //m_carriedActor.FighterLeft += OnCarryingActorLeft;
+            Dead += OnCarryingActorDead;
+            //FighterLeft += OnCarryingActorLeft;
+        }
+
+        public void ThrowActor(Cell cell, bool drop = false)
+        {
+            var actor = Fight.GetOneFighter(cell);
+            if (actor != null && !drop)
+                return;
+
+            var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carrying).FirstOrDefault();
+            var targetState = m_carriedActor.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.Carried).FirstOrDefault();
+
+            Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+
+            if (drop)
+                ActionsHandler.SendGameActionFightDropCharacterMessage(Fight.Clients, this, m_carriedActor, cell);   
+            else
+                ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
+
+            if (actorState != null)
+                RemoveAndDispellBuff(actorState);
+
+            if (targetState != null)
+                m_carriedActor.RemoveAndDispellBuff(targetState);
+
+            RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
+            m_carriedActor.RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
+
+            m_carriedActor.Position.Cell = cell;
+
+            Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, m_carriedActor));
+
+            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+
+            m_carriedActor.Dead -= OnCarryingActorDead;
+            Dead -= OnCarryingActorDead;
+
+            m_carriedActor = null;
+        }
+
+        public override bool StartMove(Path movementPath)
+        {
+            if (!IsCarried())
+                return base.StartMove(movementPath);
+
+            var carryingActor = GetCarryingActor();
+
+            if (carryingActor == null)
+                return base.StartMove(movementPath);
+
+            //movementPath.CutPath(1, true);
+
+            carryingActor.ThrowActor(movementPath.StartCell, true);
+
+            return base.StartMove(movementPath);
+        }
+
+        public override bool StopMove()
+        {
+            if (!base.StopMove())
+                return false;
+
+            if (IsCarrying())
+            {
+                m_carriedActor.Position.Cell = Position.Cell;
+            }
+
+            return true;
+        }
+
+        private void OnCarryingActorDead(FightActor actor, FightActor killer)
+        {
+            ThrowActor(Cell, true);
         }
 
         #endregion
@@ -1688,7 +1890,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CanTackle(FightActor fighter)
         {
-            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter);
+            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.Rooted) && !fighter.HasState((int)SpellStatesEnum.Rooted) && fighter.Position.Cell != Position.Cell;
         }
 
         public virtual bool CanPlay()

@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
     [SpellCastHandler(SpellIdEnum.CONCENTRATION_DE_CHAKRA)]
     public class ChakraConcentrationCastHandler : DefaultSpellCastHandler
     {
-        private FightActor[] m_affectedActors; 
+        private FightActor[] m_affectedActors;
 
         public ChakraConcentrationCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(caster, spell, targetedCell, critical)

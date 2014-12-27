@@ -573,7 +573,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public bool Relook
+        public uint Relook
         {
             get;
             set;

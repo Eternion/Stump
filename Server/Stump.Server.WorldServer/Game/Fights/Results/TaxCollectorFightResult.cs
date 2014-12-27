@@ -13,8 +13,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public override FightResultListEntry GetFightResultListEntry()
         {
+
             return new FightResultTaxCollectorListEntry((short) Outcome, 0, Loot.GetFightLoot(), Id, Alive, (byte)Level,
-                Fighter.TaxCollectorNpc.Guild.GetBasicGuildInformations(), 0);
+                Fighter.TaxCollectorNpc.Guild.GetBasicGuildInformations(), Fighter.TaxCollectorNpc.GatheredExperience);
         }
     }
 }
