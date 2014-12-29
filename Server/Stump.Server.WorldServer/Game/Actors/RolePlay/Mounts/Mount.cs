@@ -284,6 +284,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         #endregion
 
+        public void SetOwner(Character character)
+        {
+            OwnerId = character.Id;
+        }
+
         public void RenameMount(Character character, string name)
         {
             Name = name;
@@ -291,14 +296,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             MountHandler.SendMountRenamedMessage(character.Client, Id, name);
         }
 
-        public void Release(Character character)
+        public void Release(Character character, bool delete = true)
         {
             Dismount(character);
 
             MountHandler.SendMountUnSetMessage(character.Client);
             MountHandler.SendMountReleaseMessage(character.Client, character.Mount.Id);
 
-            MountManager.Instance.DeleteMount(character.Mount);
+            if (delete)
+                MountManager.Instance.DeleteMount(character.Mount);
+
             character.Mount = null;
         }
 
