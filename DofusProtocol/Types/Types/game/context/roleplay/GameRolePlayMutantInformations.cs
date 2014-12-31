@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:03
+// Generated on 12/29/2014 21:14:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int monsterId;
+        public short monsterId;
         public sbyte powerLevel;
         
         public GameRolePlayMutantInformations()
         {
         }
         
-        public GameRolePlayMutantInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, Types.HumanInformations humanoidInfo, int accountId, int monsterId, sbyte powerLevel)
+        public GameRolePlayMutantInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, Types.HumanInformations humanoidInfo, int accountId, short monsterId, sbyte powerLevel)
          : base(contextualId, look, disposition, name, humanoidInfo, accountId)
         {
             this.monsterId = monsterId;
@@ -34,20 +34,22 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(monsterId);
+            writer.WriteShort(monsterId);
             writer.WriteSByte(powerLevel);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            monsterId = reader.ReadInt();
+            monsterId = reader.ReadShort();
+            if (monsterId < 0)
+                throw new Exception("Forbidden value on monsterId = " + monsterId + ", it doesn't respect the following condition : monsterId < 0");
             powerLevel = reader.ReadSByte();
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(sbyte);
+            return base.GetSerializationSize() + sizeof(short) + sizeof(sbyte);
         }
         
     }

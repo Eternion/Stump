@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:33
+// Generated on 12/29/2014 21:11:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public AchievementFinishedInformationMessage(short id, short finishedlevel, string name, int playerId)
+        public AchievementFinishedInformationMessage(short id, byte finishedlevel, string name, int playerId)
          : base(id, finishedlevel)
         {
             this.name = name;

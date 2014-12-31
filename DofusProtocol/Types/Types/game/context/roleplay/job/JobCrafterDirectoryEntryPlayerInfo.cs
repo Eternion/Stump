@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:03
+// Generated on 12/29/2014 21:14:30
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,8 +72,8 @@ namespace Stump.DofusProtocol.Types
             playerName = reader.ReadUTF();
             alignmentSide = reader.ReadSByte();
             breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Steamer)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Steamer");
+            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliatrope)
+                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliatrope");
             sex = reader.ReadBoolean();
             isInWorkshop = reader.ReadBoolean();
             worldX = reader.ReadShort();

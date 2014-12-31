@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:04
+// Generated on 12/29/2014 21:14:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public short min;
-        public short max;
+        public int min;
+        public int max;
         
         public ObjectEffectMinMax()
         {
         }
         
-        public ObjectEffectMinMax(short actionId, short min, short max)
+        public ObjectEffectMinMax(short actionId, int min, int max)
          : base(actionId)
         {
             this.min = min;
@@ -34,24 +34,24 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(min);
-            writer.WriteShort(max);
+            writer.WriteInt(min);
+            writer.WriteInt(max);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            min = reader.ReadShort();
+            min = reader.ReadInt();
             if (min < 0)
                 throw new Exception("Forbidden value on min = " + min + ", it doesn't respect the following condition : min < 0");
-            max = reader.ReadShort();
+            max = reader.ReadInt();
             if (max < 0)
                 throw new Exception("Forbidden value on max = " + max + ", it doesn't respect the following condition : max < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(int) + sizeof(int);
         }
         
     }

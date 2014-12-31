@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override ObjectEffect GetObjectEffect()
         {
-            return new ObjectEffectDate(Id, m_year, m_month, m_day, m_hour, m_minute);
+            return new ObjectEffectDate(Id, m_year, (sbyte)m_month, (sbyte)m_day, (sbyte)m_hour, (sbyte)m_minute);
         }
 
         public override EffectInstance GetEffectInstance()

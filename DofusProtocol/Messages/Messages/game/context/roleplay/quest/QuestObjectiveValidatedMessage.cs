@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:50
+// Generated on 12/29/2014 21:12:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public ushort questId;
-        public ushort objectiveId;
+        public short questId;
+        public short objectiveId;
         
         public QuestObjectiveValidatedMessage()
         {
         }
         
-        public QuestObjectiveValidatedMessage(ushort questId, ushort objectiveId)
+        public QuestObjectiveValidatedMessage(short questId, short objectiveId)
         {
             this.questId = questId;
             this.objectiveId = objectiveId;
@@ -33,23 +33,23 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort(questId);
-            writer.WriteUShort(objectiveId);
+            writer.WriteShort(questId);
+            writer.WriteShort(objectiveId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            questId = reader.ReadUShort();
-            if (questId < 0 || questId > 65535)
-                throw new Exception("Forbidden value on questId = " + questId + ", it doesn't respect the following condition : questId < 0 || questId > 65535");
-            objectiveId = reader.ReadUShort();
-            if (objectiveId < 0 || objectiveId > 65535)
-                throw new Exception("Forbidden value on objectiveId = " + objectiveId + ", it doesn't respect the following condition : objectiveId < 0 || objectiveId > 65535");
+            questId = reader.ReadShort();
+            if (questId < 0)
+                throw new Exception("Forbidden value on questId = " + questId + ", it doesn't respect the following condition : questId < 0");
+            objectiveId = reader.ReadShort();
+            if (objectiveId < 0)
+                throw new Exception("Forbidden value on objectiveId = " + objectiveId + ", it doesn't respect the following condition : objectiveId < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(ushort) + sizeof(ushort);
+            return sizeof(short) + sizeof(short);
         }
         
     }

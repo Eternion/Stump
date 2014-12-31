@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:05
+// Generated on 12/29/2014 21:14:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +36,8 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             type = reader.ReadSByte();
+            if (type < 0)
+                throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
         }
         
         public virtual int GetSerializationSize()

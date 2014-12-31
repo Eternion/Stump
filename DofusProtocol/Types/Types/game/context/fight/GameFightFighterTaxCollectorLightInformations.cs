@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:02
+// Generated on 12/29/2014 21:14:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterTaxCollectorLightInformations(bool sex, bool alive, int id, int wave, short level, sbyte breed, short firstNameId, short lastNameId)
+        public GameFightFighterTaxCollectorLightInformations(bool sex, bool alive, int id, sbyte wave, short level, sbyte breed, short firstNameId, short lastNameId)
          : base(sex, alive, id, wave, level, breed)
         {
             this.firstNameId = firstNameId;

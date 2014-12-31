@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:03
+// Generated on 12/29/2014 21:14:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public uint nbWaves;
+        public sbyte nbWaves;
         public IEnumerable<Types.GroupMonsterStaticInformations> alternatives;
         
         public GameRolePlayGroupMonsterWaveInformations()
         {
         }
         
-        public GameRolePlayGroupMonsterWaveInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, bool keyRingBonus, bool hasHardcoreDrop, bool hasAVARewardToken, Types.GroupMonsterStaticInformations staticInfos, short ageBonus, sbyte lootShare, sbyte alignmentSide, uint nbWaves, IEnumerable<Types.GroupMonsterStaticInformations> alternatives)
+        public GameRolePlayGroupMonsterWaveInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, bool keyRingBonus, bool hasHardcoreDrop, bool hasAVARewardToken, Types.GroupMonsterStaticInformations staticInfos, short ageBonus, sbyte lootShare, sbyte alignmentSide, sbyte nbWaves, IEnumerable<Types.GroupMonsterStaticInformations> alternatives)
          : base(contextualId, look, disposition, keyRingBonus, hasHardcoreDrop, hasAVARewardToken, staticInfos, ageBonus, lootShare, alignmentSide)
         {
             this.nbWaves = nbWaves;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUInt(nbWaves);
+            writer.WriteSByte(nbWaves);
             var alternatives_before = writer.Position;
             var alternatives_count = 0;
             writer.WriteUShort(0);
@@ -54,9 +54,9 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            nbWaves = reader.ReadUInt();
-            if (nbWaves < 0 || nbWaves > 4.294967295E9)
-                throw new Exception("Forbidden value on nbWaves = " + nbWaves + ", it doesn't respect the following condition : nbWaves < 0 || nbWaves > 4.294967295E9");
+            nbWaves = reader.ReadSByte();
+            if (nbWaves < 0)
+                throw new Exception("Forbidden value on nbWaves = " + nbWaves + ", it doesn't respect the following condition : nbWaves < 0");
             var limit = reader.ReadUShort();
             var alternatives_ = new Types.GroupMonsterStaticInformations[limit];
             for (int i = 0; i < limit; i++)
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(uint) + sizeof(short) + alternatives.Sum(x => sizeof(short) + x.GetSerializationSize());
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + alternatives.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

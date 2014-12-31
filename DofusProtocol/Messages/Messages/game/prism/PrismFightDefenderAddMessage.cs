@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:37:03
+// Generated on 12/29/2014 21:13:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short subAreaId;
-        public double fightId;
+        public short fightId;
         public Types.CharacterMinimalPlusLookInformations defender;
         
         public PrismFightDefenderAddMessage()
         {
         }
         
-        public PrismFightDefenderAddMessage(short subAreaId, double fightId, Types.CharacterMinimalPlusLookInformations defender)
+        public PrismFightDefenderAddMessage(short subAreaId, short fightId, Types.CharacterMinimalPlusLookInformations defender)
         {
             this.subAreaId = subAreaId;
             this.fightId = fightId;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteShort(subAreaId);
-            writer.WriteDouble(fightId);
+            writer.WriteShort(fightId);
             writer.WriteShort(defender.TypeId);
             defender.Serialize(writer);
         }
@@ -46,16 +46,16 @@ namespace Stump.DofusProtocol.Messages
             subAreaId = reader.ReadShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            fightId = reader.ReadDouble();
-            if (fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15");
+            fightId = reader.ReadShort();
+            if (fightId < 0)
+                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             defender = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
             defender.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(double) + sizeof(short) + defender.GetSerializationSize();
+            return sizeof(short) + sizeof(short) + sizeof(short) + defender.GetSerializationSize();
         }
         
     }

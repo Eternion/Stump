@@ -196,7 +196,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         public static void SendPartyMemberInFightMessage(IPacketReceiver client, Game.Parties.Party party, Character member, PartyFightReasonEnum reason, IFight fight)
         {
             client.Send(new PartyMemberInFightMessage(party.Id, (sbyte)reason, member.Id, member.Account.Id, member.Name, fight.Id, 
-                new MapCoordinatesExtended((short)fight.Map.Position.X, (short)fight.Map.Position.Y, fight.Map.Id, (short)fight.Map.SubArea.Id), fight.GetPlacementTimeLeft()));
+                new MapCoordinatesExtended((short)fight.Map.Position.X, (short)fight.Map.Position.Y, fight.Map.Id, (short)fight.Map.SubArea.Id), (short)fight.GetPlacementTimeLeft()));
         }
 
         public static void SendPartyNewMemberMessage(IPacketReceiver client, Game.Parties.Party party, Character member)

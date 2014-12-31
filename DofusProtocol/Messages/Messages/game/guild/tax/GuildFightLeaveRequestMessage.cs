@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:53
+// Generated on 12/29/2014 21:13:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +40,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             taxCollectorId = reader.ReadInt();
+            if (taxCollectorId < 0)
+                throw new Exception("Forbidden value on taxCollectorId = " + taxCollectorId + ", it doesn't respect the following condition : taxCollectorId < 0");
             characterId = reader.ReadInt();
             if (characterId < 0)
                 throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0");

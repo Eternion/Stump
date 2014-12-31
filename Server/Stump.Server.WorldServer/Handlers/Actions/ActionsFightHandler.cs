@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
         public static void SendGameActionFightDispellSpellMessage(IPacketReceiver client, FightActor source, FightActor target, int spellId)
         {
-            client.Send(new GameActionFightDispellSpellMessage(406, source.Id, target.Id, spellId));
+            client.Send(new GameActionFightDispellSpellMessage(406, source.Id, target.Id, (short)spellId));
         }
 
         public static void SendGameActionFightDispellEffectMessage(IPacketReceiver client, FightActor source, FightActor target, Buff buff)
@@ -123,7 +123,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                     break;
             }
 
-            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, weapon.Id));
+            client.Send(new GameActionFightCloseCombatMessage((short)action, source.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)castCritical, silentCast, (short)weapon.Id));
         }
 
         public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, ActorLook look)

@@ -421,7 +421,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                Spell spell)
         {
             client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, target == null ? 0 : target.Id, silentCast ? (short)-1 : cell.Id, (sbyte)(critical),
-                                                            silentCast, (short) spell.Id, (sbyte) spell.CurrentLevel));
+                                                            silentCast, (short) spell.Id, (sbyte) spell.CurrentLevel, new short[0]));
         }
 
         public static void SendGameActionFightSpellCastMessage(IPacketReceiver client, ActionsEnum actionId, FightActor caster, FightActor target,
@@ -429,7 +429,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                        short spellId, sbyte spellLevel)
         {
             client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)( critical ),
-                                                            silentCast, spellId, spellLevel));
+                                                            silentCast, spellId, spellLevel, new short[0]));
         }
 
         public static void SendGameActionFightNoSpellCastMessage(IPacketReceiver client, Spell spell)

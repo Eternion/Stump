@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:27:35
+// Generated on 12/29/2014 16:35:08
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,7 +15,6 @@ namespace Stump.DofusProtocol.D2oClasses
         private const String MODULE = "Comics";
         public int id;
         public String remoteId;
-        public String readerUrl;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -31,12 +30,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.remoteId; }
             set { this.remoteId = value; }
-        }
-        [D2OIgnore]
-        public String ReaderUrl
-        {
-            get { return this.readerUrl; }
-            set { this.readerUrl = value; }
         }
     }
 }

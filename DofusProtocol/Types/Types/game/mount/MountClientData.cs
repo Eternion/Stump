@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:05
+// Generated on 12/29/2014 21:14:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +27,8 @@ namespace Stump.DofusProtocol.Types
         public IEnumerable<int> behaviors;
         public string name;
         public int ownerId;
-        public double experience;
-        public double experienceForLevel;
+        public long experience;
+        public long experienceForLevel;
         public double experienceForNextLevel;
         public sbyte level;
         public int maxPods;
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public MountClientData(bool sex, bool isRideable, bool isWild, bool isFecondationReady, double id, int model, IEnumerable<int> ancestor, IEnumerable<int> behaviors, string name, int ownerId, double experience, double experienceForLevel, double experienceForNextLevel, sbyte level, int maxPods, int stamina, int staminaMax, int maturity, int maturityForAdult, int energy, int energyMax, int serenity, int aggressivityMax, int serenityMax, int love, int loveMax, int fecondationTime, int boostLimiter, double boostMax, int reproductionCount, int reproductionCountMax, IEnumerable<Types.ObjectEffectInteger> effectList)
+        public MountClientData(bool sex, bool isRideable, bool isWild, bool isFecondationReady, double id, int model, IEnumerable<int> ancestor, IEnumerable<int> behaviors, string name, int ownerId, long experience, long experienceForLevel, double experienceForNextLevel, sbyte level, int maxPods, int stamina, int staminaMax, int maturity, int maturityForAdult, int energy, int energyMax, int serenity, int aggressivityMax, int serenityMax, int love, int loveMax, int fecondationTime, int boostLimiter, double boostMax, int reproductionCount, int reproductionCountMax, IEnumerable<Types.ObjectEffectInteger> effectList)
         {
             this.sex = sex;
             this.isRideable = isRideable;
@@ -128,8 +128,8 @@ namespace Stump.DofusProtocol.Types
 
             writer.WriteUTF(name);
             writer.WriteInt(ownerId);
-            writer.WriteDouble(experience);
-            writer.WriteDouble(experienceForLevel);
+            writer.WriteLong(experience);
+            writer.WriteLong(experienceForLevel);
             writer.WriteDouble(experienceForNextLevel);
             writer.WriteSByte(level);
             writer.WriteInt(maxPods);
@@ -195,12 +195,12 @@ namespace Stump.DofusProtocol.Types
             ownerId = reader.ReadInt();
             if (ownerId < 0)
                 throw new Exception("Forbidden value on ownerId = " + ownerId + ", it doesn't respect the following condition : ownerId < 0");
-            experience = reader.ReadDouble();
-            if (experience < -9.007199254740992E15 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9.007199254740992E15 || experience > 9.007199254740992E15");
-            experienceForLevel = reader.ReadDouble();
-            if (experienceForLevel < -9.007199254740992E15 || experienceForLevel > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceForLevel = " + experienceForLevel + ", it doesn't respect the following condition : experienceForLevel < -9.007199254740992E15 || experienceForLevel > 9.007199254740992E15");
+            experience = reader.ReadLong();
+            if (experience < 0 || experience > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
+            experienceForLevel = reader.ReadLong();
+            if (experienceForLevel < 0 || experienceForLevel > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceForLevel = " + experienceForLevel + ", it doesn't respect the following condition : experienceForLevel < 0 || experienceForLevel > 9.007199254740992E15");
             experienceForNextLevel = reader.ReadDouble();
             if (experienceForNextLevel < -9.007199254740992E15 || experienceForNextLevel > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceForNextLevel = " + experienceForNextLevel + ", it doesn't respect the following condition : experienceForNextLevel < -9.007199254740992E15 || experienceForNextLevel > 9.007199254740992E15");
@@ -262,7 +262,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(bool) + 0 + 0 + 0 + sizeof(double) + sizeof(int) + sizeof(short) + ancestor.Sum(x => sizeof(int)) + sizeof(short) + behaviors.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(int) + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(short) + effectList.Sum(x => x.GetSerializationSize());
+            return sizeof(bool) + 0 + 0 + 0 + sizeof(double) + sizeof(int) + sizeof(short) + ancestor.Sum(x => sizeof(int)) + sizeof(short) + behaviors.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(int) + sizeof(long) + sizeof(long) + sizeof(double) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(short) + effectList.Sum(x => x.GetSerializationSize());
         }
         
     }

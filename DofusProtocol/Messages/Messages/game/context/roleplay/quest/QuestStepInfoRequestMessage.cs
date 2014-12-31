@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:50
+// Generated on 12/29/2014 21:12:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,32 +18,32 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public ushort questId;
+        public short questId;
         
         public QuestStepInfoRequestMessage()
         {
         }
         
-        public QuestStepInfoRequestMessage(ushort questId)
+        public QuestStepInfoRequestMessage(short questId)
         {
             this.questId = questId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort(questId);
+            writer.WriteShort(questId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            questId = reader.ReadUShort();
-            if (questId < 0 || questId > 65535)
-                throw new Exception("Forbidden value on questId = " + questId + ", it doesn't respect the following condition : questId < 0 || questId > 65535");
+            questId = reader.ReadShort();
+            if (questId < 0)
+                throw new Exception("Forbidden value on questId = " + questId + ", it doesn't respect the following condition : questId < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(ushort);
+            return sizeof(short);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:40
+// Generated on 12/29/2014 21:12:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,40 +10,32 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class DungeonLeftMessage : Message
+    public class GameFightPlacementSwapPositionsErrorMessage : Message
     {
-        public const uint Id = 6149;
+        public const uint Id = 6548;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public int dungeonId;
         
-        public DungeonLeftMessage()
+        public GameFightPlacementSwapPositionsErrorMessage()
         {
         }
         
-        public DungeonLeftMessage(int dungeonId)
-        {
-            this.dungeonId = dungeonId;
-        }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(dungeonId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            dungeonId = reader.ReadInt();
-            if (dungeonId < 0)
-                throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int);
+            return 0;
+            ;
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:51
+// Generated on 12/29/2014 21:13:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +21,13 @@ namespace Stump.DofusProtocol.Messages
         public int memberId;
         public short rank;
         public sbyte experienceGivenPercent;
-        public uint rights;
+        public int rights;
         
         public GuildChangeMemberParametersMessage()
         {
         }
         
-        public GuildChangeMemberParametersMessage(int memberId, short rank, sbyte experienceGivenPercent, uint rights)
+        public GuildChangeMemberParametersMessage(int memberId, short rank, sbyte experienceGivenPercent, int rights)
         {
             this.memberId = memberId;
             this.rank = rank;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(memberId);
             writer.WriteShort(rank);
             writer.WriteSByte(experienceGivenPercent);
-            writer.WriteUInt(rights);
+            writer.WriteInt(rights);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -54,14 +54,14 @@ namespace Stump.DofusProtocol.Messages
             experienceGivenPercent = reader.ReadSByte();
             if (experienceGivenPercent < 0 || experienceGivenPercent > 100)
                 throw new Exception("Forbidden value on experienceGivenPercent = " + experienceGivenPercent + ", it doesn't respect the following condition : experienceGivenPercent < 0 || experienceGivenPercent > 100");
-            rights = reader.ReadUInt();
-            if (rights < 0 || rights > 4.294967295E9)
-                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4.294967295E9");
+            rights = reader.ReadInt();
+            if (rights < 0)
+                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(uint);
+            return sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(int);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:50
+// Generated on 12/29/2014 21:12:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public ushort questId;
-        public ushort stepId;
+        public short questId;
+        public short stepId;
         
         public QuestStepValidatedMessage()
         {
         }
         
-        public QuestStepValidatedMessage(ushort questId, ushort stepId)
+        public QuestStepValidatedMessage(short questId, short stepId)
         {
             this.questId = questId;
             this.stepId = stepId;
@@ -33,23 +33,23 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort(questId);
-            writer.WriteUShort(stepId);
+            writer.WriteShort(questId);
+            writer.WriteShort(stepId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            questId = reader.ReadUShort();
-            if (questId < 0 || questId > 65535)
-                throw new Exception("Forbidden value on questId = " + questId + ", it doesn't respect the following condition : questId < 0 || questId > 65535");
-            stepId = reader.ReadUShort();
-            if (stepId < 0 || stepId > 65535)
-                throw new Exception("Forbidden value on stepId = " + stepId + ", it doesn't respect the following condition : stepId < 0 || stepId > 65535");
+            questId = reader.ReadShort();
+            if (questId < 0)
+                throw new Exception("Forbidden value on questId = " + questId + ", it doesn't respect the following condition : questId < 0");
+            stepId = reader.ReadShort();
+            if (stepId < 0)
+                throw new Exception("Forbidden value on stepId = " + stepId + ", it doesn't respect the following condition : stepId < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(ushort) + sizeof(ushort);
+            return sizeof(short) + sizeof(short);
         }
         
     }

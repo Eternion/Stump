@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:37:00
+// Generated on 12/29/2014 21:13:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public int objectUID;
         public int foodUID;
-        public short foodQuantity;
+        public int foodQuantity;
         
         public ObjectFeedMessage()
         {
         }
         
-        public ObjectFeedMessage(int objectUID, int foodUID, short foodQuantity)
+        public ObjectFeedMessage(int objectUID, int foodUID, int foodQuantity)
         {
             this.objectUID = objectUID;
             this.foodUID = foodUID;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(objectUID);
             writer.WriteInt(foodUID);
-            writer.WriteShort(foodQuantity);
+            writer.WriteInt(foodQuantity);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,14 +48,14 @@ namespace Stump.DofusProtocol.Messages
             foodUID = reader.ReadInt();
             if (foodUID < 0)
                 throw new Exception("Forbidden value on foodUID = " + foodUID + ", it doesn't respect the following condition : foodUID < 0");
-            foodQuantity = reader.ReadShort();
+            foodQuantity = reader.ReadInt();
             if (foodQuantity < 0)
                 throw new Exception("Forbidden value on foodQuantity = " + foodQuantity + ", it doesn't respect the following condition : foodQuantity < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(short);
+            return sizeof(int) + sizeof(int) + sizeof(int);
         }
         
     }

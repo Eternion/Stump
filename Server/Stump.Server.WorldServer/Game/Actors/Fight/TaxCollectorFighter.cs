@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NLog.LayoutRenderers;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -115,6 +116,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
+                new short[0],
                 TaxCollectorNpc.FirstNameId,
                 TaxCollectorNpc.LastNameId,
                 TaxCollectorNpc.Level);

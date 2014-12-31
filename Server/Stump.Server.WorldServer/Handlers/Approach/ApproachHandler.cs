@@ -154,7 +154,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
         public static void SendServerOptionalFeaturesMessage(IPacketReceiver client, params OptionalFeaturesEnum[] features)
         {
-            client.Send(new ServerOptionalFeaturesMessage(features.Select(x => (short)x)));
+            client.Send(new ServerOptionalFeaturesMessage(features.Select(x => (sbyte)x)));
         }
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)
@@ -162,8 +162,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             client.Send(new AccountCapabilitiesMessage(
                             client.Account.Id,
                             false,
-                            (short)client.Account.BreedFlags,
-                            (short)BreedManager.Instance.AvailableBreedsFlags,
+                            (ushort)client.Account.BreedFlags,
+                            (ushort)BreedManager.Instance.AvailableBreedsFlags,
                             (sbyte) client.UserGroup.Role));
         }
 

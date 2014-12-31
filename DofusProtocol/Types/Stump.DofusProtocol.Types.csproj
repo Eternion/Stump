@@ -219,8 +219,11 @@
     <Compile Include="Types\game\character\choice\AbstractCharacterToRefurbishInformation.cs" />
     <Compile Include="Types\game\character\choice\CharacterBaseInformations.cs" />
     <Compile Include="Types\game\character\choice\CharacterHardcoreOrEpicInformations.cs" />
+    <Compile Include="Types\game\character\choice\CharacterRemodelingInformation.cs" />
     <Compile Include="Types\game\character\choice\CharacterToRecolorInformation.cs" />
     <Compile Include="Types\game\character\choice\CharacterToRelookInformation.cs" />
+    <Compile Include="Types\game\character\choice\CharacterToRemodelInformations.cs" />
+    <Compile Include="Types\game\character\choice\RemodelingInformation.cs" />
     <Compile Include="Types\game\character\restriction\ActorRestrictionsInformations.cs" />
     <Compile Include="Types\game\character\status\PlayerStatus.cs" />
     <Compile Include="Types\game\character\status\PlayerStatusExtended.cs" />

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:00
+// Generated on 12/29/2014 21:14:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short @base;
+        public short additionnal;
         public short objectsAndMountBonus;
         public short alignGiftBonus;
         public short contextModif;
@@ -26,9 +27,10 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public CharacterBaseCharacteristic(short @base, short objectsAndMountBonus, short alignGiftBonus, short contextModif)
+        public CharacterBaseCharacteristic(short @base, short additionnal, short objectsAndMountBonus, short alignGiftBonus, short contextModif)
         {
             this.@base = @base;
+            this.additionnal = additionnal;
             this.objectsAndMountBonus = objectsAndMountBonus;
             this.alignGiftBonus = alignGiftBonus;
             this.contextModif = contextModif;
@@ -37,6 +39,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(@base);
+            writer.WriteShort(additionnal);
             writer.WriteShort(objectsAndMountBonus);
             writer.WriteShort(alignGiftBonus);
             writer.WriteShort(contextModif);
@@ -45,6 +48,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             @base = reader.ReadShort();
+            additionnal = reader.ReadShort();
             objectsAndMountBonus = reader.ReadShort();
             alignGiftBonus = reader.ReadShort();
             contextModif = reader.ReadShort();
@@ -52,7 +56,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short);
+            return sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short);
         }
         
     }

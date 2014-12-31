@@ -1,0 +1,87 @@
+
+
+// Generated on 12/29/2014 21:14:17
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Stump.Core.IO;
+
+namespace Stump.DofusProtocol.Types
+{
+    public class CharacterRemodelingInformation : AbstractCharacterInformation
+    {
+        public const short Id = 479;
+        public override short TypeId
+        {
+            get { return Id; }
+        }
+        
+        public string name;
+        public sbyte breed;
+        public bool sex;
+        public short cosmeticId;
+        public IEnumerable<int> colors;
+        
+        public CharacterRemodelingInformation()
+        {
+        }
+        
+        public CharacterRemodelingInformation(int id, string name, sbyte breed, bool sex, short cosmeticId, IEnumerable<int> colors)
+         : base(id)
+        {
+            this.name = name;
+            this.breed = breed;
+            this.sex = sex;
+            this.cosmeticId = cosmeticId;
+            this.colors = colors;
+        }
+        
+        public override void Serialize(IDataWriter writer)
+        {
+            base.Serialize(writer);
+            writer.WriteUTF(name);
+            writer.WriteSByte(breed);
+            writer.WriteBoolean(sex);
+            writer.WriteShort(cosmeticId);
+            var colors_before = writer.Position;
+            var colors_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in colors)
+            {
+                 writer.WriteInt(entry);
+                 colors_count++;
+            }
+            var colors_after = writer.Position;
+            writer.Seek((int)colors_before);
+            writer.WriteUShort((ushort)colors_count);
+            writer.Seek((int)colors_after);
+
+        }
+        
+        public override void Deserialize(IDataReader reader)
+        {
+            base.Deserialize(reader);
+            name = reader.ReadUTF();
+            breed = reader.ReadSByte();
+            sex = reader.ReadBoolean();
+            cosmeticId = reader.ReadShort();
+            if (cosmeticId < 0)
+                throw new Exception("Forbidden value on cosmeticId = " + cosmeticId + ", it doesn't respect the following condition : cosmeticId < 0");
+            var limit = reader.ReadUShort();
+            var colors_ = new int[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 colors_[i] = reader.ReadInt();
+            }
+            colors = colors_;
+        }
+        
+        public override int GetSerializationSize()
+        {
+            return base.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(sbyte) + sizeof(bool) + sizeof(short) + sizeof(short) + colors.Sum(x => sizeof(int));
+        }
+        
+    }
+    
+}

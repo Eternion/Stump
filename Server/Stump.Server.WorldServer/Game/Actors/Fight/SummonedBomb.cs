@@ -430,7 +430,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             return new GameFightMonsterInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
-                (sbyte)Team.Id, 0, IsAlive(), GetGameFightMinimalStats(), (short)MonsterBombTemplate.MonsterId, (sbyte)MonsterBombTemplate.GradeId);
+                (sbyte)Team.Id, 0, IsAlive(), GetGameFightMinimalStats(), new short[0], (short)MonsterBombTemplate.MonsterId, (sbyte)MonsterBombTemplate.GradeId);
         } 
         
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:58
+// Generated on 12/29/2014 21:13:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int npcSellerId;
-        public int tokenId;
+        public short tokenId;
         public IEnumerable<Types.ObjectItemToSellInNpcShop> objectsInfos;
         
         public ExchangeStartOkNpcShopMessage()
         {
         }
         
-        public ExchangeStartOkNpcShopMessage(int npcSellerId, int tokenId, IEnumerable<Types.ObjectItemToSellInNpcShop> objectsInfos)
+        public ExchangeStartOkNpcShopMessage(int npcSellerId, short tokenId, IEnumerable<Types.ObjectItemToSellInNpcShop> objectsInfos)
         {
             this.npcSellerId = npcSellerId;
             this.tokenId = tokenId;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(npcSellerId);
-            writer.WriteInt(tokenId);
+            writer.WriteShort(tokenId);
             var objectsInfos_before = writer.Position;
             var objectsInfos_count = 0;
             writer.WriteUShort(0);
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             npcSellerId = reader.ReadInt();
-            tokenId = reader.ReadInt();
+            tokenId = reader.ReadShort();
             if (tokenId < 0)
                 throw new Exception("Forbidden value on tokenId = " + tokenId + ", it doesn't respect the following condition : tokenId < 0");
             var limit = reader.ReadUShort();
@@ -70,7 +70,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(short) + objectsInfos.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(short) + sizeof(short) + objectsInfos.Sum(x => x.GetSerializationSize());
         }
         
     }

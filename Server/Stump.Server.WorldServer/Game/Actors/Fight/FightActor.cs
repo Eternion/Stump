@@ -1995,7 +1995,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (sbyte)Team.Id,
                 0,
                 IsAlive(),
-                GetGameFightMinimalStats(client));
+                GetGameFightMinimalStats(client),
+                new short[0]);
         }
 
         public virtual GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)

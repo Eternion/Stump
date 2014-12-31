@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:02
+// Generated on 12/29/2014 21:14:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Types
         
         public short firstNameId;
         public short lastNameId;
-        public short level;
+        public byte level;
         
         public GameFightTaxCollectorInformations()
         {
         }
         
-        public GameFightTaxCollectorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, uint wave, bool alive, Types.GameFightMinimalStats stats, short firstNameId, short lastNameId, short level)
-         : base(contextualId, look, disposition, teamId, wave, alive, stats)
+        public GameFightTaxCollectorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, short firstNameId, short lastNameId, byte level)
+         : base(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions)
         {
             this.firstNameId = firstNameId;
             this.lastNameId = lastNameId;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteShort(firstNameId);
             writer.WriteShort(lastNameId);
-            writer.WriteShort(level);
+            writer.WriteByte(level);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -50,14 +50,14 @@ namespace Stump.DofusProtocol.Types
             lastNameId = reader.ReadShort();
             if (lastNameId < 0)
                 throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
-            level = reader.ReadShort();
-            if (level < 0)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
+            level = reader.ReadByte();
+            if (level < 0 || level > 255)
+                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(byte);
         }
         
     }

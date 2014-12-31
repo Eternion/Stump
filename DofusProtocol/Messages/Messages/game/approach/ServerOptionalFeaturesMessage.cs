@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:36
+// Generated on 12/29/2014 21:11:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<short> features;
+        public IEnumerable<sbyte> features;
         
         public ServerOptionalFeaturesMessage()
         {
         }
         
-        public ServerOptionalFeaturesMessage(IEnumerable<short> features)
+        public ServerOptionalFeaturesMessage(IEnumerable<sbyte> features)
         {
             this.features = features;
         }
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in features)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteSByte(entry);
                  features_count++;
             }
             var features_after = writer.Position;
@@ -49,17 +49,17 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            var features_ = new short[limit];
+            var features_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
-                 features_[i] = reader.ReadShort();
+                 features_[i] = reader.ReadSByte();
             }
             features = features_;
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + features.Sum(x => sizeof(short));
+            return sizeof(short) + features.Sum(x => sizeof(sbyte));
         }
         
     }

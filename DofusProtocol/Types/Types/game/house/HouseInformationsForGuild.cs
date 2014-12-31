@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:05
+// Generated on 12/29/2014 21:14:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,13 +25,13 @@ namespace Stump.DofusProtocol.Types
         public int mapId;
         public short subAreaId;
         public IEnumerable<int> skillListIds;
-        public uint guildshareParams;
+        public int guildshareParams;
         
         public HouseInformationsForGuild()
         {
         }
         
-        public HouseInformationsForGuild(int houseId, int modelId, string ownerName, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<int> skillListIds, uint guildshareParams)
+        public HouseInformationsForGuild(int houseId, int modelId, string ownerName, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<int> skillListIds, int guildshareParams)
         {
             this.houseId = houseId;
             this.modelId = modelId;
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort((ushort)skillListIds_count);
             writer.Seek((int)skillListIds_after);
 
-            writer.WriteUInt(guildshareParams);
+            writer.WriteInt(guildshareParams);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -95,14 +95,14 @@ namespace Stump.DofusProtocol.Types
                  skillListIds_[i] = reader.ReadInt();
             }
             skillListIds = skillListIds_;
-            guildshareParams = reader.ReadUInt();
-            if (guildshareParams < 0 || guildshareParams > 4.294967295E9)
-                throw new Exception("Forbidden value on guildshareParams = " + guildshareParams + ", it doesn't respect the following condition : guildshareParams < 0 || guildshareParams > 4.294967295E9");
+            guildshareParams = reader.ReadInt();
+            if (guildshareParams < 0)
+                throw new Exception("Forbidden value on guildshareParams = " + guildshareParams + ", it doesn't respect the following condition : guildshareParams < 0");
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + skillListIds.Sum(x => sizeof(int)) + sizeof(uint);
+            return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + skillListIds.Sum(x => sizeof(int)) + sizeof(int);
         }
         
     }

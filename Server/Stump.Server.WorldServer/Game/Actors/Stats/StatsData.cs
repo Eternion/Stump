@@ -179,6 +179,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             return new CharacterBaseCharacteristic(
                 (short)( s1.Base > short.MaxValue ? short.MaxValue : s1.Base ),
+                0,
                 (short)( s1.Equiped > short.MaxValue ? short.MaxValue : s1.Equiped ),
                 (short)( s1.Given > short.MaxValue ? short.MaxValue : s1.Given ),
                 (short)( s1.Context > short.MaxValue ? short.MaxValue : s1.Context ));

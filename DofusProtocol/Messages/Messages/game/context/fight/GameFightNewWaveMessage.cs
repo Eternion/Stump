@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:40
+// Generated on 12/29/2014 21:12:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +18,15 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public uint id;
+        public sbyte id;
         public sbyte teamId;
-        public int nbTurnBeforeNextWave;
+        public short nbTurnBeforeNextWave;
         
         public GameFightNewWaveMessage()
         {
         }
         
-        public GameFightNewWaveMessage(uint id, sbyte teamId, int nbTurnBeforeNextWave)
+        public GameFightNewWaveMessage(sbyte id, sbyte teamId, short nbTurnBeforeNextWave)
         {
             this.id = id;
             this.teamId = teamId;
@@ -35,25 +35,25 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUInt(id);
+            writer.WriteSByte(id);
             writer.WriteSByte(teamId);
-            writer.WriteInt(nbTurnBeforeNextWave);
+            writer.WriteShort(nbTurnBeforeNextWave);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            id = reader.ReadUInt();
-            if (id < 0 || id > 4.294967295E9)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 4.294967295E9");
+            id = reader.ReadSByte();
+            if (id < 0)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
             teamId = reader.ReadSByte();
             if (teamId < 0)
                 throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
-            nbTurnBeforeNextWave = reader.ReadInt();
+            nbTurnBeforeNextWave = reader.ReadShort();
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(uint) + sizeof(sbyte) + sizeof(int);
+            return sizeof(sbyte) + sizeof(sbyte) + sizeof(short);
         }
         
     }
