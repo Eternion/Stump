@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:45
+// Generated on 12/29/2014 21:12:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public bool enable;
-        public uint rights;
+        public int rights;
         
         public HouseGuildShareRequestMessage()
         {
         }
         
-        public HouseGuildShareRequestMessage(bool enable, uint rights)
+        public HouseGuildShareRequestMessage(bool enable, int rights)
         {
             this.enable = enable;
             this.rights = rights;
@@ -34,20 +34,20 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteBoolean(enable);
-            writer.WriteUInt(rights);
+            writer.WriteInt(rights);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             enable = reader.ReadBoolean();
-            rights = reader.ReadUInt();
-            if (rights < 0 || rights > 4.294967295E9)
-                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4.294967295E9");
+            rights = reader.ReadInt();
+            if (rights < 0)
+                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(bool) + sizeof(uint);
+            return sizeof(bool) + sizeof(int);
         }
         
     }

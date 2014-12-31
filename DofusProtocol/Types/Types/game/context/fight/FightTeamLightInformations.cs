@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:01
+// Generated on 12/29/2014 21:14:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightTeamLightInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, uint nbWaves, bool hasFriend, bool hasGuildMember, bool hasAllianceMember, bool hasGroupMember, bool hasMyTaxCollector, sbyte teamMembersCount, int meanLevel)
+        public FightTeamLightInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves, bool hasFriend, bool hasGuildMember, bool hasAllianceMember, bool hasGroupMember, bool hasMyTaxCollector, sbyte teamMembersCount, int meanLevel)
          : base(teamId, leaderId, teamSide, teamTypeId, nbWaves)
         {
             this.hasFriend = hasFriend;

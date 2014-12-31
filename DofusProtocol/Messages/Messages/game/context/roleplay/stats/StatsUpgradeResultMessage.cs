@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:50
+// Generated on 12/29/2014 21:13:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +18,28 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public sbyte result;
         public short nbCharacBoost;
         
         public StatsUpgradeResultMessage()
         {
         }
         
-        public StatsUpgradeResultMessage(short nbCharacBoost)
+        public StatsUpgradeResultMessage(sbyte result, short nbCharacBoost)
         {
+            this.result = result;
             this.nbCharacBoost = nbCharacBoost;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteSByte(result);
             writer.WriteShort(nbCharacBoost);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            result = reader.ReadSByte();
             nbCharacBoost = reader.ReadShort();
             if (nbCharacBoost < 0)
                 throw new Exception("Forbidden value on nbCharacBoost = " + nbCharacBoost + ", it doesn't respect the following condition : nbCharacBoost < 0");
@@ -43,7 +47,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(short);
+            return sizeof(sbyte) + sizeof(short);
         }
         
     }

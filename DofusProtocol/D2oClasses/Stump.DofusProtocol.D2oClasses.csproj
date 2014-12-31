@@ -204,6 +204,8 @@
     <Compile Include="Classes\appearance\Title.cs" />
     <Compile Include="Classes\appearance\TitleCategory.cs" />
     <Compile Include="Classes\breeds\Breed.cs" />
+    <Compile Include="Classes\breeds\BreedRole.cs" />
+    <Compile Include="Classes\breeds\BreedRoleByBreed.cs" />
     <Compile Include="Classes\breeds\Head.cs" />
     <Compile Include="Classes\challenges\Challenge.cs" />
     <Compile Include="Classes\communication\CensoredWord.cs" />
@@ -432,6 +434,7 @@
       <Name>NLog.netfx40</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

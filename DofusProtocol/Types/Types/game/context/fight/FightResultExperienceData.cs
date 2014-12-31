@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:01
+// Generated on 12/29/2014 21:14:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,19 +24,19 @@ namespace Stump.DofusProtocol.Types
         public bool showExperienceForGuild;
         public bool showExperienceForMount;
         public bool isIncarnationExperience;
-        public double experience;
-        public double experienceLevelFloor;
+        public long experience;
+        public long experienceLevelFloor;
         public double experienceNextLevelFloor;
         public int experienceFightDelta;
         public int experienceForGuild;
         public int experienceForMount;
-        public int rerollExperienceMul;
+        public sbyte rerollExperienceMul;
         
         public FightResultExperienceData()
         {
         }
         
-        public FightResultExperienceData(bool showExperience, bool showExperienceLevelFloor, bool showExperienceNextLevelFloor, bool showExperienceFightDelta, bool showExperienceForGuild, bool showExperienceForMount, bool isIncarnationExperience, double experience, double experienceLevelFloor, double experienceNextLevelFloor, int experienceFightDelta, int experienceForGuild, int experienceForMount, int rerollExperienceMul)
+        public FightResultExperienceData(bool showExperience, bool showExperienceLevelFloor, bool showExperienceNextLevelFloor, bool showExperienceFightDelta, bool showExperienceForGuild, bool showExperienceForMount, bool isIncarnationExperience, long experience, long experienceLevelFloor, double experienceNextLevelFloor, int experienceFightDelta, int experienceForGuild, int experienceForMount, sbyte rerollExperienceMul)
         {
             this.showExperience = showExperience;
             this.showExperienceLevelFloor = showExperienceLevelFloor;
@@ -66,13 +66,13 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 5, showExperienceForMount);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 6, isIncarnationExperience);
             writer.WriteByte(flag1);
-            writer.WriteDouble(experience);
-            writer.WriteDouble(experienceLevelFloor);
+            writer.WriteLong(experience);
+            writer.WriteLong(experienceLevelFloor);
             writer.WriteDouble(experienceNextLevelFloor);
             writer.WriteInt(experienceFightDelta);
             writer.WriteInt(experienceForGuild);
             writer.WriteInt(experienceForMount);
-            writer.WriteInt(rerollExperienceMul);
+            writer.WriteSByte(rerollExperienceMul);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -86,10 +86,10 @@ namespace Stump.DofusProtocol.Types
             showExperienceForGuild = BooleanByteWrapper.GetFlag(flag1, 4);
             showExperienceForMount = BooleanByteWrapper.GetFlag(flag1, 5);
             isIncarnationExperience = BooleanByteWrapper.GetFlag(flag1, 6);
-            experience = reader.ReadDouble();
+            experience = reader.ReadLong();
             if (experience < 0 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
-            experienceLevelFloor = reader.ReadDouble();
+            experienceLevelFloor = reader.ReadLong();
             if (experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15");
             experienceNextLevelFloor = reader.ReadDouble();
@@ -102,12 +102,14 @@ namespace Stump.DofusProtocol.Types
             experienceForMount = reader.ReadInt();
             if (experienceForMount < 0)
                 throw new Exception("Forbidden value on experienceForMount = " + experienceForMount + ", it doesn't respect the following condition : experienceForMount < 0");
-            rerollExperienceMul = reader.ReadInt();
+            rerollExperienceMul = reader.ReadSByte();
+            if (rerollExperienceMul < 0)
+                throw new Exception("Forbidden value on rerollExperienceMul = " + rerollExperienceMul + ", it doesn't respect the following condition : rerollExperienceMul < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int);
+            return base.GetSerializationSize() + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(long) + sizeof(long) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(sbyte);
         }
         
     }

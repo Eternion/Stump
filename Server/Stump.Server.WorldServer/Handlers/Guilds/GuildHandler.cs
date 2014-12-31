@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 return;
 
             client.Character.Guild.ChangeParameters(client.Character, target, message.rank,
-                                                    (byte) message.experienceGivenPercent, message.rights);
+                                                    (byte) message.experienceGivenPercent, (uint)message.rights);
         }
 
         [WorldHandler(GuildKickRequestMessage.Id)]
@@ -297,7 +297,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildMembershipMessage(IPacketReceiver client, GuildMember member)
         {
-            client.Send(new GuildMembershipMessage(member.Guild.GetGuildInformations(), (uint)member.Rights, true));
+            client.Send(new GuildMembershipMessage(member.Guild.GetGuildInformations(), (int)member.Rights, true));
         }
 
         public static void SendGuildInformationsGeneralMessage(IPacketReceiver client, Guild guild)
@@ -335,7 +335,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
 
         public static void SendGuildJoinedMessage(IPacketReceiver client, GuildMember member)
         {
-            client.Send(new GuildJoinedMessage(member.Guild.GetGuildInformations(), (uint)member.Rights, true));
+            client.Send(new GuildJoinedMessage(member.Guild.GetGuildInformations(), (int)member.Rights, true));
         }
 
         public static void SendGuildMemberLeavingMessage(IPacketReceiver client, GuildMember member, bool kicked)

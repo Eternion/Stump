@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:04
+// Generated on 12/29/2014 21:14:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte playerState;
-        public int lastConnection;
+        public short lastConnection;
         public int achievementPoints;
         
         public FriendInformations()
         {
         }
         
-        public FriendInformations(int accountId, string accountName, sbyte playerState, int lastConnection, int achievementPoints)
+        public FriendInformations(int accountId, string accountName, sbyte playerState, short lastConnection, int achievementPoints)
          : base(accountId, accountName)
         {
             this.playerState = playerState;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteSByte(playerState);
-            writer.WriteInt(lastConnection);
+            writer.WriteShort(lastConnection);
             writer.WriteInt(achievementPoints);
         }
         
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             playerState = reader.ReadSByte();
             if (playerState < 0)
                 throw new Exception("Forbidden value on playerState = " + playerState + ", it doesn't respect the following condition : playerState < 0");
-            lastConnection = reader.ReadInt();
+            lastConnection = reader.ReadShort();
             if (lastConnection < 0)
                 throw new Exception("Forbidden value on lastConnection = " + lastConnection + ", it doesn't respect the following condition : lastConnection < 0");
             achievementPoints = reader.ReadInt();
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int) + sizeof(int);
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + sizeof(int);
         }
         
     }

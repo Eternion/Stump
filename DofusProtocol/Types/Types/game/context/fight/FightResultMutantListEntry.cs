@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:01
+// Generated on 12/29/2014 21:14:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public ushort level;
+        public short level;
         
         public FightResultMutantListEntry()
         {
         }
         
-        public FightResultMutantListEntry(short outcome, uint wave, Types.FightLoot rewards, int id, bool alive, ushort level)
+        public FightResultMutantListEntry(short outcome, sbyte wave, Types.FightLoot rewards, int id, bool alive, short level)
          : base(outcome, wave, rewards, id, alive)
         {
             this.level = level;
@@ -32,20 +32,20 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUShort(level);
+            writer.WriteShort(level);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            level = reader.ReadUShort();
-            if (level < 0 || level > 65535)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 65535");
+            level = reader.ReadShort();
+            if (level < 0)
+                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(ushort);
+            return base.GetSerializationSize() + sizeof(short);
         }
         
     }

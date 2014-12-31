@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:55
+// Generated on 12/29/2014 21:13:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,32 +18,32 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int genId;
+        public short genId;
         
         public ExchangeBidHousePriceMessage()
         {
         }
         
-        public ExchangeBidHousePriceMessage(int genId)
+        public ExchangeBidHousePriceMessage(short genId)
         {
             this.genId = genId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(genId);
+            writer.WriteShort(genId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            genId = reader.ReadInt();
+            genId = reader.ReadShort();
             if (genId < 0)
                 throw new Exception("Forbidden value on genId = " + genId + ", it doesn't respect the following condition : genId < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int);
+            return sizeof(short);
         }
         
     }

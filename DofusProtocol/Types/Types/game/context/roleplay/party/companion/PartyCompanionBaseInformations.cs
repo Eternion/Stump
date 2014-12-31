@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:04
+// Generated on 12/29/2014 21:14:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte indexId;
-        public short companionGenericId;
+        public sbyte companionGenericId;
         public Types.EntityLook entityLook;
         
         public PartyCompanionBaseInformations()
         {
         }
         
-        public PartyCompanionBaseInformations(sbyte indexId, short companionGenericId, Types.EntityLook entityLook)
+        public PartyCompanionBaseInformations(sbyte indexId, sbyte companionGenericId, Types.EntityLook entityLook)
         {
             this.indexId = indexId;
             this.companionGenericId = companionGenericId;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(indexId);
-            writer.WriteShort(companionGenericId);
+            writer.WriteSByte(companionGenericId);
             entityLook.Serialize(writer);
         }
         
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
             indexId = reader.ReadSByte();
             if (indexId < 0)
                 throw new Exception("Forbidden value on indexId = " + indexId + ", it doesn't respect the following condition : indexId < 0");
-            companionGenericId = reader.ReadShort();
+            companionGenericId = reader.ReadSByte();
             if (companionGenericId < 0)
                 throw new Exception("Forbidden value on companionGenericId = " + companionGenericId + ", it doesn't respect the following condition : companionGenericId < 0");
             entityLook = new Types.EntityLook();
@@ -53,7 +53,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(short) + entityLook.GetSerializationSize();
+            return sizeof(sbyte) + sizeof(sbyte) + entityLook.GetSerializationSize();
         }
         
     }

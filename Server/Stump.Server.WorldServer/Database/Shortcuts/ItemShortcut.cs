@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
 
         public override DofusProtocol.Types.Shortcut GetNetworkShortcut()
         {
-            return new ShortcutObjectItem(Slot, ItemGuid, ItemTemplateId);
+            return new ShortcutObjectItem((sbyte)Slot, ItemGuid, ItemTemplateId);
         }
     }
 }

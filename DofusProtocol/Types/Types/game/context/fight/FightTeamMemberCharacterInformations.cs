@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:01
+// Generated on 12/29/2014 21:14:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Types
         }
         
         public string name;
-        public short level;
+        public byte level;
         
         public FightTeamMemberCharacterInformations()
         {
         }
         
-        public FightTeamMemberCharacterInformations(int id, string name, short level)
+        public FightTeamMemberCharacterInformations(int id, string name, byte level)
          : base(id)
         {
             this.name = name;
@@ -35,21 +35,21 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteUTF(name);
-            writer.WriteShort(level);
+            writer.WriteByte(level);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             name = reader.ReadUTF();
-            level = reader.ReadShort();
-            if (level < 0)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
+            level = reader.ReadByte();
+            if (level < 0 || level > 255)
+                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(byte);
         }
         
     }

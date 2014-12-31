@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:46
+// Generated on 12/29/2014 21:12:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         public sbyte taxCollectorsCount;
         public int taxCollectorAttack;
         public int kamas;
-        public double experience;
+        public long experience;
         public int pods;
         public int itemsValue;
         
@@ -32,7 +32,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public TaxCollectorDialogQuestionExtendedMessage(Types.BasicGuildInformations guildInfo, short maxPods, short prospecting, short wisdom, sbyte taxCollectorsCount, int taxCollectorAttack, int kamas, double experience, int pods, int itemsValue)
+        public TaxCollectorDialogQuestionExtendedMessage(Types.BasicGuildInformations guildInfo, short maxPods, short prospecting, short wisdom, sbyte taxCollectorsCount, int taxCollectorAttack, int kamas, long experience, int pods, int itemsValue)
          : base(guildInfo)
         {
             this.maxPods = maxPods;
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(taxCollectorsCount);
             writer.WriteInt(taxCollectorAttack);
             writer.WriteInt(kamas);
-            writer.WriteDouble(experience);
+            writer.WriteLong(experience);
             writer.WriteInt(pods);
             writer.WriteInt(itemsValue);
         }
@@ -79,7 +79,7 @@ namespace Stump.DofusProtocol.Messages
             kamas = reader.ReadInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
-            experience = reader.ReadDouble();
+            experience = reader.ReadLong();
             if (experience < 0 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
             pods = reader.ReadInt();
@@ -92,7 +92,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int);
+            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(long) + sizeof(int) + sizeof(int);
         }
         
     }

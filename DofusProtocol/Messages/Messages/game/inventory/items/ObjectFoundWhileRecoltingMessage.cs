@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:37:00
+// Generated on 12/29/2014 21:13:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,44 +18,44 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int genericId;
+        public short genericId;
         public int quantity;
-        public int ressourceGenericId;
+        public int resourceGenericId;
         
         public ObjectFoundWhileRecoltingMessage()
         {
         }
         
-        public ObjectFoundWhileRecoltingMessage(int genericId, int quantity, int ressourceGenericId)
+        public ObjectFoundWhileRecoltingMessage(short genericId, int quantity, int resourceGenericId)
         {
             this.genericId = genericId;
             this.quantity = quantity;
-            this.ressourceGenericId = ressourceGenericId;
+            this.resourceGenericId = resourceGenericId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(genericId);
+            writer.WriteShort(genericId);
             writer.WriteInt(quantity);
-            writer.WriteInt(ressourceGenericId);
+            writer.WriteInt(resourceGenericId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            genericId = reader.ReadInt();
+            genericId = reader.ReadShort();
             if (genericId < 0)
                 throw new Exception("Forbidden value on genericId = " + genericId + ", it doesn't respect the following condition : genericId < 0");
             quantity = reader.ReadInt();
             if (quantity < 0)
                 throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");
-            ressourceGenericId = reader.ReadInt();
-            if (ressourceGenericId < 0)
-                throw new Exception("Forbidden value on ressourceGenericId = " + ressourceGenericId + ", it doesn't respect the following condition : ressourceGenericId < 0");
+            resourceGenericId = reader.ReadInt();
+            if (resourceGenericId < 0)
+                throw new Exception("Forbidden value on resourceGenericId = " + resourceGenericId + ", it doesn't respect the following condition : resourceGenericId < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(int);
+            return sizeof(short) + sizeof(int) + sizeof(int);
         }
         
     }

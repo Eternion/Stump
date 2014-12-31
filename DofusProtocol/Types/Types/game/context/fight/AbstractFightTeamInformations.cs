@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:01
+// Generated on 12/29/2014 21:14:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +21,13 @@ namespace Stump.DofusProtocol.Types
         public int leaderId;
         public sbyte teamSide;
         public sbyte teamTypeId;
-        public uint nbWaves;
+        public sbyte nbWaves;
         
         public AbstractFightTeamInformations()
         {
         }
         
-        public AbstractFightTeamInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, uint nbWaves)
+        public AbstractFightTeamInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves)
         {
             this.teamId = teamId;
             this.leaderId = leaderId;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteInt(leaderId);
             writer.WriteSByte(teamSide);
             writer.WriteSByte(teamTypeId);
-            writer.WriteUInt(nbWaves);
+            writer.WriteSByte(nbWaves);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -55,14 +55,14 @@ namespace Stump.DofusProtocol.Types
             teamTypeId = reader.ReadSByte();
             if (teamTypeId < 0)
                 throw new Exception("Forbidden value on teamTypeId = " + teamTypeId + ", it doesn't respect the following condition : teamTypeId < 0");
-            nbWaves = reader.ReadUInt();
-            if (nbWaves < 0 || nbWaves > 4.294967295E9)
-                throw new Exception("Forbidden value on nbWaves = " + nbWaves + ", it doesn't respect the following condition : nbWaves < 0 || nbWaves > 4.294967295E9");
+            nbWaves = reader.ReadSByte();
+            if (nbWaves < 0)
+                throw new Exception("Forbidden value on nbWaves = " + nbWaves + ", it doesn't respect the following condition : nbWaves < 0");
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(sbyte) + sizeof(uint);
+            return sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

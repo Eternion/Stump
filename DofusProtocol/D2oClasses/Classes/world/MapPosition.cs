@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:27:54
+// Generated on 12/29/2014 16:35:25
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -20,6 +20,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int capabilities;
         [I18NField]
         public int nameId;
+        public Boolean showNameOnFingerpost;
         public List<AmbientSound> sounds;
         public int subAreaId;
         public int worldMap;
@@ -63,6 +64,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.nameId; }
             set { this.nameId = value; }
+        }
+        [D2OIgnore]
+        public Boolean ShowNameOnFingerpost
+        {
+            get { return this.showNameOnFingerpost; }
+            set { this.showNameOnFingerpost = value; }
         }
         [D2OIgnore]
         public List<AmbientSound> Sounds

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:05
+// Generated on 12/29/2014 21:14:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public int kamas;
-        public double experience;
+        public long experience;
         public int pods;
         public int itemsValue;
         
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public TaxCollectorLootInformations(int kamas, double experience, int pods, int itemsValue)
+        public TaxCollectorLootInformations(int kamas, long experience, int pods, int itemsValue)
         {
             this.kamas = kamas;
             this.experience = experience;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteInt(kamas);
-            writer.WriteDouble(experience);
+            writer.WriteLong(experience);
             writer.WriteInt(pods);
             writer.WriteInt(itemsValue);
         }
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Types
             kamas = reader.ReadInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
-            experience = reader.ReadDouble();
+            experience = reader.ReadLong();
             if (experience < 0 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
             pods = reader.ReadInt();
@@ -62,7 +62,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int);
+            return base.GetSerializationSize() + sizeof(int) + sizeof(long) + sizeof(int) + sizeof(int);
         }
         
     }

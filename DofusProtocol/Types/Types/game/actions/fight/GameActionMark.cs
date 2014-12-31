@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:37:59
+// Generated on 12/29/2014 21:14:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,30 +18,41 @@ namespace Stump.DofusProtocol.Types
         }
         
         public int markAuthorId;
+        public sbyte markTeamId;
         public int markSpellId;
+        public sbyte markSpellLevel;
         public short markId;
         public sbyte markType;
+        public short markimpactCell;
         public IEnumerable<Types.GameActionMarkedCell> cells;
+        public bool active;
         
         public GameActionMark()
         {
         }
         
-        public GameActionMark(int markAuthorId, int markSpellId, short markId, sbyte markType, IEnumerable<Types.GameActionMarkedCell> cells)
+        public GameActionMark(int markAuthorId, sbyte markTeamId, int markSpellId, sbyte markSpellLevel, short markId, sbyte markType, short markimpactCell, IEnumerable<Types.GameActionMarkedCell> cells, bool active)
         {
             this.markAuthorId = markAuthorId;
+            this.markTeamId = markTeamId;
             this.markSpellId = markSpellId;
+            this.markSpellLevel = markSpellLevel;
             this.markId = markId;
             this.markType = markType;
+            this.markimpactCell = markimpactCell;
             this.cells = cells;
+            this.active = active;
         }
         
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(markAuthorId);
+            writer.WriteSByte(markTeamId);
             writer.WriteInt(markSpellId);
+            writer.WriteSByte(markSpellLevel);
             writer.WriteShort(markId);
             writer.WriteSByte(markType);
+            writer.WriteShort(markimpactCell);
             var cells_before = writer.Position;
             var cells_count = 0;
             writer.WriteUShort(0);
@@ -55,16 +66,26 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort((ushort)cells_count);
             writer.Seek((int)cells_after);
 
+            writer.WriteBoolean(active);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
             markAuthorId = reader.ReadInt();
+            markTeamId = reader.ReadSByte();
+            if (markTeamId < 0)
+                throw new Exception("Forbidden value on markTeamId = " + markTeamId + ", it doesn't respect the following condition : markTeamId < 0");
             markSpellId = reader.ReadInt();
             if (markSpellId < 0)
                 throw new Exception("Forbidden value on markSpellId = " + markSpellId + ", it doesn't respect the following condition : markSpellId < 0");
+            markSpellLevel = reader.ReadSByte();
+            if (markSpellLevel < 1 || markSpellLevel > 6)
+                throw new Exception("Forbidden value on markSpellLevel = " + markSpellLevel + ", it doesn't respect the following condition : markSpellLevel < 1 || markSpellLevel > 6");
             markId = reader.ReadShort();
             markType = reader.ReadSByte();
+            markimpactCell = reader.ReadShort();
+            if (markimpactCell < -1 || markimpactCell > 559)
+                throw new Exception("Forbidden value on markimpactCell = " + markimpactCell + ", it doesn't respect the following condition : markimpactCell < -1 || markimpactCell > 559");
             var limit = reader.ReadUShort();
             var cells_ = new Types.GameActionMarkedCell[limit];
             for (int i = 0; i < limit; i++)
@@ -73,11 +94,12 @@ namespace Stump.DofusProtocol.Types
                  cells_[i].Deserialize(reader);
             }
             cells = cells_;
+            active = reader.ReadBoolean();
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(short) + cells.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(short) + sizeof(sbyte) + sizeof(short) + sizeof(short) + cells.Sum(x => x.GetSerializationSize()) + sizeof(bool);
         }
         
     }

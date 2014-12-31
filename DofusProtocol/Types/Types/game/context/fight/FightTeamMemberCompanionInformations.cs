@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:01
+// Generated on 12/29/2014 21:14:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +17,15 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int companionId;
-        public short level;
+        public sbyte companionId;
+        public byte level;
         public int masterId;
         
         public FightTeamMemberCompanionInformations()
         {
         }
         
-        public FightTeamMemberCompanionInformations(int id, int companionId, short level, int masterId)
+        public FightTeamMemberCompanionInformations(int id, sbyte companionId, byte level, int masterId)
          : base(id)
         {
             this.companionId = companionId;
@@ -36,24 +36,26 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(companionId);
-            writer.WriteShort(level);
+            writer.WriteSByte(companionId);
+            writer.WriteByte(level);
             writer.WriteInt(masterId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            companionId = reader.ReadInt();
-            level = reader.ReadShort();
-            if (level < 0)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
+            companionId = reader.ReadSByte();
+            if (companionId < 0)
+                throw new Exception("Forbidden value on companionId = " + companionId + ", it doesn't respect the following condition : companionId < 0");
+            level = reader.ReadByte();
+            if (level < 1 || level > 200)
+                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
             masterId = reader.ReadInt();
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + sizeof(int);
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(byte) + sizeof(int);
         }
         
     }

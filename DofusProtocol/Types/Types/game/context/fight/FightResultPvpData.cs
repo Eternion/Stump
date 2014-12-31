@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:01
+// Generated on 12/29/2014 21:14:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +18,16 @@ namespace Stump.DofusProtocol.Types
         }
         
         public byte grade;
-        public ushort minHonorForGrade;
-        public ushort maxHonorForGrade;
-        public ushort honor;
+        public short minHonorForGrade;
+        public short maxHonorForGrade;
+        public short honor;
         public short honorDelta;
         
         public FightResultPvpData()
         {
         }
         
-        public FightResultPvpData(byte grade, ushort minHonorForGrade, ushort maxHonorForGrade, ushort honor, short honorDelta)
+        public FightResultPvpData(byte grade, short minHonorForGrade, short maxHonorForGrade, short honor, short honorDelta)
         {
             this.grade = grade;
             this.minHonorForGrade = minHonorForGrade;
@@ -40,9 +40,9 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteByte(grade);
-            writer.WriteUShort(minHonorForGrade);
-            writer.WriteUShort(maxHonorForGrade);
-            writer.WriteUShort(honor);
+            writer.WriteShort(minHonorForGrade);
+            writer.WriteShort(maxHonorForGrade);
+            writer.WriteShort(honor);
             writer.WriteShort(honorDelta);
         }
         
@@ -52,13 +52,13 @@ namespace Stump.DofusProtocol.Types
             grade = reader.ReadByte();
             if (grade < 0 || grade > 255)
                 throw new Exception("Forbidden value on grade = " + grade + ", it doesn't respect the following condition : grade < 0 || grade > 255");
-            minHonorForGrade = reader.ReadUShort();
+            minHonorForGrade = reader.ReadShort();
             if (minHonorForGrade < 0 || minHonorForGrade > 20000)
                 throw new Exception("Forbidden value on minHonorForGrade = " + minHonorForGrade + ", it doesn't respect the following condition : minHonorForGrade < 0 || minHonorForGrade > 20000");
-            maxHonorForGrade = reader.ReadUShort();
+            maxHonorForGrade = reader.ReadShort();
             if (maxHonorForGrade < 0 || maxHonorForGrade > 20000)
                 throw new Exception("Forbidden value on maxHonorForGrade = " + maxHonorForGrade + ", it doesn't respect the following condition : maxHonorForGrade < 0 || maxHonorForGrade > 20000");
-            honor = reader.ReadUShort();
+            honor = reader.ReadShort();
             if (honor < 0 || honor > 20000)
                 throw new Exception("Forbidden value on honor = " + honor + ", it doesn't respect the following condition : honor < 0 || honor > 20000");
             honorDelta = reader.ReadShort();
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(byte) + sizeof(ushort) + sizeof(ushort) + sizeof(ushort) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(byte) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short);
         }
         
     }

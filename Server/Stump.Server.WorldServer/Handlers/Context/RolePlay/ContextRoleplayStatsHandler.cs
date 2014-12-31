@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendStatsUpgradeResultMessage(IPacketReceiver client, short usedpts)
         {
-            client.Send(new StatsUpgradeResultMessage(usedpts));
+            client.Send(new StatsUpgradeResultMessage(1, usedpts));
         }
     }
 }

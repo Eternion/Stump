@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:06
+// Generated on 12/29/2014 21:14:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public ShortcutObjectPreset(int slot, sbyte presetId)
+        public ShortcutObjectPreset(sbyte slot, sbyte presetId)
          : base(slot)
         {
             this.presetId = presetId;

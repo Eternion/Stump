@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:27:34
+// Generated on 12/29/2014 16:35:06
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -34,6 +34,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<List<uint>> statsPointsForVitality;
         public List<List<uint>> statsPointsForWisdom;
         public List<uint> breedSpellsId;
+        public List<BreedRoleByBreed> breedRoles;
         public List<uint> maleColors;
         public List<uint> femaleColors;
         public uint spawnMap;
@@ -142,6 +143,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.breedSpellsId; }
             set { this.breedSpellsId = value; }
+        }
+        [D2OIgnore]
+        public List<BreedRoleByBreed> BreedRoles
+        {
+            get { return this.breedRoles; }
+            set { this.breedRoles = value; }
         }
         [D2OIgnore]
         public List<uint> MaleColors

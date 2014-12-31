@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:32
+// Generated on 12/29/2014 21:11:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +37,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             serverId = reader.ReadShort();
+            if (serverId < 0)
+                throw new Exception("Forbidden value on serverId = " + serverId + ", it doesn't respect the following condition : serverId < 0");
         }
         
         public override int GetSerializationSize()

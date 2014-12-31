@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public override ObjectEffect GetObjectEffect()
         {
-            return new ObjectEffectDuration(Id, m_days, m_hours, m_minutes);
+            return new ObjectEffectDuration(Id, m_days, (sbyte)m_hours, (sbyte)m_minutes);
         }
         public override EffectInstance GetEffectInstance()
         {

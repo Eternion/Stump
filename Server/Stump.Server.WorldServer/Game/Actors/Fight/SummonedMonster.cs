@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using NLog.LayoutRenderers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
@@ -88,6 +89,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
+                new short[0],
                 (short)Monster.Template.Id,
                 (sbyte)Monster.GradeId);
         }

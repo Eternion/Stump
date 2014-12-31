@@ -13,11 +13,11 @@ namespace Stump.Server.WorldServer.Handlers.Basic
 {
     public class BasicHandler : WorldHandlerContainer
     {
-        [WorldHandler(BasicSetAwayModeRequestMessage.Id)]
+        /*[WorldHandler(BasicSetAwayModeRequestMessage.Id)]
         public static void HandleBasicSwitchModeRequestMessage(WorldClient client, BasicSetAwayModeRequestMessage message)
         {
             client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, client.Character.ToggleAway() ? (short) 37 : (short) 38);
-        }
+        }*/
 
         [WorldHandler(BasicWhoAmIRequestMessage.Id)]
         public static void HandleBasicWhoAmIRequestMessage(WorldClient client, BasicWhoAmIRequestMessage message)

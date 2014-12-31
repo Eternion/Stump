@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:02
+// Generated on 12/29/2014 21:14:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightMutantInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, uint wave, bool alive, Types.GameFightMinimalStats stats, string name, Types.PlayerStatus status, sbyte powerLevel)
-         : base(contextualId, look, disposition, teamId, wave, alive, stats, name, status)
+        public GameFightMutantInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, string name, Types.PlayerStatus status, sbyte powerLevel)
+         : base(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions, name, status)
         {
             this.powerLevel = powerLevel;
         }
