@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:04
+// Generated on 12/29/2014 21:14:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public PartyCompanionMemberInformations(sbyte indexId, short companionGenericId, Types.EntityLook entityLook, short initiative, int lifePoints, int maxLifePoints, short prospecting, byte regenRate)
+        public PartyCompanionMemberInformations(sbyte indexId, sbyte companionGenericId, Types.EntityLook entityLook, short initiative, int lifePoints, int maxLifePoints, short prospecting, byte regenRate)
          : base(indexId, companionGenericId, entityLook)
         {
             this.initiative = initiative;

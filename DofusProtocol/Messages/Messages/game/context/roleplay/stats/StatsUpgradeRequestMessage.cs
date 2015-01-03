@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:50
+// Generated on 12/29/2014 21:13:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public bool useAdditionnal;
         public sbyte statId;
         public short boostPoint;
         
@@ -25,20 +26,23 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public StatsUpgradeRequestMessage(sbyte statId, short boostPoint)
+        public StatsUpgradeRequestMessage(bool useAdditionnal, sbyte statId, short boostPoint)
         {
+            this.useAdditionnal = useAdditionnal;
             this.statId = statId;
             this.boostPoint = boostPoint;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteBoolean(useAdditionnal);
             writer.WriteSByte(statId);
             writer.WriteShort(boostPoint);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            useAdditionnal = reader.ReadBoolean();
             statId = reader.ReadSByte();
             if (statId < 0)
                 throw new Exception("Forbidden value on statId = " + statId + ", it doesn't respect the following condition : statId < 0");
@@ -49,7 +53,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(short);
+            return sizeof(bool) + sizeof(sbyte) + sizeof(short);
         }
         
     }

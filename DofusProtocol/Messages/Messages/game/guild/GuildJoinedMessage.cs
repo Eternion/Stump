@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:52
+// Generated on 12/29/2014 21:13:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public Types.GuildInformations guildInfo;
-        public uint memberRights;
+        public int memberRights;
         public bool enabled;
         
         public GuildJoinedMessage()
         {
         }
         
-        public GuildJoinedMessage(Types.GuildInformations guildInfo, uint memberRights, bool enabled)
+        public GuildJoinedMessage(Types.GuildInformations guildInfo, int memberRights, bool enabled)
         {
             this.guildInfo = guildInfo;
             this.memberRights = memberRights;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             guildInfo.Serialize(writer);
-            writer.WriteUInt(memberRights);
+            writer.WriteInt(memberRights);
             writer.WriteBoolean(enabled);
         }
         
@@ -44,15 +44,15 @@ namespace Stump.DofusProtocol.Messages
         {
             guildInfo = new Types.GuildInformations();
             guildInfo.Deserialize(reader);
-            memberRights = reader.ReadUInt();
-            if (memberRights < 0 || memberRights > 4.294967295E9)
-                throw new Exception("Forbidden value on memberRights = " + memberRights + ", it doesn't respect the following condition : memberRights < 0 || memberRights > 4.294967295E9");
+            memberRights = reader.ReadInt();
+            if (memberRights < 0)
+                throw new Exception("Forbidden value on memberRights = " + memberRights + ", it doesn't respect the following condition : memberRights < 0");
             enabled = reader.ReadBoolean();
         }
         
         public override int GetSerializationSize()
         {
-            return guildInfo.GetSerializationSize() + sizeof(uint) + sizeof(bool);
+            return guildInfo.GetSerializationSize() + sizeof(int) + sizeof(bool);
         }
         
     }

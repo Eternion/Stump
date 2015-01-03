@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:42
+// Generated on 12/29/2014 21:12:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public double mountUid;
+        public long mountUid;
         public sbyte mountLocation;
         public int mountFoodUid;
         public int quantity;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public MountFeedRequestMessage(double mountUid, sbyte mountLocation, int mountFoodUid, int quantity)
+        public MountFeedRequestMessage(long mountUid, sbyte mountLocation, int mountFoodUid, int quantity)
         {
             this.mountUid = mountUid;
             this.mountLocation = mountLocation;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteDouble(mountUid);
+            writer.WriteLong(mountUid);
             writer.WriteSByte(mountLocation);
             writer.WriteInt(mountFoodUid);
             writer.WriteInt(quantity);
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            mountUid = reader.ReadDouble();
+            mountUid = reader.ReadLong();
             if (mountUid < 0 || mountUid > 9.007199254740992E15)
                 throw new Exception("Forbidden value on mountUid = " + mountUid + ", it doesn't respect the following condition : mountUid < 0 || mountUid > 9.007199254740992E15");
             mountLocation = reader.ReadSByte();
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(double) + sizeof(sbyte) + sizeof(int) + sizeof(int);
+            return sizeof(long) + sizeof(sbyte) + sizeof(int) + sizeof(int);
         }
         
     }

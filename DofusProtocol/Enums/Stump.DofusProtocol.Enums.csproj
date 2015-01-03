@@ -174,11 +174,13 @@
     <Compile Include="Custom\GuildInvitationStateEnum.cs" />
     <Compile Include="Custom\InteractiveTypeEnum.cs" />
     <Compile Include="Custom\ItemSuperTypeEnum.cs" />
+    <Compile Include="Custom\MountStateEnum.cs" />
     <Compile Include="Custom\NotificationEnum.cs" />
     <Compile Include="Custom\OptionalFeaturesEnum.cs" />
     <Compile Include="Custom\OrnamentEnum.cs" />
     <Compile Include="Custom\PartyFightReasonEnum.cs" />
     <Compile Include="Custom\SpellShapeEnum.cs" />
+    <Compile Include="Custom\StableExchangeActionsEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />
     <Compile Include="Custom\ContinentIdEnum.cs" />
     <Compile Include="Custom\MountBehaviorEnum.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="Export\CharacterCreationResultEnum.cs" />
     <Compile Include="Export\CharacterDeletionErrorEnum.cs" />
     <Compile Include="Export\CharacterInventoryPositionEnum.cs" />
+    <Compile Include="Export\CharacterRemodelingEnum.cs" />
     <Compile Include="Export\CharacterSpellModificationTypeEnum.cs" />
     <Compile Include="Export\ChatActivableChannelsEnum.cs" />
     <Compile Include="Export\ChatChannelsMultiEnum.cs" />
@@ -242,7 +245,6 @@
     <Compile Include="Export\GuestLimitationEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
     <Compile Include="Export\GuildRightsBitEnum.cs" />
-    <Compile Include="Export\HardcoreDeathStateEnum.cs" />
     <Compile Include="Export\HardcoreOrEpicDeathStateEnum.cs" />
     <Compile Include="Export\IdentificationFailureReasonEnum.cs" />
     <Compile Include="Export\ListAddFailureEnum.cs" />
@@ -250,7 +252,6 @@
     <Compile Include="Export\MountEquipedErrorEnum.cs" />
     <Compile Include="Export\NicknameErrorEnum.cs" />
     <Compile Include="Export\NicknameGeneratingFailureEnum.cs" />
-    <Compile Include="Export\NumericalValueTypeEnum.cs" />
     <Compile Include="Export\ObjectErrorEnum.cs" />
     <Compile Include="Export\PartStateEnum.cs" />
     <Compile Include="Export\PartyJoinErrorEnum.cs" />
@@ -278,6 +279,7 @@
     <Compile Include="Export\SocialGroupCreationResultEnum.cs" />
     <Compile Include="Export\SocialGroupInvitationStateEnum.cs" />
     <Compile Include="Export\StatisticTypeEnum.cs" />
+    <Compile Include="Export\StatsUpgradeResultEnum.cs" />
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Export\SubscriptionRequiredEnum.cs" />
     <Compile Include="Export\TaxCollectorErrorReasonEnum.cs" />

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:57
+// Generated on 12/29/2014 21:13:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int humanVendorId;
-        public int humanVendorCell;
+        public short humanVendorCell;
         
         public ExchangeOnHumanVendorRequestMessage()
         {
         }
         
-        public ExchangeOnHumanVendorRequestMessage(int humanVendorId, int humanVendorCell)
+        public ExchangeOnHumanVendorRequestMessage(int humanVendorId, short humanVendorCell)
         {
             this.humanVendorId = humanVendorId;
             this.humanVendorCell = humanVendorCell;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(humanVendorId);
-            writer.WriteInt(humanVendorCell);
+            writer.WriteShort(humanVendorCell);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,14 +42,14 @@ namespace Stump.DofusProtocol.Messages
             humanVendorId = reader.ReadInt();
             if (humanVendorId < 0)
                 throw new Exception("Forbidden value on humanVendorId = " + humanVendorId + ", it doesn't respect the following condition : humanVendorId < 0");
-            humanVendorCell = reader.ReadInt();
-            if (humanVendorCell < 0)
-                throw new Exception("Forbidden value on humanVendorCell = " + humanVendorCell + ", it doesn't respect the following condition : humanVendorCell < 0");
+            humanVendorCell = reader.ReadShort();
+            if (humanVendorCell < 0 || humanVendorCell > 559)
+                throw new Exception("Forbidden value on humanVendorCell = " + humanVendorCell + ", it doesn't respect the following condition : humanVendorCell < 0 || humanVendorCell > 559");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int);
+            return sizeof(int) + sizeof(short);
         }
         
     }

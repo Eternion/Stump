@@ -144,6 +144,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
+                new short[0],
                 (short)Monster.Template.Id,
                 (sbyte)Monster.Grade.GradeId);
         }

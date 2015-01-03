@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:04
+// Generated on 12/29/2014 21:14:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Types
         
         public int playerId;
         public string playerName;
-        public short level;
+        public byte level;
         public sbyte alignmentSide;
         public sbyte breed;
         public bool sex;
@@ -31,7 +31,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, int lastConnection, int achievementPoints, int playerId, string playerName, short level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, sbyte moodSmileyId, Types.PlayerStatus status)
+        public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, short lastConnection, int achievementPoints, int playerId, string playerName, byte level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, sbyte moodSmileyId, Types.PlayerStatus status)
          : base(accountId, accountName, playerState, lastConnection, achievementPoints)
         {
             this.playerId = playerId;
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteInt(playerId);
             writer.WriteUTF(playerName);
-            writer.WriteShort(level);
+            writer.WriteByte(level);
             writer.WriteSByte(alignmentSide);
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
@@ -67,13 +67,13 @@ namespace Stump.DofusProtocol.Types
             if (playerId < 0)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             playerName = reader.ReadUTF();
-            level = reader.ReadShort();
+            level = reader.ReadByte();
             if (level < 0 || level > 200)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 200");
             alignmentSide = reader.ReadSByte();
             breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Steamer)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Steamer");
+            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliatrope)
+                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliatrope");
             sex = reader.ReadBoolean();
             guildInfo = new Types.BasicGuildInformations();
             guildInfo.Deserialize(reader);
@@ -84,7 +84,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + guildInfo.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + status.GetSerializationSize();
+            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(byte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + guildInfo.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + status.GetSerializationSize();
         }
         
     }

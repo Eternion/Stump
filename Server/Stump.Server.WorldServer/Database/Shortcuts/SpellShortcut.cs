@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Database.Shortcuts
 
         public override DofusProtocol.Types.Shortcut GetNetworkShortcut()
         {
-            return new ShortcutSpell(Slot, SpellId);
+            return new ShortcutSpell((sbyte)Slot, SpellId);
         }
     }
 }

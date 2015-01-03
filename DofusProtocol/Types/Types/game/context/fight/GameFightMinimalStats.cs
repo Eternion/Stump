@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:02
+// Generated on 12/29/2014 21:14:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,6 +158,8 @@ namespace Stump.DofusProtocol.Types
             tackleBlock = reader.ReadShort();
             tackleEvade = reader.ReadShort();
             invisibilityState = reader.ReadSByte();
+            if (invisibilityState < 0)
+                throw new Exception("Forbidden value on invisibilityState = " + invisibilityState + ", it doesn't respect the following condition : invisibilityState < 0");
         }
         
         public virtual int GetSerializationSize()

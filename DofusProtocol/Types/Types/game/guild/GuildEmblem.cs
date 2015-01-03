@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:05
+// Generated on 12/29/2014 21:14:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Types
         
         public short symbolShape;
         public int symbolColor;
-        public short backgroundShape;
+        public sbyte backgroundShape;
         public int backgroundColor;
         
         public GuildEmblem()
         {
         }
         
-        public GuildEmblem(short symbolShape, int symbolColor, short backgroundShape, int backgroundColor)
+        public GuildEmblem(short symbolShape, int symbolColor, sbyte backgroundShape, int backgroundColor)
         {
             this.symbolShape = symbolShape;
             this.symbolColor = symbolColor;
@@ -38,21 +38,25 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteShort(symbolShape);
             writer.WriteInt(symbolColor);
-            writer.WriteShort(backgroundShape);
+            writer.WriteSByte(backgroundShape);
             writer.WriteInt(backgroundColor);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
             symbolShape = reader.ReadShort();
+            if (symbolShape < 0)
+                throw new Exception("Forbidden value on symbolShape = " + symbolShape + ", it doesn't respect the following condition : symbolShape < 0");
             symbolColor = reader.ReadInt();
-            backgroundShape = reader.ReadShort();
+            backgroundShape = reader.ReadSByte();
+            if (backgroundShape < 0)
+                throw new Exception("Forbidden value on backgroundShape = " + backgroundShape + ", it doesn't respect the following condition : backgroundShape < 0");
             backgroundColor = reader.ReadInt();
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(int) + sizeof(short) + sizeof(int);
+            return sizeof(short) + sizeof(int) + sizeof(sbyte) + sizeof(int);
         }
         
     }

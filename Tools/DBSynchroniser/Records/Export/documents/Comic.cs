@@ -58,7 +58,7 @@ namespace DBSynchroniser.Records
             
             Id = castedObj.id;
             RemoteId = castedObj.remoteId;
-            ReaderUrl = castedObj.readerUrl;
+            //ReaderUrl = castedObj.readerUrl;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -66,7 +66,7 @@ namespace DBSynchroniser.Records
             var obj = parent != null ? (Comic)parent : new Comic();
             obj.id = Id;
             obj.remoteId = RemoteId;
-            obj.readerUrl = ReaderUrl;
+            //obj.readerUrl = ReaderUrl;
             return obj;
         }
         

@@ -335,9 +335,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightSynchronizeMessage(WorldClient client, IFight fight)
         {
-            client.Send(
-                new GameFightSynchronizeMessage(
-                    fight.GetAllFighters().Select(entry => entry.GetGameFightFighterInformations(client))));
+            client.Send(new GameFightSynchronizeMessage(
+                    fight.GetAllFighters().Select(entry => entry is SummonedClone ?
+                        (entry as SummonedClone).GetGameFightFighterNamedInformations() :
+                        entry.GetGameFightFighterInformations(client))));
         }
 
         public static void SendGameFightNewRoundMessage(IPacketReceiver client, int roundNumber)
@@ -373,13 +374,23 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         public static void SendGameFightShowFighterMessage(WorldClient client, FightActor fighter)
-        {   
-            client.Send(new GameFightShowFighterMessage(fighter.GetGameFightFighterInformations(client)));
+        {
+            var fighterInfos = fighter.GetGameFightFighterInformations(client);
+
+            if (fighter is SummonedClone)
+                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+
+            client.Send(new GameFightShowFighterMessage(fighterInfos));
         }
 
         public static void SendGameFightRefreshFighterMessage(WorldClient client, FightActor fighter)
         {
-            client.Send(new GameFightRefreshFighterMessage(fighter.GetGameFightFighterInformations(client)));
+            var fighterInfos = fighter.GetGameFightFighterInformations(client);
+
+            if (fighter is SummonedClone)
+                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+
+            client.Send(new GameFightRefreshFighterMessage(fighterInfos));
         }
 
         public static void SendGameFightRemoveTeamMemberMessage(IPacketReceiver client, FightActor fighter)
@@ -410,7 +421,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                                Spell spell)
         {
             client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, target == null ? 0 : target.Id, silentCast ? (short)-1 : cell.Id, (sbyte)(critical),
-                                                            silentCast, (short) spell.Id, (sbyte) spell.CurrentLevel));
+                                                            silentCast, (short) spell.Id, (sbyte) spell.CurrentLevel, new short[0]));
         }
 
         public static void SendGameActionFightSpellCastMessage(IPacketReceiver client, ActionsEnum actionId, FightActor caster, FightActor target,
@@ -418,7 +429,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                        short spellId, sbyte spellLevel)
         {
             client.Send(new GameActionFightSpellCastMessage((short)actionId, caster.Id, target == null ? 0 : target.Id, cell.Id, (sbyte)( critical ),
-                                                            silentCast, spellId, spellLevel));
+                                                            silentCast, spellId, spellLevel, new short[0]));
         }
 
         public static void SendGameActionFightNoSpellCastMessage(IPacketReceiver client, Spell spell)

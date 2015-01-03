@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:37:04
+// Generated on 12/29/2014 21:14:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte barType;
-        public int slot;
+        public sbyte slot;
         
         public ShortcutBarRemovedMessage()
         {
         }
         
-        public ShortcutBarRemovedMessage(sbyte barType, int slot)
+        public ShortcutBarRemovedMessage(sbyte barType, sbyte slot)
         {
             this.barType = barType;
             this.slot = slot;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(barType);
-            writer.WriteInt(slot);
+            writer.WriteSByte(slot);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,14 +42,14 @@ namespace Stump.DofusProtocol.Messages
             barType = reader.ReadSByte();
             if (barType < 0)
                 throw new Exception("Forbidden value on barType = " + barType + ", it doesn't respect the following condition : barType < 0");
-            slot = reader.ReadInt();
+            slot = reader.ReadSByte();
             if (slot < 0 || slot > 99)
                 throw new Exception("Forbidden value on slot = " + slot + ", it doesn't respect the following condition : slot < 0 || slot > 99");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(sbyte) + sizeof(int);
+            return sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

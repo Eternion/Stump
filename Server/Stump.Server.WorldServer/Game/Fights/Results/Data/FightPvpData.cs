@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results.Data
 
         public override DofusProtocol.Types.FightResultAdditionalData GetFightResultAdditionalData()
         {
-            return new FightResultPvpData(Grade, MinHonorForGrade, MaxHonorForGrade, Honor, HonorDelta);
+            return new FightResultPvpData(Grade, (short)MinHonorForGrade, (short)MaxHonorForGrade, (short)Honor, HonorDelta);
         }
 
         public override void Apply()

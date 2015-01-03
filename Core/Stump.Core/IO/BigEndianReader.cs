@@ -21,6 +21,16 @@ namespace Stump.Core.IO
 {
     public class BigEndianReader : IDataReader, IDisposable
     {
+        public const int INT_SIZE = 32;
+        public const int SHORT_SIZE = 16;
+        public const int SHORT_MIN_VALUE = -0x8000;
+        public const int SHORT_MAX_VALUE = 0x7FFF;
+        public const int USHORT_MAX_VALUE = 0x10000;
+        public const int CHUNCK_BIT_SIZE = 7;
+        public static readonly int MAX_ENCODING_LENGHT = (int)Math.Ceiling((double)INT_SIZE/CHUNCK_BIT_SIZE);
+        public const int MASK_10000000 = 0x80;
+        public const int MASK_01111111 = 0x7F;
+
         #region Properties
 
         private BinaryReader m_reader;
@@ -101,6 +111,56 @@ namespace Stump.Core.IO
         #endregion
 
         #region Public Method
+
+        public int ReadVarInt()
+        {
+            int value = 0;
+            int size = 0;
+            while (size < INT_SIZE)
+            {
+                var b = ReadByte();
+                bool bit = (b & MASK_10000000) == MASK_10000000;
+                if (size > 0)
+                    value |= ((b & MASK_01111111) << size);
+                else
+                    value |= (b & MASK_01111111);
+                size += CHUNCK_BIT_SIZE;
+                if (!bit)
+                    return value;
+            }
+
+            throw new Exception("Overflow varint : too much data");
+        }
+
+        public short ReadVarShort()
+        {
+            int value = 0;
+            int size = 0;
+            while (size < SHORT_SIZE)
+            {
+                var b = ReadByte();
+                bool bit = (b & MASK_10000000) == MASK_10000000;
+                if (size > 0)
+                    value |= ((b & MASK_01111111) << size);
+                else
+                    value |= (b & MASK_01111111);
+                size += CHUNCK_BIT_SIZE;
+                if (!bit)
+                {
+                    if (value > SHORT_MAX_VALUE)
+                        value = value - USHORT_MAX_VALUE;
+
+                    return (short)value;
+                }
+            }
+
+            throw new Exception("Overflow varint : too much data");
+        }
+
+        public long ReadVarLong()
+        {
+            return ReadLong();
+        }
 
         /// <summary>
         ///   Read a Short from the Buffer

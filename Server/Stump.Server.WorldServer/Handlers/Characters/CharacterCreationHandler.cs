@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             SendCharacterCreationResultMessage(client, CharacterCreationResultEnum.OK);
             BasicHandler.SendBasicNoOperationMessage(client);
-            SendCharactersListWithModificationsMessage(client);
+            SendCharactersListWithRemodelingMessage(client);
         }
 
         private static void OnCharacterCreationFailed(IPacketReceiver client, CharacterCreationResultEnum result)

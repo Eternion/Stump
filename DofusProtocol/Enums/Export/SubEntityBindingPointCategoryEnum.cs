@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:03:56
+// Generated on 12/29/2014 16:35:31
 using System;
 using System.Collections.Generic;
 
@@ -15,5 +15,6 @@ namespace Stump.DofusProtocol.Enums
         HOOK_POINT_CATEGORY_BASE_BACKGROUND = 4,
         HOOK_POINT_CATEGORY_MERCHANT_BAG = 5,
         HOOK_POINT_CATEGORY_BASE_FOREGROUND = 6,
+        HOOK_POINT_CATEGORY_PET_FOLLOWER = 7,
     }
 }

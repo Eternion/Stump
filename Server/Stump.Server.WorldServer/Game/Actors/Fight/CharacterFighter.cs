@@ -323,11 +323,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                       0,
                                                       IsAlive(),
                                                       GetGameFightMinimalStats(client),
+                                                      new short[0],
                                                       Name,
                                                       Character.GetPlayerStatus(),
                                                       Character.Level,
                                                       Character.GetActorAlignmentInformations(),
-                                                      (sbyte) Character.Breed.Id);
+                                                      (sbyte) Character.Breed.Id,
+                                                      Character.Sex != SexTypeEnum.SEX_MALE);
         }
 
         public override GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:55
+// Generated on 12/29/2014 21:13:28
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int genericId;
+        public short genericId;
         public int averagePrice;
         
         public ExchangeBidPriceMessage()
         {
         }
         
-        public ExchangeBidPriceMessage(int genericId, int averagePrice)
+        public ExchangeBidPriceMessage(short genericId, int averagePrice)
         {
             this.genericId = genericId;
             this.averagePrice = averagePrice;
@@ -33,13 +33,13 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(genericId);
+            writer.WriteShort(genericId);
             writer.WriteInt(averagePrice);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            genericId = reader.ReadInt();
+            genericId = reader.ReadShort();
             if (genericId < 0)
                 throw new Exception("Forbidden value on genericId = " + genericId + ", it doesn't respect the following condition : genericId < 0");
             averagePrice = reader.ReadInt();
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int);
+            return sizeof(short) + sizeof(int);
         }
         
     }

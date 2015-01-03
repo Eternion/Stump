@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:04
+// Generated on 12/29/2014 21:14:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +18,16 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short year;
-        public short month;
-        public short day;
-        public short hour;
-        public short minute;
+        public sbyte month;
+        public sbyte day;
+        public sbyte hour;
+        public sbyte minute;
         
         public ObjectEffectDate()
         {
         }
         
-        public ObjectEffectDate(short actionId, short year, short month, short day, short hour, short minute)
+        public ObjectEffectDate(short actionId, short year, sbyte month, sbyte day, sbyte hour, sbyte minute)
          : base(actionId)
         {
             this.year = year;
@@ -41,10 +41,10 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteShort(year);
-            writer.WriteShort(month);
-            writer.WriteShort(day);
-            writer.WriteShort(hour);
-            writer.WriteShort(minute);
+            writer.WriteSByte(month);
+            writer.WriteSByte(day);
+            writer.WriteSByte(hour);
+            writer.WriteSByte(minute);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -53,23 +53,23 @@ namespace Stump.DofusProtocol.Types
             year = reader.ReadShort();
             if (year < 0)
                 throw new Exception("Forbidden value on year = " + year + ", it doesn't respect the following condition : year < 0");
-            month = reader.ReadShort();
+            month = reader.ReadSByte();
             if (month < 0)
                 throw new Exception("Forbidden value on month = " + month + ", it doesn't respect the following condition : month < 0");
-            day = reader.ReadShort();
+            day = reader.ReadSByte();
             if (day < 0)
                 throw new Exception("Forbidden value on day = " + day + ", it doesn't respect the following condition : day < 0");
-            hour = reader.ReadShort();
+            hour = reader.ReadSByte();
             if (hour < 0)
                 throw new Exception("Forbidden value on hour = " + hour + ", it doesn't respect the following condition : hour < 0");
-            minute = reader.ReadShort();
+            minute = reader.ReadSByte();
             if (minute < 0)
                 throw new Exception("Forbidden value on minute = " + minute + ", it doesn't respect the following condition : minute < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

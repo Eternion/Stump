@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:38
+// Generated on 12/29/2014 21:11:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +18,16 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public double experienceCharacter;
-        public double experienceMount;
-        public double experienceGuild;
-        public double experienceIncarnation;
+        public long experienceCharacter;
+        public long experienceMount;
+        public long experienceGuild;
+        public long experienceIncarnation;
         
         public CharacterExperienceGainMessage()
         {
         }
         
-        public CharacterExperienceGainMessage(double experienceCharacter, double experienceMount, double experienceGuild, double experienceIncarnation)
+        public CharacterExperienceGainMessage(long experienceCharacter, long experienceMount, long experienceGuild, long experienceIncarnation)
         {
             this.experienceCharacter = experienceCharacter;
             this.experienceMount = experienceMount;
@@ -37,31 +37,31 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteDouble(experienceCharacter);
-            writer.WriteDouble(experienceMount);
-            writer.WriteDouble(experienceGuild);
-            writer.WriteDouble(experienceIncarnation);
+            writer.WriteLong(experienceCharacter);
+            writer.WriteLong(experienceMount);
+            writer.WriteLong(experienceGuild);
+            writer.WriteLong(experienceIncarnation);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            experienceCharacter = reader.ReadDouble();
+            experienceCharacter = reader.ReadLong();
             if (experienceCharacter < 0 || experienceCharacter > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceCharacter = " + experienceCharacter + ", it doesn't respect the following condition : experienceCharacter < 0 || experienceCharacter > 9.007199254740992E15");
-            experienceMount = reader.ReadDouble();
+            experienceMount = reader.ReadLong();
             if (experienceMount < 0 || experienceMount > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceMount = " + experienceMount + ", it doesn't respect the following condition : experienceMount < 0 || experienceMount > 9.007199254740992E15");
-            experienceGuild = reader.ReadDouble();
+            experienceGuild = reader.ReadLong();
             if (experienceGuild < 0 || experienceGuild > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceGuild = " + experienceGuild + ", it doesn't respect the following condition : experienceGuild < 0 || experienceGuild > 9.007199254740992E15");
-            experienceIncarnation = reader.ReadDouble();
+            experienceIncarnation = reader.ReadLong();
             if (experienceIncarnation < 0 || experienceIncarnation > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceIncarnation = " + experienceIncarnation + ", it doesn't respect the following condition : experienceIncarnation < 0 || experienceIncarnation > 9.007199254740992E15");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(double) + sizeof(double) + sizeof(double) + sizeof(double);
+            return sizeof(long) + sizeof(long) + sizeof(long) + sizeof(long);
         }
         
     }

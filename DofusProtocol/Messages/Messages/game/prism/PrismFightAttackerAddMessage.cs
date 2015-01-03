@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:37:03
+// Generated on 12/29/2014 21:13:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short subAreaId;
-        public double fightId;
+        public short fightId;
         public Types.CharacterMinimalPlusLookInformations attacker;
         
         public PrismFightAttackerAddMessage()
         {
         }
         
-        public PrismFightAttackerAddMessage(short subAreaId, double fightId, Types.CharacterMinimalPlusLookInformations attacker)
+        public PrismFightAttackerAddMessage(short subAreaId, short fightId, Types.CharacterMinimalPlusLookInformations attacker)
         {
             this.subAreaId = subAreaId;
             this.fightId = fightId;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteShort(subAreaId);
-            writer.WriteDouble(fightId);
+            writer.WriteShort(fightId);
             writer.WriteShort(attacker.TypeId);
             attacker.Serialize(writer);
         }
@@ -46,16 +46,16 @@ namespace Stump.DofusProtocol.Messages
             subAreaId = reader.ReadShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            fightId = reader.ReadDouble();
-            if (fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < -9.007199254740992E15 || fightId > 9.007199254740992E15");
+            fightId = reader.ReadShort();
+            if (fightId < 0)
+                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             attacker = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
             attacker.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(double) + sizeof(short) + attacker.GetSerializationSize();
+            return sizeof(short) + sizeof(short) + sizeof(short) + attacker.GetSerializationSize();
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:37:01
+// Generated on 12/29/2014 21:13:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ObtainedItemWithBonusMessage(int genericId, int baseQuantity, int bonusQuantity)
+        public ObtainedItemWithBonusMessage(short genericId, int baseQuantity, int bonusQuantity)
          : base(genericId, baseQuantity)
         {
             this.bonusQuantity = bonusQuantity;

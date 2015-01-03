@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:03
+// Generated on 12/29/2014 21:14:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int sellType;
+        public sbyte sellType;
         public IEnumerable<Types.HumanOption> options;
         
         public GameRolePlayMerchantInformations()
         {
         }
         
-        public GameRolePlayMerchantInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, int sellType, IEnumerable<Types.HumanOption> options)
+        public GameRolePlayMerchantInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, string name, sbyte sellType, IEnumerable<Types.HumanOption> options)
          : base(contextualId, look, disposition, name)
         {
             this.sellType = sellType;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(sellType);
+            writer.WriteSByte(sellType);
             var options_before = writer.Position;
             var options_count = 0;
             writer.WriteUShort(0);
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            sellType = reader.ReadInt();
+            sellType = reader.ReadSByte();
             if (sellType < 0)
                 throw new Exception("Forbidden value on sellType = " + sellType + ", it doesn't respect the following condition : sellType < 0");
             var limit = reader.ReadUShort();
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + options.Sum(x => sizeof(short) + x.GetSerializationSize());
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + options.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

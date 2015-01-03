@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Handlers.Shortcuts
 
         public static void SendShortcutBarRemovedMessage(IPacketReceiver client, ShortcutBarEnum barType, int slot)
         {
-            client.Send(new ShortcutBarRemovedMessage((sbyte)barType, slot));
+            client.Send(new ShortcutBarRemovedMessage((sbyte)barType, (sbyte)slot));
         }
 
         public static void SendShortcutBarRemoveErrorMessage(IPacketReceiver client)

@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             return new NetworkGuildEmblem
             {
                 backgroundColor = Record.EmblemBackgroundColor,
-                backgroundShape = Record.EmblemBackgroundShape,
+                backgroundShape = (sbyte)Record.EmblemBackgroundShape,
                 symbolColor = Record.EmblemForegroundColor,
                 symbolShape = Record.EmblemForegroundShape
             };

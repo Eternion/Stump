@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:02
+// Generated on 12/29/2014 21:14:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Stump.DofusProtocol.Types
         public bool sex;
         public bool alive;
         public int id;
-        public int wave;
+        public sbyte wave;
         public short level;
         public sbyte breed;
         
@@ -28,7 +28,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterLightInformations(bool sex, bool alive, int id, int wave, short level, sbyte breed)
+        public GameFightFighterLightInformations(bool sex, bool alive, int id, sbyte wave, short level, sbyte breed)
         {
             this.sex = sex;
             this.alive = alive;
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, alive);
             writer.WriteByte(flag1);
             writer.WriteInt(id);
-            writer.WriteInt(wave);
+            writer.WriteSByte(wave);
             writer.WriteShort(level);
             writer.WriteSByte(breed);
         }
@@ -56,7 +56,9 @@ namespace Stump.DofusProtocol.Types
             sex = BooleanByteWrapper.GetFlag(flag1, 0);
             alive = BooleanByteWrapper.GetFlag(flag1, 1);
             id = reader.ReadInt();
-            wave = reader.ReadInt();
+            wave = reader.ReadSByte();
+            if (wave < 0)
+                throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0");
             level = reader.ReadShort();
             if (level < 0)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
@@ -65,7 +67,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(bool) + 0 + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(sbyte);
+            return sizeof(bool) + 0 + sizeof(int) + sizeof(sbyte) + sizeof(short) + sizeof(sbyte);
         }
         
     }

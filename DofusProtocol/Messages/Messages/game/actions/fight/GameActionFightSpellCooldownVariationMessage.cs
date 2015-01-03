@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:34
+// Generated on 12/29/2014 21:11:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int targetId;
-        public int spellId;
+        public short spellId;
         public short value;
         
         public GameActionFightSpellCooldownVariationMessage()
         {
         }
         
-        public GameActionFightSpellCooldownVariationMessage(short actionId, int sourceId, int targetId, int spellId, short value)
+        public GameActionFightSpellCooldownVariationMessage(short actionId, int sourceId, int targetId, short spellId, short value)
          : base(actionId, sourceId)
         {
             this.targetId = targetId;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteInt(targetId);
-            writer.WriteInt(spellId);
+            writer.WriteShort(spellId);
             writer.WriteShort(value);
         }
         
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             targetId = reader.ReadInt();
-            spellId = reader.ReadInt();
+            spellId = reader.ReadShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
             value = reader.ReadShort();
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(short);
+            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + sizeof(short);
         }
         
     }
