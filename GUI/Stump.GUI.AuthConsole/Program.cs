@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using Stump.Core.IO;
 using Stump.Server.AuthServer;
 
 namespace Stump.GUI.AuthConsole
@@ -10,6 +11,7 @@ namespace Stump.GUI.AuthConsole
     {
         static void Main(string[] args)
         {
+
             var server = new AuthServer();
             if (!Debugger.IsAttached)
             {
