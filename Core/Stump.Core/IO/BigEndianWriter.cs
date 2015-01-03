@@ -21,6 +21,16 @@ namespace Stump.Core.IO
 {
     public class BigEndianWriter : IDataWriter,IDisposable
     {
+        public const int INT_SIZE = 32;
+        public const int SHORT_SIZE = 16;
+        public const int SHORT_MIN_VALUE = -0x8000;
+        public const int SHORT_MAX_VALUE = 0x7FFF;
+        public const int USHORT_MAX_VALUE = 0xFFFF;
+        public const int CHUNCK_BIT_SIZE = 7;
+        public static readonly int MAX_ENCODING_LENGHT = (int)Math.Ceiling((double)INT_SIZE / CHUNCK_BIT_SIZE);
+        public const int MASK_10000000 = 0x80;
+        public const int MASK_01111111 = 0x7F;
+
         #region Properties
 
         private BinaryWriter m_writer;
@@ -102,6 +112,50 @@ namespace Stump.Core.IO
         #endregion
 
         #region Public Methods
+
+        public void WriteVarInt(int @int)
+        {
+            var value = unchecked((uint) @int);
+
+            if (value <= MASK_01111111)
+            {
+                m_writer.Write((byte) value);
+                return;
+            }
+
+            int i = 0;
+            while (value != 0)
+            {
+                var b = (byte)(value & MASK_01111111);
+                i++;
+                value >>= CHUNCK_BIT_SIZE;
+                if (value > 0)
+                    b |= MASK_10000000;
+                m_writer.Write(b);
+            }
+        }
+
+        public void WriteVarShort(short @int)
+        {
+            var value = unchecked((ushort)@int);
+
+            if (value <= MASK_01111111)
+            {
+                m_writer.Write((byte)value);
+                return;
+            }
+
+            int i = 0;
+            while (value != 0)
+            {
+                var b = (byte)(value & MASK_01111111);
+                i++;
+                value >>= CHUNCK_BIT_SIZE;
+                if (value > 0)
+                    b |= MASK_10000000;
+                m_writer.Write(b);
+            }
+        }
 
         /// <summary>
         ///   Write a Short into the buffer
