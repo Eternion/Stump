@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:06
+// Generated on 12/29/2014 21:14:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GuildInAllianceVersatileInformations(int guildId, int leaderId, ushort guildLevel, ushort nbMembers, int allianceId)
+        public GuildInAllianceVersatileInformations(int guildId, int leaderId, byte guildLevel, byte nbMembers, int allianceId)
          : base(guildId, leaderId, guildLevel, nbMembers)
         {
             this.allianceId = allianceId;

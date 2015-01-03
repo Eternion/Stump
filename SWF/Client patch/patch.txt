@@ -1,0 +1,27 @@
+com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame@311
+"if(BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)"
+->
+"if(BuildInfos.BUILD_TYPE < BuildTypeEnum.RELEASE)"
+
+com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame@433
+Remove setPublicKey()
+
+dofus.ankamagames.dofus.logic.connection.managers.AuthentificationManager@183
+"_loc2_.initIdentificationMessage(_loc2_.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(this._lva.username,this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false);"
+->
+"_loc2_.initIdentificationMessage(_loc2_.version,this._lva.username + "|" + this._lva.password,,this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false);"
+
+pcode:
+getlocal_0
+getproperty Qname(PrivateNamespace("*","1264"),"_lva")
+getproperty Qname(PackageNamespace("","156"),"username")
+pushstring "|"
+add
+getlocal_0
+getproperty Qname(PrivateNamespace("*","1264"),"_lva")
+getproperty Qname(PackageNamespace("","156"),"password")
+add
+getlex Multiname("Vector",[PrivateNamespace("*","1494"),PackageNamespace("","156"),PrivateNamespace("*","3119"),PackageNamespace("com.ankamagames.dofus.network.messages.connection"),PackageInternalNs("com.ankamagames.dofus.network.messages.connection"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.network.messages.connection:IdentificationMessage"),StaticProtectedNs("com.ankamagames.dofus.network.messages.connection:IdentificationMessage"),StaticProtectedNs("com.ankamagames.jerakine.network:NetworkMessage"),StaticProtectedNs("com.ankamagames.jerakine.scrambling:ScramblableElement"),PackageNamespace("__AS3__.vec")])
+getlex Qname(PackageNamespace("","156"),"int")
+applytype 1
+construct 0

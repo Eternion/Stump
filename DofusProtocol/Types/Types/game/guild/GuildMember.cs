@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:05
+// Generated on 12/29/2014 21:14:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +20,9 @@ namespace Stump.DofusProtocol.Types
         public sbyte breed;
         public bool sex;
         public short rank;
-        public double givenExperience;
+        public long givenExperience;
         public sbyte experienceGivenPercent;
-        public uint rights;
+        public int rights;
         public sbyte connected;
         public sbyte alignmentSide;
         public ushort hoursSinceLastConnection;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GuildMember(int id, byte level, string name, sbyte breed, bool sex, short rank, double givenExperience, sbyte experienceGivenPercent, uint rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, sbyte moodSmileyId, int accountId, int achievementPoints, Types.PlayerStatus status)
+        public GuildMember(int id, byte level, string name, sbyte breed, bool sex, short rank, long givenExperience, sbyte experienceGivenPercent, int rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, sbyte moodSmileyId, int accountId, int achievementPoints, Types.PlayerStatus status)
          : base(id, level, name)
         {
             this.breed = breed;
@@ -59,9 +59,9 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
             writer.WriteShort(rank);
-            writer.WriteDouble(givenExperience);
+            writer.WriteLong(givenExperience);
             writer.WriteSByte(experienceGivenPercent);
-            writer.WriteUInt(rights);
+            writer.WriteInt(rights);
             writer.WriteSByte(connected);
             writer.WriteSByte(alignmentSide);
             writer.WriteUShort(hoursSinceLastConnection);
@@ -80,15 +80,15 @@ namespace Stump.DofusProtocol.Types
             rank = reader.ReadShort();
             if (rank < 0)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0");
-            givenExperience = reader.ReadDouble();
+            givenExperience = reader.ReadLong();
             if (givenExperience < 0 || givenExperience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on givenExperience = " + givenExperience + ", it doesn't respect the following condition : givenExperience < 0 || givenExperience > 9.007199254740992E15");
             experienceGivenPercent = reader.ReadSByte();
             if (experienceGivenPercent < 0 || experienceGivenPercent > 100)
                 throw new Exception("Forbidden value on experienceGivenPercent = " + experienceGivenPercent + ", it doesn't respect the following condition : experienceGivenPercent < 0 || experienceGivenPercent > 100");
-            rights = reader.ReadUInt();
-            if (rights < 0 || rights > 4.294967295E9)
-                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0 || rights > 4.294967295E9");
+            rights = reader.ReadInt();
+            if (rights < 0)
+                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0");
             connected = reader.ReadSByte();
             if (connected < 0)
                 throw new Exception("Forbidden value on connected = " + connected + ", it doesn't respect the following condition : connected < 0");
@@ -107,7 +107,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + sizeof(double) + sizeof(sbyte) + sizeof(uint) + sizeof(sbyte) + sizeof(sbyte) + sizeof(ushort) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(short) + status.GetSerializationSize();
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + sizeof(long) + sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(sbyte) + sizeof(ushort) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(short) + status.GetSerializationSize();
         }
         
     }

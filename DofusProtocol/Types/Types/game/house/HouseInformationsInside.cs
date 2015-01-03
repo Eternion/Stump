@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:05
+// Generated on 12/29/2014 21:14:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +23,14 @@ namespace Stump.DofusProtocol.Types
         public string ownerName;
         public short worldX;
         public short worldY;
-        public uint price;
+        public int price;
         public bool isLocked;
         
         public HouseInformationsInside()
         {
         }
         
-        public HouseInformationsInside(int houseId, short modelId, int ownerId, string ownerName, short worldX, short worldY, uint price, bool isLocked)
+        public HouseInformationsInside(int houseId, short modelId, int ownerId, string ownerName, short worldX, short worldY, int price, bool isLocked)
         {
             this.houseId = houseId;
             this.modelId = modelId;
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUTF(ownerName);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
-            writer.WriteUInt(price);
+            writer.WriteInt(price);
             writer.WriteBoolean(isLocked);
         }
         
@@ -70,15 +70,15 @@ namespace Stump.DofusProtocol.Types
             worldY = reader.ReadShort();
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            price = reader.ReadUInt();
-            if (price < 0 || price > 4.294967295E9)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0 || price > 4.294967295E9");
+            price = reader.ReadInt();
+            if (price < 0)
+                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
             isLocked = reader.ReadBoolean();
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(short) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short) + sizeof(short) + sizeof(uint) + sizeof(bool);
+            return sizeof(int) + sizeof(short) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(bool);
         }
         
     }

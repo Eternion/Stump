@@ -1,6 +1,6 @@
 
 
-// Generated on 10/26/2014 23:27:53
+// Generated on 12/29/2014 16:35:24
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint nameId;
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
+        public Boolean isSilent;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -45,6 +46,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.preventsFight; }
             set { this.preventsFight = value; }
+        }
+        [D2OIgnore]
+        public Boolean IsSilent
+        {
+            get { return this.isSilent; }
+            set { this.isSilent = value; }
         }
     }
 }

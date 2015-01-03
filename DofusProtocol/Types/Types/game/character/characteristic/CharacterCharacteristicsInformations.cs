@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:00
+// Generated on 12/29/2014 21:14:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public double experience;
-        public double experienceLevelFloor;
-        public double experienceNextLevelFloor;
+        public long experience;
+        public long experienceLevelFloor;
+        public long experienceNextLevelFloor;
         public int kamas;
-        public int statsPoints;
-        public int spellsPoints;
+        public short statsPoints;
+        public short additionnalPoints;
+        public short spellsPoints;
         public Types.ActorExtendedAlignmentInformations alignmentInfos;
         public int lifePoints;
         public int maxLifePoints;
@@ -96,13 +97,14 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public CharacterCharacteristicsInformations(double experience, double experienceLevelFloor, double experienceNextLevelFloor, int kamas, int statsPoints, int spellsPoints, Types.ActorExtendedAlignmentInformations alignmentInfos, int lifePoints, int maxLifePoints, short energyPoints, short maxEnergyPoints, short actionPointsCurrent, short movementPointsCurrent, Types.CharacterBaseCharacteristic initiative, Types.CharacterBaseCharacteristic prospecting, Types.CharacterBaseCharacteristic actionPoints, Types.CharacterBaseCharacteristic movementPoints, Types.CharacterBaseCharacteristic strength, Types.CharacterBaseCharacteristic vitality, Types.CharacterBaseCharacteristic wisdom, Types.CharacterBaseCharacteristic chance, Types.CharacterBaseCharacteristic agility, Types.CharacterBaseCharacteristic intelligence, Types.CharacterBaseCharacteristic range, Types.CharacterBaseCharacteristic summonableCreaturesBoost, Types.CharacterBaseCharacteristic reflect, Types.CharacterBaseCharacteristic criticalHit, short criticalHitWeapon, Types.CharacterBaseCharacteristic criticalMiss, Types.CharacterBaseCharacteristic healBonus, Types.CharacterBaseCharacteristic allDamagesBonus, Types.CharacterBaseCharacteristic weaponDamagesBonusPercent, Types.CharacterBaseCharacteristic damagesBonusPercent, Types.CharacterBaseCharacteristic trapBonus, Types.CharacterBaseCharacteristic trapBonusPercent, Types.CharacterBaseCharacteristic glyphBonusPercent, Types.CharacterBaseCharacteristic permanentDamagePercent, Types.CharacterBaseCharacteristic tackleBlock, Types.CharacterBaseCharacteristic tackleEvade, Types.CharacterBaseCharacteristic PAAttack, Types.CharacterBaseCharacteristic PMAttack, Types.CharacterBaseCharacteristic pushDamageBonus, Types.CharacterBaseCharacteristic criticalDamageBonus, Types.CharacterBaseCharacteristic neutralDamageBonus, Types.CharacterBaseCharacteristic earthDamageBonus, Types.CharacterBaseCharacteristic waterDamageBonus, Types.CharacterBaseCharacteristic airDamageBonus, Types.CharacterBaseCharacteristic fireDamageBonus, Types.CharacterBaseCharacteristic dodgePALostProbability, Types.CharacterBaseCharacteristic dodgePMLostProbability, Types.CharacterBaseCharacteristic neutralElementResistPercent, Types.CharacterBaseCharacteristic earthElementResistPercent, Types.CharacterBaseCharacteristic waterElementResistPercent, Types.CharacterBaseCharacteristic airElementResistPercent, Types.CharacterBaseCharacteristic fireElementResistPercent, Types.CharacterBaseCharacteristic neutralElementReduction, Types.CharacterBaseCharacteristic earthElementReduction, Types.CharacterBaseCharacteristic waterElementReduction, Types.CharacterBaseCharacteristic airElementReduction, Types.CharacterBaseCharacteristic fireElementReduction, Types.CharacterBaseCharacteristic pushDamageReduction, Types.CharacterBaseCharacteristic criticalDamageReduction, Types.CharacterBaseCharacteristic pvpNeutralElementResistPercent, Types.CharacterBaseCharacteristic pvpEarthElementResistPercent, Types.CharacterBaseCharacteristic pvpWaterElementResistPercent, Types.CharacterBaseCharacteristic pvpAirElementResistPercent, Types.CharacterBaseCharacteristic pvpFireElementResistPercent, Types.CharacterBaseCharacteristic pvpNeutralElementReduction, Types.CharacterBaseCharacteristic pvpEarthElementReduction, Types.CharacterBaseCharacteristic pvpWaterElementReduction, Types.CharacterBaseCharacteristic pvpAirElementReduction, Types.CharacterBaseCharacteristic pvpFireElementReduction, IEnumerable<Types.CharacterSpellModification> spellModifications, int probationTime)
+        public CharacterCharacteristicsInformations(long experience, long experienceLevelFloor, long experienceNextLevelFloor, int kamas, short statsPoints, short additionnalPoints, short spellsPoints, Types.ActorExtendedAlignmentInformations alignmentInfos, int lifePoints, int maxLifePoints, short energyPoints, short maxEnergyPoints, short actionPointsCurrent, short movementPointsCurrent, Types.CharacterBaseCharacteristic initiative, Types.CharacterBaseCharacteristic prospecting, Types.CharacterBaseCharacteristic actionPoints, Types.CharacterBaseCharacteristic movementPoints, Types.CharacterBaseCharacteristic strength, Types.CharacterBaseCharacteristic vitality, Types.CharacterBaseCharacteristic wisdom, Types.CharacterBaseCharacteristic chance, Types.CharacterBaseCharacteristic agility, Types.CharacterBaseCharacteristic intelligence, Types.CharacterBaseCharacteristic range, Types.CharacterBaseCharacteristic summonableCreaturesBoost, Types.CharacterBaseCharacteristic reflect, Types.CharacterBaseCharacteristic criticalHit, short criticalHitWeapon, Types.CharacterBaseCharacteristic criticalMiss, Types.CharacterBaseCharacteristic healBonus, Types.CharacterBaseCharacteristic allDamagesBonus, Types.CharacterBaseCharacteristic weaponDamagesBonusPercent, Types.CharacterBaseCharacteristic damagesBonusPercent, Types.CharacterBaseCharacteristic trapBonus, Types.CharacterBaseCharacteristic trapBonusPercent, Types.CharacterBaseCharacteristic glyphBonusPercent, Types.CharacterBaseCharacteristic permanentDamagePercent, Types.CharacterBaseCharacteristic tackleBlock, Types.CharacterBaseCharacteristic tackleEvade, Types.CharacterBaseCharacteristic PAAttack, Types.CharacterBaseCharacteristic PMAttack, Types.CharacterBaseCharacteristic pushDamageBonus, Types.CharacterBaseCharacteristic criticalDamageBonus, Types.CharacterBaseCharacteristic neutralDamageBonus, Types.CharacterBaseCharacteristic earthDamageBonus, Types.CharacterBaseCharacteristic waterDamageBonus, Types.CharacterBaseCharacteristic airDamageBonus, Types.CharacterBaseCharacteristic fireDamageBonus, Types.CharacterBaseCharacteristic dodgePALostProbability, Types.CharacterBaseCharacteristic dodgePMLostProbability, Types.CharacterBaseCharacteristic neutralElementResistPercent, Types.CharacterBaseCharacteristic earthElementResistPercent, Types.CharacterBaseCharacteristic waterElementResistPercent, Types.CharacterBaseCharacteristic airElementResistPercent, Types.CharacterBaseCharacteristic fireElementResistPercent, Types.CharacterBaseCharacteristic neutralElementReduction, Types.CharacterBaseCharacteristic earthElementReduction, Types.CharacterBaseCharacteristic waterElementReduction, Types.CharacterBaseCharacteristic airElementReduction, Types.CharacterBaseCharacteristic fireElementReduction, Types.CharacterBaseCharacteristic pushDamageReduction, Types.CharacterBaseCharacteristic criticalDamageReduction, Types.CharacterBaseCharacteristic pvpNeutralElementResistPercent, Types.CharacterBaseCharacteristic pvpEarthElementResistPercent, Types.CharacterBaseCharacteristic pvpWaterElementResistPercent, Types.CharacterBaseCharacteristic pvpAirElementResistPercent, Types.CharacterBaseCharacteristic pvpFireElementResistPercent, Types.CharacterBaseCharacteristic pvpNeutralElementReduction, Types.CharacterBaseCharacteristic pvpEarthElementReduction, Types.CharacterBaseCharacteristic pvpWaterElementReduction, Types.CharacterBaseCharacteristic pvpAirElementReduction, Types.CharacterBaseCharacteristic pvpFireElementReduction, IEnumerable<Types.CharacterSpellModification> spellModifications, int probationTime)
         {
             this.experience = experience;
             this.experienceLevelFloor = experienceLevelFloor;
             this.experienceNextLevelFloor = experienceNextLevelFloor;
             this.kamas = kamas;
             this.statsPoints = statsPoints;
+            this.additionnalPoints = additionnalPoints;
             this.spellsPoints = spellsPoints;
             this.alignmentInfos = alignmentInfos;
             this.lifePoints = lifePoints;
@@ -176,12 +178,13 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteDouble(experience);
-            writer.WriteDouble(experienceLevelFloor);
-            writer.WriteDouble(experienceNextLevelFloor);
+            writer.WriteLong(experience);
+            writer.WriteLong(experienceLevelFloor);
+            writer.WriteLong(experienceNextLevelFloor);
             writer.WriteInt(kamas);
-            writer.WriteInt(statsPoints);
-            writer.WriteInt(spellsPoints);
+            writer.WriteShort(statsPoints);
+            writer.WriteShort(additionnalPoints);
+            writer.WriteShort(spellsPoints);
             alignmentInfos.Serialize(writer);
             writer.WriteInt(lifePoints);
             writer.WriteInt(maxLifePoints);
@@ -266,22 +269,25 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            experience = reader.ReadDouble();
+            experience = reader.ReadLong();
             if (experience < 0 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
-            experienceLevelFloor = reader.ReadDouble();
+            experienceLevelFloor = reader.ReadLong();
             if (experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15");
-            experienceNextLevelFloor = reader.ReadDouble();
+            experienceNextLevelFloor = reader.ReadLong();
             if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15");
             kamas = reader.ReadInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
-            statsPoints = reader.ReadInt();
+            statsPoints = reader.ReadShort();
             if (statsPoints < 0)
                 throw new Exception("Forbidden value on statsPoints = " + statsPoints + ", it doesn't respect the following condition : statsPoints < 0");
-            spellsPoints = reader.ReadInt();
+            additionnalPoints = reader.ReadShort();
+            if (additionnalPoints < 0)
+                throw new Exception("Forbidden value on additionnalPoints = " + additionnalPoints + ", it doesn't respect the following condition : additionnalPoints < 0");
+            spellsPoints = reader.ReadShort();
             if (spellsPoints < 0)
                 throw new Exception("Forbidden value on spellsPoints = " + spellsPoints + ", it doesn't respect the following condition : spellsPoints < 0");
             alignmentInfos = new Types.ActorExtendedAlignmentInformations();
@@ -434,7 +440,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(double) + sizeof(double) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(int) + alignmentInfos.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + initiative.GetSerializationSize() + prospecting.GetSerializationSize() + actionPoints.GetSerializationSize() + movementPoints.GetSerializationSize() + strength.GetSerializationSize() + vitality.GetSerializationSize() + wisdom.GetSerializationSize() + chance.GetSerializationSize() + agility.GetSerializationSize() + intelligence.GetSerializationSize() + range.GetSerializationSize() + summonableCreaturesBoost.GetSerializationSize() + reflect.GetSerializationSize() + criticalHit.GetSerializationSize() + sizeof(short) + criticalMiss.GetSerializationSize() + healBonus.GetSerializationSize() + allDamagesBonus.GetSerializationSize() + weaponDamagesBonusPercent.GetSerializationSize() + damagesBonusPercent.GetSerializationSize() + trapBonus.GetSerializationSize() + trapBonusPercent.GetSerializationSize() + glyphBonusPercent.GetSerializationSize() + permanentDamagePercent.GetSerializationSize() + tackleBlock.GetSerializationSize() + tackleEvade.GetSerializationSize() + PAAttack.GetSerializationSize() + PMAttack.GetSerializationSize() + pushDamageBonus.GetSerializationSize() + criticalDamageBonus.GetSerializationSize() + neutralDamageBonus.GetSerializationSize() + earthDamageBonus.GetSerializationSize() + waterDamageBonus.GetSerializationSize() + airDamageBonus.GetSerializationSize() + fireDamageBonus.GetSerializationSize() + dodgePALostProbability.GetSerializationSize() + dodgePMLostProbability.GetSerializationSize() + neutralElementResistPercent.GetSerializationSize() + earthElementResistPercent.GetSerializationSize() + waterElementResistPercent.GetSerializationSize() + airElementResistPercent.GetSerializationSize() + fireElementResistPercent.GetSerializationSize() + neutralElementReduction.GetSerializationSize() + earthElementReduction.GetSerializationSize() + waterElementReduction.GetSerializationSize() + airElementReduction.GetSerializationSize() + fireElementReduction.GetSerializationSize() + pushDamageReduction.GetSerializationSize() + criticalDamageReduction.GetSerializationSize() + pvpNeutralElementResistPercent.GetSerializationSize() + pvpEarthElementResistPercent.GetSerializationSize() + pvpWaterElementResistPercent.GetSerializationSize() + pvpAirElementResistPercent.GetSerializationSize() + pvpFireElementResistPercent.GetSerializationSize() + pvpNeutralElementReduction.GetSerializationSize() + pvpEarthElementReduction.GetSerializationSize() + pvpWaterElementReduction.GetSerializationSize() + pvpAirElementReduction.GetSerializationSize() + pvpFireElementReduction.GetSerializationSize() + sizeof(short) + spellModifications.Sum(x => x.GetSerializationSize()) + sizeof(int);
+            return sizeof(long) + sizeof(long) + sizeof(long) + sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + alignmentInfos.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + initiative.GetSerializationSize() + prospecting.GetSerializationSize() + actionPoints.GetSerializationSize() + movementPoints.GetSerializationSize() + strength.GetSerializationSize() + vitality.GetSerializationSize() + wisdom.GetSerializationSize() + chance.GetSerializationSize() + agility.GetSerializationSize() + intelligence.GetSerializationSize() + range.GetSerializationSize() + summonableCreaturesBoost.GetSerializationSize() + reflect.GetSerializationSize() + criticalHit.GetSerializationSize() + sizeof(short) + criticalMiss.GetSerializationSize() + healBonus.GetSerializationSize() + allDamagesBonus.GetSerializationSize() + weaponDamagesBonusPercent.GetSerializationSize() + damagesBonusPercent.GetSerializationSize() + trapBonus.GetSerializationSize() + trapBonusPercent.GetSerializationSize() + glyphBonusPercent.GetSerializationSize() + permanentDamagePercent.GetSerializationSize() + tackleBlock.GetSerializationSize() + tackleEvade.GetSerializationSize() + PAAttack.GetSerializationSize() + PMAttack.GetSerializationSize() + pushDamageBonus.GetSerializationSize() + criticalDamageBonus.GetSerializationSize() + neutralDamageBonus.GetSerializationSize() + earthDamageBonus.GetSerializationSize() + waterDamageBonus.GetSerializationSize() + airDamageBonus.GetSerializationSize() + fireDamageBonus.GetSerializationSize() + dodgePALostProbability.GetSerializationSize() + dodgePMLostProbability.GetSerializationSize() + neutralElementResistPercent.GetSerializationSize() + earthElementResistPercent.GetSerializationSize() + waterElementResistPercent.GetSerializationSize() + airElementResistPercent.GetSerializationSize() + fireElementResistPercent.GetSerializationSize() + neutralElementReduction.GetSerializationSize() + earthElementReduction.GetSerializationSize() + waterElementReduction.GetSerializationSize() + airElementReduction.GetSerializationSize() + fireElementReduction.GetSerializationSize() + pushDamageReduction.GetSerializationSize() + criticalDamageReduction.GetSerializationSize() + pvpNeutralElementResistPercent.GetSerializationSize() + pvpEarthElementResistPercent.GetSerializationSize() + pvpWaterElementResistPercent.GetSerializationSize() + pvpAirElementResistPercent.GetSerializationSize() + pvpFireElementResistPercent.GetSerializationSize() + pvpNeutralElementReduction.GetSerializationSize() + pvpEarthElementReduction.GetSerializationSize() + pvpWaterElementReduction.GetSerializationSize() + pvpAirElementReduction.GetSerializationSize() + pvpFireElementReduction.GetSerializationSize() + sizeof(short) + spellModifications.Sum(x => x.GetSerializationSize()) + sizeof(int);
         }
         
     }

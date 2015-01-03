@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:33
+// Generated on 12/29/2014 21:11:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short id;
-        public short finishedlevel;
+        public byte finishedlevel;
         
         public AchievementFinishedMessage()
         {
         }
         
-        public AchievementFinishedMessage(short id, short finishedlevel)
+        public AchievementFinishedMessage(short id, byte finishedlevel)
         {
             this.id = id;
             this.finishedlevel = finishedlevel;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteShort(id);
-            writer.WriteShort(finishedlevel);
+            writer.WriteByte(finishedlevel);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,14 +42,14 @@ namespace Stump.DofusProtocol.Messages
             id = reader.ReadShort();
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
-            finishedlevel = reader.ReadShort();
+            finishedlevel = reader.ReadByte();
             if (finishedlevel < 0 || finishedlevel > 200)
                 throw new Exception("Forbidden value on finishedlevel = " + finishedlevel + ", it doesn't respect the following condition : finishedlevel < 0 || finishedlevel > 200");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(short);
+            return sizeof(short) + sizeof(byte);
         }
         
     }

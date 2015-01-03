@@ -39,8 +39,23 @@ namespace DofusProtocolBuilder.XmlPatterns
                     type = Regex.Match(statement.Value, @"Read([\w\d_]+)\(").Groups[1].Value.ToLower();
                     var name = statement.Name;
 
-                    if (type == "bytes")
-                        type = "byte[]";
+                    switch (type)
+                    {
+                        case "bytes":
+                            type = "byte[]";
+                            break;
+                        case "varuhshort":
+                        case "varshort":
+                            type = "short";
+                            break;
+                        case "varuhlong":
+                            type = "double";
+                            break;
+                        case "varuhint":
+                        case "varint":
+                            type = "int";
+                            break;
+                    }
 
                     Match match = Regex.Match(name, @"^([_\w\d]+)\[.+\]$");
                     if (match.Success)

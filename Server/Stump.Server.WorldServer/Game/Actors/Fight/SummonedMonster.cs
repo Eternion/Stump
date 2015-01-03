@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using NLog.LayoutRenderers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
@@ -35,6 +36,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Strength.Base = (short)( m_stats.Strength.Base * ( 1 + ( Summoner.Level / 100d ) ) );
             m_stats.Agility.Base = (short)( m_stats.Agility.Base * ( 1 + ( Summoner.Level / 100d ) ) );
             m_stats.Wisdom.Base = (short)( m_stats.Wisdom.Base * ( 1 + ( Summoner.Level / 100d ) ) );
+        }
+
+        public override int CalculateArmorValue(int reduction)
+        {
+            return (int)(reduction * (100 + 5 * Summoner.Level) / 100d);
         }
 
         public MonsterGrade Monster
@@ -83,6 +89,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
+                new short[0],
                 (short)Monster.Template.Id,
                 (sbyte)Monster.GradeId);
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:43
+// Generated on 12/29/2014 21:12:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public ushort id;
+        public short id;
         public IEnumerable<string> parameters;
         
         public NotificationByServerMessage()
         {
         }
         
-        public NotificationByServerMessage(ushort id, IEnumerable<string> parameters)
+        public NotificationByServerMessage(short id, IEnumerable<string> parameters)
         {
             this.id = id;
             this.parameters = parameters;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort(id);
+            writer.WriteShort(id);
             var parameters_before = writer.Position;
             var parameters_count = 0;
             writer.WriteUShort(0);
@@ -51,9 +51,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            id = reader.ReadUShort();
-            if (id < 0 || id > 65535)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 65535");
+            id = reader.ReadShort();
+            if (id < 0)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
             var limit = reader.ReadUShort();
             var parameters_ = new string[limit];
             for (int i = 0; i < limit; i++)
@@ -65,7 +65,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(ushort) + sizeof(short) + parameters.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x));
+            return sizeof(short) + sizeof(short) + parameters.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x));
         }
         
     }

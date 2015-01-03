@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:46
+// Generated on 12/29/2014 21:12:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public IEnumerable<short> cells;
-        public IEnumerable<int> referenceIds;
+        public IEnumerable<short> referenceIds;
         
         public ObjectGroundListAddedMessage()
         {
         }
         
-        public ObjectGroundListAddedMessage(IEnumerable<short> cells, IEnumerable<int> referenceIds)
+        public ObjectGroundListAddedMessage(IEnumerable<short> cells, IEnumerable<short> referenceIds)
         {
             this.cells = cells;
             this.referenceIds = referenceIds;
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in referenceIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteShort(entry);
                  referenceIds_count++;
             }
             var referenceIds_after = writer.Position;
@@ -71,17 +71,17 @@ namespace Stump.DofusProtocol.Messages
             }
             cells = cells_;
             limit = reader.ReadUShort();
-            var referenceIds_ = new int[limit];
+            var referenceIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 referenceIds_[i] = reader.ReadInt();
+                 referenceIds_[i] = reader.ReadShort();
             }
             referenceIds = referenceIds_;
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + cells.Sum(x => sizeof(short)) + sizeof(short) + referenceIds.Sum(x => sizeof(int));
+            return sizeof(short) + cells.Sum(x => sizeof(short)) + sizeof(short) + referenceIds.Sum(x => sizeof(short));
         }
         
     }

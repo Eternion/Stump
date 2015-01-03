@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:06
+// Generated on 12/29/2014 21:14:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,32 +17,32 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int slot;
+        public sbyte slot;
         
         public Shortcut()
         {
         }
         
-        public Shortcut(int slot)
+        public Shortcut(sbyte slot)
         {
             this.slot = slot;
         }
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(slot);
+            writer.WriteSByte(slot);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            slot = reader.ReadInt();
+            slot = reader.ReadSByte();
             if (slot < 0 || slot > 99)
                 throw new Exception("Forbidden value on slot = " + slot + ", it doesn't respect the following condition : slot < 0 || slot > 99");
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int);
+            return sizeof(sbyte);
         }
         
     }

@@ -41,8 +41,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                         client.Character.Kamas, // Amount of kamas.
 
-                        client.Character.StatsPoints, // Stats points
-                        client.Character.SpellsPoints, // Spell points
+                        (short)client.Character.StatsPoints, // Stats points
+                        0, // Additionnal points
+                        (short)client.Character.SpellsPoints, // Spell points
 
                         // Alignment
                         client.Character.GetActorAlignmentExtendInformations(),

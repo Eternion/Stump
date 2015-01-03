@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:55
+// Generated on 12/29/2014 21:13:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ExchangeCraftInformationObjectMessage(sbyte craftResult, int objectGenericId, int playerId)
+        public ExchangeCraftInformationObjectMessage(sbyte craftResult, short objectGenericId, int playerId)
          : base(craftResult, objectGenericId)
         {
             this.playerId = playerId;

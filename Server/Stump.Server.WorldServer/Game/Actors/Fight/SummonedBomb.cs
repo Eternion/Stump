@@ -25,7 +25,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SummonedBomb : FightActor, INamedActor
     {
-        [Variable] public static int BonusDamageIncrease = 25;
+        [Variable] public static int BonusDamageStart = 40;
+        [Variable] public static int BonusDamageIncrease = 20;
         [Variable] public static int BonusDamageIncreaseLimit = 3;
         [Variable] public static int BombLimit = 3;
         [Variable] public static int WallMinSize = 1;
@@ -86,11 +87,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void OnTurnStarted(IFight fight, FightActor player)
         {
-            if (player != this)
-                return;
+            if (player == Summoner)
+                IncreaseDamageBonus();
 
-            IncreaseDamageBonus();
-            PassTurn();
+            if (player == this)
+                PassTurn();
         }
 
         private void AdjustStats()
@@ -246,7 +247,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(x => IsBoundWith(x) || IsInExplosionZone(x)))
             {
                 bombs.Add(bomb);
-                SummonedBomb bomb1 = bomb;
+                var bomb1 = bomb;
                 foreach (var bomb2 in Summoner.Bombs.Where(bomb2 => !bombs.Contains(bomb2)).Where(x => bomb1.IsBoundWith(x) || bomb1.IsInExplosionZone(x)))
                 {
                     bombs.Add(bomb2);
@@ -279,6 +280,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler.Execute();
 
             OnSpellCasted(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
+
+            foreach (var client in Fight.Clients)
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, handler.DamageBonus);
         }
 
         public static void ExplodeInReaction(ICollection<SummonedBomb> bombs)
@@ -296,10 +300,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (DamageBonusTurns >= BonusDamageIncreaseLimit)
                 return false;
 
-            DamageBonusPercent += BonusDamageIncrease;
+            DamageBonusPercent += BonusDamageStart + (BonusDamageIncrease * DamageBonusTurns);
             DamageBonusTurns++;
 
             Look.Rescale(1.2);
+
+            foreach (var client in Fight.Clients)
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, DamageBonusPercent);
 
             return true;
         }
@@ -398,6 +405,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy)
         {
+            if (HasState((int) SpellStatesEnum.Unmovable))
+            {
+                var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
+                RemoveState(state);
+
+                Explode();
+            }      
+
             base.OnDead(killedBy);
 
             Summoner.RemoveBomb(this);
@@ -406,13 +421,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 binding.Delete();
             }
+
+            Fight.TurnStarted -= OnTurnStarted;
+            Team.FighterAdded -= OnFighterAdded;
         }
 
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             return new GameFightMonsterInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
-                (sbyte)Team.Id, 0, IsAlive(), GetGameFightMinimalStats(), (short)MonsterBombTemplate.MonsterId, (sbyte)MonsterBombTemplate.GradeId);
+                (sbyte)Team.Id, 0, IsAlive(), GetGameFightMinimalStats(), new short[0], (short)MonsterBombTemplate.MonsterId, (sbyte)MonsterBombTemplate.GradeId);
         } 
         
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

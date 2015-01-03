@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
+            if (Owner.Record.Rename)
             {
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
                 return 0;
@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
+            if (Owner.Record.Recolor)
             {
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
                 return 0;
@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
+            if (Owner.Record.Relook == 1)
             {
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
                 return 0;
@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            if (Owner.Record.Rename || Owner.Record.Recolor || Owner.Record.Relook > 0)
+            if (Owner.Record.Relook == 2)
             {
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 43);
                 return 0;

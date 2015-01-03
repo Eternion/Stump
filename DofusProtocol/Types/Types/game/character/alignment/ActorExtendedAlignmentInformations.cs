@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:00
+// Generated on 12/29/2014 21:14:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +17,16 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public ushort honor;
-        public ushort honorGradeFloor;
-        public ushort honorNextGradeFloor;
+        public short honor;
+        public short honorGradeFloor;
+        public short honorNextGradeFloor;
         public sbyte aggressable;
         
         public ActorExtendedAlignmentInformations()
         {
         }
         
-        public ActorExtendedAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, int characterPower, ushort honor, ushort honorGradeFloor, ushort honorNextGradeFloor, sbyte aggressable)
+        public ActorExtendedAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, int characterPower, short honor, short honorGradeFloor, short honorNextGradeFloor, sbyte aggressable)
          : base(alignmentSide, alignmentValue, alignmentGrade, characterPower)
         {
             this.honor = honor;
@@ -38,22 +38,22 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUShort(honor);
-            writer.WriteUShort(honorGradeFloor);
-            writer.WriteUShort(honorNextGradeFloor);
+            writer.WriteShort(honor);
+            writer.WriteShort(honorGradeFloor);
+            writer.WriteShort(honorNextGradeFloor);
             writer.WriteSByte(aggressable);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            honor = reader.ReadUShort();
+            honor = reader.ReadShort();
             if (honor < 0 || honor > 20000)
                 throw new Exception("Forbidden value on honor = " + honor + ", it doesn't respect the following condition : honor < 0 || honor > 20000");
-            honorGradeFloor = reader.ReadUShort();
+            honorGradeFloor = reader.ReadShort();
             if (honorGradeFloor < 0 || honorGradeFloor > 20000)
                 throw new Exception("Forbidden value on honorGradeFloor = " + honorGradeFloor + ", it doesn't respect the following condition : honorGradeFloor < 0 || honorGradeFloor > 20000");
-            honorNextGradeFloor = reader.ReadUShort();
+            honorNextGradeFloor = reader.ReadShort();
             if (honorNextGradeFloor < 0 || honorNextGradeFloor > 20000)
                 throw new Exception("Forbidden value on honorNextGradeFloor = " + honorNextGradeFloor + ", it doesn't respect the following condition : honorNextGradeFloor < 0 || honorNextGradeFloor > 20000");
             aggressable = reader.ReadSByte();
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Types
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(ushort) + sizeof(ushort) + sizeof(ushort) + sizeof(sbyte);
+            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte);
         }
         
     }

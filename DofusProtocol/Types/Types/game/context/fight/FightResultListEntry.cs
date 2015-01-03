@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:01
+// Generated on 12/29/2014 21:14:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short outcome;
-        public uint wave;
+        public sbyte wave;
         public Types.FightLoot rewards;
         
         public FightResultListEntry()
         {
         }
         
-        public FightResultListEntry(short outcome, uint wave, Types.FightLoot rewards)
+        public FightResultListEntry(short outcome, sbyte wave, Types.FightLoot rewards)
         {
             this.outcome = outcome;
             this.wave = wave;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteShort(outcome);
-            writer.WriteUInt(wave);
+            writer.WriteSByte(wave);
             rewards.Serialize(writer);
         }
         
@@ -44,16 +44,16 @@ namespace Stump.DofusProtocol.Types
             outcome = reader.ReadShort();
             if (outcome < 0)
                 throw new Exception("Forbidden value on outcome = " + outcome + ", it doesn't respect the following condition : outcome < 0");
-            wave = reader.ReadUInt();
-            if (wave < 0 || wave > 4.294967295E9)
-                throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0 || wave > 4.294967295E9");
+            wave = reader.ReadSByte();
+            if (wave < 0)
+                throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0");
             rewards = new Types.FightLoot();
             rewards.Deserialize(reader);
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(uint) + rewards.GetSerializationSize();
+            return sizeof(short) + sizeof(sbyte) + rewards.GetSerializationSize();
         }
         
     }

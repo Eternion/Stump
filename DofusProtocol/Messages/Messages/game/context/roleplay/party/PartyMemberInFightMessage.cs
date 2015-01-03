@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:48
+// Generated on 12/29/2014 21:12:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +24,13 @@ namespace Stump.DofusProtocol.Messages
         public string memberName;
         public int fightId;
         public Types.MapCoordinatesExtended fightMap;
-        public int secondsBeforeFightStart;
+        public short secondsBeforeFightStart;
         
         public PartyMemberInFightMessage()
         {
         }
         
-        public PartyMemberInFightMessage(int partyId, sbyte reason, int memberId, int memberAccountId, string memberName, int fightId, Types.MapCoordinatesExtended fightMap, int secondsBeforeFightStart)
+        public PartyMemberInFightMessage(int partyId, sbyte reason, int memberId, int memberAccountId, string memberName, int fightId, Types.MapCoordinatesExtended fightMap, short secondsBeforeFightStart)
          : base(partyId)
         {
             this.reason = reason;
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(memberName);
             writer.WriteInt(fightId);
             fightMap.Serialize(writer);
-            writer.WriteInt(secondsBeforeFightStart);
+            writer.WriteShort(secondsBeforeFightStart);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -61,6 +61,8 @@ namespace Stump.DofusProtocol.Messages
             if (reason < 0)
                 throw new Exception("Forbidden value on reason = " + reason + ", it doesn't respect the following condition : reason < 0");
             memberId = reader.ReadInt();
+            if (memberId < 0)
+                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0");
             memberAccountId = reader.ReadInt();
             if (memberAccountId < 0)
                 throw new Exception("Forbidden value on memberAccountId = " + memberAccountId + ", it doesn't respect the following condition : memberAccountId < 0");
@@ -68,12 +70,12 @@ namespace Stump.DofusProtocol.Messages
             fightId = reader.ReadInt();
             fightMap = new Types.MapCoordinatesExtended();
             fightMap.Deserialize(reader);
-            secondsBeforeFightStart = reader.ReadInt();
+            secondsBeforeFightStart = reader.ReadShort();
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(memberName) + sizeof(int) + fightMap.GetSerializationSize() + sizeof(int);
+            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(memberName) + sizeof(int) + fightMap.GetSerializationSize() + sizeof(short);
         }
         
     }

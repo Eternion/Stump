@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:36
+// Generated on 12/29/2014 21:11:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +20,15 @@ namespace Stump.DofusProtocol.Messages
         
         public int accountId;
         public bool tutorialAvailable;
-        public short breedsVisible;
-        public short breedsAvailable;
+        public ushort breedsVisible;
+        public ushort breedsAvailable;
         public sbyte status;
         
         public AccountCapabilitiesMessage()
         {
         }
         
-        public AccountCapabilitiesMessage(int accountId, bool tutorialAvailable, short breedsVisible, short breedsAvailable, sbyte status)
+        public AccountCapabilitiesMessage(int accountId, bool tutorialAvailable, ushort breedsVisible, ushort breedsAvailable, sbyte status)
         {
             this.accountId = accountId;
             this.tutorialAvailable = tutorialAvailable;
@@ -41,27 +41,29 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(accountId);
             writer.WriteBoolean(tutorialAvailable);
-            writer.WriteShort(breedsVisible);
-            writer.WriteShort(breedsAvailable);
+            writer.WriteUShort(breedsVisible);
+            writer.WriteUShort(breedsAvailable);
             writer.WriteSByte(status);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             accountId = reader.ReadInt();
+            if (accountId < 0)
+                throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
             tutorialAvailable = reader.ReadBoolean();
-            breedsVisible = reader.ReadShort();
-            if (breedsVisible < 0)
-                throw new Exception("Forbidden value on breedsVisible = " + breedsVisible + ", it doesn't respect the following condition : breedsVisible < 0");
-            breedsAvailable = reader.ReadShort();
-            if (breedsAvailable < 0)
-                throw new Exception("Forbidden value on breedsAvailable = " + breedsAvailable + ", it doesn't respect the following condition : breedsAvailable < 0");
+            breedsVisible = reader.ReadUShort();
+            if (breedsVisible < 0 || breedsVisible > 65535)
+                throw new Exception("Forbidden value on breedsVisible = " + breedsVisible + ", it doesn't respect the following condition : breedsVisible < 0 || breedsVisible > 65535");
+            breedsAvailable = reader.ReadUShort();
+            if (breedsAvailable < 0 || breedsAvailable > 65535)
+                throw new Exception("Forbidden value on breedsAvailable = " + breedsAvailable + ", it doesn't respect the following condition : breedsAvailable < 0 || breedsAvailable > 65535");
             status = reader.ReadSByte();
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(bool) + sizeof(short) + sizeof(short) + sizeof(sbyte);
+            return sizeof(int) + sizeof(bool) + sizeof(ushort) + sizeof(ushort) + sizeof(sbyte);
         }
         
     }

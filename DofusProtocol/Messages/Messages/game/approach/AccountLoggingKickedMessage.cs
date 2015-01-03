@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:36
+// Generated on 12/29/2014 21:11:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +18,15 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int days;
-        public int hours;
-        public int minutes;
+        public short days;
+        public sbyte hours;
+        public sbyte minutes;
         
         public AccountLoggingKickedMessage()
         {
         }
         
-        public AccountLoggingKickedMessage(int days, int hours, int minutes)
+        public AccountLoggingKickedMessage(short days, sbyte hours, sbyte minutes)
         {
             this.days = days;
             this.hours = hours;
@@ -35,27 +35,27 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(days);
-            writer.WriteInt(hours);
-            writer.WriteInt(minutes);
+            writer.WriteShort(days);
+            writer.WriteSByte(hours);
+            writer.WriteSByte(minutes);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            days = reader.ReadInt();
+            days = reader.ReadShort();
             if (days < 0)
                 throw new Exception("Forbidden value on days = " + days + ", it doesn't respect the following condition : days < 0");
-            hours = reader.ReadInt();
+            hours = reader.ReadSByte();
             if (hours < 0)
                 throw new Exception("Forbidden value on hours = " + hours + ", it doesn't respect the following condition : hours < 0");
-            minutes = reader.ReadInt();
+            minutes = reader.ReadSByte();
             if (minutes < 0)
                 throw new Exception("Forbidden value on minutes = " + minutes + ", it doesn't respect the following condition : minutes < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(int);
+            return sizeof(short) + sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

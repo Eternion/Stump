@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:37
+// Generated on 12/29/2014 21:11:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,41 +10,42 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class CharacterSelectionWithRenameMessage : CharacterSelectionMessage
+    public class CharacterSelectionWithRemodelMessage : CharacterSelectionMessage
     {
-        public const uint Id = 6121;
+        public const uint Id = 6549;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public string name;
+        public Types.RemodelingInformation remodel;
         
-        public CharacterSelectionWithRenameMessage()
+        public CharacterSelectionWithRemodelMessage()
         {
         }
         
-        public CharacterSelectionWithRenameMessage(int id, string name)
+        public CharacterSelectionWithRemodelMessage(int id, Types.RemodelingInformation remodel)
          : base(id)
         {
-            this.name = name;
+            this.remodel = remodel;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteUTF(name);
+            remodel.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            name = reader.ReadUTF();
+            remodel = new Types.RemodelingInformation();
+            remodel.Deserialize(reader);
         }
         
         public override int GetSerializationSize()
         {
-            return base.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(name);
+            return base.GetSerializationSize() + remodel.GetSerializationSize();
         }
         
     }

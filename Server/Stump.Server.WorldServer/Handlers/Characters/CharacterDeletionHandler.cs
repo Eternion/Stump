@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 CharacterManager.Instance.DeleteCharacterOnAccount(character, client);
 
-                SendCharactersListWithModificationsMessage(client);
+                SendCharactersListWithRemodelingMessage(client);
                 BasicHandler.SendBasicNoOperationMessage(client);
             }
             else

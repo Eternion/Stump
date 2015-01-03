@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:36:53
+// Generated on 12/29/2014 21:13:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public double fightId;
+        public int fightId;
         public IEnumerable<Types.CharacterMinimalPlusLookInformations> playerInfo;
         
         public GuildFightPlayersEnemiesListMessage()
         {
         }
         
-        public GuildFightPlayersEnemiesListMessage(double fightId, IEnumerable<Types.CharacterMinimalPlusLookInformations> playerInfo)
+        public GuildFightPlayersEnemiesListMessage(int fightId, IEnumerable<Types.CharacterMinimalPlusLookInformations> playerInfo)
         {
             this.fightId = fightId;
             this.playerInfo = playerInfo;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteDouble(fightId);
+            writer.WriteInt(fightId);
             var playerInfo_before = writer.Position;
             var playerInfo_count = 0;
             writer.WriteUShort(0);
@@ -51,9 +51,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            fightId = reader.ReadDouble();
-            if (fightId < 0 || fightId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0 || fightId > 9.007199254740992E15");
+            fightId = reader.ReadInt();
+            if (fightId < 0)
+                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             var limit = reader.ReadUShort();
             var playerInfo_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override int GetSerializationSize()
         {
-            return sizeof(double) + sizeof(short) + playerInfo.Sum(x => x.GetSerializationSize());
+            return sizeof(int) + sizeof(short) + playerInfo.Sum(x => x.GetSerializationSize());
         }
         
     }

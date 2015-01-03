@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:37:00
+// Generated on 12/29/2014 21:13:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public short msgId;
         public IEnumerable<string> parameters;
-        public uint livingObject;
+        public int livingObject;
         
         public LivingObjectMessageRequestMessage()
         {
         }
         
-        public LivingObjectMessageRequestMessage(short msgId, IEnumerable<string> parameters, uint livingObject)
+        public LivingObjectMessageRequestMessage(short msgId, IEnumerable<string> parameters, int livingObject)
         {
             this.msgId = msgId;
             this.parameters = parameters;
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)parameters_count);
             writer.Seek((int)parameters_after);
 
-            writer.WriteUInt(livingObject);
+            writer.WriteInt(livingObject);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -64,14 +64,14 @@ namespace Stump.DofusProtocol.Messages
                  parameters_[i] = reader.ReadUTF();
             }
             parameters = parameters_;
-            livingObject = reader.ReadUInt();
-            if (livingObject < 0 || livingObject > 4.294967295E9)
-                throw new Exception("Forbidden value on livingObject = " + livingObject + ", it doesn't respect the following condition : livingObject < 0 || livingObject > 4.294967295E9");
+            livingObject = reader.ReadInt();
+            if (livingObject < 0)
+                throw new Exception("Forbidden value on livingObject = " + livingObject + ", it doesn't respect the following condition : livingObject < 0");
         }
         
         public override int GetSerializationSize()
         {
-            return sizeof(short) + sizeof(short) + parameters.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(uint);
+            return sizeof(short) + sizeof(short) + parameters.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(int);
         }
         
     }

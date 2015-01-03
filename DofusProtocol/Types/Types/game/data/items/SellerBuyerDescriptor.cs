@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:04
+// Generated on 12/29/2014 21:14:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace Stump.DofusProtocol.Types
         public IEnumerable<int> types;
         public float taxPercentage;
         public float taxModificationPercentage;
-        public int maxItemLevel;
+        public byte maxItemLevel;
         public int maxItemPerAccount;
         public int npcContextualId;
         public short unsoldDelay;
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public SellerBuyerDescriptor(IEnumerable<int> quantities, IEnumerable<int> types, float taxPercentage, float taxModificationPercentage, int maxItemLevel, int maxItemPerAccount, int npcContextualId, short unsoldDelay)
+        public SellerBuyerDescriptor(IEnumerable<int> quantities, IEnumerable<int> types, float taxPercentage, float taxModificationPercentage, byte maxItemLevel, int maxItemPerAccount, int npcContextualId, short unsoldDelay)
         {
             this.quantities = quantities;
             this.types = types;
@@ -72,7 +72,7 @@ namespace Stump.DofusProtocol.Types
 
             writer.WriteFloat(taxPercentage);
             writer.WriteFloat(taxModificationPercentage);
-            writer.WriteInt(maxItemLevel);
+            writer.WriteByte(maxItemLevel);
             writer.WriteInt(maxItemPerAccount);
             writer.WriteInt(npcContextualId);
             writer.WriteShort(unsoldDelay);
@@ -96,9 +96,9 @@ namespace Stump.DofusProtocol.Types
             types = types_;
             taxPercentage = reader.ReadFloat();
             taxModificationPercentage = reader.ReadFloat();
-            maxItemLevel = reader.ReadInt();
-            if (maxItemLevel < 0)
-                throw new Exception("Forbidden value on maxItemLevel = " + maxItemLevel + ", it doesn't respect the following condition : maxItemLevel < 0");
+            maxItemLevel = reader.ReadByte();
+            if (maxItemLevel < 0 || maxItemLevel > 255)
+                throw new Exception("Forbidden value on maxItemLevel = " + maxItemLevel + ", it doesn't respect the following condition : maxItemLevel < 0 || maxItemLevel > 255");
             maxItemPerAccount = reader.ReadInt();
             if (maxItemPerAccount < 0)
                 throw new Exception("Forbidden value on maxItemPerAccount = " + maxItemPerAccount + ", it doesn't respect the following condition : maxItemPerAccount < 0");
@@ -110,7 +110,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(short) + quantities.Sum(x => sizeof(int)) + sizeof(short) + types.Sum(x => sizeof(int)) + sizeof(float) + sizeof(float) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short);
+            return sizeof(short) + quantities.Sum(x => sizeof(int)) + sizeof(short) + types.Sum(x => sizeof(int)) + sizeof(float) + sizeof(float) + sizeof(byte) + sizeof(int) + sizeof(int) + sizeof(short);
         }
         
     }

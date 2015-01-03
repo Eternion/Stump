@@ -164,14 +164,14 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (IsConnected)
             {
                 return new NetworkGuildMember(Id, Character.Level, Character.Name, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                                              GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
+                                              GivenExperience, (sbyte)GivenPercent, (int)Rights, (sbyte)(IsConnected ? 1 : 0),
                                               (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
                                               Record.AccountId, 0, Character.GetPlayerStatus());
             }
 
             return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),
                 Name, (sbyte)Breed, Sex == SexTypeEnum.SEX_FEMALE, RankId,
-                GivenExperience, (sbyte)GivenPercent, (uint)Rights, (sbyte)(IsConnected ? 1 : 0),
+                GivenExperience, (sbyte)GivenPercent, (int)Rights, (sbyte)(IsConnected ? 1 : 0),
                 (sbyte)AlignementSide, LastConnection!= null ? (ushort)(DateTime.Now - LastConnection.Value).TotalHours : (ushort)0, 0,
                 Record.AccountId, 0, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_OFFLINE));
         }

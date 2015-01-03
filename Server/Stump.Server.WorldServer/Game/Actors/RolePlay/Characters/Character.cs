@@ -15,11 +15,13 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Arena;
@@ -135,9 +137,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public event Action<Character> Saved;
+        private bool m_isLocalSaving;
 
         private void OnSaved()
         {
+            UnBlockAccount();
+
             var handler = Saved;
             if (handler != null) handler(this);
         }
@@ -148,6 +153,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             var handler = LifeRegened;
             if (handler != null) handler(this, regenedLife);
+        }
+
+        public event Action<Character> AccountUnblocked;
+
+        private void OnAccountUnblocked()
+        {
+            Action<Character> handler = AccountUnblocked;
+            if (handler != null) handler(this);
         }
 
         #endregion
@@ -675,6 +688,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get
             {
+                if (!IsRiding())
+                    return null;
+
+                var mountLook = Mount.Model.EntityLook.Clone();
+                var playerLook = RealLook.Clone();
+
+                playerLook.BonesID = 2;
+                mountLook.SetRiderLook(playerLook);
+
+                return mountLook;
+            }
+        }
+
+        public ActorLook MountItemLook
+        {
+            get
+            {
                 var petSkin = GetEquipedMount();
                 if (petSkin == -1)
                     return null;
@@ -682,6 +712,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 var mountLook = new ActorLook { BonesID = (short)petSkin };
                 var playerLook = RealLook.Clone();
 
+                //KramKram
                 if (petSkin == 1792)
                 {
                     mountLook.AddColor(1, Color.FromArgb(212, 246, 212));
@@ -697,7 +728,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override ActorLook Look
         {
-            get { return GetEquipedMount() != -1 ? MountLook : (CustomLookActivated && CustomLook != null ? CustomLook : RealLook); }
+            get { return IsRiding() ? MountLook : (GetEquipedMount() != -1 ? MountItemLook : (CustomLookActivated && CustomLook != null ? CustomLook : RealLook)); }
         }
 
         public override SexTypeEnum Sex
@@ -1097,10 +1128,26 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Mount
 
+        public Mount Mount
+        {
+            get;
+            set;
+        }
+
         public int GetEquipedMount()
         {
             var petSkin = Inventory.GetPetSkin();
             return (petSkin != null && petSkin.Item1.HasValue && !petSkin.Item2) ? petSkin.Item1.Value : -1;
+        }
+
+        public bool HasEquipedMount()
+        {
+            return Mount != null;
+        }
+
+        public bool IsRiding()
+        {
+            return HasEquipedMount() && Mount.IsRiding;
         }
 
         #endregion
@@ -1917,12 +1964,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DisplayNotification(string text, NotificationEnum notification = NotificationEnum.INFORMATION)
         {
-            Client.Send(new NotificationByServerMessage((ushort) notification, new []{text}));
+            Client.Send(new NotificationByServerMessage((short) notification, new []{text}));
         }
 
         public void DisplayNotification(NotificationEnum notification, params object[] parameters)
         {
-            Client.Send(new NotificationByServerMessage((ushort)notification, parameters.Select(entry => entry.ToString())));
+            Client.Send(new NotificationByServerMessage((short)notification, parameters.Select(entry => entry.ToString())));
         }
 
         public void DisplayNotification(Notification notification)
@@ -2622,6 +2669,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public bool IsAccountBlocked
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         ///   Spawn the character on the map. It can be called once.
         /// </summary>
@@ -2706,6 +2759,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         {
                             try
                             {
+                                BlockAccount();
                                 SaveNow();
                                 UnLoadRecord();
                             }
@@ -2720,6 +2774,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SaveLater()
         {
+            BlockAccount();
             WorldServer.Instance.IOTaskPool.AddMessage(SaveNow);
         }
 
@@ -2745,6 +2800,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                     if (GuildMember != null && GuildMember.IsDirty)
                         GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
+
+                    if (Mount != null)
+                        Mount.Save(WorldServer.Instance.DBAccessor.Database);
 
                     m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
                     m_record.CellId = Cell.Id;
@@ -2812,6 +2870,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             GuildMember = GuildManager.Instance.TryGetGuildMember(Id);
 
+            Mount = MountManager.Instance.TryGetMount(Id) != null ? new Mount(this) : null;
+
             Spells = new SpellInventory(this);
             Spells.LoadSpells();
 
@@ -2833,6 +2893,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
 
             m_recordLoaded = false;
+        }
+
+        private void BlockAccount()
+        {
+            AccountManager.Instance.BlockAccount(Client.WorldAccount, this);
+            IsAccountBlocked = true;
+        }
+
+        private void UnBlockAccount()
+        {
+            if (!IsAccountBlocked)
+                return;
+
+            AccountManager.Instance.UnBlockAccount(Client.WorldAccount);
+            IsAccountBlocked = false;
+
+            OnAccountUnblocked();
         }
 
         #endregion
@@ -2896,9 +2973,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 AlignmentValue,
                 AlignmentGrade,
                 CharacterPower,
-                Honor,
-                LowerBoundHonor,
-                UpperBoundHonor,
+                (short)Honor,
+                (short)LowerBoundHonor,
+                (short)UpperBoundHonor,
                 PvPEnabled ? (sbyte)1 : (sbyte)0);
         }
 

@@ -1,6 +1,6 @@
 
 
-// Generated on 10/28/2014 16:38:06
+// Generated on 12/29/2014 21:14:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Types
         
         public int guildId;
         public int leaderId;
-        public ushort guildLevel;
-        public ushort nbMembers;
+        public byte guildLevel;
+        public byte nbMembers;
         
         public GuildVersatileInformations()
         {
         }
         
-        public GuildVersatileInformations(int guildId, int leaderId, ushort guildLevel, ushort nbMembers)
+        public GuildVersatileInformations(int guildId, int leaderId, byte guildLevel, byte nbMembers)
         {
             this.guildId = guildId;
             this.leaderId = leaderId;
@@ -38,8 +38,8 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteInt(guildId);
             writer.WriteInt(leaderId);
-            writer.WriteUShort(guildLevel);
-            writer.WriteUShort(nbMembers);
+            writer.WriteByte(guildLevel);
+            writer.WriteByte(nbMembers);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -50,17 +50,17 @@ namespace Stump.DofusProtocol.Types
             leaderId = reader.ReadInt();
             if (leaderId < 0)
                 throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0");
-            guildLevel = reader.ReadUShort();
-            if (guildLevel < 0 || guildLevel > 65535)
-                throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 0 || guildLevel > 65535");
-            nbMembers = reader.ReadUShort();
-            if (nbMembers < 0 || nbMembers > 65535)
-                throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 0 || nbMembers > 65535");
+            guildLevel = reader.ReadByte();
+            if (guildLevel < 1 || guildLevel > 200)
+                throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 1 || guildLevel > 200");
+            nbMembers = reader.ReadByte();
+            if (nbMembers < 1 || nbMembers > 240)
+                throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 1 || nbMembers > 240");
         }
         
         public virtual int GetSerializationSize()
         {
-            return sizeof(int) + sizeof(int) + sizeof(ushort) + sizeof(ushort);
+            return sizeof(int) + sizeof(int) + sizeof(byte) + sizeof(byte);
         }
         
     }
