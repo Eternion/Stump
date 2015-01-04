@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:30
+// Generated on 01/04/2015 11:54:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,11 +45,6 @@ namespace Stump.DofusProtocol.Messages
             emoteStartTime = reader.ReadDouble();
             if (emoteStartTime < -9.007199254740992E15 || emoteStartTime > 9.007199254740992E15)
                 throw new Exception("Forbidden value on emoteStartTime = " + emoteStartTime + ", it doesn't respect the following condition : emoteStartTime < -9.007199254740992E15 || emoteStartTime > 9.007199254740992E15");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(byte) + sizeof(double);
         }
         
     }

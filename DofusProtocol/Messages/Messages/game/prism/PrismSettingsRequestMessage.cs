@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:58
+// Generated on 01/04/2015 11:54:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,23 +33,18 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
             writer.WriteSByte(startDefenseTime);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             startDefenseTime = reader.ReadSByte();
             if (startDefenseTime < 0)
                 throw new Exception("Forbidden value on startDefenseTime = " + startDefenseTime + ", it doesn't respect the following condition : startDefenseTime < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(sbyte);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:17
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteSByte(deathState);
-            writer.WriteShort(deathCount);
+            writer.WriteVarShort(deathCount);
             writer.WriteByte(deathMaxLevel);
         }
         
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             deathState = reader.ReadSByte();
             if (deathState < 0)
                 throw new Exception("Forbidden value on deathState = " + deathState + ", it doesn't respect the following condition : deathState < 0");
-            deathCount = reader.ReadShort();
+            deathCount = reader.ReadVarShort();
             if (deathCount < 0)
                 throw new Exception("Forbidden value on deathCount = " + deathCount + ", it doesn't respect the following condition : deathCount < 0");
             deathMaxLevel = reader.ReadByte();
@@ -55,10 +55,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on deathMaxLevel = " + deathMaxLevel + ", it doesn't respect the following condition : deathMaxLevel < 1 || deathMaxLevel > 200");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + sizeof(byte);
-        }
         
     }
     

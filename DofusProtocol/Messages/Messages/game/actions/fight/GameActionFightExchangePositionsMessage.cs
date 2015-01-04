@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:34
+// Generated on 01/04/2015 11:54:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,11 +52,6 @@ namespace Stump.DofusProtocol.Messages
             targetCellId = reader.ReadShort();
             if (targetCellId < -1 || targetCellId > 559)
                 throw new Exception("Forbidden value on targetCellId = " + targetCellId + ", it doesn't respect the following condition : targetCellId < -1 || targetCellId > 559");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + sizeof(short);
         }
         
     }

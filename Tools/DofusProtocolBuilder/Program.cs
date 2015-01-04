@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using DofusProtocolBuilder.Parsing;
@@ -157,7 +158,8 @@ namespace DofusProtocolBuilder
             {
                 DeleteDirectory(dir);
             }
-
+            
+            Thread.Sleep(1); // fuck you
             Directory.Delete(targetDir, false);
         }
 

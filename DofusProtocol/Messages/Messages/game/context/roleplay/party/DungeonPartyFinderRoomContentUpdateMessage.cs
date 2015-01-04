@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:48
+// Generated on 01/04/2015 11:54:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(dungeonId);
+            writer.WriteVarShort(dungeonId);
             var addedPlayers_before = writer.Position;
             var addedPlayers_count = 0;
             writer.WriteUShort(0);
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in removedPlayersIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  removedPlayersIds_count++;
             }
             var removedPlayersIds_after = writer.Position;
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            dungeonId = reader.ReadShort();
+            dungeonId = reader.ReadVarShort();
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
             var limit = reader.ReadUShort();
@@ -81,14 +81,9 @@ namespace Stump.DofusProtocol.Messages
             var removedPlayersIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 removedPlayersIds_[i] = reader.ReadInt();
+                 removedPlayersIds_[i] = reader.ReadVarInt();
             }
             removedPlayersIds = removedPlayersIds_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + addedPlayers.Sum(x => x.GetSerializationSize()) + sizeof(short) + removedPlayersIds.Sum(x => sizeof(int));
         }
         
     }

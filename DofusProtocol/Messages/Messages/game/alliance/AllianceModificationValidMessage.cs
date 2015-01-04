@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:46
+// Generated on 01/04/2015 11:54:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,11 +46,6 @@ namespace Stump.DofusProtocol.Messages
             allianceTag = reader.ReadUTF();
             Alliancemblem = new Types.GuildEmblem();
             Alliancemblem.Deserialize(reader);
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(allianceName) + sizeof(short) + Encoding.UTF8.GetByteCount(allianceTag) + Alliancemblem.GetSerializationSize();
         }
         
     }

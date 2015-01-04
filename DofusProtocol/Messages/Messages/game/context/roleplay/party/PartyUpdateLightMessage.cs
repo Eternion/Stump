@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:57
+// Generated on 01/04/2015 11:54:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,36 +41,31 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(id);
-            writer.WriteInt(lifePoints);
-            writer.WriteInt(maxLifePoints);
-            writer.WriteShort(prospecting);
+            writer.WriteVarInt(id);
+            writer.WriteVarInt(lifePoints);
+            writer.WriteVarInt(maxLifePoints);
+            writer.WriteVarShort(prospecting);
             writer.WriteByte(regenRate);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            id = reader.ReadInt();
+            id = reader.ReadVarInt();
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
-            lifePoints = reader.ReadInt();
+            lifePoints = reader.ReadVarInt();
             if (lifePoints < 0)
                 throw new Exception("Forbidden value on lifePoints = " + lifePoints + ", it doesn't respect the following condition : lifePoints < 0");
-            maxLifePoints = reader.ReadInt();
+            maxLifePoints = reader.ReadVarInt();
             if (maxLifePoints < 0)
                 throw new Exception("Forbidden value on maxLifePoints = " + maxLifePoints + ", it doesn't respect the following condition : maxLifePoints < 0");
-            prospecting = reader.ReadShort();
+            prospecting = reader.ReadVarShort();
             if (prospecting < 0)
                 throw new Exception("Forbidden value on prospecting = " + prospecting + ", it doesn't respect the following condition : prospecting < 0");
             regenRate = reader.ReadByte();
             if (regenRate < 0 || regenRate > 255)
                 throw new Exception("Forbidden value on regenRate = " + regenRate + ", it doesn't respect the following condition : regenRate < 0 || regenRate > 255");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(byte);
         }
         
     }

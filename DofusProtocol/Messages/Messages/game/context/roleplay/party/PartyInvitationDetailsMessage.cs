@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:51
+// Generated on 01/04/2015 11:54:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,9 +47,9 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             writer.WriteSByte(partyType);
             writer.WriteUTF(partyName);
-            writer.WriteInt(fromId);
+            writer.WriteVarInt(fromId);
             writer.WriteUTF(fromName);
-            writer.WriteInt(leaderId);
+            writer.WriteVarInt(leaderId);
             var members_before = writer.Position;
             var members_count = 0;
             writer.WriteUShort(0);
@@ -85,11 +85,11 @@ namespace Stump.DofusProtocol.Messages
             if (partyType < 0)
                 throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
             partyName = reader.ReadUTF();
-            fromId = reader.ReadInt();
+            fromId = reader.ReadVarInt();
             if (fromId < 0)
                 throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0");
             fromName = reader.ReadUTF();
-            leaderId = reader.ReadInt();
+            leaderId = reader.ReadVarInt();
             if (leaderId < 0)
                 throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0");
             var limit = reader.ReadUShort();
@@ -108,11 +108,6 @@ namespace Stump.DofusProtocol.Messages
                  guests_[i].Deserialize(reader);
             }
             guests = guests_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(partyName) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(fromName) + sizeof(int) + sizeof(short) + members.Sum(x => x.GetSerializationSize()) + sizeof(short) + guests.Sum(x => x.GetSerializationSize());
         }
         
     }

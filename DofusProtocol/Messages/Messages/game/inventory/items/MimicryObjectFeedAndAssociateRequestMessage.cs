@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:46
+// Generated on 01/04/2015 11:54:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(foodUID);
+            writer.WriteVarInt(foodUID);
             writer.WriteByte(foodPos);
             writer.WriteBoolean(preview);
         }
@@ -45,18 +45,13 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            foodUID = reader.ReadInt();
+            foodUID = reader.ReadVarInt();
             if (foodUID < 0)
                 throw new Exception("Forbidden value on foodUID = " + foodUID + ", it doesn't respect the following condition : foodUID < 0");
             foodPos = reader.ReadByte();
             if (foodPos < 0 || foodPos > 255)
                 throw new Exception("Forbidden value on foodPos = " + foodPos + ", it doesn't respect the following condition : foodPos < 0 || foodPos > 255");
             preview = reader.ReadBoolean();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(byte) + sizeof(bool);
         }
         
     }

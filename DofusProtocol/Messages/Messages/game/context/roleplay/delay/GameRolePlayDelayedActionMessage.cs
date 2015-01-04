@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:29
+// Generated on 01/04/2015 11:54:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,11 +49,6 @@ namespace Stump.DofusProtocol.Messages
             delayEndTime = reader.ReadDouble();
             if (delayEndTime < 0 || delayEndTime > 9.007199254740992E15)
                 throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9.007199254740992E15");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(sbyte) + sizeof(double);
         }
         
     }

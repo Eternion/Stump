@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:40
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,12 +50,12 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(modelId);
+            writer.WriteVarInt(modelId);
             writer.WriteUTF(ownerName);
             writer.WriteBoolean(ownerConnected);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
             writer.WriteSByte(nbRoom);
             writer.WriteSByte(nbChest);
             var skillListIds_before = writer.Position;
@@ -72,12 +72,12 @@ namespace Stump.DofusProtocol.Types
             writer.Seek((int)skillListIds_after);
 
             writer.WriteBoolean(isLocked);
-            writer.WriteInt(price);
+            writer.WriteVarInt(price);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            modelId = reader.ReadInt();
+            modelId = reader.ReadVarInt();
             if (modelId < 0)
                 throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
             ownerName = reader.ReadUTF();
@@ -88,7 +88,7 @@ namespace Stump.DofusProtocol.Types
             worldY = reader.ReadShort();
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             nbRoom = reader.ReadSByte();
@@ -101,15 +101,11 @@ namespace Stump.DofusProtocol.Types
             }
             skillListIds = skillListIds_;
             isLocked = reader.ReadBoolean();
-            price = reader.ReadInt();
+            price = reader.ReadVarInt();
             if (price < 0)
                 throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(bool) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(short) + skillListIds.Sum(x => sizeof(int)) + sizeof(bool) + sizeof(int);
-        }
         
     }
     

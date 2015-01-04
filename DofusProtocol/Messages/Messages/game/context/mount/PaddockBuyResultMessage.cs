@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:24
+// Generated on 01/04/2015 11:54:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,21 +37,16 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(paddockId);
             writer.WriteBoolean(bought);
-            writer.WriteInt(realPrice);
+            writer.WriteVarInt(realPrice);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             paddockId = reader.ReadInt();
             bought = reader.ReadBoolean();
-            realPrice = reader.ReadInt();
+            realPrice = reader.ReadVarInt();
             if (realPrice < 0)
                 throw new Exception("Forbidden value on realPrice = " + realPrice + ", it doesn't respect the following condition : realPrice < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(bool) + sizeof(int);
         }
         
     }

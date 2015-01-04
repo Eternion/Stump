@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:28
+// Generated on 01/04/2015 11:54:28
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in minimalPrices)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  minimalPrices_count++;
             }
             var minimalPrices_after = writer.Position;
@@ -59,14 +59,9 @@ namespace Stump.DofusProtocol.Messages
             var minimalPrices_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 minimalPrices_[i] = reader.ReadInt();
+                 minimalPrices_[i] = reader.ReadVarInt();
             }
             minimalPrices = minimalPrices_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(bool) + sizeof(short) + minimalPrices.Sum(x => sizeof(int));
         }
         
     }

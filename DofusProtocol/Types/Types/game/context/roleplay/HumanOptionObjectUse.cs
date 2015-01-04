@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:30
+// Generated on 01/04/2015 11:54:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteSByte(delayTypeId);
             writer.WriteDouble(delayEndTime);
-            writer.WriteShort(objectGID);
+            writer.WriteVarShort(objectGID);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -49,15 +49,11 @@ namespace Stump.DofusProtocol.Types
             delayEndTime = reader.ReadDouble();
             if (delayEndTime < 0 || delayEndTime > 9.007199254740992E15)
                 throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9.007199254740992E15");
-            objectGID = reader.ReadShort();
+            objectGID = reader.ReadVarShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(double) + sizeof(short);
-        }
         
     }
     

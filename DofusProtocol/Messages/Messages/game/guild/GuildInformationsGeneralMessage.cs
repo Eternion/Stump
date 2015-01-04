@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:12
+// Generated on 01/04/2015 11:54:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,12 +52,12 @@ namespace Stump.DofusProtocol.Messages
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, abandonnedPaddock);
             writer.WriteByte(flag1);
             writer.WriteByte(level);
-            writer.WriteLong(expLevelFloor);
-            writer.WriteLong(experience);
-            writer.WriteLong(expNextLevelFloor);
+            writer.WriteVarLong(expLevelFloor);
+            writer.WriteVarLong(experience);
+            writer.WriteVarLong(expNextLevelFloor);
             writer.WriteInt(creationDate);
-            writer.WriteShort(nbTotalMembers);
-            writer.WriteShort(nbConnectedMembers);
+            writer.WriteVarShort(nbTotalMembers);
+            writer.WriteVarShort(nbConnectedMembers);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -68,29 +68,24 @@ namespace Stump.DofusProtocol.Messages
             level = reader.ReadByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
-            expLevelFloor = reader.ReadLong();
+            expLevelFloor = reader.ReadVarLong();
             if (expLevelFloor < 0 || expLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on expLevelFloor = " + expLevelFloor + ", it doesn't respect the following condition : expLevelFloor < 0 || expLevelFloor > 9.007199254740992E15");
-            experience = reader.ReadLong();
+            experience = reader.ReadVarLong();
             if (experience < 0 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
-            expNextLevelFloor = reader.ReadLong();
+            expNextLevelFloor = reader.ReadVarLong();
             if (expNextLevelFloor < 0 || expNextLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on expNextLevelFloor = " + expNextLevelFloor + ", it doesn't respect the following condition : expNextLevelFloor < 0 || expNextLevelFloor > 9.007199254740992E15");
             creationDate = reader.ReadInt();
             if (creationDate < 0)
                 throw new Exception("Forbidden value on creationDate = " + creationDate + ", it doesn't respect the following condition : creationDate < 0");
-            nbTotalMembers = reader.ReadShort();
+            nbTotalMembers = reader.ReadVarShort();
             if (nbTotalMembers < 0)
                 throw new Exception("Forbidden value on nbTotalMembers = " + nbTotalMembers + ", it doesn't respect the following condition : nbTotalMembers < 0");
-            nbConnectedMembers = reader.ReadShort();
+            nbConnectedMembers = reader.ReadVarShort();
             if (nbConnectedMembers < 0)
                 throw new Exception("Forbidden value on nbConnectedMembers = " + nbConnectedMembers + ", it doesn't respect the following condition : nbConnectedMembers < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(bool) + 0 + sizeof(byte) + sizeof(long) + sizeof(long) + sizeof(long) + sizeof(int) + sizeof(short) + sizeof(short);
         }
         
     }

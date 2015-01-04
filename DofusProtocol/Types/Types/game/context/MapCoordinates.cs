@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:19
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,10 +46,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:22
+// Generated on 01/04/2015 11:54:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,11 +59,6 @@ namespace Stump.DofusProtocol.Messages
                  key_[i] = reader.ReadSByte();
             }
             key = key_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(salt) + sizeof(short) + key.Sum(x => sizeof(sbyte));
         }
         
     }

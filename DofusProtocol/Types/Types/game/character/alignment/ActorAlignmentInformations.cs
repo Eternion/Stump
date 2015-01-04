@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:16
+// Generated on 01/04/2015 11:54:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(alignmentSide);
             writer.WriteSByte(alignmentValue);
             writer.WriteSByte(alignmentGrade);
-            writer.WriteInt(characterPower);
+            writer.WriteVarInt(characterPower);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -51,15 +51,11 @@ namespace Stump.DofusProtocol.Types
             alignmentGrade = reader.ReadSByte();
             if (alignmentGrade < 0)
                 throw new Exception("Forbidden value on alignmentGrade = " + alignmentGrade + ", it doesn't respect the following condition : alignmentGrade < 0");
-            characterPower = reader.ReadInt();
+            characterPower = reader.ReadVarInt();
             if (characterPower < 0)
                 throw new Exception("Forbidden value on characterPower = " + characterPower + ", it doesn't respect the following condition : characterPower < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int);
-        }
         
     }
     

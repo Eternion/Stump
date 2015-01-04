@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:38
+// Generated on 01/04/2015 11:54:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,35 +44,30 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteInt(firstCharacterId);
-            writer.WriteInt(firstCharacterCurrentWeight);
-            writer.WriteInt(firstCharacterMaxWeight);
+            writer.WriteVarInt(firstCharacterCurrentWeight);
+            writer.WriteVarInt(firstCharacterMaxWeight);
             writer.WriteInt(secondCharacterId);
-            writer.WriteInt(secondCharacterCurrentWeight);
-            writer.WriteInt(secondCharacterMaxWeight);
+            writer.WriteVarInt(secondCharacterCurrentWeight);
+            writer.WriteVarInt(secondCharacterMaxWeight);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             firstCharacterId = reader.ReadInt();
-            firstCharacterCurrentWeight = reader.ReadInt();
+            firstCharacterCurrentWeight = reader.ReadVarInt();
             if (firstCharacterCurrentWeight < 0)
                 throw new Exception("Forbidden value on firstCharacterCurrentWeight = " + firstCharacterCurrentWeight + ", it doesn't respect the following condition : firstCharacterCurrentWeight < 0");
-            firstCharacterMaxWeight = reader.ReadInt();
+            firstCharacterMaxWeight = reader.ReadVarInt();
             if (firstCharacterMaxWeight < 0)
                 throw new Exception("Forbidden value on firstCharacterMaxWeight = " + firstCharacterMaxWeight + ", it doesn't respect the following condition : firstCharacterMaxWeight < 0");
             secondCharacterId = reader.ReadInt();
-            secondCharacterCurrentWeight = reader.ReadInt();
+            secondCharacterCurrentWeight = reader.ReadVarInt();
             if (secondCharacterCurrentWeight < 0)
                 throw new Exception("Forbidden value on secondCharacterCurrentWeight = " + secondCharacterCurrentWeight + ", it doesn't respect the following condition : secondCharacterCurrentWeight < 0");
-            secondCharacterMaxWeight = reader.ReadInt();
+            secondCharacterMaxWeight = reader.ReadVarInt();
             if (secondCharacterMaxWeight < 0)
                 throw new Exception("Forbidden value on secondCharacterMaxWeight = " + secondCharacterMaxWeight + ", it doesn't respect the following condition : secondCharacterMaxWeight < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int);
         }
         
     }

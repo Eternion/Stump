@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:34
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteByte(position);
-            writer.WriteShort(objectGID);
+            writer.WriteVarShort(objectGID);
             var effects_before = writer.Position;
             var effects_count = 0;
             writer.WriteUShort(0);
@@ -55,8 +55,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort((ushort)effects_count);
             writer.Seek((int)effects_after);
 
-            writer.WriteInt(objectUID);
-            writer.WriteInt(quantity);
+            writer.WriteVarInt(objectUID);
+            writer.WriteVarInt(quantity);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -65,7 +65,7 @@ namespace Stump.DofusProtocol.Types
             position = reader.ReadByte();
             if (position < 0 || position > 255)
                 throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 0 || position > 255");
-            objectGID = reader.ReadShort();
+            objectGID = reader.ReadVarShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
             var limit = reader.ReadUShort();
@@ -76,18 +76,14 @@ namespace Stump.DofusProtocol.Types
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;
-            objectUID = reader.ReadInt();
+            objectUID = reader.ReadVarInt();
             if (objectUID < 0)
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            quantity = reader.ReadInt();
+            quantity = reader.ReadVarInt();
             if (quantity < 0)
                 throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(byte) + sizeof(short) + sizeof(short) + effects.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(int) + sizeof(int);
-        }
         
     }
     

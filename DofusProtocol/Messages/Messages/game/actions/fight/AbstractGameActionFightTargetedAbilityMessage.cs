@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:31
+// Generated on 01/04/2015 11:54:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,11 +56,6 @@ namespace Stump.DofusProtocol.Messages
             if (critical < 0)
                 throw new Exception("Forbidden value on critical = " + critical + ", it doesn't respect the following condition : critical < 0");
             silentCast = reader.ReadBoolean();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(bool);
         }
         
     }

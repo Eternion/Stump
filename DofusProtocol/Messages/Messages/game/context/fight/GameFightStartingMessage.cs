@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:17
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,11 +47,6 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
             attackerId = reader.ReadInt();
             defenderId = reader.ReadInt();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(int) + sizeof(int);
         }
         
     }

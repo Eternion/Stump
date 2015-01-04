@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:31
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,16 +54,16 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(lifePoints);
-            writer.WriteInt(maxLifePoints);
-            writer.WriteShort(prospecting);
+            writer.WriteVarInt(lifePoints);
+            writer.WriteVarInt(maxLifePoints);
+            writer.WriteVarShort(prospecting);
             writer.WriteByte(regenRate);
-            writer.WriteShort(initiative);
+            writer.WriteVarShort(initiative);
             writer.WriteSByte(alignmentSide);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
             writer.WriteShort(status.TypeId);
             status.Serialize(writer);
             var companions_before = writer.Position;
@@ -84,19 +84,19 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            lifePoints = reader.ReadInt();
+            lifePoints = reader.ReadVarInt();
             if (lifePoints < 0)
                 throw new Exception("Forbidden value on lifePoints = " + lifePoints + ", it doesn't respect the following condition : lifePoints < 0");
-            maxLifePoints = reader.ReadInt();
+            maxLifePoints = reader.ReadVarInt();
             if (maxLifePoints < 0)
                 throw new Exception("Forbidden value on maxLifePoints = " + maxLifePoints + ", it doesn't respect the following condition : maxLifePoints < 0");
-            prospecting = reader.ReadShort();
+            prospecting = reader.ReadVarShort();
             if (prospecting < 0)
                 throw new Exception("Forbidden value on prospecting = " + prospecting + ", it doesn't respect the following condition : prospecting < 0");
             regenRate = reader.ReadByte();
             if (regenRate < 0 || regenRate > 255)
                 throw new Exception("Forbidden value on regenRate = " + regenRate + ", it doesn't respect the following condition : regenRate < 0 || regenRate > 255");
-            initiative = reader.ReadShort();
+            initiative = reader.ReadVarShort();
             if (initiative < 0)
                 throw new Exception("Forbidden value on initiative = " + initiative + ", it doesn't respect the following condition : initiative < 0");
             alignmentSide = reader.ReadSByte();
@@ -107,7 +107,7 @@ namespace Stump.DofusProtocol.Types
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
             mapId = reader.ReadInt();
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
@@ -122,10 +122,6 @@ namespace Stump.DofusProtocol.Types
             companions = companions_;
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(byte) + sizeof(short) + sizeof(sbyte) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + status.GetSerializationSize() + sizeof(short) + companions.Sum(x => x.GetSerializationSize());
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:32
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,10 +44,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(sbyte);
-        }
         
     }
     

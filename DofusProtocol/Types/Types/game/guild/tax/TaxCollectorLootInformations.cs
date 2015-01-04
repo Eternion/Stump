@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:40
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,33 +37,29 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(kamas);
-            writer.WriteLong(experience);
-            writer.WriteInt(pods);
-            writer.WriteInt(itemsValue);
+            writer.WriteVarInt(kamas);
+            writer.WriteVarLong(experience);
+            writer.WriteVarInt(pods);
+            writer.WriteVarInt(itemsValue);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            kamas = reader.ReadInt();
+            kamas = reader.ReadVarInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
-            experience = reader.ReadLong();
+            experience = reader.ReadVarLong();
             if (experience < 0 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
-            pods = reader.ReadInt();
+            pods = reader.ReadVarInt();
             if (pods < 0)
                 throw new Exception("Forbidden value on pods = " + pods + ", it doesn't respect the following condition : pods < 0");
-            itemsValue = reader.ReadInt();
+            itemsValue = reader.ReadVarInt();
             if (itemsValue < 0)
                 throw new Exception("Forbidden value on itemsValue = " + itemsValue + ", it doesn't respect the following condition : itemsValue < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(long) + sizeof(int) + sizeof(int);
-        }
         
     }
     

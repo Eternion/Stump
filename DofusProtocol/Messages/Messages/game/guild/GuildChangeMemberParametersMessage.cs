@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:09
+// Generated on 01/04/2015 11:54:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,31 +37,26 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(memberId);
-            writer.WriteShort(rank);
+            writer.WriteVarInt(memberId);
+            writer.WriteVarShort(rank);
             writer.WriteSByte(experienceGivenPercent);
-            writer.WriteInt(rights);
+            writer.WriteVarInt(rights);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            memberId = reader.ReadInt();
+            memberId = reader.ReadVarInt();
             if (memberId < 0)
                 throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0");
-            rank = reader.ReadShort();
+            rank = reader.ReadVarShort();
             if (rank < 0)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0");
             experienceGivenPercent = reader.ReadSByte();
             if (experienceGivenPercent < 0 || experienceGivenPercent > 100)
                 throw new Exception("Forbidden value on experienceGivenPercent = " + experienceGivenPercent + ", it doesn't respect the following condition : experienceGivenPercent < 0 || experienceGivenPercent > 100");
-            rights = reader.ReadInt();
+            rights = reader.ReadVarInt();
             if (rights < 0)
                 throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(int);
         }
         
     }

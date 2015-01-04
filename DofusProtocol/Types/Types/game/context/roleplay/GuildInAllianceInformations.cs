@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:28
+// Generated on 01/04/2015 11:54:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,10 +53,6 @@ namespace Stump.DofusProtocol.Types
             enabled = reader.ReadBoolean();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(byte) + sizeof(byte) + sizeof(bool);
-        }
         
     }
     

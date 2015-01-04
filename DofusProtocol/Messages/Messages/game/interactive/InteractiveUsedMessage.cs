@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:20
+// Generated on 01/04/2015 11:54:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,31 +37,26 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(entityId);
-            writer.WriteInt(elemId);
-            writer.WriteShort(skillId);
-            writer.WriteShort(duration);
+            writer.WriteVarInt(entityId);
+            writer.WriteVarInt(elemId);
+            writer.WriteVarShort(skillId);
+            writer.WriteVarShort(duration);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            entityId = reader.ReadInt();
+            entityId = reader.ReadVarInt();
             if (entityId < 0)
                 throw new Exception("Forbidden value on entityId = " + entityId + ", it doesn't respect the following condition : entityId < 0");
-            elemId = reader.ReadInt();
+            elemId = reader.ReadVarInt();
             if (elemId < 0)
                 throw new Exception("Forbidden value on elemId = " + elemId + ", it doesn't respect the following condition : elemId < 0");
-            skillId = reader.ReadShort();
+            skillId = reader.ReadVarShort();
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
-            duration = reader.ReadShort();
+            duration = reader.ReadVarShort();
             if (duration < 0)
                 throw new Exception("Forbidden value on duration = " + duration + ", it doesn't respect the following condition : duration < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(short) + sizeof(short);
         }
         
     }

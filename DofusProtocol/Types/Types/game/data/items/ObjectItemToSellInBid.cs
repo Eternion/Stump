@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:35
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,10 +43,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on unsoldDelay = " + unsoldDelay + ", it doesn't respect the following condition : unsoldDelay < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int);
-        }
         
     }
     

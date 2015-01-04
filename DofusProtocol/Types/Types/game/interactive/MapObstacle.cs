@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:41
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,13 +32,13 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(obstacleCellId);
+            writer.WriteVarShort(obstacleCellId);
             writer.WriteSByte(state);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            obstacleCellId = reader.ReadShort();
+            obstacleCellId = reader.ReadVarShort();
             if (obstacleCellId < 0 || obstacleCellId > 559)
                 throw new Exception("Forbidden value on obstacleCellId = " + obstacleCellId + ", it doesn't respect the following condition : obstacleCellId < 0 || obstacleCellId > 559");
             state = reader.ReadSByte();
@@ -46,10 +46,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(sbyte);
-        }
         
     }
     

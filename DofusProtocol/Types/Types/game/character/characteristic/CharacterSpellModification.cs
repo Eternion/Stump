@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:16
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(modificationType);
-            writer.WriteShort(spellId);
+            writer.WriteVarShort(spellId);
             value.Serialize(writer);
         }
         
@@ -44,17 +44,13 @@ namespace Stump.DofusProtocol.Types
             modificationType = reader.ReadSByte();
             if (modificationType < 0)
                 throw new Exception("Forbidden value on modificationType = " + modificationType + ", it doesn't respect the following condition : modificationType < 0");
-            spellId = reader.ReadShort();
+            spellId = reader.ReadVarShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
             value = new Types.CharacterBaseCharacteristic();
             value.Deserialize(reader);
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(short) + value.GetSerializationSize();
-        }
         
     }
     

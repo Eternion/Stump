@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:22
+// Generated on 01/04/2015 11:54:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,10 +47,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on grade = " + grade + ", it doesn't respect the following condition : grade < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(sbyte);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:45
+// Generated on 01/04/2015 11:54:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(areaId);
             writer.WriteSByte(atLeastNbMount);
             writer.WriteSByte(atLeastNbMachine);
-            writer.WriteInt(maxPrice);
+            writer.WriteVarInt(maxPrice);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,14 +48,9 @@ namespace Stump.DofusProtocol.Messages
             areaId = reader.ReadInt();
             atLeastNbMount = reader.ReadSByte();
             atLeastNbMachine = reader.ReadSByte();
-            maxPrice = reader.ReadInt();
+            maxPrice = reader.ReadVarInt();
             if (maxPrice < 0)
                 throw new Exception("Forbidden value on maxPrice = " + maxPrice + ", it doesn't respect the following condition : maxPrice < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int);
         }
         
     }

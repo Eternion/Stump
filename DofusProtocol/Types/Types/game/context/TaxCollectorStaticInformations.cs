@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:20
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,27 +34,23 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(firstNameId);
-            writer.WriteShort(lastNameId);
+            writer.WriteVarShort(firstNameId);
+            writer.WriteVarShort(lastNameId);
             guildIdentity.Serialize(writer);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            firstNameId = reader.ReadShort();
+            firstNameId = reader.ReadVarShort();
             if (firstNameId < 0)
                 throw new Exception("Forbidden value on firstNameId = " + firstNameId + ", it doesn't respect the following condition : firstNameId < 0");
-            lastNameId = reader.ReadShort();
+            lastNameId = reader.ReadVarShort();
             if (lastNameId < 0)
                 throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
             guildIdentity = new Types.GuildInformations();
             guildIdentity.Deserialize(reader);
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + guildIdentity.GetSerializationSize();
-        }
         
     }
     

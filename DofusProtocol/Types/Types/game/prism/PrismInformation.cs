@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:45
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(state);
             writer.WriteInt(nextVulnerabilityDate);
             writer.WriteInt(placementDate);
-            writer.WriteInt(rewardTokenCount);
+            writer.WriteVarInt(rewardTokenCount);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -59,15 +59,11 @@ namespace Stump.DofusProtocol.Types
             placementDate = reader.ReadInt();
             if (placementDate < 0)
                 throw new Exception("Forbidden value on placementDate = " + placementDate + ", it doesn't respect the following condition : placementDate < 0");
-            rewardTokenCount = reader.ReadInt();
+            rewardTokenCount = reader.ReadVarInt();
             if (rewardTokenCount < 0)
                 throw new Exception("Forbidden value on rewardTokenCount = " + rewardTokenCount + ", it doesn't respect the following condition : rewardTokenCount < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(int);
-        }
         
     }
     

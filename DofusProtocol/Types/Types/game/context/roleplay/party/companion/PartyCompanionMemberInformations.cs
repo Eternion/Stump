@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:32
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,26 +40,26 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(initiative);
-            writer.WriteInt(lifePoints);
-            writer.WriteInt(maxLifePoints);
-            writer.WriteShort(prospecting);
+            writer.WriteVarShort(initiative);
+            writer.WriteVarInt(lifePoints);
+            writer.WriteVarInt(maxLifePoints);
+            writer.WriteVarShort(prospecting);
             writer.WriteByte(regenRate);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            initiative = reader.ReadShort();
+            initiative = reader.ReadVarShort();
             if (initiative < 0)
                 throw new Exception("Forbidden value on initiative = " + initiative + ", it doesn't respect the following condition : initiative < 0");
-            lifePoints = reader.ReadInt();
+            lifePoints = reader.ReadVarInt();
             if (lifePoints < 0)
                 throw new Exception("Forbidden value on lifePoints = " + lifePoints + ", it doesn't respect the following condition : lifePoints < 0");
-            maxLifePoints = reader.ReadInt();
+            maxLifePoints = reader.ReadVarInt();
             if (maxLifePoints < 0)
                 throw new Exception("Forbidden value on maxLifePoints = " + maxLifePoints + ", it doesn't respect the following condition : maxLifePoints < 0");
-            prospecting = reader.ReadShort();
+            prospecting = reader.ReadVarShort();
             if (prospecting < 0)
                 throw new Exception("Forbidden value on prospecting = " + prospecting + ", it doesn't respect the following condition : prospecting < 0");
             regenRate = reader.ReadByte();
@@ -67,10 +67,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on regenRate = " + regenRate + ", it doesn't respect the following condition : regenRate < 0 || regenRate > 255");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(byte);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:37
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteInt(mountId);
             writer.WriteDouble(date);
-            writer.WriteShort(modelId);
+            writer.WriteVarShort(modelId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -50,15 +50,11 @@ namespace Stump.DofusProtocol.Types
             date = reader.ReadDouble();
             if (date < -9.007199254740992E15 || date > 9.007199254740992E15)
                 throw new Exception("Forbidden value on date = " + date + ", it doesn't respect the following condition : date < -9.007199254740992E15 || date > 9.007199254740992E15");
-            modelId = reader.ReadShort();
+            modelId = reader.ReadVarShort();
             if (modelId < 0)
                 throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(double) + sizeof(short);
-        }
         
     }
     

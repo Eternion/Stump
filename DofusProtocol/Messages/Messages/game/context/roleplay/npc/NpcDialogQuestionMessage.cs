@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:43
+// Generated on 01/04/2015 11:54:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(messageId);
+            writer.WriteVarShort(messageId);
             var dialogParams_before = writer.Position;
             var dialogParams_count = 0;
             writer.WriteUShort(0);
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in visibleReplies)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  visibleReplies_count++;
             }
             var visibleReplies_after = writer.Position;
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            messageId = reader.ReadShort();
+            messageId = reader.ReadVarShort();
             if (messageId < 0)
                 throw new Exception("Forbidden value on messageId = " + messageId + ", it doesn't respect the following condition : messageId < 0");
             var limit = reader.ReadUShort();
@@ -80,14 +80,9 @@ namespace Stump.DofusProtocol.Messages
             var visibleReplies_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 visibleReplies_[i] = reader.ReadShort();
+                 visibleReplies_[i] = reader.ReadVarShort();
             }
             visibleReplies = visibleReplies_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + dialogParams.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(short) + visibleReplies.Sum(x => sizeof(short));
         }
         
     }

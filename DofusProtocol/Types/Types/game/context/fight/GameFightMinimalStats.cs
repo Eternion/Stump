@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:24
+// Generated on 01/04/2015 11:54:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,88 +84,84 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(lifePoints);
-            writer.WriteInt(maxLifePoints);
-            writer.WriteInt(baseMaxLifePoints);
-            writer.WriteInt(permanentDamagePercent);
-            writer.WriteInt(shieldPoints);
-            writer.WriteShort(actionPoints);
-            writer.WriteShort(maxActionPoints);
-            writer.WriteShort(movementPoints);
-            writer.WriteShort(maxMovementPoints);
+            writer.WriteVarInt(lifePoints);
+            writer.WriteVarInt(maxLifePoints);
+            writer.WriteVarInt(baseMaxLifePoints);
+            writer.WriteVarInt(permanentDamagePercent);
+            writer.WriteVarInt(shieldPoints);
+            writer.WriteVarShort(actionPoints);
+            writer.WriteVarShort(maxActionPoints);
+            writer.WriteVarShort(movementPoints);
+            writer.WriteVarShort(maxMovementPoints);
             writer.WriteInt(summoner);
             writer.WriteBoolean(summoned);
-            writer.WriteShort(neutralElementResistPercent);
-            writer.WriteShort(earthElementResistPercent);
-            writer.WriteShort(waterElementResistPercent);
-            writer.WriteShort(airElementResistPercent);
-            writer.WriteShort(fireElementResistPercent);
-            writer.WriteShort(neutralElementReduction);
-            writer.WriteShort(earthElementReduction);
-            writer.WriteShort(waterElementReduction);
-            writer.WriteShort(airElementReduction);
-            writer.WriteShort(fireElementReduction);
-            writer.WriteShort(criticalDamageFixedResist);
-            writer.WriteShort(pushDamageFixedResist);
-            writer.WriteShort(dodgePALostProbability);
-            writer.WriteShort(dodgePMLostProbability);
-            writer.WriteShort(tackleBlock);
-            writer.WriteShort(tackleEvade);
+            writer.WriteVarShort(neutralElementResistPercent);
+            writer.WriteVarShort(earthElementResistPercent);
+            writer.WriteVarShort(waterElementResistPercent);
+            writer.WriteVarShort(airElementResistPercent);
+            writer.WriteVarShort(fireElementResistPercent);
+            writer.WriteVarShort(neutralElementReduction);
+            writer.WriteVarShort(earthElementReduction);
+            writer.WriteVarShort(waterElementReduction);
+            writer.WriteVarShort(airElementReduction);
+            writer.WriteVarShort(fireElementReduction);
+            writer.WriteVarShort(criticalDamageFixedResist);
+            writer.WriteVarShort(pushDamageFixedResist);
+            writer.WriteVarShort(dodgePALostProbability);
+            writer.WriteVarShort(dodgePMLostProbability);
+            writer.WriteVarShort(tackleBlock);
+            writer.WriteVarShort(tackleEvade);
             writer.WriteSByte(invisibilityState);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            lifePoints = reader.ReadInt();
+            lifePoints = reader.ReadVarInt();
             if (lifePoints < 0)
                 throw new Exception("Forbidden value on lifePoints = " + lifePoints + ", it doesn't respect the following condition : lifePoints < 0");
-            maxLifePoints = reader.ReadInt();
+            maxLifePoints = reader.ReadVarInt();
             if (maxLifePoints < 0)
                 throw new Exception("Forbidden value on maxLifePoints = " + maxLifePoints + ", it doesn't respect the following condition : maxLifePoints < 0");
-            baseMaxLifePoints = reader.ReadInt();
+            baseMaxLifePoints = reader.ReadVarInt();
             if (baseMaxLifePoints < 0)
                 throw new Exception("Forbidden value on baseMaxLifePoints = " + baseMaxLifePoints + ", it doesn't respect the following condition : baseMaxLifePoints < 0");
-            permanentDamagePercent = reader.ReadInt();
+            permanentDamagePercent = reader.ReadVarInt();
             if (permanentDamagePercent < 0)
                 throw new Exception("Forbidden value on permanentDamagePercent = " + permanentDamagePercent + ", it doesn't respect the following condition : permanentDamagePercent < 0");
-            shieldPoints = reader.ReadInt();
+            shieldPoints = reader.ReadVarInt();
             if (shieldPoints < 0)
                 throw new Exception("Forbidden value on shieldPoints = " + shieldPoints + ", it doesn't respect the following condition : shieldPoints < 0");
-            actionPoints = reader.ReadShort();
-            maxActionPoints = reader.ReadShort();
-            movementPoints = reader.ReadShort();
-            maxMovementPoints = reader.ReadShort();
+            actionPoints = reader.ReadVarShort();
+            maxActionPoints = reader.ReadVarShort();
+            movementPoints = reader.ReadVarShort();
+            maxMovementPoints = reader.ReadVarShort();
             summoner = reader.ReadInt();
             summoned = reader.ReadBoolean();
-            neutralElementResistPercent = reader.ReadShort();
-            earthElementResistPercent = reader.ReadShort();
-            waterElementResistPercent = reader.ReadShort();
-            airElementResistPercent = reader.ReadShort();
-            fireElementResistPercent = reader.ReadShort();
-            neutralElementReduction = reader.ReadShort();
-            earthElementReduction = reader.ReadShort();
-            waterElementReduction = reader.ReadShort();
-            airElementReduction = reader.ReadShort();
-            fireElementReduction = reader.ReadShort();
-            criticalDamageFixedResist = reader.ReadShort();
-            pushDamageFixedResist = reader.ReadShort();
-            dodgePALostProbability = reader.ReadShort();
+            neutralElementResistPercent = reader.ReadVarShort();
+            earthElementResistPercent = reader.ReadVarShort();
+            waterElementResistPercent = reader.ReadVarShort();
+            airElementResistPercent = reader.ReadVarShort();
+            fireElementResistPercent = reader.ReadVarShort();
+            neutralElementReduction = reader.ReadVarShort();
+            earthElementReduction = reader.ReadVarShort();
+            waterElementReduction = reader.ReadVarShort();
+            airElementReduction = reader.ReadVarShort();
+            fireElementReduction = reader.ReadVarShort();
+            criticalDamageFixedResist = reader.ReadVarShort();
+            pushDamageFixedResist = reader.ReadVarShort();
+            dodgePALostProbability = reader.ReadVarShort();
             if (dodgePALostProbability < 0)
                 throw new Exception("Forbidden value on dodgePALostProbability = " + dodgePALostProbability + ", it doesn't respect the following condition : dodgePALostProbability < 0");
-            dodgePMLostProbability = reader.ReadShort();
+            dodgePMLostProbability = reader.ReadVarShort();
             if (dodgePMLostProbability < 0)
                 throw new Exception("Forbidden value on dodgePMLostProbability = " + dodgePMLostProbability + ", it doesn't respect the following condition : dodgePMLostProbability < 0");
-            tackleBlock = reader.ReadShort();
-            tackleEvade = reader.ReadShort();
+            tackleBlock = reader.ReadVarShort();
+            tackleEvade = reader.ReadVarShort();
             invisibilityState = reader.ReadSByte();
             if (invisibilityState < 0)
                 throw new Exception("Forbidden value on invisibilityState = " + invisibilityState + ", it doesn't respect the following condition : invisibilityState < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(bool) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte);
-        }
         
     }
     

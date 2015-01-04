@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:12
+// Generated on 01/04/2015 11:54:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,10 +68,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on date = " + date + ", it doesn't respect the following condition : date < -9.007199254740992E15 || date > 9.007199254740992E15");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(ushort) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + sizeof(sbyte) + sizeof(double);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:40
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,12 +49,12 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(uniqueId);
-            writer.WriteShort(firtNameId);
-            writer.WriteShort(lastNameId);
+            writer.WriteVarShort(firtNameId);
+            writer.WriteVarShort(lastNameId);
             additionalInfos.Serialize(writer);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
             writer.WriteSByte(state);
             look.Serialize(writer);
             var complements_before = writer.Position;
@@ -76,10 +76,10 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             uniqueId = reader.ReadInt();
-            firtNameId = reader.ReadShort();
+            firtNameId = reader.ReadVarShort();
             if (firtNameId < 0)
                 throw new Exception("Forbidden value on firtNameId = " + firtNameId + ", it doesn't respect the following condition : firtNameId < 0");
-            lastNameId = reader.ReadShort();
+            lastNameId = reader.ReadVarShort();
             if (lastNameId < 0)
                 throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
             additionalInfos = new Types.AdditionalTaxCollectorInformations();
@@ -90,7 +90,7 @@ namespace Stump.DofusProtocol.Types
             worldY = reader.ReadShort();
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             state = reader.ReadSByte();
@@ -108,10 +108,6 @@ namespace Stump.DofusProtocol.Types
             complements = complements_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + sizeof(short) + additionalInfos.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + look.GetSerializationSize() + sizeof(short) + complements.Sum(x => sizeof(short) + x.GetSerializationSize());
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:01
+// Generated on 01/04/2015 11:54:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,20 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(lifePointsGained);
+            writer.WriteVarInt(lifePointsGained);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            lifePointsGained = reader.ReadInt();
+            lifePointsGained = reader.ReadVarInt();
             if (lifePointsGained < 0)
                 throw new Exception("Forbidden value on lifePointsGained = " + lifePointsGained + ", it doesn't respect the following condition : lifePointsGained < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int);
         }
         
     }

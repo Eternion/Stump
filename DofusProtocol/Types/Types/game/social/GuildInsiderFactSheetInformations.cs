@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:48
+// Generated on 01/04/2015 11:54:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteUTF(leaderName);
-            writer.WriteShort(nbConnectedMembers);
+            writer.WriteVarShort(nbConnectedMembers);
             writer.WriteSByte(nbTaxCollectors);
             writer.WriteInt(lastActivity);
             writer.WriteBoolean(enabled);
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             leaderName = reader.ReadUTF();
-            nbConnectedMembers = reader.ReadShort();
+            nbConnectedMembers = reader.ReadVarShort();
             if (nbConnectedMembers < 0)
                 throw new Exception("Forbidden value on nbConnectedMembers = " + nbConnectedMembers + ", it doesn't respect the following condition : nbConnectedMembers < 0");
             nbTaxCollectors = reader.ReadSByte();
@@ -63,10 +63,6 @@ namespace Stump.DofusProtocol.Types
             enabled = reader.ReadBoolean();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + Encoding.UTF8.GetByteCount(leaderName) + sizeof(short) + sizeof(sbyte) + sizeof(int) + sizeof(bool);
-        }
         
     }
     

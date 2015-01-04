@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:54
+// Generated on 01/04/2015 11:54:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteSByte(presetId);
             writer.WriteByte(position);
-            writer.WriteInt(objUid);
+            writer.WriteVarInt(objUid);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,14 +48,9 @@ namespace Stump.DofusProtocol.Messages
             position = reader.ReadByte();
             if (position < 0 || position > 255)
                 throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 0 || position > 255");
-            objUid = reader.ReadInt();
+            objUid = reader.ReadVarInt();
             if (objUid < 0)
                 throw new Exception("Forbidden value on objUid = " + objUid + ", it doesn't respect the following condition : objUid < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(byte) + sizeof(int);
         }
         
     }

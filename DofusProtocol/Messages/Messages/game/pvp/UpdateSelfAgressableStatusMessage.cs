@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:59
+// Generated on 01/04/2015 11:54:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,11 +45,6 @@ namespace Stump.DofusProtocol.Messages
             probationTime = reader.ReadInt();
             if (probationTime < 0)
                 throw new Exception("Forbidden value on probationTime = " + probationTime + ", it doesn't respect the following condition : probationTime < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(int);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:42
+// Generated on 01/04/2015 11:54:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,11 +104,6 @@ namespace Stump.DofusProtocol.Messages
                  npcsIdsWithoutQuest_[i] = reader.ReadInt();
             }
             npcsIdsWithoutQuest = npcsIdsWithoutQuest_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + npcsIdsWithQuest.Sum(x => sizeof(int)) + sizeof(short) + questFlags.Sum(x => x.GetSerializationSize()) + sizeof(short) + npcsIdsWithoutQuest.Sum(x => sizeof(int));
         }
         
     }

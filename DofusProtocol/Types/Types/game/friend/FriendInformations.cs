@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:38
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteSByte(playerState);
-            writer.WriteShort(lastConnection);
+            writer.WriteVarShort(lastConnection);
             writer.WriteInt(achievementPoints);
         }
         
@@ -47,16 +47,12 @@ namespace Stump.DofusProtocol.Types
             playerState = reader.ReadSByte();
             if (playerState < 0)
                 throw new Exception("Forbidden value on playerState = " + playerState + ", it doesn't respect the following condition : playerState < 0");
-            lastConnection = reader.ReadShort();
+            lastConnection = reader.ReadVarShort();
             if (lastConnection < 0)
                 throw new Exception("Forbidden value on lastConnection = " + lastConnection + ", it doesn't respect the following condition : lastConnection < 0");
             achievementPoints = reader.ReadInt();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + sizeof(int);
-        }
         
     }
     

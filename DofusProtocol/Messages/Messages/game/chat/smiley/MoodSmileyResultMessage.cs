@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:06
+// Generated on 01/04/2015 11:54:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,11 +43,6 @@ namespace Stump.DofusProtocol.Messages
             if (resultCode < 0)
                 throw new Exception("Forbidden value on resultCode = " + resultCode + ", it doesn't respect the following condition : resultCode < 0");
             smileyId = reader.ReadSByte();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

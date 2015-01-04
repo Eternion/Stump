@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:13
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,11 +94,6 @@ namespace Stump.DofusProtocol.Messages
                  namedPartyTeamsOutcomes_[i].Deserialize(reader);
             }
             namedPartyTeamsOutcomes = namedPartyTeamsOutcomes_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short) + results.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + namedPartyTeamsOutcomes.Sum(x => x.GetSerializationSize());
         }
         
     }

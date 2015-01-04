@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:23
+// Generated on 01/04/2015 11:54:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +58,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in subAreaIds)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  subAreaIds_count++;
             }
             var subAreaIds_after = writer.Position;
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in costs)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  costs_count++;
             }
             var costs_after = writer.Position;
@@ -110,14 +110,14 @@ namespace Stump.DofusProtocol.Messages
             var subAreaIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 subAreaIds_[i] = reader.ReadShort();
+                 subAreaIds_[i] = reader.ReadVarShort();
             }
             subAreaIds = subAreaIds_;
             limit = reader.ReadUShort();
             var costs_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 costs_[i] = reader.ReadShort();
+                 costs_[i] = reader.ReadVarShort();
             }
             costs = costs_;
             limit = reader.ReadUShort();
@@ -127,11 +127,6 @@ namespace Stump.DofusProtocol.Messages
                  destTeleporterType_[i] = reader.ReadSByte();
             }
             destTeleporterType = destTeleporterType_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(short) + mapIds.Sum(x => sizeof(int)) + sizeof(short) + subAreaIds.Sum(x => sizeof(short)) + sizeof(short) + costs.Sum(x => sizeof(short)) + sizeof(short) + destTeleporterType.Sum(x => sizeof(sbyte));
         }
         
     }

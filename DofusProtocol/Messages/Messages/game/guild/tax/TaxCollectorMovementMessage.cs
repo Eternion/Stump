@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:19
+// Generated on 01/04/2015 11:54:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteBoolean(hireOrFire);
             basicInfos.Serialize(writer);
-            writer.WriteInt(playerId);
+            writer.WriteVarInt(playerId);
             writer.WriteUTF(playerName);
         }
         
@@ -48,15 +48,10 @@ namespace Stump.DofusProtocol.Messages
             hireOrFire = reader.ReadBoolean();
             basicInfos = new Types.TaxCollectorBasicInformations();
             basicInfos.Deserialize(reader);
-            playerId = reader.ReadInt();
+            playerId = reader.ReadVarInt();
             if (playerId < 0)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             playerName = reader.ReadUTF();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(bool) + basicInfos.GetSerializationSize() + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName);
         }
         
     }

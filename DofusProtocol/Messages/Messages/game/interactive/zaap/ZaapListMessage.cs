@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:24
+// Generated on 01/04/2015 11:54:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +42,6 @@ namespace Stump.DofusProtocol.Messages
             spawnMapId = reader.ReadInt();
             if (spawnMapId < 0)
                 throw new Exception("Forbidden value on spawnMapId = " + spawnMapId + ", it doesn't respect the following condition : spawnMapId < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int);
         }
         
     }

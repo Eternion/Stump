@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:21
+// Generated on 01/04/2015 11:54:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +52,7 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 4, hasMyTaxCollector);
             writer.WriteByte(flag1);
             writer.WriteSByte(teamMembersCount);
-            writer.WriteInt(meanLevel);
+            writer.WriteVarInt(meanLevel);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -67,15 +67,11 @@ namespace Stump.DofusProtocol.Types
             teamMembersCount = reader.ReadSByte();
             if (teamMembersCount < 0)
                 throw new Exception("Forbidden value on teamMembersCount = " + teamMembersCount + ", it doesn't respect the following condition : teamMembersCount < 0");
-            meanLevel = reader.ReadInt();
+            meanLevel = reader.ReadVarInt();
             if (meanLevel < 0)
                 throw new Exception("Forbidden value on meanLevel = " + meanLevel + ", it doesn't respect the following condition : meanLevel < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(bool) + 0 + 0 + 0 + 0 + sizeof(sbyte) + sizeof(int);
-        }
         
     }
     

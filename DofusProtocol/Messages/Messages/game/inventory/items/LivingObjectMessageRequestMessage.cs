@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:46
+// Generated on 01/04/2015 11:54:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(msgId);
+            writer.WriteVarShort(msgId);
             var parameters_before = writer.Position;
             var parameters_count = 0;
             writer.WriteUShort(0);
@@ -49,12 +49,12 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)parameters_count);
             writer.Seek((int)parameters_after);
 
-            writer.WriteInt(livingObject);
+            writer.WriteVarInt(livingObject);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            msgId = reader.ReadShort();
+            msgId = reader.ReadVarShort();
             if (msgId < 0)
                 throw new Exception("Forbidden value on msgId = " + msgId + ", it doesn't respect the following condition : msgId < 0");
             var limit = reader.ReadUShort();
@@ -64,14 +64,9 @@ namespace Stump.DofusProtocol.Messages
                  parameters_[i] = reader.ReadUTF();
             }
             parameters = parameters_;
-            livingObject = reader.ReadInt();
+            livingObject = reader.ReadVarInt();
             if (livingObject < 0)
                 throw new Exception("Forbidden value on livingObject = " + livingObject + ", it doesn't respect the following condition : livingObject < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + parameters.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x)) + sizeof(int);
         }
         
     }

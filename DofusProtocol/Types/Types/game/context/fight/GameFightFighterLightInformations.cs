@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:24
+// Generated on 01/04/2015 11:54:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteByte(flag1);
             writer.WriteInt(id);
             writer.WriteSByte(wave);
-            writer.WriteShort(level);
+            writer.WriteVarShort(level);
             writer.WriteSByte(breed);
         }
         
@@ -59,16 +59,12 @@ namespace Stump.DofusProtocol.Types
             wave = reader.ReadSByte();
             if (wave < 0)
                 throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0");
-            level = reader.ReadShort();
+            level = reader.ReadVarShort();
             if (level < 0)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
             breed = reader.ReadSByte();
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(bool) + 0 + sizeof(int) + sizeof(sbyte) + sizeof(short) + sizeof(sbyte);
-        }
         
     }
     

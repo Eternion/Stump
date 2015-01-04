@@ -103,27 +103,6 @@ public override void Deserialize(IDataReader reader)
 <# PopIndent(); #>
 }
 
-public override int GetSerializationSize()
-{
-<# PushIndent("    "); #>
-<#
-	Write("return ");
-    if (Message.Heritage != "Message")
-    {
-        Write("base.GetSerializationSize()");
-
-		if (Message.Fields.Length > 0)
-			Write(" + ");
-    }
-	else if (Message.Fields.Length == 0)
-		WriteLine("0;");
-
-	WriteLine(string.Join(" + ", Message.Fields.Select(x => GetFieldBytesCountCode(x.Type, x.Name))) + ";");
-
-#>
-<# PopIndent(); #>
-}
-
 <# PopIndent(); #>
 }
 

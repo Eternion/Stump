@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:38
+// Generated on 01/04/2015 11:54:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,20 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(storageMaxSlot);
+            writer.WriteVarInt(storageMaxSlot);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            storageMaxSlot = reader.ReadInt();
+            storageMaxSlot = reader.ReadVarInt();
             if (storageMaxSlot < 0)
                 throw new Exception("Forbidden value on storageMaxSlot = " + storageMaxSlot + ", it doesn't respect the following condition : storageMaxSlot < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int);
         }
         
     }

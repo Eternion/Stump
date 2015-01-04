@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:57
+// Generated on 01/04/2015 11:54:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,11 +126,6 @@ namespace Stump.DofusProtocol.Messages
                  charactersToRelook_[i].Deserialize(reader);
             }
             charactersToRelook = charactersToRelook_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + charactersToRecolor.Sum(x => x.GetSerializationSize()) + sizeof(short) + charactersToRename.Sum(x => sizeof(int)) + sizeof(short) + unusableCharacters.Sum(x => sizeof(int)) + sizeof(short) + charactersToRelook.Sum(x => x.GetSerializationSize());
         }
         
     }

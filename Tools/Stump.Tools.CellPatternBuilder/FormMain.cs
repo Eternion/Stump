@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using DBSynchroniser.Maps.Placements;
 using Stump.Tools.MapControl;
 using Stump.Core.Xml;
-using Stump.Plugins.DefaultPlugin.Global.Placements;
 
 namespace Stump.Tools.CellPatternBuilder
 {

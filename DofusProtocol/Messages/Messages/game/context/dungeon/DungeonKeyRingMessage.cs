@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:13
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in availables)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  availables_count++;
             }
             var availables_after = writer.Position;
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in unavailables)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  unavailables_count++;
             }
             var unavailables_after = writer.Position;
@@ -67,21 +67,16 @@ namespace Stump.DofusProtocol.Messages
             var availables_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 availables_[i] = reader.ReadShort();
+                 availables_[i] = reader.ReadVarShort();
             }
             availables = availables_;
             limit = reader.ReadUShort();
             var unavailables_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 unavailables_[i] = reader.ReadShort();
+                 unavailables_[i] = reader.ReadVarShort();
             }
             unavailables = unavailables_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + availables.Sum(x => sizeof(short)) + sizeof(short) + unavailables.Sum(x => sizeof(short));
         }
         
     }

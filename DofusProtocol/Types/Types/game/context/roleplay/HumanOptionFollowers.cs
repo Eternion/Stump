@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:29
+// Generated on 01/04/2015 11:54:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,10 +59,6 @@ namespace Stump.DofusProtocol.Types
             followingCharactersLook = followingCharactersLook_;
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + followingCharactersLook.Sum(x => x.GetSerializationSize());
-        }
         
     }
     

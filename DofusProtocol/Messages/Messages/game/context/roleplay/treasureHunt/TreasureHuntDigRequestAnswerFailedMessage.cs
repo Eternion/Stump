@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:01
+// Generated on 01/04/2015 11:54:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +42,6 @@ namespace Stump.DofusProtocol.Messages
             wrongFlagCount = reader.ReadSByte();
             if (wrongFlagCount < 0)
                 throw new Exception("Forbidden value on wrongFlagCount = " + wrongFlagCount + ", it doesn't respect the following condition : wrongFlagCount < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte);
         }
         
     }

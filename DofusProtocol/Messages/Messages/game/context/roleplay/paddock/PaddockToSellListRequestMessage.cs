@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:45
+// Generated on 01/04/2015 11:54:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,19 +31,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(pageIndex);
+            writer.WriteVarShort(pageIndex);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            pageIndex = reader.ReadShort();
+            pageIndex = reader.ReadVarShort();
             if (pageIndex < 0)
                 throw new Exception("Forbidden value on pageIndex = " + pageIndex + ", it doesn't respect the following condition : pageIndex < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short);
         }
         
     }

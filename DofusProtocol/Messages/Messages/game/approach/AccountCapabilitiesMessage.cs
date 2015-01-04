@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:47
+// Generated on 01/04/2015 11:54:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,11 +59,6 @@ namespace Stump.DofusProtocol.Messages
             if (breedsAvailable < 0 || breedsAvailable > 65535)
                 throw new Exception("Forbidden value on breedsAvailable = " + breedsAvailable + ", it doesn't respect the following condition : breedsAvailable < 0 || breedsAvailable > 65535");
             status = reader.ReadSByte();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(bool) + sizeof(ushort) + sizeof(ushort) + sizeof(sbyte);
         }
         
     }

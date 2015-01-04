@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:08
+// Generated on 01/04/2015 11:54:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,11 +57,6 @@ namespace Stump.DofusProtocol.Messages
                  ignoredList_[i].Deserialize(reader);
             }
             ignoredList = ignoredList_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + ignoredList.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

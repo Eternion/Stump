@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:33
+// Generated on 01/04/2015 11:54:30
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,11 +53,6 @@ namespace Stump.DofusProtocol.Messages
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
             liberator = reader.ReadUTF();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(short) + sizeof(short) + sizeof(short) + Encoding.UTF8.GetByteCount(liberator);
         }
         
     }

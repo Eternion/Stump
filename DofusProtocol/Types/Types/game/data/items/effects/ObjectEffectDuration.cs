@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:37
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(days);
+            writer.WriteVarShort(days);
             writer.WriteSByte(hours);
             writer.WriteSByte(minutes);
         }
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            days = reader.ReadShort();
+            days = reader.ReadVarShort();
             if (days < 0)
                 throw new Exception("Forbidden value on days = " + days + ", it doesn't respect the following condition : days < 0");
             hours = reader.ReadSByte();
@@ -55,10 +55,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on minutes = " + minutes + ", it doesn't respect the following condition : minutes < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(sbyte) + sizeof(sbyte);
-        }
         
     }
     

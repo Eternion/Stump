@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:29
+// Generated on 01/04/2015 11:54:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,10 +48,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on emoteStartTime = " + emoteStartTime + ", it doesn't respect the following condition : emoteStartTime < -9.007199254740992E15 || emoteStartTime > 9.007199254740992E15");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(byte) + sizeof(double);
-        }
         
     }
     

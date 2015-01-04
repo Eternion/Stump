@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:44
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,24 +32,20 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(maxOutdoorMount);
-            writer.WriteShort(maxItems);
+            writer.WriteVarShort(maxOutdoorMount);
+            writer.WriteVarShort(maxItems);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            maxOutdoorMount = reader.ReadShort();
+            maxOutdoorMount = reader.ReadVarShort();
             if (maxOutdoorMount < 0)
                 throw new Exception("Forbidden value on maxOutdoorMount = " + maxOutdoorMount + ", it doesn't respect the following condition : maxOutdoorMount < 0");
-            maxItems = reader.ReadShort();
+            maxItems = reader.ReadVarShort();
             if (maxItems < 0)
                 throw new Exception("Forbidden value on maxItems = " + maxItems + ", it doesn't respect the following condition : maxItems < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short);
-        }
         
     }
     

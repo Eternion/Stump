@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:44
+// Generated on 01/04/2015 11:54:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,11 +47,6 @@ namespace Stump.DofusProtocol.Messages
             if (npcActionId < 0)
                 throw new Exception("Forbidden value on npcActionId = " + npcActionId + ", it doesn't respect the following condition : npcActionId < 0");
             npcMapId = reader.ReadInt();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(sbyte) + sizeof(int);
         }
         
     }

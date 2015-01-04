@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:41
+// Generated on 01/04/2015 11:54:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             writer.WriteShort(markId);
             writer.WriteInt(triggeringCharacterId);
-            writer.WriteShort(triggeredSpellId);
+            writer.WriteVarShort(triggeredSpellId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -47,14 +47,9 @@ namespace Stump.DofusProtocol.Messages
             base.Deserialize(reader);
             markId = reader.ReadShort();
             triggeringCharacterId = reader.ReadInt();
-            triggeredSpellId = reader.ReadShort();
+            triggeredSpellId = reader.ReadVarShort();
             if (triggeredSpellId < 0)
                 throw new Exception("Forbidden value on triggeredSpellId = " + triggeredSpellId + ", it doesn't respect the following condition : triggeredSpellId < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(int) + sizeof(short);
         }
         
     }

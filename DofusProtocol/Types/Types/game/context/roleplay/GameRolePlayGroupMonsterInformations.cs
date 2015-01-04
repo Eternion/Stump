@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:26
+// Generated on 01/04/2015 11:54:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,10 +74,6 @@ namespace Stump.DofusProtocol.Types
             alignmentSide = reader.ReadSByte();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(bool) + 0 + 0 + sizeof(short) + staticInfos.GetSerializationSize() + sizeof(short) + sizeof(sbyte) + sizeof(sbyte);
-        }
         
     }
     

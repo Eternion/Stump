@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:42
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,13 +38,13 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(bonesId);
+            writer.WriteVarShort(bonesId);
             var skins_before = writer.Position;
             var skins_count = 0;
             writer.WriteUShort(0);
             foreach (var entry in skins)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  skins_count++;
             }
             var skins_after = writer.Position;
@@ -70,7 +70,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in scales)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  scales_count++;
             }
             var scales_after = writer.Position;
@@ -95,14 +95,14 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            bonesId = reader.ReadShort();
+            bonesId = reader.ReadVarShort();
             if (bonesId < 0)
                 throw new Exception("Forbidden value on bonesId = " + bonesId + ", it doesn't respect the following condition : bonesId < 0");
             var limit = reader.ReadUShort();
             var skins_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 skins_[i] = reader.ReadShort();
+                 skins_[i] = reader.ReadVarShort();
             }
             skins = skins_;
             limit = reader.ReadUShort();
@@ -116,7 +116,7 @@ namespace Stump.DofusProtocol.Types
             var scales_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 scales_[i] = reader.ReadShort();
+                 scales_[i] = reader.ReadVarShort();
             }
             scales = scales_;
             limit = reader.ReadUShort();
@@ -129,10 +129,6 @@ namespace Stump.DofusProtocol.Types
             subentities = subentities_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + skins.Sum(x => sizeof(short)) + sizeof(short) + indexedColors.Sum(x => sizeof(int)) + sizeof(short) + scales.Sum(x => sizeof(short)) + sizeof(short) + subentities.Sum(x => x.GetSerializationSize());
-        }
         
     }
     

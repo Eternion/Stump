@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:49
+// Generated on 01/04/2015 11:54:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in objectUID)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  objectUID_count++;
             }
             var objectUID_after = writer.Position;
@@ -52,14 +52,9 @@ namespace Stump.DofusProtocol.Messages
             var objectUID_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 objectUID_[i] = reader.ReadInt();
+                 objectUID_[i] = reader.ReadVarInt();
             }
             objectUID = objectUID_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + objectUID.Sum(x => sizeof(int));
         }
         
     }

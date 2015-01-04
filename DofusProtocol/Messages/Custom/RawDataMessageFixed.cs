@@ -53,11 +53,6 @@ namespace Stump.DofusProtocol.Messages.Custom
             var len = reader.ReadShort();
             content = reader.ReadBytes(len);
         }
-
-        public override int GetSerializationSize()
-        {
-            return sizeof (short) + content.Length;
-        }
     }
     
 }

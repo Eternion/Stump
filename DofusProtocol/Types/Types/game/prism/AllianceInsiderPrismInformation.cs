@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:44
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,15 +41,15 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteInt(lastTimeSlotModificationDate);
-            writer.WriteInt(lastTimeSlotModificationAuthorGuildId);
-            writer.WriteInt(lastTimeSlotModificationAuthorId);
+            writer.WriteVarInt(lastTimeSlotModificationAuthorGuildId);
+            writer.WriteVarInt(lastTimeSlotModificationAuthorId);
             writer.WriteUTF(lastTimeSlotModificationAuthorName);
             var modulesItemIds_before = writer.Position;
             var modulesItemIds_count = 0;
             writer.WriteUShort(0);
             foreach (var entry in modulesItemIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  modulesItemIds_count++;
             }
             var modulesItemIds_after = writer.Position;
@@ -65,10 +65,10 @@ namespace Stump.DofusProtocol.Types
             lastTimeSlotModificationDate = reader.ReadInt();
             if (lastTimeSlotModificationDate < 0)
                 throw new Exception("Forbidden value on lastTimeSlotModificationDate = " + lastTimeSlotModificationDate + ", it doesn't respect the following condition : lastTimeSlotModificationDate < 0");
-            lastTimeSlotModificationAuthorGuildId = reader.ReadInt();
+            lastTimeSlotModificationAuthorGuildId = reader.ReadVarInt();
             if (lastTimeSlotModificationAuthorGuildId < 0)
                 throw new Exception("Forbidden value on lastTimeSlotModificationAuthorGuildId = " + lastTimeSlotModificationAuthorGuildId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorGuildId < 0");
-            lastTimeSlotModificationAuthorId = reader.ReadInt();
+            lastTimeSlotModificationAuthorId = reader.ReadVarInt();
             if (lastTimeSlotModificationAuthorId < 0)
                 throw new Exception("Forbidden value on lastTimeSlotModificationAuthorId = " + lastTimeSlotModificationAuthorId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorId < 0");
             lastTimeSlotModificationAuthorName = reader.ReadUTF();
@@ -76,15 +76,11 @@ namespace Stump.DofusProtocol.Types
             var modulesItemIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 modulesItemIds_[i] = reader.ReadInt();
+                 modulesItemIds_[i] = reader.ReadVarInt();
             }
             modulesItemIds = modulesItemIds_;
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(lastTimeSlotModificationAuthorName) + sizeof(short) + modulesItemIds.Sum(x => sizeof(int));
-        }
         
     }
     

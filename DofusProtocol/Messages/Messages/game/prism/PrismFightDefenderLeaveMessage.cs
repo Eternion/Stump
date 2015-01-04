@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:57
+// Generated on 01/04/2015 11:54:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,27 +35,22 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(subAreaId);
-            writer.WriteShort(fightId);
-            writer.WriteInt(fighterToRemoveId);
+            writer.WriteVarShort(subAreaId);
+            writer.WriteVarShort(fightId);
+            writer.WriteVarInt(fighterToRemoveId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            fightId = reader.ReadShort();
+            fightId = reader.ReadVarShort();
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
-            fighterToRemoveId = reader.ReadInt();
+            fighterToRemoveId = reader.ReadVarInt();
             if (fighterToRemoveId < 0)
                 throw new Exception("Forbidden value on fighterToRemoveId = " + fighterToRemoveId + ", it doesn't respect the following condition : fighterToRemoveId < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + sizeof(int);
         }
         
     }

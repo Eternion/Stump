@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:37
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(year);
+            writer.WriteVarShort(year);
             writer.WriteSByte(month);
             writer.WriteSByte(day);
             writer.WriteSByte(hour);
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            year = reader.ReadShort();
+            year = reader.ReadVarShort();
             if (year < 0)
                 throw new Exception("Forbidden value on year = " + year + ", it doesn't respect the following condition : year < 0");
             month = reader.ReadSByte();
@@ -67,10 +67,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on minute = " + minute + ", it doesn't respect the following condition : minute < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte) + sizeof(sbyte);
-        }
         
     }
     

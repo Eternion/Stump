@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:38
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,10 +44,6 @@ namespace Stump.DofusProtocol.Types
             accountName = reader.ReadUTF();
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(accountName);
-        }
         
     }
     

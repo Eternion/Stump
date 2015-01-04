@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:24
+// Generated on 01/04/2015 11:54:28
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in ids)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  ids_count++;
             }
             var ids_after = writer.Position;
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in avgPrices)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  avgPrices_count++;
             }
             var avgPrices_after = writer.Position;
@@ -67,21 +67,16 @@ namespace Stump.DofusProtocol.Messages
             var ids_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 ids_[i] = reader.ReadShort();
+                 ids_[i] = reader.ReadVarShort();
             }
             ids = ids_;
             limit = reader.ReadUShort();
             var avgPrices_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 avgPrices_[i] = reader.ReadInt();
+                 avgPrices_[i] = reader.ReadVarInt();
             }
             avgPrices = avgPrices_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + ids.Sum(x => sizeof(short)) + sizeof(short) + avgPrices.Sum(x => sizeof(int));
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:43
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,7 +99,7 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 3, isFecondationReady);
             writer.WriteByte(flag1);
             writer.WriteDouble(id);
-            writer.WriteInt(model);
+            writer.WriteVarInt(model);
             var ancestor_before = writer.Position;
             var ancestor_count = 0;
             writer.WriteUShort(0);
@@ -128,27 +128,27 @@ namespace Stump.DofusProtocol.Types
 
             writer.WriteUTF(name);
             writer.WriteInt(ownerId);
-            writer.WriteLong(experience);
-            writer.WriteLong(experienceForLevel);
+            writer.WriteVarLong(experience);
+            writer.WriteVarLong(experienceForLevel);
             writer.WriteDouble(experienceForNextLevel);
             writer.WriteSByte(level);
-            writer.WriteInt(maxPods);
-            writer.WriteInt(stamina);
-            writer.WriteInt(staminaMax);
-            writer.WriteInt(maturity);
-            writer.WriteInt(maturityForAdult);
-            writer.WriteInt(energy);
-            writer.WriteInt(energyMax);
+            writer.WriteVarInt(maxPods);
+            writer.WriteVarInt(stamina);
+            writer.WriteVarInt(staminaMax);
+            writer.WriteVarInt(maturity);
+            writer.WriteVarInt(maturityForAdult);
+            writer.WriteVarInt(energy);
+            writer.WriteVarInt(energyMax);
             writer.WriteInt(serenity);
             writer.WriteInt(aggressivityMax);
-            writer.WriteInt(serenityMax);
-            writer.WriteInt(love);
-            writer.WriteInt(loveMax);
+            writer.WriteVarInt(serenityMax);
+            writer.WriteVarInt(love);
+            writer.WriteVarInt(loveMax);
             writer.WriteInt(fecondationTime);
             writer.WriteInt(boostLimiter);
             writer.WriteDouble(boostMax);
             writer.WriteInt(reproductionCount);
-            writer.WriteInt(reproductionCountMax);
+            writer.WriteVarInt(reproductionCountMax);
             var effectList_before = writer.Position;
             var effectList_count = 0;
             writer.WriteUShort(0);
@@ -174,7 +174,7 @@ namespace Stump.DofusProtocol.Types
             id = reader.ReadDouble();
             if (id < -9.007199254740992E15 || id > 9.007199254740992E15)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9.007199254740992E15 || id > 9.007199254740992E15");
-            model = reader.ReadInt();
+            model = reader.ReadVarInt();
             if (model < 0)
                 throw new Exception("Forbidden value on model = " + model + ", it doesn't respect the following condition : model < 0");
             var limit = reader.ReadUShort();
@@ -195,10 +195,10 @@ namespace Stump.DofusProtocol.Types
             ownerId = reader.ReadInt();
             if (ownerId < 0)
                 throw new Exception("Forbidden value on ownerId = " + ownerId + ", it doesn't respect the following condition : ownerId < 0");
-            experience = reader.ReadLong();
+            experience = reader.ReadVarLong();
             if (experience < 0 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
-            experienceForLevel = reader.ReadLong();
+            experienceForLevel = reader.ReadVarLong();
             if (experienceForLevel < 0 || experienceForLevel > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceForLevel = " + experienceForLevel + ", it doesn't respect the following condition : experienceForLevel < 0 || experienceForLevel > 9.007199254740992E15");
             experienceForNextLevel = reader.ReadDouble();
@@ -207,36 +207,36 @@ namespace Stump.DofusProtocol.Types
             level = reader.ReadSByte();
             if (level < 0)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
-            maxPods = reader.ReadInt();
+            maxPods = reader.ReadVarInt();
             if (maxPods < 0)
                 throw new Exception("Forbidden value on maxPods = " + maxPods + ", it doesn't respect the following condition : maxPods < 0");
-            stamina = reader.ReadInt();
+            stamina = reader.ReadVarInt();
             if (stamina < 0)
                 throw new Exception("Forbidden value on stamina = " + stamina + ", it doesn't respect the following condition : stamina < 0");
-            staminaMax = reader.ReadInt();
+            staminaMax = reader.ReadVarInt();
             if (staminaMax < 0)
                 throw new Exception("Forbidden value on staminaMax = " + staminaMax + ", it doesn't respect the following condition : staminaMax < 0");
-            maturity = reader.ReadInt();
+            maturity = reader.ReadVarInt();
             if (maturity < 0)
                 throw new Exception("Forbidden value on maturity = " + maturity + ", it doesn't respect the following condition : maturity < 0");
-            maturityForAdult = reader.ReadInt();
+            maturityForAdult = reader.ReadVarInt();
             if (maturityForAdult < 0)
                 throw new Exception("Forbidden value on maturityForAdult = " + maturityForAdult + ", it doesn't respect the following condition : maturityForAdult < 0");
-            energy = reader.ReadInt();
+            energy = reader.ReadVarInt();
             if (energy < 0)
                 throw new Exception("Forbidden value on energy = " + energy + ", it doesn't respect the following condition : energy < 0");
-            energyMax = reader.ReadInt();
+            energyMax = reader.ReadVarInt();
             if (energyMax < 0)
                 throw new Exception("Forbidden value on energyMax = " + energyMax + ", it doesn't respect the following condition : energyMax < 0");
             serenity = reader.ReadInt();
             aggressivityMax = reader.ReadInt();
-            serenityMax = reader.ReadInt();
+            serenityMax = reader.ReadVarInt();
             if (serenityMax < 0)
                 throw new Exception("Forbidden value on serenityMax = " + serenityMax + ", it doesn't respect the following condition : serenityMax < 0");
-            love = reader.ReadInt();
+            love = reader.ReadVarInt();
             if (love < 0)
                 throw new Exception("Forbidden value on love = " + love + ", it doesn't respect the following condition : love < 0");
-            loveMax = reader.ReadInt();
+            loveMax = reader.ReadVarInt();
             if (loveMax < 0)
                 throw new Exception("Forbidden value on loveMax = " + loveMax + ", it doesn't respect the following condition : loveMax < 0");
             fecondationTime = reader.ReadInt();
@@ -247,7 +247,7 @@ namespace Stump.DofusProtocol.Types
             if (boostMax < -9.007199254740992E15 || boostMax > 9.007199254740992E15)
                 throw new Exception("Forbidden value on boostMax = " + boostMax + ", it doesn't respect the following condition : boostMax < -9.007199254740992E15 || boostMax > 9.007199254740992E15");
             reproductionCount = reader.ReadInt();
-            reproductionCountMax = reader.ReadInt();
+            reproductionCountMax = reader.ReadVarInt();
             if (reproductionCountMax < 0)
                 throw new Exception("Forbidden value on reproductionCountMax = " + reproductionCountMax + ", it doesn't respect the following condition : reproductionCountMax < 0");
             limit = reader.ReadUShort();
@@ -260,10 +260,6 @@ namespace Stump.DofusProtocol.Types
             effectList = effectList_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(bool) + 0 + 0 + 0 + sizeof(double) + sizeof(int) + sizeof(short) + ancestor.Sum(x => sizeof(int)) + sizeof(short) + behaviors.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(int) + sizeof(long) + sizeof(long) + sizeof(double) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(double) + sizeof(int) + sizeof(int) + sizeof(short) + effectList.Sum(x => x.GetSerializationSize());
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:38
+// Generated on 01/04/2015 11:54:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(spellId);
+            writer.WriteVarShort(spellId);
             writer.WriteSByte(spellLevel);
             var portalsIds_before = writer.Position;
             var portalsIds_count = 0;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            spellId = reader.ReadShort();
+            spellId = reader.ReadVarShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
             spellLevel = reader.ReadSByte();
@@ -70,11 +70,6 @@ namespace Stump.DofusProtocol.Messages
                  portalsIds_[i] = reader.ReadShort();
             }
             portalsIds = portalsIds_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(sbyte) + sizeof(short) + portalsIds.Sum(x => sizeof(short));
         }
         
     }

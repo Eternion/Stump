@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:45
+// Generated on 01/04/2015 11:54:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in cellId)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  cellId_count++;
             }
             var cellId_after = writer.Position;
@@ -52,14 +52,9 @@ namespace Stump.DofusProtocol.Messages
             var cellId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 cellId_[i] = reader.ReadShort();
+                 cellId_[i] = reader.ReadVarShort();
             }
             cellId = cellId_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + cellId.Sum(x => sizeof(short));
         }
         
     }

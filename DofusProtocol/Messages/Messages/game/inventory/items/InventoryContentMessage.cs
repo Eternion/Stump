@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:45
+// Generated on 01/04/2015 11:54:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)objects_count);
             writer.Seek((int)objects_after);
 
-            writer.WriteInt(kamas);
+            writer.WriteVarInt(kamas);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -59,14 +59,9 @@ namespace Stump.DofusProtocol.Messages
                  objects_[i].Deserialize(reader);
             }
             objects = objects_;
-            kamas = reader.ReadInt();
+            kamas = reader.ReadVarInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + objects.Sum(x => x.GetSerializationSize()) + sizeof(int);
         }
         
     }

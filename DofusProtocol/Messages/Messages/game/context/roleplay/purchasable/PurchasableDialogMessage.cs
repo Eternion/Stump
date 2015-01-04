@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:58
+// Generated on 01/04/2015 11:54:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,24 +36,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteBoolean(buyOrSell);
-            writer.WriteInt(purchasableId);
-            writer.WriteInt(price);
+            writer.WriteVarInt(purchasableId);
+            writer.WriteVarInt(price);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             buyOrSell = reader.ReadBoolean();
-            purchasableId = reader.ReadInt();
+            purchasableId = reader.ReadVarInt();
             if (purchasableId < 0)
                 throw new Exception("Forbidden value on purchasableId = " + purchasableId + ", it doesn't respect the following condition : purchasableId < 0");
-            price = reader.ReadInt();
+            price = reader.ReadVarInt();
             if (price < 0)
                 throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(bool) + sizeof(int) + sizeof(int);
         }
         
     }

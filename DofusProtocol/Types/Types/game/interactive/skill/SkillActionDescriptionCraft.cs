@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:42
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,10 +49,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on probability = " + probability + ", it doesn't respect the following condition : probability < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(sbyte);
-        }
         
     }
     

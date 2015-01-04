@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:00
+// Generated on 01/04/2015 11:54:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +39,6 @@ namespace Stump.DofusProtocol.Messages
             regenRate = reader.ReadByte();
             if (regenRate < 0 || regenRate > 255)
                 throw new Exception("Forbidden value on regenRate = " + regenRate + ", it doesn't respect the following condition : regenRate < 0 || regenRate > 255");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(byte);
         }
         
     }

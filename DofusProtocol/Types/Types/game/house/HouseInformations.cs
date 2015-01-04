@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:40
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Types
             writer.Seek((int)doorsOnMap_after);
 
             writer.WriteUTF(ownerName);
-            writer.WriteShort(modelId);
+            writer.WriteVarShort(modelId);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -78,15 +78,11 @@ namespace Stump.DofusProtocol.Types
             }
             doorsOnMap = doorsOnMap_;
             ownerName = reader.ReadUTF();
-            modelId = reader.ReadShort();
+            modelId = reader.ReadVarShort();
             if (modelId < 0)
                 throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(bool) + 0 + sizeof(int) + sizeof(short) + doorsOnMap.Sum(x => sizeof(int)) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short);
-        }
         
     }
     

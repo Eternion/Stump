@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:13
+// Generated on 01/04/2015 11:54:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,18 +51,18 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteSByte(maxTaxCollectorsCount);
             writer.WriteSByte(taxCollectorsCount);
-            writer.WriteShort(taxCollectorLifePoints);
-            writer.WriteShort(taxCollectorDamagesBonuses);
-            writer.WriteShort(taxCollectorPods);
-            writer.WriteShort(taxCollectorProspecting);
-            writer.WriteShort(taxCollectorWisdom);
-            writer.WriteShort(boostPoints);
+            writer.WriteVarShort(taxCollectorLifePoints);
+            writer.WriteVarShort(taxCollectorDamagesBonuses);
+            writer.WriteVarShort(taxCollectorPods);
+            writer.WriteVarShort(taxCollectorProspecting);
+            writer.WriteVarShort(taxCollectorWisdom);
+            writer.WriteVarShort(boostPoints);
             var spellId_before = writer.Position;
             var spellId_count = 0;
             writer.WriteUShort(0);
             foreach (var entry in spellId)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  spellId_count++;
             }
             var spellId_after = writer.Position;
@@ -93,29 +93,29 @@ namespace Stump.DofusProtocol.Messages
             taxCollectorsCount = reader.ReadSByte();
             if (taxCollectorsCount < 0)
                 throw new Exception("Forbidden value on taxCollectorsCount = " + taxCollectorsCount + ", it doesn't respect the following condition : taxCollectorsCount < 0");
-            taxCollectorLifePoints = reader.ReadShort();
+            taxCollectorLifePoints = reader.ReadVarShort();
             if (taxCollectorLifePoints < 0)
                 throw new Exception("Forbidden value on taxCollectorLifePoints = " + taxCollectorLifePoints + ", it doesn't respect the following condition : taxCollectorLifePoints < 0");
-            taxCollectorDamagesBonuses = reader.ReadShort();
+            taxCollectorDamagesBonuses = reader.ReadVarShort();
             if (taxCollectorDamagesBonuses < 0)
                 throw new Exception("Forbidden value on taxCollectorDamagesBonuses = " + taxCollectorDamagesBonuses + ", it doesn't respect the following condition : taxCollectorDamagesBonuses < 0");
-            taxCollectorPods = reader.ReadShort();
+            taxCollectorPods = reader.ReadVarShort();
             if (taxCollectorPods < 0)
                 throw new Exception("Forbidden value on taxCollectorPods = " + taxCollectorPods + ", it doesn't respect the following condition : taxCollectorPods < 0");
-            taxCollectorProspecting = reader.ReadShort();
+            taxCollectorProspecting = reader.ReadVarShort();
             if (taxCollectorProspecting < 0)
                 throw new Exception("Forbidden value on taxCollectorProspecting = " + taxCollectorProspecting + ", it doesn't respect the following condition : taxCollectorProspecting < 0");
-            taxCollectorWisdom = reader.ReadShort();
+            taxCollectorWisdom = reader.ReadVarShort();
             if (taxCollectorWisdom < 0)
                 throw new Exception("Forbidden value on taxCollectorWisdom = " + taxCollectorWisdom + ", it doesn't respect the following condition : taxCollectorWisdom < 0");
-            boostPoints = reader.ReadShort();
+            boostPoints = reader.ReadVarShort();
             if (boostPoints < 0)
                 throw new Exception("Forbidden value on boostPoints = " + boostPoints + ", it doesn't respect the following condition : boostPoints < 0");
             var limit = reader.ReadUShort();
             var spellId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 spellId_[i] = reader.ReadShort();
+                 spellId_[i] = reader.ReadVarShort();
             }
             spellId = spellId_;
             limit = reader.ReadUShort();
@@ -125,11 +125,6 @@ namespace Stump.DofusProtocol.Messages
                  spellLevel_[i] = reader.ReadSByte();
             }
             spellLevel = spellLevel_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(sbyte) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + spellId.Sum(x => sizeof(short)) + sizeof(short) + spellLevel.Sum(x => sizeof(sbyte));
         }
         
     }

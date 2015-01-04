@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:39
+// Generated on 01/04/2015 11:54:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteSByte(nbCase);
-            writer.WriteInt(skillId);
+            writer.WriteVarInt(skillId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -44,14 +44,9 @@ namespace Stump.DofusProtocol.Messages
             nbCase = reader.ReadSByte();
             if (nbCase < 0)
                 throw new Exception("Forbidden value on nbCase = " + nbCase + ", it doesn't respect the following condition : nbCase < 0");
-            skillId = reader.ReadInt();
+            skillId = reader.ReadVarInt();
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int);
         }
         
     }

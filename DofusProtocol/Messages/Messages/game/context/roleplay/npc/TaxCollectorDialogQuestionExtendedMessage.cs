@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:44
+// Generated on 01/04/2015 11:54:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,50 +49,45 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(maxPods);
-            writer.WriteShort(prospecting);
-            writer.WriteShort(wisdom);
+            writer.WriteVarShort(maxPods);
+            writer.WriteVarShort(prospecting);
+            writer.WriteVarShort(wisdom);
             writer.WriteSByte(taxCollectorsCount);
             writer.WriteInt(taxCollectorAttack);
-            writer.WriteInt(kamas);
-            writer.WriteLong(experience);
-            writer.WriteInt(pods);
-            writer.WriteInt(itemsValue);
+            writer.WriteVarInt(kamas);
+            writer.WriteVarLong(experience);
+            writer.WriteVarInt(pods);
+            writer.WriteVarInt(itemsValue);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            maxPods = reader.ReadShort();
+            maxPods = reader.ReadVarShort();
             if (maxPods < 0)
                 throw new Exception("Forbidden value on maxPods = " + maxPods + ", it doesn't respect the following condition : maxPods < 0");
-            prospecting = reader.ReadShort();
+            prospecting = reader.ReadVarShort();
             if (prospecting < 0)
                 throw new Exception("Forbidden value on prospecting = " + prospecting + ", it doesn't respect the following condition : prospecting < 0");
-            wisdom = reader.ReadShort();
+            wisdom = reader.ReadVarShort();
             if (wisdom < 0)
                 throw new Exception("Forbidden value on wisdom = " + wisdom + ", it doesn't respect the following condition : wisdom < 0");
             taxCollectorsCount = reader.ReadSByte();
             if (taxCollectorsCount < 0)
                 throw new Exception("Forbidden value on taxCollectorsCount = " + taxCollectorsCount + ", it doesn't respect the following condition : taxCollectorsCount < 0");
             taxCollectorAttack = reader.ReadInt();
-            kamas = reader.ReadInt();
+            kamas = reader.ReadVarInt();
             if (kamas < 0)
                 throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
-            experience = reader.ReadLong();
+            experience = reader.ReadVarLong();
             if (experience < 0 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
-            pods = reader.ReadInt();
+            pods = reader.ReadVarInt();
             if (pods < 0)
                 throw new Exception("Forbidden value on pods = " + pods + ", it doesn't respect the following condition : pods < 0");
-            itemsValue = reader.ReadInt();
+            itemsValue = reader.ReadVarInt();
             if (itemsValue < 0)
                 throw new Exception("Forbidden value on itemsValue = " + itemsValue + ", it doesn't respect the following condition : itemsValue < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(long) + sizeof(int) + sizeof(int);
         }
         
     }

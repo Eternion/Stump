@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:39
+// Generated on 01/04/2015 11:54:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in jobs)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  jobs_count++;
             }
             var jobs_after = writer.Position;
@@ -52,14 +52,9 @@ namespace Stump.DofusProtocol.Messages
             var jobs_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 jobs_[i] = reader.ReadInt();
+                 jobs_[i] = reader.ReadVarInt();
             }
             jobs = jobs_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + jobs.Sum(x => sizeof(int));
         }
         
     }

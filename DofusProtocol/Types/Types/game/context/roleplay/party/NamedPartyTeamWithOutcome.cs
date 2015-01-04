@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:31
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,22 +33,18 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             team.Serialize(writer);
-            writer.WriteShort(outcome);
+            writer.WriteVarShort(outcome);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
             team = new Types.NamedPartyTeam();
             team.Deserialize(reader);
-            outcome = reader.ReadShort();
+            outcome = reader.ReadVarShort();
             if (outcome < 0)
                 throw new Exception("Forbidden value on outcome = " + outcome + ", it doesn't respect the following condition : outcome < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return team.GetSerializationSize() + sizeof(short);
-        }
         
     }
     

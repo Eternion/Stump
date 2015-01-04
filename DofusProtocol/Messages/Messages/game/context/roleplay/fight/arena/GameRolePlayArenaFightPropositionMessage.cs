@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:33
+// Generated on 01/04/2015 11:54:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in alliesId)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  alliesId_count++;
             }
             var alliesId_after = writer.Position;
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)alliesId_count);
             writer.Seek((int)alliesId_after);
 
-            writer.WriteShort(duration);
+            writer.WriteVarShort(duration);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -61,17 +61,12 @@ namespace Stump.DofusProtocol.Messages
             var alliesId_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 alliesId_[i] = reader.ReadInt();
+                 alliesId_[i] = reader.ReadVarInt();
             }
             alliesId = alliesId_;
-            duration = reader.ReadShort();
+            duration = reader.ReadVarShort();
             if (duration < 0)
                 throw new Exception("Forbidden value on duration = " + duration + ", it doesn't respect the following condition : duration < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + alliesId.Sum(x => sizeof(int)) + sizeof(short);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:32
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,25 +34,21 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(curCompletion);
-            writer.WriteShort(maxCompletion);
+            writer.WriteVarShort(curCompletion);
+            writer.WriteVarShort(maxCompletion);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            curCompletion = reader.ReadShort();
+            curCompletion = reader.ReadVarShort();
             if (curCompletion < 0)
                 throw new Exception("Forbidden value on curCompletion = " + curCompletion + ", it doesn't respect the following condition : curCompletion < 0");
-            maxCompletion = reader.ReadShort();
+            maxCompletion = reader.ReadVarShort();
             if (maxCompletion < 0)
                 throw new Exception("Forbidden value on maxCompletion = " + maxCompletion + ", it doesn't respect the following condition : maxCompletion < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short);
-        }
         
     }
     

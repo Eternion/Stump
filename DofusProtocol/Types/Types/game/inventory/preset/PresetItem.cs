@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:42
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +35,8 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteByte(position);
-            writer.WriteShort(objGid);
-            writer.WriteInt(objUid);
+            writer.WriteVarShort(objGid);
+            writer.WriteVarInt(objUid);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -44,18 +44,14 @@ namespace Stump.DofusProtocol.Types
             position = reader.ReadByte();
             if (position < 0 || position > 255)
                 throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 0 || position > 255");
-            objGid = reader.ReadShort();
+            objGid = reader.ReadVarShort();
             if (objGid < 0)
                 throw new Exception("Forbidden value on objGid = " + objGid + ", it doesn't respect the following condition : objGid < 0");
-            objUid = reader.ReadInt();
+            objUid = reader.ReadVarInt();
             if (objUid < 0)
                 throw new Exception("Forbidden value on objUid = " + objUid + ", it doesn't respect the following condition : objUid < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(byte) + sizeof(short) + sizeof(int);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:51
+// Generated on 01/04/2015 11:54:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,13 +35,13 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(setId);
+            writer.WriteVarShort(setId);
             var setObjects_before = writer.Position;
             var setObjects_count = 0;
             writer.WriteUShort(0);
             foreach (var entry in setObjects)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  setObjects_count++;
             }
             var setObjects_after = writer.Position;
@@ -67,14 +67,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            setId = reader.ReadShort();
+            setId = reader.ReadVarShort();
             if (setId < 0)
                 throw new Exception("Forbidden value on setId = " + setId + ", it doesn't respect the following condition : setId < 0");
             var limit = reader.ReadUShort();
             var setObjects_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 setObjects_[i] = reader.ReadShort();
+                 setObjects_[i] = reader.ReadVarShort();
             }
             setObjects = setObjects_;
             limit = reader.ReadUShort();
@@ -85,11 +85,6 @@ namespace Stump.DofusProtocol.Messages
                  setEffects_[i].Deserialize(reader);
             }
             setEffects = setEffects_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + setObjects.Sum(x => sizeof(short)) + sizeof(short) + setEffects.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

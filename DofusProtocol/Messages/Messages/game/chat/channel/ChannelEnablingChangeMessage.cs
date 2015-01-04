@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:05
+// Generated on 01/04/2015 11:54:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,11 +43,6 @@ namespace Stump.DofusProtocol.Messages
             if (channel < 0)
                 throw new Exception("Forbidden value on channel = " + channel + ", it doesn't respect the following condition : channel < 0");
             enable = reader.ReadBoolean();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(bool);
         }
         
     }

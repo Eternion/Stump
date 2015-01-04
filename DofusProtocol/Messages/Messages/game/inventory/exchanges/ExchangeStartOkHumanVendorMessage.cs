@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:39
+// Generated on 01/04/2015 11:54:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(sellerId);
+            writer.WriteVarInt(sellerId);
             var objectsInfos_before = writer.Position;
             var objectsInfos_count = 0;
             writer.WriteUShort(0);
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            sellerId = reader.ReadInt();
+            sellerId = reader.ReadVarInt();
             if (sellerId < 0)
                 throw new Exception("Forbidden value on sellerId = " + sellerId + ", it doesn't respect the following condition : sellerId < 0");
             var limit = reader.ReadUShort();
@@ -62,11 +62,6 @@ namespace Stump.DofusProtocol.Messages
                  objectsInfos_[i].Deserialize(reader);
             }
             objectsInfos = objectsInfos_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + objectsInfos.Sum(x => x.GetSerializationSize());
         }
         
     }

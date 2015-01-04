@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:55
+// Generated on 01/04/2015 11:54:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,11 +49,6 @@ namespace Stump.DofusProtocol.Messages
             if (symbolId < 0)
                 throw new Exception("Forbidden value on symbolId = " + symbolId + ", it doesn't respect the following condition : symbolId < 0");
             saveEquipment = reader.ReadBoolean();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(sbyte) + sizeof(bool);
         }
         
     }

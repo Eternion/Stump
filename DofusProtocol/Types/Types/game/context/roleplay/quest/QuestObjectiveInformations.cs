@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:32
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(objectiveId);
+            writer.WriteVarShort(objectiveId);
             writer.WriteBoolean(objectiveStatus);
             var dialogParams_before = writer.Position;
             var dialogParams_count = 0;
@@ -53,7 +53,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            objectiveId = reader.ReadShort();
+            objectiveId = reader.ReadVarShort();
             if (objectiveId < 0)
                 throw new Exception("Forbidden value on objectiveId = " + objectiveId + ", it doesn't respect the following condition : objectiveId < 0");
             objectiveStatus = reader.ReadBoolean();
@@ -66,10 +66,6 @@ namespace Stump.DofusProtocol.Types
             dialogParams = dialogParams_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(bool) + sizeof(short) + dialogParams.Sum(x => sizeof(short) + Encoding.UTF8.GetByteCount(x));
-        }
         
     }
     

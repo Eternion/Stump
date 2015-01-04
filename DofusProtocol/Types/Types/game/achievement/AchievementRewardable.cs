@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:13
+// Generated on 01/04/2015 11:54:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,13 +32,13 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(id);
+            writer.WriteVarShort(id);
             writer.WriteByte(finishedlevel);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            id = reader.ReadShort();
+            id = reader.ReadVarShort();
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
             finishedlevel = reader.ReadByte();
@@ -46,10 +46,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on finishedlevel = " + finishedlevel + ", it doesn't respect the following condition : finishedlevel < 0 || finishedlevel > 200");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(byte);
-        }
         
     }
     

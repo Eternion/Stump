@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:58
+// Generated on 01/04/2015 11:54:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in finishedQuestsIds)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  finishedQuestsIds_count++;
             }
             var finishedQuestsIds_after = writer.Position;
@@ -53,7 +53,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in finishedQuestsCounts)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  finishedQuestsCounts_count++;
             }
             var finishedQuestsCounts_after = writer.Position;
@@ -83,14 +83,14 @@ namespace Stump.DofusProtocol.Messages
             var finishedQuestsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 finishedQuestsIds_[i] = reader.ReadShort();
+                 finishedQuestsIds_[i] = reader.ReadVarShort();
             }
             finishedQuestsIds = finishedQuestsIds_;
             limit = reader.ReadUShort();
             var finishedQuestsCounts_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 finishedQuestsCounts_[i] = reader.ReadShort();
+                 finishedQuestsCounts_[i] = reader.ReadVarShort();
             }
             finishedQuestsCounts = finishedQuestsCounts_;
             limit = reader.ReadUShort();
@@ -101,11 +101,6 @@ namespace Stump.DofusProtocol.Messages
                  activeQuests_[i].Deserialize(reader);
             }
             activeQuests = activeQuests_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + finishedQuestsIds.Sum(x => sizeof(short)) + sizeof(short) + finishedQuestsCounts.Sum(x => sizeof(short)) + sizeof(short) + activeQuests.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

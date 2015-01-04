@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:23
+// Generated on 01/04/2015 11:54:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,10 +56,6 @@ namespace Stump.DofusProtocol.Types
             sex = reader.ReadBoolean();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(byte) + alignmentInfos.GetSerializationSize() + sizeof(sbyte) + sizeof(bool);
-        }
         
     }
     

@@ -363,6 +363,15 @@ string GetRealType(string rawType)
     if (rawType.StartsWith("flag"))
         return "bool";
 
+    if (rawType.StartsWith("varuh"))
+    {
+        return rawType.Remove(0, 5);
+    }
+    else if (rawType.StartsWith("var"))
+    {
+        return rawType.Remove(0, 3);
+    }
+
     switch (rawType)
     {
         case "utf":
@@ -383,6 +392,19 @@ string GetIOMethodTypeName(string rawType)
 
     if (rawType == "utf")
         return "UTF";
+    if (rawType.StartsWith("var"))
+    {
+        if (rawType.StartsWith("varuh"))
+        {
+            rawType = rawType.Remove(3, 2);
+            letters = rawType.ToCharArray();
+        }
+        
+        letters[0] = char.ToUpper(letters[0]);
+        letters[3] = char.ToUpper(letters[3]);
+
+        return new string(letters);
+    }
     if (rawType.StartsWith("u") || rawType == "sbyte")
     {
         letters[0] = char.ToUpper(letters[0]);

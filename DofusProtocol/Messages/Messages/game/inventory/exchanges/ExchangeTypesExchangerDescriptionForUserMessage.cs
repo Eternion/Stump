@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:40
+// Generated on 01/04/2015 11:54:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in typeDescription)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  typeDescription_count++;
             }
             var typeDescription_after = writer.Position;
@@ -52,14 +52,9 @@ namespace Stump.DofusProtocol.Messages
             var typeDescription_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 typeDescription_[i] = reader.ReadInt();
+                 typeDescription_[i] = reader.ReadVarInt();
             }
             typeDescription = typeDescription_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + typeDescription.Sum(x => sizeof(int));
         }
         
     }
