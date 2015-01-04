@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:24
+// Generated on 01/04/2015 11:54:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,21 +32,17 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(initiative);
+            writer.WriteVarInt(initiative);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            initiative = reader.ReadInt();
+            initiative = reader.ReadVarInt();
             if (initiative < 0)
                 throw new Exception("Forbidden value on initiative = " + initiative + ", it doesn't respect the following condition : initiative < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int);
-        }
         
     }
     

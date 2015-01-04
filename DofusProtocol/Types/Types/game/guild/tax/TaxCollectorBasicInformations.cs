@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:39
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,20 +40,20 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(firstNameId);
-            writer.WriteShort(lastNameId);
+            writer.WriteVarShort(firstNameId);
+            writer.WriteVarShort(lastNameId);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            firstNameId = reader.ReadShort();
+            firstNameId = reader.ReadVarShort();
             if (firstNameId < 0)
                 throw new Exception("Forbidden value on firstNameId = " + firstNameId + ", it doesn't respect the following condition : firstNameId < 0");
-            lastNameId = reader.ReadShort();
+            lastNameId = reader.ReadVarShort();
             if (lastNameId < 0)
                 throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
             worldX = reader.ReadShort();
@@ -63,15 +63,11 @@ namespace Stump.DofusProtocol.Types
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
             mapId = reader.ReadInt();
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short);
-        }
         
     }
     

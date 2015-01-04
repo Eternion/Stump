@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:23
+// Generated on 01/04/2015 11:54:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in previousPositions)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  previousPositions_count++;
             }
             var previousPositions_after = writer.Position;
@@ -76,15 +76,11 @@ namespace Stump.DofusProtocol.Types
             var previousPositions_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 previousPositions_[i] = reader.ReadShort();
+                 previousPositions_[i] = reader.ReadVarShort();
             }
             previousPositions = previousPositions_;
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool) + sizeof(short) + stats.GetSerializationSize() + sizeof(short) + previousPositions.Sum(x => sizeof(short));
-        }
         
     }
     

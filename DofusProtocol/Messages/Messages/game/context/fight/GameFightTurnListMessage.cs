@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:18
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,11 +77,6 @@ namespace Stump.DofusProtocol.Messages
                  deadsIds_[i] = reader.ReadInt();
             }
             deadsIds = deadsIds_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + ids.Sum(x => sizeof(int)) + sizeof(short) + deadsIds.Sum(x => sizeof(int));
         }
         
     }

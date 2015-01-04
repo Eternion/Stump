@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:25
+// Generated on 01/04/2015 11:54:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,23 +33,19 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(allianceId);
+            writer.WriteVarInt(allianceId);
             writer.WriteUTF(allianceTag);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            allianceId = reader.ReadInt();
+            allianceId = reader.ReadVarInt();
             if (allianceId < 0)
                 throw new Exception("Forbidden value on allianceId = " + allianceId + ", it doesn't respect the following condition : allianceId < 0");
             allianceTag = reader.ReadUTF();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(allianceTag);
-        }
         
     }
     

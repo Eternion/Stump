@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:14
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,11 +55,6 @@ namespace Stump.DofusProtocol.Messages
             if (option < 0)
                 throw new Exception("Forbidden value on option = " + option + ", it doesn't respect the following condition : option < 0");
             state = reader.ReadBoolean();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(bool);
         }
         
     }

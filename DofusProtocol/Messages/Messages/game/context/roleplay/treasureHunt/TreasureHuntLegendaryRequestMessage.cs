@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:03
+// Generated on 01/04/2015 11:54:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,19 +31,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(legendaryId);
+            writer.WriteVarShort(legendaryId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            legendaryId = reader.ReadShort();
+            legendaryId = reader.ReadVarShort();
             if (legendaryId < 0)
                 throw new Exception("Forbidden value on legendaryId = " + legendaryId + ", it doesn't respect the following condition : legendaryId < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short);
         }
         
     }

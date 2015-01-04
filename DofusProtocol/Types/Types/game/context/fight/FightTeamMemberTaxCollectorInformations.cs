@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:22
+// Generated on 01/04/2015 11:54:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,37 +40,33 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(firstNameId);
-            writer.WriteShort(lastNameId);
+            writer.WriteVarShort(firstNameId);
+            writer.WriteVarShort(lastNameId);
             writer.WriteByte(level);
-            writer.WriteInt(guildId);
-            writer.WriteInt(uid);
+            writer.WriteVarInt(guildId);
+            writer.WriteVarInt(uid);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            firstNameId = reader.ReadShort();
+            firstNameId = reader.ReadVarShort();
             if (firstNameId < 0)
                 throw new Exception("Forbidden value on firstNameId = " + firstNameId + ", it doesn't respect the following condition : firstNameId < 0");
-            lastNameId = reader.ReadShort();
+            lastNameId = reader.ReadVarShort();
             if (lastNameId < 0)
                 throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
             level = reader.ReadByte();
             if (level < 1 || level > 200)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
-            guildId = reader.ReadInt();
+            guildId = reader.ReadVarInt();
             if (guildId < 0)
                 throw new Exception("Forbidden value on guildId = " + guildId + ", it doesn't respect the following condition : guildId < 0");
-            uid = reader.ReadInt();
+            uid = reader.ReadVarInt();
             if (uid < 0)
                 throw new Exception("Forbidden value on uid = " + uid + ", it doesn't respect the following condition : uid < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(byte) + sizeof(int) + sizeof(int);
-        }
         
     }
     

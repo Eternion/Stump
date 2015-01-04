@@ -11,31 +11,38 @@ namespace UnitTest
         public void TestVarInt()
         {
             var writer = new BigEndianWriter();
+
             writer.WriteVarInt(128);
             writer.WriteVarInt(255);
             writer.WriteVarInt(-128);
             writer.WriteVarInt(int.MaxValue);
             writer.WriteVarInt(int.MinValue);
+
             writer.WriteVarShort(255);
             writer.WriteVarShort(short.MaxValue);
             writer.WriteVarShort(short.MinValue);
+
+            writer.WriteVarLong(0x7FFFFFFF);
+            writer.WriteVarLong(0xFFFFFFFF);
+            writer.WriteVarLong(0x80000001);
+            writer.WriteVarLong(long.MaxValue);
+            writer.WriteVarLong(long.MinValue);
             var reader = new BigEndianReader(writer.Data);
-            var int1 = reader.ReadVarInt();
-            Assert.AreEqual(int1, 128);
-            var int2 = reader.ReadVarInt();
-            Assert.AreEqual(int2, 255);
-            var int3 = reader.ReadVarInt();
-            Assert.AreEqual(int3, -128);
-            var int4 = reader.ReadVarInt();
-            Assert.AreEqual(int4, int.MaxValue);
-            var int5 = reader.ReadVarInt();
-            Assert.AreEqual(int5, int.MinValue);
-            var short1 = reader.ReadVarShort();
-            Assert.AreEqual(short1, 255);
-            var short2 = reader.ReadVarShort();
-            Assert.AreEqual(short2, short.MaxValue);
-            var short3 = reader.ReadVarShort();
-            Assert.AreEqual(short3, short.MinValue);
+            Assert.AreEqual(128, reader.ReadVarInt());
+            Assert.AreEqual(255, reader.ReadVarInt());
+            Assert.AreEqual(-128, reader.ReadVarInt());
+            Assert.AreEqual(int.MaxValue, reader.ReadVarInt());
+            Assert.AreEqual(int.MinValue, reader.ReadVarInt());
+            Assert.AreEqual(255, reader.ReadVarShort());
+            Assert.AreEqual(short.MaxValue, reader.ReadVarShort());
+            Assert.AreEqual(short.MinValue, reader.ReadVarShort());
+            Assert.AreEqual(0x7FFFFFFFL, reader.ReadVarLong());
+            Assert.AreEqual(0xFFFFFFFFL, reader.ReadVarLong());
+            Assert.AreEqual(0x80000001L, reader.ReadVarLong());
+            Assert.AreEqual(long.MaxValue, reader.ReadVarLong());
+            var value = reader.ReadVarLong();
+            Assert.AreEqual(long.MinValue, value);
+            
         }
     }
 }

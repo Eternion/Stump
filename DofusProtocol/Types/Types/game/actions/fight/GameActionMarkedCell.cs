@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:14
+// Generated on 01/04/2015 11:54:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(cellId);
+            writer.WriteVarShort(cellId);
             writer.WriteSByte(zoneSize);
             writer.WriteInt(cellColor);
             writer.WriteSByte(cellsType);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            cellId = reader.ReadShort();
+            cellId = reader.ReadVarShort();
             if (cellId < 0 || cellId > 559)
                 throw new Exception("Forbidden value on cellId = " + cellId + ", it doesn't respect the following condition : cellId < 0 || cellId > 559");
             zoneSize = reader.ReadSByte();
@@ -52,10 +52,6 @@ namespace Stump.DofusProtocol.Types
             cellsType = reader.ReadSByte();
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(sbyte) + sizeof(int) + sizeof(sbyte);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:20
+// Generated on 01/04/2015 11:54:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,19 +31,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(experiencePercent);
+            writer.WriteVarShort(experiencePercent);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            experiencePercent = reader.ReadShort();
+            experiencePercent = reader.ReadVarShort();
             if (experiencePercent < 0)
                 throw new Exception("Forbidden value on experiencePercent = " + experiencePercent + ", it doesn't respect the following condition : experiencePercent < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short);
         }
         
     }

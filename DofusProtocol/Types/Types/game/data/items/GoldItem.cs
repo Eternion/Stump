@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:34
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,21 +31,17 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(sum);
+            writer.WriteVarInt(sum);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            sum = reader.ReadInt();
+            sum = reader.ReadVarInt();
             if (sum < 0)
                 throw new Exception("Forbidden value on sum = " + sum + ", it doesn't respect the following condition : sum < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int);
-        }
         
     }
     

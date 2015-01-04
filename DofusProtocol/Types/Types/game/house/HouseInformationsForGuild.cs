@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:40
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,12 +47,12 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(houseId);
-            writer.WriteInt(modelId);
+            writer.WriteVarInt(modelId);
             writer.WriteUTF(ownerName);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
             var skillListIds_before = writer.Position;
             var skillListIds_count = 0;
             writer.WriteUShort(0);
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort((ushort)skillListIds_count);
             writer.Seek((int)skillListIds_after);
 
-            writer.WriteInt(guildshareParams);
+            writer.WriteVarInt(guildshareParams);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -74,7 +74,7 @@ namespace Stump.DofusProtocol.Types
             houseId = reader.ReadInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
-            modelId = reader.ReadInt();
+            modelId = reader.ReadVarInt();
             if (modelId < 0)
                 throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
             ownerName = reader.ReadUTF();
@@ -85,7 +85,7 @@ namespace Stump.DofusProtocol.Types
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
             mapId = reader.ReadInt();
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             var limit = reader.ReadUShort();
@@ -95,15 +95,11 @@ namespace Stump.DofusProtocol.Types
                  skillListIds_[i] = reader.ReadInt();
             }
             skillListIds = skillListIds_;
-            guildshareParams = reader.ReadInt();
+            guildshareParams = reader.ReadVarInt();
             if (guildshareParams < 0)
                 throw new Exception("Forbidden value on guildshareParams = " + guildshareParams + ", it doesn't respect the following condition : guildshareParams < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(ownerName) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + skillListIds.Sum(x => sizeof(int)) + sizeof(int);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:36
+// Generated on 01/04/2015 11:54:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +35,8 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(pageIndex);
-            writer.WriteShort(totalPage);
+            writer.WriteVarShort(pageIndex);
+            writer.WriteVarShort(totalPage);
             var houseList_before = writer.Position;
             var houseList_count = 0;
             writer.WriteUShort(0);
@@ -54,10 +54,10 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            pageIndex = reader.ReadShort();
+            pageIndex = reader.ReadVarShort();
             if (pageIndex < 0)
                 throw new Exception("Forbidden value on pageIndex = " + pageIndex + ", it doesn't respect the following condition : pageIndex < 0");
-            totalPage = reader.ReadShort();
+            totalPage = reader.ReadVarShort();
             if (totalPage < 0)
                 throw new Exception("Forbidden value on totalPage = " + totalPage + ", it doesn't respect the following condition : totalPage < 0");
             var limit = reader.ReadUShort();
@@ -68,11 +68,6 @@ namespace Stump.DofusProtocol.Messages
                  houseList_[i].Deserialize(reader);
             }
             houseList = houseList_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + sizeof(short) + houseList.Sum(x => x.GetSerializationSize());
         }
         
     }

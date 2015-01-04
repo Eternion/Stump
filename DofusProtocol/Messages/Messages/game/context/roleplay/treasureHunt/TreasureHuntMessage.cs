@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:03
+// Generated on 01/04/2015 11:54:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,8 +62,8 @@ namespace Stump.DofusProtocol.Messages
             writer.Seek((int)knownStepsList_after);
 
             writer.WriteSByte(totalStepCount);
-            writer.WriteInt(checkPointCurrent);
-            writer.WriteInt(checkPointTotal);
+            writer.WriteVarInt(checkPointCurrent);
+            writer.WriteVarInt(checkPointTotal);
             writer.WriteInt(availableRetryCount);
             var flags_before = writer.Position;
             var flags_count = 0;
@@ -97,10 +97,10 @@ namespace Stump.DofusProtocol.Messages
             totalStepCount = reader.ReadSByte();
             if (totalStepCount < 0)
                 throw new Exception("Forbidden value on totalStepCount = " + totalStepCount + ", it doesn't respect the following condition : totalStepCount < 0");
-            checkPointCurrent = reader.ReadInt();
+            checkPointCurrent = reader.ReadVarInt();
             if (checkPointCurrent < 0)
                 throw new Exception("Forbidden value on checkPointCurrent = " + checkPointCurrent + ", it doesn't respect the following condition : checkPointCurrent < 0");
-            checkPointTotal = reader.ReadInt();
+            checkPointTotal = reader.ReadVarInt();
             if (checkPointTotal < 0)
                 throw new Exception("Forbidden value on checkPointTotal = " + checkPointTotal + ", it doesn't respect the following condition : checkPointTotal < 0");
             availableRetryCount = reader.ReadInt();
@@ -112,11 +112,6 @@ namespace Stump.DofusProtocol.Messages
                  flags_[i].Deserialize(reader);
             }
             flags = flags_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(int) + sizeof(short) + knownStepsList.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(short) + flags.Sum(x => x.GetSerializationSize());
         }
         
     }

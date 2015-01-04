@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:35
+// Generated on 01/04/2015 11:54:31
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,25 +35,20 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(initiatorId);
-            writer.WriteInt(otherId);
+            writer.WriteVarInt(initiatorId);
+            writer.WriteVarInt(otherId);
             writer.WriteSByte(role);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            initiatorId = reader.ReadInt();
+            initiatorId = reader.ReadVarInt();
             if (initiatorId < 0)
                 throw new Exception("Forbidden value on initiatorId = " + initiatorId + ", it doesn't respect the following condition : initiatorId < 0");
-            otherId = reader.ReadInt();
+            otherId = reader.ReadVarInt();
             if (otherId < 0)
                 throw new Exception("Forbidden value on otherId = " + otherId + ", it doesn't respect the following condition : otherId < 0");
             role = reader.ReadSByte();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(sbyte);
         }
         
     }

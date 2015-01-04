@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:47
+// Generated on 01/04/2015 11:54:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(dungeonId);
+            writer.WriteVarShort(dungeonId);
             var players_before = writer.Position;
             var players_count = 0;
             writer.WriteUShort(0);
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            dungeonId = reader.ReadShort();
+            dungeonId = reader.ReadVarShort();
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
             var limit = reader.ReadUShort();
@@ -62,11 +62,6 @@ namespace Stump.DofusProtocol.Messages
                  players_[i].Deserialize(reader);
             }
             players = players_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + players.Sum(x => x.GetSerializationSize());
         }
         
     }

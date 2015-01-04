@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:37
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,29 +36,25 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(diceNum);
-            writer.WriteShort(diceSide);
-            writer.WriteShort(diceConst);
+            writer.WriteVarShort(diceNum);
+            writer.WriteVarShort(diceSide);
+            writer.WriteVarShort(diceConst);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            diceNum = reader.ReadShort();
+            diceNum = reader.ReadVarShort();
             if (diceNum < 0)
                 throw new Exception("Forbidden value on diceNum = " + diceNum + ", it doesn't respect the following condition : diceNum < 0");
-            diceSide = reader.ReadShort();
+            diceSide = reader.ReadVarShort();
             if (diceSide < 0)
                 throw new Exception("Forbidden value on diceSide = " + diceSide + ", it doesn't respect the following condition : diceSide < 0");
-            diceConst = reader.ReadShort();
+            diceConst = reader.ReadVarShort();
             if (diceConst < 0)
                 throw new Exception("Forbidden value on diceConst = " + diceConst + ", it doesn't respect the following condition : diceConst < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short);
-        }
         
     }
     

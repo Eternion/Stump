@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:31
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,21 +32,17 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(rank);
+            writer.WriteVarShort(rank);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            rank = reader.ReadShort();
+            rank = reader.ReadVarShort();
             if (rank < 0 || rank > 2300)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0 || rank > 2300");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short);
-        }
         
     }
     

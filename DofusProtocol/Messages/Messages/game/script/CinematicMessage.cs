@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:59
+// Generated on 01/04/2015 11:54:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,19 +31,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(cinematicId);
+            writer.WriteVarShort(cinematicId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            cinematicId = reader.ReadShort();
+            cinematicId = reader.ReadVarShort();
             if (cinematicId < 0)
                 throw new Exception("Forbidden value on cinematicId = " + cinematicId + ", it doesn't respect the following condition : cinematicId < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short);
         }
         
     }

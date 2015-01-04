@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:45
+// Generated on 01/04/2015 11:54:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,11 +38,6 @@ namespace Stump.DofusProtocol.Messages
         {
             gold = new Types.GoldItem();
             gold.Deserialize(reader);
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return gold.GetSerializationSize();
         }
         
     }

@@ -47,7 +47,6 @@ namespace Stump.DofusProtocol.Messages
 
         public abstract void Serialize(IDataWriter writer);
         public abstract void Deserialize(IDataReader reader);
-        public abstract int GetSerializationSize();
 
         private static byte ComputeTypeLen(int param1)
         {

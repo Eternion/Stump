@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:02
+// Generated on 01/04/2015 11:54:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +39,6 @@ namespace Stump.DofusProtocol.Messages
         {
             status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
             status.Deserialize(reader);
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + status.GetSerializationSize();
         }
         
     }

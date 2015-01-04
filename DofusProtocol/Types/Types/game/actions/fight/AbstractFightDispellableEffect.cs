@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:13
+// Generated on 01/04/2015 11:54:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,18 +42,18 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(uid);
+            writer.WriteVarInt(uid);
             writer.WriteInt(targetId);
             writer.WriteShort(turnDuration);
             writer.WriteSByte(dispelable);
-            writer.WriteShort(spellId);
-            writer.WriteInt(effectId);
-            writer.WriteInt(parentBoostUid);
+            writer.WriteVarShort(spellId);
+            writer.WriteVarInt(effectId);
+            writer.WriteVarInt(parentBoostUid);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            uid = reader.ReadInt();
+            uid = reader.ReadVarInt();
             if (uid < 0)
                 throw new Exception("Forbidden value on uid = " + uid + ", it doesn't respect the following condition : uid < 0");
             targetId = reader.ReadInt();
@@ -61,21 +61,17 @@ namespace Stump.DofusProtocol.Types
             dispelable = reader.ReadSByte();
             if (dispelable < 0)
                 throw new Exception("Forbidden value on dispelable = " + dispelable + ", it doesn't respect the following condition : dispelable < 0");
-            spellId = reader.ReadShort();
+            spellId = reader.ReadVarShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
-            effectId = reader.ReadInt();
+            effectId = reader.ReadVarInt();
             if (effectId < 0)
                 throw new Exception("Forbidden value on effectId = " + effectId + ", it doesn't respect the following condition : effectId < 0");
-            parentBoostUid = reader.ReadInt();
+            parentBoostUid = reader.ReadVarInt();
             if (parentBoostUid < 0)
                 throw new Exception("Forbidden value on parentBoostUid = " + parentBoostUid + ", it doesn't respect the following condition : parentBoostUid < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(short) + sizeof(sbyte) + sizeof(short) + sizeof(int) + sizeof(int);
-        }
         
     }
     

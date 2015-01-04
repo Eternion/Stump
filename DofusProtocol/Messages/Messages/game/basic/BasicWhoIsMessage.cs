@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:52
+// Generated on 01/04/2015 11:54:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(accountNickname);
             writer.WriteInt(accountId);
             writer.WriteUTF(playerName);
-            writer.WriteInt(playerId);
+            writer.WriteVarInt(playerId);
             writer.WriteShort(areaId);
             var socialGroups_before = writer.Position;
             var socialGroups_count = 0;
@@ -87,7 +87,7 @@ namespace Stump.DofusProtocol.Messages
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
             playerName = reader.ReadUTF();
-            playerId = reader.ReadInt();
+            playerId = reader.ReadVarInt();
             if (playerId < 0)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             areaId = reader.ReadShort();
@@ -102,11 +102,6 @@ namespace Stump.DofusProtocol.Messages
             playerState = reader.ReadSByte();
             if (playerState < 0)
                 throw new Exception("Forbidden value on playerState = " + playerState + ", it doesn't respect the following condition : playerState < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(bool) + 0 + sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(accountNickname) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(playerName) + sizeof(int) + sizeof(short) + sizeof(short) + socialGroups.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(sbyte);
         }
         
     }

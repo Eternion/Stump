@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:10
+// Generated on 01/04/2015 11:54:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(infos.TypeId);
             infos.Serialize(writer);
             writer.WriteInt(creationDate);
-            writer.WriteShort(nbTaxCollectors);
+            writer.WriteVarShort(nbTaxCollectors);
             writer.WriteBoolean(enabled);
             var members_before = writer.Position;
             var members_count = 0;
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Messages
             creationDate = reader.ReadInt();
             if (creationDate < 0)
                 throw new Exception("Forbidden value on creationDate = " + creationDate + ", it doesn't respect the following condition : creationDate < 0");
-            nbTaxCollectors = reader.ReadShort();
+            nbTaxCollectors = reader.ReadVarShort();
             if (nbTaxCollectors < 0)
                 throw new Exception("Forbidden value on nbTaxCollectors = " + nbTaxCollectors + ", it doesn't respect the following condition : nbTaxCollectors < 0");
             enabled = reader.ReadBoolean();
@@ -78,11 +78,6 @@ namespace Stump.DofusProtocol.Messages
                  members_[i].Deserialize(reader);
             }
             members = members_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + infos.GetSerializationSize() + sizeof(int) + sizeof(short) + sizeof(bool) + sizeof(short) + members.Sum(x => x.GetSerializationSize());
         }
         
     }

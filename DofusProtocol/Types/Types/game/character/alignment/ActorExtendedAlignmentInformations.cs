@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:16
+// Generated on 01/04/2015 11:54:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,22 +38,22 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(honor);
-            writer.WriteShort(honorGradeFloor);
-            writer.WriteShort(honorNextGradeFloor);
+            writer.WriteVarShort(honor);
+            writer.WriteVarShort(honorGradeFloor);
+            writer.WriteVarShort(honorNextGradeFloor);
             writer.WriteSByte(aggressable);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            honor = reader.ReadShort();
+            honor = reader.ReadVarShort();
             if (honor < 0 || honor > 20000)
                 throw new Exception("Forbidden value on honor = " + honor + ", it doesn't respect the following condition : honor < 0 || honor > 20000");
-            honorGradeFloor = reader.ReadShort();
+            honorGradeFloor = reader.ReadVarShort();
             if (honorGradeFloor < 0 || honorGradeFloor > 20000)
                 throw new Exception("Forbidden value on honorGradeFloor = " + honorGradeFloor + ", it doesn't respect the following condition : honorGradeFloor < 0 || honorGradeFloor > 20000");
-            honorNextGradeFloor = reader.ReadShort();
+            honorNextGradeFloor = reader.ReadVarShort();
             if (honorNextGradeFloor < 0 || honorNextGradeFloor > 20000)
                 throw new Exception("Forbidden value on honorNextGradeFloor = " + honorNextGradeFloor + ", it doesn't respect the following condition : honorNextGradeFloor < 0 || honorNextGradeFloor > 20000");
             aggressable = reader.ReadSByte();
@@ -61,10 +61,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on aggressable = " + aggressable + ", it doesn't respect the following condition : aggressable < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte);
-        }
         
     }
     

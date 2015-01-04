@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:36
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in quantities)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  quantities_count++;
             }
             var quantities_after = writer.Position;
@@ -62,7 +62,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in types)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  types_count++;
             }
             var types_after = writer.Position;
@@ -73,9 +73,9 @@ namespace Stump.DofusProtocol.Types
             writer.WriteFloat(taxPercentage);
             writer.WriteFloat(taxModificationPercentage);
             writer.WriteByte(maxItemLevel);
-            writer.WriteInt(maxItemPerAccount);
+            writer.WriteVarInt(maxItemPerAccount);
             writer.WriteInt(npcContextualId);
-            writer.WriteShort(unsoldDelay);
+            writer.WriteVarShort(unsoldDelay);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -84,14 +84,14 @@ namespace Stump.DofusProtocol.Types
             var quantities_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 quantities_[i] = reader.ReadInt();
+                 quantities_[i] = reader.ReadVarInt();
             }
             quantities = quantities_;
             limit = reader.ReadUShort();
             var types_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 types_[i] = reader.ReadInt();
+                 types_[i] = reader.ReadVarInt();
             }
             types = types_;
             taxPercentage = reader.ReadFloat();
@@ -99,19 +99,15 @@ namespace Stump.DofusProtocol.Types
             maxItemLevel = reader.ReadByte();
             if (maxItemLevel < 0 || maxItemLevel > 255)
                 throw new Exception("Forbidden value on maxItemLevel = " + maxItemLevel + ", it doesn't respect the following condition : maxItemLevel < 0 || maxItemLevel > 255");
-            maxItemPerAccount = reader.ReadInt();
+            maxItemPerAccount = reader.ReadVarInt();
             if (maxItemPerAccount < 0)
                 throw new Exception("Forbidden value on maxItemPerAccount = " + maxItemPerAccount + ", it doesn't respect the following condition : maxItemPerAccount < 0");
             npcContextualId = reader.ReadInt();
-            unsoldDelay = reader.ReadShort();
+            unsoldDelay = reader.ReadVarShort();
             if (unsoldDelay < 0)
                 throw new Exception("Forbidden value on unsoldDelay = " + unsoldDelay + ", it doesn't respect the following condition : unsoldDelay < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + quantities.Sum(x => sizeof(int)) + sizeof(short) + types.Sum(x => sizeof(int)) + sizeof(float) + sizeof(float) + sizeof(byte) + sizeof(int) + sizeof(int) + sizeof(short);
-        }
         
     }
     

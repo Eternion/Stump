@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:07
+// Generated on 01/04/2015 11:54:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(accountId);
-            writer.WriteInt(playerId);
+            writer.WriteVarInt(playerId);
             writer.WriteSByte(smileyId);
         }
         
@@ -45,15 +45,10 @@ namespace Stump.DofusProtocol.Messages
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            playerId = reader.ReadInt();
+            playerId = reader.ReadVarInt();
             if (playerId < 0)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
             smileyId = reader.ReadSByte();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(sbyte);
         }
         
     }

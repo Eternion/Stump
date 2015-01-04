@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:16
+// Generated on 01/04/2015 11:54:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,26 +38,22 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(@base);
-            writer.WriteShort(additionnal);
-            writer.WriteShort(objectsAndMountBonus);
-            writer.WriteShort(alignGiftBonus);
-            writer.WriteShort(contextModif);
+            writer.WriteVarShort(@base);
+            writer.WriteVarShort(additionnal);
+            writer.WriteVarShort(objectsAndMountBonus);
+            writer.WriteVarShort(alignGiftBonus);
+            writer.WriteVarShort(contextModif);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            @base = reader.ReadShort();
-            additionnal = reader.ReadShort();
-            objectsAndMountBonus = reader.ReadShort();
-            alignGiftBonus = reader.ReadShort();
-            contextModif = reader.ReadShort();
+            @base = reader.ReadVarShort();
+            additionnal = reader.ReadVarShort();
+            objectsAndMountBonus = reader.ReadVarShort();
+            alignGiftBonus = reader.ReadVarShort();
+            contextModif = reader.ReadVarShort();
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short);
-        }
         
     }
     

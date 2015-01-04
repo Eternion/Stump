@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:56
+// Generated on 01/04/2015 11:54:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,11 +47,6 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on lockDuration = " + lockDuration + ", it doesn't respect the following condition : lockDuration < 0 || lockDuration > 255");
             author = reader.ReadUTF();
             content = reader.ReadUTF();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(byte) + sizeof(short) + Encoding.UTF8.GetByteCount(author) + sizeof(short) + Encoding.UTF8.GetByteCount(content);
         }
         
     }

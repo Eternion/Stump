@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:16
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort((ushort)colors_count);
             writer.Seek((int)colors_after);
 
-            writer.WriteInt(cosmeticId);
+            writer.WriteVarInt(cosmeticId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -60,15 +60,11 @@ namespace Stump.DofusProtocol.Types
                  colors_[i] = reader.ReadInt();
             }
             colors = colors_;
-            cosmeticId = reader.ReadInt();
+            cosmeticId = reader.ReadVarInt();
             if (cosmeticId < 0)
                 throw new Exception("Forbidden value on cosmeticId = " + cosmeticId + ", it doesn't respect the following condition : cosmeticId < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + colors.Sum(x => sizeof(int)) + sizeof(int);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:47
+// Generated on 01/04/2015 11:54:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,14 +35,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(days);
+            writer.WriteVarShort(days);
             writer.WriteSByte(hours);
             writer.WriteSByte(minutes);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            days = reader.ReadShort();
+            days = reader.ReadVarShort();
             if (days < 0)
                 throw new Exception("Forbidden value on days = " + days + ", it doesn't respect the following condition : days < 0");
             hours = reader.ReadSByte();
@@ -51,11 +51,6 @@ namespace Stump.DofusProtocol.Messages
             minutes = reader.ReadSByte();
             if (minutes < 0)
                 throw new Exception("Forbidden value on minutes = " + minutes + ", it doesn't respect the following condition : minutes < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

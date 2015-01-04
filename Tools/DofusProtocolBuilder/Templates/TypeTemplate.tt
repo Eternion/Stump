@@ -107,28 +107,6 @@ public <#= !string.IsNullOrEmpty(Type.Heritage)
 <# PopIndent(); #>
 }
 
-public <#= !string.IsNullOrEmpty(Type.Heritage)
-        && Type.Heritage != "Object" ? "override" : "virtual" #> int GetSerializationSize()
-{
-<# PushIndent("    "); #>
-<#
-	Write("return ");
-    if (!string.IsNullOrEmpty(Type.Heritage)
-        && Type.Heritage != "Object")
-    {
-        Write("base.GetSerializationSize()");
-
-		if (Type.Fields.Length > 0)
-			Write(" + ");
-    }
-	else if (Type.Fields.Length == 0)
-		WriteLine("0;");
-
-	WriteLine(string.Join(" + ", Type.Fields.Select(x => GetFieldBytesCountCode(x.Type, x.Name))) + ";");
-
-#>
-<# PopIndent(); #>
-}
 
 <# PopIndent(); #>
 }

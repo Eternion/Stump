@@ -24,10 +24,5 @@
         {
             throw new System.NotImplementedException();
         }
-
-        public override int GetSerializationSize()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:44
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,10 +42,6 @@ namespace Stump.DofusProtocol.Types
             guildInfo.Deserialize(reader);
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + guildInfo.GetSerializationSize();
-        }
         
     }
     

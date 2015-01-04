@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:26
+// Generated on 01/04/2015 11:54:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,11 +79,6 @@ namespace Stump.DofusProtocol.Messages
                  finishedAchievements_[i].Deserialize(reader);
             }
             finishedAchievements = finishedAchievements_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + startedAchievements.Sum(x => x.GetSerializationSize()) + sizeof(short) + finishedAchievements.Sum(x => x.GetSerializationSize());
         }
         
     }

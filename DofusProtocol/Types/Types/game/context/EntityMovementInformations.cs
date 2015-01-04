@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:18
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,10 +60,6 @@ namespace Stump.DofusProtocol.Types
             steps = steps_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + steps.Sum(x => sizeof(sbyte));
-        }
         
     }
     

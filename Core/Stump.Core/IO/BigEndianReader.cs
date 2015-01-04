@@ -132,6 +132,11 @@ namespace Stump.Core.IO
             throw new Exception("Overflow varint : too much data");
         }
 
+        public uint ReadVarUInt()
+        {
+            return unchecked ((uint) ReadVarInt());
+        }
+
         public short ReadVarShort()
         {
             int value = 0;
@@ -157,9 +162,56 @@ namespace Stump.Core.IO
             throw new Exception("Overflow varint : too much data");
         }
 
+        public ushort ReadVarUShort()
+        {
+            return unchecked((ushort) ReadVarShort());
+        }
+
         public long ReadVarLong()
         {
-            return ReadLong();
+            int low = 0;
+            int high = 0;
+            int size = 0;
+            byte lastByte = 0;
+            while (size < 28)
+            {
+                lastByte = m_reader.ReadByte();
+                if ((lastByte & MASK_10000000) == MASK_10000000)
+                {
+                    low |= ((lastByte & MASK_01111111) << size);
+                    size += 7;
+                }
+                else
+                {
+                    low |= lastByte << size;
+                    return low;
+                }
+            }
+            lastByte = m_reader.ReadByte();
+            if ((lastByte & MASK_10000000) == MASK_10000000)
+            {
+                low |= (lastByte & MASK_01111111) << size;
+                high = (lastByte & MASK_01111111) >> 4;
+                size = 3;
+                while (size < 32)
+                {
+                    lastByte = m_reader.ReadByte();
+                    if ((lastByte & MASK_10000000) == MASK_10000000)
+                        high |= (lastByte & MASK_01111111) << size;
+                    else break;
+                    size += 7;
+                }
+                high |= lastByte << size;
+                return (low & 0xFFFFFFFF) | ((long)high << 32);
+            }
+            low |= lastByte << size;
+            high = lastByte >> 4;
+            return (low & 0xFFFFFFFF) | (long)high << 32;
+        }
+
+        public ulong ReadVarULong()
+        {
+            return unchecked((ulong) ReadVarLong());
         }
 
         /// <summary>

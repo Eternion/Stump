@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:52
+// Generated on 01/04/2015 11:54:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteSByte(partyType);
-            writer.WriteInt(partyLeaderId);
+            writer.WriteVarInt(partyLeaderId);
             writer.WriteSByte(maxParticipants);
             var members_before = writer.Position;
             var members_count = 0;
@@ -85,7 +85,7 @@ namespace Stump.DofusProtocol.Messages
             partyType = reader.ReadSByte();
             if (partyType < 0)
                 throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
-            partyLeaderId = reader.ReadInt();
+            partyLeaderId = reader.ReadVarInt();
             if (partyLeaderId < 0)
                 throw new Exception("Forbidden value on partyLeaderId = " + partyLeaderId + ", it doesn't respect the following condition : partyLeaderId < 0");
             maxParticipants = reader.ReadSByte();
@@ -109,11 +109,6 @@ namespace Stump.DofusProtocol.Messages
             guests = guests_;
             restricted = reader.ReadBoolean();
             partyName = reader.ReadUTF();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(short) + members.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + guests.Sum(x => x.GetSerializationSize()) + sizeof(bool) + sizeof(short) + Encoding.UTF8.GetByteCount(partyName);
         }
         
     }

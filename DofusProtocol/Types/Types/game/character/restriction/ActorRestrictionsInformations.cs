@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:18
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,10 +123,6 @@ namespace Stump.DofusProtocol.Types
             cantWalk8Directions = BooleanByteWrapper.GetFlag(flag3, 4);
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0 + 0 + 0 + 0 + sizeof(bool) + 0 + 0 + 0 + 0;
-        }
         
     }
     

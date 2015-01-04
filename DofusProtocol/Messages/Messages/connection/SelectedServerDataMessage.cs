@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:24
+// Generated on 01/04/2015 11:54:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Messages
             flag1 = BooleanByteWrapper.SetFlag(flag1, 0, ssl);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, canCreateNewCharacter);
             writer.WriteByte(flag1);
-            writer.WriteShort(serverId);
+            writer.WriteVarShort(serverId);
             writer.WriteUTF(address);
             writer.WriteUShort(port);
             writer.WriteUTF(ticket);
@@ -56,7 +56,7 @@ namespace Stump.DofusProtocol.Messages
             byte flag1 = reader.ReadByte();
             ssl = BooleanByteWrapper.GetFlag(flag1, 0);
             canCreateNewCharacter = BooleanByteWrapper.GetFlag(flag1, 1);
-            serverId = reader.ReadShort();
+            serverId = reader.ReadVarShort();
             if (serverId < 0)
                 throw new Exception("Forbidden value on serverId = " + serverId + ", it doesn't respect the following condition : serverId < 0");
             address = reader.ReadUTF();
@@ -64,11 +64,6 @@ namespace Stump.DofusProtocol.Messages
             if (port < 0 || port > 65535)
                 throw new Exception("Forbidden value on port = " + port + ", it doesn't respect the following condition : port < 0 || port > 65535");
             ticket = reader.ReadUTF();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(bool) + 0 + sizeof(short) + sizeof(short) + Encoding.UTF8.GetByteCount(address) + sizeof(ushort) + sizeof(short) + Encoding.UTF8.GetByteCount(ticket);
         }
         
     }

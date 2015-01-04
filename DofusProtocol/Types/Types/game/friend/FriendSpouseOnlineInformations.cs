@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:38
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, followSpouse);
             writer.WriteByte(flag1);
             writer.WriteInt(mapId);
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -55,15 +55,11 @@ namespace Stump.DofusProtocol.Types
             mapId = reader.ReadInt();
             if (mapId < 0)
                 throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(bool) + 0 + sizeof(int) + sizeof(short);
-        }
         
     }
     

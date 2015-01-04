@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:36
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,23 +34,19 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(objectPrice);
+            writer.WriteVarInt(objectPrice);
             writer.WriteUTF(buyCriterion);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            objectPrice = reader.ReadInt();
+            objectPrice = reader.ReadVarInt();
             if (objectPrice < 0)
                 throw new Exception("Forbidden value on objectPrice = " + objectPrice + ", it doesn't respect the following condition : objectPrice < 0");
             buyCriterion = reader.ReadUTF();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(buyCriterion);
-        }
         
     }
     

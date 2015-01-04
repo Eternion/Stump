@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:28
+// Generated on 01/04/2015 11:54:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,21 +32,17 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(npcId);
+            writer.WriteVarShort(npcId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            npcId = reader.ReadShort();
+            npcId = reader.ReadVarShort();
             if (npcId < 0)
                 throw new Exception("Forbidden value on npcId = " + npcId + ", it doesn't respect the following condition : npcId < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short);
-        }
         
     }
     

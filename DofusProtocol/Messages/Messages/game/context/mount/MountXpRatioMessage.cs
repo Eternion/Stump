@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:24
+// Generated on 01/04/2015 11:54:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +39,6 @@ namespace Stump.DofusProtocol.Messages
             ratio = reader.ReadSByte();
             if (ratio < 0)
                 throw new Exception("Forbidden value on ratio = " + ratio + ", it doesn't respect the following condition : ratio < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte);
         }
         
     }

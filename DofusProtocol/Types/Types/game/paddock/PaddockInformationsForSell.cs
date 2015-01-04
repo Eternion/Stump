@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:44
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,10 +45,10 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUTF(guildOwner);
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
             writer.WriteSByte(nbMount);
             writer.WriteSByte(nbObject);
-            writer.WriteInt(price);
+            writer.WriteVarInt(price);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -60,20 +60,16 @@ namespace Stump.DofusProtocol.Types
             worldY = reader.ReadShort();
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             nbMount = reader.ReadSByte();
             nbObject = reader.ReadSByte();
-            price = reader.ReadInt();
+            price = reader.ReadVarInt();
             if (price < 0)
                 throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(guildOwner) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(sbyte) + sizeof(sbyte) + sizeof(int);
-        }
         
     }
     

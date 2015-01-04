@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:01
+// Generated on 01/04/2015 11:54:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,11 +43,6 @@ namespace Stump.DofusProtocol.Messages
             if (questType < 0)
                 throw new Exception("Forbidden value on questType = " + questType + ", it doesn't respect the following condition : questType < 0");
             availableRetryCount = reader.ReadInt();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(int);
         }
         
     }

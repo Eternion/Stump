@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:32
+// Generated on 01/04/2015 11:54:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,11 +45,6 @@ namespace Stump.DofusProtocol.Messages
             targetId = reader.ReadInt();
             entityLook = new Types.EntityLook();
             entityLook.Deserialize(reader);
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + entityLook.GetSerializationSize();
         }
         
     }

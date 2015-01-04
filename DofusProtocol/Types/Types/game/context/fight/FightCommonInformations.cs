@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:20
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in fightTeamsPositions)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  fightTeamsPositions_count++;
             }
             var fightTeamsPositions_after = writer.Position;
@@ -100,7 +100,7 @@ namespace Stump.DofusProtocol.Types
             var fightTeamsPositions_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 fightTeamsPositions_[i] = reader.ReadShort();
+                 fightTeamsPositions_[i] = reader.ReadVarShort();
             }
             fightTeamsPositions = fightTeamsPositions_;
             limit = reader.ReadUShort();
@@ -113,10 +113,6 @@ namespace Stump.DofusProtocol.Types
             fightTeamsOptions = fightTeamsOptions_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(sbyte) + sizeof(short) + fightTeams.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + fightTeamsPositions.Sum(x => sizeof(short)) + sizeof(short) + fightTeamsOptions.Sum(x => x.GetSerializationSize());
-        }
         
     }
     

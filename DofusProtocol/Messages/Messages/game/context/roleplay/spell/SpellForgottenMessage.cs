@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:59
+// Generated on 01/04/2015 11:54:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in spellsId)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  spellsId_count++;
             }
             var spellsId_after = writer.Position;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)spellsId_count);
             writer.Seek((int)spellsId_after);
 
-            writer.WriteShort(boostPoint);
+            writer.WriteVarShort(boostPoint);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -55,17 +55,12 @@ namespace Stump.DofusProtocol.Messages
             var spellsId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 spellsId_[i] = reader.ReadShort();
+                 spellsId_[i] = reader.ReadVarShort();
             }
             spellsId = spellsId_;
-            boostPoint = reader.ReadShort();
+            boostPoint = reader.ReadVarShort();
             if (boostPoint < 0)
                 throw new Exception("Forbidden value on boostPoint = " + boostPoint + ", it doesn't respect the following condition : boostPoint < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + spellsId.Sum(x => sizeof(short)) + sizeof(short);
         }
         
     }

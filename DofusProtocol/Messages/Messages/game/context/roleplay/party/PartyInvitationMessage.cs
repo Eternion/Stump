@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:52
+// Generated on 01/04/2015 11:54:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,9 +46,9 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(partyType);
             writer.WriteUTF(partyName);
             writer.WriteSByte(maxParticipants);
-            writer.WriteInt(fromId);
+            writer.WriteVarInt(fromId);
             writer.WriteUTF(fromName);
-            writer.WriteInt(toId);
+            writer.WriteVarInt(toId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -61,18 +61,13 @@ namespace Stump.DofusProtocol.Messages
             maxParticipants = reader.ReadSByte();
             if (maxParticipants < 0)
                 throw new Exception("Forbidden value on maxParticipants = " + maxParticipants + ", it doesn't respect the following condition : maxParticipants < 0");
-            fromId = reader.ReadInt();
+            fromId = reader.ReadVarInt();
             if (fromId < 0)
                 throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0");
             fromName = reader.ReadUTF();
-            toId = reader.ReadInt();
+            toId = reader.ReadVarInt();
             if (toId < 0)
                 throw new Exception("Forbidden value on toId = " + toId + ", it doesn't respect the following condition : toId < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short) + Encoding.UTF8.GetByteCount(partyName) + sizeof(sbyte) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(fromName) + sizeof(int);
         }
         
     }

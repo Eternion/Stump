@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:59
+// Generated on 01/04/2015 11:54:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,31 +37,26 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteLong(experienceCharacter);
-            writer.WriteLong(experienceMount);
-            writer.WriteLong(experienceGuild);
-            writer.WriteLong(experienceIncarnation);
+            writer.WriteVarLong(experienceCharacter);
+            writer.WriteVarLong(experienceMount);
+            writer.WriteVarLong(experienceGuild);
+            writer.WriteVarLong(experienceIncarnation);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            experienceCharacter = reader.ReadLong();
+            experienceCharacter = reader.ReadVarLong();
             if (experienceCharacter < 0 || experienceCharacter > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceCharacter = " + experienceCharacter + ", it doesn't respect the following condition : experienceCharacter < 0 || experienceCharacter > 9.007199254740992E15");
-            experienceMount = reader.ReadLong();
+            experienceMount = reader.ReadVarLong();
             if (experienceMount < 0 || experienceMount > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceMount = " + experienceMount + ", it doesn't respect the following condition : experienceMount < 0 || experienceMount > 9.007199254740992E15");
-            experienceGuild = reader.ReadLong();
+            experienceGuild = reader.ReadVarLong();
             if (experienceGuild < 0 || experienceGuild > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceGuild = " + experienceGuild + ", it doesn't respect the following condition : experienceGuild < 0 || experienceGuild > 9.007199254740992E15");
-            experienceIncarnation = reader.ReadLong();
+            experienceIncarnation = reader.ReadVarLong();
             if (experienceIncarnation < 0 || experienceIncarnation > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceIncarnation = " + experienceIncarnation + ", it doesn't respect the following condition : experienceIncarnation < 0 || experienceIncarnation > 9.007199254740992E15");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(long) + sizeof(long) + sizeof(long) + sizeof(long);
         }
         
     }

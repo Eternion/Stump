@@ -61,6 +61,36 @@ namespace Stump.Core.IO
             get { return m_buffer.Length - m_position; }
         }
 
+        public short ReadVarShort()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ushort ReadVarUShort()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ReadVarInt()
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint ReadVarUInt()
+        {
+            throw new NotImplementedException();
+        }
+
+        public long ReadVarLong()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong ReadVarULong()
+        {
+            throw new NotImplementedException();
+        }
+
         public short ReadShort()
         {
             var position = m_position;

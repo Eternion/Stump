@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:21
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +40,10 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteByte(grade);
-            writer.WriteShort(minHonorForGrade);
-            writer.WriteShort(maxHonorForGrade);
-            writer.WriteShort(honor);
-            writer.WriteShort(honorDelta);
+            writer.WriteVarShort(minHonorForGrade);
+            writer.WriteVarShort(maxHonorForGrade);
+            writer.WriteVarShort(honor);
+            writer.WriteVarShort(honorDelta);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -52,22 +52,18 @@ namespace Stump.DofusProtocol.Types
             grade = reader.ReadByte();
             if (grade < 0 || grade > 255)
                 throw new Exception("Forbidden value on grade = " + grade + ", it doesn't respect the following condition : grade < 0 || grade > 255");
-            minHonorForGrade = reader.ReadShort();
+            minHonorForGrade = reader.ReadVarShort();
             if (minHonorForGrade < 0 || minHonorForGrade > 20000)
                 throw new Exception("Forbidden value on minHonorForGrade = " + minHonorForGrade + ", it doesn't respect the following condition : minHonorForGrade < 0 || minHonorForGrade > 20000");
-            maxHonorForGrade = reader.ReadShort();
+            maxHonorForGrade = reader.ReadVarShort();
             if (maxHonorForGrade < 0 || maxHonorForGrade > 20000)
                 throw new Exception("Forbidden value on maxHonorForGrade = " + maxHonorForGrade + ", it doesn't respect the following condition : maxHonorForGrade < 0 || maxHonorForGrade > 20000");
-            honor = reader.ReadShort();
+            honor = reader.ReadVarShort();
             if (honor < 0 || honor > 20000)
                 throw new Exception("Forbidden value on honor = " + honor + ", it doesn't respect the following condition : honor < 0 || honor > 20000");
-            honorDelta = reader.ReadShort();
+            honorDelta = reader.ReadVarShort();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(byte) + sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:15
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in positionsForChallengers)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  positionsForChallengers_count++;
             }
             var positionsForChallengers_after = writer.Position;
@@ -53,7 +53,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in positionsForDefenders)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  positionsForDefenders_count++;
             }
             var positionsForDefenders_after = writer.Position;
@@ -70,24 +70,19 @@ namespace Stump.DofusProtocol.Messages
             var positionsForChallengers_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 positionsForChallengers_[i] = reader.ReadShort();
+                 positionsForChallengers_[i] = reader.ReadVarShort();
             }
             positionsForChallengers = positionsForChallengers_;
             limit = reader.ReadUShort();
             var positionsForDefenders_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 positionsForDefenders_[i] = reader.ReadShort();
+                 positionsForDefenders_[i] = reader.ReadVarShort();
             }
             positionsForDefenders = positionsForDefenders_;
             teamNumber = reader.ReadSByte();
             if (teamNumber < 0)
                 throw new Exception("Forbidden value on teamNumber = " + teamNumber + ", it doesn't respect the following condition : teamNumber < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + positionsForChallengers.Sum(x => sizeof(short)) + sizeof(short) + positionsForDefenders.Sum(x => sizeof(short)) + sizeof(sbyte);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:13
+// Generated on 01/04/2015 11:54:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,10 +41,6 @@ namespace Stump.DofusProtocol.Types
             immuneSpellId = reader.ReadInt();
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int);
-        }
         
     }
     

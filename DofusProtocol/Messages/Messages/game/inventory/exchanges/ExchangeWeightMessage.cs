@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:41
+// Generated on 01/04/2015 11:54:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,23 +33,18 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(currentWeight);
-            writer.WriteInt(maxWeight);
+            writer.WriteVarInt(currentWeight);
+            writer.WriteVarInt(maxWeight);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            currentWeight = reader.ReadInt();
+            currentWeight = reader.ReadVarInt();
             if (currentWeight < 0)
                 throw new Exception("Forbidden value on currentWeight = " + currentWeight + ", it doesn't respect the following condition : currentWeight < 0");
-            maxWeight = reader.ReadInt();
+            maxWeight = reader.ReadVarInt();
             if (maxWeight < 0)
                 throw new Exception("Forbidden value on maxWeight = " + maxWeight + ", it doesn't respect the following condition : maxWeight < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int);
         }
         
     }

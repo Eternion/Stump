@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:30
+// Generated on 01/04/2015 11:54:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteShort(worldX);
             writer.WriteShort(worldY);
             writer.WriteInt(mapId);
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
             writer.WriteUTF(userName);
             writer.WriteDouble(experience);
             var objectsInfos_before = writer.Position;
@@ -77,7 +77,7 @@ namespace Stump.DofusProtocol.Messages
             if (worldY < -255 || worldY > 255)
                 throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
             mapId = reader.ReadInt();
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             userName = reader.ReadUTF();
@@ -92,11 +92,6 @@ namespace Stump.DofusProtocol.Messages
                  objectsInfos_[i].Deserialize(reader);
             }
             objectsInfos = objectsInfos_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(collectorName) + sizeof(short) + sizeof(short) + sizeof(int) + sizeof(short) + sizeof(short) + Encoding.UTF8.GetByteCount(userName) + sizeof(double) + sizeof(short) + objectsInfos.Sum(x => x.GetSerializationSize());
         }
         
     }

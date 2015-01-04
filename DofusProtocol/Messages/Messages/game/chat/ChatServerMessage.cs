@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:04
+// Generated on 01/04/2015 11:54:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,11 +50,6 @@ namespace Stump.DofusProtocol.Messages
             senderAccountId = reader.ReadInt();
             if (senderAccountId < 0)
                 throw new Exception("Forbidden value on senderAccountId = " + senderAccountId + ", it doesn't respect the following condition : senderAccountId < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(senderName) + sizeof(int);
         }
         
     }

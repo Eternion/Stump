@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:09
+// Generated on 01/04/2015 11:54:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +39,6 @@ namespace Stump.DofusProtocol.Messages
             downloadSpeed = reader.ReadSByte();
             if (downloadSpeed < 1 || downloadSpeed > 10)
                 throw new Exception("Forbidden value on downloadSpeed = " + downloadSpeed + ", it doesn't respect the following condition : downloadSpeed < 1 || downloadSpeed > 10");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte);
         }
         
     }

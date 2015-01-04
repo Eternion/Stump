@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:30
+// Generated on 01/04/2015 11:54:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,20 +34,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteBoolean(onlySuccess);
-            writer.WriteInt(goldSum);
+            writer.WriteVarInt(goldSum);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             onlySuccess = reader.ReadBoolean();
-            goldSum = reader.ReadInt();
+            goldSum = reader.ReadVarInt();
             if (goldSum < 0)
                 throw new Exception("Forbidden value on goldSum = " + goldSum + ", it doesn't respect the following condition : goldSum < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(bool) + sizeof(int);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:32
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in questsToValidId)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  questsToValidId_count++;
             }
             var questsToValidId_after = writer.Position;
@@ -50,7 +50,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in questsToStartId)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  questsToStartId_count++;
             }
             var questsToStartId_after = writer.Position;
@@ -66,22 +66,18 @@ namespace Stump.DofusProtocol.Types
             var questsToValidId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 questsToValidId_[i] = reader.ReadShort();
+                 questsToValidId_[i] = reader.ReadVarShort();
             }
             questsToValidId = questsToValidId_;
             limit = reader.ReadUShort();
             var questsToStartId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 questsToStartId_[i] = reader.ReadShort();
+                 questsToStartId_[i] = reader.ReadVarShort();
             }
             questsToStartId = questsToStartId_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + questsToValidId.Sum(x => sizeof(short)) + sizeof(short) + questsToStartId.Sum(x => sizeof(short));
-        }
         
     }
     

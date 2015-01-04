@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:27
+// Generated on 01/04/2015 11:54:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,19 +31,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(fightCount);
+            writer.WriteVarShort(fightCount);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            fightCount = reader.ReadShort();
+            fightCount = reader.ReadVarShort();
             if (fightCount < 0)
                 throw new Exception("Forbidden value on fightCount = " + fightCount + ", it doesn't respect the following condition : fightCount < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short);
         }
         
     }

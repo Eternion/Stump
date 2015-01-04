@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:43
+// Generated on 01/04/2015 11:54:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,10 +42,6 @@ namespace Stump.DofusProtocol.Types
             durabilityMax = reader.ReadShort();
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(short);
-        }
         
     }
     

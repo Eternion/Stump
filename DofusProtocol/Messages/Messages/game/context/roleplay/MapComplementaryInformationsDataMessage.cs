@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:27
+// Generated on 01/04/2015 11:54:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(subAreaId);
+            writer.WriteVarShort(subAreaId);
             writer.WriteInt(mapId);
             var houses_before = writer.Position;
             var houses_count = 0;
@@ -132,7 +132,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            subAreaId = reader.ReadShort();
+            subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             mapId = reader.ReadInt();
@@ -186,11 +186,6 @@ namespace Stump.DofusProtocol.Messages
                  fights_[i].Deserialize(reader);
             }
             fights = fights_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(int) + sizeof(short) + houses.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + actors.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + interactiveElements.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + statedElements.Sum(x => x.GetSerializationSize()) + sizeof(short) + obstacles.Sum(x => x.GetSerializationSize()) + sizeof(short) + fights.Sum(x => x.GetSerializationSize());
         }
         
     }

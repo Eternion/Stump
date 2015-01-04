@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:16
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,11 +71,6 @@ namespace Stump.DofusProtocol.Messages
             bombCount = reader.ReadSByte();
             if (bombCount < 0)
                 throw new Exception("Forbidden value on bombCount = " + bombCount + ", it doesn't respect the following condition : bombCount < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + spellCooldowns.Sum(x => x.GetSerializationSize()) + sizeof(sbyte) + sizeof(sbyte);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:57
+// Generated on 01/04/2015 11:54:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,11 +59,6 @@ namespace Stump.DofusProtocol.Messages
                  charactersToRemodel_[i].Deserialize(reader);
             }
             charactersToRemodel = charactersToRemodel_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + charactersToRemodel.Sum(x => x.GetSerializationSize());
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:40
+// Generated on 01/04/2015 11:54:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(maxCase);
-            writer.WriteInt(skillId);
+            writer.WriteVarInt(skillId);
             writer.WriteSByte(crafterJobLevel);
         }
         
@@ -45,17 +45,12 @@ namespace Stump.DofusProtocol.Messages
             maxCase = reader.ReadSByte();
             if (maxCase < 0)
                 throw new Exception("Forbidden value on maxCase = " + maxCase + ", it doesn't respect the following condition : maxCase < 0");
-            skillId = reader.ReadInt();
+            skillId = reader.ReadVarInt();
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
             crafterJobLevel = reader.ReadSByte();
             if (crafterJobLevel < 0)
                 throw new Exception("Forbidden value on crafterJobLevel = " + crafterJobLevel + ", it doesn't respect the following condition : crafterJobLevel < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(int) + sizeof(sbyte);
         }
         
     }

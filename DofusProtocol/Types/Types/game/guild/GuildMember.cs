@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:39
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,10 +58,10 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
-            writer.WriteShort(rank);
-            writer.WriteLong(givenExperience);
+            writer.WriteVarShort(rank);
+            writer.WriteVarLong(givenExperience);
             writer.WriteSByte(experienceGivenPercent);
-            writer.WriteInt(rights);
+            writer.WriteVarInt(rights);
             writer.WriteSByte(connected);
             writer.WriteSByte(alignmentSide);
             writer.WriteUShort(hoursSinceLastConnection);
@@ -77,16 +77,16 @@ namespace Stump.DofusProtocol.Types
             base.Deserialize(reader);
             breed = reader.ReadSByte();
             sex = reader.ReadBoolean();
-            rank = reader.ReadShort();
+            rank = reader.ReadVarShort();
             if (rank < 0)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0");
-            givenExperience = reader.ReadLong();
+            givenExperience = reader.ReadVarLong();
             if (givenExperience < 0 || givenExperience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on givenExperience = " + givenExperience + ", it doesn't respect the following condition : givenExperience < 0 || givenExperience > 9.007199254740992E15");
             experienceGivenPercent = reader.ReadSByte();
             if (experienceGivenPercent < 0 || experienceGivenPercent > 100)
                 throw new Exception("Forbidden value on experienceGivenPercent = " + experienceGivenPercent + ", it doesn't respect the following condition : experienceGivenPercent < 0 || experienceGivenPercent > 100");
-            rights = reader.ReadInt();
+            rights = reader.ReadVarInt();
             if (rights < 0)
                 throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0");
             connected = reader.ReadSByte();
@@ -105,10 +105,6 @@ namespace Stump.DofusProtocol.Types
             status.Deserialize(reader);
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + sizeof(long) + sizeof(sbyte) + sizeof(int) + sizeof(sbyte) + sizeof(sbyte) + sizeof(ushort) + sizeof(sbyte) + sizeof(int) + sizeof(int) + sizeof(short) + status.GetSerializationSize();
-        }
         
     }
     

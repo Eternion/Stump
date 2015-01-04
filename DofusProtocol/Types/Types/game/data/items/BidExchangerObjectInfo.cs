@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:34
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(objectUID);
+            writer.WriteVarInt(objectUID);
             var effects_before = writer.Position;
             var effects_count = 0;
             writer.WriteUShort(0);
@@ -66,7 +66,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            objectUID = reader.ReadInt();
+            objectUID = reader.ReadVarInt();
             if (objectUID < 0)
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
             var limit = reader.ReadUShort();
@@ -86,10 +86,6 @@ namespace Stump.DofusProtocol.Types
             prices = prices_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + effects.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + prices.Sum(x => sizeof(int));
-        }
         
     }
     

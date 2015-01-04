@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:41
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,20 +30,16 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(skillId);
+            writer.WriteVarShort(skillId);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            skillId = reader.ReadShort();
+            skillId = reader.ReadVarShort();
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:33
+// Generated on 01/04/2015 11:54:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +42,6 @@ namespace Stump.DofusProtocol.Messages
             base.Deserialize(reader);
             effect = Types.ProtocolTypeManager.GetInstance<Types.AbstractFightDispellableEffect>(reader.ReadShort());
             effect.Deserialize(reader);
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + effect.GetSerializationSize();
         }
         
     }

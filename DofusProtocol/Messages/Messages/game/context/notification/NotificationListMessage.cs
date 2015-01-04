@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:25
+// Generated on 01/04/2015 11:54:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in flags)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  flags_count++;
             }
             var flags_after = writer.Position;
@@ -52,14 +52,9 @@ namespace Stump.DofusProtocol.Messages
             var flags_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 flags_[i] = reader.ReadInt();
+                 flags_[i] = reader.ReadVarInt();
             }
             flags = flags_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + flags.Sum(x => sizeof(int));
         }
         
     }

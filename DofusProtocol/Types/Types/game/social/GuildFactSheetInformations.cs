@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:48
+// Generated on 01/04/2015 11:54:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,29 +36,25 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(leaderId);
+            writer.WriteVarInt(leaderId);
             writer.WriteByte(guildLevel);
-            writer.WriteShort(nbMembers);
+            writer.WriteVarShort(nbMembers);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            leaderId = reader.ReadInt();
+            leaderId = reader.ReadVarInt();
             if (leaderId < 0)
                 throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0");
             guildLevel = reader.ReadByte();
             if (guildLevel < 0 || guildLevel > 255)
                 throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 0 || guildLevel > 255");
-            nbMembers = reader.ReadShort();
+            nbMembers = reader.ReadVarShort();
             if (nbMembers < 0)
                 throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(byte) + sizeof(short);
-        }
         
     }
     

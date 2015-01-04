@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:39
+// Generated on 01/04/2015 11:54:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,11 +58,6 @@ namespace Stump.DofusProtocol.Messages
                  tacklersIds_[i] = reader.ReadInt();
             }
             tacklersIds = tacklersIds_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + tacklersIds.Sum(x => sizeof(int));
         }
         
     }

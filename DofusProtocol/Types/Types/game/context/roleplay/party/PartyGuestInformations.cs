@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:31
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,10 +92,6 @@ namespace Stump.DofusProtocol.Types
             companions = companions_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(name) + guestLook.GetSerializationSize() + sizeof(sbyte) + sizeof(bool) + sizeof(short) + status.GetSerializationSize() + sizeof(short) + companions.Sum(x => x.GetSerializationSize());
-        }
         
     }
     

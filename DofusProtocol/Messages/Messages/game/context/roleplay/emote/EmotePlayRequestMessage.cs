@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:30
+// Generated on 01/04/2015 11:54:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +39,6 @@ namespace Stump.DofusProtocol.Messages
             emoteId = reader.ReadByte();
             if (emoteId < 0 || emoteId > 255)
                 throw new Exception("Forbidden value on emoteId = " + emoteId + ", it doesn't respect the following condition : emoteId < 0 || emoteId > 255");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(byte);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:31
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,10 +64,6 @@ namespace Stump.DofusProtocol.Types
             skills = skills_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(short) + skills.Sum(x => sizeof(short) + x.GetSerializationSize());
-        }
         
     }
     

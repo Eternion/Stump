@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:54
+// Generated on 01/04/2015 11:54:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,11 +59,6 @@ namespace Stump.DofusProtocol.Messages
                  geopositions_[i].Deserialize(reader);
             }
             geopositions = geopositions_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + geopositions.Sum(x => x.GetSerializationSize());
         }
         
     }

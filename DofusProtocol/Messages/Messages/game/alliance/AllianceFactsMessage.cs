@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:43
+// Generated on 01/04/2015 11:54:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +59,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in controlledSubareaIds)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  controlledSubareaIds_count++;
             }
             var controlledSubareaIds_after = writer.Position;
@@ -67,7 +67,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)controlledSubareaIds_count);
             writer.Seek((int)controlledSubareaIds_after);
 
-            writer.WriteInt(leaderCharacterId);
+            writer.WriteVarInt(leaderCharacterId);
             writer.WriteUTF(leaderCharacterName);
         }
         
@@ -87,18 +87,13 @@ namespace Stump.DofusProtocol.Messages
             var controlledSubareaIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 controlledSubareaIds_[i] = reader.ReadShort();
+                 controlledSubareaIds_[i] = reader.ReadVarShort();
             }
             controlledSubareaIds = controlledSubareaIds_;
-            leaderCharacterId = reader.ReadInt();
+            leaderCharacterId = reader.ReadVarInt();
             if (leaderCharacterId < 0)
                 throw new Exception("Forbidden value on leaderCharacterId = " + leaderCharacterId + ", it doesn't respect the following condition : leaderCharacterId < 0");
             leaderCharacterName = reader.ReadUTF();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + infos.GetSerializationSize() + sizeof(short) + guilds.Sum(x => x.GetSerializationSize()) + sizeof(short) + controlledSubareaIds.Sum(x => sizeof(short)) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(leaderCharacterName);
         }
         
     }

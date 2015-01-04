@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:31
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,9 +40,9 @@ namespace Stump.DofusProtocol.Types
         {
             writer.WriteSByte(jobId);
             writer.WriteSByte(jobLevel);
-            writer.WriteLong(jobXP);
-            writer.WriteLong(jobXpLevelFloor);
-            writer.WriteLong(jobXpNextLevelFloor);
+            writer.WriteVarLong(jobXP);
+            writer.WriteVarLong(jobXpLevelFloor);
+            writer.WriteVarLong(jobXpNextLevelFloor);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -53,21 +53,17 @@ namespace Stump.DofusProtocol.Types
             jobLevel = reader.ReadSByte();
             if (jobLevel < 0)
                 throw new Exception("Forbidden value on jobLevel = " + jobLevel + ", it doesn't respect the following condition : jobLevel < 0");
-            jobXP = reader.ReadLong();
+            jobXP = reader.ReadVarLong();
             if (jobXP < 0 || jobXP > 9.007199254740992E15)
                 throw new Exception("Forbidden value on jobXP = " + jobXP + ", it doesn't respect the following condition : jobXP < 0 || jobXP > 9.007199254740992E15");
-            jobXpLevelFloor = reader.ReadLong();
+            jobXpLevelFloor = reader.ReadVarLong();
             if (jobXpLevelFloor < 0 || jobXpLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on jobXpLevelFloor = " + jobXpLevelFloor + ", it doesn't respect the following condition : jobXpLevelFloor < 0 || jobXpLevelFloor > 9.007199254740992E15");
-            jobXpNextLevelFloor = reader.ReadLong();
+            jobXpNextLevelFloor = reader.ReadVarLong();
             if (jobXpNextLevelFloor < 0 || jobXpNextLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on jobXpNextLevelFloor = " + jobXpNextLevelFloor + ", it doesn't respect the following condition : jobXpNextLevelFloor < 0 || jobXpNextLevelFloor > 9.007199254740992E15");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(sbyte) + sizeof(sbyte) + sizeof(long) + sizeof(long) + sizeof(long);
-        }
         
     }
     

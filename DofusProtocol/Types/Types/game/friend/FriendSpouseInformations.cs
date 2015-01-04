@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:38
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(spouseAccountId);
-            writer.WriteInt(spouseId);
+            writer.WriteVarInt(spouseId);
             writer.WriteUTF(spouseName);
             writer.WriteByte(spouseLevel);
             writer.WriteSByte(breed);
@@ -62,7 +62,7 @@ namespace Stump.DofusProtocol.Types
             spouseAccountId = reader.ReadInt();
             if (spouseAccountId < 0)
                 throw new Exception("Forbidden value on spouseAccountId = " + spouseAccountId + ", it doesn't respect the following condition : spouseAccountId < 0");
-            spouseId = reader.ReadInt();
+            spouseId = reader.ReadVarInt();
             if (spouseId < 0)
                 throw new Exception("Forbidden value on spouseId = " + spouseId + ", it doesn't respect the following condition : spouseId < 0");
             spouseName = reader.ReadUTF();
@@ -78,10 +78,6 @@ namespace Stump.DofusProtocol.Types
             alignmentSide = reader.ReadSByte();
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(spouseName) + sizeof(byte) + sizeof(sbyte) + sizeof(sbyte) + spouseEntityLook.GetSerializationSize() + guildInfo.GetSerializationSize() + sizeof(sbyte);
-        }
         
     }
     

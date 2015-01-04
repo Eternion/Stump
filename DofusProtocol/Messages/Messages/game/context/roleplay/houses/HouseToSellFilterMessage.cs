@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:35
+// Generated on 01/04/2015 11:54:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +42,8 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(areaId);
             writer.WriteSByte(atLeastNbRoom);
             writer.WriteSByte(atLeastNbChest);
-            writer.WriteShort(skillRequested);
-            writer.WriteInt(maxPrice);
+            writer.WriteVarShort(skillRequested);
+            writer.WriteVarInt(maxPrice);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -55,17 +55,12 @@ namespace Stump.DofusProtocol.Messages
             atLeastNbChest = reader.ReadSByte();
             if (atLeastNbChest < 0)
                 throw new Exception("Forbidden value on atLeastNbChest = " + atLeastNbChest + ", it doesn't respect the following condition : atLeastNbChest < 0");
-            skillRequested = reader.ReadShort();
+            skillRequested = reader.ReadVarShort();
             if (skillRequested < 0)
                 throw new Exception("Forbidden value on skillRequested = " + skillRequested + ", it doesn't respect the following condition : skillRequested < 0");
-            maxPrice = reader.ReadInt();
+            maxPrice = reader.ReadVarInt();
             if (maxPrice < 0)
                 throw new Exception("Forbidden value on maxPrice = " + maxPrice + ", it doesn't respect the following condition : maxPrice < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(sbyte) + sizeof(sbyte) + sizeof(short) + sizeof(int);
         }
         
     }

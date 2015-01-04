@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:39
+// Generated on 01/04/2015 11:54:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +44,6 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on newLevel = " + newLevel + ", it doesn't respect the following condition : newLevel < 0");
             jobsDescription = new Types.JobDescription();
             jobsDescription.Deserialize(reader);
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(sbyte) + jobsDescription.GetSerializationSize();
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:16
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)marks_count);
             writer.Seek((int)marks_after);
 
-            writer.WriteShort(gameTurn);
+            writer.WriteVarShort(gameTurn);
             writer.WriteInt(fightStart);
         }
         
@@ -85,17 +85,12 @@ namespace Stump.DofusProtocol.Messages
                  marks_[i].Deserialize(reader);
             }
             marks = marks_;
-            gameTurn = reader.ReadShort();
+            gameTurn = reader.ReadVarShort();
             if (gameTurn < 0)
                 throw new Exception("Forbidden value on gameTurn = " + gameTurn + ", it doesn't respect the following condition : gameTurn < 0");
             fightStart = reader.ReadInt();
             if (fightStart < 0)
                 throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + effects.Sum(x => x.GetSerializationSize()) + sizeof(short) + marks.Sum(x => x.GetSerializationSize()) + sizeof(short) + sizeof(int);
         }
         
     }

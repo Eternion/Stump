@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:59
+// Generated on 01/04/2015 11:54:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in playerIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  playerIds_count++;
             }
             var playerIds_after = writer.Position;
@@ -67,7 +67,7 @@ namespace Stump.DofusProtocol.Messages
             var playerIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 playerIds_[i] = reader.ReadInt();
+                 playerIds_[i] = reader.ReadVarInt();
             }
             playerIds = playerIds_;
             limit = reader.ReadUShort();
@@ -77,11 +77,6 @@ namespace Stump.DofusProtocol.Messages
                  enable_[i] = reader.ReadSByte();
             }
             enable = enable_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + playerIds.Sum(x => sizeof(int)) + sizeof(short) + enable.Sum(x => sizeof(sbyte));
         }
         
     }

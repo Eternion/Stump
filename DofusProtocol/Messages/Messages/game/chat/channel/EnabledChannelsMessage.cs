@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:05
+// Generated on 01/04/2015 11:54:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,11 +77,6 @@ namespace Stump.DofusProtocol.Messages
                  disallowed_[i] = reader.ReadSByte();
             }
             disallowed = disallowed_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + channels.Sum(x => sizeof(sbyte)) + sizeof(short) + disallowed.Sum(x => sizeof(sbyte));
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:31
+// Generated on 01/04/2015 11:54:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +44,6 @@ namespace Stump.DofusProtocol.Messages
             base.Deserialize(reader);
             markId = reader.ReadShort();
             active = reader.ReadBoolean();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(bool);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:47
+// Generated on 01/04/2015 11:54:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,32 +36,28 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(allianceId);
-            writer.WriteShort(nbGuilds);
-            writer.WriteShort(nbMembers);
-            writer.WriteShort(nbSubarea);
+            writer.WriteVarInt(allianceId);
+            writer.WriteVarShort(nbGuilds);
+            writer.WriteVarShort(nbMembers);
+            writer.WriteVarShort(nbSubarea);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            allianceId = reader.ReadInt();
+            allianceId = reader.ReadVarInt();
             if (allianceId < 0)
                 throw new Exception("Forbidden value on allianceId = " + allianceId + ", it doesn't respect the following condition : allianceId < 0");
-            nbGuilds = reader.ReadShort();
+            nbGuilds = reader.ReadVarShort();
             if (nbGuilds < 0)
                 throw new Exception("Forbidden value on nbGuilds = " + nbGuilds + ", it doesn't respect the following condition : nbGuilds < 0");
-            nbMembers = reader.ReadShort();
+            nbMembers = reader.ReadVarShort();
             if (nbMembers < 0)
                 throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 0");
-            nbSubarea = reader.ReadShort();
+            nbSubarea = reader.ReadVarShort();
             if (nbSubarea < 0)
                 throw new Exception("Forbidden value on nbSubarea = " + nbSubarea + ", it doesn't respect the following condition : nbSubarea < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + sizeof(short) + sizeof(short);
-        }
         
     }
     

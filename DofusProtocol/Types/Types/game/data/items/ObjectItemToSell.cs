@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:35
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(objectGID);
+            writer.WriteVarShort(objectGID);
             var effects_before = writer.Position;
             var effects_count = 0;
             writer.WriteUShort(0);
@@ -54,15 +54,15 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort((ushort)effects_count);
             writer.Seek((int)effects_after);
 
-            writer.WriteInt(objectUID);
-            writer.WriteInt(quantity);
-            writer.WriteInt(objectPrice);
+            writer.WriteVarInt(objectUID);
+            writer.WriteVarInt(quantity);
+            writer.WriteVarInt(objectPrice);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            objectGID = reader.ReadShort();
+            objectGID = reader.ReadVarShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
             var limit = reader.ReadUShort();
@@ -73,21 +73,17 @@ namespace Stump.DofusProtocol.Types
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;
-            objectUID = reader.ReadInt();
+            objectUID = reader.ReadVarInt();
             if (objectUID < 0)
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            quantity = reader.ReadInt();
+            quantity = reader.ReadVarInt();
             if (quantity < 0)
                 throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");
-            objectPrice = reader.ReadInt();
+            objectPrice = reader.ReadVarInt();
             if (objectPrice < 0)
                 throw new Exception("Forbidden value on objectPrice = " + objectPrice + ", it doesn't respect the following condition : objectPrice < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + effects.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(int) + sizeof(int) + sizeof(int);
-        }
         
     }
     

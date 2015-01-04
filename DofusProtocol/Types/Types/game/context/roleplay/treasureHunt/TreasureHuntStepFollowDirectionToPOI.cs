@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:34
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         {
             base.Serialize(writer);
             writer.WriteSByte(direction);
-            writer.WriteShort(poiLabelId);
+            writer.WriteVarShort(poiLabelId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -43,15 +43,11 @@ namespace Stump.DofusProtocol.Types
             direction = reader.ReadSByte();
             if (direction < 0)
                 throw new Exception("Forbidden value on direction = " + direction + ", it doesn't respect the following condition : direction < 0");
-            poiLabelId = reader.ReadShort();
+            poiLabelId = reader.ReadVarShort();
             if (poiLabelId < 0)
                 throw new Exception("Forbidden value on poiLabelId = " + poiLabelId + ", it doesn't respect the following condition : poiLabelId < 0");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(sbyte) + sizeof(short);
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:39
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(symbolShape);
+            writer.WriteVarShort(symbolShape);
             writer.WriteInt(symbolColor);
             writer.WriteSByte(backgroundShape);
             writer.WriteInt(backgroundColor);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            symbolShape = reader.ReadShort();
+            symbolShape = reader.ReadVarShort();
             if (symbolShape < 0)
                 throw new Exception("Forbidden value on symbolShape = " + symbolShape + ", it doesn't respect the following condition : symbolShape < 0");
             symbolColor = reader.ReadInt();
@@ -54,10 +54,6 @@ namespace Stump.DofusProtocol.Types
             backgroundColor = reader.ReadInt();
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(int) + sizeof(sbyte) + sizeof(int);
-        }
         
     }
     

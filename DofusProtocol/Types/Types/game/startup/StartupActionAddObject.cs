@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:48
+// Generated on 01/04/2015 11:54:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,10 +79,6 @@ namespace Stump.DofusProtocol.Types
             items = items_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + Encoding.UTF8.GetByteCount(title) + sizeof(short) + Encoding.UTF8.GetByteCount(text) + sizeof(short) + Encoding.UTF8.GetByteCount(descUrl) + sizeof(short) + Encoding.UTF8.GetByteCount(pictureUrl) + sizeof(short) + items.Sum(x => x.GetSerializationSize());
-        }
         
     }
     

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:27
+// Generated on 01/04/2015 11:54:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in finishedAchievementsIds)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  finishedAchievementsIds_count++;
             }
             var finishedAchievementsIds_after = writer.Position;
@@ -67,7 +67,7 @@ namespace Stump.DofusProtocol.Messages
             var finishedAchievementsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 finishedAchievementsIds_[i] = reader.ReadShort();
+                 finishedAchievementsIds_[i] = reader.ReadVarShort();
             }
             finishedAchievementsIds = finishedAchievementsIds_;
             limit = reader.ReadUShort();
@@ -78,11 +78,6 @@ namespace Stump.DofusProtocol.Messages
                  rewardableAchievements_[i].Deserialize(reader);
             }
             rewardableAchievements = rewardableAchievements_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + finishedAchievementsIds.Sum(x => sizeof(short)) + sizeof(short) + rewardableAchievements.Sum(x => x.GetSerializationSize());
         }
         
     }

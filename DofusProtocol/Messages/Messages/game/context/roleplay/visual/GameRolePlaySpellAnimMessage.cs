@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:03
+// Generated on 01/04/2015 11:54:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,28 +38,23 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(casterId);
-            writer.WriteShort(targetCellId);
-            writer.WriteShort(spellId);
+            writer.WriteVarShort(targetCellId);
+            writer.WriteVarShort(spellId);
             writer.WriteSByte(spellLevel);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             casterId = reader.ReadInt();
-            targetCellId = reader.ReadShort();
+            targetCellId = reader.ReadVarShort();
             if (targetCellId < 0 || targetCellId > 559)
                 throw new Exception("Forbidden value on targetCellId = " + targetCellId + ", it doesn't respect the following condition : targetCellId < 0 || targetCellId > 559");
-            spellId = reader.ReadShort();
+            spellId = reader.ReadVarShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
             spellLevel = reader.ReadSByte();
             if (spellLevel < 1 || spellLevel > 6)
                 throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + sizeof(short) + sizeof(sbyte);
         }
         
     }

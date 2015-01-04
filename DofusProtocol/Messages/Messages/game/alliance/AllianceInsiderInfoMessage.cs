@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:43
+// Generated on 01/04/2015 11:54:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,11 +85,6 @@ namespace Stump.DofusProtocol.Messages
                  prisms_[i].Deserialize(reader);
             }
             prisms = prisms_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return allianceInfos.GetSerializationSize() + sizeof(short) + guilds.Sum(x => x.GetSerializationSize()) + sizeof(short) + prisms.Sum(x => sizeof(short) + x.GetSerializationSize());
         }
         
     }

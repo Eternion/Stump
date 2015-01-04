@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:32
+// Generated on 01/04/2015 11:54:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteShort(stepId);
+            writer.WriteVarShort(stepId);
             var objectives_before = writer.Position;
             var objectives_count = 0;
             writer.WriteUShort(0);
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            stepId = reader.ReadShort();
+            stepId = reader.ReadVarShort();
             if (stepId < 0)
                 throw new Exception("Forbidden value on stepId = " + stepId + ", it doesn't respect the following condition : stepId < 0");
             var limit = reader.ReadUShort();
@@ -67,10 +67,6 @@ namespace Stump.DofusProtocol.Types
             objectives = objectives_;
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(short) + sizeof(short) + objectives.Sum(x => sizeof(short) + x.GetSerializationSize());
-        }
         
     }
     

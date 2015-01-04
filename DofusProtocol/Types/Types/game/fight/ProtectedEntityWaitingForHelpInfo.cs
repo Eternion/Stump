@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:38
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,10 +48,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on nbPositionForDefensors = " + nbPositionForDefensors + ", it doesn't respect the following condition : nbPositionForDefensors < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(sbyte);
-        }
         
     }
     

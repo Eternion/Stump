@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:47
+// Generated on 01/04/2015 11:54:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in dungeonIds)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  dungeonIds_count++;
             }
             var dungeonIds_after = writer.Position;
@@ -52,14 +52,9 @@ namespace Stump.DofusProtocol.Messages
             var dungeonIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 dungeonIds_[i] = reader.ReadShort();
+                 dungeonIds_[i] = reader.ReadVarShort();
             }
             dungeonIds = dungeonIds_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + dungeonIds.Sum(x => sizeof(short));
         }
         
     }

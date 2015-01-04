@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:14
+// Generated on 01/04/2015 11:54:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,11 +39,6 @@ namespace Stump.DofusProtocol.Messages
             newLevel = reader.ReadByte();
             if (newLevel < 2 || newLevel > 200)
                 throw new Exception("Forbidden value on newLevel = " + newLevel + ", it doesn't respect the following condition : newLevel < 2 || newLevel > 200");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(byte);
         }
         
     }

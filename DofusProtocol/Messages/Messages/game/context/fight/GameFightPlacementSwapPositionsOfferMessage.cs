@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:12:15
+// Generated on 01/04/2015 11:54:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +40,10 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(requestId);
-            writer.WriteInt(requesterId);
-            writer.WriteShort(requesterCellId);
-            writer.WriteInt(requestedId);
-            writer.WriteShort(requestedCellId);
+            writer.WriteVarInt(requesterId);
+            writer.WriteVarShort(requesterCellId);
+            writer.WriteVarInt(requestedId);
+            writer.WriteVarShort(requestedCellId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -51,23 +51,18 @@ namespace Stump.DofusProtocol.Messages
             requestId = reader.ReadInt();
             if (requestId < 0)
                 throw new Exception("Forbidden value on requestId = " + requestId + ", it doesn't respect the following condition : requestId < 0");
-            requesterId = reader.ReadInt();
+            requesterId = reader.ReadVarInt();
             if (requesterId < 0)
                 throw new Exception("Forbidden value on requesterId = " + requesterId + ", it doesn't respect the following condition : requesterId < 0");
-            requesterCellId = reader.ReadShort();
+            requesterCellId = reader.ReadVarShort();
             if (requesterCellId < 0 || requesterCellId > 559)
                 throw new Exception("Forbidden value on requesterCellId = " + requesterCellId + ", it doesn't respect the following condition : requesterCellId < 0 || requesterCellId > 559");
-            requestedId = reader.ReadInt();
+            requestedId = reader.ReadVarInt();
             if (requestedId < 0)
                 throw new Exception("Forbidden value on requestedId = " + requestedId + ", it doesn't respect the following condition : requestedId < 0");
-            requestedCellId = reader.ReadShort();
+            requestedCellId = reader.ReadVarShort();
             if (requestedCellId < 0 || requestedCellId > 559)
                 throw new Exception("Forbidden value on requestedCellId = " + requestedCellId + ", it doesn't respect the following condition : requestedCellId < 0 || requestedCellId > 559");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(int) + sizeof(short) + sizeof(int) + sizeof(short);
         }
         
     }

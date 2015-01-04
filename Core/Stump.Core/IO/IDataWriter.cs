@@ -16,6 +16,13 @@ namespace Stump.Core.IO
             get;
         }
 
+        void WriteVarShort(short @short);
+        void WriteVarUShort(ushort @short);
+        void WriteVarInt(int @int);
+        void WriteVarUInt(uint @int);
+        void WriteVarLong(long @long);
+        void WriteVarULong(ulong @long);
+
         /// <summary>
         ///   Write a Short into the buffer
         /// </summary>

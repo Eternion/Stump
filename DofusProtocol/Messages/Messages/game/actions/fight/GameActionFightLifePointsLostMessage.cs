@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:36
+// Generated on 01/04/2015 11:54:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,25 +38,20 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteInt(targetId);
-            writer.WriteShort(loss);
-            writer.WriteShort(permanentDamages);
+            writer.WriteVarShort(loss);
+            writer.WriteVarShort(permanentDamages);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             targetId = reader.ReadInt();
-            loss = reader.ReadShort();
+            loss = reader.ReadVarShort();
             if (loss < 0)
                 throw new Exception("Forbidden value on loss = " + loss + ", it doesn't respect the following condition : loss < 0");
-            permanentDamages = reader.ReadShort();
+            permanentDamages = reader.ReadVarShort();
             if (permanentDamages < 0)
                 throw new Exception("Forbidden value on permanentDamages = " + permanentDamages + ", it doesn't respect the following condition : permanentDamages < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(int) + sizeof(short) + sizeof(short);
         }
         
     }

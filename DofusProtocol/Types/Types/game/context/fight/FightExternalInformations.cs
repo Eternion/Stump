@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:20
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,10 +80,6 @@ namespace Stump.DofusProtocol.Types
             fightTeamsOptions = fightTeamsOptions_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(sbyte) + sizeof(int) + sizeof(bool) + sizeof(short) + fightTeams.Sum(x => x.GetSerializationSize()) + sizeof(short) + fightTeamsOptions.Sum(x => x.GetSerializationSize());
-        }
         
     }
     

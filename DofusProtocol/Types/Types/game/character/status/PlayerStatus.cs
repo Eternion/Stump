@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:18
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +40,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on statusId = " + statusId + ", it doesn't respect the following condition : statusId < 0");
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(sbyte);
-        }
         
     }
     

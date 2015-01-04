@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:45
+// Generated on 01/04/2015 11:54:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +42,6 @@ namespace Stump.DofusProtocol.Messages
             allianceInfo = new Types.AllianceInformations();
             allianceInfo.Deserialize(reader);
             enabled = reader.ReadBoolean();
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return allianceInfo.GetSerializationSize() + sizeof(bool);
         }
         
     }

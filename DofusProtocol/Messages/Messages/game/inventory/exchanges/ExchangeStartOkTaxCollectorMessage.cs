@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:40
+// Generated on 01/04/2015 11:54:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)objectsInfos_count);
             writer.Seek((int)objectsInfos_after);
 
-            writer.WriteInt(goldInfo);
+            writer.WriteVarInt(goldInfo);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -63,14 +63,9 @@ namespace Stump.DofusProtocol.Messages
                  objectsInfos_[i].Deserialize(reader);
             }
             objectsInfos = objectsInfos_;
-            goldInfo = reader.ReadInt();
+            goldInfo = reader.ReadVarInt();
             if (goldInfo < 0)
                 throw new Exception("Forbidden value on goldInfo = " + goldInfo + ", it doesn't respect the following condition : goldInfo < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + objectsInfos.Sum(x => x.GetSerializationSize()) + sizeof(int);
         }
         
     }

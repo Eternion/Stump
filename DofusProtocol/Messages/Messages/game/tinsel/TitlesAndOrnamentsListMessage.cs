@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:05
+// Generated on 01/04/2015 11:54:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in titles)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  titles_count++;
             }
             var titles_after = writer.Position;
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in ornaments)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  ornaments_count++;
             }
             var ornaments_after = writer.Position;
@@ -63,8 +63,8 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)ornaments_count);
             writer.Seek((int)ornaments_after);
 
-            writer.WriteShort(activeTitle);
-            writer.WriteShort(activeOrnament);
+            writer.WriteVarShort(activeTitle);
+            writer.WriteVarShort(activeOrnament);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -73,27 +73,22 @@ namespace Stump.DofusProtocol.Messages
             var titles_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 titles_[i] = reader.ReadShort();
+                 titles_[i] = reader.ReadVarShort();
             }
             titles = titles_;
             limit = reader.ReadUShort();
             var ornaments_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 ornaments_[i] = reader.ReadShort();
+                 ornaments_[i] = reader.ReadVarShort();
             }
             ornaments = ornaments_;
-            activeTitle = reader.ReadShort();
+            activeTitle = reader.ReadVarShort();
             if (activeTitle < 0)
                 throw new Exception("Forbidden value on activeTitle = " + activeTitle + ", it doesn't respect the following condition : activeTitle < 0");
-            activeOrnament = reader.ReadShort();
+            activeOrnament = reader.ReadVarShort();
             if (activeOrnament < 0)
                 throw new Exception("Forbidden value on activeOrnament = " + activeOrnament + ", it doesn't respect the following condition : activeOrnament < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + titles.Sum(x => sizeof(short)) + sizeof(short) + ornaments.Sum(x => sizeof(short)) + sizeof(short) + sizeof(short);
         }
         
     }

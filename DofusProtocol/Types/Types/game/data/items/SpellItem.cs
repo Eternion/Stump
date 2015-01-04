@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:36
+// Generated on 01/04/2015 11:54:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,10 +52,6 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
         }
         
-        public override int GetSerializationSize()
-        {
-            return base.GetSerializationSize() + sizeof(byte) + sizeof(int) + sizeof(sbyte);
-        }
         
     }
     

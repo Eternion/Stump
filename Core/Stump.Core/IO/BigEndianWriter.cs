@@ -135,9 +135,14 @@ namespace Stump.Core.IO
             }
         }
 
-        public void WriteVarShort(short @int)
+        public void WriteVarUInt(uint @uint)
         {
-            var value = unchecked((ushort)@int);
+            WriteVarInt(unchecked((int) @uint));
+        }
+
+        public void WriteVarShort(short @short)
+        {
+            var value = unchecked((ushort)@short);
 
             if (value <= MASK_01111111)
             {
@@ -155,6 +160,50 @@ namespace Stump.Core.IO
                     b |= MASK_10000000;
                 m_writer.Write(b);
             }
+        }
+
+        public void WriteVarUShort(ushort @ushort)
+        {
+            WriteVarShort(unchecked((short) @ushort));
+        }
+
+        public void WriteVarLong(long @long)
+        {
+            var value = unchecked ((ulong) @long);
+
+            if (value >> 32 == 0)
+            {
+                WriteVarInt((int) value);
+                return;
+            }
+
+            var low = value & 0xFFFFFFFF;
+            var high = value >> 32;
+            for (int i = 0; i < 4; i++)
+            {
+                m_writer.Write((byte)(low & MASK_01111111 | MASK_10000000));
+                low >>= 7;
+            }
+            if ((high & 0xFFFFFFF8) == 0) // only 3 first bits are non zeros
+            {
+                m_writer.Write((byte) (high << 4 | low));
+            }
+            else
+            {
+                m_writer.Write((byte) ((high << 4 | low) & MASK_01111111 | MASK_10000000));
+                high >>= 3;
+                while(high >= 0x80)
+                {
+                    m_writer.Write((byte)(high & MASK_01111111 | MASK_10000000));
+                    high >>= 7;
+                }
+                m_writer.Write((byte) high);
+            }
+        }
+
+        public void WriteVarULong(ulong @ulong)
+        {
+            WriteVarLong(unchecked((long) @ulong));
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:18
+// Generated on 01/04/2015 11:54:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUTF(name);
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
-            writer.WriteShort(cosmeticId);
+            writer.WriteVarShort(cosmeticId);
             var colors_before = writer.Position;
             var colors_count = 0;
             writer.WriteUShort(0);
@@ -62,7 +62,7 @@ namespace Stump.DofusProtocol.Types
             name = reader.ReadUTF();
             breed = reader.ReadSByte();
             sex = reader.ReadBoolean();
-            cosmeticId = reader.ReadShort();
+            cosmeticId = reader.ReadVarShort();
             if (cosmeticId < 0)
                 throw new Exception("Forbidden value on cosmeticId = " + cosmeticId + ", it doesn't respect the following condition : cosmeticId < 0");
             var limit = reader.ReadUShort();
@@ -74,10 +74,6 @@ namespace Stump.DofusProtocol.Types
             colors = colors_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(short) + Encoding.UTF8.GetByteCount(name) + sizeof(sbyte) + sizeof(bool) + sizeof(short) + sizeof(short) + colors.Sum(x => sizeof(int));
-        }
         
     }
     

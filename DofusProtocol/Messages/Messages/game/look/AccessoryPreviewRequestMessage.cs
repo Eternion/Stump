@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:56
+// Generated on 01/04/2015 11:54:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in genericId)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  genericId_count++;
             }
             var genericId_after = writer.Position;
@@ -52,14 +52,9 @@ namespace Stump.DofusProtocol.Messages
             var genericId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 genericId_[i] = reader.ReadShort();
+                 genericId_[i] = reader.ReadVarShort();
             }
             genericId = genericId_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + genericId.Sum(x => sizeof(short));
         }
         
     }

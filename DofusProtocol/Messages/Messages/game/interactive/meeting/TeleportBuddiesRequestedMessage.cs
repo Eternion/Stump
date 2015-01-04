@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:13:22
+// Generated on 01/04/2015 11:54:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,14 +35,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort(dungeonId);
-            writer.WriteInt(inviterId);
+            writer.WriteVarShort(dungeonId);
+            writer.WriteVarInt(inviterId);
             var invalidBuddiesIds_before = writer.Position;
             var invalidBuddiesIds_count = 0;
             writer.WriteUShort(0);
             foreach (var entry in invalidBuddiesIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  invalidBuddiesIds_count++;
             }
             var invalidBuddiesIds_after = writer.Position;
@@ -54,24 +54,19 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            dungeonId = reader.ReadShort();
+            dungeonId = reader.ReadVarShort();
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
-            inviterId = reader.ReadInt();
+            inviterId = reader.ReadVarInt();
             if (inviterId < 0)
                 throw new Exception("Forbidden value on inviterId = " + inviterId + ", it doesn't respect the following condition : inviterId < 0");
             var limit = reader.ReadUShort();
             var invalidBuddiesIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 invalidBuddiesIds_[i] = reader.ReadInt();
+                 invalidBuddiesIds_[i] = reader.ReadVarInt();
             }
             invalidBuddiesIds = invalidBuddiesIds_;
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + sizeof(int) + sizeof(short) + invalidBuddiesIds.Sum(x => sizeof(int));
         }
         
     }

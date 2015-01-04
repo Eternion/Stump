@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:47
+// Generated on 01/04/2015 11:54:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in allianceNbMembers)
             {
-                 writer.WriteShort(entry);
+                 writer.WriteVarShort(entry);
                  allianceNbMembers_count++;
             }
             var allianceNbMembers_after = writer.Position;
@@ -76,7 +76,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in allianceRoundWeigth)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarInt(entry);
                  allianceRoundWeigth_count++;
             }
             var allianceRoundWeigth_after = writer.Position;
@@ -98,8 +98,8 @@ namespace Stump.DofusProtocol.Messages
             writer.Seek((int)allianceMatchScore_after);
 
             allianceMapWinner.Serialize(writer);
-            writer.WriteInt(allianceMapWinnerScore);
-            writer.WriteInt(allianceMapMyAllianceScore);
+            writer.WriteVarInt(allianceMapWinnerScore);
+            writer.WriteVarInt(allianceMapMyAllianceScore);
             writer.WriteDouble(nextTickTime);
         }
         
@@ -117,14 +117,14 @@ namespace Stump.DofusProtocol.Messages
             var allianceNbMembers_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
-                 allianceNbMembers_[i] = reader.ReadShort();
+                 allianceNbMembers_[i] = reader.ReadVarShort();
             }
             allianceNbMembers = allianceNbMembers_;
             limit = reader.ReadUShort();
             var allianceRoundWeigth_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 allianceRoundWeigth_[i] = reader.ReadInt();
+                 allianceRoundWeigth_[i] = reader.ReadVarInt();
             }
             allianceRoundWeigth = allianceRoundWeigth_;
             limit = reader.ReadUShort();
@@ -136,20 +136,15 @@ namespace Stump.DofusProtocol.Messages
             allianceMatchScore = allianceMatchScore_;
             allianceMapWinner = new Types.BasicAllianceInformations();
             allianceMapWinner.Deserialize(reader);
-            allianceMapWinnerScore = reader.ReadInt();
+            allianceMapWinnerScore = reader.ReadVarInt();
             if (allianceMapWinnerScore < 0)
                 throw new Exception("Forbidden value on allianceMapWinnerScore = " + allianceMapWinnerScore + ", it doesn't respect the following condition : allianceMapWinnerScore < 0");
-            allianceMapMyAllianceScore = reader.ReadInt();
+            allianceMapMyAllianceScore = reader.ReadVarInt();
             if (allianceMapMyAllianceScore < 0)
                 throw new Exception("Forbidden value on allianceMapMyAllianceScore = " + allianceMapMyAllianceScore + ", it doesn't respect the following condition : allianceMapMyAllianceScore < 0");
             nextTickTime = reader.ReadDouble();
             if (nextTickTime < 0 || nextTickTime > 9.007199254740992E15)
                 throw new Exception("Forbidden value on nextTickTime = " + nextTickTime + ", it doesn't respect the following condition : nextTickTime < 0 || nextTickTime > 9.007199254740992E15");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(short) + alliances.Sum(x => x.GetSerializationSize()) + sizeof(short) + allianceNbMembers.Sum(x => sizeof(short)) + sizeof(short) + allianceRoundWeigth.Sum(x => sizeof(int)) + sizeof(short) + allianceMatchScore.Sum(x => sizeof(sbyte)) + allianceMapWinner.GetSerializationSize() + sizeof(int) + sizeof(int) + sizeof(double);
         }
         
     }

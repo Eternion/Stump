@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:14:39
+// Generated on 01/04/2015 11:54:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,10 +86,6 @@ namespace Stump.DofusProtocol.Types
             enemyCharactersInformations = enemyCharactersInformations_;
         }
         
-        public virtual int GetSerializationSize()
-        {
-            return sizeof(int) + sizeof(short) + allyCharactersInformations.Sum(x => sizeof(short) + x.GetSerializationSize()) + sizeof(short) + enemyCharactersInformations.Sum(x => sizeof(short) + x.GetSerializationSize());
-        }
         
     }
     

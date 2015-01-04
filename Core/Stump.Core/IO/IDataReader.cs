@@ -15,6 +15,13 @@ namespace Stump.Core.IO
             get;
         }
 
+        short ReadVarShort();
+        ushort ReadVarUShort();
+        int ReadVarInt();
+        uint ReadVarUInt();
+        long ReadVarLong();
+        ulong ReadVarULong();
+
         /// <summary>
         ///   Read a Short from the Buffer
         /// </summary>

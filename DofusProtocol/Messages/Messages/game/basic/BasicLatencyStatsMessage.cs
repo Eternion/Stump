@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 21:11:51
+// Generated on 01/04/2015 11:54:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +36,8 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteUShort(latency);
-            writer.WriteShort(sampleCount);
-            writer.WriteShort(max);
+            writer.WriteVarShort(sampleCount);
+            writer.WriteVarShort(max);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -45,17 +45,12 @@ namespace Stump.DofusProtocol.Messages
             latency = reader.ReadUShort();
             if (latency < 0 || latency > 65535)
                 throw new Exception("Forbidden value on latency = " + latency + ", it doesn't respect the following condition : latency < 0 || latency > 65535");
-            sampleCount = reader.ReadShort();
+            sampleCount = reader.ReadVarShort();
             if (sampleCount < 0)
                 throw new Exception("Forbidden value on sampleCount = " + sampleCount + ", it doesn't respect the following condition : sampleCount < 0");
-            max = reader.ReadShort();
+            max = reader.ReadVarShort();
             if (max < 0)
                 throw new Exception("Forbidden value on max = " + max + ", it doesn't respect the following condition : max < 0");
-        }
-        
-        public override int GetSerializationSize()
-        {
-            return sizeof(ushort) + sizeof(short) + sizeof(short);
         }
         
     }
