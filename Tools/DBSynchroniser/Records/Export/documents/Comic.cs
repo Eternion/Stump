@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/26/2014 23:31:13
+// Generated on 01/04/2015 01:23:45
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +20,6 @@ namespace DBSynchroniser.Records
         private const String MODULE = "Comics";
         public int id;
         public String remoteId;
-        public String readerUrl;
 
         int ID2ORecord.Id
         {
@@ -44,21 +43,12 @@ namespace DBSynchroniser.Records
             set { remoteId = value; }
         }
 
-        [D2OIgnore]
-        [NullString]
-        public String ReaderUrl
-        {
-            get { return readerUrl; }
-            set { readerUrl = value; }
-        }
-
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Comic)obj;
             
             Id = castedObj.id;
             RemoteId = castedObj.remoteId;
-            //ReaderUrl = castedObj.readerUrl;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -66,7 +56,6 @@ namespace DBSynchroniser.Records
             var obj = parent != null ? (Comic)parent : new Comic();
             obj.id = Id;
             obj.remoteId = RemoteId;
-            //obj.readerUrl = ReaderUrl;
             return obj;
         }
         

@@ -26,6 +26,16 @@ namespace Stump.Core.IO
     /// </summary>
     public unsafe class FastBigEndianReader : IDataReader
     {
+        public const int INT_SIZE = 32;
+        public const int SHORT_SIZE = 16;
+        public const int SHORT_MIN_VALUE = -0x8000;
+        public const int SHORT_MAX_VALUE = 0x7FFF;
+        public const int USHORT_MAX_VALUE = 0x10000;
+        public const int CHUNCK_BIT_SIZE = 7;
+        public static readonly int MAX_ENCODING_LENGHT = (int)Math.Ceiling((double)INT_SIZE/CHUNCK_BIT_SIZE);
+        public const int MASK_10000000 = 0x80;
+        public const int MASK_01111111 = 0x7F;
+
         private long m_position;
         private readonly byte[] m_buffer;
         private long m_maxPosition = -1;
@@ -60,32 +70,104 @@ namespace Stump.Core.IO
 
         public short ReadVarShort()
         {
-            throw new NotImplementedException();
+            int value = 0;
+            int size = 0;
+            while (size < SHORT_SIZE)
+            {
+                var b = ReadByte();
+                bool bit = (b & MASK_10000000) == MASK_10000000;
+                if (size > 0)
+                    value |= ((b & MASK_01111111) << size);
+                else
+                    value |= (b & MASK_01111111);
+                size += CHUNCK_BIT_SIZE;
+                if (!bit)
+                {
+                    if (value > SHORT_MAX_VALUE)
+                        value = value - USHORT_MAX_VALUE;
+
+                    return (short)value;
+                }
+            }
+
+            throw new Exception("Overflow varint : too much data");
         }
 
         public ushort ReadVarUShort()
         {
-            throw new NotImplementedException();
+            return unchecked((ushort) ReadVarShort());
         }
 
         public int ReadVarInt()
         {
-            throw new NotImplementedException();
+            int value = 0;
+            int size = 0;
+            while (size < INT_SIZE)
+            {
+                var b = ReadByte();
+                bool bit = (b & MASK_10000000) == MASK_10000000;
+                if (size > 0)
+                    value |= ((b & MASK_01111111) << size);
+                else
+                    value |= (b & MASK_01111111);
+                size += CHUNCK_BIT_SIZE;
+                if (!bit)
+                    return value;
+            }
+
+            throw new Exception("Overflow varint : too much data");
         }
 
         public uint ReadVarUInt()
         {
-            throw new NotImplementedException();
+            return unchecked ((uint) ReadVarInt());
         }
 
         public long ReadVarLong()
         {
-            throw new NotImplementedException();
+            int low = 0;
+            int high = 0;
+            int size = 0;
+            byte lastByte = 0;
+            while (size < 28)
+            {
+                lastByte = ReadByte();
+                if ((lastByte & MASK_10000000) == MASK_10000000)
+                {
+                    low |= ((lastByte & MASK_01111111) << size);
+                    size += 7;
+                }
+                else
+                {
+                    low |= lastByte << size;
+                    return low;
+                }
+            }
+            lastByte = ReadByte();
+            if ((lastByte & MASK_10000000) == MASK_10000000)
+            {
+                low |= (lastByte & MASK_01111111) << size;
+                high = (lastByte & MASK_01111111) >> 4;
+                size = 3;
+                while (size < 32)
+                {
+                    lastByte = ReadByte();
+                    if ((lastByte & MASK_10000000) == MASK_10000000)
+                        high |= (lastByte & MASK_01111111) << size;
+                    else break;
+                    size += 7;
+                }
+                high |= lastByte << size;
+                return (low & 0xFFFFFFFF) | ((long)high << 32);
+            }
+            low |= lastByte << size;
+            high = lastByte >> 4;
+            return (low & 0xFFFFFFFF) | (long)high << 32;
         }
 
         public ulong ReadVarULong()
         {
-            throw new NotImplementedException();
+            return unchecked((ulong) ReadVarLong());
         }
 
         public FastBigEndianReader(byte[] buffer)

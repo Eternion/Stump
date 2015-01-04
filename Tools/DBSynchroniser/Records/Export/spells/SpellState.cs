@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/26/2014 23:31:16
+// Generated on 01/04/2015 01:23:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +23,7 @@ namespace DBSynchroniser.Records
         public uint nameId;
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
+        public Boolean isSilent;
 
         int ID2ORecord.Id
         {
@@ -60,6 +61,13 @@ namespace DBSynchroniser.Records
             set { preventsFight = value; }
         }
 
+        [D2OIgnore]
+        public Boolean IsSilent
+        {
+            get { return isSilent; }
+            set { isSilent = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SpellState)obj;
@@ -68,6 +76,7 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
             PreventsSpellCast = castedObj.preventsSpellCast;
             PreventsFight = castedObj.preventsFight;
+            IsSilent = castedObj.isSilent;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -77,6 +86,7 @@ namespace DBSynchroniser.Records
             obj.nameId = NameId;
             obj.preventsSpellCast = PreventsSpellCast;
             obj.preventsFight = PreventsFight;
+            obj.isSilent = IsSilent;
             return obj;
         }
         

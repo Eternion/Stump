@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/26/2014 23:31:16
+// Generated on 01/04/2015 01:23:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,6 +25,7 @@ namespace DBSynchroniser.Records
         public int capabilities;
         [I18NField]
         public int nameId;
+        public Boolean showNameOnFingerpost;
         public List<AmbientSound> sounds;
         public int subAreaId;
         public int worldMap;
@@ -78,6 +79,13 @@ namespace DBSynchroniser.Records
         {
             get { return nameId; }
             set { nameId = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean ShowNameOnFingerpost
+        {
+            get { return showNameOnFingerpost; }
+            set { showNameOnFingerpost = value; }
         }
 
         [D2OIgnore]
@@ -137,6 +145,7 @@ namespace DBSynchroniser.Records
             Outdoor = castedObj.outdoor;
             Capabilities = castedObj.capabilities;
             NameId = castedObj.nameId;
+            ShowNameOnFingerpost = castedObj.showNameOnFingerpost;
             Sounds = castedObj.sounds;
             SubAreaId = castedObj.subAreaId;
             WorldMap = castedObj.worldMap;
@@ -152,6 +161,7 @@ namespace DBSynchroniser.Records
             obj.outdoor = Outdoor;
             obj.capabilities = Capabilities;
             obj.nameId = NameId;
+            obj.showNameOnFingerpost = ShowNameOnFingerpost;
             obj.sounds = Sounds;
             obj.subAreaId = SubAreaId;
             obj.worldMap = WorldMap;
