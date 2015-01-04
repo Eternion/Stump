@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/26/2014 23:31:13
+// Generated on 01/04/2015 01:23:44
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,6 +39,7 @@ namespace DBSynchroniser.Records
         public List<List<uint>> statsPointsForVitality;
         public List<List<uint>> statsPointsForWisdom;
         public List<uint> breedSpellsId;
+        public List<BreedRoleByBreed> breedRoles;
         public List<uint> maleColors;
         public List<uint> femaleColors;
         public uint spawnMap;
@@ -310,6 +311,32 @@ namespace DBSynchroniser.Records
 
         [D2OIgnore]
         [Ignore]
+        public List<BreedRoleByBreed> BreedRoles
+        {
+            get { return breedRoles; }
+            set
+            {
+                breedRoles = value;
+                m_breedRolesBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_breedRolesBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] BreedRolesBin
+        {
+            get { return m_breedRolesBin; }
+            set
+            {
+                m_breedRolesBin = value;
+                breedRoles = value == null ? null : value.ToObject<List<BreedRoleByBreed>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
         public List<uint> MaleColors
         {
             get { return maleColors; }
@@ -388,6 +415,7 @@ namespace DBSynchroniser.Records
             StatsPointsForVitality = castedObj.statsPointsForVitality;
             StatsPointsForWisdom = castedObj.statsPointsForWisdom;
             BreedSpellsId = castedObj.breedSpellsId;
+            BreedRoles = castedObj.breedRoles;
             MaleColors = castedObj.maleColors;
             FemaleColors = castedObj.femaleColors;
             SpawnMap = castedObj.spawnMap;
@@ -413,6 +441,7 @@ namespace DBSynchroniser.Records
             obj.statsPointsForVitality = StatsPointsForVitality;
             obj.statsPointsForWisdom = StatsPointsForWisdom;
             obj.breedSpellsId = BreedSpellsId;
+            obj.breedRoles = BreedRoles;
             obj.maleColors = MaleColors;
             obj.femaleColors = FemaleColors;
             obj.spawnMap = SpawnMap;
@@ -428,6 +457,7 @@ namespace DBSynchroniser.Records
             m_statsPointsForVitalityBin = statsPointsForVitality == null ? null : statsPointsForVitality.ToBinary();
             m_statsPointsForWisdomBin = statsPointsForWisdom == null ? null : statsPointsForWisdom.ToBinary();
             m_breedSpellsIdBin = breedSpellsId == null ? null : breedSpellsId.ToBinary();
+            m_breedRolesBin = breedRoles == null ? null : breedRoles.ToBinary();
             m_maleColorsBin = maleColors == null ? null : maleColors.ToBinary();
             m_femaleColorsBin = femaleColors == null ? null : femaleColors.ToBinary();
         

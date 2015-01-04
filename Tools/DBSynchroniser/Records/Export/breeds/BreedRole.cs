@@ -13,15 +13,18 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 
 namespace DBSynchroniser.Records
 {
-    [TableName("AlignmentEffect")]
-    [D2OClass("AlignmentEffect", "com.ankamagames.dofus.datacenter.alignments")]
-    public class AlignmentEffectRecord : ID2ORecord, ISaveIntercepter
+    [TableName("BreedRoles")]
+    [D2OClass("BreedRole", "com.ankamagames.dofus.datacenter.breeds")]
+    public class BreedRoleRecord : ID2ORecord, ISaveIntercepter
     {
-        public const String MODULE = "AlignmentEffect";
+        public const String MODULE = "BreedRoles";
         public int id;
-        public uint characteristicId;
+        [I18NField]
+        public uint nameId;
         [I18NField]
         public uint descriptionId;
+        public int assetId;
+        public int color;
 
         int ID2ORecord.Id
         {
@@ -38,10 +41,11 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public uint CharacteristicId
+        [I18NField]
+        public uint NameId
         {
-            get { return characteristicId; }
-            set { characteristicId = value; }
+            get { return nameId; }
+            set { nameId = value; }
         }
 
         [D2OIgnore]
@@ -52,21 +56,39 @@ namespace DBSynchroniser.Records
             set { descriptionId = value; }
         }
 
+        [D2OIgnore]
+        public int AssetId
+        {
+            get { return assetId; }
+            set { assetId = value; }
+        }
+
+        [D2OIgnore]
+        public int Color
+        {
+            get { return color; }
+            set { color = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
-            var castedObj = (AlignmentEffect)obj;
+            var castedObj = (BreedRole)obj;
             
             Id = castedObj.id;
-            CharacteristicId = castedObj.characteristicId;
+            NameId = castedObj.nameId;
             DescriptionId = castedObj.descriptionId;
+            AssetId = castedObj.assetId;
+            Color = castedObj.color;
         }
         
         public virtual object CreateObject(object parent = null)
         {
-            var obj = parent != null ? (AlignmentEffect)parent : new AlignmentEffect();
+            var obj = parent != null ? (BreedRole)parent : new BreedRole();
             obj.id = Id;
-            obj.characteristicId = CharacteristicId;
+            obj.nameId = NameId;
             obj.descriptionId = DescriptionId;
+            obj.assetId = AssetId;
+            obj.color = Color;
             return obj;
         }
         

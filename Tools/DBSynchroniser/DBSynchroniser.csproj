@@ -139,6 +139,8 @@
     <Compile Include="Records\Export\appearance\Title.cs" />
     <Compile Include="Records\Export\appearance\TitleCategory.cs" />
     <Compile Include="Records\Export\breeds\Breed.cs" />
+    <Compile Include="Records\Export\breeds\BreedRole.cs" />
+    <Compile Include="Records\Export\breeds\BreedRoleByBreed.cs" />
     <Compile Include="Records\Export\breeds\Head.cs" />
     <Compile Include="Records\Export\challenges\Challenge.cs" />
     <Compile Include="Records\Export\communication\CensoredWord.cs" />

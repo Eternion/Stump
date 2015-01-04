@@ -1,7 +1,7 @@
  
 
 
-// Generated on 10/26/2014 23:31:15
+// Generated on 01/04/2015 01:23:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,6 +42,7 @@ namespace DBSynchroniser.Records
         public int creatureBoneId;
         public Boolean canBePushed;
         public Boolean fastAnimsFun;
+        public Boolean canSwitchPos;
 
         int ID2ORecord.Id
         {
@@ -308,6 +309,13 @@ namespace DBSynchroniser.Records
             set { fastAnimsFun = value; }
         }
 
+        [D2OIgnore]
+        public Boolean CanSwitchPos
+        {
+            get { return canSwitchPos; }
+            set { canSwitchPos = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Monster)obj;
@@ -335,6 +343,7 @@ namespace DBSynchroniser.Records
             CreatureBoneId = castedObj.creatureBoneId;
             CanBePushed = castedObj.canBePushed;
             FastAnimsFun = castedObj.fastAnimsFun;
+            CanSwitchPos = castedObj.canSwitchPos;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -363,6 +372,7 @@ namespace DBSynchroniser.Records
             obj.creatureBoneId = CreatureBoneId;
             obj.canBePushed = CanBePushed;
             obj.fastAnimsFun = FastAnimsFun;
+            obj.canSwitchPos = CanSwitchPos;
             return obj;
         }
         
