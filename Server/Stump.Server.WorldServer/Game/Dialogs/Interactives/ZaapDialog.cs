@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
 {
     public class ZaapDialog : IDialog
     {
-        private List<Map> m_destinations = new List<Map>();
+        private readonly List<Map> m_destinations = new List<Map>();
 
         public ZaapDialog(Character character, InteractiveObject zaap)
         {
@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
                 m_destinations.Select(entry => entry.Id),
                 m_destinations.Select(entry => (short)entry.SubArea.Id),
                 m_destinations.Select(GetCostTo),
-                new[] { (sbyte)TeleporterTypeEnum.TELEPORTER_ZAAP },
+                m_destinations.Select(entry => (sbyte)TeleporterTypeEnum.TELEPORTER_ZAAP),
                 Zaap.Map.Id));
         }
 

@@ -146,7 +146,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
-
             InventoryHandler.SendInventoryContentMessage(client);
 
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR);
@@ -154,15 +153,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             //ContextHandler.SendSpellForgottenMessage(client);
 
             ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 21).Select(entry => (byte)entry).ToList());
-            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
 
             PvPHandler.SendAlignmentRankUpdateMessage(client);
+
+            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
 
             InventoryHandler.SendSpellListMessage(client, true);
             
             InitializationHandler.SendSetCharacterRestrictionsMessage(client);
 
             InventoryHandler.SendInventoryWeightMessage(client);
+
+            FriendHandler.SendFriendWarnOnConnectionStateMessage(client, client.Character.FriendsBook.WarnOnConnection);
+            FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);
+            GuildHandler.SendGuildMemberWarnOnConnectionStateMessage(client, client.Character.WarnOnGuildConnection);
 
             //Guild
             if (client.Character.GuildMember != null)
@@ -172,21 +176,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             if (client.Character.Mount != null)
                 MountHandler.SendMountSetMessage(client, client.Character.Mount.GetMountClientData());
 
-            FriendHandler.SendFriendWarnOnConnectionStateMessage(client, client.Character.FriendsBook.WarnOnConnection);
-            FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);
-            GuildHandler.SendGuildMemberWarnOnConnectionStateMessage(client, client.Character.WarnOnGuildConnection);
-
             client.Character.SendConnectionMessages();
 
             //InitializationHandler.SendOnConnectionEventMessage(client, 3);
 
             //Start Cinematic(Doesn't work for now)
-            if (client.Character.Record.LastUsage == null)
+            if ((DateTime.Now - client.Character.Record.LastUsage).Value.TotalSeconds <= 30)
                 BasicHandler.SendCinematicMessage(client, 10);
 
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client, client.Character);
 
             SendCharacterCapabilitiesMessage(client);
+
+            //Loading complete
+            SendCharacterLoadingCompleteMessage(client);
 
             // Update LastConnection and Last Ip
             client.WorldAccount.LastConnection = DateTime.Now;
@@ -204,8 +207,8 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             if (client.Account != null && client.Account.Login != "")
             {
-                SendCharactersListWithRemodelingMessage(client);
-
+                SendCharactersListMessage(client);
+                //SendCharactersListWithRemodelingMessage(client);
 
                 if (client.WorldAccount != null && client.StartupActions.Count > 0)
                 {
@@ -250,6 +253,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                                                                             (sbyte) characterRecord.Breed,
                                                                             characterRecord.Relook == 2 ? characterRecord.Sex == SexTypeEnum.SEX_MALE : characterRecord.Sex != SexTypeEnum.SEX_MALE));
 
+                if (!characterRecord.Rename && !characterRecord.Recolor && characterRecord.Relook == 0)
+                    continue;
+
                 var possibleChanges = (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NOT_APPLICABLE;
                 var mandatoryChanges = (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NOT_APPLICABLE;
 
@@ -288,7 +294,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)
         {
-            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations(), false));
+            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations(), true));
         }
 
         public static void SendCharacterCapabilitiesMessage(WorldClient client)

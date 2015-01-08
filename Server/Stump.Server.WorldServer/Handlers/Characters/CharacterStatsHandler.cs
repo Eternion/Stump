@@ -127,7 +127,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.Send(new CharacterLevelUpMessage(level));
         }
 
-
         public static void SendCharacterLevelUpInformationMessage(IPacketReceiver client, Character character, byte level)
         {
             client.Send(new CharacterLevelUpInformationMessage(level, character.Name, character.Id));
