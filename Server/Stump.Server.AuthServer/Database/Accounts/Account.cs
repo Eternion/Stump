@@ -66,7 +66,7 @@ namespace Stump.Server.AuthServer.Database
 
         public Account()
         {
-            AvailableBreedsFlag = 16383;
+            AvailableBreedsFlag = 65535;
             WorldCharacters = new List<WorldCharacter>();
         }
 

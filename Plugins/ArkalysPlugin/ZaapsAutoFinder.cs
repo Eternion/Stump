@@ -42,7 +42,7 @@ namespace ArkalysPlugin
 
         private static void OnCreatingCharacter(CharacterRecord record)
         {
-            record.KnownZaaps = m_zaaps.ToList();
+            record.KnownZaaps = m_zaaps.Where(x => x != null).ToList();
             WorldServer.Instance.IOTaskPool.AddMessage(() => CharacterManager.Instance.Database.Update(record));
         }
     }

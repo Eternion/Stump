@@ -34,6 +34,8 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 PlayableBreedEnum.Pandawa,
                 PlayableBreedEnum.Roublard,
                 PlayableBreedEnum.Zobal,
+                PlayableBreedEnum.Steamer,
+                PlayableBreedEnum.Eliatrope
             };
 
         public uint AvailableBreedsFlags
@@ -44,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
             }
         }
 
-        private Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
+        private readonly Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
         private Dictionary<int, Head> m_heads = new Dictionary<int, Head>();
 
         [Initialization(InitializationPass.Third)]

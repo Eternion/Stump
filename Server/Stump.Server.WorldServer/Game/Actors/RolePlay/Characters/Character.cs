@@ -2884,7 +2884,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ChatHistory = new ChatHistory(this);
 
             m_recordLoaded = true;
-            CharacterHandler.SendCharacterLoadingCompleteMessage(Client);
         }
 
         private void UnLoadRecord()
