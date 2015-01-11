@@ -2867,7 +2867,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             GuildMember = GuildManager.Instance.TryGetGuildMember(Id);
 
-            Mount = MountManager.Instance.TryGetMount(Id) != null ? new Mount(this) : null;
+            Mount = MountManager.Instance.TryGetMountByCharacterId(Id) != null ? new Mount(this) : null;
 
             Spells = new SpellInventory(this);
             Spells.LoadSpells();

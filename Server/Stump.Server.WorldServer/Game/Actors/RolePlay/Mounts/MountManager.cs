@@ -1,28 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Pool;
-using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
     public class MountManager : DataManager<MountManager>
     {
-        private UniqueIdProvider m_idProvider;
         private Dictionary<int, MountTemplate> m_mountTemplates;
-        private Dictionary<int, MountRecord> m_mountRecords;
-
-        private readonly object m_lock = new object();
 
         [Initialization(InitializationPass.Sixth)]
         public override void Initialize()
         {
             m_mountTemplates = Database.Query<MountTemplate>(MountTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_mountRecords = Database.Query<MountRecord>(MountRecordRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_idProvider = m_mountRecords.Any() ? new UniqueIdProvider(m_mountRecords.Select(x => x.Value.Id).Max()) : new UniqueIdProvider(1);
         }
 
         public MountTemplate[] GetTemplates()
@@ -38,56 +31,94 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public Mount CreateMount(Character character, bool sex, int modelid)
         {
-            var mount = new Mount(character, m_idProvider.Pop(), sex, modelid);
+            var mount = new Mount(sex, modelid);
 
-            AddMount(mount);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                AddMount(mount);
+                LinkMountToCharacter(character, mount);
+            });  
 
             return mount;
         }
 
-        public void AddMount(Mount mount)
+        public void LinkMountToCharacter(Character character, Mount mount)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => Database.Insert(mount.Record));
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() => {
+                var record = new MountCharacter
+                {
+                    CharacterId = character.Id,
+                    MountId = mount.Id
+                };
 
-            lock (m_lock)
-            {
-                mount.Record.IsNew = false;
-                m_mountRecords.Add(mount.Id, mount.Record);
-            }
+                Database.Insert(record);
+            });
         }
 
-        public bool DeleteMount(Mount mount)
+        public void UnlinkMountFromCharacter(Character character)
+        {
+            var record = Database.Query<MountCharacter>(string.Format(MountCharacterRelator.FetchByCharacterId, character.Id));
+
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () => Database.Delete(record));
+
+            DeleteMount(character.Mount);
+        }
+
+        public void LinkMountToPaddock(Paddock paddock, Mount mount, bool stabled)
+        {
+            var record = new MountPaddock
+            {
+                PaddockId = paddock.Id,
+                MountId = mount.Id,
+                Stabled = stabled
+            };
+
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () => Database.Insert(record));
+        }
+
+        public void UnlinkMountFromPaddock(Mount mount)
+        {
+            var record = Database.Query<MountPaddock>(string.Format(MountPaddockRelator.FetchByMountId, mount.Id));
+
+            WorldServer.Instance.IOTaskPool.AddMessage(
+                () => Database.Delete(record));
+        }
+
+        public void AddMount(Mount mount)
+        {
+            WorldServer.Instance.IOTaskPool.ExecuteInContext
+                (() => Database.Insert(mount.Record));
+
+            mount.Record.IsNew = false;
+        }
+
+        public void DeleteMount(Mount mount)
         {
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () => Database.Delete(mount.Record));
-
-            lock (m_lock)
-            {
-                m_mountRecords.Remove(mount.Id);
-                return true;
-            }
         }
 
-        public MountRecord TryGetMount(int characterId)
+        public MountRecord TryGetMountByCharacterId(int characterId)
         {
-            lock (m_lock)
-            {
-                return m_mountRecords.FirstOrDefault(x => x.Value.State == MountStateEnum.EQUIPED && x.Value.OwnerId == characterId).Value;
-            }
+            var record = Database.Query<MountCharacter>(string.Format(MountCharacterRelator.FetchByCharacterId, characterId)).FirstOrDefault();
+            return record == null ? null : TryGetMount(record.MountId);
         }
 
-        public MountRecord TryGetMountById(int mountId)
+        public MountRecord TryGetMount(int mountId)
         {
-            lock (m_lock)
-            {
-                return m_mountRecords.FirstOrDefault(x => x.Value.Id == mountId).Value;
-            }
+            return Database.Query<MountRecord>(string.Format(MountRecordRelator.FindById, mountId)).FirstOrDefault();
+        }
+
+        public List<MountRecord> TryGetMountsByPaddockId(int paddockId, bool stabled)
+        {
+            return Database.Fetch<MountRecord>(string.Format(MountRecordRelator.FetchByPaddockId, paddockId));
         }
 
         public Mount GetMountById(int mountId)
         {
-            var record = TryGetMountById(mountId);
+            var record = TryGetMount(mountId);
             return record == null ? null : new Mount(record);
         }
     }

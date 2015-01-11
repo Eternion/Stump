@@ -217,6 +217,8 @@
     <Compile Include="Database\Monsters\MonsterSpell.cs" />
     <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
     <Compile Include="Database\Monsters\MonsterTemplate.cs" />
+    <Compile Include="Database\Mounts\MountCharacter.cs" />
+    <Compile Include="Database\Mounts\MountPaddock.cs" />
     <Compile Include="Database\Mounts\MountRecord.cs" />
     <Compile Include="Database\Mounts\MountTemplate.cs" />
     <Compile Include="Database\Npcs\Actions\NpcAction.cs" />

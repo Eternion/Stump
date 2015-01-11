@@ -21,8 +21,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
             if (record.Map == null)
                 throw new Exception(string.Format("Paddock's map({0}) not found", record.MapId));
 
-            StabledMounts = record.StabledMounts.Select(x => MountManager.Instance.GetMountById(x)).ToList();
-            PaddockedMounts = record.PaddockedMounts.Select(x => MountManager.Instance.GetMountById(x)).ToList();
+            StabledMounts = MountManager.Instance.TryGetMountsByPaddockId(record.Id, true).Select(x => new Mount(x)).ToList();
+            PaddockedMounts = MountManager.Instance.TryGetMountsByPaddockId(record.Id, false).Select(x => new Mount(x)).ToList();
         }
 
         public WorldMapPaddockRecord Record
@@ -107,9 +107,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 
         public void Save()
         {
-            Record.PaddockedMounts = PaddockedMounts.Select(x => x.Id).ToList();
-            Record.StabledMounts = StabledMounts.Select(x => x.Id).ToList();
-
             WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Update(Record));
 
             IsRecordDirty = false;
@@ -130,24 +127,32 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
         {
             IsRecordDirty = true;
             PaddockedMounts.Add(mount);
+
+            MountManager.Instance.LinkMountToPaddock(this, mount, false);
         }
 
         public void RemoveMountFromPaddock(Mount mount)
         {
             IsRecordDirty = true;
             PaddockedMounts.Remove(mount);
+
+            MountManager.Instance.UnlinkMountFromPaddock(mount);
         }
 
         public void AddMountToStable(Mount mount)
         {
             IsRecordDirty = true;
             StabledMounts.Add(mount);
+
+            MountManager.Instance.LinkMountToPaddock(this, mount, true);
         }
 
         public void RemoveMountFromStable(Mount mount)
         {
             IsRecordDirty = true;
             StabledMounts.Remove(mount);
+
+            MountManager.Instance.UnlinkMountFromPaddock(mount);
         }
 
         public Mount GetPaddockedMount(int mountId)
