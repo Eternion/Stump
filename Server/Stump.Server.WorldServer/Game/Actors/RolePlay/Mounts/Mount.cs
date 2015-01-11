@@ -1,7 +1,6 @@
 ﻿using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -31,10 +30,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public Mount(Character character)
         {
-            Record = MountManager.Instance.TryGetMount(character.Id);
+            Record = MountManager.Instance.TryGetMountByCharacterId(character.Id);
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
+            Owner = character;
         }
 
         public Mount(MountRecord record)
@@ -45,15 +45,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
         }
 
-        public Mount(Character character, int globalId, bool sex, int modelid)
+        public Mount(bool sex, int modelid)
         {
             Record = new MountRecord
             {
-                Id = globalId,
-                OwnerId = character.Id,
                 IsNew = true,
                 ModelId = modelid,
-                State = MountStateEnum.EQUIPED, 
                 Experience = ExperienceManager.Instance.GetMountLevelExperience(1)
             };
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
@@ -81,10 +78,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             private set { Record.Id = value; }
         }
 
+        public Character Owner
+        {
+            get;
+            set;
+        }
+
         public int OwnerId
         {
-            get { return Record.OwnerId; }
-            private set { Record.OwnerId = value; }
+            get { return Owner != null ? Owner.Id : 0; }
         }
 
         public bool IsRiding
@@ -102,16 +104,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 IsDirty = true;
             }
 
-        }
-
-        public MountStateEnum State
-        {
-            get { return Record.State; }
-            set
-            {
-                Record.State = value;
-                IsDirty = true;
-            }
         }
 
         public MountTemplate Model
@@ -298,7 +290,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             MountHandler.SendMountUnSetMessage(character.Client);
             MountHandler.SendMountReleaseMessage(character.Client, character.Mount.Id);
 
-            MountManager.Instance.DeleteMount(character.Mount);
+            MountManager.Instance.UnlinkMountFromCharacter(character);
             character.Mount = null;
         }
 
@@ -395,7 +387,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 ancestor = new int[0],
                 behaviors = new int[0],
                 name = Name,
-                ownerId = Record.OwnerId,
+                ownerId = OwnerId,
                 experience = Experience,
                 experienceForLevel = ExperienceLevelFloor,
                 experienceForNextLevel = ExperienceNextLevelFloor,
@@ -424,14 +416,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         public MountInformationsForPaddock GetMountInformationsForPaddock()
         {
             var character = CharacterManager.Instance.GetCharacterById(OwnerId);
-            return new MountInformationsForPaddock(Model.Id, Name, character.Name);
+            return new MountInformationsForPaddock(Model.Id, Name, character != null ? character.Name : "");
         }
 
         #endregion
 
         public void Save(ORM.Database database)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
             {
                 if (Record.IsNew)
                     database.Insert(Record);

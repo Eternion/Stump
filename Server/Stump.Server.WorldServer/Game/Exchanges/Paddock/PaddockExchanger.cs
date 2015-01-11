@@ -3,7 +3,6 @@ using System.Linq;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -11,7 +10,6 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.Mounts;
-using Item = Stump.Server.WorldServer.Game.Items.Item;
 using MapPaddock = Stump.Server.WorldServer.Game.Maps.Paddocks.Paddock;
 using Mount = Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts.Mount;
 
@@ -59,8 +57,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public void EquipMount(Mount mount)
         {
+            mount.Owner = Character;
             Character.Mount = mount;
 
+            MountManager.Instance.LinkMountToCharacter(Character, mount);
             MountHandler.SendMountSetMessage(Character.Client, mount.GetMountClientData());
         }
 
@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (equip && Character.HasEquipedMount())
                 return false;
 
-            if (Character.Id != mount.OwnerId)
+            if (mount.Owner != null && Character.Id != mount.Owner.Id)
                 return false;
 
             if (!equip || Character.Level >= Mount.RequiredLevel)
@@ -100,7 +100,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.AddMountToPaddock(Character.Mount);
             InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, Character.Mount);
 
-            Character.Mount.State = MountStateEnum.PADDOCKED;
             Character.Mount.Release(Character);
 
             return true;
@@ -117,7 +116,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.AddMountToStable(Character.Mount);
             InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, Character.Mount);
 
-            Character.Mount.State = MountStateEnum.STABLED;
             Character.Mount.Release(Character);
 
             return true;
@@ -135,7 +133,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.RemoveMountFromPaddock(mount);
             InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
 
-            mount.State = MountStateEnum.EQUIPED;
             EquipMount(mount);
 
             return true;
@@ -152,8 +149,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             Paddock.RemoveMountFromPaddock(mount);
             Paddock.AddMountToStable(mount);
-
-            mount.State = MountStateEnum.STABLED;
 
             InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
             InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, mount);
@@ -173,8 +168,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.RemoveMountFromStable(mount);
             Paddock.AddMountToPaddock(mount);
 
-            mount.State = MountStateEnum.PADDOCKED;
-
             InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
             InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, mount);
 
@@ -193,7 +186,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.RemoveMountFromStable(mount);
             InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
 
-            mount.State = MountStateEnum.EQUIPED;
             EquipMount(mount);
 
             return true;
@@ -211,7 +203,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.RemoveMountFromStable(mount);
             InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
 
-            mount.State = MountStateEnum.STOCKED;
             StoreMount(mount);
 
             return true;
@@ -229,7 +220,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.RemoveMountFromPaddock(mount);
             InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
 
-            mount.State = MountStateEnum.STOCKED;
             StoreMount(mount);
 
             return true;
@@ -245,7 +235,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             StoreMount(Character.Mount);
 
-            Character.Mount.State = MountStateEnum.STOCKED;
             Character.Mount.Release(Character);
 
             return true;
@@ -261,12 +250,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.AddMountToStable(mount);
             Character.Inventory.RemoveItem(item);
 
-            mount.State = MountStateEnum.STABLED;
-
             InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, mount);
 
             return true;
         }
+
         public bool InventoryToPaddock(int itemId)
         {
             var item = Character.Inventory.TryGetItem(itemId);
@@ -276,8 +264,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             Paddock.AddMountToPaddock(mount);
             Character.Inventory.RemoveItem(item);
-
-            mount.State = MountStateEnum.PADDOCKED;
 
             InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, mount);
 
@@ -296,9 +282,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             Character.Inventory.RemoveItem(item);
 
-            mount.State = MountStateEnum.EQUIPED;
-
-           EquipMount(mount);
+            EquipMount(mount);
 
             return true;
         }
