@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (equip && Character.HasEquipedMount())
                 return false;
 
-            if (mount.Owner != null && Character.Id != mount.Owner.Id)
+            if (mount.Owner != null && Character.Id != mount.OwnerId)
                 return false;
 
             if (!equip || Character.Level >= Mount.RequiredLevel)
