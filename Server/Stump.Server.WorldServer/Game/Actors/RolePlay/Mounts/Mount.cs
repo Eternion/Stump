@@ -84,9 +84,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             set;
         }
 
+        private int m_ownerId;
         public int OwnerId
         {
-            get { return Owner != null ? Owner.Id : 0; }
+            get { return Owner != null ? Owner.Id : m_ownerId; }
+            set { m_ownerId = value; }
         }
 
         public bool IsRiding

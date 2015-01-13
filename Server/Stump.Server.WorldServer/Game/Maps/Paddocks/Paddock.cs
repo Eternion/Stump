@@ -21,8 +21,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
             if (record.Map == null)
                 throw new Exception(string.Format("Paddock's map({0}) not found", record.MapId));
 
-            StabledMounts = MountManager.Instance.TryGetMountsByPaddockId(record.Id, true).Select(x => new Mount(x)).ToList();
-            PaddockedMounts = MountManager.Instance.TryGetMountsByPaddockId(record.Id, false).Select(x => new Mount(x)).ToList();
+            StabledMounts = MountManager.Instance.TryGetMountsByPaddockId(record.Id, true).Select(x => PaddockManager.Instance.LoadMount(x)).ToList();
+            PaddockedMounts = MountManager.Instance.TryGetMountsByPaddockId(record.Id, false).Select(x => PaddockManager.Instance.LoadMount(x)).ToList();
         }
 
         public WorldMapPaddockRecord Record

@@ -5,6 +5,7 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
+using Stump.Server.WorldServer.Handlers.Mounts;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 {
@@ -37,6 +38,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             {
                 AddMount(mount);
                 LinkMountToCharacter(character, mount);
+
+                mount.Owner = character;
+                character.Mount = mount;
+
+                MountHandler.SendMountSetMessage(character.Client, mount.GetMountClientData());
             });  
 
             return mount;
@@ -57,12 +63,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public void UnlinkMountFromCharacter(Character character)
         {
-            var record = Database.Query<MountCharacter>(string.Format(MountCharacterRelator.FetchByCharacterId, character.Id));
-
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => Database.Delete(record));
-
-            DeleteMount(character.Mount);
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() => {
+                var record = Database.Query<MountCharacter>(string.Format(MountCharacterRelator.FetchByCharacterId, character.Id)).FirstOrDefault();
+                Database.Delete(record);     
+            });
         }
 
         public void LinkMountToPaddock(Paddock paddock, Mount mount, bool stabled)
@@ -71,19 +75,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             {
                 PaddockId = paddock.Id,
                 MountId = mount.Id,
+                CharacterId = mount.OwnerId,
                 Stabled = stabled
             };
 
-            WorldServer.Instance.IOTaskPool.AddMessage(
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(
                 () => Database.Insert(record));
         }
 
         public void UnlinkMountFromPaddock(Mount mount)
         {
-            var record = Database.Query<MountPaddock>(string.Format(MountPaddockRelator.FetchByMountId, mount.Id));
-
-            WorldServer.Instance.IOTaskPool.AddMessage(
-                () => Database.Delete(record));
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+            {
+                var record = Database.Query<MountPaddock>(string.Format(MountPaddockRelator.FetchByMountId, mount.Id)).FirstOrDefault();
+                Database.Delete(record);
+            });
         }
 
         public void AddMount(Mount mount)
