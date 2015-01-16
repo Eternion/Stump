@@ -335,9 +335,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightSynchronizeMessage(WorldClient client, IFight fight)
         {
-            client.Send(
-                new GameFightSynchronizeMessage(
-                    fight.GetAllFighters().Select(entry => entry.GetGameFightFighterInformations(client))));
+            client.Send(new GameFightSynchronizeMessage(
+                    fight.GetAllFighters().Select(entry => entry is SummonedClone ?
+                        (entry as SummonedClone).GetGameFightFighterNamedInformations() :
+                        entry.GetGameFightFighterInformations(client))));
         }
 
         public static void SendGameFightNewRoundMessage(IPacketReceiver client, int roundNumber)
@@ -373,13 +374,23 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         public static void SendGameFightShowFighterMessage(WorldClient client, FightActor fighter)
-        {   
-            client.Send(new GameFightShowFighterMessage(fighter.GetGameFightFighterInformations(client)));
+        {
+            var fighterInfos = fighter.GetGameFightFighterInformations(client);
+
+            if (fighter is SummonedClone)
+                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+
+            client.Send(new GameFightShowFighterMessage(fighterInfos));
         }
 
         public static void SendGameFightRefreshFighterMessage(WorldClient client, FightActor fighter)
         {
-            client.Send(new GameFightRefreshFighterMessage(fighter.GetGameFightFighterInformations(client)));
+            var fighterInfos = fighter.GetGameFightFighterInformations(client);
+
+            if (fighter is SummonedClone)
+                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+
+            client.Send(new GameFightRefreshFighterMessage(fighterInfos));
         }
 
         public static void SendGameFightRemoveTeamMemberMessage(IPacketReceiver client, FightActor fighter)

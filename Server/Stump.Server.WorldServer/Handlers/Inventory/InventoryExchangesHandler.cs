@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
@@ -7,16 +9,19 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Merchant;
+using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 using Stump.Server.WorldServer.Game.Exchanges.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -237,6 +242,57 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             exchange.Open();
         }
 
+        [WorldHandler(ExchangeHandleMountStableMessage.Id)]
+        public static void HandleExchangeHandleMountStableMessage(WorldClient client, ExchangeHandleMountStableMessage message)
+        {
+            if (!client.Character.IsInExchange())
+                return;
+
+            var exchanger = client.Character.Exchanger as PaddockExchanger;
+            if (exchanger == null)
+                return;
+
+            switch ((StableExchangeActionsEnum)message.actionType)
+            {
+                case StableExchangeActionsEnum.EQUIP_TO_STABLE:
+                    exchanger.EquipToStable(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.STABLE_TO_EQUIP:
+                    exchanger.StableToEquip(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.STABLE_TO_INVENTORY:
+                    exchanger.StableToInventory(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.INVENTORY_TO_STABLE:
+                     exchanger.InventoryToStable(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.STABLE_TO_PADDOCK:
+                    exchanger.StableToPaddock(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.PADDOCK_TO_STABLE:
+                    exchanger.PaddockToStable(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.EQUIP_TO_PADDOCK:
+                    exchanger.EquipToPaddock(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.PADDOCK_TO_EQUIP:
+                    exchanger.PaddockToEquip(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.EQUIP_TO_INVENTORY:
+                    exchanger.EquipToInventory(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.PADDOCK_TO_INVENTORY:
+                    exchanger.PaddockToInventory(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.INVENTORY_TO_EQUIP:
+                    exchanger.InventoryToEquip(message.rideId);
+                    break;
+                case StableExchangeActionsEnum.INVENTORY_TO_PADDOCK:
+                    exchanger.InventoryToPaddock(message.rideId);
+                    break;
+            }
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
@@ -318,6 +374,31 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             client.Send(new ExchangeShopStockStartedMessage(
                             merchantBag.Select(x => x.GetObjectItemToSell())));
+        }
+
+        public static void SendExchangeStartOkMountMessage(IPacketReceiver client, List<Mount> stabledMounts, List<Mount> paddockedMounts)
+        {
+            client.Send(new ExchangeStartOkMountMessage(stabledMounts.Select(x => x.GetMountClientData()), paddockedMounts.Select(x => x.GetMountClientData())));
+        }
+
+        public static void SendExchangeMountPaddockAddMessage(IPacketReceiver client, Mount mount)
+        {
+            client.Send(new ExchangeMountPaddockAddMessage(mount.GetMountClientData()));
+        }
+
+        public static void SendExchangeMountStableAddMessage(IPacketReceiver client, Mount mount)
+        {
+            client.Send(new ExchangeMountStableAddMessage(mount.GetMountClientData()));
+        }
+
+        public static void SendExchangeMountPaddockRemoveMessage(IPacketReceiver client, Mount mount)
+        {
+            client.Send(new ExchangeMountPaddockRemoveMessage(mount.Id));
+        }
+
+        public static void SendExchangeMountStableRemoveMessage(IPacketReceiver client, Mount mount)
+        {
+            client.Send(new ExchangeMountStableRemoveMessage(mount.Id));
         }
     }
 }

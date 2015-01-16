@@ -47,6 +47,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             return Database.Query<CharacterRecord>(string.Format(CharacterRelator.FetchById, id)).FirstOrDefault();
         }
+
         public CharacterRecord GetCharacterByName(string name)
         {
             return Database.Query<CharacterRecord>(CharacterRelator.FetchByName, name).FirstOrDefault();
