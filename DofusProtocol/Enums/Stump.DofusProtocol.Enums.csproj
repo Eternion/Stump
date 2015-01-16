@@ -143,11 +143,13 @@
     <Compile Include="Custom\ActionsEnum.cs" />
     <Compile Include="Custom\InteractiveTypeEnum.cs" />
     <Compile Include="Custom\ItemSuperTypeEnum.cs" />
+    <Compile Include="Custom\MountStateEnum.cs" />
     <Compile Include="Custom\NotificationEnum.cs" />
     <Compile Include="Custom\OptionalFeaturesEnum.cs" />
     <Compile Include="Custom\OrnamentEnum.cs" />
     <Compile Include="Custom\PartyFightReasonEnum.cs" />
     <Compile Include="Custom\SpellShapeEnum.cs" />
+    <Compile Include="Custom\StableExchangeActionsEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />
     <Compile Include="Custom\ContinentIdEnum.cs" />
     <Compile Include="Custom\MountBehaviorEnum.cs" />

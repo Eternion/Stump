@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
@@ -34,6 +35,10 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
             if (fightCount > 0)
                 SendMapFightCountMessage(client, fightCount);
+
+            var paddock = PaddockManager.Instance.GetPaddock(message.mapId);
+            if (paddock != null)
+                client.Send(paddock.GetPaddockPropertiesMessage());
         }
 
         [WorldHandler(MapRunningFightListRequestMessage.Id)]
