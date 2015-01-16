@@ -247,6 +247,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (mount == null)
                 return false;
 
+            mount.Owner = Character;
             Paddock.AddMountToStable(mount);
             Character.Inventory.RemoveItem(item);
 
@@ -262,6 +263,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (mount == null)
                 return false;
 
+            mount.Owner = Character;
             Paddock.AddMountToPaddock(mount);
             Character.Inventory.RemoveItem(item);
 
@@ -280,6 +282,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (mount == null)
                 return false;
 
+            mount.Owner = Character;
             Character.Inventory.RemoveItem(item);
 
             EquipMount(mount);
