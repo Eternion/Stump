@@ -2356,6 +2356,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             OnCharacterContextChanged(false);
             StartRegen();
 
+            if (Map == null)
+                return;
+
             NextMap.Area.ExecuteInContext(() =>
             {
                 LastMap = Map;

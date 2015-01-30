@@ -36,32 +36,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             private set;
         }
 
-        public void StoreMount(Mount mount)
-        {
-            var item = ItemManager.Instance.CreatePlayerItem(Character, 7806, 1);
-
-            var date = DateTime.Now;
-
-            var nameEffect = new EffectString((short)EffectsEnum.Effect_Name, mount.Name, new EffectBase());
-            var belongEffect = new EffectString((short)EffectsEnum.Effect_BelongsTo, Character.Name, new EffectBase());
-            var validityEffect = new EffectDuration((short)EffectsEnum.Effect_Validity, 39, 23, 59, new EffectBase());
-            var mountEffect = new EffectMount((short)EffectsEnum.Effect_ViewMountCharacteristics, mount.Id, date.GetUnixTimeStampDouble(), mount.ModelId, new EffectBase());
-
-            item.Effects.Add(nameEffect);
-            item.Effects.Add(belongEffect);
-            item.Effects.Add(mountEffect);
-            item.Effects.Add(validityEffect);
-
-            Character.Inventory.AddItem(item);
-        }
-
         public void EquipMount(Mount mount)
         {
             mount.Owner = Character;
             Character.Mount = mount;
 
+            mount.ApplyMountEffects();
+
             MountManager.Instance.LinkMountToCharacter(Character, mount);
             MountHandler.SendMountSetMessage(Character.Client, mount.GetMountClientData());
+            MountHandler.SendMountXpRatioMessage(Character.Client, mount.GivenExperience);
         }
 
         public bool HasMountRight(Mount mount, bool equip = false)
@@ -203,7 +187,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.RemoveMountFromStable(mount);
             InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
 
-            StoreMount(mount);
+            MountManager.Instance.StoreMount(Character, mount);
 
             return true;
         }
@@ -220,7 +204,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             Paddock.RemoveMountFromPaddock(mount);
             InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
 
-            StoreMount(mount);
+            MountManager.Instance.StoreMount(Character, mount);
 
             return true;
         }
@@ -233,7 +217,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (Character.Mount.Id != mountId)
                 return false;
 
-            StoreMount(Character.Mount);
+            MountManager.Instance.StoreMount(Character, Character.Mount);
 
             Character.Mount.Release(Character);
 

@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
         public Mount LoadMount(MountRecord record)
         {
             var mount = new Mount(record);
-            var mountPaddock = Database.Query<MountPaddock>(MountPaddockRelator.FetchByMountId).FirstOrDefault();
+            var mountPaddock = Database.Query<MountPaddock>(string.Format(MountPaddockRelator.FetchByMountId, mount.Id)).FirstOrDefault();
             if (mountPaddock != null)
                 mount.OwnerId = mountPaddock.CharacterId;
 
