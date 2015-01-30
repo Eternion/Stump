@@ -1,9 +1,15 @@
-﻿using NLog;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Mounts;
 
@@ -34,7 +40,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
+            Effects = MountManager.Instance.GetMountEffects(this);
             Owner = character;
+
+            ApplyMountEffects(false);
         }
 
         public Mount(MountRecord record)
@@ -43,19 +52,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
+            Effects = MountManager.Instance.GetMountEffects(this);
         }
 
-        public Mount(bool sex, int modelid)
+        public Mount(bool sex, int templateId)
         {
             Record = new MountRecord
             {
                 IsNew = true,
-                ModelId = modelid,
+                TemplateId = templateId,
                 Experience = ExperienceManager.Instance.GetMountLevelExperience(1)
             };
             Level = ExperienceManager.Instance.GetMountLevel(Experience);
             Sex = sex;
             Name = Model.Name;
+            Effects = MountManager.Instance.GetMountEffects(this);
         }
 
         #region Properties
@@ -108,18 +119,32 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         }
 
+        public List<EffectInteger> Effects
+        {
+            get;
+            private set;
+        }
+
         public MountTemplate Model
         {
             get { return Record.Model; }
         }
 
-        public int ModelId
+        public int TemplateId
         {
-            get { return Record.ModelId; }
+            get { return Record.TemplateId; }
             set
             {
-                Record.ModelId = value;
+                Record.TemplateId = value;
                 IsDirty = true;
+            }
+        }
+
+        public ItemTemplate ScrollItem
+        {
+            get
+            {
+                return ItemManager.Instance.TryGetTemplate(Model.ScrollId == 0 ? 7806 : (int)Model.ScrollId);
             }
         }
 
@@ -278,6 +303,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         #endregion
 
+        public void ApplyMountEffects(bool send = true)
+        {
+            if (Owner == null)
+                return;
+
+            var item = ItemManager.Instance.CreatePlayerItem(Owner, 7806, 1);
+            item.Effects.AddRange(Effects);
+
+            Owner.Inventory.ApplyItemEffects(item, send, true);
+        }
+
+        public void UnApplyMountEffects()
+        {
+            if (Owner == null)
+                return;
+
+            var item = ItemManager.Instance.CreatePlayerItem(Owner, 7806, 1);
+            item.Effects.AddRange(Effects);
+
+            Owner.Inventory.ApplyItemEffects(item);
+        }
+
         public void RenameMount(Character character, string name)
         {
             Name = name;
@@ -288,6 +335,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         public void Release(Character character)
         {
             Dismount(character);
+
+            UnApplyMountEffects();
 
             MountHandler.SendMountUnSetMessage(character.Client);
             MountHandler.SendMountReleaseMessage(character.Client, character.Mount.Id);
@@ -358,6 +407,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             ExperienceLevelFloor = ExperienceManager.Instance.GetGuildLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
 
+            UnApplyMountEffects();
+            Effects = MountManager.Instance.GetMountEffects(this);
+            ApplyMountEffects();
+
             MountHandler.SendMountSetMessage(character.Client, GetMountClientData());
         }
 
@@ -411,7 +464,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 boostMax = 1000,
                 reproductionCount = ReproductionCount,
                 reproductionCountMax = ReproductionCountMax,
-                effectList = new ObjectEffectInteger[0]
+                effectList = Effects.Select(x => x.GetObjectEffect() as ObjectEffectInteger)
             };
         }
 

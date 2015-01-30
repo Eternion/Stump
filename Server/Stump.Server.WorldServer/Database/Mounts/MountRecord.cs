@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
         /// </summary>
         public static string FindById = "SELECT * FROM mounts WHERE Id={0}";
 
-        public static string FetchByPaddockId = "SELECT mounts.* FROM mounts JOIN mounts_paddocks ON mounts.Id = mounts_paddocks.MountId WHERE mounts_paddocks.PaddockId={0}";
+        public static string FetchByPaddockId = "SELECT mounts.* FROM mounts JOIN mounts_paddocks ON mounts.Id = mounts_paddocks.MountId WHERE mounts_paddocks.PaddockId={0} AND Stabled={1}";
     }
 
     [TableName("mounts")]
@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
             set;
         }
 
-        public int ModelId
+        public int TemplateId
         {
             get;
             set;
@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Database.Mounts
         [Ignore]
         public MountTemplate Model
         {
-            get { return MountManager.Instance.GetTemplate(ModelId); }
+            get { return MountManager.Instance.GetTemplate(TemplateId); }
         }
 
         public long Experience

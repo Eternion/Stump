@@ -12,7 +12,9 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Basic;
@@ -597,10 +599,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return newitem;
         }
 
-        private void ApplyItemEffects(BasePlayerItem item, bool send = true)
+        public void ApplyItemEffects(BasePlayerItem item, bool send = true, bool forceApply = false)
         {
             foreach (var handler in item.Effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, item)))
             {
+                if (forceApply)
+                    handler.Operation = ItemEffectHandler.HandlerOperation.APPLY;
+
                 handler.Apply();
             }
 
