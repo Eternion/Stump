@@ -205,7 +205,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             //Mount
             if (client.Character.Mount != null)
+            {
                 MountHandler.SendMountSetMessage(client, client.Character.Mount.GetMountClientData());
+                MountHandler.SendMountXpRatioMessage(client, client.Character.Mount.GivenExperience);
+            }
 
             FriendHandler.SendFriendWarnOnConnectionStateMessage(client, client.Character.FriendsBook.WarnOnConnection);
             FriendHandler.SendFriendWarnOnLevelGainStateMessage(client, client.Character.FriendsBook.WarnOnLevel);
