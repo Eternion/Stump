@@ -259,7 +259,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharactersListMessage(WorldClient client)
         {
-            var characters = client.Characters.Select(
+            var characters = client.Characters.OrderByDescending(x => x.LastUsage).Select(
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
@@ -283,7 +283,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var charactersToRename = new List<int>();
             var unusableCharacters = new List<int>();
 
-            foreach (var characterRecord in client.Characters)
+            foreach (var characterRecord in client.Characters.OrderByDescending(x => x.LastUsage))
             {
                 characterBaseInformations.Add(new CharacterBaseInformations(characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
