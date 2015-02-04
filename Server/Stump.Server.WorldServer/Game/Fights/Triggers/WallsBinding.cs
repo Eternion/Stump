@@ -110,11 +110,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 }
                 else
                 {
-                    if (!m_intersections.Contains(existantWall.WallBinding))
-                    {
-                        m_intersections.Add(existantWall.WallBinding);
-                        existantWall.WallBinding.Removed += OnIntersectionRemoved;
-                    }
+                    if (m_intersections.Contains(existantWall.WallBinding))
+                        continue;
+
+                    m_intersections.Add(existantWall.WallBinding);
+                    existantWall.WallBinding.Removed += OnIntersectionRemoved;
                 }
 
             }
@@ -143,6 +143,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             {  
                 wall.Remove();
             }
+
             m_walls.Clear();
             OnRemoved();
         }
