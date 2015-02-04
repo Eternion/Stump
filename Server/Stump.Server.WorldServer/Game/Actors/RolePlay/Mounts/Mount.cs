@@ -9,7 +9,6 @@ using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
-using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Mounts;
 
@@ -41,6 +40,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
             ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
             Effects = MountManager.Instance.GetMountEffects(this);
+
             Owner = character;
 
             ApplyMountEffects(false);
@@ -67,6 +67,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             Sex = sex;
             Name = Model.Name;
             Effects = MountManager.Instance.GetMountEffects(this);
+            Behaviors = new List<MountBehaviorEnum>();
         }
 
         #region Properties
@@ -123,6 +124,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
         {
             get;
             private set;
+        }
+
+        public List<MountBehaviorEnum> Behaviors
+        {
+            get { return Record.Behaviors.Select(x => (MountBehaviorEnum)x).ToList(); }
+            private set { Record.Behaviors = value.Select(x => (uint)x).ToList(); }
         }
 
         public MountTemplate Model
@@ -402,10 +409,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             OnLevelChanged(character);
         }
 
+        public void AddBehavior(MountBehaviorEnum behavior)
+        {
+            var behaviors = Behaviors;
+            behaviors.Add(behavior);
+
+            Behaviors = behaviors;
+        }
+
         protected virtual void OnLevelChanged(Character character)
         {
-            ExperienceLevelFloor = ExperienceManager.Instance.GetGuildLevelExperience(Level);
-            ExperienceNextLevelFloor = ExperienceManager.Instance.GetGuildNextLevelExperience(Level);
+            ExperienceLevelFloor = ExperienceManager.Instance.GetMountLevelExperience(Level);
+            ExperienceNextLevelFloor = ExperienceManager.Instance.GetMountNextLevelExperience(Level);
 
             UnApplyMountEffects();
             Effects = MountManager.Instance.GetMountEffects(this);
@@ -440,7 +455,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 id = Id,
                 model = Model.Id,
                 ancestor = new int[0],
-                behaviors = new int[0],
+                behaviors = Behaviors.Select(x => (int)x),
                 name = Name,
                 ownerId = OwnerId,
                 experience = Experience,

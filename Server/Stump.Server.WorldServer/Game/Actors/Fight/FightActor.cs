@@ -272,6 +272,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, amount);
         }
 
+        public event Action<FightActor, bool> ActorPushed;
+
+        public virtual void OnActorPushed(FightActor fighter, bool takeDamage)
+        {
+            var handler = ActorPushed;
+            if (handler != null)
+                handler(fighter, takeDamage);
+        }
+
         #endregion
 
         #region Constructor
@@ -683,6 +692,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return shape.GetCells(Cell, Map);
         }
+
         public int GetSpellRange(SpellLevelTemplate spell)
         {
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));

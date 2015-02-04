@@ -50,6 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
                 var range = SubRangeForActor == actor ? (integerEffect.Value - 1) : integerEffect.Value;
+                var takeDamage = false;
 
                 for (var i = 0; i < range; i++)
                 {
@@ -69,7 +70,27 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                 IgnoreDamageReduction = false
                             };
 
+                            takeDamage = true;
                             actor.InflictDamage(damage);
+
+                            if (nextCell != null)
+                            {
+                                var fighter = Fight.GetOneFighter(Map.Cells[nextCell.CellId]);
+                                if (fighter != null)
+                                {
+                                    pushbackDamages = pushbackDamages / 2 - fighter.Stats[PlayerFields.PushDamageReduction];
+                                    damage = new Fights.Damage(pushbackDamages)
+                                    {
+                                        Source = actor,
+                                        School = EffectSchoolEnum.Unknown,
+                                        IgnoreDamageBoost = true,
+                                        IgnoreDamageReduction = false
+                                    };
+
+                                    fighter.InflictDamage(damage);
+                                    fighter.OnActorPushed(actor, true);
+                                }
+                            }
                         }
 
                         break;
@@ -94,6 +115,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
+                actor.OnActorPushed(Caster, takeDamage);
             }
 
             return true;

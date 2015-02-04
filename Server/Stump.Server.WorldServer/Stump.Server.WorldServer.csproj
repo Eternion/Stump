@@ -128,6 +128,7 @@
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\RoyalMouthBrain.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
     <Compile Include="AI\Fights\Spells\SpellCastInformations.cs" />
     <Compile Include="AI\Fights\Spells\SpellCategory.cs" />
@@ -453,6 +454,7 @@
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
+    <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ShieldItem.cs" />

@@ -1,8 +1,10 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs.Guilds;
+using Stump.Server.WorldServer.Handlers.Mounts;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
@@ -141,6 +143,30 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             panel.Open();
 
             return 0;
+        }
+    }
+
+    [ItemId(20838)]
+    public class ChameleonBehaviorPotion : BasePlayerItem
+    {
+        public ChameleonBehaviorPotion(Character owner, PlayerItemRecord record)
+            : base(owner, record)
+        {
+        }
+
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
+        {
+            if (!Owner.HasEquipedMount())
+                return 0;
+
+            if (Owner.Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
+                return 0;
+
+            Owner.Mount.AddBehavior(MountBehaviorEnum.Caméléone);
+
+            MountHandler.SendMountSetMessage(Owner.Client, Owner.Mount.GetMountClientData());
+
+            return 1;
         }
     }
 }

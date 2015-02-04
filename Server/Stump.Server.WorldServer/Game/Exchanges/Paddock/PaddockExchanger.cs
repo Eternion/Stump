@@ -1,12 +1,8 @@
-﻿using System;
-using System.Linq;
-using Stump.Core.Extensions;
+﻿using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
-using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.Mounts;
