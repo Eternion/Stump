@@ -2074,7 +2074,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-            foreach (MarkTrigger trigger in triggersToRemove)
+            foreach (var trigger in triggersToRemove)
             {
                 RemoveTrigger(trigger);
             }

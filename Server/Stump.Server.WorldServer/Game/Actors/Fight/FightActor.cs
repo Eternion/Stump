@@ -698,14 +698,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
         }
 
-        public virtual bool CastSpell(Spell spell, Cell cell)
+        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false)
         {
             if (!IsFighterTurn() || IsDead())
                 return false;
 
             var spellLevel = spell.CurrentSpellLevel;
 
-            if (CanCastSpell(spell, cell) != SpellCastResult.OK)
+            if (!force && CanCastSpell(spell, cell) != SpellCastResult.OK)
             {
                 OnSpellCastFailed(spell, cell);
                 return false;
