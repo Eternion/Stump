@@ -485,8 +485,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public MountInformationsForPaddock GetMountInformationsForPaddock()
         {
-            var character = CharacterManager.Instance.GetCharacterById(OwnerId);
-            return new MountInformationsForPaddock(Model.Id, Name, character != null ? character.Name : "");
+            return new MountInformationsForPaddock(Model.Id, Name, "");
         }
 
         #endregion
