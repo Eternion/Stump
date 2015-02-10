@@ -43,8 +43,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             Effects = MountManager.Instance.GetMountEffects(this);
 
             Owner = character;
-
-            ApplyMountEffects(false);
         }
 
         public Mount(MountRecord record)
@@ -384,20 +382,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
             MountHandler.SendMountRidingMessage(character.Client, IsRiding);
 
-            if (!IsRiding)
-            {
-                //Vous descendez de votre monture.
-                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
-            }
+            if (IsRiding)
+                ApplyMountEffects();
+            else
+                UnApplyMountEffects();
         }
 
         public void Dismount(Character character)
         {
             IsRiding = false;
+            UnApplyMountEffects();
 
             character.RefreshActor();
 
             MountHandler.SendMountRidingMessage(character.Client, false);
+
+            //Vous descendez de votre monture.
+            BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
         }
 
         public void AddXP(Character character, long experience)
