@@ -52,6 +52,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!m_records.ContainsKey(level))
                 throw new Exception("Level " + level + " not found");
 
+            if (m_records[level].CharacterExp == null)
+                throw new Exception("Level " + level + " not found");
+
             var exp = m_records[level].CharacterExp;
 
             if (!exp.HasValue)
@@ -68,6 +71,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public long GetCharacterNextLevelExperience(byte level)
         {
             if (!m_records.ContainsKey((byte) (level + 1)))
+                return long.MaxValue;
+
+            if (m_records[(byte)(level + 1)].CharacterExp == null)
                 return long.MaxValue;
 
             var exp = m_records[(byte) (level + 1)].CharacterExp;
@@ -107,6 +113,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public ushort GetAlignementGradeHonor(byte grade)
         {
+            if (!m_records.ContainsKey(grade))
+                throw new Exception("Grade " + grade + " not found");
+
             if (m_records[grade].AlignmentHonor == null)
                 throw new Exception("Grade " + grade + " not found");
 
@@ -124,6 +133,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public ushort GetAlignementNextGradeHonor(byte grade)
         {
+            if (!m_records.ContainsKey((byte)(grade + 1)))
+                return 17500;
+
             if (m_records[(byte) (grade + 1)].AlignmentHonor == null)
                 return 17500;
 
@@ -158,6 +170,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public long GetGuildLevelExperience(byte level)
         {
+            if (!m_records.ContainsKey(level))
+                throw new Exception("Level " + level + " not found");
+
             if (m_records[level].GuildExp == null)
                 throw new Exception("Level " + level + " not found");
 
@@ -176,7 +191,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public long GetGuildNextLevelExperience(byte level)
         {
-            if (m_records[(byte) (level + 1)].GuildExp != null)
+            if (!m_records.ContainsKey((byte)(level + 1)))
+                return long.MaxValue;
+
+            if (m_records[(byte) (level + 1)].GuildExp == null)
                 return long.MaxValue;
 
             var exp = m_records[(byte) (level + 1)].GuildExp;
@@ -212,6 +230,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public long GetMountLevelExperience(byte level)
         {
+            if (!m_records.ContainsKey(level))
+                throw new Exception("Level " + level + " not found");
+
             if (m_records[level].MountExp == null)
                 throw new Exception("Level " + level + " not found");
 
@@ -230,6 +251,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         /// <returns></returns>
         public long GetMountNextLevelExperience(byte level)
         {
+            if (!m_records.ContainsKey((byte)(level + 1)))
+                return long.MaxValue;
+
             if (m_records[(byte)(level + 1)].MountExp == null)
                 return long.MaxValue;
 

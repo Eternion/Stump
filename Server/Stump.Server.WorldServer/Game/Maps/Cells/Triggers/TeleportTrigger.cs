@@ -77,6 +77,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
         public override void Apply(Character character)
         {
+            if (!Record.IsConditionFilled(character))
+            {
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 1); //Certaines conditions ne sont pas satisfaites
+                return;
+            }              
+
             var destination = GetDestinationPosition();
             character.Teleport(destination.Map, destination.Cell);
         }

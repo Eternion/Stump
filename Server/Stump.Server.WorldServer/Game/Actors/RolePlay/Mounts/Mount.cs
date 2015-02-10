@@ -2,6 +2,7 @@
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -334,7 +335,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
         public void RenameMount(Character character, string name)
         {
-            Name = name;
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+
+            Name = name.EscapeString();
 
             MountHandler.SendMountRenamedMessage(character.Client, Id, name);
         }
