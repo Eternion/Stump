@@ -37,8 +37,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             mount.Owner = Character;
             Character.Mount = mount;
 
-            mount.ApplyMountEffects();
-
             var pet = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
             if (pet != null)
             {
@@ -88,10 +86,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
                 if (Character.Mount == null)
                     return;
 
-                Character.Mount.Release(Character);
                 Paddock.AddMountToPaddock(Character.Mount);
-
                 InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, Character.Mount);
+
+                Character.Mount.Release(Character);          
             });
 
             return true;
@@ -110,10 +108,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
                 if (Character.Mount == null)
                     return;
 
-                Character.Mount.Release(Character);
-                Paddock.AddMountToStable(Character.Mount);
 
+                Paddock.AddMountToStable(Character.Mount);
                 InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, Character.Mount);
+
+                Character.Mount.Release(Character);       
             });
 
             return true;
@@ -272,6 +271,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
                 var mount = MountManager.Instance.GetMountById(mountId);
+                if (mount == null)
+                    return;
 
                 mount.Owner = Character;
 
@@ -295,6 +296,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
                 var mount = MountManager.Instance.GetMountById(mountId);
+                if (mount == null)
+                    return;
 
                 mount.Owner = Character;
                 Paddock.AddMountToPaddock(mount);
@@ -320,6 +323,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
                 var mount = MountManager.Instance.GetMountById(mountId);
+                if (mount == null)
+                    return;
 
                 mount.Owner = Character;
                 

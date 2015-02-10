@@ -1882,6 +1882,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             else if (!MustBeJailed() && IsInJail())
                 Teleport(Breed.GetStartPosition());
 
+            if (IsRiding() && !map.Outdoor)
+                Mount.Dismount(this);
+
             base.OnEnterMap(map);
         }
 
