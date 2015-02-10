@@ -1,4 +1,7 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Drawing;
+using System.Linq;
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -6,6 +9,7 @@ using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {

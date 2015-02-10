@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override bool IsAffected(FightActor actor)
         {
-            if (!(actor is SummonedBomb))
+            if (!(actor is SummonedBomb) && !actor.HasState((int)SpellStatesEnum.Kaboom))
                 return true;
 
             var bomb = Bombs.FirstOrDefault();

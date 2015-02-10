@@ -124,7 +124,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 case 43:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(100, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddWisdom, GetBonusByLevel(25, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     break;
                 case 44:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(100, mount.Level)));
@@ -194,37 +194,37 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(100, mount.Level)));
                     break;
                 case 21:
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(200, mount.Level)));
                     break;
                 case 55:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(100, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddChance, GetBonusByLevel(30, mount.Level)));
                     break;
                 case 56:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(100, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, GetBonusByLevel(20, mount.Level)));
                     break;
                 case 59:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(100, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddIntelligence, GetBonusByLevel(30, mount.Level)));
                     break;
                 case 60:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(100, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddStrength, GetBonusByLevel(30, mount.Level)));
                     break;
                 case 57:
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(300, mount.Level)));
                     break;
                 case 58:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(100, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddProspecting, GetBonusByLevel(40, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     break;
                 case 88:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddAirResistPercent, GetBonusByLevel(5, mount.Level)));
@@ -329,7 +329,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 case 80:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(200, mount.Level)));
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddRange, GetBonusByLevel(1, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMPAttack, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     break;
                 case 82:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddVitality, GetBonusByLevel(200, mount.Level)));

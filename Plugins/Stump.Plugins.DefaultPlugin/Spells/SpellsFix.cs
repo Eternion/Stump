@@ -299,6 +299,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2812, 2, (level, effect, critical) => effect.Duration = 2, false);
             FixEffectOnAllLevels(2812, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS | SpellTargetType.ENEMY_BOMBS, false);
 
+            // Kaboom (2815)
+            FixEffectOnAllLevels(2815, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+
             #endregion
         }
 

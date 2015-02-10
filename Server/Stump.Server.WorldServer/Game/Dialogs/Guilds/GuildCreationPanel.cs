@@ -52,11 +52,15 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Guilds
             if (Character.Guild != null)
             {
                 GuildHandler.SendGuildCreationResultMessage(Character.Client, GuildCreationResultEnum.GUILD_CREATE_ERROR_ALREADY_IN_GUILD);
+                Close();
+
                 return;
             }
             
             var result = GuildManager.Instance.CreateGuild(Character, guildName, emblem);
             GuildHandler.SendGuildCreationResultMessage(Character.Client, result);
+
+            Close();
         }
     }
 }

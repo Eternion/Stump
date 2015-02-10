@@ -446,9 +446,10 @@
     <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillGuildCreate.cs" />
     <Compile Include="Game\Interactives\Skills\SkillPaddock.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
-    <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
+    <Compile Include="Game\Interactives\SkillZaapTeleport.cs" />
     <Compile Include="Game\Items\Player\Bank.cs" />
     <Compile Include="Game\Items\Player\BankItem.cs" />
     <Compile Include="Database\Items\BankItemRecord.cs" />
