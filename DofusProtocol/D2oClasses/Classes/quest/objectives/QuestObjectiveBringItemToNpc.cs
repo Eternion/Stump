@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 16:35:20
+// Generated on 02/11/2015 10:21:33
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
