@@ -1353,7 +1353,7 @@
         /// <summary>
         /// #3 state deactivated
         /// </summary>
-        Effect_952 = 952,
+        Effect_DisableState = 952,
         /// <summary>
         /// Alignment: #3
         /// </summary>

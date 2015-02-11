@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
@@ -116,7 +117,13 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
-            Character.Inventory.AddItem(item);
+            //Todo: Find better way to assign Mount Effects
+            var mount = MountManager.Instance.CreateMount(Character, itemId);
+            if (mount == null)
+                Character.Inventory.AddItem(item);
+            else
+                finalPrice = (int)itemToSell.Price;
+
             if (Token != null)
             {
                 Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);

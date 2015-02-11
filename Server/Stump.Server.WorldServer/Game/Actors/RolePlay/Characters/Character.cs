@@ -694,6 +694,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 var mountLook = Mount.Model.EntityLook.Clone();
                 var playerLook = RealLook.Clone();
 
+                if (Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
+                {
+                    Color color1;
+                    Color color2;
+                    Color color3;
+
+                    playerLook.Colors.TryGetValue(3, out color1);
+                    playerLook.Colors.TryGetValue(4, out color2);
+                    playerLook.Colors.TryGetValue(5, out color3);
+
+                    mountLook.SetColors(color1, color2, color3);
+                }
+
                 playerLook.BonesID = 2;
                 mountLook.SetRiderLook(playerLook);
 
@@ -715,8 +728,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 //KramKram
                 if (petSkin == 1792)
                 {
-                    mountLook.AddColor(1, Color.FromArgb(212, 246, 212));
-                    mountLook.AddColor(2, Color.FromArgb(111, 133, 145));
+                    Color color1;
+                    Color color2;
+
+                    playerLook.Colors.TryGetValue(3, out color1);
+                    playerLook.Colors.TryGetValue(4, out color2);
+
+                    mountLook.AddColor(1, color1);
+                    mountLook.AddColor(2, color2);
+
+                    //mountLook.AddColor(1, Color.FromArgb(212, 246, 212));
+                    //mountLook.AddColor(2, Color.FromArgb(111, 133, 145));
                 }
 
                 playerLook.BonesID = 2;
@@ -1863,6 +1885,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             else if (!MustBeJailed() && IsInJail())
                 Teleport(Breed.GetStartPosition());
 
+            if (IsRiding() && !map.Outdoor)
+                Mount.Dismount(this);
+
             base.OnEnterMap(map);
         }
 
@@ -2358,6 +2383,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             
             OnCharacterContextChanged(false);
             StartRegen();
+
+            if (Map == null)
+                return;
 
             NextMap.Area.ExecuteInContext(() =>
             {
@@ -2870,7 +2898,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             GuildMember = GuildManager.Instance.TryGetGuildMember(Id);
 
-            Mount = MountManager.Instance.TryGetMount(Id) != null ? new Mount(this) : null;
+            Mount = MountManager.Instance.TryGetMountByCharacterId(Id) != null ? new Mount(this) : null;
 
             Spells = new SpellInventory(this);
             Spells.LoadSpells();

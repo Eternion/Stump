@@ -206,6 +206,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        event Action FightStarted;
+        event Action FightEnded;
+
         void Initialize();
         void StartFighting();
         bool CheckFightEnd();
@@ -668,14 +671,21 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
         }
 
+        public event Action FightStarted;
+
         protected virtual void OnFightStarted()
         {
             foreach (var fighter in Fighters)
             {
                 fighter.FightStartPosition = fighter.Position.Clone();
             }
+
+            var handler = FightStarted;
+            if (handler != null)
+                handler();
         }
 
+        public event Action FightEnded;
         protected virtual void OnFightEnded()
         {
             ReadyChecker = null;
@@ -694,6 +704,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             Dispose();
+
+            var handler = FightEnded;
+            if (handler != null)
+                handler();
         }
 
         public event FightWinnersDelegate WinnersDetermined;
@@ -2060,7 +2074,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-            foreach (MarkTrigger trigger in triggersToRemove)
+            foreach (var trigger in triggersToRemove)
             {
                 RemoveTrigger(trigger);
             }

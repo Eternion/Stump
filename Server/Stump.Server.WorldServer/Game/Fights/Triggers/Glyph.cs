@@ -56,6 +56,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override bool DecrementDuration()
         {
+            if (Duration == -1)
+                return false;
+
             return (--Duration) <= 0;
         }
 

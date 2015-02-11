@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.DamageBonusPercent;
                 case ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY:
                 case (ActionsEnum)407: // **** magic numbers
-                    return PlayerFields.Vitality;
+                    return PlayerFields.Health;
 
                 default:
                     throw new Exception(string.Format("PunishmentBoostType not found for action {0}", punishementAction));
@@ -88,8 +88,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return EffectsEnum.Effect_AddStrength;
                 case PlayerFields.Intelligence:
                     return EffectsEnum.Effect_AddIntelligence;
-                case PlayerFields.Vitality:
-                    return EffectsEnum.Effect_AddVitality;
+                case PlayerFields.Health:
+                    return EffectsEnum.Effect_AddHealth;
                 case PlayerFields.Wisdom:
                     return EffectsEnum.Effect_AddWisdom;
                 case PlayerFields.DamageBonusPercent:

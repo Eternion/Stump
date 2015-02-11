@@ -13,8 +13,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Wall : MarkTrigger
     {
-        private readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
-
         public Wall(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, WallsBinding binding, params MarkShape[] shapes)
             : base(id, caster, castedSpell, originEffect, centerCell, shapes)
         {
@@ -37,14 +35,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             get { return TriggerType.MOVE | TriggerType.TURN_BEGIN | TriggerType.TURN_END; }
         }
 
-        public ReadOnlyCollection<SummonedBomb> Bombs
+        public SummonedBomb[] Bombs
         {
-            get { return m_bombs.AsReadOnly(); }
-        }
-
-        public void BindToBomb(SummonedBomb bomb)
-        {
-            m_bombs.Add(bomb);
+            get { return new[] { WallBinding.Bomb1, WallBinding.Bomb2 }; }
         }
 
         public override void Trigger(FightActor trigger)
@@ -90,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override bool IsAffected(FightActor actor)
         {
-            if (!(actor is SummonedBomb))
+            if (!(actor is SummonedBomb) && !actor.HasState((int)SpellStatesEnum.Kaboom))
                 return true;
 
             var bomb = Bombs.FirstOrDefault();

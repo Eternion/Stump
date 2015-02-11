@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
@@ -56,13 +55,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public GameFightFighterNamedInformations GetGameFightFighterNamedInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, casterInfos.alive, casterInfos.stats, new short[0], Name, new PlayerStatus());
+            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, IsAlive(), casterInfos.stats, new short[0], Name, new PlayerStatus());
         }
 
         public override GameFightFighterInformations GetGameFightFighterInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, casterInfos.alive, casterInfos.stats, new short[0]);
+            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, IsAlive(), casterInfos.stats, new short[0]);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

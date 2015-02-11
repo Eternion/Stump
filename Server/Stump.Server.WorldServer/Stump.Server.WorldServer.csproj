@@ -127,7 +127,10 @@
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\GlourselesteBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\KorriandreBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\RoyalMouthBrain.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
     <Compile Include="AI\Fights\Spells\SpellCastInformations.cs" />
     <Compile Include="AI\Fights\Spells\SpellCategory.cs" />
@@ -217,6 +220,8 @@
     <Compile Include="Database\Monsters\MonsterSpell.cs" />
     <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
     <Compile Include="Database\Monsters\MonsterTemplate.cs" />
+    <Compile Include="Database\Mounts\MountCharacter.cs" />
+    <Compile Include="Database\Mounts\MountPaddock.cs" />
     <Compile Include="Database\Mounts\MountRecord.cs" />
     <Compile Include="Database\Mounts\MountTemplate.cs" />
     <Compile Include="Database\Npcs\Actions\NpcAction.cs" />
@@ -441,6 +446,7 @@
     <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillGuildCreate.cs" />
     <Compile Include="Game\Interactives\Skills\SkillPaddock.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
@@ -451,6 +457,7 @@
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
+    <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ShieldItem.cs" />

@@ -30,8 +30,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
             Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, Caster, Caster, TargetedCell));
 
-            foreach (var summon in from dir in (DirectionsEnum[])Enum.GetValues(typeof(DirectionsEnum)) where isEven == ((short)dir%2 == 0) where direction != dir select Map.GetCell(CastPoint.GetCellInDirection(dir, (short)distance).CellId) into dstCell where dstCell != null where Fight.IsCellFree(dstCell) && dstCell.Walkable select new SummonedImage(Fight.GetNextContextualId(), Caster, dstCell))
+            foreach (var dir in (DirectionsEnum[])Enum.GetValues(typeof(DirectionsEnum)))
             {
+                if (isEven != ((short)dir % 2 == 0))
+                    continue;
+
+                if (direction == dir)
+                    continue;
+
+                var cell = CastPoint.GetCellInDirection(dir, (short) distance);
+                if (cell == null)
+                    continue;
+
+                var dstCell = Map.GetCell(cell.CellId);
+
+                if (dstCell == null)
+                    continue;
+
+                if (!Fight.IsCellFree(dstCell) || !dstCell.Walkable)
+                    continue;
+
+                var summon = new SummonedImage(Fight.GetNextContextualId(), Caster, dstCell);
+
                 ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 
                 Caster.AddSummon(summon);

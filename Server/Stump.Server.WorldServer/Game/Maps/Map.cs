@@ -659,6 +659,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             OnInteractiveSpawned(interactiveObject);
 
+            //logger.Debug("Spawn interactive {0}", interactiveObject.Id);
+
             return interactiveObject;
         }
 

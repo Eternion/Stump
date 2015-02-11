@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using TreeSharp;

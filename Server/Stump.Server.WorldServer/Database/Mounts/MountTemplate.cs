@@ -75,6 +75,12 @@ namespace Stump.Server.WorldServer.Database.Mounts
             }
         }
 
+        public uint ScrollId
+        {
+            get;
+            set;
+        }
+
         public int PodsBase
         {
             get;
