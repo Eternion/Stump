@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private void OnTurnStarted(IFight fight, FightActor player)
         {
             if (player == Summoner)
-                InflictDirectDamage(LifePoints, Caster);
+                Die();
 
             if (player != this)
                 return;
@@ -42,9 +42,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             base.OnBeforeDamageInflicted(damage);
         }
 
+        protected override void OnDead(FightActor killedBy)
+        {
+            Fight.TurnStarted -= OnTurnStarted;
+            Summoner.DamageInflicted -= OnDamageInflicted;
+
+            base.OnDead(killedBy);
+        }
+
         private void OnDamageInflicted(FightActor actor, Damage damage)
         {
-            InflictDirectDamage(LifePoints, Caster);
+            Die();
         }
 
         protected override void OnPositionChanged(ObjectPosition position)
@@ -52,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             base.OnPositionChanged(position);
 
             if (m_initialized)
-                InflictDirectDamage(LifePoints, Caster);
+                Die();
         }
     }
 }

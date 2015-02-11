@@ -30,15 +30,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(GameTrigger trigger)
         {
-            var source = trigger.GetSource() as WorldClient;
-
             if (trigger.Character.HasEquipedMount())
                 MountManager.Instance.DeleteMount(trigger.Character.Mount);
 
-            var mount = MountManager.Instance.CreateMount(trigger.Character, false, 9);
-
-            trigger.Character.Mount = mount;
-            MountHandler.SendMountSetMessage(source, mount.GetMountClientData());
+            MountManager.Instance.CreateMount(trigger.Character, false, 9);
         }
     }
 }

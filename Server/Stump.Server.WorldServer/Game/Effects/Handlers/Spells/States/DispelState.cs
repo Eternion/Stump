@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
     [EffectHandler(EffectsEnum.Effect_DispelState)]
+    [EffectHandler(EffectsEnum.Effect_DisableState)]
     public class DispelState : SpellEffectHandler
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

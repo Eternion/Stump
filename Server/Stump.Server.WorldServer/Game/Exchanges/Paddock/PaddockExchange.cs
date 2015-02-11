@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using MapPaddock = Stump.Server.WorldServer.Game.Maps.Paddocks.Paddock;
@@ -44,7 +45,10 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
         {
             Character.SetDialoger(m_paddock);
 
-            InventoryHandler.SendExchangeStartOkMountMessage(Character.Client, Paddock.StabledMounts, Paddock.PaddockedMounts);
+            var stabledMounts = Paddock.StabledMounts.Where(x => x.OwnerId == Character.Id).ToList();
+            var paddockedMounts = Paddock.PaddockedMounts.Where(x => x.OwnerId == Character.Id).ToList();
+
+            InventoryHandler.SendExchangeStartOkMountMessage(Character.Client, stabledMounts, paddockedMounts);
         }
         public void Close()
         {

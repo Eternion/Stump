@@ -174,7 +174,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             //Mount
             if (client.Character.Mount != null)
+            {
                 MountHandler.SendMountSetMessage(client, client.Character.Mount.GetMountClientData());
+                MountHandler.SendMountXpRatioMessage(client, client.Character.Mount.GivenExperience);
+            }
 
             client.Character.SendConnectionMessages();
 
@@ -224,7 +227,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharactersListMessage(WorldClient client)
         {
-            var characters = client.Characters.Select(
+            var characters = client.Characters.OrderByDescending(x => x.LastUsage).Select(
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
@@ -245,7 +248,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var characterBaseInformations = new List<CharacterBaseInformations>();
             var charactersToRemodel = new List<CharacterToRemodelInformations>();
 
-            foreach (var characterRecord in client.Characters)
+            foreach (var characterRecord in client.Characters.OrderByDescending(x => x.LastUsage))
             {
                 characterBaseInformations.Add(new CharacterBaseInformations((short)characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),

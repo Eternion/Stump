@@ -160,6 +160,22 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Korriandre
+
+            // Glyphe Daivain (2700)
+            // kill
+            // target none -> only self
+            FixEffectOnAllLevels(2700, EffectsEnum.Effect_Kill,
+                (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            // Glyphe Daidisse (2701)
+            // kill
+            // target none -> ALLY ALL
+            FixEffectOnAllLevels(2701, EffectsEnum.Effect_Kill,
+                (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            #endregion
+
             #region TOFU
 
             // béco du tofu (1999)
@@ -282,6 +298,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2812, 2, (level, effect, critical) => effect.Delay = 3, false);
             FixEffectOnAllLevels(2812, 2, (level, effect, critical) => effect.Duration = 2, false);
             FixEffectOnAllLevels(2812, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS | SpellTargetType.ENEMY_BOMBS, false);
+
+            // Kaboom (2815)
+            FixEffectOnAllLevels(2815, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
 
             #endregion
         }

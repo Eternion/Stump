@@ -44,6 +44,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
         {
             switch (spell.Id)
             {
+                case (int)SpellIdEnum.DAIPIPAY:
+                    return Color.White;
                 default:
                     return Color.Red;
             }
