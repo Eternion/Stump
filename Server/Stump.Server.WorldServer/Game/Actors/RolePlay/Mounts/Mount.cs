@@ -376,6 +376,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 return;
             }
 
+            if (!IsRiding && !character.Map.Outdoor)
+            {
+                //Impossible d'être sur une monture à l'intérieur d'une maison.
+                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);
+
+                return;
+            }
+
             IsRiding = !IsRiding;
 
             character.RefreshActor();
@@ -385,7 +393,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             if (IsRiding)
                 ApplyMountEffects();
             else
+            {
+                //Vous descendez de votre monture.
+                BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+
                 UnApplyMountEffects();
+            }
         }
 
         public void Dismount(Character character)
@@ -399,6 +412,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
 
             //Vous descendez de votre monture.
             BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 273);
+            //Impossible d'entrer dans une demeure en restant sur sa monture.
+            BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 118);
         }
 
         public void AddXP(Character character, long experience)
