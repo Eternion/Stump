@@ -308,6 +308,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return Dialog as ZaapDialog; }
         }
 
+        public ZaapiDialog ZaapiDialog
+        {
+            get { return Dialog as ZaapiDialog; }
+        }
+
         public MerchantShopDialog MerchantShopDialog
         {
             get { return Dialog as MerchantShopDialog; }
@@ -389,6 +394,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsInZaapDialog()
         {
             return Dialog is ZaapDialog;
+        }
+
+        public bool IsInZaapiDialog()
+        {
+            return Dialog is ZaapiDialog;
         }
 
         #endregion
