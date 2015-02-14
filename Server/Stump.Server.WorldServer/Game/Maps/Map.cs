@@ -491,6 +491,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             private set;
         }
 
+        public InteractiveObject Zaapi
+        {
+            get;
+            private set;
+        }
+
         public bool IsMuted
         {
             get;
@@ -647,6 +653,13 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 Zaap = interactiveObject;
             }
+            else if (interactiveObject.Template != null && interactiveObject.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI)
+            {
+                if (Zaapi != null)
+                    throw new Exception("Cannot add a second zaapi on the map");
+
+                Zaapi = interactiveObject;
+            }
 
             if (m_interactives.ContainsKey(interactiveObject.Id))
             {
@@ -675,6 +688,8 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             if (interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAP && Zaap != null)
                 Zaap = null;
+            else if (interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI && Zaapi != null)
+                Zaapi = null;
 
             interactive.Delete();
             m_interactives.Remove(interactive.Id);
