@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Handlers.Friends
             }
 
             client.Character.FriendsBook.RemoveFriend(friend);
-            SendFriendDeleteResultMessage(client, true, friend.Character.Name);
+            SendFriendDeleteResultMessage(client, true, friend.Account.Nickname);
         }
 
         [WorldHandler(IgnoredAddRequestMessage.Id)]
