@@ -83,8 +83,10 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         public void RemoveInteractiveSpawn(InteractiveSpawn spawn)
         {
+            spawn.GetMap().UnSpawnInteractive(new InteractiveObject(spawn));
+
             Database.Delete(spawn);
-            m_interactivesSpawns.Remove(spawn.Id);
+            m_interactivesSpawns.Remove(spawn.Id);     
         }
     }
 }

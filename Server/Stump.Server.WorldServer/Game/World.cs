@@ -262,6 +262,19 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
+        public void UnSpawnInteractives()
+        {
+            foreach (var map in m_maps.Values)
+            {
+                var interactives = map.GetInteractiveObjects().ToArray();
+
+                foreach (var interactive in interactives)
+                {
+                    map.UnSpawnInteractive(interactive);
+                }
+            }
+        }
+
         private static void SpawnCellTriggers()
         {
             foreach (var trigger in CellTriggerManager.Instance.GetCellTriggers().Select(cellTrigger => cellTrigger.GenerateTrigger()))
