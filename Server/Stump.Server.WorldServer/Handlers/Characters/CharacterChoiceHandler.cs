@@ -184,7 +184,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             //InitializationHandler.SendOnConnectionEventMessage(client, 3);
 
             //Start Cinematic(Doesn't work for now)
-            if ((DateTime.Now - client.Character.Record.LastUsage).Value.TotalSeconds <= 30)
+            if ((DateTime.Now - client.Character.Record.CreationDate).TotalSeconds <= 30)
                 BasicHandler.SendCinematicMessage(client, 10);
 
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client, client.Character);
