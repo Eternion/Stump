@@ -35,7 +35,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
+            World.Instance.UnSpawnInteractives();
             World.Instance.SpawnInteractives();
+
             trigger.Reply("Successfully refresh interactives objects !");
         }
     }
@@ -104,14 +106,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     SkillId = skill.Id
                 };
 
-                WorldServer.Instance.IOTaskPool.ExecuteInContext(() => InteractiveManager.Instance.AddInteractiveSpawn(spawn, skill, spawnSkill));
+                WorldServer.Instance.IOTaskPool.AddMessage(() => InteractiveManager.Instance.AddInteractiveSpawn(spawn, skill, spawnSkill));
                 trigger.ReplyBold("Add Interactive {0} on map {1}", spawn.Template.Name, spawn.MapId);
             }
         }
 
         public override void ExecuteRemove(TriggerBase trigger)
         {
-            var character = trigger is GameTrigger ? (trigger as GameTrigger).Character : null;
+            var gameTrigger = trigger as GameTrigger;
+            var character = gameTrigger != null ? gameTrigger.Character : null;
 
             if (character == null)
                 return;
@@ -120,11 +123,11 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var mapSrc = character.Map;
             var interactive = InteractiveManager.Instance.GetOneSpawn(x => x.ElementId == elementId);
 
-            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                InteractiveManager.Instance.RemoveInteractiveSpawn(interactive);
-                trigger.ReplyBold("Delete Interactive {0} on map {1}", elementId, mapSrc.Id);
+                InteractiveManager.Instance.RemoveInteractiveSpawn(interactive);             
             });
+            trigger.ReplyBold("Delete Interactive {0} on map {1}", elementId, mapSrc.Id);
         }
     }
 }
