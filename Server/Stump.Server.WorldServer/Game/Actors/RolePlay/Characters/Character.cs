@@ -1814,7 +1814,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             if (m_earnKamasInMerchant > 0)
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 45, m_earnKamasInMerchant);
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, m_earnKamasInMerchant, 1);
         }
 
         public void SendServerMessage(string message)
