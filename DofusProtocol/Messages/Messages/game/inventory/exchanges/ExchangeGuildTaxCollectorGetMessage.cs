@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:36
+// Generated on 02/18/2015 10:46:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,13 +25,13 @@ namespace Stump.DofusProtocol.Messages
         public short subAreaId;
         public string userName;
         public double experience;
-        public IEnumerable<Types.ObjectItemQuantity> objectsInfos;
+        public IEnumerable<Types.ObjectItemGenericQuantity> objectsInfos;
         
         public ExchangeGuildTaxCollectorGetMessage()
         {
         }
         
-        public ExchangeGuildTaxCollectorGetMessage(string collectorName, short worldX, short worldY, int mapId, short subAreaId, string userName, double experience, IEnumerable<Types.ObjectItemQuantity> objectsInfos)
+        public ExchangeGuildTaxCollectorGetMessage(string collectorName, short worldX, short worldY, int mapId, short subAreaId, string userName, double experience, IEnumerable<Types.ObjectItemGenericQuantity> objectsInfos)
         {
             this.collectorName = collectorName;
             this.worldX = worldX;
@@ -85,10 +85,10 @@ namespace Stump.DofusProtocol.Messages
             if (experience < -9.007199254740992E15 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9.007199254740992E15 || experience > 9.007199254740992E15");
             var limit = reader.ReadUShort();
-            var objectsInfos_ = new Types.ObjectItemQuantity[limit];
+            var objectsInfos_ = new Types.ObjectItemGenericQuantity[limit];
             for (int i = 0; i < limit; i++)
             {
-                 objectsInfos_[i] = new Types.ObjectItemQuantity();
+                 objectsInfos_[i] = new Types.ObjectItemGenericQuantity();
                  objectsInfos_[i].Deserialize(reader);
             }
             objectsInfos = objectsInfos_;

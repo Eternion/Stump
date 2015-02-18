@@ -59,6 +59,11 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             return new ObjectItemQuantity(Guid, (int)Stack);
         }
 
+        public ObjectItemGenericQuantity GetObjectItemGenericQuantity()
+        {
+            return new ObjectItemGenericQuantity((short)Template.Id, (int)Stack);
+        }
+
         #endregion
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:37
+// Generated on 02/18/2015 10:46:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,34 +10,32 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class ExchangeMountPaddockAddMessage : Message
+    public class ExchangeMountsStableBornAddMessage : ExchangeMountsStableAddMessage
     {
-        public const uint Id = 6049;
+        public const uint Id = 6557;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public Types.MountClientData mountDescription;
         
-        public ExchangeMountPaddockAddMessage()
+        public ExchangeMountsStableBornAddMessage()
         {
         }
         
-        public ExchangeMountPaddockAddMessage(Types.MountClientData mountDescription)
+        public ExchangeMountsStableBornAddMessage(IEnumerable<Types.MountClientData> mountDescription)
+         : base(mountDescription)
         {
-            this.mountDescription = mountDescription;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            mountDescription.Serialize(writer);
+            base.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            mountDescription = new Types.MountClientData();
-            mountDescription.Deserialize(reader);
+            base.Deserialize(reader);
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:21:32
+// Generated on 02/18/2015 11:06:00
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -14,7 +14,7 @@ namespace Stump.DofusProtocol.D2oClasses
     {
         public const String MODULE = "CompanionCharacteristics";
         public int id;
-        public String labelId;
+        public int caracId;
         public int companionId;
         public int order;
         public int initialValue;
@@ -31,10 +31,10 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.id = value; }
         }
         [D2OIgnore]
-        public String LabelId
+        public int CaracId
         {
-            get { return this.labelId; }
-            set { this.labelId = value; }
+            get { return this.caracId; }
+            set { this.caracId = value; }
         }
         [D2OIgnore]
         public int CompanionId

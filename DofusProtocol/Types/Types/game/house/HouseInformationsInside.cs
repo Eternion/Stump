@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:21:04
+// Generated on 02/18/2015 11:05:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(houseId);
+            writer.WriteVarInt(houseId);
             writer.WriteVarShort(modelId);
             writer.WriteInt(ownerId);
             writer.WriteUTF(ownerName);
@@ -56,7 +56,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            houseId = reader.ReadInt();
+            houseId = reader.ReadVarInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
             modelId = reader.ReadVarShort();

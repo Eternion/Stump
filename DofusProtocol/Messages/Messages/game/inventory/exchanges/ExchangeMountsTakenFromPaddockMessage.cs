@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:37
+// Generated on 02/18/2015 10:46:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,9 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class ExchangeMountTakenFromPaddockMessage : Message
+    public class ExchangeMountsTakenFromPaddockMessage : Message
     {
-        public const uint Id = 5994;
+        public const uint Id = 6554;
         public override uint MessageId
         {
             get { return Id; }
@@ -23,11 +23,11 @@ namespace Stump.DofusProtocol.Messages
         public short worldY;
         public string ownername;
         
-        public ExchangeMountTakenFromPaddockMessage()
+        public ExchangeMountsTakenFromPaddockMessage()
         {
         }
         
-        public ExchangeMountTakenFromPaddockMessage(string name, short worldX, short worldY, string ownername)
+        public ExchangeMountsTakenFromPaddockMessage(string name, short worldX, short worldY, string ownername)
         {
             this.name = name;
             this.worldX = worldX;
