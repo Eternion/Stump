@@ -136,8 +136,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             else
             {
                 Character.Inventory.SubKamas(finalPrice);
-                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                        46, finalPrice);
             }
 
             Character.Client.Send(new ExchangeBuyOkMessage());
@@ -206,8 +204,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             else
             {
                 Character.Inventory.AddKamas(price);
-                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                        45, price);
             }
 
             Character.Client.Send(new ExchangeSellOkMessage());
