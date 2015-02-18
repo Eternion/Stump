@@ -89,8 +89,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
 
             var finalPrice = item.Price*quantity;
             Character.Inventory.SubKamas((int)finalPrice);
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    46, (int)finalPrice);
+
             Merchant.KamasEarned += (uint)finalPrice;
 
             Character.Client.Send(new ExchangeBuyOkMessage());
