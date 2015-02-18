@@ -461,7 +461,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
             return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
-                (short)Position.Map.SubArea.Id, Record.CallerName, GatheredExperience, Bag.Select(x => x.GetObjectItemQuantity()));
+                (short)Position.Map.SubArea.Id, Record.CallerName, GatheredExperience, Bag.Select(x => x.GetObjectItemGenericQuantity()));
         }
 
         public StorageInventoryContentMessage GetStorageInventoryContent()

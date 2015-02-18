@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:26:10
+// Generated on 02/18/2015 11:06:03
 using System;
 using System.Collections.Generic;
 
@@ -28,5 +28,6 @@ namespace Stump.DofusProtocol.Enums
         NPC_TRADE_MOUNT = 18,
         REALESTATE_HOUSE = 19,
         REALESTATE_FARM = 20,
+        RUNES_TRADE = 21,
     }
 }

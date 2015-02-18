@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:21:04
+// Generated on 02/18/2015 11:05:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,8 +72,8 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 200");
             alignmentSide = reader.ReadSByte();
             breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliatrope)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliatrope");
+            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliotrope)
+                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliotrope");
             sex = reader.ReadBoolean();
             guildInfo = new Types.BasicGuildInformations();
             guildInfo.Deserialize(reader);

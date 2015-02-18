@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 PlayableBreedEnum.Roublard,
                 PlayableBreedEnum.Zobal,
                 PlayableBreedEnum.Steamer,
-                PlayableBreedEnum.Eliatrope
+                PlayableBreedEnum.Eliotrope
             };
 
         public uint AvailableBreedsFlags
