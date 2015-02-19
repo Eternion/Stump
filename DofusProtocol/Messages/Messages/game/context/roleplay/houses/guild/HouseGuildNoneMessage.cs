@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:30
+// Generated on 02/18/2015 10:46:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public short houseId;
+        public int houseId;
         
         public HouseGuildNoneMessage()
         {
         }
         
-        public HouseGuildNoneMessage(short houseId)
+        public HouseGuildNoneMessage(int houseId)
         {
             this.houseId = houseId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarShort(houseId);
+            writer.WriteVarInt(houseId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            houseId = reader.ReadVarShort();
+            houseId = reader.ReadVarInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
         }

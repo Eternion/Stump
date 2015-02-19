@@ -108,7 +108,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
                 if (Character.Mount == null)
                     return;
 
-
                 Paddock.AddMountToStable(Character.Mount);
                 InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, Character.Mount);
 

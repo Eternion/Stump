@@ -1,42 +1,46 @@
 
 
-// Generated on 02/11/2015 10:20:37
+// Generated on 02/18/2015 11:05:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Stump.Core.IO;
-using Stump.DofusProtocol.Types;
 
-namespace Stump.DofusProtocol.Messages
+namespace Stump.DofusProtocol.Types
 {
-    public class ExchangeMountStableBornAddMessage : ExchangeMountStableAddMessage
+    public class StatisticDataShort : StatisticData
     {
-        public const uint Id = 5966;
-        public override uint MessageId
+        public const short Id = 488;
+        public override short TypeId
         {
             get { return Id; }
         }
         
+        public short value;
         
-        public ExchangeMountStableBornAddMessage()
+        public StatisticDataShort()
         {
         }
         
-        public ExchangeMountStableBornAddMessage(Types.MountClientData mountDescription)
-         : base(mountDescription)
+        public StatisticDataShort(short actionId, short value)
+         : base(actionId)
         {
+            this.value = value;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
+            writer.WriteShort(value);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
+            value = reader.ReadShort();
         }
+        
         
     }
     

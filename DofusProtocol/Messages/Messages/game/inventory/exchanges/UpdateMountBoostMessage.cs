@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:38
+// Generated on 02/18/2015 10:46:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public double rideId;
+        public int rideId;
         public IEnumerable<Types.UpdateMountBoost> boostToUpdateList;
         
         public UpdateMountBoostMessage()
         {
         }
         
-        public UpdateMountBoostMessage(double rideId, IEnumerable<Types.UpdateMountBoost> boostToUpdateList)
+        public UpdateMountBoostMessage(int rideId, IEnumerable<Types.UpdateMountBoost> boostToUpdateList)
         {
             this.rideId = rideId;
             this.boostToUpdateList = boostToUpdateList;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteDouble(rideId);
+            writer.WriteVarInt(rideId);
             var boostToUpdateList_before = writer.Position;
             var boostToUpdateList_count = 0;
             writer.WriteUShort(0);
@@ -52,9 +52,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            rideId = reader.ReadDouble();
-            if (rideId < -9.007199254740992E15 || rideId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on rideId = " + rideId + ", it doesn't respect the following condition : rideId < -9.007199254740992E15 || rideId > 9.007199254740992E15");
+            rideId = reader.ReadVarInt();
             var limit = reader.ReadUShort();
             var boostToUpdateList_ = new Types.UpdateMountBoost[limit];
             for (int i = 0; i < limit; i++)

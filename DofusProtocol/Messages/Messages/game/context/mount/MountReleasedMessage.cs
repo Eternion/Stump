@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:29
+// Generated on 02/18/2015 10:46:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +18,25 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public double mountId;
+        public int mountId;
         
         public MountReleasedMessage()
         {
         }
         
-        public MountReleasedMessage(double mountId)
+        public MountReleasedMessage(int mountId)
         {
             this.mountId = mountId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteDouble(mountId);
+            writer.WriteVarInt(mountId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            mountId = reader.ReadDouble();
-            if (mountId < -9.007199254740992E15 || mountId > 9.007199254740992E15)
-                throw new Exception("Forbidden value on mountId = " + mountId + ", it doesn't respect the following condition : mountId < -9.007199254740992E15 || mountId > 9.007199254740992E15");
+            mountId = reader.ReadVarInt();
         }
         
     }

@@ -390,7 +390,7 @@
     <Compile Include="Messages\game\chat\smiley\MoodSmileyRequestMessage.cs" />
     <Compile Include="Messages\game\chat\smiley\MoodSmileyResultMessage.cs" />
     <Compile Include="Messages\game\chat\smiley\MoodSmileyUpdateMessage.cs" />
-    <Compile Include="Messages\game\context\display\DisplayNumericalValueMessage.cs" />
+    <Compile Include="Messages\game\context\display\DisplayNumericalValuePaddockMessage.cs" />
     <Compile Include="Messages\game\context\dungeon\DungeonKeyRingMessage.cs" />
     <Compile Include="Messages\game\context\dungeon\DungeonKeyRingUpdateMessage.cs" />
     <Compile Include="Messages\game\context\fight\challenge\ChallengeInfoMessage.cs" />
@@ -412,10 +412,13 @@
     <Compile Include="Messages\game\context\fight\GameFightOptionToggleMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightPlacementPositionRequestMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightPlacementPossiblePositionsMessage.cs" />
+    <Compile Include="Messages\game\context\fight\GameFightPlacementSwapPositionsAcceptMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightPlacementSwapPositionsCancelledMessage.cs" />
+    <Compile Include="Messages\game\context\fight\GameFightPlacementSwapPositionsCancelMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightPlacementSwapPositionsErrorMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightPlacementSwapPositionsMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightPlacementSwapPositionsOfferMessage.cs" />
+    <Compile Include="Messages\game\context\fight\GameFightPlacementSwapPositionsRequestMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightReadyMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightRemoveTeamMemberMessage.cs" />
     <Compile Include="Messages\game\context\fight\GameFightResumeMessage.cs" />
@@ -779,6 +782,7 @@
     <Compile Include="Messages\game\guild\GuildPaddockTeleportRequestMessage.cs" />
     <Compile Include="Messages\game\guild\GuildSpellUpgradeRequestMessage.cs" />
     <Compile Include="Messages\game\guild\GuildVersatileInfoListMessage.cs" />
+    <Compile Include="Messages\game\guild\tax\AbstractTaxCollectorListMessage.cs" />
     <Compile Include="Messages\game\guild\tax\GameRolePlayTaxCollectorFightRequestMessage.cs" />
     <Compile Include="Messages\game\guild\tax\GuildFightJoinRequestMessage.cs" />
     <Compile Include="Messages\game\guild\tax\GuildFightLeaveRequestMessage.cs" />
@@ -795,6 +799,7 @@
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementRemoveMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorStateUpdateMessage.cs" />
+    <Compile Include="Messages\game\guild\tax\TopTaxCollectorListMessage.cs" />
     <Compile Include="Messages\game\initialization\CharacterCapabilitiesMessage.cs" />
     <Compile Include="Messages\game\initialization\CharacterLoadingCompleteMessage.cs" />
     <Compile Include="Messages\game\initialization\OnConnectionEventMessage.cs" />
@@ -817,6 +822,7 @@
     <Compile Include="Messages\game\interactive\zaap\TeleportDestinationsListMessage.cs" />
     <Compile Include="Messages\game\interactive\zaap\TeleportRequestMessage.cs" />
     <Compile Include="Messages\game\interactive\zaap\ZaapListMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\DecraftResultMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeAcceptMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseBuyMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseBuyResultMessage.cs" />
@@ -846,7 +852,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeErrorMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeGoldPaymentForCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeGuildTaxCollectorGetMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeHandleMountStableMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeHandleMountsStableMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeIsReadyMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeItemAutoCraftRemainingMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeItemAutoCraftStopedMessage.cs" />
@@ -856,14 +862,14 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeLeaveMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeModifiedPaymentForCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeMountFreeFromPaddockMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountPaddockAddMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountPaddockRemoveMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountStableAddMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountStableBornAddMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountsPaddockAddMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountsPaddockRemoveMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountsStableAddMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountsStableBornAddMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountsStableRemoveMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeMountStableErrorMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountStableRemoveMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountsTakenFromPaddockMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeMountSterilizeFromPaddockMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeMountTakenFromPaddockMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectAddedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectModifyPricedMessage.cs" />
@@ -921,7 +927,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkMulticraftCustomerMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkNpcShopMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkNpcTradeMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkTaxCollectorMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkRunesTradeMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeTypesExchangerDescriptionForUserMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeTypesItemsExchangerDescriptionForUserMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeWaitingResultMessage.cs" />

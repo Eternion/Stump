@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:21:04
+// Generated on 02/18/2015 11:05:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 0, isOnSale);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, isSaleLocked);
             writer.WriteByte(flag1);
-            writer.WriteInt(houseId);
+            writer.WriteVarInt(houseId);
             var doorsOnMap_before = writer.Position;
             var doorsOnMap_count = 0;
             writer.WriteUShort(0);
@@ -67,7 +67,7 @@ namespace Stump.DofusProtocol.Types
             byte flag1 = reader.ReadByte();
             isOnSale = BooleanByteWrapper.GetFlag(flag1, 0);
             isSaleLocked = BooleanByteWrapper.GetFlag(flag1, 1);
-            houseId = reader.ReadInt();
+            houseId = reader.ReadVarInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
             var limit = reader.ReadUShort();

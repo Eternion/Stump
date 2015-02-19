@@ -305,7 +305,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                     FightTypeEnum fightTypeEnum)
         {
             client.Send(new GameFightJoinMessage(canBeCancelled, canSayReady, isFightStarted,
-                                                 timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
+                                                 (short)timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
         }
 
         public static void SendGameFightSpectateMessage(IPacketReceiver client, IFight fight)

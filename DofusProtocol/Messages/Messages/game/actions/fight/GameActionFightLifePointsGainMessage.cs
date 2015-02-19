@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:25
+// Generated on 02/18/2015 10:46:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int targetId;
-        public short delta;
+        public int delta;
         
         public GameActionFightLifePointsGainMessage()
         {
         }
         
-        public GameActionFightLifePointsGainMessage(short actionId, int sourceId, int targetId, short delta)
+        public GameActionFightLifePointsGainMessage(short actionId, int sourceId, int targetId, int delta)
          : base(actionId, sourceId)
         {
             this.targetId = targetId;
@@ -36,14 +36,14 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteInt(targetId);
-            writer.WriteVarShort(delta);
+            writer.WriteVarInt(delta);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             targetId = reader.ReadInt();
-            delta = reader.ReadVarShort();
+            delta = reader.ReadVarInt();
             if (delta < 0)
                 throw new Exception("Forbidden value on delta = " + delta + ", it doesn't respect the following condition : delta < 0");
         }

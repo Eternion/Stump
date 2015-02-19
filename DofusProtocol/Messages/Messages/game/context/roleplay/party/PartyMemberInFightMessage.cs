@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:33
+// Generated on 02/18/2015 10:46:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +24,13 @@ namespace Stump.DofusProtocol.Messages
         public string memberName;
         public int fightId;
         public Types.MapCoordinatesExtended fightMap;
-        public short secondsBeforeFightStart;
+        public short timeBeforeFightStart;
         
         public PartyMemberInFightMessage()
         {
         }
         
-        public PartyMemberInFightMessage(int partyId, sbyte reason, int memberId, int memberAccountId, string memberName, int fightId, Types.MapCoordinatesExtended fightMap, short secondsBeforeFightStart)
+        public PartyMemberInFightMessage(int partyId, sbyte reason, int memberId, int memberAccountId, string memberName, int fightId, Types.MapCoordinatesExtended fightMap, short timeBeforeFightStart)
          : base(partyId)
         {
             this.reason = reason;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
             this.memberName = memberName;
             this.fightId = fightId;
             this.fightMap = fightMap;
-            this.secondsBeforeFightStart = secondsBeforeFightStart;
+            this.timeBeforeFightStart = timeBeforeFightStart;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(memberName);
             writer.WriteInt(fightId);
             fightMap.Serialize(writer);
-            writer.WriteVarShort(secondsBeforeFightStart);
+            writer.WriteVarShort(timeBeforeFightStart);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -70,7 +70,7 @@ namespace Stump.DofusProtocol.Messages
             fightId = reader.ReadInt();
             fightMap = new Types.MapCoordinatesExtended();
             fightMap.Deserialize(reader);
-            secondsBeforeFightStart = reader.ReadVarShort();
+            timeBeforeFightStart = reader.ReadVarShort();
         }
         
     }
