@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:29
+// Generated on 02/18/2015 10:46:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +33,13 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(mountId);
+            writer.WriteVarInt(mountId);
             writer.WriteSByte(reactionType);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            mountId = reader.ReadInt();
+            mountId = reader.ReadVarInt();
             reactionType = reader.ReadSByte();
             if (reactionType < 0)
                 throw new Exception("Forbidden value on reactionType = " + reactionType + ", it doesn't respect the following condition : reactionType < 0");

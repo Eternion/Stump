@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:28
+// Generated on 02/18/2015 10:46:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,39 +10,39 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class DisplayNumericalValueMessage : Message
+    public class DisplayNumericalValuePaddockMessage : Message
     {
-        public const uint Id = 5808;
+        public const uint Id = 6563;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public int entityId;
+        public int rideId;
         public int value;
         public sbyte type;
         
-        public DisplayNumericalValueMessage()
+        public DisplayNumericalValuePaddockMessage()
         {
         }
         
-        public DisplayNumericalValueMessage(int entityId, int value, sbyte type)
+        public DisplayNumericalValuePaddockMessage(int rideId, int value, sbyte type)
         {
-            this.entityId = entityId;
+            this.rideId = rideId;
             this.value = value;
             this.type = type;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(entityId);
+            writer.WriteInt(rideId);
             writer.WriteInt(value);
             writer.WriteSByte(type);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            entityId = reader.ReadInt();
+            rideId = reader.ReadInt();
             value = reader.ReadInt();
             type = reader.ReadSByte();
             if (type < 0)

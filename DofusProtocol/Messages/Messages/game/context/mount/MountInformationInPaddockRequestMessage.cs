@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:29
+// Generated on 02/18/2015 10:46:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,12 +31,12 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(mapRideId);
+            writer.WriteVarInt(mapRideId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            mapRideId = reader.ReadInt();
+            mapRideId = reader.ReadVarInt();
         }
         
     }

@@ -1,12 +1,12 @@
-com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame@311
+com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame@331
 "if(BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)"
 ->
 "if(BuildInfos.BUILD_TYPE < BuildTypeEnum.RELEASE)"
 
-com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame@433
+com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame@453
 Remove setPublicKey()
 
-dofus.ankamagames.dofus.logic.connection.managers.AuthentificationManager@183
+dofus.ankamagames.dofus.logic.connection.managers.AuthentificationManager@182
 "_loc2_.initIdentificationMessage(_loc2_.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(this._lva.username,this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false);"
 ->
 "_loc2_.initIdentificationMessage(_loc2_.version,this._lva.username + "|" + this._lva.password,,this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false);"

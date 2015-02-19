@@ -1,6 +1,6 @@
 
 
-// Generated on 02/11/2015 10:20:35
+// Generated on 02/18/2015 10:46:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class TaxCollectorListMessage : Message
+    public class TaxCollectorListMessage : AbstractTaxCollectorListMessage
     {
         public const uint Id = 5930;
         public override uint MessageId
@@ -19,37 +19,23 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte nbcollectorMax;
-        public IEnumerable<Types.TaxCollectorInformations> informations;
         public IEnumerable<Types.TaxCollectorFightersInformation> fightersInformations;
         
         public TaxCollectorListMessage()
         {
         }
         
-        public TaxCollectorListMessage(sbyte nbcollectorMax, IEnumerable<Types.TaxCollectorInformations> informations, IEnumerable<Types.TaxCollectorFightersInformation> fightersInformations)
+        public TaxCollectorListMessage(IEnumerable<Types.TaxCollectorInformations> informations, sbyte nbcollectorMax, IEnumerable<Types.TaxCollectorFightersInformation> fightersInformations)
+         : base(informations)
         {
             this.nbcollectorMax = nbcollectorMax;
-            this.informations = informations;
             this.fightersInformations = fightersInformations;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            base.Serialize(writer);
             writer.WriteSByte(nbcollectorMax);
-            var informations_before = writer.Position;
-            var informations_count = 0;
-            writer.WriteUShort(0);
-            foreach (var entry in informations)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-                 informations_count++;
-            }
-            var informations_after = writer.Position;
-            writer.Seek((int)informations_before);
-            writer.WriteUShort((ushort)informations_count);
-            writer.Seek((int)informations_after);
-
             var fightersInformations_before = writer.Position;
             var fightersInformations_count = 0;
             writer.WriteUShort(0);
@@ -67,18 +53,11 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
+            base.Deserialize(reader);
             nbcollectorMax = reader.ReadSByte();
             if (nbcollectorMax < 0)
                 throw new Exception("Forbidden value on nbcollectorMax = " + nbcollectorMax + ", it doesn't respect the following condition : nbcollectorMax < 0");
             var limit = reader.ReadUShort();
-            var informations_ = new Types.TaxCollectorInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 informations_[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorInformations>(reader.ReadShort());
-                 informations_[i].Deserialize(reader);
-            }
-            informations = informations_;
-            limit = reader.ReadUShort();
             var fightersInformations_ = new Types.TaxCollectorFightersInformation[limit];
             for (int i = 0; i < limit; i++)
             {

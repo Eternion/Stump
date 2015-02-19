@@ -208,6 +208,8 @@
     <Compile Include="Classes\breeds\BreedRoleByBreed.cs" />
     <Compile Include="Classes\breeds\Head.cs" />
     <Compile Include="Classes\challenges\Challenge.cs" />
+    <Compile Include="Classes\characteristics\Characteristic.cs" />
+    <Compile Include="Classes\characteristics\CharacteristicCategory.cs" />
     <Compile Include="Classes\communication\CensoredWord.cs" />
     <Compile Include="Classes\communication\ChatChannel.cs" />
     <Compile Include="Classes\communication\Emoticon.cs" />

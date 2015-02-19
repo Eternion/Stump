@@ -242,8 +242,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             exchange.Open();
         }
 
-        [WorldHandler(ExchangeHandleMountStableMessage.Id)]
-        public static void HandleExchangeHandleMountStableMessage(WorldClient client, ExchangeHandleMountStableMessage message)
+        [WorldHandler(ExchangeHandleMountsStableMessage.Id)]
+        public static void HandleExchangeHandleMountStableMessage(WorldClient client, ExchangeHandleMountsStableMessage message)
         {
             if (!client.Character.IsInExchange())
                 return;
@@ -252,44 +252,47 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (exchanger == null)
                 return;
 
-            switch ((StableExchangeActionsEnum)message.actionType)
+            foreach (var rideId in message.ridesId)
             {
-                case StableExchangeActionsEnum.EQUIP_TO_STABLE:
-                    exchanger.EquipToStable(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.STABLE_TO_EQUIP:
-                    exchanger.StableToEquip(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.STABLE_TO_INVENTORY:
-                    exchanger.StableToInventory(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.INVENTORY_TO_STABLE:
-                     exchanger.InventoryToStable(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.STABLE_TO_PADDOCK:
-                    exchanger.StableToPaddock(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.PADDOCK_TO_STABLE:
-                    exchanger.PaddockToStable(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.EQUIP_TO_PADDOCK:
-                    exchanger.EquipToPaddock(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.PADDOCK_TO_EQUIP:
-                    exchanger.PaddockToEquip(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.EQUIP_TO_INVENTORY:
-                    exchanger.EquipToInventory(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.PADDOCK_TO_INVENTORY:
-                    exchanger.PaddockToInventory(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.INVENTORY_TO_EQUIP:
-                    exchanger.InventoryToEquip(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.INVENTORY_TO_PADDOCK:
-                    exchanger.InventoryToPaddock(message.rideId);
-                    break;
+                switch ((StableExchangeActionsEnum)message.actionType)
+                {
+                    case StableExchangeActionsEnum.EQUIP_TO_STABLE:
+                        exchanger.EquipToStable(rideId);
+                        break;
+                    case StableExchangeActionsEnum.STABLE_TO_EQUIP:
+                        exchanger.StableToEquip(rideId);
+                        break;
+                    case StableExchangeActionsEnum.STABLE_TO_INVENTORY:
+                        exchanger.StableToInventory(rideId);
+                        break;
+                    case StableExchangeActionsEnum.INVENTORY_TO_STABLE:
+                        exchanger.InventoryToStable(rideId);
+                        break;
+                    case StableExchangeActionsEnum.STABLE_TO_PADDOCK:
+                        exchanger.StableToPaddock(rideId);
+                        break;
+                    case StableExchangeActionsEnum.PADDOCK_TO_STABLE:
+                        exchanger.PaddockToStable(rideId);
+                        break;
+                    case StableExchangeActionsEnum.EQUIP_TO_PADDOCK:
+                        exchanger.EquipToPaddock(rideId);
+                        break;
+                    case StableExchangeActionsEnum.PADDOCK_TO_EQUIP:
+                        exchanger.PaddockToEquip(rideId);
+                        break;
+                    case StableExchangeActionsEnum.EQUIP_TO_INVENTORY:
+                        exchanger.EquipToInventory(rideId);
+                        break;
+                    case StableExchangeActionsEnum.PADDOCK_TO_INVENTORY:
+                        exchanger.PaddockToInventory(rideId);
+                        break;
+                    case StableExchangeActionsEnum.INVENTORY_TO_EQUIP:
+                        exchanger.InventoryToEquip(rideId);
+                        break;
+                    case StableExchangeActionsEnum.INVENTORY_TO_PADDOCK:
+                        exchanger.InventoryToPaddock(rideId);
+                        break;
+                }
             }
         }
 
@@ -322,7 +325,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeStartOkTaxCollectorMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
         {
-            client.Send(new ExchangeStartOkTaxCollectorMessage(taxCollector.Id, taxCollector.Bag.Select(x => x.GetObjectItem()), taxCollector.GatheredKamas));
+            //Todo: Update
+            //client.Send(new ExchangeStartOkTaxCollectorMessage(taxCollector.Id, taxCollector.Bag.Select(x => x.GetObjectItem()), taxCollector.GatheredKamas));
         }
 
         public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)
@@ -383,22 +387,22 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeMountPaddockAddMessage(IPacketReceiver client, Mount mount)
         {
-            client.Send(new ExchangeMountPaddockAddMessage(mount.GetMountClientData()));
+            client.Send(new ExchangeMountsPaddockAddMessage(new[] { mount.GetMountClientData() }));
         }
 
         public static void SendExchangeMountStableAddMessage(IPacketReceiver client, Mount mount)
         {
-            client.Send(new ExchangeMountStableAddMessage(mount.GetMountClientData()));
+            client.Send(new ExchangeMountsStableAddMessage(new[] { mount.GetMountClientData() }));
         }
 
         public static void SendExchangeMountPaddockRemoveMessage(IPacketReceiver client, Mount mount)
         {
-            client.Send(new ExchangeMountPaddockRemoveMessage(mount.Id));
+            client.Send(new ExchangeMountsPaddockRemoveMessage(new[] { mount.Id }));
         }
 
         public static void SendExchangeMountStableRemoveMessage(IPacketReceiver client, Mount mount)
         {
-            client.Send(new ExchangeMountStableRemoveMessage(mount.Id));
+            client.Send(new ExchangeMountsStableRemoveMessage(new[] { mount.Id }));
         }
     }
 }
