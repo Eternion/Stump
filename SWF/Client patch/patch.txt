@@ -13,15 +13,15 @@ dofus.ankamagames.dofus.logic.connection.managers.AuthentificationManager@183
 
 pcode:
 getlocal_0
-getproperty Qname(PrivateNamespace("*","1264"),"_lva")
+getproperty Qname(PrivateNamespace("*","1266"),"_lva")
 getproperty Qname(PackageNamespace("","156"),"username")
 pushstring "|"
 add
 getlocal_0
-getproperty Qname(PrivateNamespace("*","1264"),"_lva")
+getproperty Qname(PrivateNamespace("*","1266"),"_lva")
 getproperty Qname(PackageNamespace("","156"),"password")
 add
-getlex Multiname("Vector",[PrivateNamespace("*","1494"),PackageNamespace("","156"),PrivateNamespace("*","3119"),PackageNamespace("com.ankamagames.dofus.network.messages.connection"),PackageInternalNs("com.ankamagames.dofus.network.messages.connection"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.network.messages.connection:IdentificationMessage"),StaticProtectedNs("com.ankamagames.dofus.network.messages.connection:IdentificationMessage"),StaticProtectedNs("com.ankamagames.jerakine.network:NetworkMessage"),StaticProtectedNs("com.ankamagames.jerakine.scrambling:ScramblableElement"),PackageNamespace("__AS3__.vec")])
+getlex Multiname("Vector",[PrivateNamespace("*","2627"),PrivateNamespace("*","2904"),PackageNamespace("","156"),PackageNamespace("com.ankamagames.dofus.console.moduleLogger"),PackageInternalNs("com.ankamagames.dofus.console.moduleLogger"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.console.moduleLogger:ModuleDebugManager"),StaticProtectedNs("com.ankamagames.dofus.console.moduleLogger:ModuleDebugManager"),PackageNamespace("__AS3__.vec")])
 getlex Qname(PackageNamespace("","156"),"int")
 applytype 1
 construct 0
