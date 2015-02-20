@@ -391,7 +391,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             MountHandler.SendMountRidingMessage(character.Client, IsRiding);
 
             if (IsRiding)
+            {
+                var pet = character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
+                if (pet != null)
+                {
+                    character.Inventory.MoveItem(pet, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+                }
+
                 ApplyMountEffects();
+            }            
             else
             {
                 //Vous descendez de votre monture.

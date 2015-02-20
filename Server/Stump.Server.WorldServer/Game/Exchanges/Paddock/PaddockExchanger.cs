@@ -37,12 +37,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             mount.Owner = Character;
             Character.Mount = mount;
 
-            var pet = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS);
-            if (pet != null)
-            {
-                Character.Inventory.MoveItem(pet, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-            }
-
             MountManager.Instance.LinkMountToCharacter(Character, mount);
             MountHandler.SendMountSetMessage(Character.Client, mount.GetMountClientData());
             MountHandler.SendMountXpRatioMessage(Character.Client, mount.GivenExperience);
