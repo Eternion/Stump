@@ -1,5 +1,6 @@
 
 using System;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
@@ -295,11 +296,23 @@ namespace Stump.Server.WorldServer.Commands
             return outvalue;
         };
 
+        public static ConverterHandler<DirectionsEnum> DirectionConverter = (entry, trigger) =>
+        {
+            DirectionsEnum outvalue;
+            if (!Enum.TryParse(entry, out outvalue))
+                throw new ConverterException(string.Format("'{0}' is not of format 'Direction'", entry));
+
+            return outvalue;
+        };
+
         public static ConverterHandler<InteractiveTemplate> InteractiveTemplateConverter = (entry, trigger) =>
         {
             int outvalue;
             if (!int.TryParse(entry, out outvalue))
                 throw new ConverterException(string.Format("'{0}' is not of format 'interactiveId'", entry));
+
+            if (outvalue == 0)
+                return null;
 
             var interactiveById = InteractiveManager.Instance.GetTemplate(outvalue);
 

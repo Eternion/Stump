@@ -15,23 +15,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
-            Owner.Area.AddMessage(() =>
+            var tokens = Owner.Inventory.Tokens;
+            var wonTokens = (uint)Template.Price;
+
+            if (tokens != null)
             {
-                var tokens = Owner.Inventory.Tokens;
-                var wonTokens = (uint) Template.Price;
-
-                if (tokens != null)
-                {
-                    tokens.Stack += wonTokens;
-                    Owner.Inventory.RefreshItem(tokens);
-                }
-                else
-                    Owner.Inventory.AddItem(Inventory.TokenTemplate, (int)wonTokens);
+                tokens.Stack += wonTokens;
+                Owner.Inventory.RefreshItem(tokens);
+            }
+            else
+                Owner.Inventory.AddItem(Inventory.TokenTemplate, (int)wonTokens);
 
 
-                WorldServer.Instance.IOTaskPool.AddMessage(() => Owner.Inventory.Save());
-                Owner.SendServerMessage(string.Format("Vous avez reçu {0} Jetons en utilisant votre {1}", wonTokens, Template.Name));
-            });
+            WorldServer.Instance.IOTaskPool.AddMessage(() => Owner.Inventory.Save());
+            Owner.SendServerMessage(string.Format("Vous avez reçu {0} Jetons en utilisant votre {1}", wonTokens, Template.Name));
 
             return 1;
         }
