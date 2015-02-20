@@ -48,6 +48,18 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_ageBonusDefined = true;
         }
 
+        protected override void OnFightEnded()
+        {
+            base.OnFightEnded();
+
+            if (Winners != DefendersTeam)
+                return;
+
+            var monsterFighter = DefendersTeam.Leader;
+            if (monsterFighter != null)
+                Map.Enter(monsterFighter.Monster.Group);
+        }
+
         public override FightTypeEnum FightType
         {
             get { return FightTypeEnum.FIGHT_TYPE_PvM; }
