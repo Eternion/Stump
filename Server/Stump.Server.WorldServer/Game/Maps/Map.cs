@@ -1423,7 +1423,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public InteractiveObject GetInteractiveObject(int id)
         {
-            return m_interactives[id];
+            return !m_interactives.ContainsKey(id) ? null : m_interactives[id];
         }
 
         public IEnumerable<InteractiveObject> GetInteractiveObjects()

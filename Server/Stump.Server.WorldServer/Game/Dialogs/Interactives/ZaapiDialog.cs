@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
             Zaapi = zaapi;
 
             foreach (var map in from map in character.Area.Maps from interactive in map.GetInteractiveObjects()
-                                    .Where(interactive => interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI) select map)
+                                    .Where(interactive => interactive.Template != null && interactive.Template.Type == InteractiveTypeEnum.TYPE_ZAAPI) select map)
             {
                 AddDestination(map);
             }
@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
         public void Open()
         {
             Character.SetDialog(this);
-            SendZaapListMessage(Character.Client);
+            SendZaapiListMessage(Character.Client);
         }
 
         public void Close()
@@ -85,18 +85,24 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
                 }
             }
 
+            var cost = GetCostTo(map);
+
+            if (Character.Kamas < cost)
+                return;
+
+            Character.Inventory.SubKamas(cost);
             Character.Teleport(map, cell);
+
             Close();
         }
 
-        public void SendZaapListMessage(IPacketReceiver client)
+        public void SendZaapiListMessage(IPacketReceiver client)
         {
             client.Send(new TeleportDestinationsListMessage(
                 (sbyte)TeleporterTypeEnum.TELEPORTER_SUBWAY,
                 m_destinations.Select(entry => entry.Id),
                 m_destinations.Select(entry => (short)entry.SubArea.Id),
-                m_destinations.Select(GetCostTo),
-                m_destinations.Select(entry => (sbyte)TeleporterTypeEnum.TELEPORTER_SUBWAY)));
+                m_destinations.Select(GetCostTo)));
         }
 
         public short GetCostTo(Map map)

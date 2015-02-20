@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
 {
     public class ZaapDialog : IDialog
     {
-        private List<Map> m_destinations = new List<Map>();
+        private readonly List<Map> m_destinations = new List<Map>();
 
         public ZaapDialog(Character character, InteractiveObject zaap)
         {
@@ -86,7 +86,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
                 }
             }
 
+            var cost = GetCostTo(map);
+
+            if (Character.Kamas < cost)
+                return;
+
+            Character.Inventory.SubKamas(cost);
             Character.Teleport(map, cell);
+
             Close();
         }
 

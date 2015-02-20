@@ -741,7 +741,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         protected override void OnKamasAmountChanged(int amount)
         {
-            InventoryHandler.SendKamasUpdateMessage(Owner.Client, amount);
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, amount > 0 ? (short)45 : (short)46, Math.Abs(amount));
+            InventoryHandler.SendKamasUpdateMessage(Owner.Client, Kamas);
 
             base.OnKamasAmountChanged(amount);
         }
