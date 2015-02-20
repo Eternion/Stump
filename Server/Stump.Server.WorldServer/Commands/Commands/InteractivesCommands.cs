@@ -11,6 +11,7 @@ using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -78,11 +79,13 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Task.Factory.StartNew(() =>
             {
                 World.Instance.UnSpawnInteractives();
+                World.Instance.UnSpawnCellTriggers();
 
                 World.Instance.Pause();
                 try
                 {
                     method.Invoke(InteractiveManager.Instance, new object[0]);
+                    method.Invoke(CellTriggerManager.Instance, new object[0]);
                 }
                 finally
                 {
@@ -90,6 +93,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 }
                
                 World.Instance.SpawnInteractives();
+                World.Instance.SpawnCellTriggers();
 
                 World.Instance.SendAnnounce("[RELOAD] Interactives reloaded ... WORLD RESUMED", Color.DodgerBlue);
             });
