@@ -1323,6 +1323,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void TogglePvPMode(bool state)
         {
+            if (IsInFight())
+                return;
+
             PvPEnabled = state;
         }
 
