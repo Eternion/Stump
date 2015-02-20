@@ -18,8 +18,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (unequip)
                 return base.OnEquipItem(true);
 
+            if (Owner.IsRiding())
+                Owner.Mount.Dismount(Owner);
 
-            return !Owner.HasEquipedMount();
+            return base.OnEquipItem(false);
         }
     }
 }
