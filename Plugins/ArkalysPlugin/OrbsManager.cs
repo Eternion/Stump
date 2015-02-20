@@ -83,24 +83,24 @@ namespace ArkalysPlugin
                     player.Loot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
             }
 
-            if (fight.Map.TaxCollector != null)
+            if (fight.Map.TaxCollector == null)
+                return;
+
+            var item = fight.Map.TaxCollector.Bag.TryGetItem(OrbItemTemplate);
+            var limit = fight.Map.TaxCollector.Guild.TaxCollectorPods;
+
+            if (item != null)
             {
-                var item = fight.Map.TaxCollector.Bag.TryGetItem(OrbItemTemplate);
-                int limit = fight.Map.TaxCollector.Guild.TaxCollectorPods;
-
-                if (item != null)
-                {
-                    limit -= (int)item.Stack;
-                }
-
-                var orbs = (uint) (((double)fight.Map.TaxCollector.Guild.TaxCollectorProspecting/
-                    players.Sum(entry => entry.Stats[PlayerFields.Prospecting].Total))*totalOrbs*0.05);
-
-                if (orbs > limit)
-                    orbs = (uint)limit;
-
-                fight.TaxCollectorLoot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
+                limit -= (int)item.Stack;
             }
+
+            var collectorOrbs = (uint) (((double)fight.Map.TaxCollector.Guild.TaxCollectorProspecting/
+                                players.Sum(entry => entry.Stats[PlayerFields.Prospecting].Total))*totalOrbs*0.05);
+
+            if (collectorOrbs > limit)
+                collectorOrbs = (uint)limit;
+
+            fight.TaxCollectorLoot.AddItem(new DroppedItem(OrbItemTemplateId, collectorOrbs));
         }
 
         private static uint GetMonsterDroppedOrbs(MonsterFighter monster)

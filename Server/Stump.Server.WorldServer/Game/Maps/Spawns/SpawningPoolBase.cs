@@ -175,7 +175,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         public bool SpawnNextGroup()
         {
-            MonsterGroup group = DequeueNextGroupToSpawn();
+            var group = DequeueNextGroupToSpawn();
 
             if (group == null)
                 return false;
@@ -202,19 +202,14 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected virtual MonsterGroup DequeueNextGroupToSpawn()
         {
-            if (NextGroup != null)
-            {
-                return NextGroup;
-            }
-
-            return null;
+            return NextGroup;
         }
 
         public virtual void SetNextGroupToSpawn(IEnumerable<Monster> monsters)
         {
             NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition());
 
-            foreach (Monster monster in monsters)
+            foreach (var monster in monsters)
             {
                 NextGroup.AddMonster(monster);
             }
@@ -223,8 +218,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         private void OnMapActorLeave(Map map, RolePlayActor actor)
         {
-            if (actor is MonsterGroup && (Spawns.Contains(actor as MonsterGroup)))
-                OnGroupUnSpawned(actor as MonsterGroup);
+            if (actor is MonsterGroup && (Spawns.Contains((MonsterGroup) actor)))
+                OnGroupUnSpawned((MonsterGroup) actor);
         }
 
         public event Action<SpawningPoolBase, MonsterGroup> Spawned;
@@ -236,7 +231,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
             NextGroup = null;
 
-            Action<SpawningPoolBase, MonsterGroup> handler = Spawned;
+            var handler = Spawned;
             if (handler != null)
                 handler(this, group);
         }

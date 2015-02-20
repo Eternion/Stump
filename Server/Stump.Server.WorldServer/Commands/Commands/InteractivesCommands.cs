@@ -74,7 +74,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var method = InteractiveManager.Instance.GetType().GetMethod("Initialize", new Type[0]);
+            var methodInteractives = InteractiveManager.Instance.GetType().GetMethod("Initialize", new Type[0]);
+            var methodTrigger = CellTriggerManager.Instance.GetType().GetMethod("Initialize", new Type[0]);
+
             World.Instance.SendAnnounce("[RELOAD] Reloading Interactives ... WORLD PAUSED", Color.DodgerBlue);
             Task.Factory.StartNew(() =>
             {
@@ -84,8 +86,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 World.Instance.Pause();
                 try
                 {
-                    method.Invoke(InteractiveManager.Instance, new object[0]);
-                    method.Invoke(CellTriggerManager.Instance, new object[0]);
+                    methodInteractives.Invoke(InteractiveManager.Instance, new object[0]);
+                    methodTrigger.Invoke(CellTriggerManager.Instance, new object[0]);
                 }
                 finally
                 {
