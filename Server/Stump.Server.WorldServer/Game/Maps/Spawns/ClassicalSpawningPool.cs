@@ -91,6 +91,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         {
             lock (m_locker)
             {
+                if (NextGroup != null)
+                    return NextGroup;
+                
                 if (m_groupsToSpawn.Count == 0)
                 {
                     return null;
