@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
-using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -12,6 +11,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
@@ -33,11 +33,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         private readonly List<Monster> m_monsters = new List<Monster>();
 
-        public MonsterGroup(int id, ObjectPosition position)
+        public MonsterGroup(int id, ObjectPosition position, SpawningPoolBase spawningPool = null)
         {
             ContextualId = id;
             Position = position;
             CreationDate = DateTime.Now;
+            SpawningPool = spawningPool;
         }
 
         public IFight Fight
@@ -53,6 +54,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         }
 
         public int ContextualId
+        {
+            get;
+            private set;
+        }
+
+        public SpawningPoolBase SpawningPool
         {
             get;
             private set;
@@ -136,7 +143,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return false;
         }
 
-        public override bool Teleport(ObjectPosition destination, bool performCheck)
+        public override bool Teleport(ObjectPosition destination, bool performCheck = true)
         {
             return false;
         }
@@ -179,7 +186,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             var handler = EnterFight;
             if (handler != null)
-                EnterFight(this, character);
+                handler(this, character);
         }
 
         public IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team)
@@ -237,11 +244,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public GroupMonsterStaticInformations GetGroupMonsterStaticInformations()
         {
             return new GroupMonsterStaticInformations(Leader.GetMonsterInGroupLightInformations(), GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()));
-        }
-
-        protected override void OnDisposed()
-        {
-            base.OnDisposed();
         }
 
         public override string ToString()

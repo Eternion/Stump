@@ -207,7 +207,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         public virtual void SetNextGroupToSpawn(IEnumerable<Monster> monsters)
         {
-            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition());
+            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition(), this);
 
             foreach (var monster in monsters)
             {
@@ -215,6 +215,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             }
         }
 
+        public void UnSpawnGroup(Map map, RolePlayActor actor)
+        {
+            if (actor is MonsterGroup && (Spawns.Contains((MonsterGroup)actor)))
+                OnGroupUnSpawned((MonsterGroup)actor);
+        }
 
         private void OnMapActorLeave(Map map, RolePlayActor actor)
         {
