@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public SpawningPoolBase SpawningPool
         {
             get;
-            private set;
+            set;
         }
 
         public Monster Leader

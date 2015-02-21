@@ -98,7 +98,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
                 var size = m_groupsToSpawn.Dequeue();
 
-                return m_groupsBySize[(int) size] = Map.GenerateRandomMonsterGroup(GroupSizes[size].Item1, GroupSizes[size].Item2);
+                var group = Map.GenerateRandomMonsterGroup(GroupSizes[size].Item1, GroupSizes[size].Item2);
+                group.SpawningPool = this;
+
+                return m_groupsBySize[(int) size] = group;
             }
         }
 
