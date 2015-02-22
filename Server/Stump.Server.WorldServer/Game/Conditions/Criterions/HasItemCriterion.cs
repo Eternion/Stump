@@ -45,11 +45,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
     {
         public const string Identifier = "PO2";
 
-        public Dictionary<int, int> Items
-        {
-            get;
-            set;
-        }
+        public Dictionary<int, int> Items = new Dictionary<int, int>();
 
         public override bool Eval(Character character)
         {
@@ -69,6 +65,9 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
                 var item = character.Inventory.TryGetItem(template);
 
+                if (item == null)
+                    return false;
+
                 if (item.Stack < amount)
                     return false;
 
@@ -85,7 +84,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 
         public override void Build()
         {
-            var itemsList = Literal.Split('|');
+            var itemsList = Literal.Split(',');
 
             foreach (var itemCut in itemsList.Select(item => item.Split('_')))
             {
