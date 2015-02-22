@@ -207,7 +207,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         public virtual void SetNextGroupToSpawn(IEnumerable<Monster> monsters)
         {
-            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition());
+            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition(), this);
 
             foreach (var monster in monsters)
             {

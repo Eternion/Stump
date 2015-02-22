@@ -932,7 +932,8 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             var categories = grade.Spells.Select(SpellIdentifier.GetSpellCategories);
 
-            return categories.Any(
+            return
+                categories.Any(
                     x =>
                     (x & SpellCategory.Damages) != 0 ||
                     x.HasFlag(SpellCategory.Healing));
