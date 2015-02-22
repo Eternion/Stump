@@ -33,12 +33,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         private readonly List<Monster> m_monsters = new List<Monster>();
 
-        public MonsterGroup(int id, ObjectPosition position, SpawningPoolBase spawningPool = null)
+        public MonsterGroup(int id, ObjectPosition position)
         {
             ContextualId = id;
             Position = position;
             CreationDate = DateTime.Now;
-            SpawningPool = spawningPool;
         }
 
         public IFight Fight
@@ -57,12 +56,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             get;
             private set;
-        }
-
-        public SpawningPoolBase SpawningPool
-        {
-            get;
-            set;
         }
 
         public Monster Leader
