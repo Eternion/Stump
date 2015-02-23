@@ -7,6 +7,7 @@ using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights
@@ -52,9 +53,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.OnFightEnded();
 
-            if (Winners == ChallengersTeam)
-                return;
-
             var monsterFighter = DefendersTeam.Leader;
             if (monsterFighter == null)
                 return;
@@ -63,8 +61,20 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (spawningPool == null)
                 return;
 
+            spawningPool.SetPoolState(SpawningPoolState.Stoped);
+
+            spawningPool.UnSpawnGroup(monsterFighter.Monster.Group);
+
+            if (Winners == ChallengersTeam)
+            {
+                spawningPool.SetPoolState(SpawningPoolState.Paused);
+                return;
+            }
+
             spawningPool.SetNextGroupToSpawn(monsterFighter.Monster.Group.GetMonsters());
             spawningPool.SpawnNextGroup();
+
+            spawningPool.SetPoolState(SpawningPoolState.Paused);
         }
 
         public override FightTypeEnum FightType

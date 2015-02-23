@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         protected SpawningPoolBase(Map map)
         {
             Map = map;
-            Map.ActorLeave += OnMapActorLeave;
+            //Map.ActorLeave += OnMapActorLeave;
             Spawns = new List<MonsterGroup>();
         }
 
@@ -109,13 +109,17 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                 if (!AutoSpawnEnabled)
                     return;
 
-
                 if (SpawnTimer != null)
                     SpawnTimer.Dispose();
 
                 State = SpawningPoolState.Stoped;
                 OnAutoSpawnDisabled();
             }
+        }
+
+        public void SetPoolState(SpawningPoolState state)
+        {
+            State = state;
         }
 
         protected virtual void OnAutoSpawnDisabled()
@@ -219,6 +223,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         {
             if (actor is MonsterGroup && (Spawns.Contains((MonsterGroup) actor)))
                 OnGroupUnSpawned((MonsterGroup) actor);
+        }
+
+        public void UnSpawnGroup(MonsterGroup group)
+        {
+            OnGroupUnSpawned(group);
         }
 
         public event Action<SpawningPoolBase, MonsterGroup> Spawned;
