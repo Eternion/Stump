@@ -8,7 +8,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ARKALYS")]
 [assembly: AssemblyProduct("Arkalys Uplauncher")]
-[assembly: AssemblyCopyright("Copyright ©  2014 ARKALYS - Tous droits réservés")]
+[assembly: AssemblyCopyright("Copyright ©  2015 ARKALYS - Tous droits réservés")]
 [assembly: AssemblyTrademark("ARKALYS")]
 [assembly: AssemblyCulture("")]
 
