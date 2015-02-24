@@ -92,7 +92,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             lock (m_locker)
             {
                 if (NextGroup != null)
-                    return NextGroup;
+                {
+                    return m_groupsBySize[NextGroup.GroupSize] = NextGroup; ;
+                }
                 
                 if (m_groupsToSpawn.Count == 0)
                 {
@@ -103,6 +105,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
                 var group = Map.GenerateRandomMonsterGroup(GroupSizes[size].Item1, GroupSizes[size].Item2);
                 group.SpawningPool = this;
+                group.GroupSize = (int)size;
 
                 return m_groupsBySize[(int) size] = group;
             }
