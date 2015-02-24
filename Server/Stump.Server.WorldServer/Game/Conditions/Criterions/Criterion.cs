@@ -120,8 +120,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new GuildRightsCriterion();
                 case HasItemCriterion.Identifier:
                     return new HasItemCriterion();
-                case DeleteItemCriterion.Identifier:
-                    return new DeleteItemCriterion();
                 case HasOrnament.Identifier:
                     return new HasOrnament();
                 case HasTitleCriterion.Identifier:
