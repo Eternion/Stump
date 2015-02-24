@@ -121,6 +121,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected override void OnGroupUnSpawned(MonsterGroup monster)
         {
+            if (NextGroup != null)
+            {
+                base.OnGroupUnSpawned(monster);
+                return;
+            }
+
             lock (m_locker)
             {
                 if (monster == SmallGroup)
