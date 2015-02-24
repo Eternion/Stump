@@ -65,6 +65,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             set;
         }
 
+        public int GroupSize
+        {
+            get;
+            set;
+        }
+
         public Monster Leader
         {
             get;
