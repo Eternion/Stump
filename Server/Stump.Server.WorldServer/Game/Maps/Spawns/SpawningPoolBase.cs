@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Stump.Core.Timers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -115,11 +116,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                 State = SpawningPoolState.Stoped;
                 OnAutoSpawnDisabled();
             }
-        }
-
-        public void SetPoolState(SpawningPoolState state)
-        {
-            State = state;
         }
 
         protected virtual void OnAutoSpawnDisabled()
@@ -246,8 +242,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected virtual void OnGroupUnSpawned(MonsterGroup monster)
         {
+            var monsterToDelete = Spawns.FirstOrDefault(x => x.Id == monster.Id);
+
             lock (Spawns)
-                Spawns.Remove(monster);
+                Spawns.Remove(monsterToDelete);
 
             if (!IsLimitReached() && State == SpawningPoolState.Paused)
                 ResumeAutoSpawn();

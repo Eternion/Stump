@@ -61,26 +61,23 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (spawningPool == null)
                 return;
 
-            spawningPool.SetPoolState(SpawningPoolState.Stoped);
-
-            spawningPool.UnSpawnGroup(monsterFighter.Monster.Group);
-
             if (Winners == ChallengersTeam)
             {
-                spawningPool.SetPoolState(SpawningPoolState.Paused);
+                spawningPool.UnSpawnGroup(monsterFighter.Monster.Group);
                 return;
             }
 
             spawningPool.SetNextGroupToSpawn(monsterFighter.Monster.Group.GetMonsters());
-            spawningPool.SpawnNextGroup();
+            spawningPool.UnSpawnGroup(monsterFighter.Monster.Group);
 
-            spawningPool.SetPoolState(SpawningPoolState.Paused);
+            spawningPool.SpawnNextGroup();
         }
 
         public override FightTypeEnum FightType
         {
             get { return FightTypeEnum.FIGHT_TYPE_PvM; }
         }
+
         public override bool IsPvP
         {
             get { return false; }
