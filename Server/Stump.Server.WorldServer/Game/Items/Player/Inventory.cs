@@ -676,6 +676,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, item.Stack, item.Template.Id);
+
             if (wasEquiped)
                 CheckItemsCriterias();
 
@@ -735,6 +737,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
+
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, difference, item.Template.Id);
 
             base.OnItemStackChanged(item, difference);
         }

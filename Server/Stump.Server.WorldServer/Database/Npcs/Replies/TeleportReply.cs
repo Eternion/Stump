@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
@@ -142,10 +141,16 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
                 var item = character.Inventory.TryGetItem(template);
 
                 if (item == null)
+                {
+                    character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
                     return false;
+                }
 
                 if (item.Stack < amount)
+                {
+                    character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
                     return false;
+                }
 
                 itemsToDelete.Add(item, amount);
             }

@@ -164,7 +164,6 @@ namespace ArkalysPlugin.Npcs
                 else
                 {
                     Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
-                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
 
                     Character.Inventory.AddItem(NpcGuilds.RequieredItem);
                 }
