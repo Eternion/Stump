@@ -1,10 +1,9 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Usables;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
 
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 {
     [EffectHandler(EffectsEnum.Effect_TeleportToSavePoint)]
     public class TeleportToSavePoint : UsableEffectHandler
@@ -18,6 +17,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         {
             var dest = Target.GetSpawnPoint();
             Target.Teleport(dest);
+
+            UsedItems = 1;
 
             return true;
         }
