@@ -738,7 +738,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
-            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, difference, item.Template.Id);
+            if (difference != 0)
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, difference > 0 ? (short)21 : (short)22, Math.Abs(difference), item.Template.Id);
 
             base.OnItemStackChanged(item, difference);
         }

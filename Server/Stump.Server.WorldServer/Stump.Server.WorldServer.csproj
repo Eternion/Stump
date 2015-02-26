@@ -326,7 +326,7 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
-    <Compile Include="Game\Effects\Handlers\Items\TeleportToSavePoint.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Frikt.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
