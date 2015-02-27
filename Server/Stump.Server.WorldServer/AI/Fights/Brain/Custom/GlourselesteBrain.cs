@@ -17,6 +17,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
             : base(fighter)
         {
             fighter.ActorPushed += OnActorPushed;
+            fighter.FightPointsVariation += OnFightPointsVariation;
             fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
 
             fighter.Fight.FightStarted += OnFightStarted;
@@ -79,6 +80,17 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
 
             if (takeDamage)
                 m_gloursongeurHandlers[1].Apply(); //Kill
+        }
+
+        private void OnFightPointsVariation(FightActor fighter, ActionsEnum action, FightActor source, FightActor target, short delta)
+        {
+            if (source == target)
+                return;
+
+            if (source.IsFriendlyWith(target))
+                return;
+
+            m_gloursongeurHandlers[3].Apply(); //State Résuglours
         }
     }
 }

@@ -700,7 +700,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CastSpell(Spell spell, Cell cell, bool force = false)
         {
-            if (!IsFighterTurn() || IsDead())
+            if (!force && (!IsFighterTurn() || IsDead()))
                 return false;
 
             var spellLevel = spell.CurrentSpellLevel;
