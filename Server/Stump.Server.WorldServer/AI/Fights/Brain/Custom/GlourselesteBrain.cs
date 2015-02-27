@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
                 return;
 
             var spell = new Spell((int)SpellIdEnum.GLOURSOMPTUEUX, 1);
-            player.CastSpell(spell, Fighter.Cell, true);
+            player.CastSpell(spell, Fighter.Cell, true, true);
         }
 
         private void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
                 return;
 
             var spell = new Spell((int)SpellIdEnum.HYDROMEL, 1);
-            Fighter.CastSpell(spell, Fighter.Cell, true);
+            Fighter.CastSpell(spell, Fighter.Cell, true, true);
         }
 
         private void OnActorPushed(FightActor fighter, bool takeDamage)
