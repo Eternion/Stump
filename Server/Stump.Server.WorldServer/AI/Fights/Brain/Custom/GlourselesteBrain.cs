@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
         {
             fighter.ActorPushed += OnActorPushed;
             fighter.FightPointsVariation += OnFightPointsVariation;
-            fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
+            fighter.DamageInflicted += OnDamageInflicted;
 
             fighter.Fight.FightStarted += OnFightStarted;
             fighter.Fight.TurnStarted += OnTurnStarted;
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
             player.CastSpell(spell, Fighter.Cell, true, true);
         }
 
-        private void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
+        private void OnDamageInflicted(FightActor fighter, Damage damage)
         {
             if (damage.Source == Fighter)
                 return;
