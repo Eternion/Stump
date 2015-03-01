@@ -23,9 +23,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
             fighter.Fight.TurnStarted += OnTurnStarted;
         }
 
-        private SpellEffectHandler GetEffectHandler(SpellIdEnum spellId, Cell cell, int offset)
+        private SpellEffectHandler GetEffectHandler(SpellIdEnum spellId, Cell cell, int offset, FightActor fighter = null)
         {
-            var spell = SpellManager.Instance.GetSpellCastHandler(Fighter, new Spell((int)spellId, 1), cell, false);
+            if (fighter == null)
+                fighter = Fighter;
+
+            var spell = SpellManager.Instance.GetSpellCastHandler(fighter, new Spell((int)spellId, 1), cell, false);
             spell.Initialize();
 
             return spell.GetEffectHandlers().ToArray()[offset];
@@ -54,6 +57,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
 
         private void OnTurnStarted(IFight fight, FightActor player)
         {
+            if (player == Fighter && player.HasState((int)SpellStatesEnum.Beark_to_Life))
+            {
+                var spellGlours = new Spell((int)SpellIdEnum.PETIT_GLOURS_BRUN, 1);
+                player.CastSpell(spellGlours, Fighter.Cell);
+            }
+
             if (!(player is CharacterFighter) || player.Team.Id == Fighter.Team.Id)
                 return;
 
