@@ -71,12 +71,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
                     for (var i = 0; i < drop.Amount; i++)
                     {
                         var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, 1);
-                        Character.Inventory.AddItem(item);
+                        Character.Inventory.AddItem(item, false);
                     }
                 else
                 {
                     var item = ItemManager.Instance.CreatePlayerItem(Character, drop.ItemId, (int)drop.Amount);
-                    Character.Inventory.AddItem(item);
+                    Character.Inventory.AddItem(item, false);
                 }
             }
             if (ExperienceData != null)
