@@ -125,18 +125,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return (Items.Count * PricePerItem);
         }
 
-        protected override void OnItemAdded(BankItem item)
+        protected override void OnItemAdded(BankItem item, bool addItemMsg)
         {
             InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
 
-            base.OnItemAdded(item);
+            base.OnItemAdded(item, addItemMsg);
         }
 
-        protected override void OnItemRemoved(BankItem item)
+        protected override void OnItemRemoved(BankItem item, bool removeItemMsg)
         {            
             InventoryHandler.SendStorageObjectRemoveMessage(Owner.Client, item);
 
-            base.OnItemRemoved(item);
+            base.OnItemRemoved(item, removeItemMsg);
         }
 
         protected override void OnItemStackChanged(BankItem item, int difference)

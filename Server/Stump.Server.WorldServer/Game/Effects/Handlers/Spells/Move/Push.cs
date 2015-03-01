@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                     };
 
                                     fighter.InflictDamage(damage);
-                                    fighter.OnActorPushed(actor, true);
+                                    fighter.OnActorPushed(fighter, true);
                                 }
                             }
                         }
@@ -106,16 +106,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 }
 
                 var endCell = lastCell;
-                var actorCopy = actor;
 
                 if (actor.IsCarrying())
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
-                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actorCopy.IsVisibleFor))
-                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
+                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actor.IsVisibleFor))
+                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actor, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
-                actor.OnActorPushed(Caster, takeDamage);
+                actor.OnActorPushed(actor, takeDamage);
             }
 
             return true;
