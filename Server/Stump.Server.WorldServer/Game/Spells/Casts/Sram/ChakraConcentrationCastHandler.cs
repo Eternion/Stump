@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 
-namespace Stump.Server.WorldServer.Game.Spells.Casts
+namespace Stump.Server.WorldServer.Game.Spells.Casts.Sram
 {
     [SpellCastHandler(SpellIdEnum.CONCENTRATION_DE_CHAKRA)]
     public class ChakraConcentrationCastHandler : DefaultSpellCastHandler
