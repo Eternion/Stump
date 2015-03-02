@@ -160,6 +160,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Monsters
+
             #region Korriandre
 
             // Glyphe Daivain (2700)
@@ -183,6 +185,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // target only self -> all
             FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
                 (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+
+            #endregion
 
             #endregion
 
