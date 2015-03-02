@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
@@ -23,7 +22,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             if (fighter == null)
                 return;
 
-            Handlers[0].SetAffectedActors(fighter as IEnumerable<FightActor>);
+            Handlers[0].SetAffectedActors(new[] {fighter});
+
+            base.Execute();
         }
     }
 }

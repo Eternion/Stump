@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -60,7 +61,21 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
             if (player == Fighter && player.HasState((int)SpellStatesEnum.Beark_to_Life))
             {
                 var spellGlours = new Spell((int)SpellIdEnum.PETIT_GLOURS_BRUN, 1);
-                player.CastSpell(spellGlours, Fighter.Cell);
+
+                for (var i = 0; i < 3; i++)
+                {
+                    if (player.AP < spellGlours.CurrentSpellLevel.ApCost)
+                        continue;
+
+                    var deadFighter = player.Team.GetLastDeadFighter();
+                    if (deadFighter == null)
+                        continue;
+
+                    player.CastSpell(spellGlours, deadFighter.Cell, true);
+                }
+
+                var state = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.Beark_to_Life);
+                player.RemoveState(state);
             }
 
             if (!(player is CharacterFighter) || player.Team.Id == Fighter.Team.Id)
@@ -81,9 +96,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
             if (!Fighter.Position.Point.IsAdjacentTo(damage.Source.Position.Point))
                 return;
 
-            damage.IgnoreDamageBoost = true;
-            damage.IgnoreDamageReduction = true;
-            damage.Generated = true;
+            if (Fighter.HasState((int)SpellStatesEnum.Invulnerable))
+            {
+                damage.IgnoreDamageBoost = true;
+                damage.IgnoreDamageReduction = true;
+                damage.Generated = true;
+                damage.Amount = 0;
+            }
 
             var spell = new Spell((int)SpellIdEnum.HYDROMEL, 1);
             Fighter.CastSpell(spell, Fighter.Cell, true, true);
@@ -112,9 +131,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
         private void OnFightPointsVariation(FightActor fighter, ActionsEnum action, FightActor source, FightActor target, short delta)
         {
             if (action != ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST && action != ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST)
-                return;
-
-            if (source.IsFriendlyWith(target))
                 return;
 
             //State Résuglours

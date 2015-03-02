@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         {
             get
             {
-                return Record.GetParameter<string>(3);
+                return Record.GetParameter<string>(3, true);
             }
             set
             {
@@ -117,7 +117,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (!base.Execute(npc, character))
                 return false;
 
-            if (ItemsParameter == null)
+            if (string.IsNullOrEmpty(ItemsParameter))
                 return character.Teleport(GetPosition());
 
             var parameter = ItemsParameter.Split(',');
