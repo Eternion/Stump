@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             MonsterBombTemplate = monsterBombTemplate;
             Summoner = summoner;
             SpellBombTemplate = spellBombTemplate;
-            m_stats = new StatsFields(this, 100);
+            m_stats = new StatsFields(this);
             m_stats.Initialize(monsterBombTemplate);
             WallSpell = new Spell((int) wallsSpells[SpellBombTemplate.WallId], (byte) MonsterBombTemplate.GradeId);
             m_color = wallsColors[SpellBombTemplate.WallId];
