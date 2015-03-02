@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                             .ToList();
             Kamas = TaxCollectorNpc.GatheredKamas;
 
-            m_stats = new StatsFields(this);
+            m_stats = new StatsFields(this, 100);
             m_stats.Initialize(TaxCollectorNpc);
             
             Cell cell;
