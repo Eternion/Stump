@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Stump.Core.Timers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -18,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         protected SpawningPoolBase(Map map)
         {
             Map = map;
-            Map.ActorLeave += OnMapActorLeave;
+            //Map.ActorLeave += OnMapActorLeave;
             Spawns = new List<MonsterGroup>();
         }
 
@@ -108,7 +109,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             {
                 if (!AutoSpawnEnabled)
                     return;
-
 
                 if (SpawnTimer != null)
                     SpawnTimer.Dispose();
@@ -215,16 +215,29 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             }
         }
 
-        public void UnSpawnGroup(Map map, RolePlayActor actor)
+        public virtual void SetNextGroupToSpawn(MonsterGroup group)
         {
-            if (actor is MonsterGroup && (Spawns.Contains((MonsterGroup)actor)))
-                OnGroupUnSpawned((MonsterGroup)actor);
+            var monsters = group.GetMonsters();
+            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition(), this)
+            {
+                GroupSize = @group.GroupSize
+            };
+
+            foreach (var monster in monsters)
+            {
+                NextGroup.AddMonster(monster);
+            }
         }
 
         private void OnMapActorLeave(Map map, RolePlayActor actor)
         {
             if (actor is MonsterGroup && (Spawns.Contains((MonsterGroup) actor)))
                 OnGroupUnSpawned((MonsterGroup) actor);
+        }
+
+        public void UnSpawnGroup(MonsterGroup group)
+        {
+            OnGroupUnSpawned(group);
         }
 
         public event Action<SpawningPoolBase, MonsterGroup> Spawned;
@@ -243,8 +256,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected virtual void OnGroupUnSpawned(MonsterGroup monster)
         {
+            var monsterToDelete = Spawns.FirstOrDefault(x => x.Id == monster.Id);
+
             lock (Spawns)
-                Spawns.Remove(monster);
+                Spawns.Remove(monsterToDelete);
 
             if (!IsLimitReached() && State == SpawningPoolState.Paused)
                 ResumeAutoSpawn();

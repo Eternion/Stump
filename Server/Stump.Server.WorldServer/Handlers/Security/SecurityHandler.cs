@@ -11,6 +11,7 @@ namespace Stump.Server.WorldServer.Handlers.Security
         public static void HandleClientKeyMessage(WorldClient client, ClientKeyMessage message)
         {
             client.Account.LastClientKey = message.key;
+            IPCAccessor.Instance.Send(new UpdateAccountMessage(client.Account));
             IPCAccessor.Instance.SendRequest<BanClientKeyAnswerMessage>(new BanClientKeyRequestMessage { ClientKey = message.key },
                 msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnClientKeyReceived(msg, client)), error => client.Disconnect());
             

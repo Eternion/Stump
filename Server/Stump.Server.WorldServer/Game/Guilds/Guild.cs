@@ -550,7 +550,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
             character.Inventory.RemoveItem(potion, 1);
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, potion.Template.Id);
 
             Name = name;
 
@@ -581,7 +580,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
 
             character.Inventory.RemoveItem(potion, 1);
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, potion.Template.Id);
 
             Emblem.ChangeEmblem(emblem);
 

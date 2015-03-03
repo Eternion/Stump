@@ -119,7 +119,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Fight.ReadyChecker.ToggleReady(this, ready);
         }
 
-        public override bool CastSpell(Spell spell, Cell cell, bool force = false)
+        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
         {
             if (!IsFighterTurn())
                 return false;
@@ -127,7 +127,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             // weapon attack
             if (spell.Id != 0 ||
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
-                return base.CastSpell(spell, cell, force);
+                return base.CastSpell(spell, cell, force, ApFree);
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate =  weapon.Template as WeaponTemplate;
 
@@ -139,18 +139,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var random = new AsyncRandom();
             var critical = RollCriticalDice(weaponTemplate);
 
-            if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+            switch (critical)
             {
-                OnWeaponUsed(weaponTemplate, cell, critical, false);
-                UseAP((short) weaponTemplate.ApCost);
-                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
+                case FightSpellCastCriticalEnum.CRITICAL_FAIL:
+                    OnWeaponUsed(weaponTemplate, cell, critical, false);
 
-                PassTurn();
+                    if (!ApFree)
+                        UseAP((short) weaponTemplate.ApCost);
+                
+                    Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
-                return false;
+                    PassTurn();
+
+                    return false;
+                case FightSpellCastCriticalEnum.CRITICAL_HIT:
+                    m_criticalWeaponBonus = weaponTemplate.CriticalHitBonus;
+                    break;
             }
-            if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
-                m_criticalWeaponBonus = weaponTemplate.CriticalHitBonus;
 
             m_isUsingWeapon = true;
             var effects =
@@ -180,7 +185,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var silentCast = handlers.Any(entry => entry.RequireSilentCast());
 
             OnWeaponUsed(weaponTemplate, cell, critical, silentCast);
-            UseAP((short) weaponTemplate.ApCost);
+
+            if (!ApFree)
+                UseAP((short) weaponTemplate.ApCost);
 
             foreach (var handler in handlers)
                 handler.Apply();

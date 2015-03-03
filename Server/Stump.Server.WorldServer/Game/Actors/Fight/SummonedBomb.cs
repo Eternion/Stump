@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells.Casts.Roublard;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {

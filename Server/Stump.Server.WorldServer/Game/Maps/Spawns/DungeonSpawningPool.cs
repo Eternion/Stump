@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         protected override bool IsLimitReached()
         {
-            return m_spawnsQueue.Count == 0;
+            return m_spawnsQueue.Count == 0 && NextGroup == null;
         }
 
         protected override MonsterGroup DequeueNextGroupToSpawn()

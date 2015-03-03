@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Monster = monster;
             Look = monster.Look.Clone();
 
-            m_stats = new StatsFields(this);
+            m_stats = new StatsFields(this, 100);
             m_stats.Initialize(Monster.Grade);
             
 

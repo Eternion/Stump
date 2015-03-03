@@ -42,9 +42,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         #endregion
 
-        public StatsFields(IStatsOwner owner)
+        public StatsFields(IStatsOwner owner, int resistanceLimit = 50)
         {
             Owner = owner;
+            ResistanceLimit = resistanceLimit;
         }
 
         public Dictionary<PlayerFields, StatsData> Fields
