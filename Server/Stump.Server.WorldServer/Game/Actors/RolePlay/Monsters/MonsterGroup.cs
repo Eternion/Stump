@@ -65,6 +65,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             set;
         }
 
+        public int GroupSize
+        {
+            get;
+            set;
+        }
+
         public Monster Leader
         {
             get;
@@ -196,6 +202,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public void AddMonster(Monster monster)
         {
+            monster.SetMonsterGroup(this);
             m_monsters.Add(monster);
 
             if (m_monsters.Count == 1)

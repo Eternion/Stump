@@ -84,31 +84,31 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public event ItemAddedEventHandler ItemAdded;
 
-        public void NotifyItemAdded(T item)
+        public void NotifyItemAdded(T item, bool addItemMsg)
         {
-            OnItemAdded(item);
+            OnItemAdded(item, addItemMsg);
 
             var handler = ItemAdded;
             if (handler != null)
                 handler(this, item);
         }
 
-        protected virtual void OnItemAdded(T item)
+        protected virtual void OnItemAdded(T item, bool addItemMsg)
         {
         }
 
         public event ItemRemovedEventHandler ItemRemoved;
 
-        public void NotifyItemRemoved(T item)
+        public void NotifyItemRemoved(T item, bool removeItemMsg)
         {
-            OnItemRemoved(item);
+            OnItemRemoved(item, removeItemMsg);
 
             var handler = ItemRemoved;
             if (handler != null)
                 handler(this, item);
         }
 
-        protected virtual void OnItemRemoved(T item)
+        protected virtual void OnItemRemoved(T item, bool removeItemMsg)
         {
         }
 
@@ -133,8 +133,9 @@ namespace Stump.Server.WorldServer.Game.Items
         /// Add an item to the collection
         /// </summary>
         /// <param name="item"></param>
+        /// <param name="addItemMsg"></param>
         /// <returns></returns>
-        public virtual T AddItem(T item)
+        public virtual T AddItem(T item, bool addItemMsg = true)
         {
             if (HasItem(item))
                 throw new Exception("Cannot add an item that is already in the collection");
@@ -152,7 +153,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
                 Items.Add(item.Guid, item);
 
-                NotifyItemAdded(item);
+                NotifyItemAdded(item, addItemMsg);
             }
 
             return item;
@@ -184,7 +185,8 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="delete"></param>
-        public virtual bool RemoveItem(T item, bool delete = true)
+        /// <param name="removeItemMsg"></param>
+        public virtual bool RemoveItem(T item, bool delete = true, bool removeItemMsg = true)
         {
             if (!HasItem(item))
                 return false;
@@ -197,7 +199,7 @@ namespace Stump.Server.WorldServer.Game.Items
                     DeleteItem(item);
 
                 if (deleted)
-                    NotifyItemRemoved(item);
+                    NotifyItemRemoved(item, removeItemMsg);
 
                 return deleted;
             }
@@ -213,7 +215,7 @@ namespace Stump.Server.WorldServer.Game.Items
             if (Items.ContainsKey(item.Guid))
             {
                 Items.Remove(item.Guid);
-                NotifyItemRemoved(item);
+                NotifyItemRemoved(item, true);
             }
 
             ItemsToDelete.Enqueue(item);
@@ -258,7 +260,7 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             if (notify)
                 foreach(var item in this)
-                    NotifyItemRemoved(item);
+                    NotifyItemRemoved(item, true);
 
             ItemsToDelete = new Queue<T>(ItemsToDelete.Concat(Items.Values));
             Items.Clear();

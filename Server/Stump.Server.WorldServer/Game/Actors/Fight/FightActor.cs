@@ -698,9 +698,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
         }
 
-        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false)
+        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
         {
-            if (!IsFighterTurn() || IsDead())
+            if (!force && (!IsFighterTurn() || IsDead()))
                 return false;
 
             var spellLevel = spell.CurrentSpellLevel;
@@ -718,7 +718,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
                 OnSpellCasting(spell, cell, critical, false);
-                UseAP((short) spellLevel.ApCost);
+
+                if (!ApFree)
+                    UseAP((short) spellLevel.ApCost);
+
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
                 if (spellLevel.CriticalFailureEndsTurn)
@@ -732,7 +735,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler.Initialize();
 
             OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
-            UseAP((short)spellLevel.ApCost);
+            if (!ApFree)
+                UseAP((short)spellLevel.ApCost);
 
             handler.Execute();
 

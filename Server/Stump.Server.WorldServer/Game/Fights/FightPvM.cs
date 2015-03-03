@@ -52,27 +52,31 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.OnFightEnded();
 
-            if (Winners == ChallengersTeam)
-                return;
-
             var monsterFighter = DefendersTeam.Leader;
             if (monsterFighter == null)
                 return;
 
             var spawningPool = monsterFighter.Monster.Group.SpawningPool;
-            if (spawningPool != null)
+            if (spawningPool == null)
+                return;
+
+            if (Winners == ChallengersTeam)
             {
-                spawningPool.SetNextGroupToSpawn(monsterFighter.Monster.Group.GetMonsters());
-                spawningPool.SpawnNextGroup();
+                spawningPool.UnSpawnGroup(monsterFighter.Monster.Group);
+                return;
             }
-            else
-                Map.SpawnMonsterGroup(monsterFighter.Monster.Group.GetMonsters().Select(x => x.Grade), Map.GetRandomFreePosition());
+
+            spawningPool.SetNextGroupToSpawn(monsterFighter.Monster.Group.GetMonsters());
+            spawningPool.UnSpawnGroup(monsterFighter.Monster.Group);
+
+            spawningPool.SpawnNextGroup();
         }
 
         public override FightTypeEnum FightType
         {
             get { return FightTypeEnum.FIGHT_TYPE_PvM; }
         }
+
         public override bool IsPvP
         {
             get { return false; }

@@ -889,7 +889,7 @@
         /// <summary>
         /// Teleport to save point
         /// </summary>
-        Effect_600 = 600,
+        Effect_TeleportToSavePoint = 600,
         Effect_601 = 601,
         /*  */
         /// <summary>
