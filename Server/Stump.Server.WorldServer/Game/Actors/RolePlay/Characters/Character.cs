@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -2693,6 +2694,42 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             });
 
             return false;
+        }
+
+        #endregion
+
+        #region Debug
+
+        public void ClearHighlight()
+        {
+            Client.Send(new DebugClearHighlightCellsMessage());
+        }
+
+        public Color HighlightCell(Cell cell)
+        {
+            var rand = new Random();
+            var color = Color.FromArgb(0xFF << 24 | rand.Next(0xFFFFFF));
+            HighlightCell(cell, color);
+
+            return color;
+        }
+
+        public void HighlightCell(Cell cell, Color color)
+        {
+            Client.Send(new DebugHighlightCellsMessage(color.ToArgb() & 16777215, new[] { cell.Id }));
+        }
+        public Color HighlightCells(IEnumerable<Cell> cells)
+        {
+            var rand = new Random();
+            var color = Color.FromArgb(0xFF << 24 | rand.Next(0xFFFFFF));
+
+            HighlightCells(cells, color);
+            return color;
+        }
+
+        public void HighlightCells(IEnumerable<Cell> cells, Color color)
+        {
+            Client.Send(new DebugHighlightCellsMessage(color.ToArgb() & 16777215, cells.Select(x => x.Id)));
         }
 
         #endregion

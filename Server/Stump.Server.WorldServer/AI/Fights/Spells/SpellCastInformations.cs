@@ -35,6 +35,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             private set;
         }
 
+        public SpellCategory Category
+        {
+            get;
+            private set;
+        }
+
         public bool IsSummoningSpell
         {
             get;
@@ -47,15 +53,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             set;
         }
 
-        public int MPToUse
+        public Cell CastCell
         {
             get;
             set;
-        }
-
-        public bool HasToMove
-        {
-            get { return MPToUse > 0; }
         }
 
         public List<SpellTarget> Impacts

@@ -68,14 +68,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public bool MustBeAdjusted()
         {
-            var dist = Bomb1.Position.Point.DistanceToCell(Bomb2.Position.Point);
+            var dist = Bomb1.Position.Point.ManhattanDistanceTo(Bomb2.Position.Point);
 
             return dist != Length + 1;
         }
 
         public void AdjustWalls()
         {
-            var dist = Bomb1.Position.Point.DistanceToCell(Bomb2.Position.Point);
+            var dist = Bomb1.Position.Point.ManhattanDistanceTo(Bomb2.Position.Point);
             // we assume it's valid
 
             if (dist == Length + 1)

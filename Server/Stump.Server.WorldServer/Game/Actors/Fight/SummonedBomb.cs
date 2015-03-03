@@ -224,7 +224,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsBoundWith(SummonedBomb bomb)
         {
-            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+            var dist = Position.Point.ManhattanDistanceTo(bomb.Position.Point);
 
             return dist > WallMinSize && dist <= (WallMaxSize + 1) && // check the distance
                 MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
@@ -235,7 +235,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsInExplosionZone(SummonedBomb bomb)
         {
-            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+            var dist = Position.Point.ManhattanDistanceTo(bomb.Position.Point);
 
             return dist <= ExplosionZone;
         }

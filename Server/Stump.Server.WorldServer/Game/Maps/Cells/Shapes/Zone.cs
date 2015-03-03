@@ -157,15 +157,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                 case SpellShapeEnum.P:
                     m_shape = new Single();
                     break;
-                /*case SpellShapeEnum.Hammer:
-                    m_shape = new Cross(0, Radius)
-                    {
-                        DisabledDirections = new List<DirectionsEnum>
-                        {
-                            (DirectionsEnum) ((int)Direction - 4 > 0 ? (int)Direction - 4 : (int)Direction + 4)
-                        }
-                    };
-                    break;*/
                 default:
                     m_shape = new Cross(0, 0);
                     break;

@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             while (x <= centerPoint.X + Radius)
             {
                 y = (int) (centerPoint.Y - Radius);
-                while (y <= centerPoint.Y - Radius)
+                while (y <= centerPoint.Y + Radius)
                 {
                     if (MinRadius == 0 || Math.Abs(centerPoint.X - x) + Math.Abs(centerPoint.Y - y) >= MinRadius)
                         if (!DiagonalFree || Math.Abs(centerPoint.X - x) != Math.Abs(centerPoint.Y - y))
