@@ -465,7 +465,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void PassTurn()
         {
-            if (!IsFighterTurn())
+            if (!IsFighterTurn() || Fight.Freezed)
                 return;
 
             Fight.StopTurn();

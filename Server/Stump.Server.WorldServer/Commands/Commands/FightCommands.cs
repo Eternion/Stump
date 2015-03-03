@@ -240,4 +240,34 @@ namespace Stump.Server.WorldServer.Commands.Commands
             fight.FighterPlaying.PassTurn();
         }
     }
+
+    public class FreezeFightCommand : SubCommand
+    {
+        public FreezeFightCommand()
+        {
+            Aliases = new[] { "freeze" };
+            Description = "Freeze/unfreeze current fight";
+            ParentCommandType = typeof(FightCommands);
+            RequiredRole = RoleEnum.GameMaster;
+            AddParameter("fight", "f", "The fight to end", isOptional: true,
+                              converter: ParametersConverter.FightConverter);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            IFight fight;
+            if (trigger.IsArgumentDefined("fight"))
+                fight = trigger.Get<IFight>("fight");
+            else if (( trigger is GameTrigger ) && ( trigger as GameTrigger ).Character.IsInFight())
+                fight = ( trigger as GameTrigger ).Character.Fight;
+            else
+            {
+                trigger.ReplyError("Define a fight");
+                return;
+            }
+
+            fight.Freezed = !fight.Freezed;
+            trigger.Reply("Fight " + (fight.Freezed ? "freezed" : "unfreezed"));
+        }
+    }
 }

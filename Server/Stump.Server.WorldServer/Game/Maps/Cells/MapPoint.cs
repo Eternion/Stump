@@ -115,18 +115,18 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         }
 
 
-        public uint DistanceTo(MapPoint point)
+        public uint EuclideanDistanceTo(MapPoint point)
         {
             return (uint)Math.Sqrt(( point.X - m_x ) * ( point.X - m_x ) + ( point.Y - m_y ) * ( point.Y - m_y ));
         }
 
-        public uint DistanceToCell(MapPoint point)
+        public uint ManhattanDistanceTo(MapPoint point)
         {
             return (uint) (Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y));
         }
         public bool IsAdjacentTo(MapPoint point)
         {
-            return DistanceToCell(point) == 1;
+            return ManhattanDistanceTo(point) == 1;
         }
 
         public DirectionsEnum OrientationToAdjacent(MapPoint point)
@@ -369,6 +369,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             var northWest = new MapPoint(m_x - 1, m_y);
             if (IsInMap(northWest.X, northWest.Y) && predicate(northWest.CellId))
                 yield return northWest;
+        }
+
+        public bool IsInMap()
+        {
+            return IsInMap(m_x, m_y);
         }
 
         public static bool IsInMap(int x, int y)
