@@ -1590,11 +1590,11 @@
         /// <summary>
         /// #1{~1~2 to }#2% of HP to shield
         /// </summary>
-        Effect_1039 = 1039,
+        Effect_AddShieldPercent = 1039,
         /// <summary>
         /// #1{~1~2 to }#2 Shield
         /// </summary>
-        Effect_1040 = 1040,
+        Effect_AddShield = 1040,
         /// <summary>
         /// Retreats #1 cell(s)
         /// </summary>

@@ -1725,13 +1725,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Health & Actions points
 
-        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int shieldDamages, int permanentDamages, FightActor from)
         {
             var loss = (short) (-delta);
-            if (delta == 0 && permanentDamages == 0)
+            var shieldLoss = (short)(-shieldDamages);
+
+            if (delta == 0 && shieldDamages == 0 && permanentDamages == 0)
                 return;
 
-            ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages, shieldLoss);
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
