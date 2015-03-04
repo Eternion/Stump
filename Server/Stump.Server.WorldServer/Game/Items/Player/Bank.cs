@@ -148,7 +148,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         protected override void OnKamasAmountChanged(int amount)
         {
-            InventoryHandler.SendStorageKamasUpdateMessage(Owner.Client, amount);
+            InventoryHandler.SendStorageKamasUpdateMessage(Owner.Client, Kamas);
 
             base.OnKamasAmountChanged(amount);
         }
