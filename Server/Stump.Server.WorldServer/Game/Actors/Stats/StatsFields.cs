@@ -65,6 +65,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             get { return this[PlayerFields.Health] as StatsHealth; }
         }
 
+        public StatsData Shield
+        {
+            get { return this[PlayerFields.Shield]; }
+        }
+
         public StatsAP AP
         {
             get { return this[PlayerFields.AP] as StatsAP; }
@@ -199,6 +204,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
             Fields.Add(PlayerFields.Erosion, new StatsData(Owner, PlayerFields.Erosion, 10));
             Fields.Add(PlayerFields.ComboBonus, new StatsData(Owner, PlayerFields.ComboBonus, 0));
+            Fields.Add(PlayerFields.Shield, new StatsData(Owner, PlayerFields.Shield, 0));
         }
 
         public void Initialize(MonsterGrade record)
@@ -280,6 +286,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
             Fields.Add(PlayerFields.Erosion, new StatsData(Owner, PlayerFields.Erosion, 10));
             Fields.Add(PlayerFields.ComboBonus, new StatsData(Owner, PlayerFields.ComboBonus, 0));
+            Fields.Add(PlayerFields.Shield, new StatsData(Owner, PlayerFields.Shield, 0));
 
             foreach (var pair in record.Stats)
             {
@@ -365,6 +372,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.AirDamageArmor, new StatsData(Owner, PlayerFields.AirDamageArmor, 0));
             Fields.Add(PlayerFields.FireDamageArmor, new StatsData(Owner, PlayerFields.FireDamageArmor, 0));
             Fields.Add(PlayerFields.Erosion, new StatsData(Owner, PlayerFields.Erosion, 10));
+            Fields.Add(PlayerFields.ComboBonus, new StatsData(Owner, PlayerFields.ComboBonus, 0));
+            Fields.Add(PlayerFields.Shield, new StatsData(Owner, PlayerFields.Shield, 0));
         }
 
         public StatsFields CloneAndChangeOwner(IStatsOwner owner)

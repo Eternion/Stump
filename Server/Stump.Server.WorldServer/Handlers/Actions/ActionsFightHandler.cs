@@ -78,12 +78,15 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightTackledMessage((short)ActionsEnum.ACTION_CHARACTER_ACTION_TACKLED, source.Id, tacklers.Select(entry => entry.Id)));
         }
 
-        public static void SendGameActionFightLifePointsLostMessage(IPacketReceiver client, FightActor source,
-                                                                         FightActor target, short loss, short permanentDamages)
+        public static void SendGameActionFightLifePointsLostMessage(IPacketReceiver client, FightActor source, FightActor target, short loss, short permanentDamages)
         {
             client.Send(new GameActionFightLifePointsLostMessage((short)ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, source.Id, target.Id, loss, permanentDamages));
         }
 
+        public static void SendGameActionFightLifeAndShieldPointsLostMessage(IPacketReceiver client, FightActor source, FightActor target, short loss, short permanentDamages, short shieldLoss)
+        {
+            client.Send(new GameActionFightLifeAndShieldPointsLostMessage((short)ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, source.Id, target.Id, loss, permanentDamages, shieldLoss));
+        }
 
         public static void SendGameActionFightDodgePointLossMessage(IPacketReceiver client, ActionsEnum action, FightActor source, FightActor target, short amount)
         {

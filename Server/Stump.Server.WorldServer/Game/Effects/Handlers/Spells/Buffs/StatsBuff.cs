@@ -34,6 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddMPAttack)]
     [EffectHandler(EffectsEnum.Effect_AddAPAttack)]
     [EffectHandler(EffectsEnum.Effect_AddPushDamageBonus)]
+    [EffectHandler(EffectsEnum.Effect_AddShield)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -109,6 +110,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.APAttack;
                 case EffectsEnum.Effect_AddPushDamageBonus:
                     return PlayerFields.PushDamageBonus;
+                case EffectsEnum.Effect_AddShield:
+                    return PlayerFields.Shield;
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }
