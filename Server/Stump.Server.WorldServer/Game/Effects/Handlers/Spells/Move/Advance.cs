@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
             AddAffectedActor(Caster);
 
-            return true;
+            return base.Apply();
         }
     }
 }
