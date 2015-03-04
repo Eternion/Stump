@@ -1598,7 +1598,7 @@
         /// <summary>
         /// Retreats #1 cell(s)
         /// </summary>
-        Effect_1041 = 1041,
+        Effect_Retreat = 1041,
         /// <summary>
         /// Advances #1 cell(s)
         /// </summary>
@@ -1614,7 +1614,7 @@
         /// <summary>
         /// #1: #3 turns until recast
         /// </summary>
-        Effect_1045 = 1045,
+        Effect_CooldownSet = 1045,
         /// <summary>
         /// Using #1 MP will cause a loss of #2 HP
         /// </summary>
