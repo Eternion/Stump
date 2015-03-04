@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:55
+// Generated on 02/19/2015 12:10:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Types
             if (symbolId < 0)
                 throw new Exception("Forbidden value on symbolId = " + symbolId + ", it doesn't respect the following condition : symbolId < 0");
             mount = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var objects_ = new Types.PresetItem[limit];
             for (int i = 0; i < limit; i++)
             {

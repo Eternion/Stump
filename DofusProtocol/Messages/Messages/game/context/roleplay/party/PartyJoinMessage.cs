@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:17
+// Generated on 02/19/2015 12:09:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,7 +91,7 @@ namespace Stump.DofusProtocol.Messages
             maxParticipants = reader.ReadSByte();
             if (maxParticipants < 0)
                 throw new Exception("Forbidden value on maxParticipants = " + maxParticipants + ", it doesn't respect the following condition : maxParticipants < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var members_ = new Types.PartyMemberInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -99,7 +99,7 @@ namespace Stump.DofusProtocol.Messages
                  members_[i].Deserialize(reader);
             }
             members = members_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var guests_ = new Types.PartyGuestInformations[limit];
             for (int i = 0; i < limit; i++)
             {

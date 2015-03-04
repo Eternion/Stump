@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:04
+// Generated on 02/19/2015 12:09:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,14 +63,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var finishedAchievementsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  finishedAchievementsIds_[i] = reader.ReadVarShort();
             }
             finishedAchievementsIds = finishedAchievementsIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var rewardableAchievements_ = new Types.AchievementRewardable[limit];
             for (int i = 0; i < limit; i++)
             {

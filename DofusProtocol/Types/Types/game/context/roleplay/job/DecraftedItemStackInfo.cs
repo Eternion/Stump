@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:52
+// Generated on 02/19/2015 12:10:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,14 +76,14 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
             bonusMin = reader.ReadFloat();
             bonusMax = reader.ReadFloat();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var runesId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  runesId_[i] = reader.ReadVarShort();
             }
             runesId = runesId_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var runesQty_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

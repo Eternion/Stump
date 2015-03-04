@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:50
+// Generated on 02/19/2015 12:10:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -425,7 +425,7 @@ namespace Stump.DofusProtocol.Types
             pvpAirElementReduction.Deserialize(reader);
             pvpFireElementReduction = new Types.CharacterBaseCharacteristic();
             pvpFireElementReduction.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var spellModifications_ = new Types.CharacterSpellModification[limit];
             for (int i = 0; i < limit; i++)
             {

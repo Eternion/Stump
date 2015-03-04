@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:56
+// Generated on 02/19/2015 12:10:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Types
             text = reader.ReadUTF();
             descUrl = reader.ReadUTF();
             pictureUrl = reader.ReadUTF();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var items_ = new Types.ObjectItemInformationWithQuantity[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:20
+// Generated on 02/19/2015 12:09:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +86,7 @@ namespace Stump.DofusProtocol.Messages
             if (questType < 0)
                 throw new Exception("Forbidden value on questType = " + questType + ", it doesn't respect the following condition : questType < 0");
             startMapId = reader.ReadInt();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var knownStepsList_ = new Types.TreasureHuntStep[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -104,7 +104,7 @@ namespace Stump.DofusProtocol.Messages
             if (checkPointTotal < 0)
                 throw new Exception("Forbidden value on checkPointTotal = " + checkPointTotal + ", it doesn't respect the following condition : checkPointTotal < 0");
             availableRetryCount = reader.ReadInt();
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var flags_ = new Types.TreasureHuntFlag[limit];
             for (int i = 0; i < limit; i++)
             {

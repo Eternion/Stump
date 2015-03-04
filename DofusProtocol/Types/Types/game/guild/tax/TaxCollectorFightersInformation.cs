@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:54
+// Generated on 02/19/2015 12:10:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +68,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             collectorId = reader.ReadInt();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var allyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -76,7 +76,7 @@ namespace Stump.DofusProtocol.Types
                  allyCharactersInformations_[i].Deserialize(reader);
             }
             allyCharactersInformations = allyCharactersInformations_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var enemyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {

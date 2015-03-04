@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:21
+// Generated on 02/19/2015 12:09:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +70,7 @@ namespace Stump.DofusProtocol.Messages
             if (nbTaxCollectors < 0)
                 throw new Exception("Forbidden value on nbTaxCollectors = " + nbTaxCollectors + ", it doesn't respect the following condition : nbTaxCollectors < 0");
             enabled = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var members_ = new Types.CharacterMinimalInformations[limit];
             for (int i = 0; i < limit; i++)
             {

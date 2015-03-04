@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:21
+// Generated on 02/19/2015 12:09:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,14 +111,14 @@ namespace Stump.DofusProtocol.Messages
             boostPoints = reader.ReadVarShort();
             if (boostPoints < 0)
                 throw new Exception("Forbidden value on boostPoints = " + boostPoints + ", it doesn't respect the following condition : boostPoints < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var spellId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  spellId_[i] = reader.ReadVarShort();
             }
             spellId = spellId_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var spellLevel_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
