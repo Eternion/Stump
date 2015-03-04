@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:10
+// Generated on 02/19/2015 12:09:28
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,7 +78,7 @@ namespace Stump.DofusProtocol.Messages
                 throw new Exception("Forbidden value on duration = " + duration + ", it doesn't respect the following condition : duration < 0");
             ageBonus = reader.ReadShort();
             lootShareLimitMalus = reader.ReadShort();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var results_ = new Types.FightResultListEntry[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -86,7 +86,7 @@ namespace Stump.DofusProtocol.Messages
                  results_[i].Deserialize(reader);
             }
             results = results_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var namedPartyTeamsOutcomes_ = new Types.NamedPartyTeamWithOutcome[limit];
             for (int i = 0; i < limit; i++)
             {

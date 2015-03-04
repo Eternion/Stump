@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:53
+// Generated on 02/19/2015 12:10:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Types
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var skills_ = new Types.SkillActionDescription[limit];
             for (int i = 0; i < limit; i++)
             {

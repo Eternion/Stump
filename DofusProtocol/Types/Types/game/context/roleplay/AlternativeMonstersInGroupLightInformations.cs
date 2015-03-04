@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:51
+// Generated on 02/19/2015 12:10:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Deserialize(IDataReader reader)
         {
             playerCount = reader.ReadInt();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var monsters_ = new Types.MonsterInGroupLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:23
+// Generated on 02/19/2015 12:09:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             allIdentical = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var minimalPrices_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:52
+// Generated on 02/19/2015 12:10:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Types
             restrictions = new Types.ActorRestrictionsInformations();
             restrictions.Deserialize(reader);
             sex = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var options_ = new Types.HumanOption[limit];
             for (int i = 0; i < limit; i++)
             {

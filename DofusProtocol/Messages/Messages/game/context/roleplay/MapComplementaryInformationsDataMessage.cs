@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:13
+// Generated on 02/19/2015 12:09:31
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,7 +138,7 @@ namespace Stump.DofusProtocol.Messages
             mapId = reader.ReadInt();
             if (mapId < 0)
                 throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var houses_ = new Types.HouseInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -146,7 +146,7 @@ namespace Stump.DofusProtocol.Messages
                  houses_[i].Deserialize(reader);
             }
             houses = houses_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var actors_ = new Types.GameRolePlayActorInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -154,7 +154,7 @@ namespace Stump.DofusProtocol.Messages
                  actors_[i].Deserialize(reader);
             }
             actors = actors_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var interactiveElements_ = new Types.InteractiveElement[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -162,7 +162,7 @@ namespace Stump.DofusProtocol.Messages
                  interactiveElements_[i].Deserialize(reader);
             }
             interactiveElements = interactiveElements_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var statedElements_ = new Types.StatedElement[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -170,7 +170,7 @@ namespace Stump.DofusProtocol.Messages
                  statedElements_[i].Deserialize(reader);
             }
             statedElements = statedElements_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var obstacles_ = new Types.MapObstacle[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -178,7 +178,7 @@ namespace Stump.DofusProtocol.Messages
                  obstacles_[i].Deserialize(reader);
             }
             obstacles = obstacles_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var fights_ = new Types.FightCommonInformations[limit];
             for (int i = 0; i < limit; i++)
             {

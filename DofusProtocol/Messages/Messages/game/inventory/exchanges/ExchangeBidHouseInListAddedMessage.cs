@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:23
+// Generated on 02/19/2015 12:09:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +72,7 @@ namespace Stump.DofusProtocol.Messages
         {
             itemUID = reader.ReadInt();
             objGenericId = reader.ReadInt();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -80,7 +80,7 @@ namespace Stump.DofusProtocol.Messages
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var prices_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

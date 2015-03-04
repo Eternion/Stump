@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:53
+// Generated on 02/19/2015 12:10:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,14 +62,14 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var questsToValidId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  questsToValidId_[i] = reader.ReadVarShort();
             }
             questsToValidId = questsToValidId_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var questsToStartId_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {

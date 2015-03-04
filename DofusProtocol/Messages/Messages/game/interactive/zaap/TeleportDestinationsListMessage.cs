@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:23
+// Generated on 02/19/2015 12:09:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,28 +99,28 @@ namespace Stump.DofusProtocol.Messages
             teleporterType = reader.ReadSByte();
             if (teleporterType < 0)
                 throw new Exception("Forbidden value on teleporterType = " + teleporterType + ", it doesn't respect the following condition : teleporterType < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var mapIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  mapIds_[i] = reader.ReadInt();
             }
             mapIds = mapIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var subAreaIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  subAreaIds_[i] = reader.ReadVarShort();
             }
             subAreaIds = subAreaIds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var costs_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  costs_[i] = reader.ReadVarShort();
             }
             costs = costs_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var destTeleporterType_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {

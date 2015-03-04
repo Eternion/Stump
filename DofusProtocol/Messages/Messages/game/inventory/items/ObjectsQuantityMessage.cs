@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:28
+// Generated on 02/19/2015 12:09:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +48,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var objectsUIDAndQty_ = new Types.ObjectItemQuantity[limit];
             for (int i = 0; i < limit; i++)
             {

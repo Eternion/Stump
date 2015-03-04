@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:11
+// Generated on 02/19/2015 12:09:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var effects_ = new Types.FightDispellableEffectExtendedInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -77,7 +77,7 @@ namespace Stump.DofusProtocol.Messages
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var marks_ = new Types.GameActionMark[limit];
             for (int i = 0; i < limit; i++)
             {

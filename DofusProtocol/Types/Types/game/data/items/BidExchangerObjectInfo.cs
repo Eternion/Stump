@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:53
+// Generated on 02/19/2015 12:10:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Types
             objectUID = reader.ReadVarInt();
             if (objectUID < 0)
                 throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -77,7 +77,7 @@ namespace Stump.DofusProtocol.Types
                  effects_[i].Deserialize(reader);
             }
             effects = effects_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var prices_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

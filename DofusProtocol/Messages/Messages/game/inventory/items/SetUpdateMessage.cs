@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:28
+// Generated on 02/19/2015 12:09:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,14 +70,14 @@ namespace Stump.DofusProtocol.Messages
             setId = reader.ReadVarShort();
             if (setId < 0)
                 throw new Exception("Forbidden value on setId = " + setId + ", it doesn't respect the following condition : setId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var setObjects_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  setObjects_[i] = reader.ReadVarShort();
             }
             setObjects = setObjects_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var setEffects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -61,7 +61,6 @@ namespace DofusProtocolBuilder.XmlPatterns
 
                         type += "[]";
                         name = name.Split('[')[0];
-                        
                     }
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == name);
 

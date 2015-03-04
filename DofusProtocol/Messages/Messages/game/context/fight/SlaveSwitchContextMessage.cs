@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:12
+// Generated on 02/19/2015 12:09:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,7 +75,7 @@ namespace Stump.DofusProtocol.Messages
         {
             masterId = reader.ReadInt();
             slaveId = reader.ReadInt();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var slaveSpells_ = new Types.SpellItem[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -85,7 +85,7 @@ namespace Stump.DofusProtocol.Messages
             slaveSpells = slaveSpells_;
             slaveStats = new Types.CharacterCharacteristicsInformations();
             slaveStats.Deserialize(reader);
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var shortcuts_ = new Types.Shortcut[limit];
             for (int i = 0; i < limit; i++)
             {

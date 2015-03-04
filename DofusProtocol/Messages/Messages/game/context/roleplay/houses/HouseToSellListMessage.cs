@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:14
+// Generated on 02/19/2015 12:09:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Messages
             totalPage = reader.ReadVarShort();
             if (totalPage < 0)
                 throw new Exception("Forbidden value on totalPage = " + totalPage + ", it doesn't respect the following condition : totalPage < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var houseList_ = new Types.HouseInformationsForSell[limit];
             for (int i = 0; i < limit; i++)
             {

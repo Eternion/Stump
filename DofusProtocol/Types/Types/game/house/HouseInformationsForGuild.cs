@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:54
+// Generated on 02/19/2015 12:10:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +88,7 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var skillListIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

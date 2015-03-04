@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 11:05:55
+// Generated on 02/19/2015 12:10:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,14 +177,14 @@ namespace Stump.DofusProtocol.Types
             model = reader.ReadVarInt();
             if (model < 0)
                 throw new Exception("Forbidden value on model = " + model + ", it doesn't respect the following condition : model < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var ancestor_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  ancestor_[i] = reader.ReadInt();
             }
             ancestor = ancestor_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var behaviors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -250,7 +250,7 @@ namespace Stump.DofusProtocol.Types
             reproductionCountMax = reader.ReadVarInt();
             if (reproductionCountMax < 0)
                 throw new Exception("Forbidden value on reproductionCountMax = " + reproductionCountMax + ", it doesn't respect the following condition : reproductionCountMax < 0");
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var effectList_ = new Types.ObjectEffectInteger[limit];
             for (int i = 0; i < limit; i++)
             {

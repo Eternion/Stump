@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:13
+// Generated on 02/19/2015 12:09:31
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.Messages
             fightId = reader.ReadInt();
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var attackers_ = new Types.GameFightFighterLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -79,7 +79,7 @@ namespace Stump.DofusProtocol.Messages
                  attackers_[i].Deserialize(reader);
             }
             attackers = attackers_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var defenders_ = new Types.GameFightFighterLightInformations[limit];
             for (int i = 0; i < limit; i++)
             {

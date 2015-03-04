@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:06
+// Generated on 02/19/2015 12:09:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,7 +69,7 @@ namespace Stump.DofusProtocol.Messages
         {
             allianceInfos = new Types.AllianceFactSheetInformations();
             allianceInfos.Deserialize(reader);
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var guilds_ = new Types.GuildInsiderFactSheetInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -77,7 +77,7 @@ namespace Stump.DofusProtocol.Messages
                  guilds_[i].Deserialize(reader);
             }
             guilds = guilds_;
-            limit = reader.ReadUShort();
+            limit = reader.ReadVarInt();
             var prisms_ = new Types.PrismSubareaEmptyInfo[limit];
             for (int i = 0; i < limit; i++)
             {

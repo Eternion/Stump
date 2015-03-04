@@ -1,6 +1,6 @@
 
 
-// Generated on 02/18/2015 10:46:26
+// Generated on 02/19/2015 12:09:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             sellerId = reader.ReadVarInt();
             if (sellerId < 0)
                 throw new Exception("Forbidden value on sellerId = " + sellerId + ", it doesn't respect the following condition : sellerId < 0");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var objectsInfos_ = new Types.ObjectItemToSellInHumanVendorShop[limit];
             for (int i = 0; i < limit; i++)
             {
