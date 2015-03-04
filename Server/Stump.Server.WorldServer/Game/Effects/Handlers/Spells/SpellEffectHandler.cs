@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public MapPoint TargetedPoint
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool Critical

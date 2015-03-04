@@ -10,7 +10,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_PushBack)]
     [EffectHandler(EffectsEnum.Effect_PushBack_1103)]
-    [EffectHandler(EffectsEnum.Effect_Retreat)]
     public class Push : SpellEffectHandler
     {
         public Push(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
