@@ -9,7 +9,6 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_PullForward)]
-    [EffectHandler(EffectsEnum.Effect_Advance)]
     public class Pull : SpellEffectHandler
     {
         public Pull(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
