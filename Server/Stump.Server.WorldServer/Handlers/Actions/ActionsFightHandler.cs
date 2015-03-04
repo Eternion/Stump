@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Handlers.Actions
 {
@@ -129,6 +130,11 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, ActorLook look)
         {
             client.Send(new GameActionFightChangeLookMessage((short)ActionsEnum.ACTION_CHARACTER_CHANGE_LOOK, source.Id, target.Id, look.GetEntityLook()));
+        }
+
+        public static void SendGameActionFightSpellCooldownVariationMessage(IPacketReceiver client, FightActor source, FightActor target, Spell spell, short duration)
+        {
+            client.Send(new GameActionFightSpellCooldownVariationMessage(duration > 0 ? (short)ActionsEnum.ACTION_CHARACTER_ADD_SPELL_COOLDOWN : (short)ActionsEnum.ACTION_CHARACTER_REMOVE_SPELL_COOLDOWN, source.Id, target.Id, spell.Id, duration));
         }
 
         public static void SendGameActionFightExchangePositionsMessage(IPacketReceiver client, FightActor caster, FightActor target)
