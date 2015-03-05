@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NLog;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Spells;
@@ -283,6 +284,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Diffraction (2849)
             // NONE -> ALLY_ALL && SELF
             FixEffectOnAllLevels(2849, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+
+            // Boliche (2889)
+            // Swap Effects index
+            FixEffectOnAllLevels(2889, 0, (level, effect, critical) => level.Effects.Move(effect, 2));
 
             // Plastron (2890)
             // NONE -> ALLY_ALL && SELF

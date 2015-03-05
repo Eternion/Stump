@@ -1176,6 +1176,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
 
+            if (HasState((int)SpellStatesEnum.Unlockable))
+                return 0;
+
             var tacklers = GetTacklers();
 
             // no tacklers, then no tackle possible
@@ -1208,6 +1211,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual int GetTackledAP()
         {
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
+                return 0;
+
+            if (HasState((int)SpellStatesEnum.Unlockable))
                 return 0;
 
             var tacklers = GetTacklers();
