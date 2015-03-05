@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 {
     [EffectHandler(EffectsEnum.Effect_AddShieldPercent)]
     public class GiveShieldPercent : SpellEffectHandler

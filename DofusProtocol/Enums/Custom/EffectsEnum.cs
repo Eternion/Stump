@@ -1626,7 +1626,7 @@
         /// <summary>
         /// -#1{~1~2 to }#2% HP
         /// </summary>
-        Effect_1048 = 1048,
+        Effect_SubVitalityPercent_1048 = 1048,
         /// <summary>
         /// +#1{~1~2 to}level #2
         /// </summary>
