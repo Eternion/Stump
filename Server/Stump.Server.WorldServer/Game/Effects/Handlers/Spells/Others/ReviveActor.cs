@@ -34,6 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 return false;
 
             ReviveActor(LastDeadFighter, integerEffect.Value);
+
             return true;
         }
 
@@ -52,11 +53,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             if (LastDeadFighter != null && LastDeadFighter.IsAlive())
                 LastDeadFighter.Die();
+
+            Caster.Dead -= OnCasterDead;
         }
 
         private void HealHpPercent(FightActor actor, int percent)
         {
             var healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
+
+            if (healAmount <= 0)
+                healAmount = 1;
 
             actor.Heal(healAmount, Caster, false);
         }
