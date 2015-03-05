@@ -18,11 +18,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
             AddAffectedActor(Caster);
 
-            var oppositeDirection = TargetedPoint.OrientationTo(Caster.Position.Point);
-
-            TargetedPoint = Caster.Position.Point.GetNearestCellInDirection(oppositeDirection);
-            TargetedCell = Map.Cells[TargetedPoint.CellId];
-
             return base.Apply();
         }
     }

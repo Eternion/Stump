@@ -831,15 +831,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var shieldDamages = 0;
             if (Stats.Shield.TotalSafe > 0)
             {
-                var difference = Stats.Shield.TotalSafe - damage.Amount;
-                
-                if (difference <= 0)
-                    difference = 0;
-
-                var reduction = Stats.Shield.TotalSafe - difference;
-
-                damage.Amount = difference;
-                shieldDamages += reduction;
+                if (Stats.Shield.TotalSafe > damage.Amount)
+                {
+                    shieldDamages += damage.Amount;
+                    damage.Amount = 0;
+                }
+                else
+                {
+                    shieldDamages += Stats.Shield.TotalSafe;
+                    damage.Amount -= Stats.Shield.TotalSafe;
+                }
             }
 
             //Heal Or Multiply
@@ -873,6 +874,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
+            Stats.Shield.Context -= shieldDamages;
 
             OnLifePointsChanged(-damage.Amount, -shieldDamages, permanentDamages, damage.Source);
 
@@ -1983,7 +1985,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.TotalMax,
                 Stats.Health.Base,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
-                0, // shieldsPoints = ?
+                Stats.Shield.TotalSafe,
                 (short)Stats.AP.Total,
                 (short)Stats.AP.TotalMax,
                 (short)Stats.MP.Total,
