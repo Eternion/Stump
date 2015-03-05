@@ -68,6 +68,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region SADIDA
+
             // sacrifice dool
             // target Kill = Only Self
             FixEffectOnAllLevels(2006, EffectsEnum.Effect_Kill, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
@@ -75,6 +76,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // sylvan power (197)
             // new skin 671 => 893 (todo find relation)
             FixEffectOnAllLevels(197, EffectsEnum.Effect_ChangeAppearance, (level, effect, critical) => effect.Value = 893);
+
             #endregion
 
             #region CRA
@@ -88,9 +90,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region XELOR
+
             // mummification (99)
             // new skin 729 => 113 (todo find relation)
             FixEffectOnAllLevels(99, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 113);
+
             #endregion
 
             #region ENIRIPSA
@@ -117,6 +121,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Chance (42)
             FixEffectOnAllLevels(42, 1, (level, effect, critical) => effect.Delay = 1, false);
+
+            // Retraite anticipée (425)
+            // Delay -> 1
+            // NONE -> ONLY_SELF
+            FixEffectOnAllLevels(425, 1, (level, effect, critical) => effect.Delay = 1, false);
+            FixEffectOnAllLevels(425, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+            FixEffectOnAllLevels(425, 3, (level, effect, critical) => effect.Delay = 1, false);
+            FixEffectOnAllLevels(425, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
 
             #endregion
 
@@ -170,6 +182,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region PANDAWA
+
+            // Picole (686)
+            // new skin 667 => 44 (todo find relation)
+            FixEffectOnAllLevels(686, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 44);
 
             #endregion
 
@@ -281,9 +297,16 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region ZOBAL
 
-            // Diffraction (2849)
-            // NONE -> ALLY_ALL && SELF
-            FixEffectOnAllLevels(2849, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+            // Masque du pleutre (2879)
+            // new skin 103 => 1576 (todo find relation)
+            // new skin 106 => 1576 (todo find relation)
+            FixEffectOnAllLevels(2879, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 1576);
+
+            // Cabriole (2888)
+            // NONE -> ENEMY_ALL
+            // NONE -> ONLY_SELF
+            FixEffectOnAllLevels(2888, EffectsEnum.Effect_DamageAir,  (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2888, EffectsEnum.Effect_IncreaseDamage_138, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
             // Boliche (2889)
             // Swap Effects index
@@ -304,6 +327,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2892, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
             FixEffectOnAllLevels(2892, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
             FixEffectOnAllLevels(2892, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            // Furia (2912)
+            // NONE -> ONLY_SELF
+            FixEffectOnAllLevels(2912, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            // Boliche (2921)
+            // NONE -> ONLY_SELF
+            FixEffectOnAllLevels(2921, EffectsEnum.Effect_AddPushDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
             #endregion
 
