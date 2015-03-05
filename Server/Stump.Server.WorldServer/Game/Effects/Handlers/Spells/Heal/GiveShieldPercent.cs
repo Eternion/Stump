@@ -27,7 +27,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
                 if (Effect.Duration > 1)
                 {
-
                     AddStatBuff(actor, shieldAmount, PlayerFields.Shield, true);
                 }
                 else

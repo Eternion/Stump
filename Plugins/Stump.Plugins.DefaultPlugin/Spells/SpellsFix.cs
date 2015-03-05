@@ -160,36 +160,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
-            #region Monsters
-
-            #region Korriandre
-
-            // Glyphe Daivain (2700)
-            // kill
-            // target none -> only self
-            FixEffectOnAllLevels(2700, EffectsEnum.Effect_Kill,
-                (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
-
-            // Glyphe Daidisse (2701)
-            // kill
-            // target none -> ALLY ALL
-            FixEffectOnAllLevels(2701, EffectsEnum.Effect_Kill,
-                (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
-
-            #endregion
-
-            #region TOFU
-
-            // béco du tofu (1999)
-            // steal agility
-            // target only self -> all
-            FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
-                (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
-
-            #endregion
-
-            #endregion
-
             #region SRAM
 
             // chakra concentration (62)
@@ -307,6 +277,61 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2815, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
 
             #endregion
+
+            #region ZOBAL
+
+            // Diffraction (2849)
+            // NONE -> ALLY_ALL && SELF
+            FixEffectOnAllLevels(2849, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+
+            // Plastron (2890)
+            // NONE -> ALLY_ALL && SELF
+            FixEffectOnAllLevels(2890, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            // Tortoruga (2891)
+            // NONE -> ALLY_ALL
+            FixEffectOnAllLevels(2891, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            // Transe (2892)
+            // NONE -> ALLY_ALL && SELF
+            // NONE -> ALLY_ALL && SELF
+            // NONE -> ONLY_SELF
+            FixEffectOnAllLevels(2892, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+            FixEffectOnAllLevels(2892, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+            FixEffectOnAllLevels(2892, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            #endregion
+
+            #region Monsters
+
+            #region Korriandre
+
+            // Glyphe Daivain (2700)
+            // kill
+            // target none -> only self
+            FixEffectOnAllLevels(2700, EffectsEnum.Effect_Kill,
+                (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            // Glyphe Daidisse (2701)
+            // kill
+            // target none -> ALLY ALL
+            FixEffectOnAllLevels(2701, EffectsEnum.Effect_Kill,
+                (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            #endregion
+
+            #region TOFU
+
+            // béco du tofu (1999)
+            // steal agility
+            // target only self -> all
+            FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
+                (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+
+            #endregion
+
+            #endregion
+
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer, bool critical=true)

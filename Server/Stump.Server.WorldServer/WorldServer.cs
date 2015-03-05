@@ -57,6 +57,7 @@ namespace Stump.Server.WorldServer
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
         {
             Host = "localhost",
+            Port = "3306",
             DbName = "stump_world",
             User = "root",
             Password = "",
