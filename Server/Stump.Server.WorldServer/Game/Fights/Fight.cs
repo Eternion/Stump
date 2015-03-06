@@ -9,6 +9,7 @@ using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -1736,7 +1737,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (shieldLoss == 0)
                 ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
             else
-                ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages, shieldLoss);
+            {
+                ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss,
+                    (short) permanentDamages, shieldLoss);
+
+                Clients.ForEach(client => ContextHandler.SendGameFightRefreshFighterMessage(client, actor));
+            }
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)

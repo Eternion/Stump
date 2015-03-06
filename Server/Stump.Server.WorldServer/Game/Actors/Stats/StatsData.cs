@@ -193,14 +193,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public virtual StatsData Clone()
         {
-            return (StatsData) MemberwiseClone();
+            var clone = (StatsData) MemberwiseClone();
+            clone.Context = 0;
+
+            return clone;
         }
 
         public StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            var data = (StatsData)MemberwiseClone();
+            var data = Clone();
             data.Owner = owner;
-            data.Context = 0;
 
             return data;
         }

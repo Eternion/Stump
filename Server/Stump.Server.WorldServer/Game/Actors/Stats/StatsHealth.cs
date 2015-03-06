@@ -157,5 +157,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                 m_damageTaken = m_realDamageTaken;
             }
         }
+
+        public override StatsData Clone()
+        {
+            PermanentDamages = 0;
+            DamageTaken = 0;
+
+            return base.Clone();
+        }
     }
 }
