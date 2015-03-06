@@ -53,13 +53,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public GameFightFighterNamedInformations GetGameFightFighterNamedInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, IsAlive(), casterInfos.stats, Name);
+            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, IsAlive(), GetGameFightMinimalStats(), Name);
         }
 
         public override GameFightFighterInformations GetGameFightFighterInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, IsAlive(), casterInfos.stats);
+            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, IsAlive(), GetGameFightMinimalStats());
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

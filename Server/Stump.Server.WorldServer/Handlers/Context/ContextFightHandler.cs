@@ -439,7 +439,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameActionFightModifyEffectsDurationMessage(IPacketReceiver client, FightActor source, FightActor target, short delta)
         {
-            client.Send(new GameActionFightModifyEffectsDurationMessage((short)ActionsEnum.ACTION_BOOST_DURATION_MODIFY, source.Id, target.Id, delta));
+            client.Send(new GameActionFightModifyEffectsDurationMessage((short)ActionsEnum.ACTION_CHARACTER_BOOST_DISPELLED, source.Id, target.Id, delta));
         }
 
         public static void SendGameActionFightDispellableEffectMessage(IPacketReceiver client, Buff buff, bool update = false)
