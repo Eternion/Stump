@@ -193,8 +193,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public virtual StatsData Clone()
         {
-            var clone = (StatsData) MemberwiseClone();
-            clone.Context = 0;
+            var clone = new StatsData(Owner, Name, ValueBase, Limit ?? 0, m_limitEquippedOnly)
+            {
+                Context = 0,
+                Equiped = Equiped,
+                Given = Given
+            };
 
             return clone;
         }
