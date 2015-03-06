@@ -37,5 +37,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
+        public override StatsData Clone()
+        {
+            var clone = new StatsMP(Owner, ValueBase, Limit ?? 0)
+            {
+                Used = 0
+            };
+
+            return clone;
+        }
     }
 }

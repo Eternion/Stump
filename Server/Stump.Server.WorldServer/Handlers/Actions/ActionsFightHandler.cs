@@ -27,6 +27,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightVanishMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id));
         }
          
+
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
             var fighterInfos = summon.GetGameFightFighterInformations();
@@ -35,8 +36,13 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                 fighterInfos = (summon as SummonedClone).GetGameFightFighterNamedInformations();
 
             client.Send(new GameActionFightSummonMessage(summon is SummonedClone ? (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE : (short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, fighterInfos));
-        }        
-        
+        }
+
+        public static void SendGameActionFightReviveMessage(IPacketReceiver client, FightActor caster, FightActor actor)
+        {
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_CHARACTER_SUMMON_DEAD_ALLY_IN_FIGHT, caster.Id, actor.GetGameFightFighterInformations()));
+        }
+
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedBomb summon)
         {
             client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));

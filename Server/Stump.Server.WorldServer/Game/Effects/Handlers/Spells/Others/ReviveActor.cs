@@ -3,6 +3,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
@@ -43,8 +44,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             HealHpPercent(actor, heal);
             actor.Position.Cell = TargetedCell;
 
+            ActionsHandler.SendGameActionFightReviveMessage(Fight.Clients, Caster, actor);
             ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
-            Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, actor));
 
             Caster.Dead += OnCasterDead;
         }

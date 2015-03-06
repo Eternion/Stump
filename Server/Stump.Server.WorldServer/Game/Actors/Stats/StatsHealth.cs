@@ -160,10 +160,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public override StatsData Clone()
         {
-            PermanentDamages = 0;
-            DamageTaken = 0;
+            var clone = new StatsHealth(Owner, Base, 0)
+            {
+                Equiped = Equiped,
+                Given = Given
+            };
 
-            return base.Clone();
+            return clone;
         }
     }
 }

@@ -189,6 +189,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // new skin 667 => 44 (todo find relation)
             FixEffectOnAllLevels(686, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 44);
 
+            // Epouvante (689)
+            // Move push effect to first exec debuff
+            FixEffectOnAllLevels(689, 0, (level, effect, critical) => level.Effects.Move(effect, 1));
+
             #endregion
 
             #region ROUBLARD
@@ -278,8 +282,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Rebours (2811)
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Delay = 1);
-            FixEffectOnAllLevels(2811, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
-            FixEffectOnAllLevels(2811, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2811, 1, (level, effect, critical) => level.Effects.Move(effect, 2), false);
+            FixEffectOnAllLevels(2811, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
+            FixEffectOnAllLevels(2811, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
 
             // Surcharge (2812)
             FixEffectOnAllLevels(2812, 0, (level, effect, critical) => effect.Delay = 1, false);
