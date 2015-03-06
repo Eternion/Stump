@@ -126,9 +126,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Delay -> 1
             // NONE -> ONLY_SELF
             FixEffectOnAllLevels(425, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
-            FixEffectOnAllLevels(425, 0, (level, effect, critical) => effect.Duration = 2, false);
             FixEffectOnAllLevels(425, 1, (level, effect, critical) => effect.Delay = 1, false);
-            FixEffectOnAllLevels(425, 1, (level, effect, critical) => effect.Duration = 2, false);
             FixEffectOnAllLevels(425, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
             FixEffectOnAllLevels(425, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
             FixEffectOnAllLevels(425, 3, (level, effect, critical) => effect.Delay = 1, false);

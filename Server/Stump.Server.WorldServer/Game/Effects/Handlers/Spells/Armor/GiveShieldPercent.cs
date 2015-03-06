@@ -23,7 +23,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 if (integerEffect == null)
                     return false;
 
-                var shieldAmount = (short) (actor.MaxLifePoints*(integerEffect.Value/100d));
+                if (actor.Stats[PlayerFields.Shield].Context < 0)
+                    actor.Stats[PlayerFields.Shield].Context = 0;
+
+                var shieldAmount = (short) (Caster.MaxLifePoints*(integerEffect.Value/100d));
 
                 if (Effect.Duration > 1)
                 {
