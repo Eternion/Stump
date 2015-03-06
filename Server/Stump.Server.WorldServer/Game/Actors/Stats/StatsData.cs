@@ -200,6 +200,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             var data = (StatsData)MemberwiseClone();
             data.Owner = owner;
+            data.Context = 0;
 
             return data;
         }

@@ -1733,7 +1733,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (delta == 0 && shieldDamages == 0 && permanentDamages == 0)
                 return;
 
-            ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages, shieldLoss);
+            if (shieldLoss == 0)
+                ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            else
+                ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages, shieldLoss);
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
@@ -2050,7 +2053,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
         {
-            var triggers = m_triggers.ToArray();
+            var triggers = m_triggers.OrderBy(x => x is Trap && ((Trap) x).TrapSpell.Template.Id != (int)SpellIdEnum.PIÈGE_RÉPULSIF).ToArray();
 
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
             foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))

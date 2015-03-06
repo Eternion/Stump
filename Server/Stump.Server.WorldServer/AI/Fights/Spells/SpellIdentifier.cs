@@ -117,7 +117,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_Invisibility:
                 case EffectsEnum.Effect_ReflectSpell:
                 case EffectsEnum.Effect_RegainAP:
-                case EffectsEnum.Effect_DamageIntercept:
                     return SpellCategory.Buff;
                 case EffectsEnum.Effect_Teleport:
                     return SpellCategory.Teleport;
@@ -188,6 +187,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_StealAP_440:
                 case EffectsEnum.Effect_StealMP_441:
                 case EffectsEnum.Effect_StealMP_77:
+                case EffectsEnum.Effect_RevealsInvisible:
                     return SpellCategory.Curse;
             }
             return SpellCategory.None;
