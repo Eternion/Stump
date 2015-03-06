@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         private static void MotLotofBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            buff.Target.CastSpell(buff.Spell, buff.Target.Cell);
+            buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }
 
         private static void SuppressionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
