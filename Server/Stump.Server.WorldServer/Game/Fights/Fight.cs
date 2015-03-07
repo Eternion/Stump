@@ -219,8 +219,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             set;
         }
 
-        event Action FightStarted;
-        event Action FightEnded;
+        event Action<IFight> FightStarted;
+        event Action<IFight>  FightEnded;
 
         void Initialize();
         void StartFighting();
@@ -692,7 +692,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
         }
 
-        public event Action FightStarted;
+        public event Action<IFight> FightStarted;
 
         protected virtual void OnFightStarted()
         {
@@ -703,10 +703,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var handler = FightStarted;
             if (handler != null)
-                handler();
+                handler(this);
         }
 
-        public event Action FightEnded;
+        public event Action<IFight> FightEnded;
         protected virtual void OnFightEnded()
         {
             ReadyChecker = null;
@@ -728,7 +728,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var handler = FightEnded;
             if (handler != null)
-                handler();
+                handler(this);
         }
 
         public event FightWinnersDelegate WinnersDetermined;

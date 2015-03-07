@@ -57,12 +57,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             get { return Spawns.Count; }
         }
 
-        protected MonsterGroup NextGroup
-        {
-            get;
-            set;
-        }
-
         protected TimedTimerEntry SpawnTimer
         {
             get;
@@ -177,6 +171,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         {
             var group = DequeueNextGroupToSpawn();
 
+            return SpawnGroup(group);
+        }
+
+        public bool SpawnGroup(MonsterGroup group)
+        {            
             if (group == null)
                 return false;
 
@@ -200,34 +199,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         protected abstract bool IsLimitReached();
         protected abstract int GetNextSpawnInterval();
 
-        protected virtual MonsterGroup DequeueNextGroupToSpawn()
-        {
-            return NextGroup;
-        }
-
-        public virtual void SetNextGroupToSpawn(IEnumerable<Monster> monsters)
-        {
-            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition(), this);
-
-            foreach (var monster in monsters)
-            {
-                NextGroup.AddMonster(monster);
-            }
-        }
-
-        public virtual void SetNextGroupToSpawn(MonsterGroup group)
-        {
-            var monsters = group.GetMonsters();
-            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition(), this)
-            {
-                GroupSize = @group.GroupSize
-            };
-
-            foreach (var monster in monsters)
-            {
-                NextGroup.AddMonster(monster);
-            }
-        }
+        protected abstract MonsterGroup DequeueNextGroupToSpawn();
 
         private void OnMapActorLeave(Map map, RolePlayActor actor)
         {
@@ -247,7 +219,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             lock (Spawns)
                 Spawns.Add(group);
 
-            NextGroup = null;
 
             var handler = Spawned;
             if (handler != null)

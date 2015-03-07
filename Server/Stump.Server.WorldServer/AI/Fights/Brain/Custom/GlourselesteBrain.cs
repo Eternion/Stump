@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
             return spell.GetEffectHandlers().ToArray()[offset];
         }
 
-        private void OnFightStarted()
+        private void OnFightStarted(IFight fight)
         {
             //State Lourd
             GetEffectHandler(SpellIdEnum.GLOURSONGEUR, Fighter.Cell, 4).Apply();

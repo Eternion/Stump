@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
             fighter.Fight.FightStarted += OnFightStarted;
         }
 
-        private void OnFightStarted()
+        private void OnFightStarted(IFight fight)
         {
             var inimouthSpell = SpellManager.Instance.GetSpellCastHandler(Fighter, new Spell((int)SpellIdEnum.INIMOUTH, 1), Fighter.Cell, false);
             inimouthSpell.Initialize();

@@ -48,30 +48,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_ageBonusDefined = true;
         }
 
-        protected override void OnFightEnded()
-        {
-            base.OnFightEnded();
-
-            var monsterFighter = DefendersTeam.Leader;
-            if (monsterFighter == null)
-                return;
-
-            var spawningPool = monsterFighter.Monster.Group.SpawningPool;
-            if (spawningPool == null)
-                return;
-
-            if (Winners == ChallengersTeam)
-            {
-                spawningPool.UnSpawnGroup(monsterFighter.Monster.Group);
-                return;
-            }
-
-            spawningPool.SetNextGroupToSpawn(monsterFighter.Monster.Group.GetMonsters());
-            spawningPool.UnSpawnGroup(monsterFighter.Monster.Group);
-
-            spawningPool.SpawnNextGroup();
-        }
-
         public override FightTypeEnum FightType
         {
             get { return FightTypeEnum.FIGHT_TYPE_PvM; }
