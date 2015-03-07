@@ -1,4 +1,3 @@
-using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 
@@ -36,6 +35,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             {
                 return TotalMax - Used;
             }
+        }
+
+        public override StatsData Clone()
+        {
+            var clone = new StatsAP(Owner, ValueBase, Limit ?? 0) 
+            {
+                Used = 0
+            };
+
+            return clone;
         }
     }
 }

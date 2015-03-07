@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return false;
                 }
 
-                AddStateBuff(affectedActor, !BypassDispel && state.Id == (int)SpellStatesEnum.Invulnerable, (state.Id == (int)SpellStatesEnum.Unload || state.Id == (int)SpellStatesEnum.Overload), state);
+                AddStateBuff(affectedActor, !BypassDispel && state.Id == (int)SpellStatesEnum.Invulnerable, (state.Id == (int)SpellStatesEnum.Unload || state.Id == (int)SpellStatesEnum.Overload || state.Id == (int)SpellStatesEnum.Weakened), state);
             }
 
             return true;

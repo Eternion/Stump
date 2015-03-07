@@ -100,6 +100,17 @@ namespace Stump.Tools.SpellsExplorer
                                                                 .Effects.Any(y => (int) y.Group != 0)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
+                    if (pattern.StartsWith("@"))
+                    {
+                        pattern = pattern.Remove(0, 1);
+
+                        foreach (var spell in SpellManager.Instance.GetSpellTemplates() .Where(
+                            x => SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0]).Effects.Any(y => y.Id == int.Parse(pattern))))
+                        {
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                        }
+                        continue;
+                    }
 
                     var critical = pattern.EndsWith("!");
                     if (critical)

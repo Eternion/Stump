@@ -58,7 +58,7 @@ namespace Stump.ORM
 
         public string GetConnectionString()
         {
-            return string.Format("database={0};uid={1};password={2};server={3}", DbName, User, Password, Host);
+            return string.Format("database={0};uid={1};password={2};server={3};port={4}", DbName, User, Password, Host, Port);
         }
     }
 }
