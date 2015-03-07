@@ -134,7 +134,9 @@ namespace Stump.ORM
             var db = new Database(Configuration.GetConnectionString(), Configuration.ProviderName)
                 {
                     KeepConnectionAlive = true,
+                    CommandTimeout = int.MaxValue
                 };
+
             OpenConnection(db);
         }
 
