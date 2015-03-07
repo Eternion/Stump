@@ -1729,20 +1729,19 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected virtual void OnLifePointsChanged(FightActor actor, int delta, int shieldDamages, int permanentDamages, FightActor from)
         {
             var loss = (short) (-delta);
-            var shieldLoss = (short)(-shieldDamages);
 
             if (delta == 0 && shieldDamages == 0 && permanentDamages == 0)
                 return;
 
-            if (shieldLoss == 0)
+            if (shieldDamages == 0)
                 ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
             else
             {
                 ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss,
-                    (short) permanentDamages, shieldLoss);
+                    (short)permanentDamages, (short)shieldDamages);
 
-                Clients.ForEach(client => ContextHandler.SendGameFightRefreshFighterMessage(client, actor));
-            }
+                ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
+            } 
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
