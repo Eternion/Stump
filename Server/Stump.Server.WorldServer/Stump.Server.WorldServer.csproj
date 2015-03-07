@@ -142,6 +142,7 @@
     <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
+    <Compile Include="Commands\Commands\AICommands.cs" />
     <Compile Include="Commands\Commands\AlignmentCommands.cs" />
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
@@ -482,6 +483,14 @@
     <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Complement.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Difference.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Intersection.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Set.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\LineSet.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\LozengeSet.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\SingleSet.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Union.cs" />
     <Compile Include="Game\Maps\Cells\Triggers\AnimateTrigger.cs" />
     <Compile Include="Game\Maps\Paddocks\Paddock.cs" />
     <Compile Include="Game\Maps\Paddocks\PaddockManager.cs" />

@@ -263,8 +263,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var point = new MapPoint(cell);
 
-            if (point.DistanceToCell(Position.Point) > weapon.WeaponRange ||
-                point.DistanceToCell(Position.Point) < weapon.MinRange)
+            if (point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange ||
+                point.ManhattanDistanceTo(Position.Point) < weapon.MinRange)
                 return false;
 
             return AP >= weapon.ApCost && Fight.CanBeSeen(cell, Position.Cell);
