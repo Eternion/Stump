@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     break;
                 case DirectionsEnum.DIRECTION_NORTH_EAST:
                     y = centerPoint.Y;
-                    while (y <= centerPoint.Y - Radius)
+                    while (y <= centerPoint.Y + Radius)
                     {
                         x = -i;
                         while (x <= i)

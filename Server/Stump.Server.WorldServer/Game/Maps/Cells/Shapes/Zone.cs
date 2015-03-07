@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     m_shape = new Square(0, Radius);
                     break;
                 case SpellShapeEnum.V:
-                    m_shape = new Cone(1, Radius);
+                    m_shape = new Cone(0, Radius);
                     break;
                 case SpellShapeEnum.W:
                     m_shape = new Square(0, Radius)
