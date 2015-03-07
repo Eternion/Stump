@@ -53,12 +53,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             set;
         }
 
-        public Cell CastCell
-        {
-            get;
-            set;
-        }
-
         public List<SpellTarget> Impacts
         {
             get;

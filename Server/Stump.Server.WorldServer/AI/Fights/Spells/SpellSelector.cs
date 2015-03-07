@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             var diff = Fighter.GetSpellRange(spell.CurrentSpellLevel) -
                        fighter.Position.Point.ManhattanDistanceTo(Fighter.Position.Point);
-            if (diff > 0)
+            if (diff >= 0)
             {
                 castCell = Fighter.Cell;
                 return true;
@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     return true;
                 }
                 castCell = m_environment.GetCellToCastSpell(fighter.Cell, spell);
-                return true;
+                return castCell != null;
             }
 
 
@@ -135,13 +135,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, fighter.Cell))
                             continue;
 
-                        cast.CastCell = cell;
 
                         var impact = ComputeSpellImpact(spell, fighter);
+                        
 
                         if (impact == null)
                             continue;
 
+                        impact.CastCell = cell;
                         impact.Target = fighter;
 
                         if (impact.Damage < 0)
@@ -151,7 +152,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     }
                 }
 
-                Possibilities.Add(cast);
+                if (cast.Impacts.Count > 0)
+                    Possibilities.Add(cast);
             }
 
             if (!Brain.Brain.DebugMode)
@@ -211,9 +213,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     if (Fighter.AP == 0)
                         yield break;
 
-                    if (Fighter.MP != -1 && MapPoint.GetPoint(possibleCast.CastCell).ManhattanDistanceTo(Fighter.Position.Point) > Fighter.MP)
-                        continue;
-
                     if (possibleCast.IsSummoningSpell)
                     {
                         yield return new SpellCast(possibleCast.Spell, possibleCast.SummonCell);
@@ -222,8 +221,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     {
                         foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
                         {
-                            Cell castSpell = possibleCast.CastCell;
-                            if (possibleCast.CastCell != Fighter.Cell && !CanReach(impact.Target, possibleCast.Spell, out castSpell))
+                            Cell castSpell = impact.CastCell;
+                            if (impact.CastCell != Fighter.Cell && !CanReach(impact.Target, possibleCast.Spell, out castSpell))
                                 continue;
 
                             var cast = new SpellCast(possibleCast.Spell, impact.Target.Cell);;
@@ -233,7 +232,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                             }
                             else
                             {
-                                if (MapPoint.GetPoint(possibleCast.CastCell).ManhattanDistanceTo(Fighter.Position.Point) > Fighter.MP)
+                                if (MapPoint.GetPoint(impact.CastCell).ManhattanDistanceTo(Fighter.Position.Point) > Fighter.MP)
                                     continue;
 
                                 var cell = impact.Target.Position.Point.GetAdjacentCells(m_environment.CellInformationProvider.IsCellWalkable).
@@ -258,11 +257,18 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             }
         }
 
-        public SpellTarget ComputeSpellImpact(Spell spell, FightActor target)
+        public SpellTarget ComputeSpellImpact(Spell spell, FightActor mainTarget)
         {
             SpellTarget damages = null;
             foreach (var effect in spell.CurrentSpellLevel.Effects)
-                CumulEffects(effect, ref damages, target, spell);
+            {
+                var zone = new Zone(effect.ZoneShape, (byte) effect.ZoneSize,
+                    Fighter.Position.Point.OrientationTo(mainTarget.Position.Point));
+                foreach (var target in Fighter.Fight.GetAllFighters(zone.GetCells(mainTarget.Cell, Fighter.Map)))
+                {
+                    CumulEffects(effect, ref damages, target, spell);
+                }
+            }
             return damages;
         }
 
