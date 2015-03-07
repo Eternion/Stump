@@ -95,7 +95,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
             finally
             {
-                Fight.StopTurn();
+                if (!Fight.AIDebugMode)
+                    Fight.StopTurn();
             }
         }
 

@@ -207,6 +207,18 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        bool AIDebugMode
+        {
+            get;
+            set;
+        }
+
+        bool Freezed
+        {
+            get;
+            set;
+        }
+
         event Action FightStarted;
         event Action FightEnded;
 
@@ -294,6 +306,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         FightCommonInformations GetFightCommonInformations();
         FightExternalInformations GetFightExternalInformations();
         bool CanBeSeen(Cell from, Cell to, bool throughEntities = false);
+        bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false);
         int GetPlacementTimeLeft();
     }
 
@@ -557,6 +570,13 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get { return true; }
         }
+
+        public bool AIDebugMode
+        {
+            get;
+            set;
+        }
+
 
         #endregion
 
@@ -994,12 +1014,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 if (closerCell == null)
                     closerCell = Tuple.Create(opposant.Cell,
-                                              fighter.Position.Point.DistanceToCell(point));
+                                              fighter.Position.Point.ManhattanDistanceTo(point));
                 else
                 {
-                    if (fighter.Position.Point.DistanceToCell(point) < closerCell.Item2)
+                    if (fighter.Position.Point.ManhattanDistanceTo(point) < closerCell.Item2)
                         closerCell = Tuple.Create(opposant.Cell,
-                                                  fighter.Position.Point.DistanceToCell(point));
+                                                  fighter.Position.Point.ManhattanDistanceTo(point));
                 }
             }
 
@@ -1386,7 +1406,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();
 
             TurnStartTime = DateTime.Now;
-            m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+
+            if (!Freezed)
+                m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
 
             var evnt = TurnStarted;
             if (evnt != null)
@@ -2138,6 +2160,29 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #endregion
 
+        #region Freeze
+
+        public bool Freezed
+        {
+            get { return m_freezed; }
+            set { m_freezed = value;
+                OnFreezed();
+            }
+        }
+
+        private void OnFreezed()
+        {
+            if (State == FightState.Fighting)
+            {
+                if (Freezed)
+                    m_turnTimer.Stop();
+                else
+                    m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+            }
+        }
+
+        #endregion
+
         #region Send Methods
 
         protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
@@ -2158,6 +2203,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly WorldClientCollection m_spectatorClients = new WorldClientCollection();
         private readonly List<FightActor> m_leavers;
         private readonly List<FightSpectator> m_spectators;
+        private bool m_freezed;
 
         /// <summary>
         /// Do not modify, just read

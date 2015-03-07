@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
         public override bool Apply()
         {
-            var distance = CastPoint.DistanceToCell(TargetedPoint);
+            var distance = CastPoint.ManhattanDistanceTo(TargetedPoint);
             var direction = CastPoint.OrientationTo(TargetedPoint, false);
             var isEven = (short)direction%2 == 0;
 

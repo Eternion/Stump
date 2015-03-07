@@ -14,6 +14,7 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
@@ -114,6 +115,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         /// Can be null
         /// </summary>
         public FightActor Target
+        {
+            get;
+            set;
+        }
+
+        public Cell CastCell
         {
             get;
             set;
