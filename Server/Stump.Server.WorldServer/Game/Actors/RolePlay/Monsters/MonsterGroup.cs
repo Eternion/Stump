@@ -30,6 +30,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public const short ClientStarsBonusLimit = 200;
 
         public event Action<MonsterGroup, Character> EnterFight;
+        public event Action<MonsterGroup, IFight> ExitFight;
 
         private readonly List<Monster> m_monsters = new List<Monster>();
 
@@ -65,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             set;
         }
 
-        public int GroupSize
+        public GroupSize GroupSize
         {
             get;
             set;
@@ -186,6 +187,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             fight.StartPlacement();
 
             OnEnterFight(character);
+
+            Fight.FightEnded += OnFightEnded;
+        }
+
+        private void OnFightEnded(IFight fight)
+        {
+            OnExitFight(fight);
         }
 
         private void OnEnterFight(Character character)
@@ -193,6 +201,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             var handler = EnterFight;
             if (handler != null)
                 handler(this, character);
+        }
+        private void OnExitFight(IFight fight)
+        {
+            Fight = null;
+
+            var handler = ExitFight;
+            if (handler != null) handler(this, fight);
         }
 
         public IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team)
@@ -257,5 +272,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             return string.Format("{0} monsters ({1})", m_monsters.Count, Id);
         }
+
     }
 }

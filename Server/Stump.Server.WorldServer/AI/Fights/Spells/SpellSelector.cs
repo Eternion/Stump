@@ -8,11 +8,13 @@ using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
@@ -260,13 +262,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         public SpellTarget ComputeSpellImpact(Spell spell, FightActor mainTarget)
         {
             SpellTarget damages = null;
-            foreach (var effect in spell.CurrentSpellLevel.Effects)
+            var cast = SpellManager.Instance.GetSpellCastHandler(Fighter, spell, mainTarget.Cell, false);
+            cast.Initialize();
+
+            foreach (var handler in cast.GetEffectHandlers())
             {
-                var zone = new Zone(effect.ZoneShape, (byte) effect.ZoneSize,
-                    Fighter.Position.Point.OrientationTo(mainTarget.Position.Point));
-                foreach (var target in Fighter.Fight.GetAllFighters(zone.GetCells(mainTarget.Cell, Fighter.Map)))
+                foreach (var target in handler.GetAffectedActors())
                 {
-                    CumulEffects(effect, ref damages, target, spell);
+                    CumulEffects(handler.Dice, ref damages, target, spell);
                 }
             }
             return damages;

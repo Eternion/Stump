@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -36,6 +37,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         }
 
         public EffectDice Dice
+        {
+            get;
+            private set;
+        }
+
+        public SpellCategory Category
         {
             get;
             private set;
