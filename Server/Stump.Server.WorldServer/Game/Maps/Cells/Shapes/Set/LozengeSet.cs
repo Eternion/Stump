@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
 
         public override IEnumerable<MapPoint> EnumerateSet()
         {
-            for (int r = MinRadius; r < Radius; r++)
+            for (int r = MinRadius; r <= Radius; r++)
             {
                 // add all points that have a manhattan distance of r from the center
                 if (r == 0)
