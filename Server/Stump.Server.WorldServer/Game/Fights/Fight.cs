@@ -9,6 +9,7 @@ using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -1747,13 +1748,22 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Health & Actions points
 
-        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int shieldDamages, int permanentDamages, FightActor from)
         {
             var loss = (short) (-delta);
-            if (delta == 0 && permanentDamages == 0)
+
+            if (delta == 0 && shieldDamages == 0 && permanentDamages == 0)
                 return;
 
-            ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            if (shieldDamages == 0)
+                ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            else
+            {
+                ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss,
+                    (short)permanentDamages, (short)shieldDamages);
+
+                ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
+            } 
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
@@ -2070,8 +2080,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
         {
-            var triggers = m_triggers.ToArray();
-
+            var otherTriggers = m_triggers.Where(x => x.CastedSpell.Template.Id == (int)SpellIdEnum.PIÈGE_RÉPULSIF).ToArray();
+            var triggers = m_triggers.Where(x => !otherTriggers.Contains(x)).ToArray();
+            
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
             foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
             {
@@ -2081,6 +2092,19 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (markTrigger is Trap)
                     RemoveTrigger(markTrigger); 
                     
+                markTrigger.Trigger(trigger);
+
+                EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+            }
+
+            foreach (var markTrigger in otherTriggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
+            {
+                StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+
+                // avoid the trigger to trigger twice
+                if (markTrigger is Trap)
+                    RemoveTrigger(markTrigger);
+
                 markTrigger.Trigger(trigger);
 
                 EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);

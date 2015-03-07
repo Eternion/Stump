@@ -78,6 +78,7 @@ namespace Stump.DofusProtocol.Enums
         AirDamageArmor,
         FireDamageArmor,
         Erosion,
-        ComboBonus
+        ComboBonus,
+        Shield
     }
 }

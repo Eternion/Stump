@@ -5,6 +5,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 
@@ -56,6 +57,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
                 Caster.AddSummon(summon);
                 Caster.Team.AddFighter(summon);
+
+                Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
             }
 
             return true;

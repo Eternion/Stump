@@ -1590,15 +1590,15 @@
         /// <summary>
         /// #1{~1~2 to }#2% of HP to shield
         /// </summary>
-        Effect_1039 = 1039,
+        Effect_AddShieldPercent = 1039,
         /// <summary>
         /// #1{~1~2 to }#2 Shield
         /// </summary>
-        Effect_1040 = 1040,
+        Effect_AddShield = 1040,
         /// <summary>
         /// Retreats #1 cell(s)
         /// </summary>
-        Effect_1041 = 1041,
+        Effect_Retreat = 1041,
         /// <summary>
         /// Advances #1 cell(s)
         /// </summary>
@@ -1614,7 +1614,7 @@
         /// <summary>
         /// #1: #3 turns until recast
         /// </summary>
-        Effect_1045 = 1045,
+        Effect_CooldownSet = 1045,
         /// <summary>
         /// Using #1 MP will cause a loss of #2 HP
         /// </summary>
@@ -1626,7 +1626,7 @@
         /// <summary>
         /// -#1{~1~2 to }#2% HP
         /// </summary>
-        Effect_1048 = 1048,
+        Effect_SubVitalityPercent_1048 = 1048,
         /// <summary>
         /// +#1{~1~2 to}level #2
         /// </summary>

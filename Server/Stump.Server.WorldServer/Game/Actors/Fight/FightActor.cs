@@ -59,14 +59,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 CellShown(this, cell, team);
         }
 
-        public event Action<FightActor, int, int, FightActor> LifePointsChanged;
+        public event Action<FightActor, int, int, int, FightActor> LifePointsChanged;
 
-        protected virtual void OnLifePointsChanged(int delta, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from)
         {
             var handler = LifePointsChanged;
 
             if (handler != null)
-                handler(this, delta, permanentDamages, from);
+                handler(this, delta, shieldDamages, permanentDamages, from);
         }
 
         public event Action<FightActor, Damage> BeforeDamageInflicted;
@@ -794,7 +794,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             var permanentDamages = CalculateErosionDamage(damage.Amount);
-
+            
             //Fraction
             var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
             if (fractionBuff != null && !(damage is FractionDamage))
@@ -828,6 +828,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 permanentDamages = CalculateErosionDamage(damageWithoutArmor);
             }
 
+            var shieldDamages = 0;
+            if (Stats.Shield.TotalSafe > 0)
+            {
+                if (Stats.Shield.TotalSafe > damage.Amount)
+                {
+                    shieldDamages += damage.Amount;
+                    damage.Amount = 0;
+                }
+                else
+                {
+                    shieldDamages += Stats.Shield.TotalSafe;
+                    damage.Amount -= Stats.Shield.TotalSafe;
+                }
+            }
+
             //Heal Or Multiply
             var healOrMultiplyBuff = GetBuffs(x => x is HealOrMultiplyBuff).FirstOrDefault() as HealOrMultiplyBuff;
             if (healOrMultiplyBuff != null)
@@ -848,6 +863,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (damage.Amount <= 0)
                 damage.Amount = 0;
 
+            if (shieldDamages <= 0)
+                shieldDamages = 0;
+
             if (damage.Amount > LifePoints)
             {
                 damage.Amount = LifePoints;
@@ -856,14 +874,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
+            Stats.Shield.Context -= shieldDamages;
 
-            OnLifePointsChanged(-damage.Amount, permanentDamages, damage.Source);
+            OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source);
 
             if (IsDead())
                 OnDead(damage.Source);
 
             OnDamageInflicted(damage);
-            damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
+
+            if (damage.Source != null)
+                damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
+
             TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
 
             return damage.Amount;
@@ -873,7 +895,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             if (HasState((int)SpellStatesEnum.Unhealable))
             {
-                OnLifePointsChanged(0, 0, from);
+                OnLifePointsChanged(0, 0, 0, from);
                 return 0;
             }
 
@@ -882,7 +904,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             DamageTaken -= healPoints;
 
-            OnLifePointsChanged(healPoints, 0, from);
+            OnLifePointsChanged(healPoints, 0, 0, from);
 
             return healPoints;
         }
@@ -1154,6 +1176,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
 
+            if (HasState((int)SpellStatesEnum.Unlockable))
+                return 0;
+
             var tacklers = GetTacklers();
 
             // no tacklers, then no tackle possible
@@ -1186,6 +1211,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual int GetTackledAP()
         {
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
+                return 0;
+
+            if (HasState((int)SpellStatesEnum.Unlockable))
                 return 0;
 
             var tacklers = GetTacklers();
@@ -1963,7 +1991,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.TotalMax,
                 Stats.Health.Base,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
-                0, // shieldsPoints = ?
+                Stats.Shield.TotalSafe,
                 (short)Stats.AP.Total,
                 (short)Stats.AP.TotalMax,
                 (short)Stats.MP.Total,

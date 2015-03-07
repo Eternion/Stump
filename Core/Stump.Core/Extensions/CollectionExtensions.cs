@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Stump.Core.Threading;
@@ -37,6 +36,12 @@ namespace Stump.Core.Extensions
         public static List<T> Clone<T>(this List<T> listToClone) where T : ICloneable
         {
             return listToClone.Select(item => (T)item.Clone()).ToList();
+        }
+
+        public static void Move<T>(this List<T> list, T item, int newIndex) where T : ICloneable
+        {
+            list.Remove(item);
+            list.Insert(newIndex, item);
         }
 
         public static bool CompareEnumerable<T>(this IEnumerable<T> ie1, IEnumerable<T> ie2)

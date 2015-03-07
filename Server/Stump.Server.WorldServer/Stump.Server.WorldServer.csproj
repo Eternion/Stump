@@ -327,6 +327,10 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Advance.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Retreat.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Frikt.cs" />
@@ -499,7 +503,9 @@
     <Compile Include="Game\Social\Friend.cs" />
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
+    <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\VertigoCastHandler.cs" />
