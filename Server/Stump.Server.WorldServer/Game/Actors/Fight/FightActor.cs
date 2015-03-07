@@ -876,7 +876,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.PermanentDamages += permanentDamages;
             Stats.Shield.Context -= shieldDamages;
 
-            OnLifePointsChanged(-damage.Amount, -shieldDamages, permanentDamages, damage.Source);
+            OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source);
 
             if (IsDead())
                 OnDead(damage.Source);

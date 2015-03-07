@@ -384,6 +384,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Chaton
+
+            // Guigne (487)
+            FixEffectOnAllLevels(487, EffectsEnum.Effect_HealHP_108, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+
+            #endregion
+
             #endregion
 
         }
