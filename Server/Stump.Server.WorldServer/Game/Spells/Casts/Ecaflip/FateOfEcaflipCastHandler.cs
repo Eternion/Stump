@@ -24,13 +24,21 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             if (pullHandler == null)
                 return;
 
-            var affectedActors = pullHandler.GetAffectedActors().ToArray();
+            var affectedActors = pullHandler.GetAffectedActors().FirstOrDefault();
+
+            if (affectedActors == null)
+                return;
 
             pullHandler.Apply();
 
+            TargetedCell = affectedActors.Cell;
+            TargetedPoint = affectedActors.Position.Point;
+
+            Initialize();
+
             foreach (var handler in Handlers)
             {
-                handler.SetAffectedActors(affectedActors);
+                handler.AddAffectedActor(affectedActors);
             }
 
             base.Execute();

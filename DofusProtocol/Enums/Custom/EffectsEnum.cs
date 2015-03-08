@@ -1482,7 +1482,7 @@
         /// <summary>
         /// Summons #1
         /// </summary>
-        Effect_1011 = 1011,
+        Effect_SummonSlave = 1011,
         /// <summary>
         /// #1{~1~2 to }#2 (Neutral damage)
         /// </summary>

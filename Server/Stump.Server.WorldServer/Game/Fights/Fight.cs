@@ -254,6 +254,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         void StartTurn();
         event Action<IFight, FightActor> TurnStarted;
         void StopTurn();
+        event Action<IFight, FightActor> TurnStopped;
         void SwitchFighters(FightActor fighter1, FightActor fighter2);
         IEnumerable<Buff> GetBuffs();
         void UpdateBuff(Buff buff);
@@ -1130,6 +1131,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
+            if (actor is SlaveFighter)
+            {
+                OnSlaveAdded(actor as SlaveFighter);
+                return;
+            }
+
             TimeLine.Fighters.Add(actor);
             BindFighterEvents(actor);
 
@@ -1159,6 +1166,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
+
+        protected virtual void OnSlaveAdded(SlaveFighter slave)
+        {
+            TimeLine.InsertFighter(slave, TimeLine.Fighters.IndexOf(slave.Summoner) + 1);
+            BindFighterEvents(slave);
+
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
+        }
+
         protected virtual void OnBombAdded(SummonedBomb bomb)
         {
             TimeLine.InsertFighter(bomb, TimeLine.Fighters.IndexOf(bomb.Summoner) + 1);
@@ -1397,7 +1413,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
-            ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
+            var slaveFighter = FighterPlaying as SlaveFighter;
+            if (slaveFighter != null)
+                ContextHandler.SendGameFightTurnStartSlaveMessage(Clients, slaveFighter.Id, FightConfiguration.TurnTime, slaveFighter.Summoner.Id);
+            else
+                ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
                                                          FightConfiguration.TurnTime);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
@@ -1438,6 +1458,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = ReadyChecker.RequestCheck(this, PassTurn, LagAndPassTurn);
         }
 
+        public event Action<IFight, FightActor> TurnStopped;
+
         protected virtual void OnTurnStopped()
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
@@ -1458,6 +1480,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 AcknowledgeAction();
 
             ContextHandler.SendGameFightTurnEndMessage(Clients, FighterPlaying);
+
+            var evnt = TurnStopped;
+            if (evnt != null)
+                evnt(this, FighterPlaying);
         }
 
         protected void LagAndPassTurn(NamedFighter[] laggers)
