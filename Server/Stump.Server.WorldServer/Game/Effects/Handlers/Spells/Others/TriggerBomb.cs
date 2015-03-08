@@ -16,12 +16,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         public override bool Apply()
         {
-            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && (x as SummonedBomb).Summoner == Caster).Where(bomb => bomb.IsAlive()))
+            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter) Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
             {
                 if (bomb.HasState((int) SpellStatesEnum.Unmovable))
                     bomb.RemoveSpellBuffs((int)SpellIdEnum.POUDRE);
 
-                (bomb as SummonedBomb).Explode();
+                ((SummonedBomb) bomb).Explode();
             }
 
             return true;

@@ -280,6 +280,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Character.Spells.HasSpell(id);
         }
 
+        public bool IsSlaveTurn()
+        {
+            return Fight.TimeLine.Current is SlaveFighter;
+        }
+
+        public SlaveFighter GetSlave()
+        {
+            return Fight.TimeLine.Current as SlaveFighter;
+        }
+
         public FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate weapon)
         {
             var random = new AsyncRandom();

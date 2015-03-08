@@ -1910,7 +1910,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public override bool StartMove(Path movementPath)
         {
             if (IsFighting() || MustBeJailed() || !IsInJail())
-                return IsFighting() ? Fighter.StartMove(movementPath) : base.StartMove(movementPath);
+                return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
 
             Teleport(Breed.GetStartPosition());
             return false;

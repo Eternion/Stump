@@ -1457,6 +1457,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #region Summons
 
         private readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
+        private readonly List<SlaveFighter> m_slaves = new List<SlaveFighter>();
         private readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
         public int SummonedCount
@@ -1475,6 +1476,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get { return m_summons.AsReadOnly(); }
         }
+
+        public ReadOnlyCollection<SlaveFighter> Slaves
+        {
+            get { return m_slaves.AsReadOnly(); }
+        }
+
         public ReadOnlyCollection<SummonedBomb> Bombs
         {
             get { return m_bombs.AsReadOnly(); }
@@ -1508,6 +1515,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_summons.Remove(summon);
         }
 
+        public void AddSlave(SlaveFighter slave)
+        {
+            if (slave.Monster.Template.UseSummonSlot)
+                SummonedCount++;
+
+            m_slaves.Add(slave);
+        }
+
+        public void RemoveSlave(SlaveFighter slave)
+        {
+            if (slave.Monster.Template.UseSummonSlot)
+                SummonedCount--;
+
+            m_slaves.Remove(slave);
+        }
+
         public void AddBomb(SummonedBomb bomb)
         {
             if (bomb.MonsterBombTemplate.Template.UseBombSlot)
@@ -1528,6 +1551,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             m_summons.Clear();
             m_bombs.Clear();
+            m_slaves.Clear();
         }
 
         public void KillAllSummons()
@@ -1536,9 +1560,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 summon.Die();
             }
+
             foreach (var bomb in m_bombs.ToArray())
             {
                 bomb.Die();
+            }
+
+            foreach (var slave in m_slaves.ToArray())
+            {
+                slave.Die();
             }
         }
 
@@ -1915,7 +1945,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return Fight.TimeLine.Current == this;
         }
-
 
         public bool IsFriendlyWith(FightActor actor)
         {

@@ -391,6 +391,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Lapino
+
+            // Lapino Boost (582)
+            FixEffectOnAllLevels(582, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_SUMMONER);
+
+            #endregion
+
             #endregion
 
         }
