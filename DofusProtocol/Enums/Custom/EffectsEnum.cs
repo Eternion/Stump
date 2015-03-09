@@ -1207,7 +1207,7 @@
         /// <summary>
         /// Heals upon attack
         /// </summary>
-        Effect_786 = 786,
+        Effect_GiveHpPercentWhenAttack = 786,
         /// <summary>
         /// #1
         /// </summary>
@@ -1606,7 +1606,7 @@
         /// <summary>
         /// Attract to the selected cell
         /// </summary>
-        Effect_1043 = 1043,
+        Effect_Attract = 1043,
         /// <summary>
         /// Immunity: #1
         /// </summary>
