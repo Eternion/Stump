@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.Stats;
-using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
+using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
@@ -22,7 +20,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     public class SlaveFighter : FightActor, INamedActor
     {
         private readonly StatsFields m_stats;
-
         
         public SlaveFighter(int id, FightTeam team, FightActor summoner, MonsterGrade template, Cell cell)
             : base(team)
@@ -67,14 +64,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy)
         {
-            base.OnDead(killedBy);
-
             Summoner.RemoveSlave(this);
 
             Fight.TurnStarted -= OnTurnStarted;
             Fight.TurnStopped -= OnTurnStopped;
 
-            PassTurn();
+            base.OnDead(killedBy);
         }
 
         private void AdjustStats()
@@ -163,7 +158,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (sbyte)Monster.GradeId);
         }
 
-        public CharacterCharacteristicsInformations GetCharacterCharacteristicsInformations()
+        public CharacterCharacteristicsInformations GetSlaveCharacteristicsInformations()
         {
             var characterFighter = Summoner as CharacterFighter;
             if (characterFighter == null)
@@ -285,7 +280,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.TackleBlock].Total,
                 (short)Stats[PlayerFields.TackleEvade].Total,
                 (sbyte)(client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
-                );
+            );
         }
     }
 }

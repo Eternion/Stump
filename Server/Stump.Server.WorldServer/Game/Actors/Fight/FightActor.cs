@@ -224,6 +224,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnDead(FightActor killedBy)
         {
+            if (IsFighterTurn())
+                PassTurn();
+
             KillAllSummons();
             RemoveAndDispellAllBuffs();
 

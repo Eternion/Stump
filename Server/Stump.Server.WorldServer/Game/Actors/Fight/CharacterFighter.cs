@@ -282,12 +282,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsSlaveTurn()
         {
-            return Fight.TimeLine.Current is SlaveFighter;
+            var slave = Fight.TimeLine.Current as SlaveFighter;
+
+            if (slave == null)
+                return false;
+
+            return slave.Summoner == this;
         }
 
         public SlaveFighter GetSlave()
         {
-            return Fight.TimeLine.Current as SlaveFighter;
+            var slave = Fight.TimeLine.Current as SlaveFighter;
+
+            if (slave == null)
+                return null;
+
+            return slave.Summoner == this ? slave : null;
         }
 
         public FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate weapon)
