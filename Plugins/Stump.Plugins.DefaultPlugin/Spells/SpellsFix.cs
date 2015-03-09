@@ -55,6 +55,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(144, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(144, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
+            // Epée divine (145)
+            // #1 effect = SELF, ALLY_ALL
+            FixEffectOnAllLevels(145, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
             // Sword of Fate (146)
             FixEffectOnAllLevels(146, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(146, EffectsEnum.Effect_SpellBoost, (level, effect, critical) => effect.Duration = 3);
@@ -116,8 +120,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(427, EffectsEnum.Effect_ChangeAppearance, (level, effect, critical) => effect.Value = 923);
 
             // Combustion Spontanée (1679)
-            // new skin -672 => 1 (todo find relation)
-            FixEffectOnAllLevels(1679, EffectsEnum.Effect_ChangeAppearance, (level, effect, critical) => effect.Value = 1);
+            // new skin -672 => -923 (todo find relation)
+            FixEffectOnAllLevels(1679, EffectsEnum.Effect_ChangeAppearance, (level, effect, critical) => effect.Value = -923);
 
             #endregion
 

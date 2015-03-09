@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
@@ -38,6 +39,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             AdjustStats();
 
             Fight.TurnStarted += OnTurnStarted;
+            Fight.TurnStopped += OnTurnStopped;
         }
 
         private void OnTurnStarted(IFight fight, FightActor player)
@@ -55,11 +57,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id)), ShortcutBarEnum.SPELL_SHORTCUT_BAR);
         }
 
+        private void OnTurnStopped(IFight fight, FightActor player)
+        {
+            if (player != this)
+                return;
+
+            Die();
+        }
+
         protected override void OnDead(FightActor killedBy)
         {
             base.OnDead(killedBy);
 
             Summoner.RemoveSlave(this);
+
+            Fight.TurnStarted -= OnTurnStarted;
+            Fight.TurnStopped -= OnTurnStopped;
+
             PassTurn();
         }
 
