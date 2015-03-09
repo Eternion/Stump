@@ -15,6 +15,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
     [EffectHandler(EffectsEnum.Effect_DamagePercentFire)]
     [EffectHandler(EffectsEnum.Effect_DamagePercentWater)]
     [EffectHandler(EffectsEnum.Effect_DamagePercentNeutral)]
+    [EffectHandler(EffectsEnum.Effect_DamagePercentNeutral_671)]
     public class DamagePercent : SpellEffectHandler
     {
         public DamagePercent(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -34,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 {
                     var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell);
                     damage.GenerateDamages();
-                    damage.Amount = (int)((actor.LifePoints * (damage.Amount / 100d)));
+                    damage.Amount = (int)((Caster.LifePoints * (damage.Amount / 100d)));
                     damage.IgnoreDamageBoost = true;
                     damage.MarkTrigger = MarkTrigger;
                     damage.IsCritical = Critical;
@@ -98,6 +99,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 case EffectsEnum.Effect_DamagePercentWater:
                     return EffectSchoolEnum.Fire;
                 case EffectsEnum.Effect_DamagePercentNeutral:
+                case EffectsEnum.Effect_DamagePercentNeutral_671:
                     return EffectSchoolEnum.Neutral;
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));

@@ -22,7 +22,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context;
 
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_ReduceEffectsDuration)]
     public class ReduceBuffDuration : SpellEffectHandler
@@ -34,6 +34,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         public override bool Apply()
         {
+            if (Spell.Template.Id == (int)SpellIdEnum.COLÈRE_DE_IOP || Spell.Template.Id == (int)SpellIdEnum.COLÈRE_DE_IOP_DU_DOPEUL
+                || Spell.Template.Id == (int)SpellIdEnum.EPÉE_DU_DESTIN || Spell.Template.Id == (int)SpellIdEnum.EPÉE_DU_DESTIN_DU_DOPEUL
+                || Spell.Template.Id == (int)SpellIdEnum.FLÈCHE_D_EXPIATION || Spell.Template.Id == (int)SpellIdEnum.FLÈCHE_PUNITIVE)
+                return false;
+
             foreach (var actor in GetAffectedActors())
             {
                 var integerEffect = GenerateEffect();
