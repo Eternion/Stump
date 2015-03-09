@@ -21,6 +21,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
             var spellId = Dice.DiceNum;
             var cooldown = Dice.Value;
 
+            if (spellId == (int) SpellIdEnum.COLÈRE_DE_IOP || spellId == (int) SpellIdEnum.COLÈRE_DE_IOP_DU_DOPEUL
+                || spellId == (int)SpellIdEnum.EPÉE_DU_DESTIN || spellId == (int)SpellIdEnum.EPÉE_DU_DESTIN_DU_DOPEUL)
+                return false;
+
             foreach (var actor in GetAffectedActors())
             {
                 var spell = actor.GetSpell(spellId);

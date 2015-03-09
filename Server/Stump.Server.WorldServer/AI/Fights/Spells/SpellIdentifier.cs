@@ -192,6 +192,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_StealMP_441:
                 case EffectsEnum.Effect_StealMP_77:
                 case EffectsEnum.Effect_RevealsInvisible:
+                case EffectsEnum.Effect_ReduceEffectsDuration:
                     return SpellCategory.Curse;
             }
             return SpellCategory.None;

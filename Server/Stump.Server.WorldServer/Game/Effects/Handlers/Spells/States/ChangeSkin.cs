@@ -1,13 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
@@ -55,9 +53,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                     look.BonesID = Dice.Value;
                 }
-
-                var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
-                actor.AddAndApplyBuff(buff);
+                
+                if (Dice.Value >= 0)
+                {
+                    var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
+                    actor.AddAndApplyBuff(buff);
+                }
+                else
+                {
+                    var buff = actor.GetBuffs(x => x is SkinBuff && ((SkinBuff)x).Look.BonesID == Math.Abs(Dice.Value)).FirstOrDefault();
+                    actor.RemoveAndDispellBuff(buff);
+                }
             }
 
             return true;

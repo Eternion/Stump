@@ -356,7 +356,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             client.Send(new GameFightSynchronizeMessage(
                     fight.GetAllFighters().Select(entry => entry is SummonedClone ?
-                        (entry as SummonedClone).GetGameFightFighterNamedInformations() :
+                        ((SummonedClone) entry).GetGameFightFighterNamedInformations() :
                         entry.GetGameFightFighterInformations(client))));
         }
 
