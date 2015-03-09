@@ -374,7 +374,7 @@
     <Compile Include="Game\Exchanges\Paddock\PaddockExchange.cs" />
     <Compile Include="Game\Exchanges\TaxCollector\TaxCollectorExchange.cs" />
     <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerMPUsed.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerAPUsed.cs" />

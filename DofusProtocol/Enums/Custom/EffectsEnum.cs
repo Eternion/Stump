@@ -1039,7 +1039,7 @@
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's HP (Neutral-type)
         /// </summary>
-        Effect_671 = 671,
+        Effect_DamagePercentNeutral_671 = 671,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's life (neutral)
         /// </summary>

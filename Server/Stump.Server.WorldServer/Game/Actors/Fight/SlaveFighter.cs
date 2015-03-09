@@ -64,12 +64,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy)
         {
-            Summoner.RemoveSlave(this);
-
             Fight.TurnStarted -= OnTurnStarted;
             Fight.TurnStopped -= OnTurnStopped;
 
             base.OnDead(killedBy);
+
+            Summoner.RemoveSlave(this);
         }
 
         private void AdjustStats()
