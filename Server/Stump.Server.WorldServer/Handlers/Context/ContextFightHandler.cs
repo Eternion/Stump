@@ -495,7 +495,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SlaveFighter actor)
         {
-            client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetCharacterCharacteristicsInformations()));
+            client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
         }
     }
 }

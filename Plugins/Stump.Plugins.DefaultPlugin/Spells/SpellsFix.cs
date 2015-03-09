@@ -402,6 +402,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Tree
+
+            // Soin Sylvestre (1687)
+            FixEffectOnAllLevels(1687, 0, (level, effect, critical) => effect.Duration = -1, false);
+
+            #endregion
+
             #endregion
 
         }
