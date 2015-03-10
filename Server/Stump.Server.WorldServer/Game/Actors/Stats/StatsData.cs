@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Name = name;
             Owner = owner;
         }
-        public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, int limit, bool limitEquippedOnly = false)
+        public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, int? limit, bool limitEquippedOnly = false)
         {
             ValueBase = valueBase;
             m_limit = limit;
@@ -193,7 +193,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public virtual StatsData Clone()
         {
-            var clone = new StatsData(Owner, Name, ValueBase, Limit ?? 0, m_limitEquippedOnly)
+            var clone = new StatsData(Owner, Name, ValueBase, Limit, m_limitEquippedOnly)
             {
                 Context = 0,
                 Equiped = Equiped,

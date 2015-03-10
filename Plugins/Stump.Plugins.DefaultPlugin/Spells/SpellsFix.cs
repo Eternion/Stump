@@ -195,6 +195,15 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region SACRIEUR
+
+            // Douleur Partagée (421)
+            // ALLY_ALL -> ALLY_ALL | SELF
+            FixEffectOnAllLevels(421, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+            FixEffectOnAllLevels(421, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            #endregion
+
             #region PANDAWA
 
             // Picole (686)
@@ -402,7 +411,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
-            #region Tree
+            #region Tonneau
+
+            // Beuverie (1674)
+            FixEffectOnAllLevels(1674, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_SUMMONER);
+
+            #endregion
+
+            #region LifeTree
 
             // Soin Sylvestre (1687)
             FixEffectOnAllLevels(1687, 0, (level, effect, critical) => effect.Duration = -1, false);

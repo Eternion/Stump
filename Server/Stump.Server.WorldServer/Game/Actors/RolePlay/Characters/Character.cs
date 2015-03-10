@@ -2534,7 +2534,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             Look.RemoveAuras();
 
-            var auraSkin = Look.GetAuraSkin(emote);
+            var auraSkin = Look.GetAuraSkin(Level);
 
             if (auraSkin == -1)
                 return;
