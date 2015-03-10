@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         protected SpawningPoolBase(Map map)
         {
             Map = map;
-            //Map.ActorLeave += OnMapActorLeave;
+            Map.ActorLeave += OnMapActorLeave;
             Spawns = new List<MonsterGroup>();
         }
 
@@ -218,7 +218,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         {
             lock (Spawns)
                 Spawns.Add(group);
-
 
             var handler = Spawned;
             if (handler != null)

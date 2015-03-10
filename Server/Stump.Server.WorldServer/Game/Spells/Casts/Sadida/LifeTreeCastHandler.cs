@@ -6,10 +6,10 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Sadida
 {
-    [SpellCastHandler(SpellIdEnum.ARBRE)]
-    public class TreeCastHandler : DefaultSpellCastHandler
+    [SpellCastHandler(SpellIdEnum.ARBRE_DE_VIE)]
+    public class LifeTreeCastHandler : DefaultSpellCastHandler
     {
-        public TreeCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public LifeTreeCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(caster, spell, targetedCell, critical)
         {
         }

@@ -34,11 +34,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
         public override bool Apply()
         {
-            if (Spell.Template.Id == (int)SpellIdEnum.COLÈRE_DE_IOP || Spell.Template.Id == (int)SpellIdEnum.COLÈRE_DE_IOP_DU_DOPEUL
-                || Spell.Template.Id == (int)SpellIdEnum.EPÉE_DU_DESTIN || Spell.Template.Id == (int)SpellIdEnum.EPÉE_DU_DESTIN_DU_DOPEUL
-                || Spell.Template.Id == (int)SpellIdEnum.FLÈCHE_D_EXPIATION || Spell.Template.Id == (int)SpellIdEnum.FLÈCHE_PUNITIVE)
-                return false;
-
             foreach (var actor in GetAffectedActors())
             {
                 var integerEffect = GenerateEffect();
@@ -48,6 +43,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 foreach (var buff in actor.GetBuffs().ToArray().Where(buff => buff.Dispellable))
                 {
+                    if (buff.Spell.Template.Id == (int) SpellIdEnum.COLÈRE_DE_IOP
+                        || buff.Spell.Template.Id == (int)SpellIdEnum.COLÈRE_DE_IOP_DU_DOPEUL
+                        || buff.Spell.Template.Id == (int) SpellIdEnum.EPÉE_DU_DESTIN
+                        || buff.Spell.Template.Id == (int)SpellIdEnum.EPÉE_DU_DESTIN_DU_DOPEUL
+                        || buff.Spell.Template.Id == (int) SpellIdEnum.FLÈCHE_D_EXPIATION
+                        || buff.Spell.Template.Id == (int)SpellIdEnum.FLÈCHE_PUNITIVE)
+                        continue;
+
                     buff.Duration -= integerEffect.Value;
 
                     if (buff.Duration <= 0)
