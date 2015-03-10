@@ -34,8 +34,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
     {
         private const short PET_SIZE = 75;
 
-        private const int AURA_1_SKIN = 170;
-        private const int AURA_2_SKIN = 171;
+        private const int AURA_1_SKIN = 169;
+        private const int AURA_2_SKIN = 170;
 
         private List<short> m_scales = new List<short>();
         private List<short> m_skins = new List<short>();
@@ -222,24 +222,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
-        public short GetAuraSkin(EmotesEnum auraEmote)
+        public short GetAuraSkin(short level)
         {
-            switch (auraEmote)
-            {
-                case EmotesEnum.EMOTE_AURA_VAMPYRIQUE:
-                    return AURA_1_SKIN;
-                case EmotesEnum.EMOTE_AURA_DE_PUISSANCE:
-                    return AURA_2_SKIN;
-                default:
-                    return -1;
-            }
+            if (level >= 100)
+                return AURA_1_SKIN;
+
+            if (level == 200)
+                return AURA_2_SKIN;
+
+            return -1;
         }
 
         public void SetAuraSkin(short skin)
         {
             var auraLook = AuraLook;
 
-            if (auraLook == null)
+            if (AuraLook == null)
             {
                 AddSubLook(
                     new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,
