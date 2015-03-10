@@ -100,14 +100,15 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
                 if (m_groupsToRespawn[(int) size].Count > 0)
                 {
                     group = m_groupsToRespawn[(int)size].Dequeue();
-                    group.RefreshIdAndPosition();
+                    group = Map.GenerateRandomMonsterGroup(group);
                 }
                 else
                 {
                     group = Map.GenerateRandomMonsterGroup(GroupSizes[size].Item1, GroupSizes[size].Item2);
-                    group.SpawningPool = this;
-                    group.GroupSize = size;
                 }
+
+                group.SpawningPool = this;
+                group.GroupSize = size;
 
                 return m_groupsBySize[(int) size] = group;
             }
@@ -124,15 +125,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             return (int) ((Interval + (rand.NextDouble()*Interval/4))*1000);
         }
 
-        protected override void OnGroupSpawned(MonsterGroup group)
-        {
-            group.ExitFight += OnExitFight;
-
-            base.OnGroupSpawned(group);
-        }
-
         protected override void OnGroupUnSpawned(MonsterGroup monster)
         {
+            monster.ExitFight += OnExitFight;
+
             lock (m_locker)
             {
                 if (monster.GroupSize != GroupSize.None)

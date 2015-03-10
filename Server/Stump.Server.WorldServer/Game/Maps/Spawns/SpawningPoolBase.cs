@@ -203,8 +203,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         private void OnMapActorLeave(Map map, RolePlayActor actor)
         {
-            if (actor is MonsterGroup && (Spawns.Contains((MonsterGroup) actor)))
-                OnGroupUnSpawned((MonsterGroup) actor);
+            var group = actor as MonsterGroup;
+            if (group != null && (Spawns.Contains(group)))
+                OnGroupUnSpawned(group);
         }
 
         public void UnSpawnGroup(MonsterGroup group)
