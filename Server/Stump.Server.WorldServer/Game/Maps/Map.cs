@@ -1302,12 +1302,17 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
             BasicHandler.SendBasicNoOperationMessage(Clients);
+
+            var character = actor as Character;
+            if (character == null)
+                return;
+
+            character.UnsetAuras();
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
         {
             var character = actor as Character;
-
             if (character == null)
                 return;
 
@@ -1321,11 +1326,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
             {
-                character.ToggleAura(EmotesEnum.EMOTE_AURA_VAMPYRIQUE, true);
+                character.SetAura(EmotesEnum.EMOTE_AURA_VAMPYRIQUE);
             }
             else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
             {
-                character.ToggleAura(EmotesEnum.EMOTE_AURA_DE_PUISSANCE, true);
+                character.SetAura(EmotesEnum.EMOTE_AURA_DE_PUISSANCE);
             }
         }
 

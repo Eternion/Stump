@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -88,6 +89,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                     };
 
                                     fighter.InflictDamage(damage);
+                                    fighter.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
+
                                     fighter.OnActorPushed(fighter, true);
                                 }
                             }
@@ -115,6 +118,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
                 actor.OnActorPushed(actor, takeDamage);
+                if (takeDamage)
+                    actor.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
             }
 
             return true;
