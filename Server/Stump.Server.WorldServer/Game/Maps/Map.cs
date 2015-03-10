@@ -923,6 +923,18 @@ namespace Stump.Server.WorldServer.Game.Maps
             return @group.Count() <= 0 ? null : @group;
         }
 
+        public MonsterGroup GenerateRandomMonsterGroup(MonsterGroup monsterGroup)
+        {
+            var group = new MonsterGroup(GetNextContextualId(), new ObjectPosition(this, GetRandomFreeCell(), GetRandomDirection()));
+
+            foreach (var monster in monsterGroup.GetMonsters())
+            {
+                group.AddMonster(new Monster(monster.Grade, group));
+            }
+
+            return @group.Count() <= 0 ? null : @group;
+        }
+
         /// <summary>
         /// Check the AI manage monster spells
         /// </summary>
@@ -1225,7 +1237,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                     Leave(actor);
                     return;
                 }
-                TaxCollector = actor as TaxCollectorNpc;
+                TaxCollector = (TaxCollectorNpc) actor;
             }
             if (actor is IAutoMovedEntity)
             {
