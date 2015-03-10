@@ -740,9 +740,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!ApFree)
                 UseAP((short)spellLevel.ApCost);
 
+            var fighter = Fight.GetOneFighter(handler.TargetedCell);
+
             handler.Execute();
 
-            OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast);
+            if (fighter == null)
+                OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast);
+            else
+                OnSpellCasted(spell, fighter, critical, handler.SilentCast);
 
             return true;
         }

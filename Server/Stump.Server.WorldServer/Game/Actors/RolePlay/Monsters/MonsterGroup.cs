@@ -215,6 +215,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return m_monsters.Select(monster => monster.CreateFighter(team));
         }
 
+        public void RefreshIdAndPosition()
+        {
+            ContextualId = Map.GetNextContextualId();
+            Position = Map.GetRandomFreePosition();
+        }
+
         public void AddMonster(Monster monster)
         {
             monster.SetMonsterGroup(this);
