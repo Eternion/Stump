@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 {
@@ -39,9 +40,16 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             foreach (var handler in Handlers)
             {
                 handler.AddAffectedActor(affectedActors);
+                Handlers[3].AddTriggerBuff(affectedActors, true, BuffTriggerType.DAMAGES_PUSHBACK, BuffTrigger);
             }
 
-            base.Execute();
+            Handlers[0].Apply(); //Damages
+            Handlers[2].Apply(); //Push
+        }
+
+        private void BuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            Handlers[3].Apply();
         }
     }
 }

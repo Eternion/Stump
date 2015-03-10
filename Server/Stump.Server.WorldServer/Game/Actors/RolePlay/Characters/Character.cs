@@ -61,9 +61,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
-        private const int AURA_1_SKIN = 170;
-        private const int AURA_2_SKIN = 171;
-
         [Variable]
         private const ushort HonorLimit = 16000;
 
@@ -2530,47 +2527,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void PlayEmote(EmotesEnum emote)
         {
-            var auraSkin = GetAuraSkin(emote);
-
-            if (auraSkin != -1)
-            {
-                if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == auraSkin)
-                    RealLook.RemoveAuras();
-                else
-                    RealLook.SetAuraSkin(auraSkin);
-                RefreshActor();
-            }
-
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
 
-        public short GetAuraSkin(EmotesEnum auraEmote)
+        public void SetAura(EmotesEnum emote)
         {
-            switch (auraEmote)
-            {
-                case EmotesEnum.EMOTE_AURA_VAMPYRIQUE:
-                    return AURA_1_SKIN;
-                case EmotesEnum.EMOTE_AURA_DE_PUISSANCE:
-                    return AURA_2_SKIN;
-                default:
-                    return -1;
-            }
-        }
+            Look.RemoveAuras();
 
-        public void ToggleAura(EmotesEnum emote, bool toggle)
-        {
-            var auraSkin = GetAuraSkin(emote);
+            var auraSkin = Look.GetAuraSkin(emote);
 
             if (auraSkin == -1)
                 return;
 
-            var hasAura = (RealLook.AuraLook == null || RealLook.AuraLook.BonesID != GetAuraSkin(emote));
+            Look.SetAuraSkin(auraSkin);
 
-            if (!hasAura && toggle)
-                PlayEmote(emote);
+            RefreshActor();
+            PlayEmote(emote);
+        }
 
-            else if (hasAura && !toggle)
-                PlayEmote(emote);
+        public void UnsetAuras()
+        {
+            Look.RemoveAuras();
+            RefreshActor();
         }
 
         #endregion

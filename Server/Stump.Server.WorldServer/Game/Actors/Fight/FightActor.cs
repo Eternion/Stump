@@ -900,6 +900,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int HealDirect(int healPoints, FightActor from)
         {
+            TriggerBuffs(BuffTriggerType.BEFORE_HEALED);
+            from.TriggerBuffs(BuffTriggerType.BEFORE_HEAL);
+
             if (HasState((int)SpellStatesEnum.Unhealable))
             {
                 OnLifePointsChanged(0, 0, 0, from);
@@ -912,6 +915,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             DamageTaken -= healPoints;
 
             OnLifePointsChanged(healPoints, 0, 0, from);
+
+            TriggerBuffs(BuffTriggerType.AFTER_HEALED);
+            from.TriggerBuffs(BuffTriggerType.AFTER_HEAL);
 
             return healPoints;
         }
