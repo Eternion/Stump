@@ -414,7 +414,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #region Tonneau
 
             // Beuverie (1674)
-            FixEffectOnAllLevels(1674, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_SUMMONER);
+            FixEffectOnAllLevels(1674, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_SUMMONER, false);
 
             #endregion
 

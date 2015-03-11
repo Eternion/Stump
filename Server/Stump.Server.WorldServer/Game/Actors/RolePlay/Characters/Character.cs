@@ -2530,27 +2530,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
 
-        public void SetAura(EmotesEnum emote)
-        {
-            Look.RemoveAuras();
-
-            var auraSkin = Look.GetAuraSkin(Level);
-
-            if (auraSkin == -1)
-                return;
-
-            Look.SetAuraSkin(auraSkin);
-
-            RefreshActor();
-            PlayEmote(emote);
-        }
-
-        public void UnsetAuras()
-        {
-            Look.RemoveAuras();
-            RefreshActor();
-        }
-
         #endregion
 
         #region Friend & Ennemies

@@ -5,9 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 {
     [SpellCastHandler(SpellIdEnum.GLOURSOMPTUEUX)]
-    public class GloursomptueuxSpellCastHandler : DefaultSpellCastHandler
+    public class GloursomptueuxCastHandler : DefaultSpellCastHandler
     {
-        public GloursomptueuxSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public GloursomptueuxCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(caster, spell, targetedCell, critical)
         {
         }

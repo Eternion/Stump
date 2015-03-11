@@ -1187,7 +1187,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var character = fighter.Character;
 
-            character.RealLook.RemoveAuras();
             character.RefreshActor();
 
             if (character.ArenaPopup != null)
@@ -1479,11 +1478,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (WaitAcknowledgment)
                 AcknowledgeAction();
 
-            ContextHandler.SendGameFightTurnEndMessage(Clients, FighterPlaying);
-
             var evnt = TurnStopped;
             if (evnt != null)
                 evnt(this, FighterPlaying);
+
+            ContextHandler.SendGameFightTurnEndMessage(Clients, FighterPlaying);
         }
 
         protected void LagAndPassTurn(NamedFighter[] laggers)

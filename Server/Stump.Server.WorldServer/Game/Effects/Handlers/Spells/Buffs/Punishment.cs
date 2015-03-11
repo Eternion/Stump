@@ -76,24 +76,24 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             }
         }
 
-        private static EffectsEnum GetBuffEffectId(PlayerFields caracteristic)
+        private static ActionsEnum GetBuffEffectId(PlayerFields caracteristic)
         {
             switch (caracteristic)
             {
                 case PlayerFields.Agility:
-                    return EffectsEnum.Effect_AddAgility;
+                    return ActionsEnum.ACTION_CHARACTER_BOOST_AGILITY;
                 case PlayerFields.Chance:
-                    return EffectsEnum.Effect_AddChance;
+                    return ActionsEnum.ACTION_CHARACTER_BOOST_CHANCE;
                 case PlayerFields.Strength:
-                    return EffectsEnum.Effect_AddStrength;
+                    return ActionsEnum.ACTION_CHARACTER_BOOST_STRENGTH;
                 case PlayerFields.Intelligence:
-                    return EffectsEnum.Effect_AddIntelligence;
+                    return ActionsEnum.ACTION_CHARACTER_BOOST_INTELLIGENCE;
                 case PlayerFields.Health:
-                    return EffectsEnum.Effect_AddHealth;
+                    return ActionsEnum.ACTION_CHARACTER_BOOST_HEAL_BONUS;
                 case PlayerFields.Wisdom:
-                    return EffectsEnum.Effect_AddWisdom;
+                    return ActionsEnum.ACTION_CHARACTER_BOOST_WISDOM;
                 case PlayerFields.DamageBonusPercent:
-                    return EffectsEnum.Effect_AddDamageBonusPercent;
+                    return ActionsEnum.ACTION_CHARACTER_BOOST_DAMAGES_PERCENT;
                 default:
                     throw new Exception(string.Format("Buff Effect not found for caracteristic {0}", caracteristic));
             }

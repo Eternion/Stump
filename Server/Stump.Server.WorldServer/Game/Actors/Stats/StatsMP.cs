@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
         }
 
-        public StatsMP(IStatsOwner owner, int valueBase, int limit)
+        public StatsMP(IStatsOwner owner, int valueBase, int? limit)
             : base(owner, PlayerFields.AP, valueBase, limit, true)
         {
         }
@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public override StatsData Clone()
         {
-            var clone = new StatsMP(Owner, ValueBase, Limit ?? 0)
+            var clone = new StatsMP(Owner, ValueBase, Limit)
             {
                 Equiped = Equiped,
                 Used = 0

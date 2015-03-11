@@ -162,7 +162,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             var clone = new StatsHealth(Owner, Base, 0)
             {
-                Equiped = Equiped + Owner.Stats[PlayerFields.Vitality].Equiped,
+                Equiped = Equiped,
                 Given = Given
             };
 
