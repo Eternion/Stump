@@ -35,27 +35,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Initialize(template);
             AdjustStats();
 
-            Fight.TurnStarted += OnTurnStarted;
             Fight.TurnStopped += OnTurnStopped;
-        }
-
-        private void OnTurnStarted(IFight fight, FightActor player)
-        {
-            if (player != this)
-                return;
-
-            var characterFighter = Summoner as CharacterFighter;
-            if (characterFighter == null)
-                return;
-
-            var slotIndex = 0;
-            ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
-            ShortcutHandler.SendShortcutBarContentMessage(characterFighter.Character.Client,
-                Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id)), ShortcutBarEnum.SPELL_SHORTCUT_BAR);
         }
 
         private void OnTurnStopped(IFight fight, FightActor player)
         {
+            if (player == Summoner)
+            {
+                var characterFighter = Summoner as CharacterFighter;
+                if (characterFighter == null)
+                    return;
+
+                var slotIndex = 0;
+                ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
+                ShortcutHandler.SendShortcutBarContentMessage(characterFighter.Character.Client,
+                    Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id)), ShortcutBarEnum.SPELL_SHORTCUT_BAR);
+
+                return;
+            }
             if (player != this)
                 return;
 
@@ -64,7 +61,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy)
         {
-            Fight.TurnStarted -= OnTurnStarted;
             Fight.TurnStopped -= OnTurnStopped;
 
             base.OnDead(killedBy);

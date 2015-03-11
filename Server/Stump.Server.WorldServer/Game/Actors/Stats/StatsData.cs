@@ -195,6 +195,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             var clone = new StatsData(Owner, Name, ValueBase, Limit, m_limitEquippedOnly)
             {
+                Base = Base,
                 Context = 0,
                 Equiped = Equiped,
                 Given = Given
