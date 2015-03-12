@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             var orientation = Caster.Position.Point.OrientationTo(TargetedPoint);
             Distance = Spell.CurrentSpellLevel.Range;
 
-            for (var i = 1; i < Distance; i++)
+            for (var i = 1; i <= Distance; i++)
             {
                 var cell = Caster.Position.Point.GetCellInDirection(orientation, (short)i);
 
