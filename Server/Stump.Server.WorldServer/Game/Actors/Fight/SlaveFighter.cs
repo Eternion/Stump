@@ -55,6 +55,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void OnTurnStopped(IFight fight, FightActor player)
         {
+            if (player == this && IsAlive())
+                    Die();
+
             if (player != Summoner)
                 return;
 
@@ -67,7 +70,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnTurnPassed()
         {
-            Die();
+            if (IsAlive())
+                Die();
         }
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
