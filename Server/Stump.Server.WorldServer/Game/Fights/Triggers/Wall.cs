@@ -82,13 +82,28 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override bool IsAffected(FightActor actor)
         {
-            if (!(actor is SummonedBomb) && !actor.HasState((int)SpellStatesEnum.Kaboom))
+            var bomb = Bombs.FirstOrDefault();
+
+            if (bomb == null)
                 return true;
 
-            var bomb = Bombs.FirstOrDefault();
-            var triggerBomb = (actor as SummonedBomb);
+            if ((actor is SummonedBomb))
+            {
+                var triggerBomb = ((SummonedBomb)actor);
 
-            return bomb == null || bomb.MonsterBombTemplate != triggerBomb.MonsterBombTemplate || !bomb.IsFriendlyWith(triggerBomb);
+                if (bomb.IsFriendlyWith(triggerBomb))
+                    return false;
+
+                if (bomb.MonsterBombTemplate == triggerBomb.MonsterBombTemplate)
+                    return false;
+            }
+            else if (actor.HasState((int)SpellStatesEnum.Kaboom))
+            {
+                if (bomb.IsFriendlyWith(actor))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

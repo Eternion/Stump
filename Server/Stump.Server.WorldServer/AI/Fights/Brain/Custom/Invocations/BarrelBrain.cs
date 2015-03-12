@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
 {
-    [BrainIdentifier(6229)]
+    [BrainIdentifier(2727)]
     public class BarrelBrain : Brain
     {
         public BarrelBrain(AIFighter fighter)

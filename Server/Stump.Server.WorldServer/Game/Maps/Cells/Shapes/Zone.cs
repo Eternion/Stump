@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     m_shape = new Lozenge(Radius, 63);
                     break;
                 case SpellShapeEnum.O:
-                    m_shape = new Cross(1, Radius);
+                    m_shape = new Lozenge(Radius, Radius);
                     break;
                 case SpellShapeEnum.Q:
                     m_shape = new Cross(1, Radius);
