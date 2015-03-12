@@ -38,8 +38,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
             }
 
             if (!barrel.Summoner.HasState((int) SpellStatesEnum.Drunk) ||
-                !barrel.Summoner.Position.Point.IsOnSameLine(barrel.Position.Point) ||
-                barrel.Summoner.Position.Point.ManhattanDistanceTo(Fighter.Position.Point) >= spellBeuverie.CurrentSpellLevel.Range)
+                !barrel.Summoner.Position.Point.IsOnSameLine(barrel.Position.Point))
                 return;
 
             var beuverieHandler = SpellManager.Instance.GetSpellCastHandler(Fighter,

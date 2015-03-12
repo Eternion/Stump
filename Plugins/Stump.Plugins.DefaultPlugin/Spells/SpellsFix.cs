@@ -291,6 +291,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2805, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             RemoveEffectOnAllLevels(2805, 2);
 
+            // Resquille (2807)
+            FixEffectOnAllLevels(2807, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(2807, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+
             // Rémission (2809)
             FixEffectOnAllLevels(2809, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.ENEMY_BOMBS);
             FixEffectOnAllLevels(2809, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
