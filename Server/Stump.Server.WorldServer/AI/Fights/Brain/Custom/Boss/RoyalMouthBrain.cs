@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
+namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
     [BrainIdentifier(2854)]
     public class RoyalMouthBrain : Brain

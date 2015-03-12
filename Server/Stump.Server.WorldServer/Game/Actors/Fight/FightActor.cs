@@ -222,9 +222,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, FightActor> Dead;
 
-        protected virtual void OnDead(FightActor killedBy)
+        protected virtual void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            PassTurn();
+            if (passTurn)
+                PassTurn();
 
             KillAllSummons();
             RemoveAndDispellAllBuffs();

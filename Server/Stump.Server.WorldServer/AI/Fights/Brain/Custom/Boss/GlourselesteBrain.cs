@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -8,7 +7,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
 
-namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom
+namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
     [BrainIdentifier(2864)]
     public class GlourselesteBrain : Brain

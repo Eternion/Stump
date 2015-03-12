@@ -403,7 +403,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return 0;
         }
 
-        protected override void OnDead(FightActor killedBy)
+        protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
             if (HasState((int) SpellStatesEnum.Unmovable))
             {
@@ -413,7 +413,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Explode();
             }      
 
-            base.OnDead(killedBy);
+            base.OnDead(killedBy, passTurn);
 
             Summoner.RemoveBomb(this);
 
