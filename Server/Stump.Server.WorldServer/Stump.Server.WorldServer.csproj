@@ -127,10 +127,11 @@
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\GlourselesteBrain.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\KorriandreBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\KorriandreBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
-    <Compile Include="AI\Fights\Brain\Custom\RoyalMouthBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
     <Compile Include="AI\Fights\Spells\SpellCastInformations.cs" />
     <Compile Include="AI\Fights\Spells\SpellCategory.cs" />
@@ -512,7 +513,6 @@
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Monsters\BeuverieCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\VertigoCastHandler.cs" />

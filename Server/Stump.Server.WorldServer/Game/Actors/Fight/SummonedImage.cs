@@ -42,12 +42,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             base.OnBeforeDamageInflicted(damage);
         }
 
-        protected override void OnDead(FightActor killedBy)
+        protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
             Fight.TurnStarted -= OnTurnStarted;
             Summoner.DamageInflicted -= OnDamageInflicted;
 
-            base.OnDead(killedBy);
+            base.OnDead(killedBy, passTurn);
         }
 
         private void OnDamageInflicted(FightActor actor, Damage damage)
