@@ -758,7 +758,68 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override ActorLook Look
         {
-            get { return IsRiding() ? MountLook : (GetEquipedMount() != -1 ? MountItemLook : (CustomLookActivated && CustomLook != null ? CustomLook : RealLook)); }
+            get
+            {
+                var playerLook = CustomLookActivated && CustomLook != null ? CustomLook.Clone() : RealLook.Clone();
+
+                var equipedMount = GetEquipedMount();
+                if (equipedMount != -1)
+                {
+                    var mountLook = new ActorLook { BonesID = (short)equipedMount };
+
+                    //KramKram
+                    if (equipedMount == 1792)
+                    {
+                        Color color1;
+                        Color color2;
+
+                        playerLook.Colors.TryGetValue(3, out color1);
+                        playerLook.Colors.TryGetValue(4, out color2);
+
+                        mountLook.AddColor(1, color1);
+                        mountLook.AddColor(2, color2);
+                    }
+
+                    playerLook.BonesID = 2;
+                    mountLook.SetRiderLook(playerLook);
+
+                    playerLook = mountLook;
+                }
+                else if (IsRiding())
+                {
+                    var mountLook = Mount.Model.EntityLook.Clone();
+
+                    if (Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
+                    {
+                        Color color1;
+                        Color color2;
+                        Color color3;
+
+                        playerLook.Colors.TryGetValue(3, out color1);
+                        playerLook.Colors.TryGetValue(4, out color2);
+                        playerLook.Colors.TryGetValue(5, out color3);
+
+                        mountLook.SetColors(color1, color2, color3);
+                    }
+
+                    playerLook.BonesID = 2;
+                    mountLook.SetRiderLook(playerLook);
+
+                    playerLook = mountLook;
+                }
+
+                if (!IsInMovement && Direction == DirectionsEnum.DIRECTION_SOUTH && Level >= 100)
+                {
+                    var auraLook = new ActorLook
+                    {
+                        BonesID = Level == 200 ? (short)170 : (short)169
+                    };
+
+                    playerLook.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND, auraLook));
+                }
+
+                return playerLook;
+            }
         }
 
         public override SexTypeEnum Sex
