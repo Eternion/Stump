@@ -6,7 +6,7 @@
 #define MyAppPublisher "Arkalys"
 #define MyAppURL "http://www.arkalys.com"
 #define MyAppExeName "Uplauncher.exe"
-#define SourceFileDir "C:\Users\Arkalys\Documents\ARKALYS\Stump\Tools\Uplauncher"
+#define SourceFileDir "C:\Users\Administrator\Documents\Stump\Tools\Uplauncher"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.

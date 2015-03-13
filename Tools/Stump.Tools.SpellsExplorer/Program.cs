@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Stump.Core.I18N;
+using Stump.Core.Xml.Config;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
@@ -11,12 +13,27 @@ using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Spells;
+using System.IO;
+using Stump.Core.Attributes;
 
 namespace Stump.Tools.SpellsExplorer
 {
     internal static class Program
     {
-        private static DatabaseAccessor m_databaseAccessor;
+        public const string ConfigFile = "config.xml";
+        private static XmlConfig m_config;
+
+        public static DatabaseAccessor m_databaseAccessor;
+
+        [Variable]
+        public static readonly DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
+        {
+            DbName = "stump_world",
+            Host = "localhost",
+            User = "root",
+            Password = "",
+            ProviderName = "MySql.Data.MySqlClient",
+        };
 
         private const Languages SecondaryLanguage = Languages.French;
 
@@ -26,10 +43,19 @@ namespace Stump.Tools.SpellsExplorer
             Console.BufferHeight = 1024;
             Console.WindowWidth = 90;
             Console.WindowHeight = 45;
-            
+
+            Console.WriteLine("Load {0}...", ConfigFile);
+            m_config = new XmlConfig(ConfigFile);
+            m_config.AddAssembly(Assembly.GetExecutingAssembly());
+
+            if (!File.Exists(ConfigFile))
+                m_config.Create();
+            else
+                m_config.Load();
+
             Console.WriteLine("Initializing Database...");
-            m_databaseAccessor = new DatabaseAccessor(WorldServer.DatabaseConfiguration);
-            m_databaseAccessor.RegisterMappingAssembly(typeof(WorldServer).Assembly);
+            m_databaseAccessor = new DatabaseAccessor(DatabaseConfiguration);
+            m_databaseAccessor.RegisterMappingAssembly(Assembly.GetExecutingAssembly());
             m_databaseAccessor.Initialize();
 
             Console.WriteLine("Opening Database...");
