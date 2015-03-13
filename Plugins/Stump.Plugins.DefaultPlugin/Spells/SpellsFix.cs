@@ -212,7 +212,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Epouvante (689)
             // Move push effect to first exec debuff
-            FixEffectOnAllLevels(689, 0, (level, effect, critical) => level.Effects.Move(effect, 1));
+            FixEffectOnAllLevels(689, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+            FixEffectOnAllLevels(689, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+            FixEffectOnAllLevels(689, 0, (level, effect, critical) => level.Effects.Move(effect, 1), false);
+            FixCriticalEffectOnAllLevels(689, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 1));
+
 
             #endregion
 
@@ -308,6 +312,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Delay = 1);
             FixEffectOnAllLevels(2811, 1, (level, effect, critical) => level.Effects.Move(effect, 2), false);
+            FixCriticalEffectOnAllLevels(2811, 1, (level, effect, critical) => level.Effects.Move(effect, 2));
             FixEffectOnAllLevels(2811, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2811, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
 
@@ -353,7 +358,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // NONE -> ONLY_SELF
             // Swap Effects index
             FixEffectOnAllLevels(2889, EffectsEnum.Effect_AddPushDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
-            FixEffectOnAllLevels(2889, 0, (level, effect, critical) => level.Effects.Move(effect, 2));
+            FixEffectOnAllLevels(2889, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
+            FixCriticalEffectOnAllLevels(2889, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
 
             // Plastron (2890)
             // NONE -> ALLY_ALL && SELF
@@ -472,6 +478,19 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                 {
                     fixer(level, spellEffect, true);
                 }
+            }
+        }
+
+        public static void FixCriticalEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+                throw new Exception(string.Format("Cannot apply fix on spell {0} : spell do not exists", spellId));
+
+            foreach (var level in spellLevels)
+            {
+                fixer(level, level.CriticalEffects[effectIndex], true);
             }
         }
 
