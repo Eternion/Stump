@@ -116,10 +116,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (damage.Source == null)
                 return;
 
+            if (damage.School == EffectSchoolEnum.Pushback)
+                return;
+
             var source = damage.Source;
             var target = buff.Target;
 
             if (damage.Source == target)
+                return;
+
+            if (!IsValidSpell(target, damage.Spell))
                 return;
 
             if (!target.Position.Point.IsOnSameLine(source.Position.Point))
@@ -128,6 +134,36 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             var effect = new Pull(buff.Dice, source, buff.Spell, source.Cell, buff.Critical);
             effect.AddAffectedActor(target);
             effect.Apply();
+        }
+
+        private static bool IsValidSpell(FightActor actor, Spell spell)
+        {
+            if (actor.IsPoisonSpellCast(spell))
+                return false;
+
+            if (spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_MASSE ||
+                spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_MASSE_DU_DOPEUL ||
+                spell.Template.Id == (int) SpellIdEnum.PIÈGE_MORTEL ||
+                spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_SILENCE ||
+                spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_SILENCE_DU_DOPEUL ||
+                spell.Template.Id == (int) SpellIdEnum.CONCENTRATION_DE_CHAKRA ||
+                spell.Template.Id == (int) SpellIdEnum.VERTIGE ||
+                spell.Template.Id == (int) SpellIdEnum.GLYPHE_ENFLAMMÉ ||
+                spell.Template.Id == (int)SpellIdEnum.GLYPHE_ENFLAMMÉ_DU_DOPEUL ||
+                spell.Template.Id == (int)SpellIdEnum.GLYPHE_AGRESSIF_1503 ||
+                spell.Template.Id == (int)SpellIdEnum.GLYPHE_AGRESSIF_17 ||
+                spell.Template.Id == (int)SpellIdEnum.GLYPHE_AGRESSIF_DU_DOPEUL ||
+                spell.Template.Id == (int)SpellIdEnum.GLYPHE_DE_RÉPULSION ||
+                spell.Template.Id == (int)SpellIdEnum.GLYPHE_DE_RÉPULSION_DU_DOPEUL ||
+                spell.Template.Id == (int)SpellIdEnum.CONTRE ||
+                spell.Template.Id == (int)SpellIdEnum.MOT_D_EPINE ||
+                spell.Template.Id == (int)SpellIdEnum.MOT_D_EPINE_DU_DOPEUL ||
+                spell.Template.Id == (int)SpellIdEnum.MUR_DE_FEU ||
+                spell.Template.Id == (int)SpellIdEnum.MUR_D_AIR ||
+                spell.Template.Id == (int)SpellIdEnum.MUR_D_EAU)
+                return false;
+
+            return true;
         }
     }
 }

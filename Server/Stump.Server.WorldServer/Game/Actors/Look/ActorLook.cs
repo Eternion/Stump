@@ -34,9 +34,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
     {
         private const short PET_SIZE = 75;
 
-        private const int AURA_1_SKIN = 169;
-        private const int AURA_2_SKIN = 170;
-
         private List<short> m_scales = new List<short>();
         private List<short> m_skins = new List<short>();
         private List<SubActorLook> m_subLooks = new List<SubActorLook>();

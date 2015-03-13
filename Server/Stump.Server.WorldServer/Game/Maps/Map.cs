@@ -1302,10 +1302,20 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
             BasicHandler.SendBasicNoOperationMessage(Clients);
+
+            actor.IsInMovement = true;
+
+            var character = actor as Character;
+            if (character == null)
+                return;
+
+            Refresh(character);
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
         {
+            actor.IsInMovement = false;
+
             var character = actor as Character;
             if (character == null)
                 return;
@@ -1317,6 +1327,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (monster != null)
                 monster.FightWith(character);
+
+            Refresh(character);
         }
 
         #endregion
