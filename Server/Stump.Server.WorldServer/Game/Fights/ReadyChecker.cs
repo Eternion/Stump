@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public static ReadyChecker RequestCheck(IFight fight, Action success, Action<CharacterFighter[]> fail)
         {
             var checker = new ReadyChecker(fight, fight.GetAllFighters<CharacterFighter>(entry => !entry.HasLeft()).ToList());
-            checker.Success += (chk) => success();
+            checker.Success += chk => success();
             checker.Timeout += (chk, laggers) => fail(laggers);
             checker.Start();
 

@@ -38,8 +38,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
             var slave = new SlaveFighter(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
 
-            slave.AddState(stateRooted);
-            slave.AddState(stateUnlockable);
+            AddStateBuff(slave, false, true, stateRooted);
+            AddStateBuff(slave, false, true, stateUnlockable);
 
             ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, slave);
 
