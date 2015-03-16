@@ -1456,7 +1456,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             OnTurnStopped();
 
-            ReadyChecker = ReadyChecker.RequestCheck(this, PassTurn, LagAndPassTurn);
+            ReadyChecker = ReadyChecker.RequestCheck(this, PassTurnAndCheck, LagAndPassTurn);
         }
 
         public event Action<IFight, FightActor> TurnStopped;
@@ -1495,8 +1495,21 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void LagAndPassTurn(NamedFighter[] laggers)
         {
+            if (ReadyChecker == null)
+                return;
+
             // some guys are lagging !
             OnLaggersSpotted(laggers);
+
+            PassTurnAndCheck();
+        }
+
+        protected void PassTurnAndCheck()
+        {
+            if (ReadyChecker == null)
+                return;
+
+            ReadyChecker = null;
 
             PassTurn();
         }
@@ -1505,8 +1518,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State != FightState.Fighting)
                 return;
-
-            ReadyChecker = null;
 
             if (CheckFightEnd())
                 return;
@@ -2205,13 +2216,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void OnFreezed()
         {
-            if (State != FightState.Fighting)
-                return;
-
-            if (Freezed)
-                m_turnTimer.Stop();
-            else
-                m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+            if (State == FightState.Fighting)
+            {
+                if (Freezed)
+                    m_turnTimer.Stop();
+                else
+                    m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+            }
         }
 
         #endregion
