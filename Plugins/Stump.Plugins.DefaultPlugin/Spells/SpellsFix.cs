@@ -344,6 +344,21 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // new skin 105 => 1575 (todo find relation)
             FixEffectOnAllLevels(2880, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 1575);
 
+            // Rétention (2881)
+            // NONE -> ENEMY_ALL
+            FixEffectOnAllLevels(2881, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2881, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            // Rétention (2882)
+            // NONE -> ENEMY_ALL
+            FixEffectOnAllLevels(2882, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2882, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            // Apathie (2886)
+            // NONE -> ENEMY_ALL
+            FixEffectOnAllLevels(2886, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2886, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
             // Furia (2887)
             // NONE -> ONLY_SELF
             FixEffectOnAllLevels(2887, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
@@ -360,6 +375,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2889, EffectsEnum.Effect_AddPushDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(2889, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
             FixCriticalEffectOnAllLevels(2889, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
+
+            // Picada (2899)
+            // NONE -> ENEMY_ALL
+            FixEffectOnAllLevels(2899, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2899, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
             // Plastron (2890)
             // NONE -> ALLY_ALL && SELF
