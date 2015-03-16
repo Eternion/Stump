@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             IsDirty = true;
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
 
-            base.OnItemAdded(item, addItemMsg);
+            base.OnItemAdded(item, false);
         }
 
         protected override void OnItemRemoved(MerchantItem item, bool removeItemMsg)

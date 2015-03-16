@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
             var livingObject = ItemManager.Instance.CreatePlayerItem(Owner, m_livingObjectTemplate, 1, effectsLiving);
 
-            Owner.Inventory.AddItem(livingObject);
+            Owner.Inventory.AddItem(livingObject, false);
 
             Owner.UpdateLook();
             newInstance.OnObjectModified();

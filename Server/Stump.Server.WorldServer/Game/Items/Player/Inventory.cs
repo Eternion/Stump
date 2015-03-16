@@ -298,7 +298,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.SetKamas(amount);
         }
 
-        public BasePlayerItem AddItem(ItemTemplate template, int amount = 1)
+        public BasePlayerItem AddItem(ItemTemplate template, int amount = 1, bool addItemMsg = true)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -316,7 +316,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount);
 
-                return !item.OnAddItem() ? null : AddItem(item);
+                return !item.OnAddItem() ? null : AddItem(item, addItemMsg);
             }
 
             return item;
