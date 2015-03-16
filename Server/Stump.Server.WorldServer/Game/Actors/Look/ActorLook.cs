@@ -208,6 +208,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+        public void RemoveAuras()
+        {
+            m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND
+                && (x.Look.BonesID == 169 || x.Look.BonesID == 170));
+
+            m_entityLook.Invalidate();
+        }
+
         private void OnSubEntityInvalidated(ObjectValidator<SubEntity> obj)
         {
             m_entityLook.Invalidate();

@@ -1418,7 +1418,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void TriggerBuffsRemovedOnTurnEnd()
         {
             foreach (var buff in m_buffList.Where(entry => entry.Duration <= 0 && entry is TriggerBuff &&
-                (entry as TriggerBuff).Trigger.HasFlag(BuffTriggerType.BUFF_ENDED_TURNEND)).ToArray())
+                ((TriggerBuff) entry).Trigger.HasFlag(BuffTriggerType.BUFF_ENDED_TURNEND)).ToArray())
             {
                 buff.Apply();
                 RemoveAndDispellBuff(buff);

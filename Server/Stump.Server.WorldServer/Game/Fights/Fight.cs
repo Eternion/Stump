@@ -1407,7 +1407,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (TimeLine.NewRound)
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
 
-            if (FighterPlaying.IsDead() || FighterPlaying.MustSkipTurn())
+            if (FighterPlaying.MustSkipTurn())
             {
                 FighterPlaying.ResetUsedPoints();
                 PassTurn();
@@ -2205,13 +2205,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         private void OnFreezed()
         {
-            if (State == FightState.Fighting)
-            {
-                if (Freezed)
-                    m_turnTimer.Stop();
-                else
-                    m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
-            }
+            if (State != FightState.Fighting)
+                return;
+
+            if (Freezed)
+                m_turnTimer.Stop();
+            else
+                m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
         }
 
         #endregion
