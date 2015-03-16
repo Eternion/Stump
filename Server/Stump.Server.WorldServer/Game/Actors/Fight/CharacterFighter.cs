@@ -41,6 +41,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Character = character;
 
             Look = Character.Look.Clone();
+            Look.RemoveAuras();
 
             Cell cell;
             if (!Fight.FindRandomFreeCell(this, out cell, false))

@@ -16,6 +16,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
+            var target = Fight.GetOneFighter(TargetedCell);
+
+            if (target == null)
+                return false;
+
             AddAffectedActor(Caster);
 
             return base.Apply();
