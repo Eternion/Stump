@@ -129,7 +129,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
 
-            base.OnItemAdded(item, addItemMsg);
+            base.OnItemAdded(item, false);
         }
 
         protected override void OnItemRemoved(BankItem item, bool removeItemMsg)

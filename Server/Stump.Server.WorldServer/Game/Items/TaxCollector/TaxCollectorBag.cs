@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
         {
             IsDirty = true;
 
-            base.OnItemAdded(item, addItemMsg);
+            base.OnItemAdded(item, false);
         }
 
         protected override void OnItemRemoved(TaxCollectorItem item, bool removeItemMsg)
