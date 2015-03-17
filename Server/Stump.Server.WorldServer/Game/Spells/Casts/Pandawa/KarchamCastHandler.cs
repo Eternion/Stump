@@ -16,6 +16,11 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Pandawa
         {
             base.Initialize();
 
+            var targetActor = Fight.GetOneFighter(TargetedCell);
+
+            if (targetActor != null)
+                TargetedActor = targetActor;
+
             TargetedCell = Caster.Cell;
         }
 

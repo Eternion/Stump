@@ -741,7 +741,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!ApFree)
                 UseAP((short)spellLevel.ApCost);
 
-            var fighter = Fight.GetOneFighter(handler.TargetedCell);
+            var fighter = handler.TargetedActor ?? Fight.GetOneFighter(handler.TargetedCell);
 
             handler.Execute();
 
@@ -886,8 +886,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source);
 
-            if (IsDead())
-                OnDead(damage.Source);
+            CheckDead(damage.Source);
 
             OnDamageInflicted(damage);
 
@@ -1760,6 +1759,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
                 return;
 
+            if (target.HasState((int) SpellStatesEnum.Rooted))
+                return;
+
             var actorBuffId = PopNextBuffId();
             var targetBuffId = target.PopNextBuffId();
 
@@ -1932,6 +1934,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public bool IsDead()
         {
             return !IsAlive();
+        }
+
+        public void CheckDead(FightActor source)
+        {
+            if (IsDead())
+                OnDead(source);
         }
 
         private bool m_left;

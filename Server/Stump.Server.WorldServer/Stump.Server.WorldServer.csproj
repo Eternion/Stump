@@ -259,6 +259,7 @@
     <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\SummonedImage.cs" />
+    <Compile Include="Game\Actors\Fight\SummonedTurret.cs" />
     <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
     <Compile Include="Game\Actors\Interfaces\IContextDependant.cs" />
@@ -512,6 +513,7 @@
     <Compile Include="Game\Spells\Casts\Ecaflip\ClawOfCeangal.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Elementary\CawotteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />

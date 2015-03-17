@@ -45,6 +45,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             protected set;
         }
 
+        public FightActor TargetedActor
+        {
+            get;
+            protected set;
+        }
+
         public MapPoint TargetedPoint
         {
             get;

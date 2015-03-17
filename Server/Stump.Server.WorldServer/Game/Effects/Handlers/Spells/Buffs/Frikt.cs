@@ -26,46 +26,46 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 switch (Spell.Id)
                 {
                     case (int)SpellIdEnum.FRICTION:
-                    {
-                        var spell = new Spell(Dice.DiceNum, 1);
-                        var effect = spell.CurrentSpellLevel.Effects[0];
-
-                        var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
-                            BuffTriggerType.AFTER_ATTACKED, FriktBuffTrigger)
                         {
-                            Duration = (short)Dice.Duration
-                        };
+                            var spell = new Spell(Dice.DiceNum, 1);
+                            var effect = spell.CurrentSpellLevel.Effects[0];
 
-                        actor.AddAndApplyBuff(buff);
-                    }
+                            var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
+                                BuffTriggerType.AFTER_ATTACKED, FriktBuffTrigger)
+                            {
+                                Duration = (short)Dice.Duration
+                            };
+
+                            actor.AddAndApplyBuff(buff);
+                        }
                         break;
                     case (int)SpellIdEnum.MOT_LOTOF:
-                    {
-                        var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
-                        var effect = spell.CurrentSpellLevel.Effects[0];
-
-                        var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
-                            BuffTriggerType.TURN_BEGIN, MotLotofBuffTrigger)
                         {
-                            Duration = (short)Dice.Duration
-                        };
+                            var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
+                            var effect = spell.CurrentSpellLevel.Effects[0];
 
-                        actor.AddAndApplyBuff(buff);
-                    }
+                            var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
+                                BuffTriggerType.TURN_BEGIN, MotLotofBuffTrigger)
+                            {
+                                Duration = (short)Dice.Duration
+                            };
+
+                            actor.AddAndApplyBuff(buff);
+                        }
                         break;
                     default:
-                    {
-                        var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
-                        var effect = spell.CurrentSpellLevel.Effects[0];
-
-                        var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
-                            BuffTriggerType.AFTER_ATTACKED, SuppressionBuffTrigger)
                         {
-                            Duration = (short)Dice.Duration
-                        };
+                            var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
+                            var effect = spell.CurrentSpellLevel.Effects[0];
 
-                        actor.AddAndApplyBuff(buff);
-                    }
+                            var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
+                                BuffTriggerType.AFTER_ATTACKED, SuppressionBuffTrigger)
+                            {
+                                Duration = (short)Dice.Duration
+                            };
+
+                            actor.AddAndApplyBuff(buff);
+                        }
                         break;
                 }
             }

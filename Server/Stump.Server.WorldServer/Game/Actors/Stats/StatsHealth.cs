@@ -61,7 +61,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             set
             {
                 ValueContext = value;
-                AdjustTakenDamage();
                 OnModified();
             }
         }

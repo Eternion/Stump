@@ -334,34 +334,35 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region ZOBAL
 
+            // Masque de classe (2872)
+            // NONE -> ALLY_ALL
+            FixEffectOnAllLevels(2872, EffectsEnum.Effect_AddLock, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
             // Masque du pleutre (2879)
             // new skin 103 => 1576 (todo find relation)
             // new skin 106 => 1576 (todo find relation)
             FixEffectOnAllLevels(2879, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 1576);
+            FixEffectOnAllLevels(2879, EffectsEnum.Effect_AddDodge, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
 
-            // Masque du pleutre (2880)
+            // Masque du Psychopathe (2880)
             // new skin 102 => 1575 (todo find relation)
             // new skin 105 => 1575 (todo find relation)
             FixEffectOnAllLevels(2880, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 1575);
+            FixEffectOnAllLevels(2880, EffectsEnum.Effect_IncreaseDamage_138, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
 
-            // Rétention (2881)
+            // Appeau (2883)
             // NONE -> ENEMY_ALL
-            FixEffectOnAllLevels(2881, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(2881, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2883, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
-            // Rétention (2882)
+            // Distance (2885)
             // NONE -> ENEMY_ALL
-            FixEffectOnAllLevels(2882, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(2882, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-
-            // Apathie (2886)
-            // NONE -> ENEMY_ALL
-            FixEffectOnAllLevels(2886, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(2886, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2885, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
             // Furia (2887)
             // NONE -> ONLY_SELF
+            // NONE -> ENEMY_ALL
             FixEffectOnAllLevels(2887, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(2887, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
             // Cabriole (2888)
             // NONE -> ENEMY_ALL
@@ -371,15 +372,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Boliche (2889)
             // NONE -> ONLY_SELF
+            // NONE -> ENEMY_ALL
             // Swap Effects index
             FixEffectOnAllLevels(2889, EffectsEnum.Effect_AddPushDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(2889, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(2889, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
             FixCriticalEffectOnAllLevels(2889, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
-
-            // Picada (2899)
-            // NONE -> ENEMY_ALL
-            FixEffectOnAllLevels(2899, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(2899, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
             // Plastron (2890)
             // NONE -> ALLY_ALL && SELF
@@ -396,6 +394,28 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2892, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
             FixEffectOnAllLevels(2892, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
             FixEffectOnAllLevels(2892, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            // Appui (2896)
+            // NONE -> ENEMY_ALL
+            FixEffectOnAllLevels(2896, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2896, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2896, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            #endregion
+
+            #region STEAMER
+
+            // Harponneuse (3212)
+            //Remove Kill Effect
+            RemoveEffectOnAllLevels(3212, 1, false);
+
+            // Gardienne (3213)
+            //Remove Kill Effect
+            RemoveEffectOnAllLevels(3213, 1, false);
+
+            // Tactirelle (3214)
+            //Remove Kill Effect
+            RemoveEffectOnAllLevels(3214, 1, false);
 
             #endregion
 

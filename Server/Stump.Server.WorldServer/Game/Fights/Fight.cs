@@ -9,7 +9,6 @@ using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
-using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -1138,6 +1137,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             TimeLine.Fighters.Add(actor);
+
             BindFighterEvents(actor);
 
             if (State == FightState.Placement)
