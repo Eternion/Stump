@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
 
-                var pushDirection = referenceCell.OrientationTo(actor.Position.Point, false);
+                var pushDirection = referenceCell.OrientationTo(actor.Position.Point);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
                 var range = SubRangeForActor == actor ? (integerEffect.Value - 1) : integerEffect.Value;

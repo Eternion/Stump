@@ -44,7 +44,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     if (skinId != -1)
                         driverLook.Look.AddSkin(skinId);
 
-                    look.SetRiderLook(driverLook.Look);
+                    if (Dice.Value == 923)
+                        look.BonesID = Dice.Value;
+                    else
+                        look.SetRiderLook(driverLook.Look);
                 }
                 else
                 {

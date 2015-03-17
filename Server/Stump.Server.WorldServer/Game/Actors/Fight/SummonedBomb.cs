@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         [Variable] public static int WallMaxSize = 6;
         [Variable] public static int ExplosionZone = 2;
 
-        private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>()
+        private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>
         {
             {2, SpellIdEnum.MUR_DE_FEU},
             {3, SpellIdEnum.MUR_D_AIR},
