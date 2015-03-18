@@ -534,6 +534,7 @@
     <Compile Include="Game\Maps\Cells\Shapes\Single.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Sadida\LifeTreeCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Steamer\EvolutionCastHandler.cs" />
     <Compile Include="Game\Spells\SpellCastResult.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
