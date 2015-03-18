@@ -152,8 +152,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Caster.IsFriendlyWith(actor) && Caster != actor)
             {
                 if ((Targets.HasFlag(SpellTargetType.ALLY_1) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_2) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_5)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
+                    Targets.HasFlag(SpellTargetType.ALLY_2)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
                     return true;
 
                 if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER) && Caster is SummonedFighter &&
@@ -166,14 +165,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
                 if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS) && actor is SummonedBomb)
                     return true;
+
+                if (Targets.HasFlag(SpellTargetType.ALLY_TURRETS) && actor is SummonedTurret)
+                    return true;
             }
 
             if (!Caster.IsEnnemyWith(actor))
                 return false;
 
             if ((Targets.HasFlag(SpellTargetType.ENEMY_1) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_2) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_5)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
+                 Targets.HasFlag(SpellTargetType.ENEMY_2)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
                 return true;
 
             if (Targets.HasFlag(SpellTargetType.ENEMY_SUMMONER) && Caster is SummonedFighter &&
@@ -185,6 +186,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 return true;
 
             if (Targets.HasFlag(SpellTargetType.ENEMY_BOMBS) && actor is SummonedBomb)
+                return true;
+
+            if (Targets.HasFlag(SpellTargetType.ENEMY_TURRETS) && actor is SummonedTurret)
                 return true;
 
             return false;

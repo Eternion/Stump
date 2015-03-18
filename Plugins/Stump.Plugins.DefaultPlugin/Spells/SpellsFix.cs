@@ -417,6 +417,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             //Remove Kill Effect
             RemoveEffectOnAllLevels(3214, 1, false);
 
+            // Evolution (3215)
+            FixEffectOnAllLevels(3215, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
+            FixEffectOnAllLevels(3215, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
+            FixEffectOnAllLevels(3215, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
+            FixEffectOnAllLevels(3215, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
+
             #endregion
 
             #region Monsters
