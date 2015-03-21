@@ -8,7 +8,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
-    [EffectHandler(EffectsEnum.Effect_Frikt)]
+    [EffectHandler(EffectsEnum.Effect_TriggerBuff)]
     public class Frikt : SpellEffectHandler
     {
         public Frikt(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -20,65 +20,48 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                var buffId = actor.PopNextBuffId();
+                var triggerType = BuffTriggerType.AFTER_ATTACKED;
+                TriggerBuffApplyHandler triggerHandler = DefaultBuffTrigger;
 
-
-                switch (Spell.Id)
+                switch ((SpellIdEnum)Spell.Id)
                 {
-                    case (int)SpellIdEnum.FRICTION:
-                        {
-                            var spell = new Spell(Dice.DiceNum, 1);
-                            var effect = spell.CurrentSpellLevel.Effects[0];
-
-                            var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
-                                BuffTriggerType.AFTER_ATTACKED, FriktBuffTrigger)
-                            {
-                                Duration = (short)Dice.Duration
-                            };
-
-                            actor.AddAndApplyBuff(buff);
-                        }
+                    case SpellIdEnum.FRICTION:
+                        triggerHandler = FrictionBuffTrigger;
                         break;
-                    case (int)SpellIdEnum.MOT_LOTOF:
-                        {
-                            var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
-                            var effect = spell.CurrentSpellLevel.Effects[0];
-
-                            var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
-                                BuffTriggerType.TURN_BEGIN, MotLotofBuffTrigger)
-                            {
-                                Duration = (short)Dice.Duration
-                            };
-
-                            actor.AddAndApplyBuff(buff);
-                        }
+                    case SpellIdEnum.RÉMISSION:
+                        triggerHandler = RemissionBuffTrigger;
                         break;
-                    default:
-                        {
-                            var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
-                            var effect = spell.CurrentSpellLevel.Effects[0];
-
-                            var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
-                                BuffTriggerType.AFTER_ATTACKED, SuppressionBuffTrigger)
-                            {
-                                Duration = (short)Dice.Duration
-                            };
-
-                            actor.AddAndApplyBuff(buff);
-                        }
+                    case SpellIdEnum.MOT_LOTOF:
+                        triggerType = BuffTriggerType.TURN_BEGIN;
+                        break;
+                    case SpellIdEnum.SACCHAROSE:
+                        triggerType = BuffTriggerType.LOST_MP;
                         break;
                 }
+
+                var buffId = actor.PopNextBuffId();
+
+                var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
+                var effect = spell.CurrentSpellLevel.Effects[0];
+
+                var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
+                    triggerType, triggerHandler)
+                {
+                    Duration = (short)Dice.Duration
+                };
+
+                actor.AddAndApplyBuff(buff);
             }
 
             return true;
         }
 
-        private static void MotLotofBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private static void DefaultBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }
 
-        private static void SuppressionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private static void RemissionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)
@@ -101,7 +84,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             effect.Apply();
         }
 
-        private static void FriktBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private static void FrictionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)

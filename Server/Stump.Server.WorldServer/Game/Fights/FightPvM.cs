@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                     if (looter is IExperienceResult)
                     {
-                        (looter as IExperienceResult).AddEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters(), droppers));
+                        (looter as IExperienceResult).AddEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters<CharacterFighter>(), droppers));
                     }
                 }
             }

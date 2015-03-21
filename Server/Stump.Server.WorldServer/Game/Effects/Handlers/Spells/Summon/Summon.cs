@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
             if (monster.Template.Id == 3287 || monster.Template.Id == 3288 || monster.Template.Id == 3289)
             {
-                var summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, TargetedCell);
+                var summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell);
 
                 ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 
