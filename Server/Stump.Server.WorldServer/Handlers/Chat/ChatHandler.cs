@@ -52,16 +52,6 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                 SendChatServerMessage(chr.Client, client.Character,
                                     ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
                                     message.content);
-
-                                var document = new BsonDocument
-                                {
-                                    { "SenderId", client.Character.Id },
-                                    { "ReceiverId", chr.Id },
-                                    { "Message", message.content },
-                                    { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-                                };
-
-                                MongoLogger.Instance.Insert("PrivateMSG", document);
                             }
                             else
                             {
@@ -149,15 +139,6 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         [WorldHandler(ChatClientMultiMessage.Id)]
         public static void HandleChatClientMultiMessage(WorldClient client, ChatClientMultiMessage message)
         {
-            var document = new BsonDocument
-                    {
-                        { "SenderId", client.Character.Id },
-                        { "Message", message.content },
-                        { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-                    };
-
-            MongoLogger.Instance.Insert("MultiMessage", document);
-
             ChatManager.Instance.HandleChat(client, (ChatActivableChannelsEnum)message.channel, message.content);
         }
 

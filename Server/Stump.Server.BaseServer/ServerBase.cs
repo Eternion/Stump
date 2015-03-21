@@ -391,7 +391,7 @@ namespace Stump.Server.BaseServer
             Running = true;
             Initializing = false;
 
-            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(30).TotalMilliseconds, KeepSQLConnectionAlive);
+            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(10).TotalMilliseconds, KeepSQLConnectionAlive);
             IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(5).TotalMilliseconds, CheckScheduledShutdown);
         }
 

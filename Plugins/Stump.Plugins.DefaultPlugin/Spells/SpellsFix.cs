@@ -336,19 +336,19 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Masque de classe (2872)
             // NONE -> ALLY_ALL
-            FixEffectOnAllLevels(2872, EffectsEnum.Effect_AddLock, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(2872, EffectsEnum.Effect_AddLock, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
             // Masque du pleutre (2879)
             // new skin 103 => 1576 (todo find relation)
             // new skin 106 => 1576 (todo find relation)
             FixEffectOnAllLevels(2879, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 1576);
-            FixEffectOnAllLevels(2879, EffectsEnum.Effect_AddDodge, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(2879, EffectsEnum.Effect_AddDodge, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
             // Masque du Psychopathe (2880)
             // new skin 102 => 1575 (todo find relation)
             // new skin 105 => 1575 (todo find relation)
             FixEffectOnAllLevels(2880, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 1575);
-            FixEffectOnAllLevels(2880, EffectsEnum.Effect_IncreaseDamage_138, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(2880, EffectsEnum.Effect_IncreaseDamage_138, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
             // Appeau (2883)
             // NONE -> ENEMY_ALL
@@ -478,6 +478,44 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Soin Sylvestre (1687)
             FixEffectOnAllLevels(1687, 0, (level, effect, critical) => effect.Duration = -1, false);
+
+            #endregion
+
+            #region Boulglours
+
+            // Saccharose (2255)
+            // ENEMY_ALL => ONLY_SELF
+            FixEffectOnAllLevels(2255, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            // Invertase (2485)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2485, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            #endregion
+
+            #region Glouragan
+
+            // Gloursonde (2988)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2988, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+            FixEffectOnAllLevels(2988, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
+            #endregion
+
+            #region Gloursaya
+
+            // Propolis (2258)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2258, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            #endregion
+
+            #region Meliglours
+
+            // Gloursombilical (2492)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2492, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(2492, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
 
             #endregion
 

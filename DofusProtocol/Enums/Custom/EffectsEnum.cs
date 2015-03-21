@@ -1227,7 +1227,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_Frikt = 792,
+        Effect_TriggerBuff = 792,
         /// <summary>
         /// #1
         /// </summary>

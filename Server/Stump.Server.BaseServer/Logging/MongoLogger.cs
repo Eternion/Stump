@@ -34,8 +34,9 @@ namespace Stump.Server.BaseServer.Logging
             if (!IsMongoLoggerEnabled)
                 return;
 
-            var client = new MongoClient(String.Format("mongodb://{0}:{1}@{2}:{3}",
-                MongoDBConfiguration.User, MongoDBConfiguration.Password, MongoDBConfiguration.Host, MongoDBConfiguration.Port));
+            var client = new MongoClient(String.Format("mongodb://{0}:{1}@{2}:{3}/{4}?authMechanism=SCRAM-SHA-1",
+                MongoDBConfiguration.User, MongoDBConfiguration.Password, MongoDBConfiguration.Host, MongoDBConfiguration.Port, MongoDBConfiguration.DbName));
+
             var server = client.GetServer();
             m_database = server.GetDatabase(MongoDBConfiguration.DbName);
             m_taskPool = new SelfRunningTaskPool(100, "Mongo logger");
