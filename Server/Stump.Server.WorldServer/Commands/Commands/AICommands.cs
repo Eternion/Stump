@@ -122,8 +122,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     foreach (var impact in cast.Impacts)
                     {
                         trigger.Reply(dumper.DumpElement(impact));
-                        if (impact.Target != null)
-                            trigger.Reply("\t\tTarget = " + impact.Target is NamedFighter ? ( (NamedFighter)impact.Target ).Name : impact.Target.Id.ToString());
                     }
             }
         }
