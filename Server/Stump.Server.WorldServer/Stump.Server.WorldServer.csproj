@@ -821,6 +821,10 @@
       <Project>{8BFDD80E-9E64-4386-B676-ED3CFDF1B095}</Project>
       <Name>TreeSharp</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Library\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
+      <Project>{72E591D6-8F83-4D8C-8F67-9C325E623234}</Project>
+      <Name>Xceed.Wpf.Toolkit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011FBAFC-7720-4D36-9C59-71BAE6163C9E}</Project>
       <Name>Stump.Server.BaseServer</Name>

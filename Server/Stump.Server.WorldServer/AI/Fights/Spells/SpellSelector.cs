@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
+using Xceed.Wpf.Toolkit.Zoombox;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
@@ -76,7 +77,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 {
                     // todo : other strategy?
                     var cell =
-                        m_environment.GetCellsWithLoS(target, new LozengeSet(Fighter.Position.Point, Fighter.MP).IntersectWith(new LozengeSet(targetPoint, spellRange, 1)))
+                        m_environment.GetCellsWithLoS(target, new LozengeSet(Fighter.Position.Point, Fighter.MP).
+                        IntersectWith(new LozengeSet(targetPoint, spellRange, m_environment.CellInformationProvider.IsCellWalkable(targetPoint.CellId) ? 0 : 1)))
                                      .FirstOrDefault();
 
                     if (cell == null) // no cell available
@@ -94,6 +96,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
             castCell = null;
             return false;
+        }
+
+        public Cell[] ExpandCellsZone(Cell[] cells, Spell spell)
+        {
+            var zones =
+                spell.CurrentSpellLevel.Effects.Where(x => x.ZoneShape == SpellShapeEnum.X)
+                     .Select(x => new Zone(x.ZoneShape, (byte) x.ZoneSize) {MinRadius = (byte)x.ZoneMinSize});
+
+            return cells.Union(cells.SelectMany(x => zones.SelectMany(z => z.GetCells(x, Fighter.Map)))).ToArray();
         }
 
         public void AnalysePossibilities()
@@ -130,24 +141,28 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 }
                 else
                 {
-                    foreach (var fighter in Fighter.Fight.Fighters.Where(fighter => fighter.IsAlive() && fighter.IsVisibleFor(Fighter)))
+                    var cells =
+                        ExpandCellsZone(Fighter.Fight.Fighters.Where(fighter => fighter.IsAlive() && fighter.IsVisibleFor(Fighter))
+                               .Select(x => x.Cell).ToArray(), spell);
+
+                    foreach (var target in cells)
                     {
                         Cell cell;
-                        if (!CanReach(fighter.Cell, spell, out cell))
+                        if (!CanReach(target, spell, out cell))
                             continue;
 
-                        if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, fighter.Cell))
+                        if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, target))
                             continue;
 
 
-                        var impact = ComputeSpellImpact(spell, fighter);
+                        var impact = ComputeSpellImpact(spell, target);
                         
 
                         if (impact == null)
                             continue;
 
                         impact.CastCell = cell;
-                        impact.Target = fighter;
+                        impact.Target = target;
 
                         if (impact.Damage < 0)
                             continue; // hurts more allies than boost them
@@ -158,47 +173,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
                 if (cast.Impacts.Count > 0)
                     Possibilities.Add(cast);
-            }
-
-            if (!Brain.Brain.DebugMode)
-                return;
-
-            Debug.WriteLine(Fighter.Name);
-            foreach (var spell in Fighter.Spells.Values)
-            {
-                Debug.WriteLine("Spell {0} ({1}) :: {2}", spell.Template.Name, spell.Id, SpellIdentifier.GetSpellCategories(spell));
-
-                var possibility = Possibilities.FirstOrDefault(x => x.Spell == spell);
-
-                if (possibility == null)
-                    continue;
-
-                if (possibility.IsSummoningSpell)
-                {
-                    Debug.WriteLine("\tSummon Spell");
-                }
-                else
-                {
-                    var dumper = new ObjectDumper(8)
-                    {
-                        MemberPredicate = (member) => !member.Name.Contains("Target")
-                    };
-
-                    Debug.WriteLine("\t{0} Targets", possibility.Impacts.Count);
-                    foreach (var impact in possibility.Impacts)
-                    {
-                        Debug.Write(dumper.DumpElement(impact));
-                        if (impact.Target != null)
-                            Debug.WriteLine("\t\tTarget = " + impact.Target is NamedFighter ? ( (NamedFighter)impact.Target ).Name : impact.Target.Id.ToString());
-                    }
-                }
-            }
-            Debug.WriteLine("");
-
-            if (Fighter.Fight.AIDebugMode)
-            {
-                // highlight movements
-
             }
         }
 
@@ -226,10 +200,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
                         {
                             Cell castSpell = impact.CastCell;
-                            if (impact.CastCell != Fighter.Cell && !CanReach(impact.Target.Cell, possibleCast.Spell, out castSpell))
+                            if (impact.CastCell != Fighter.Cell && !CanReach(impact.Target, possibleCast.Spell, out castSpell))
                                 continue;
 
-                            var cast = new SpellCast(possibleCast.Spell, impact.Target.Cell);;
+                            var cast = new SpellCast(possibleCast.Spell, impact.Target);;
                             if (castSpell == Fighter.Cell)
                             {
                                 yield return cast;
@@ -239,11 +213,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                                 if (MapPoint.GetPoint(impact.CastCell).ManhattanDistanceTo(Fighter.Position.Point) > Fighter.MP)
                                     continue;
 
-                                var cell = impact.Target.Position.Point.GetAdjacentCells(m_environment.CellInformationProvider.IsCellWalkable).
+                                var cell = impact.TargetPoint.GetAdjacentCells(m_environment.CellInformationProvider.IsCellWalkable).
                                     OrderBy(entry => entry.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
                                 if (cell == null)
-                                    cell = impact.Target.Position.Point;
+                                    cell = impact.TargetPoint;
 
                                 var pathfinder = new Pathfinder(m_environment.CellInformationProvider);
                                 var path = pathfinder.FindPath(Fighter.Position.Cell.Id, castSpell.Id, false, Fighter.MP);
@@ -261,10 +235,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             }
         }
 
-        public SpellTarget ComputeSpellImpact(Spell spell, FightActor mainTarget)
+        public SpellTarget ComputeSpellImpact(Spell spell, Cell targetCell)
         {
             SpellTarget damages = null;
-            var cast = SpellManager.Instance.GetSpellCastHandler(Fighter, spell, mainTarget.Cell, false);
+            var cast = SpellManager.Instance.GetSpellCastHandler(Fighter, spell, targetCell, false);
             cast.Initialize();
 
             foreach (var handler in cast.GetEffectHandlers())
