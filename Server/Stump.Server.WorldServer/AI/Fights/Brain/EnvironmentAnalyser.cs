@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
+using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
@@ -19,6 +20,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             Fighter = fighter;
             CellInformationProvider = new AIFightCellsInformationProvider(Fighter.Fight, Fighter);
+            Pathfinding = new Pathfinder(CellInformationProvider);
+        }
+
+        public Pathfinder Pathfinding
+        {
+            get;
+            private set;
         }
 
         public AIFightCellsInformationProvider CellInformationProvider
@@ -70,6 +78,21 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 if (Fight.CanBeSeen(cell, MapPoint.GetPoint(target)))
                     yield return Fight.Cells[cell.CellId];
             }
+        }
+
+        public bool TryToReach(MapPoint point, out Path path)
+        {
+            var dist = Fighter.Position.Point.ManhattanDistanceTo(point);
+
+            // todo : take in account teleport spells
+            if (dist > Fighter.MP)
+            {
+                path = null;
+                return false;
+            }
+
+            path = Pathfinding.FindPath(Fighter.Position.Point, point, false, Fighter.MP);
+            return path.EndCell.Id == point.CellId;
         }
 
         public Cell GetCellToFlee()

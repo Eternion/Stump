@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
@@ -46,6 +47,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
                 DirectionsEnum.DIRECTION_EAST
             };
 
+
         private static double GetHeuristic(MapPoint pointA, MapPoint pointB)
         {
             var dxy = new Point(Math.Abs(pointB.X - pointA.X), Math.Abs(pointB.Y - pointA.Y));
@@ -66,7 +68,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             private set;
         }
 
-        public Path FindPath(short startCell, short endCell, bool diagonal, int movementPoints = (short)-1)
+        public Path FindPath(short startCell, short endCell, bool diagonal, int movementPoints = (short) -1)
+        {
+            return FindPath(new MapPoint(startCell), new MapPoint(endCell), diagonal, movementPoints);
+        }
+
+        public Path FindPath(MapPoint startPoint, MapPoint endPoint, bool diagonal, int movementPoints = (short)-1)
         {
             var success = false;
 
@@ -74,15 +81,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             var openList = new PriorityQueueB<short>(new ComparePfNodeMatrix(matrix));
             var closedList = new List<PathNode>();
 
-            var startPoint = new MapPoint(startCell);
-            var endPoint = new MapPoint(endCell);
-
-            var location = startCell;
+            var location = startPoint.CellId;
 
             var counter = 0;
 
             if (movementPoints == 0)
-                return Path.GetEmptyPath(CellsInformationProvider.Map, CellsInformationProvider.Map.Cells[startCell]);
+                return Path.GetEmptyPath(CellsInformationProvider.Map, CellsInformationProvider.Map.Cells[startPoint.CellId]);
 
             matrix[location].Cell = location;
             matrix[location].Parent = -1;
@@ -99,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
                 if (matrix[location].Status == NodeState.Closed)
                     continue;
 
-                if (location == endCell)
+                if (location == endPoint.CellId)
                 {
                     matrix[location].Status = NodeState.Closed;
                     success = true;
@@ -107,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
                 }
 
                 if (counter > SearchLimit)
-                    return Path.GetEmptyPath(CellsInformationProvider.Map, CellsInformationProvider.Map.Cells[startCell]);
+                    return Path.GetEmptyPath(CellsInformationProvider.Map, CellsInformationProvider.Map.Cells[startPoint.CellId]);
 
                 for (int i = 0; i < (diagonal ? 8 : 4); i++)
                 {
@@ -150,7 +154,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
             if (success)
             {
-                var node = matrix[endCell];
+                var node = matrix[endPoint.CellId];
 
                 while (node.Parent != -1)
                 {
@@ -167,6 +171,83 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
                 return new Path(CellsInformationProvider.Map, closedList.Take(movementPoints + 1).Select(entry => CellsInformationProvider.Map.Cells[entry.Cell]));
 
             return new Path(CellsInformationProvider.Map, closedList.Select(entry => CellsInformationProvider.Map.Cells[entry.Cell]));
+        }
+
+        public Cell[] FindReachableCells(MapPoint from, int distance)
+        {
+            var result = new List<Cell>();
+            var matrix = new PathNode[MapPoint.MapSize + 1];
+            var openList = new PriorityQueueB<short>(new ComparePfNodeMatrix(matrix));
+            var closedList = new List<PathNode>();
+            var location = from.CellId;
+            var counter = 0;
+
+            if (distance == 0)
+                return new [] {CellsInformationProvider.Map.Cells[from.CellId]};
+
+            matrix[location].Cell = location;
+            matrix[location].Parent = -1;
+            matrix[location].G = 0;
+            matrix[location].F = 0;
+            matrix[location].Status = NodeState.Open;
+
+            openList.Push(location);
+            while (openList.Count > 0)
+            {
+                location = openList.Pop();
+                var locationPoint = new MapPoint(location);
+
+                if (matrix[location].Status == NodeState.Closed)
+                    continue;
+
+                if (counter > SearchLimit)
+                    break;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    var newLocationPoint = locationPoint.GetNearestCellInDirection(Directions[i]);
+
+                    if (newLocationPoint == null)
+                        continue;
+
+                    var newLocation = newLocationPoint.CellId;
+
+                    if (newLocation < 0 || newLocation >= MapPoint.MapSize)
+                        continue;
+
+                    if (!MapPoint.IsInMap(newLocationPoint.X, newLocationPoint.Y))
+                        continue;
+
+                    if (!CellsInformationProvider.IsCellWalkable(newLocation))
+                        continue;
+
+                    double newG = matrix[location].G + 1;
+
+                    if ((matrix[newLocation].Status == NodeState.Open ||
+                        matrix[newLocation].Status == NodeState.Closed) &&
+                        matrix[newLocation].G <= newG)
+                        continue;
+
+                    matrix[newLocation].Cell = newLocation;
+                    matrix[newLocation].Parent = location;
+                    matrix[newLocation].G = newG;
+                    matrix[newLocation].H = 0;
+                    matrix[newLocation].F = newG + matrix[newLocation].H;
+
+                    if (newG <= distance)
+                    {
+                        result.Add(CellsInformationProvider.Map.Cells[newLocation]);
+                        openList.Push(newLocation);
+                        matrix[newLocation].Status = NodeState.Open;
+                    }
+                }
+
+                counter++;
+                matrix[location].Status = NodeState.Closed;
+            }
+
+            return result.ToArray();
+
         }
 
         #region Nested type: ComparePfNodeMatrix

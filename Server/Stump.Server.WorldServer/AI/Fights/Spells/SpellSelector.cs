@@ -56,10 +56,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             set;
         }
 
-        public bool CanReach(FightActor fighter, Spell spell, out Cell castCell)
+        public bool CanReach(Cell target, Spell spell, out Cell castCell)
         {
-            var diff = Fighter.GetSpellRange(spell.CurrentSpellLevel) -
-                       fighter.Position.Point.ManhattanDistanceTo(Fighter.Position.Point);
+            var targetPoint = new MapPoint(target);
+            var spellRange = Fighter.GetSpellRange(spell.CurrentSpellLevel);
+            var dist = targetPoint.ManhattanDistanceTo(Fighter.Position.Point);
+            var diff = spellRange - dist;
             if (diff >= 0)
             {
                 castCell = Fighter.Cell;
@@ -74,7 +76,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 {
                     // todo : other strategy?
                     var cell =
-                        m_environment.GetCellsWithLoS(fighter.Cell, new LozengeSet(fighter.Position.Point, Fighter.MP))
+                        m_environment.GetCellsWithLoS(target, new LozengeSet(Fighter.Position.Point, Fighter.MP).IntersectWith(new LozengeSet(targetPoint, spellRange)))
                                      .FirstOrDefault();
 
                     if (cell == null) // no cell available
@@ -85,7 +87,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     castCell = cell;
                     return true;
                 }
-                castCell = m_environment.GetCellToCastSpell(fighter.Cell, spell);
+                castCell = m_environment.GetCellToCastSpell(target, spell);
                 return castCell != null;
             }
 
@@ -131,7 +133,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     foreach (var fighter in Fighter.Fight.Fighters.Where(fighter => fighter.IsAlive() && fighter.IsVisibleFor(Fighter)))
                     {
                         Cell cell;
-                        if (!CanReach(fighter, spell, out cell))
+                        if (!CanReach(fighter.Cell, spell, out cell))
                             continue;
 
                         if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, fighter.Cell))
@@ -224,7 +226,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
                         {
                             Cell castSpell = impact.CastCell;
-                            if (impact.CastCell != Fighter.Cell && !CanReach(impact.Target, possibleCast.Spell, out castSpell))
+                            if (impact.CastCell != Fighter.Cell && !CanReach(impact.Target.Cell, possibleCast.Spell, out castSpell))
                                 continue;
 
                             var cast = new SpellCast(possibleCast.Spell, impact.Target.Cell);;
