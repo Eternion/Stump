@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 {
                     // todo : other strategy?
                     var cell =
-                        m_environment.GetCellsWithLoS(target, new LozengeSet(Fighter.Position.Point, Fighter.MP).IntersectWith(new LozengeSet(targetPoint, spellRange)))
+                        m_environment.GetCellsWithLoS(target, new LozengeSet(Fighter.Position.Point, Fighter.MP).IntersectWith(new LozengeSet(targetPoint, spellRange, 1)))
                                      .FirstOrDefault();
 
                     if (cell == null) // no cell available
