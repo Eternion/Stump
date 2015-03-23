@@ -22,6 +22,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         DAMAGES_PUSHBACK = 0x00004000,
         LOST_MP = 0x00008000,
         LOST_AP = 0x00010000,
+        TACKLED = 0x00020000,
         UNKNOWN = 0x7FFFFFFF,
     }
 }

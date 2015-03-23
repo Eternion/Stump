@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Web.UI.WebControls;
+using Stump.Core.Collections;
 using Stump.Core.Mathematics;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
@@ -275,11 +277,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, amount);
         }
 
-        public event Action<FightActor, bool> ActorPushed;
+        public event Action<FightActor, bool> ActorMoved;
 
-        public virtual void OnActorPushed(FightActor fighter, bool takeDamage)
+        public virtual void OnActorMoved(FightActor fighter, bool takeDamage)
         {
-            var handler = ActorPushed;
+            var handler = ActorMoved;
             if (handler != null)
                 handler(fighter, takeDamage);
         }

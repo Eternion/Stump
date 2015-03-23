@@ -9,9 +9,9 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_TriggerBuff)]
-    public class Frikt : SpellEffectHandler
+    public class BuffTrigger : SpellEffectHandler
     {
-        public Frikt(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public BuffTrigger(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
@@ -36,6 +36,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                         break;
                     case SpellIdEnum.SACCHAROSE:
                         triggerType = BuffTriggerType.LOST_MP;
+                        break;
+                    case SpellIdEnum.MANSOMURE:
+                        triggerType = BuffTriggerType.AFTER_HEALED;
+                        break;
+                    case SpellIdEnum.INIMOUTH:
+                        triggerType = BuffTriggerType.DAMAGES_PUSHBACK;
+                        break;
+                    case SpellIdEnum.RATTRAPAGE:
+                        triggerType = BuffTriggerType.TACKLED;
                         break;
                 }
 

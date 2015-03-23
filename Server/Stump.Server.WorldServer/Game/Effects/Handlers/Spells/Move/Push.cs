@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                     fighter.InflictDamage(damage);
                                     fighter.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
 
-                                    fighter.OnActorPushed(fighter, true);
+                                    fighter.OnActorMoved(actor, true);
                                 }
                             }
                         }
@@ -117,7 +117,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actor, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
-                actor.OnActorPushed(actor, takeDamage);
+                actor.OnActorMoved(Caster, takeDamage);
                 if (takeDamage)
                     actor.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
             }

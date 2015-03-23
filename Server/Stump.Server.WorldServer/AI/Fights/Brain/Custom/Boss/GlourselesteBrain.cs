@@ -4,6 +4,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -15,7 +16,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
         public GlourselesteBrain(AIFighter fighter)
             : base(fighter)
         {
-            fighter.ActorPushed += OnActorPushed;
+            fighter.ActorMoved += OnBossMoved;
             fighter.FightPointsVariation += OnFightPointsVariation;
             fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
 
@@ -36,15 +37,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnFightStarted(IFight fight)
         {
-            //State Lourd
-            GetEffectHandler(SpellIdEnum.GLOURSONGEUR, Fighter.Cell, 4).Apply();
+            foreach (var fighter in Fighter.Team.GetAllFighters())
+                GetEffectHandler(SpellIdEnum.GLOURSONGEUR, fighter.Cell, 4).Apply(); //State Lourd
 
             Fighter.OpposedTeam.FighterAdded += OnFighterAdded;
 
             foreach (var fighter in Fighter.OpposedTeam.GetAllFighters())
-            {
-                fighter.ActorPushed += OnActorPushed;
-            }
+                fighter.ActorMoved += OnActorMoved;
         }
 
         private void OnFighterAdded(FightTeam team, FightActor fighter)
@@ -52,7 +51,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             if (team == Fighter.Team)
                 return;
 
-            fighter.ActorPushed += OnActorPushed;
+            fighter.ActorMoved += OnActorMoved;
         }
 
         private void OnTurnStarted(IFight fight, FightActor player)
@@ -73,8 +72,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
                     player.CastSpell(spellGlours, deadFighter.Cell, true);
                 }
 
-                var state = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.Beark_to_Life);
-                player.RemoveState(state);
+                var stateBuff = player.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == (int)SpellStatesEnum.Beark_to_Life).FirstOrDefault();
+                if (stateBuff == null)
+                    return;
+
+                player.RemoveAndDispellBuff(stateBuff);
             }
 
             if (!(player is CharacterFighter) || player.Team.Id == Fighter.Team.Id)
@@ -107,16 +109,17 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             Fighter.CastSpell(spell, Fighter.Cell, true, true);
         }
 
-        private void OnActorPushed(FightActor fighter, bool takeDamage)
+        private void OnBossMoved(FightActor fighter, bool takeDamage)
         {
             if (fighter == Fighter)
-            {
-                //State Résuglours
-                GetEffectHandler(SpellIdEnum.GLOURSONGEUR, Fighter.Cell, 3).Apply();
-
                 return;
-            }
 
+            //State Résuglours
+            GetEffectHandler(SpellIdEnum.GLOURSONGEUR, Fighter.Cell, 3).Apply();
+        }
+
+        private void OnActorMoved(FightActor fighter, bool takeDamage)
+        {
             if (!takeDamage)
                 return;
 
