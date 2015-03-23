@@ -47,6 +47,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             }
 
             target.Cell = endCell;
+            target.OnActorMoved(Caster, false);
 
             if (target.IsCarrying())
                 target.ThrowActor(Map.Cells[startCell.Id], true);

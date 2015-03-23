@@ -41,8 +41,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         private void ReviveActor(FightActor actor, int heal)
         {
+            var cell = TargetedCell;
+            if (!Fight.IsCellFree(cell))
+                return;
+
             HealHpPercent(actor, heal);
-            actor.Position.Cell = TargetedCell;
+            actor.Position.Cell = cell;
 
             ActionsHandler.SendGameActionFightReviveMessage(Fight.Clients, Caster, actor);
             ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);

@@ -427,6 +427,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region Monsters
 
+            #region Boss
+
             #region Korriandre
 
             // Glyphe Daivain (2700)
@@ -443,15 +445,27 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
-            #region TOFU
+            #region Mansot Royal
 
-            // béco du tofu (1999)
-            // steal agility
-            // target only self -> all
-            FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
-                (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+            // Mansomure (2607)
+            // remove effect
+            RemoveEffectOnAllLevels(2607, 1, false);
 
             #endregion
+
+            #region Glourséleste
+
+            // Rattrapage (2261)
+            // ENEMY_ALL -> ALLY_ALL
+            FixEffectOnAllLevels(2261, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+            FixEffectOnAllLevels(2261, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+            FixEffectOnAllLevels(2261, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
+            #endregion
+
+            #endregion
+
+            #region Summon
 
             #region Chaton
 
@@ -478,6 +492,20 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Soin Sylvestre (1687)
             FixEffectOnAllLevels(1687, 0, (level, effect, critical) => effect.Duration = -1, false);
+
+            #endregion
+
+            #endregion
+
+            #region Monsters
+
+            #region TOFU
+
+            // béco du tofu (1999)
+            // steal agility
+            // target only self -> all
+            FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
+                (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
 
             #endregion
 
@@ -516,6 +544,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // ENEMY_ALL => ALLY_ALL
             FixEffectOnAllLevels(2492, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
             FixEffectOnAllLevels(2492, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            #endregion
 
             #endregion
 

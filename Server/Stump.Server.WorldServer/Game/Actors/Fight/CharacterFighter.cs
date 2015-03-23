@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
         {
-            if (!IsFighterTurn())
+            if (!IsFighterTurn() && !force)
                 return false;
 
             // weapon attack

@@ -4,7 +4,6 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
@@ -18,7 +17,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
         public RoyalMouthBrain(AIFighter fighter)
             : base(fighter)
         {
-            fighter.ActorPushed += OnActorPushed;
+            fighter.ActorMoved += OnActorMoved;
             fighter.Dead += OnDead;
             fighter.Fight.TurnStarted += OnTurnStarted;
             fighter.Fight.FightStarted += OnFightStarted;
@@ -30,12 +29,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             inimouthSpell.Initialize();
             m_iniMouthHandlers = inimouthSpell.GetEffectHandlers().ToArray();
 
-            SetInvulnerability(true);
+            //Trigger Pushback Damages
+            m_iniMouthHandlers[0].Apply();
+
+            AddInvulnerability();
         }
 
         private void OnDead(FightActor fighter, FightActor killer)
         {
-            fighter.ActorPushed -= OnActorPushed;
+            fighter.ActorMoved -= OnActorMoved;
             fighter.Dead -= OnDead;
             fighter.Fight.TurnStarted -= OnTurnStarted;
 
@@ -48,15 +50,20 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             if (player != m_invulnerabilityBreaker)
                 return;
 
-            SetInvulnerability(true);
+            AddInvulnerability();
 
             player.Dead -= OnInvulnerabilityBreakerDead;
             m_invulnerabilityBreaker = null;
         }
 
-        private void OnActorPushed(FightActor fighter, bool takeDamage)
+        private void OnActorMoved(FightActor fighter, bool takeDamage)
         {
-            SetInvulnerability(false);
+            if (fighter == Fighter)
+                return;
+
+            //Disable Invulnerability
+            m_iniMouthHandlers[1].Apply();
+
             m_iniMouthHandlers[2].Apply(); //Add MP
 
             if (m_invulnerabilityBreaker != null)
@@ -64,40 +71,20 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
             m_invulnerabilityBreaker = fighter;
             fighter.Dead += OnInvulnerabilityBreakerDead;
-
-            if (takeDamage)
-                KillAllEnemiesInLine(Fighter.Position.Point);
         }
 
         private void OnInvulnerabilityBreakerDead(FightActor fighter, FightActor killer)
         {
-            SetInvulnerability(true);
+            AddInvulnerability();
         }
 
-        private void SetInvulnerability(bool enable)
+        private void AddInvulnerability()
         {
-            if (enable)
-            {
-                //Add State
-                var state = m_iniMouthHandlers[3] as AddState;
+            //Add State
+            var state = m_iniMouthHandlers[3] as AddState;
 
-                state.BypassDispel = true;
-                state.Apply();
-            }
-            else
-            {
-                //Remove State
-                m_iniMouthHandlers[1].Apply();
-            }
-        }
-
-        private void KillAllEnemiesInLine(MapPoint point)
-        {
-            foreach (var spell in Fighter.OpposedTeam.GetAllFighters(x => x.IsAlive()).Where(enemy => point.IsOnSameLine(enemy.Position.Point))
-                .Select(enemy => SpellManager.Instance.GetSpellCastHandler(Fighter, new Spell((int)SpellIdEnum.BERSERKMOUTH, 1), enemy.Cell, false)))
-            {
-                spell.Execute();
-            }
+            state.BypassDispel = true;
+            state.Apply();
         }
     }
 }

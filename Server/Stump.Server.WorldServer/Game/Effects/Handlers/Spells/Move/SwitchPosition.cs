@@ -29,6 +29,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             Caster.ExchangePositions(target);
 
+            target.OnActorMoved(Caster, false);
+            Caster.OnActorMoved(Caster, false);
+
             return true;
         }
     }

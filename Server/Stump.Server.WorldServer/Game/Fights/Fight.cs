@@ -1756,6 +1756,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (path.MPCost > actor.MP)
                 path.CutPath(actor.MP + 1);
+
+            actor.TriggerBuffs(BuffTriggerType.TACKLED);
         }
 
         protected virtual void OnStopMoving(ContextActor actor, Path path, bool canceled)

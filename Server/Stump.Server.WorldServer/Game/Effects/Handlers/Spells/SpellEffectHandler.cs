@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
@@ -315,7 +316,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool RemoveStateBuff(FightActor target, SpellStatesEnum stateId)
         {
-            var state = target.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)stateId).FirstOrDefault();
+            var state = target.GetBuffs(x => x is StateBuff && ((StateBuff) x).State.Id == (int)stateId).FirstOrDefault();
             if (state == null)
                 return false;
 

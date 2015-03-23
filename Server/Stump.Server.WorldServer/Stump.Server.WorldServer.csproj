@@ -129,6 +129,7 @@
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\KorriandreBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
@@ -331,6 +332,7 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\BuffTrigger.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpPercentWhenAttack.cs" />
@@ -340,7 +342,6 @@
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Frikt.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Putsch.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
