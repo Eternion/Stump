@@ -2652,6 +2652,44 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Drop Items
+
+        public void GetDroppedItem(WorldObjectItem objectItem)
+        {
+            objectItem.Map.Leave(objectItem);
+            Inventory.AddItem(objectItem.Item, objectItem.Quantity);
+        }
+
+        public void DropItem(int itemId, int quantity)
+        {
+            var cell = Position.Point.GetAdjacentCells(x => !Map.IsObjectItemOnCell(x)).FirstOrDefault();
+            if (cell == null)
+            {
+                //Il n'y a pas assez de place ici.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 145);
+                return;
+            }
+
+            var item = Inventory.TryGetItem(itemId);
+            if (item == null)
+                return;
+
+            if(item.Stack < quantity)
+            {
+                //Vous ne possédez pas l'objet en quantité suffisante.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
+                return;
+            }
+
+            Inventory.RemoveItem(item, quantity);
+
+            var objectItem = new WorldObjectItem(item.Guid, Map, Map.Cells[cell.CellId], item.Template, quantity);
+
+            Map.Enter(objectItem);
+        }
+        
+        #endregion
+
         #region Debug
 
         public void ClearHighlight()

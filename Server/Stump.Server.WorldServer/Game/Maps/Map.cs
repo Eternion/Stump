@@ -85,6 +85,28 @@ namespace Stump.Server.WorldServer.Game.Maps
                 handler(this, actor);
         }
 
+        public event Action<Map, WorldObjectItem> ObjectItemEnter;
+
+        protected virtual void OnObjectItemEnter(WorldObjectItem objectItem)
+        {
+            OnObjectEnter(objectItem);
+
+            var handler = ObjectItemEnter;
+            if (handler != null)
+                handler(this, objectItem);
+        }
+
+        public event Action<Map, WorldObjectItem> ObjectItemLeave;
+
+        protected virtual void OnObjectItemLeave(WorldObjectItem objectItem)
+        {
+            OnObjectLeave(objectItem);
+
+            var handler = ObjectItemLeave;
+            if (handler != null)
+                handler(this, objectItem);
+        }
+
         public event Action<Map, IFight> FightCreated;
 
         protected virtual void OnFightCreated(IFight fight)
@@ -202,6 +224,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         /// </summary>
         public static MapPoint[] PointsGrid;
 
+        private readonly List<WorldObjectItem> m_objectItems = new List<WorldObjectItem>();
         private readonly List<RolePlayActor> m_actors = new List<RolePlayActor>();
         private readonly ConcurrentDictionary<int, RolePlayActor> m_actorsMap = new ConcurrentDictionary<int, RolePlayActor>();
         private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
@@ -1142,10 +1165,13 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Enter(RolePlayActor actor)
         {
-#if DEBUG
+            #if DEBUG
+
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
-#endif
+
+            #endif
+
             if (m_actors.Contains(actor))
             {
                 logger.Error("Map already contains actor {0}", actor);
@@ -1166,10 +1192,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(RolePlayActor actor)
         {
-#if DEBUG
+            #if DEBUG
+
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
-#endif
+
+            #endif
 
             if (!m_actors.Remove(actor))
                 return;
@@ -1187,10 +1215,13 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(int actorId)
         {
-#if DEBUG
+            #if DEBUG
+
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
-#endif
+
+            #endif
+
             RolePlayActor removedActor;
             if (m_actorsMap.TryRemove(actorId, out removedActor) && m_actors.Remove(removedActor))
             {
@@ -1198,12 +1229,55 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public void Refresh(RolePlayActor actor)
+        public void Enter(WorldObjectItem objectItem)
         {
-#if DEBUG
+            #if DEBUG
+
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
-#endif
+
+            #endif
+
+            if (m_objectItems.Contains(objectItem))
+            {
+                logger.Error("Map already contains objectItem {0}", objectItem.Item.Id);
+                Leave(objectItem);
+            }
+
+            if (IsObjectItemOnCell(objectItem.Cell.Id))
+            {
+                logger.Error("Cannot add {0} to the map, Cell {1} already occupied", objectItem, objectItem.Cell.Id);
+                return;
+            }
+
+            m_objectItems.Add(objectItem);
+
+            OnObjectItemEnter(objectItem);
+        }
+
+        public void Leave(WorldObjectItem objectItem)
+        {
+            #if DEBUG
+
+            if (WorldServer.Instance.IsInitialized)
+                Area.EnsureContext();
+
+            #endif
+
+            if (m_objectItems.Remove(objectItem))
+            {
+                OnObjectItemLeave(objectItem);
+            }
+        }
+
+        public void Refresh(RolePlayActor actor)
+        {
+            #if DEBUG
+
+            if (WorldServer.Instance.IsInitialized)
+                Area.EnsureContext();
+
+            #endif
 
             if (IsActor(actor))
                 ForEach(x =>
@@ -1213,6 +1287,22 @@ namespace Stump.Server.WorldServer.Game.Maps
                     else
                         ContextHandler.SendGameContextRemoveElementMessage(x.Client, actor);
                 });
+        }
+
+        private void OnObjectEnter(WorldObjectItem objectItem)
+        {
+            ForEach(x =>
+            {
+                ContextRoleplayHandler.SendObjectGroundAddedMessage(x.Client, objectItem);   
+            });
+        }
+
+        private void OnObjectLeave(WorldObjectItem objectItem)
+        {
+            ForEach(x =>
+            {
+                ContextRoleplayHandler.SendObjectGroundRemovedMessage(x.Client, objectItem);
+            });
         }
 
         private void OnEnter(RolePlayActor actor)
@@ -1320,6 +1410,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (character == null)
                 return;
 
+            var objectItem = GetObjectItem(actor.Cell.Id);
+
+            if (objectItem != null)
+                character.GetDroppedItem(objectItem);
+
             if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character))
                 return;
 
@@ -1394,6 +1489,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             return exclude != null && Objects.All(x => x == exclude || x.Cell.Id != cell);
         }
 
+        public bool IsObjectItemOnCell(short cell)
+        {
+            return m_objectItems.Any(x => x.Cell.Id == cell);
+        }
+
         public T GetActor<T>(int id)
             where T : RolePlayActor
         {
@@ -1418,6 +1518,21 @@ namespace Stump.Server.WorldServer.Game.Maps
         public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
         {
             return m_actors.OfType<T>().Where(entry => predicate(entry));
+        }
+
+        public IEnumerable<WorldObjectItem> GetObjectItems()
+        {
+            return m_objectItems;
+        }
+
+        public WorldObjectItem GetObjectItem(short cell)
+        {
+            return GetObjectItems().FirstOrDefault(x => x.Cell.Id == cell);
+        }
+
+        public IEnumerable<WorldObjectItem> GetObjectItems(Predicate<WorldObjectItem> predicate)
+        {
+            return m_objectItems.Where(entry => predicate(entry));
         }
 
         public Cell GetCell(int id)

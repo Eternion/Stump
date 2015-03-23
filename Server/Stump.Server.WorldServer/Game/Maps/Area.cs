@@ -531,21 +531,19 @@ namespace Stump.Server.WorldServer.Game.Maps
             m_subAreas.Remove(subArea);
             m_maps.RemoveAll(delegate(Map entry)
             {
-                if (subArea.Maps.Contains(entry))
-                {
-                    if (m_mapsByPoint.ContainsKey(entry.Position))
-                    {
-                        var list = m_mapsByPoint[entry.Position];
-                        list.Remove(entry);
+                if (!subArea.Maps.Contains(entry))
+                    return false;
 
-                        if (list.Count <= 0)
-                            m_mapsByPoint.Remove(entry.Position);
-                    }
-
+                if (!m_mapsByPoint.ContainsKey(entry.Position))
                     return true;
-                }
 
-                return false;
+                var list = m_mapsByPoint[entry.Position];
+                list.Remove(entry);
+
+                if (list.Count <= 0)
+                    m_mapsByPoint.Remove(entry.Position);
+
+                return true;
             });
 
             subArea.Area = null;

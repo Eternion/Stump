@@ -137,6 +137,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             ((BoundLivingObjectItem) item).Dissociate();
         }
 
+        [WorldHandler(ObjectDropMessage.Id)]
+        public static void HandleObjectDropMessage(WorldClient client, ObjectDropMessage message)
+        {
+            if (client.Character.IsInFight() || client.Character.IsBusy())
+                return;
+
+            client.Character.DropItem(message.objectUID, message.quantity);
+        }
+
         public static void SendGameRolePlayPlayerLifeStatusMessage(IPacketReceiver client)
         {
             client.Send(new GameRolePlayPlayerLifeStatusMessage());
