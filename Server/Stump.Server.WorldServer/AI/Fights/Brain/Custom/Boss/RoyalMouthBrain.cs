@@ -29,8 +29,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             inimouthSpell.Initialize();
             m_iniMouthHandlers = inimouthSpell.GetEffectHandlers().ToArray();
 
+            Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+
             //Trigger Pushback Damages
             m_iniMouthHandlers[0].Apply();
+
+            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
             AddInvulnerability();
         }
@@ -61,10 +65,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             if (fighter == Fighter)
                 return;
 
+            Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+
             //Disable Invulnerability
             m_iniMouthHandlers[1].Apply();
 
             m_iniMouthHandlers[2].Apply(); //Add MP
+
+            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
             if (m_invulnerabilityBreaker != null)
                 m_invulnerabilityBreaker.Dead -= OnInvulnerabilityBreakerDead;
@@ -80,11 +88,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void AddInvulnerability()
         {
-            //Add State
-            var state = m_iniMouthHandlers[3] as AddState;
+            Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
-            state.BypassDispel = true;
-            state.Apply();
+            //Add State
+            m_iniMouthHandlers[3].Apply();
+
+            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
         }
     }
 }
