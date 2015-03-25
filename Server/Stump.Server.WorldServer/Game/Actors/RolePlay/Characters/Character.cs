@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 var item = GetPrestigeItem();
                 if (item != null)
-                    Inventory.RemoveItem(item);
+                    Inventory.RemoveItem(item, true, false);
             }
 
             var handler = LoggedIn;
@@ -1600,7 +1600,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     item.UpdateEffects();
                     Inventory.RefreshItem(item);
                 }
-                else Inventory.RemoveItem(item);
+                else Inventory.RemoveItem(item, true, false);
             }
 
             OpenPopup(
@@ -1624,7 +1624,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (item != null)
             {
-                Inventory.RemoveItem(item);
+                Inventory.RemoveItem(item, true, false);
             }
         }
 

@@ -248,7 +248,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 throw new ArgumentException("amount < 0", "amount");
 
             if (item.Stack - amount <= 0)
-                RemoveItem(item);
+                RemoveItem(item, true, false);
             else
             {
                 item.Stack -= (uint)amount;
