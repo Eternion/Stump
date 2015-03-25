@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target == null)
                 return false;
 
-            if (target.HasState((int) SpellStatesEnum.Unmovable) || target.HasState((int) SpellStatesEnum.Rooted))
+            if (target.HasState((int) SpellStatesEnum.Unmovable))
                 return false;
 
             if (target.IsCarrying())

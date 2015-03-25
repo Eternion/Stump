@@ -31,6 +31,7 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
@@ -2657,7 +2658,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void GetDroppedItem(WorldObjectItem objectItem)
         {
             objectItem.Map.Leave(objectItem);
-            Inventory.AddItem(objectItem.Item, objectItem.Quantity);
+            Inventory.AddItem(objectItem.Item, objectItem.Effects, objectItem.Quantity);
         }
 
         public void DropItem(int itemId, int quantity)
@@ -2686,7 +2687,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Inventory.RemoveItem(item, quantity);
 
-            var objectItem = new WorldObjectItem(item.Guid, Map, Map.Cells[cell.CellId], item.Template, quantity);
+            var objectItem = new WorldObjectItem(item.Guid, Map, Map.Cells[cell.CellId], item.Template, item.Effects, quantity);
 
             Map.Enter(objectItem);
         }
