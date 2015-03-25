@@ -26,7 +26,10 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(InventoryPresetItemUpdateRequestMessage.Id)]
         public static void HandleInventoryPresetItemUpdateRequestMessage(WorldClient client, InventoryPresetItemUpdateRequestMessage message)
         {
-            client.Character.Inventory.RemovePresetItem(message.presetId, message.position);
+            var result = client.Character.Inventory.RemovePresetItem(message.presetId, message.position);
+
+            if (result != PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_UNKNOWN)
+                SendInventoryPresetUpdateErrorMessage(client, result);
         }
 
         [WorldHandler(InventoryPresetUseMessage.Id)]
@@ -55,6 +58,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendInventoryPresetUseResultMessage(WorldClient client, sbyte presetId, PresetUseResultEnum result)
         {
             client.Send(new InventoryPresetUseResultMessage(presetId, (sbyte)result, new byte[0]));
+        }
+
+        public static void SendInventoryPresetUpdateErrorMessage(WorldClient client, PresetSaveUpdateErrorEnum result)
+        {
+            client.Send(new InventoryPresetItemUpdateErrorMessage((sbyte)result));
         }
     }
 }

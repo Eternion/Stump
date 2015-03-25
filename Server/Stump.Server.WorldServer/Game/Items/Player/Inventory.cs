@@ -433,19 +433,23 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return PresetDeleteResultEnum.PRESET_DEL_OK;
         }
 
-        public void RemovePresetItem(int presetId, int position)
+        public PresetSaveUpdateErrorEnum RemovePresetItem(int presetId, int position)
         {
             var preset = GetPreset(presetId);
 
             if (preset == null)
-                return;
+                return PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_BAD_PRESET_ID;
 
             var item = preset.Objects.FirstOrDefault(x => x.position == position);
 
             if (item == null)
-                return;
+                return PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_BAD_POSITION;
 
             preset.RemoveObject(item);
+
+            InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
+
+            return PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_UNKNOWN;
         }
 
         public PresetUseResultEnum EquipPreset(int presetId)
