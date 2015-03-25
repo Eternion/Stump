@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.WorldServer.Core.IPC;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -29,6 +32,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
     {
         [Variable(true)]
         private const int MaxInventoryKamas = 150000000;
+
+        [Variable(true)]
+        private const int MaxPresets = 8;
 
         [Variable]
         public static readonly bool ActiveTokens = true;
@@ -191,7 +197,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if ((weapon = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)) != null)
                 {
                     return weapon.Template is WeaponTemplate
-                               ? (uint) (weapon.Template as WeaponTemplate).CriticalHitBonus
+                               ? (uint) ((WeaponTemplate) weapon.Template).CriticalHitBonus
                                : 0;
                 }
 
@@ -202,7 +208,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public BasePlayerItem Tokens
         {
             get;
+            set;
+        }
+
+        public List<PlayerPresetRecord> Presets
+        {
+            get;
             private set;
+        }
+
+        private Queue<PlayerPresetRecord> PresetsToDelete
+        {
+            get;
+            set;
         }
 
         internal void LoadInventory()
@@ -232,6 +250,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Items.Add(Tokens.Guid, Tokens); // cannot stack
         }
 
+        internal void LoadPresets()
+        {
+            PresetsToDelete = new Queue<PlayerPresetRecord>();
+            Presets = ItemManager.Instance.FindPlayerPresets(Owner.Id);
+        }
+
         private void UnLoadInventory()
         {
             Items.Clear();
@@ -259,11 +283,31 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     }
                 }
 
+                foreach (var preset in Presets)
+                {
+                    if (preset.IsNew)
+                    {
+                        database.Insert(preset);
+                        preset.IsNew = false;
+                    }
+                    else if (preset.IsDirty)
+                    {
+                        database.Update(preset);
+                    }
+                }
+
                 while (ItemsToDelete.Count > 0)
                 {
                     var item = ItemsToDelete.Dequeue();
 
                     database.Delete(item.Record);
+                }
+
+                while (PresetsToDelete.Count > 0)
+                {
+                    var preset = PresetsToDelete.Dequeue();
+
+                    database.Delete(preset);
                 }
 
                 // update tokens amount
@@ -322,9 +366,122 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item;
         }
 
-        public override  bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true)
+        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true)
         {
             return item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
+        }
+
+        public PlayerPresetRecord GetPreset(int presetId)
+        {
+            return Presets.FirstOrDefault(x => x.PresetId == presetId);
+        }
+
+        public bool IsPresetExist(int presetId)
+        {
+            return Presets.Any(x => x.PresetId == presetId);
+        }
+
+        public PresetSaveResultEnum AddPreset(int presetId, int symbolId, bool saveEquipement)
+        {
+            if (presetId < 0 || presetId > 8)
+                return PresetSaveResultEnum.PRESET_SAVE_ERR_UNKNOWN;
+
+            if (Presets.Count > MaxPresets)
+                return PresetSaveResultEnum.PRESET_SAVE_ERR_TOO_MANY;
+
+            var preset = new PlayerPresetRecord
+            {
+                OwnerId = Owner.Id,
+                PresetId = presetId,
+                SymbolId = symbolId,
+                Objects = new List<PresetItem>(),
+                IsNew = true
+            };
+
+            if (IsPresetExist(presetId) && !saveEquipement)
+            {
+                var oldPreset = GetPreset(presetId);
+                preset.Objects = oldPreset.Objects;
+            }
+            else
+            {
+                foreach (var item in GetEquipedItems())
+                    preset.AddObject(new PresetItem((byte)item.Position, item.Template.Id, item.Guid));       
+            }
+
+            RemovePreset(presetId);
+            Presets.Add(preset);
+
+            InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
+
+            return PresetSaveResultEnum.PRESET_SAVE_OK;
+        }
+
+        public PresetDeleteResultEnum RemovePreset(int presetId)
+        {
+            if (presetId < 0 || presetId > 8)
+                return PresetDeleteResultEnum.PRESET_DEL_ERR_UNKNOWN;
+
+            var preset = GetPreset(presetId);
+
+            if (preset == null)
+                return PresetDeleteResultEnum.PRESET_DEL_ERR_BAD_PRESET_ID;
+
+            Presets.Remove(preset);
+            PresetsToDelete.Enqueue(preset);
+
+            return PresetDeleteResultEnum.PRESET_DEL_OK;
+        }
+
+        public void RemovePresetItem(int presetId, int position)
+        {
+            var preset = GetPreset(presetId);
+
+            if (preset == null)
+                return;
+
+            var item = preset.Objects.FirstOrDefault(x => x.position == position);
+
+            if (item == null)
+                return;
+
+            preset.RemoveObject(item);
+        }
+
+        public PresetUseResultEnum EquipPreset(int presetId)
+        {
+            var preset = GetPreset(presetId);
+
+            if (preset == null)
+                return PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID;
+
+            var itemsToMove = new List<Pair<BasePlayerItem, CharacterInventoryPositionEnum>>();
+
+            var partial = false;
+
+            foreach (var presetItem in preset.Objects)
+            {
+                var item = TryGetItem(presetItem.objUid);
+
+                if (item == null)
+                {
+                    Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 228, presetItem.objGid, presetId);
+                    partial = true;
+                    continue;
+                }
+
+                if (!CanEquip(item, (CharacterInventoryPositionEnum)presetItem.position))
+                    return PresetUseResultEnum.PRESET_USE_ERR_CRITERION;
+
+                itemsToMove.Add(new Pair<BasePlayerItem, CharacterInventoryPositionEnum>(item, (CharacterInventoryPositionEnum)presetItem.position));
+            }
+
+            foreach (var item in itemsToMove)
+            {
+                MoveItem(item.First, item.Second);
+            }
+
+            return partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK;
         }
 
         public BasePlayerItem RefreshItemInstance(BasePlayerItem item)
@@ -675,6 +832,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     ApplyItemSetEffects(item.Template.ItemSet, count, true);
 
                 InventoryHandler.SendSetUpdateMessage(Owner.Client, item.Template.ItemSet);
+            }
+
+            var preset = Presets.FirstOrDefault(x => x.Objects.Exists(y => y.objUid == item.Guid));
+            
+            if (preset != null)
+            {
+                preset.RemoveObject(item.Guid);
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 255, item.Template.Id, (preset.PresetId + 1));
             }
 
             InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);

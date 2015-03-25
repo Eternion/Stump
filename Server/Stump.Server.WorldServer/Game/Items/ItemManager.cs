@@ -13,7 +13,6 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -358,6 +357,11 @@ namespace Stump.Server.WorldServer.Game.Items
         public List<PlayerItemRecord> FindPlayerItems(int ownerId)
         {
             return Database.Fetch<PlayerItemRecord>(string.Format(PlayerItemRelator.FetchByOwner, ownerId));
+        }
+
+        public List<PlayerPresetRecord> FindPlayerPresets(int ownerId)
+        {
+            return Database.Fetch<PlayerPresetRecord>(string.Format(PlayerPresetRelator.FetchByOwner, ownerId));
         }
 
         public List<PlayerMerchantItemRecord> FindPlayerMerchantItems(int ownerId)

@@ -180,8 +180,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
-
-            InventoryHandler.SendInventoryContentMessage(client);
+            InventoryHandler.SendInventoryContentAndPresetMessage(client);
 
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR);
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
