@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Shortcuts;
@@ -52,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             var database = WorldServer.Instance.DBAccessor.Database;
             m_spellShortcuts = database.Query<SpellShortcut>(string.Format(SpellShortcutRelator.FetchByOwner, Owner.Id)).ToDictionary(x => x.Slot);
             m_itemShortcuts = database.Query<ItemShortcut>(string.Format(ItemShortcutRelator.FetchByOwner, Owner.Id)).ToDictionary(x => x.Slot);
-            //m_presetShortcuts = database.Query<PresetShortcut>(string.Format(PresetShortcutRelator.FetchByOwner, Owner.Id)).ToDictionary(x => x.Slot);
+            m_presetShortcuts = database.Query<PresetShortcut>(string.Format(PresetShortcutRelator.FetchByOwner, Owner.Id)).ToDictionary(x => x.Slot);
         }
 
         public void AddShortcut(ShortcutBarEnum barType, DofusProtocol.Types.Shortcut shortcut)
@@ -62,6 +63,8 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 AddSpellShortcut(shortcut.slot, ((ShortcutSpell) shortcut).spellId);
             else if (shortcut is ShortcutObjectItem && barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
                 AddItemShortcut(shortcut.slot, Owner.Inventory.TryGetItem(((ShortcutObjectItem) shortcut).itemUID));
+            else if (shortcut is ShortcutObjectPreset && barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
+                AddPresetShortcut(shortcut.slot, ((ShortcutObjectPreset)shortcut).presetId);
             else
             {
                 ShortcutHandler.SendShortcutBarAddErrorMessage(Owner.Client);
@@ -87,6 +90,17 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             var shortcut = new ItemShortcut(Owner.Record, slot, item.Template.Id, item.Guid);
 
             m_itemShortcuts.Add(slot, shortcut);
+            ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR, shortcut);
+        }
+
+        public void AddPresetShortcut(int slot, int presetId)
+        {
+            if (!IsSlotFree(slot, ShortcutBarEnum.GENERAL_SHORTCUT_BAR))
+                RemoveShortcut(ShortcutBarEnum.GENERAL_SHORTCUT_BAR, slot);
+
+            var shortcut = new PresetShortcut(Owner.Record, slot, presetId);
+
+            m_presetShortcuts.Add(slot, shortcut);
             ShortcutHandler.SendShortcutBarRefreshMessage(Owner.Client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR, shortcut);
         }
 
@@ -130,7 +144,13 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                     m_spellShortcuts.Remove(slot);
                     break;
                 case ShortcutBarEnum.GENERAL_SHORTCUT_BAR:
-                    m_itemShortcuts.Remove(slot);
+                    {
+                        if (shortcut is ItemShortcut)
+                            m_itemShortcuts.Remove(slot);
+                        else if (shortcut is PresetShortcut)
+                            m_presetShortcuts.Remove(slot);
+                    }
+                    
                     break;
             }
             m_shortcutsToDelete.Enqueue(shortcut);
@@ -144,6 +164,8 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 m_spellShortcuts.Add(shortcut.Slot, (SpellShortcut)shortcut);
             else if (shortcut is ItemShortcut)
                 m_itemShortcuts.Add(shortcut.Slot, (ItemShortcut)shortcut);
+            else if (shortcut is PresetShortcut)
+                m_presetShortcuts.Add(shortcut.Slot, (PresetShortcut)shortcut);
         }
 
         private void RemoveInternal(Shortcut shortcut)
@@ -154,10 +176,17 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 return;
             }
 
-            if (!(shortcut is ItemShortcut))
+            if (shortcut is ItemShortcut)
+            {
+                m_itemShortcuts.Remove(shortcut.Slot);
                 return;
+            }
 
-            m_itemShortcuts.Remove(shortcut.Slot);
+            if (shortcut is PresetShortcut)
+            {
+                m_presetShortcuts.Remove(shortcut.Slot);
+                return;
+            }
         }
 
         public int GetNextFreeSlot(ShortcutBarEnum barType)
@@ -178,7 +207,7 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 case ShortcutBarEnum.SPELL_SHORTCUT_BAR:
                     return !m_spellShortcuts.ContainsKey(slot);
                 case ShortcutBarEnum.GENERAL_SHORTCUT_BAR:
-                    return !m_itemShortcuts.ContainsKey(slot);
+                    return !m_itemShortcuts.ContainsKey(slot) && !m_presetShortcuts.ContainsKey(slot);
             }
 
             return true;
@@ -191,7 +220,13 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 case ShortcutBarEnum.SPELL_SHORTCUT_BAR:
                     return GetSpellShortcut(slot);
                 case ShortcutBarEnum.GENERAL_SHORTCUT_BAR:
-                    return GetItemShortcut(slot);
+                    {
+                        var shortcut = GetItemShortcut(slot);
+                        if (shortcut == null)
+                            return GetPresetShortcut(slot);
+
+                        return shortcut;
+                    }
                 default:
                     return null;
             }
@@ -199,12 +234,13 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
 
         public IEnumerable<Shortcut> GetShortcuts(ShortcutBarEnum barType)
         {
+
             switch (barType)
             {
                 case ShortcutBarEnum.SPELL_SHORTCUT_BAR:
                     return m_spellShortcuts.Values;
                 case ShortcutBarEnum.GENERAL_SHORTCUT_BAR:
-                    return m_itemShortcuts.Values;
+                    return m_itemShortcuts.Values.Concat<Shortcut>(m_presetShortcuts.Values);
                 default:
                     return new Shortcut[0];
             }
@@ -222,6 +258,12 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             return m_itemShortcuts.TryGetValue(slot, out shortcut) ? shortcut : null;
         }
 
+        public PresetShortcut GetPresetShortcut(int slot)
+        {
+            PresetShortcut shortcut;
+            return m_presetShortcuts.TryGetValue(slot, out shortcut) ? shortcut : null;
+        }
+
         public void Save()
         {
             lock (m_locker)
@@ -233,6 +275,11 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
                 }
 
                 foreach (var shortcut in m_spellShortcuts.Where(shortcut => shortcut.Value.IsDirty || shortcut.Value.IsNew))
+                {
+                    database.Save(shortcut.Value);
+                }
+
+                foreach (var shortcut in m_presetShortcuts.Where(shortcut => shortcut.Value.IsDirty || shortcut.Value.IsNew))
                 {
                     database.Save(shortcut.Value);
                 }
