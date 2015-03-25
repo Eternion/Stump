@@ -876,22 +876,24 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 InventoryHandler.SendSetUpdateMessage(Owner.Client, item.Template.ItemSet);
             }
 
-            var preset = Presets.FirstOrDefault(x => x.Objects.Exists(y => y.objUid == item.Guid));
-            
-            if (preset != null)
-            {
-                preset.RemoveObject(item.Guid);
-
-                InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
-                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 255, item.Template.Id, (preset.PresetId + 1));
-            }
-
             InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
             //Vous avez perdu %1 '$item%2'.
             if (removeItemMsg)
+            {
+                var preset = Presets.FirstOrDefault(x => x.Objects.Exists(y => y.objUid == item.Guid));
+
+                if (preset != null)
+                {
+                    preset.RemoveObject(item.Guid);
+
+                    InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
+                    Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 255, item.Template.Id, (preset.PresetId + 1));
+                }
+
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, item.Stack, item.Template.Id);
+            }
 
             if (wasEquiped)
                 CheckItemsCriterias();
