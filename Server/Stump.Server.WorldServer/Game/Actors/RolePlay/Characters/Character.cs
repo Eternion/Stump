@@ -2674,6 +2674,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (item == null)
                 return;
 
+            if (item.IsLinkedToAccount() || item.IsLinkedToPlayer())
+                return;
+
             if(item.Stack < quantity)
             {
                 //Vous ne possédez pas l'objet en quantité suffisante.
@@ -2927,6 +2930,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Inventory = new Inventory(this);
             Inventory.LoadInventory();
+            Inventory.LoadPresets();
+
             UpdateLook(false);
 
             Bank = new Bank(this); // lazy loading here !
