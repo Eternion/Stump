@@ -246,8 +246,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (TokenTemplate == null || !ActiveTokens || Owner.Account.Tokens <= 0)
                 return;
 
-            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (int)Owner.Account.Tokens);
-            Items.Add(Tokens.Guid, Tokens); // cannot stack
+            CreateTokenItem(Owner.Account.Tokens);
         }
 
         internal void LoadPresets()
@@ -342,6 +341,30 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.SetKamas(amount);
         }
 
+        public BasePlayerItem AddItem(ItemTemplate template, List<EffectBase> effects, int amount = 1, bool addItemMsg = true)
+        {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+            var item = TryGetItem(template);
+
+            if (item != null && !item.IsEquiped())
+            {
+                if (!item.OnAddItem())
+                    return null;
+
+                StackItem(item, amount);
+            }
+            else
+            {
+                item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount, effects);
+
+                return !item.OnAddItem() ? null : AddItem(item, addItemMsg);
+            }
+
+            return item;
+        }
+
         public BasePlayerItem AddItem(ItemTemplate template, int amount = 1, bool addItemMsg = true)
         {
             if (amount < 0)
@@ -369,6 +392,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true)
         {
             return item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
+        }
+
+        public void CreateTokenItem(uint amount)
+        {
+            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (int)amount);
+            Items.Add(Tokens.Guid, Tokens); // cannot stack
         }
 
         public PlayerPresetRecord GetPreset(int presetId)
@@ -430,6 +459,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Presets.Remove(preset);
             PresetsToDelete.Enqueue(preset);
 
+            var shortcut = Owner.Shortcuts.PresetShortcuts.FirstOrDefault(x => x.Value.PresetId == presetId);
+            if (shortcut.Value != null)
+                Owner.Shortcuts.RemoveShortcut(ShortcutBarEnum.GENERAL_SHORTCUT_BAR, shortcut.Key);
+
             return PresetDeleteResultEnum.PRESET_DEL_OK;
         }
 
@@ -478,6 +511,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     return PresetUseResultEnum.PRESET_USE_ERR_CRITERION;
 
                 itemsToMove.Add(new Pair<BasePlayerItem, CharacterInventoryPositionEnum>(item, (CharacterInventoryPositionEnum)presetItem.position));
+            }
+
+            foreach (var item in GetEquipedItems())
+            {
+                MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
             foreach (var item in itemsToMove)
@@ -843,6 +881,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (preset != null)
             {
                 preset.RemoveObject(item.Guid);
+
+                InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 255, item.Template.Id, (preset.PresetId + 1));
             }
 

@@ -1,17 +1,20 @@
-﻿using Stump.Server.WorldServer.Database.Items.Templates;
+﻿using System.Collections.Generic;
+using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
-    public class WorldObjectItem : WorldObject
+    public sealed class WorldObjectItem : WorldObject
     {
-        public  WorldObjectItem(int id, Map map, Cell cell, ItemTemplate template, int quantity)
+        public  WorldObjectItem(int id, Map map, Cell cell, ItemTemplate template, List<EffectBase> effects, int quantity)
         {
             Id = id;
             Position = new ObjectPosition(map, cell);
             Quantity = quantity;
             Item = template;
+            Effects = effects;
         }
 
         public override int Id
@@ -21,6 +24,12 @@ namespace Stump.Server.WorldServer.Game.Maps
         }
 
         public ItemTemplate Item
+        {
+            get;
+            protected set;
+        }
+
+        public List<EffectBase> Effects
         {
             get;
             protected set;

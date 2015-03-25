@@ -48,10 +48,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Elementary
 
             cawotte.AddAndApplyBuff(stateBuff);
 
-            var glyphSpell = new Spell(glyphEffect.Dice.DiceNum, (byte)glyphEffect.Dice.DiceFace);
-            var glyph = new Glyph((short)Fight.PopNextTriggerId(), cawotte, Spell, glyphEffect.Dice, glyphSpell, TargetedCell, (byte)glyphEffect.Effect.ZoneSize, Color.Red);
-
-            Fight.AddTriger(glyph);
+            glyphEffect.Apply();
         }
     }
 }
