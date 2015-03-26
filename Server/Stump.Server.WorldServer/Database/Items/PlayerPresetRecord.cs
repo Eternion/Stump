@@ -105,6 +105,11 @@ namespace Stump.Server.WorldServer.Database.Items
             IsDirty = true;
         }
 
+        public PresetItem GetPresetItem(int itemGuid)
+        {
+            return Objects.FirstOrDefault(x => x.objUid == itemGuid);
+        }
+
         public void BeforeSave(bool insert)
         {
             m_serializedObjects = Serialize();

@@ -115,16 +115,16 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public event ItemStackChangedEventHandler ItemStackChanged;
 
-        public void NotifyItemStackChanged(T item, int difference)
+        public void NotifyItemStackChanged(T item, int difference, bool removeMsg = true)
         {
-            OnItemStackChanged(item, difference);
+            OnItemStackChanged(item, difference, removeMsg);
 
             var handler = ItemStackChanged;
             if (handler != null)
                 handler(this, item, difference);
         }
 
-        protected virtual void OnItemStackChanged(T item, int difference)
+        protected virtual void OnItemStackChanged(T item, int difference, bool removeMsg = true)
         {
         }
 
@@ -227,14 +227,14 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="amount"></param>
-        public virtual void StackItem(T item, int amount)
+        public virtual void StackItem(T item, int amount, bool stackMsg = true)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
             item.Stack += (uint)amount;
 
-            NotifyItemStackChanged(item, amount);
+            NotifyItemStackChanged(item, amount, stackMsg);
         }
 
         /// <summary>
@@ -242,18 +242,18 @@ namespace Stump.Server.WorldServer.Game.Items
         /// </summary>
         /// <param name="item"></param>
         /// <param name="amount"></param>
-        public virtual void UnStackItem(T item, int amount)
+        public virtual void UnStackItem(T item, int amount, bool stackMsg = true)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
             if (item.Stack - amount <= 0)
-                RemoveItem(item, true, false);
+                RemoveItem(item, true, stackMsg);
             else
             {
                 item.Stack -= (uint)amount;
 
-                NotifyItemStackChanged(item, -amount);
+                NotifyItemStackChanged(item, -amount, stackMsg);
             }
         }
 

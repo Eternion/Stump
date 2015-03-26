@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             private set;
         }
 
-        protected override void OnItemStackChanged(TaxCollectorItem item, int difference)
+        protected override void OnItemStackChanged(TaxCollectorItem item, int difference, bool removeMsg = true)
         {
             IsDirty = true;
 

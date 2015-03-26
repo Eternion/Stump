@@ -139,7 +139,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.OnItemRemoved(item, removeItemMsg);
         }
 
-        protected override void OnItemStackChanged(BankItem item, int difference)
+        protected override void OnItemStackChanged(BankItem item, int difference, bool removeMsg = true)
         {            
             InventoryHandler.SendStorageObjectUpdateMessage(Owner.Client, item);
 
