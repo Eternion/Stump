@@ -2663,7 +2663,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DropItem(int itemId, int quantity)
         {
-            var cell = Position.Point.GetAdjacentCells(x => !Map.IsObjectItemOnCell(x)).FirstOrDefault();
+            var cell = Position.Point.GetAdjacentCells(x => Map.Cells[x].Walkable && Map.IsCellFree(x) && !Map.IsObjectItemOnCell(x)).FirstOrDefault();
             if (cell == null)
             {
                 //Il n'y a pas assez de place ici.
