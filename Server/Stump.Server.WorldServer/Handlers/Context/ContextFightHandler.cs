@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (fighter.IsSlaveTurn())
                 fighter.GetSlave().CastSpell(spell, target.Cell);
             else
-                fighter.CastSpell(spell, target.Cell);
+                fighter.CastSpell(spell, target.Cell);  
         }
 
 

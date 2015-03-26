@@ -346,14 +346,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
 
-            var item = TryGetItem(template);
+            var item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount, effects);
 
-            if (item != null && !item.IsEquiped())
+            var itemStack = TryGetItem(template);
+
+            if (itemStack != null && !itemStack.IsEquiped() && IsStackable(item, out itemStack))
             {
-                if (!item.OnAddItem())
+                if (!itemStack.OnAddItem())
                     return null;
 
-                StackItem(item, amount);
+                StackItem(itemStack, amount);
             }
             else
             {
@@ -496,13 +498,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             var partial = false;
 
+            foreach (var item in GetEquipedItems())
+            {
+                MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+            }
+
             foreach (var presetItem in preset.Objects)
             {
                 var item = TryGetItem(presetItem.objUid);
 
                 if (item == null)
                 {
-                    Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 228, presetItem.objGid, presetId);
+                    Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 228, presetItem.objGid, (presetId + 1));
                     partial = true;
                     continue;
                 }
@@ -513,11 +520,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 itemsToMove.Add(new Pair<BasePlayerItem, CharacterInventoryPositionEnum>(item, (CharacterInventoryPositionEnum)presetItem.position));
             }
 
-            foreach (var item in GetEquipedItems())
-            {
-                MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-            }
-
             foreach (var item in itemsToMove)
             {
                 MoveItem(item.First, item.Second);
@@ -526,9 +528,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK;
         }
 
-        public PlayerPresetRecord GetPresetByItemGuid(int itemGuid)
+        public PlayerPresetRecord[] GetPresetsByItemGuid(int itemGuid)
         {
-            return Presets.FirstOrDefault(x => x.Objects.Exists(y => y.objUid == itemGuid));
+            return Presets.Where(x => x.Objects.Exists(y => y.objUid == itemGuid)).ToArray();
         }
 
         public BasePlayerItem RefreshItemInstance(BasePlayerItem item)
@@ -640,9 +642,25 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (item.Stack > 1) // if the item to move is stack we cut it
             {
-                CutItem(item, (int)item.Stack - 1);
+                var newItem = CutItem(item);
                 // now we have 2 stack : itemToMove, stack = 1
                 //						 newitem, stack = itemToMove.Stack - 1
+
+                //Update PresetItem
+                var presets = GetPresetsByItemGuid(item.Guid);
+
+                foreach (var preset in presets)
+                {
+                    var presetItem = preset.GetPresetItem(item.Guid);
+
+                    if (presetItem == null)
+                        continue;
+
+                    presetItem.objUid = newItem.Guid;
+                    preset.IsDirty = true;
+                }
+
+                item = newItem;
             }
 
             item.Position = position;
@@ -652,24 +670,23 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 IsStackable(item, out stacktoitem) && stacktoitem != null)
                 // check if we must stack the moved item
             {
+                //Update PresetItem
+                var presets = GetPresetsByItemGuid(item.Guid);
+
+                foreach (var preset in presets)
+                {
+                    var presetItem = preset.GetPresetItem(item.Guid);
+
+                    if (presetItem == null)
+                        continue;
+
+                    presetItem.objUid = stacktoitem.Guid;
+                    preset.IsDirty = true;
+                }
 
                 NotifyItemMoved(item, oldPosition);
                 StackItem(stacktoitem, (int)item.Stack, false); // in all cases Stack = 1 else there is an error
                 RemoveItem(item, true, false);
-
-                //Update PresetItem
-                var preset = GetPresetByItemGuid(item.Guid);
-
-                if (preset != null)
-                {
-                    var presetItem = preset.GetPresetItem(item.Guid);
-
-                    if (presetItem != null)
-                    {
-                        presetItem.objUid = stacktoitem.Guid;
-                        preset.IsDirty = true;
-                    }
-                }
             }
             else // else we just move the item
             {
@@ -798,35 +815,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public BasePlayerItem CutItem(BasePlayerItem item, int amount)
+        public BasePlayerItem CutItem(BasePlayerItem item)
         {
-            if (amount < 0)
-                throw new ArgumentException("amount < 0", "amount");
-
-            if (amount >= item.Stack)
+            if (item.Stack <= 1)
                 return item;
 
-            UnStackItem(item, amount, false);
+            UnStackItem(item, 1, false);
 
-            var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, amount);
+            var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, 1);
 
             Items.Add(newitem.Guid, newitem);
 
             NotifyItemAdded(newitem, false);
-
-            //Update PresetItem
-            var preset = GetPresetByItemGuid(item.Guid);
-
-            if (preset != null)
-            {
-                var presetItem = preset.GetPresetItem(item.Guid);
-
-                if (presetItem != null)
-                {
-                    presetItem.objUid = newitem.Guid;
-                    preset.IsDirty = true;
-                }
-            }
 
             return newitem;
         }
@@ -915,9 +915,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             //Vous avez perdu %1 '$item%2'.
             if (removeItemMsg)
             {
-                var preset = GetPresetByItemGuid(item.Guid);
+                var presets = GetPresetsByItemGuid(item.Guid);
 
-                if (preset != null)
+                foreach (var preset in presets)
                 {
                     preset.RemoveObject(item.Guid);
 

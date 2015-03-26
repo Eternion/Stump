@@ -133,7 +133,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var weaponTemplate =  weapon.Template as WeaponTemplate;
 
             if (weaponTemplate == null || !CanUseWeapon(cell, weaponTemplate))
+            {
+                OnSpellCastFailed(spell, cell);
                 return false;
+            }  
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 

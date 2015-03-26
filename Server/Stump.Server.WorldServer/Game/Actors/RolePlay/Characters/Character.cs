@@ -2675,7 +2675,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (item == null)
                 return;
 
-            if (item.IsLinkedToAccount() || item.IsLinkedToPlayer())
+            if (item.IsLinkedToAccount() || item.IsLinkedToPlayer() || item.Template.Id == 20000) //Temporary block orb drop
                 return;
 
             if(item.Stack < quantity)
