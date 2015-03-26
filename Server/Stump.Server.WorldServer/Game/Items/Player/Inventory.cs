@@ -526,6 +526,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK;
         }
 
+        public PlayerPresetRecord GetPresetByItemGuid(int itemGuid)
+        {
+            return Presets.FirstOrDefault(x => x.Objects.Exists(y => y.objUid == itemGuid));
+        }
+
         public BasePlayerItem RefreshItemInstance(BasePlayerItem item)
         {
             if (!Items.ContainsKey(item.Guid))
@@ -649,8 +654,22 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
 
                 NotifyItemMoved(item, oldPosition);
-                StackItem(stacktoitem, (int)item.Stack); // in all cases Stack = 1 else there is an error
-                RemoveItem(item);
+                StackItem(stacktoitem, (int)item.Stack, false); // in all cases Stack = 1 else there is an error
+                RemoveItem(item, true, false);
+
+                //Update PresetItem
+                var preset = GetPresetByItemGuid(item.Guid);
+
+                if (preset != null)
+                {
+                    var presetItem = preset.GetPresetItem(item.Guid);
+
+                    if (presetItem != null)
+                    {
+                        presetItem.objUid = stacktoitem.Guid;
+                        preset.IsDirty = true;
+                    }
+                }
             }
             else // else we just move the item
             {
@@ -787,13 +806,27 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (amount >= item.Stack)
                 return item;
 
-            UnStackItem(item, amount);
+            UnStackItem(item, amount, false);
 
             var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, amount);
 
             Items.Add(newitem.Guid, newitem);
 
-            NotifyItemAdded(newitem, true);
+            NotifyItemAdded(newitem, false);
+
+            //Update PresetItem
+            var preset = GetPresetByItemGuid(item.Guid);
+
+            if (preset != null)
+            {
+                var presetItem = preset.GetPresetItem(item.Guid);
+
+                if (presetItem != null)
+                {
+                    presetItem.objUid = newitem.Guid;
+                    preset.IsDirty = true;
+                }
+            }
 
             return newitem;
         }
@@ -882,7 +915,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             //Vous avez perdu %1 '$item%2'.
             if (removeItemMsg)
             {
-                var preset = Presets.FirstOrDefault(x => x.Objects.Exists(y => y.objUid == item.Guid));
+                var preset = GetPresetByItemGuid(item.Guid);
 
                 if (preset != null)
                 {
@@ -950,14 +983,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Owner.RefreshStats();
         }
 
-        protected override void OnItemStackChanged(BasePlayerItem item, int difference)
+        protected override void OnItemStackChanged(BasePlayerItem item, int difference, bool removeMsg = true)
         {
             InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
             //Vous avez perdu %1 '$item%2'.
             //Vous avez obtenu %1 '$item%2'.
-            if (difference != 0)
+            if (removeMsg && difference != 0)
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, difference > 0 ? (short)21 : (short)22, Math.Abs(difference), item.Template.Id);
 
             base.OnItemStackChanged(item, difference);
