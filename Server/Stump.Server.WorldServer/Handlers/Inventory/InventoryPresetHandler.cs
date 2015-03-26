@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             var result = client.Character.Inventory.EquipPreset(message.presetId);
 
-            SendInventoryPresetUseResultMessage(client, message.presetId, result);
+            SendInventoryPresetUseResultMessage(client, (sbyte)(message.presetId + 1), result);
         }
 
         public static void SendInventoryPresetUpdateMessage(WorldClient client, Preset preset)
