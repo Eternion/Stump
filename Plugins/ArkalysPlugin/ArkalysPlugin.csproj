@@ -109,6 +109,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\GiveMapCommand.cs" />
     <Compile Include="Commands\TeleportCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Npcs\NpcAlignement.cs" />
