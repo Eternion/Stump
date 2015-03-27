@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
@@ -33,9 +34,11 @@ namespace ArkalysPlugin.Commands
 
             character.Inventory.RemoveItem(item, amount);
 
-            foreach (var player in players)
+            var amountPerPlayer = (int)Math.Ceiling((double)amount/players.Count());
+
+            foreach (var player in players.Where(player => player != character))
             {
-                player.Inventory.AddItem(itemToken, amount);
+                player.Inventory.AddItem(itemToken, amountPerPlayer);
             }
 
             trigger.Reply("Successfully add {0} items to {1} players !", amount, players.Count());

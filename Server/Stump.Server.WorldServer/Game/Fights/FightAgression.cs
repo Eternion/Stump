@@ -45,15 +45,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get { return true; }
         }
-
-        protected override void OnPlayerLeft(FightActor fighter)
-        {
-            base.OnPlayerLeft(fighter);
-
-            var character = fighter as CharacterFighter;
-            if (character != null)
-                CalculateEarnedHonor(character);
-        }
         
         protected override IEnumerable<IFightResult> GenerateResults()
         {
