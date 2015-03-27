@@ -21,11 +21,17 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public void AddKamas(int amount)
         {
+            if (amount == 0)
+                return;
+
             SetKamas(Kamas + amount);
         }
 
         public void SubKamas(int amount)
         {
+            if (amount == 0)
+                return;
+
             SetKamas(Kamas - amount);
         }
 
