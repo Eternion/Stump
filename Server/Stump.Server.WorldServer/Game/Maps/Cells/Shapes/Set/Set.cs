@@ -21,5 +21,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         {
             return new Union(A, this);
         }
+
+        public Set Substract(Set A)
+        {
+            return new Complement(this, A);
+        }
     }
 }

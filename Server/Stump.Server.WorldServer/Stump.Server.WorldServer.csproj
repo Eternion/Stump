@@ -125,6 +125,7 @@
     <Compile Include="AI\Fights\Actions\MoveNearTo.cs" />
     <Compile Include="AI\Fights\Actions\RandomMove.cs" />
     <Compile Include="AI\Fights\Actions\SpellCastAction.cs" />
+    <Compile Include="AI\Fights\Actions\StayInRange.cs" />
     <Compile Include="AI\Fights\Brain\BrainIdentifierAttribute.cs" />
     <Compile Include="AI\Fights\Brain\BrainManager.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\GlourselesteBrain.cs" />

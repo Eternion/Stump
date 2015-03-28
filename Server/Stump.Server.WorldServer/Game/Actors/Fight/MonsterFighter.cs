@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -103,9 +104,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var items = new List<DroppedItem>();
 
             var prospectingSum = OpposedTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            var droppedGroups = new List<int>();
 
-            foreach (var droppableItem in Monster.Template.DroppableItems.Where(droppableItem => prospectingSum >= droppableItem.ProspectingLock))
+            foreach (var droppableItem in Monster.Template.DroppableItems.Where(droppableItem => prospectingSum >= droppableItem.ProspectingLock).Shuffle())
             {
+                if (droppedGroups.Contains(droppableItem.DropGroup))
+                    continue;
+
                 for (var i = 0; i < droppableItem.RollsCounter; i++)
                 {
                     if (droppableItem.DropLimit > 0 && m_dropsCount.ContainsKey(droppableItem) && m_dropsCount[droppableItem] >= droppableItem.DropLimit)
@@ -116,6 +121,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                     if (!(dropRate >= chance))
                         continue;
+
+                    if (droppableItem.DropGroup != 0)
+                        droppedGroups.Add(droppableItem.DropGroup);
 
                     items.Add(new DroppedItem(droppableItem.ItemId, 1));
 

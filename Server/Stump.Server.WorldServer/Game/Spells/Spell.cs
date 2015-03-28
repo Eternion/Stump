@@ -12,6 +12,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         private readonly int m_id;
         private byte m_level;
         private SpellLevelTemplate m_currentLevel;
+        private int? m_maxLevel;
 
         public Spell(ISpellRecord record)
         {
@@ -70,11 +71,16 @@ namespace Stump.Server.WorldServer.Game.Spells
             private set;
         }
 
+        public int MaxLevel
+        {
+            get { return (m_maxLevel ?? (m_maxLevel = ByLevel.Keys.Max())).Value; }
+        }
+
         public byte CurrentLevel
         {
             get
             {
-                return m_level;
+                return ByLevel.ContainsKey(m_level) ? m_level : (byte)MaxLevel;
             }
             set
             {            
@@ -82,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Spells
                     m_record.Level = value;
 
                 m_level = value;
-                m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[1] : ByLevel[CurrentLevel];
+                m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[MaxLevel] : ByLevel[CurrentLevel];
             }
         }
 
@@ -90,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             get
             {
-                return m_currentLevel ?? (m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[1] : ByLevel[CurrentLevel]);
+                return m_currentLevel ?? (m_currentLevel = !ByLevel.ContainsKey(CurrentLevel) ? ByLevel[MaxLevel] : ByLevel[CurrentLevel]);
             }
         }
 

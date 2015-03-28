@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 occupiedCells = Objects.Where(x => x.BlockSight).Select(x => x.Cell.Id).ToArray();
 
             var line = new LineSet(from, to);
-            return !(from point in line.EnumerateSet().Skip(1) where to.CellId != point.CellId let cell = Cells[point.CellId]
+            return !(from point in line.EnumerateValidPoints().Skip(1) where to.CellId != point.CellId let cell = Cells[point.CellId]
                      where !cell.LineOfSight || !throughEntities && Array.IndexOf(occupiedCells, point.CellId) != -1 select point).Any();
         }
     }
