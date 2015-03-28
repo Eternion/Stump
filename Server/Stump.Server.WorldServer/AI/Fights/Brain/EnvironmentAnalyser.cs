@@ -53,14 +53,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             return cell != null ? CellInformationProvider.GetCellInformation(cell.CellId).Cell : null;
         }
 
-        public Cell GetCellToCastSpell(Cell target, Spell spell, bool nearFirst = true)
+        public Cell GetCellToCastSpell(Cell target, Spell spell, bool LoS, bool nearFirst = true)
         {
             var moveZone = new LozengeSet(Fighter.Position.Point, Fighter.MP);
             var castRange = new LozengeSet(MapPoint.GetPoint(target), Fighter.GetSpellRange(spell.CurrentSpellLevel), CellInformationProvider.IsCellWalkable(target.Id) ? 0 : 1);
 
             var intersection = new Intersection(moveZone, castRange);
 
-            var closestPoint = intersection.EnumerateValidPoints().Where(x => Fight.Cells[x.CellId].Walkable).
+            var closestPoint = intersection.EnumerateValidPoints().Where(x => Fight.Cells[x.CellId].Walkable && !LoS || Fight.CanBeSeen(x, MapPoint.GetPoint(target))).
                 OrderBy(x => (nearFirst ? 1 : -1)*x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
             return closestPoint != null ? Fighter.Fight.Cells[closestPoint.CellId] : null;
@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public IEnumerable<Cell> GetCellsWithLoS(Cell target, Set searchZone)
         {            
-            foreach (var cell in searchZone.EnumerateSet())
+            foreach (var cell in searchZone.EnumerateValidPoints())
             {
                 if (Fight.CanBeSeen(cell, MapPoint.GetPoint(target)))
                     yield return Fight.Cells[cell.CellId];
@@ -164,6 +164,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             return Fight.GetAllFighters(entry => predicate(entry) && Fighter.CanSee(entry)).
                 OrderBy(entry => entry.Position.Point.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
+        }
+
+        public IEnumerable<FightActor> GetVisibleEnemies()
+        {
+            return Fighter.OpposedTeam.GetAllFighters(entry => entry.IsVisibleFor(Fighter));
         }
 
         public bool IsReachable(FightActor actor)

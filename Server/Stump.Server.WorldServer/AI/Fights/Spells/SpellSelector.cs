@@ -59,6 +59,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public bool CanReach(Cell target, Spell spell, out Cell castCell)
         {
+            bool nearFirst = true;
             var targetPoint = new MapPoint(target);
             var spellRange = Fighter.GetSpellRange(spell.CurrentSpellLevel);
             var dist = targetPoint.ManhattanDistanceTo(Fighter.Position.Point);
@@ -72,24 +73,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             // reachable
             if (-diff <= Fighter.MP)
             {
-                // test LoS
-                if (spell.CurrentSpellLevel.CastTestLos)
-                {
-                    // todo : other strategy?
-                    var cell =
-                        m_environment.GetCellsWithLoS(target, new LozengeSet(Fighter.Position.Point, Fighter.MP).
-                        IntersectWith(new LozengeSet(targetPoint, spellRange, m_environment.CellInformationProvider.IsCellWalkable(targetPoint.CellId) ? 0 : 1)))
-                                     .FirstOrDefault();
-
-                    if (cell == null) // no cell available
-                    {
-                        castCell = null;
-                        return false;
-                    }
-                    castCell = cell;
-                    return true;
-                }
-                castCell = m_environment.GetCellToCastSpell(target, spell);
+                castCell = m_environment.GetCellToCastSpell(target, spell, spell.CurrentSpellLevel.CastTestLos, nearFirst);
                 return castCell != null;
             }
 
@@ -105,6 +89,29 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                      .Select(x => new Zone(x.ZoneShape, (byte) x.ZoneSize) {MinRadius = (byte)x.ZoneMinSize});
 
             return cells.Union(cells.SelectMany(x => zones.SelectMany(z => z.GetCells(x, Fighter.Map)))).ToArray();
+        }
+
+        public bool GetRangeAttack(out int min, out int max)
+        {
+            bool hasRangeAttack = false;
+            min = 0;
+            max = 0;
+            foreach (var spell in Fighter.Spells.Values)
+            {
+                var category = SpellIdentifier.GetSpellCategories(spell);
+                if (category.HasFlag(SpellCategory.Damages))
+                {
+                    if (spell.CurrentSpellLevel.MinRange > 0 && min < spell.CurrentSpellLevel.MinRange)
+                        min = (int)spell.CurrentSpellLevel.MinRange;
+
+                    if (spell.CurrentSpellLevel.Range > max)
+                        max = (int)spell.CurrentSpellLevel.Range;
+
+                    hasRangeAttack = true;
+                }
+            }
+
+            return hasRangeAttack;
         }
 
         public void AnalysePossibilities()
@@ -255,7 +262,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             var isFriend = Fighter.Team.Id == target.Team.Id;
             var result = new SpellTarget();
-            var targetType = effect.Targets;
 
             var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
 
