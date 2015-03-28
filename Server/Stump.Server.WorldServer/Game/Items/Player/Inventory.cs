@@ -500,10 +500,21 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             foreach (var item in GetEquipedItems())
             {
+                if (item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_MOUNT ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_FIRST_BONUS ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_FIRST_MALUS ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_FOLLOWER ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_MUTATION ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_ROLEPLAY_BUFFER ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_BONUS ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_MALUS)
+                    continue;
+
                 MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
-            foreach (var presetItem in preset.Objects)
+            foreach (var presetItem in preset.Objects.OrderByDescending(x => x.position))
             {
                 var item = TryGetItem(presetItem.objUid);
 

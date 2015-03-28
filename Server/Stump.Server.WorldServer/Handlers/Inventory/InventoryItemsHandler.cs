@@ -141,7 +141,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ObjectDropMessage.Id)]
         public static void HandleObjectDropMessage(WorldClient client, ObjectDropMessage message)
         {
-            if (client.Character.IsInFight() || client.Character.IsBusy())
+            if (client.Character.IsInFight() || client.Character.IsInExchange())
                 return;
 
             client.Character.DropItem(message.objectUID, message.quantity);
