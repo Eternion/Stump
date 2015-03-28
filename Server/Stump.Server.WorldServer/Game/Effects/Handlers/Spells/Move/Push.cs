@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                         {
                             var damage = new Fights.Damage(pushbackDamages)
                             {
-                                Source = Caster,
+                                Source = actor,
                                 School = EffectSchoolEnum.Pushback,
                                 IgnoreDamageBoost = true,
                                 IgnoreDamageReduction = false
@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                     pushbackDamages = pushbackDamages / 2 - fighter.Stats[PlayerFields.PushDamageReduction];
                                     damage = new Fights.Damage(pushbackDamages)
                                     {
-                                        Source = actor,
+                                        Source = fighter,
                                         School = EffectSchoolEnum.Pushback,
                                         IgnoreDamageBoost = true,
                                         IgnoreDamageReduction = false
