@@ -62,9 +62,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             bool nearFirst = true;
             var targetPoint = new MapPoint(target);
             var spellRange = Fighter.GetSpellRange(spell.CurrentSpellLevel);
+            var minSpellRange = spell.CurrentSpellLevel.MinRange;
             var dist = targetPoint.ManhattanDistanceTo(Fighter.Position.Point);
             var diff = spellRange - dist;
-            if (diff >= 0)
+
+            if (diff >= 0 && dist >= minSpellRange)
             {
                 castCell = Fighter.Cell;
                 return true;
@@ -85,7 +87,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         public Cell[] ExpandCellsZone(Cell[] cells, Spell spell)
         {
             var zones =
-                spell.CurrentSpellLevel.Effects.Where(x => x.ZoneShape == SpellShapeEnum.X)
+                spell.CurrentSpellLevel.Effects.Where(x => x.ZoneShape == SpellShapeEnum.X || x.ZoneShape == SpellShapeEnum.C)
                      .Select(x => new Zone(x.ZoneShape, (byte) x.ZoneSize) {MinRadius = (byte)x.ZoneMinSize});
 
             return cells.Union(cells.SelectMany(x => zones.SelectMany(z => z.GetCells(x, Fighter.Map)))).ToArray();
@@ -162,7 +164,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                             continue;
 
 
-                        var impact = ComputeSpellImpact(spell, target);
+                        var impact = ComputeSpellImpact(spell, target, cell);
                         
 
                         if (impact == null)
@@ -242,7 +244,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             }
         }
 
-        public SpellTarget ComputeSpellImpact(Spell spell, Cell targetCell)
+        public SpellTarget ComputeSpellImpact(Spell spell, Cell targetCell, Cell castSpell)
         {
             SpellTarget damages = null;
             var cast = SpellManager.Instance.GetSpellCastHandler(Fighter, spell, targetCell, false);
@@ -252,7 +254,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             {
                 foreach (var target in handler.GetAffectedActors())
                 {
-                    CumulEffects(handler.Dice, ref damages, target, spell);
+                    if (target != Fighter || handler.AffectedCells.Contains(castSpell)) // we take in account the movement of the caster before the spell cast
+                        CumulEffects(handler.Dice, ref damages, target, spell);
                 }
             }
             return damages;
