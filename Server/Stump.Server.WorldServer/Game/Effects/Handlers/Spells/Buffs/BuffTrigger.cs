@@ -46,6 +46,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     case SpellIdEnum.RATTRAPAGE:
                         triggerType = BuffTriggerType.TACKLED;
                         break;
+                    default:
+                        return false;
                 }
 
                 var buffId = actor.PopNextBuffId();
