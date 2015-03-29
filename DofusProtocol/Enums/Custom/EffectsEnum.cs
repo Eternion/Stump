@@ -675,23 +675,23 @@
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (water)
         /// </summary>
-        Effect_275 = 275,
+        Effect_DamageWaterPerHPLost = 275,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (earth)
         /// </summary>
-        Effect_276 = 276,
+        Effect_DamageEarthPerHPLost = 276,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (air)
         /// </summary>
-        Effect_277 = 277,
+        Effect_DamageAirPerHPLost = 277,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (fire)
         /// </summary>
-        Effect_278 = 278,
+        Effect_DamageFirePerHPLost = 278,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (neutral)
         /// </summary>
-        Effect_279 = 279,
+        Effect_DamageNeutralPerHPLost = 279,
         /// <summary>
         /// Increases #1's range by #3
         /// </summary>

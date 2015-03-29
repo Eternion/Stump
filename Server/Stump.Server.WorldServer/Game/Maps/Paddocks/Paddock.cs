@@ -107,9 +107,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 
         public void Save()
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Update(Record));
-
-            IsRecordDirty = false;
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                WorldServer.Instance.DBAccessor.Database.Update(Record);
+                IsRecordDirty = false;
+            });
         }
 
         public bool IsPaddockOwner(Character character)

@@ -121,10 +121,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         [WorldHandler(GameFightPlacementPositionRequestMessage.Id)]
-        public static void HandleGameFightPlacementPositionRequestMessage(WorldClient client,
-                                                                          GameFightPlacementPositionRequestMessage
-                                                                              message)
+        public static void HandleGameFightPlacementPositionRequestMessage(WorldClient client, GameFightPlacementPositionRequestMessage message)
         {
+            if (!client.Character.IsFighting())
+                return;
+
             if (client.Character.Fighter.Position.Cell.Id != message.cellId)
             {
                 client.Character.Fighter.ChangePrePlacement(client.Character.Fight.Map.Cells[message.cellId]);

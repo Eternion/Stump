@@ -175,11 +175,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_StealIntelligence:
                 case EffectsEnum.Effect_StealWisdom:
                 case EffectsEnum.Effect_StealStrength:
-                case EffectsEnum.Effect_275:
-                case EffectsEnum.Effect_276:
-                case EffectsEnum.Effect_277:
-                case EffectsEnum.Effect_278:
-                case EffectsEnum.Effect_279:
+                case EffectsEnum.Effect_DamageFirePerHPLost:
+                case EffectsEnum.Effect_DamageWaterPerHPLost:
+                case EffectsEnum.Effect_DamageEarthPerHPLost:
+                case EffectsEnum.Effect_DamageAirPerHPLost:
+                case EffectsEnum.Effect_DamageNeutralPerHPLost:
                 case EffectsEnum.Effect_SubAPAttack:
                 case EffectsEnum.Effect_SubMPAttack:
                 case EffectsEnum.Effect_SubCriticalDamageBonus:
@@ -196,6 +196,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_RevealsInvisible:
                 case EffectsEnum.Effect_ReduceEffectsDuration:
                 case EffectsEnum.Effect_GiveHpPercentWhenAttack:
+                case EffectsEnum.Effect_GiveHPPercent:
                     return SpellCategory.Curse;
             }
             return SpellCategory.None;
