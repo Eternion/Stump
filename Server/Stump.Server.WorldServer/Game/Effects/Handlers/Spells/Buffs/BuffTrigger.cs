@@ -46,6 +46,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     case SpellIdEnum.RATTRAPAGE:
                         triggerType = BuffTriggerType.TACKLED;
                         break;
+                    case SpellIdEnum.GLOURS_POURSUITE:
+                        triggerType = BuffTriggerType.TURN_BEGIN;
+                        break;
+                    case SpellIdEnum.GLOURSON_DE_CLOCHE:
+                        break;
                     default:
                         return false;
                 }
