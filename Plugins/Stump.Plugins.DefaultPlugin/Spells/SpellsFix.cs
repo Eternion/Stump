@@ -457,9 +457,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Rattrapage (2261)
             // ENEMY_ALL -> ALLY_ALL
-            FixEffectOnAllLevels(2261, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
-            FixEffectOnAllLevels(2261, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
-            FixEffectOnAllLevels(2261, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+            FixEffectOnAllLevels(2261, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(2261, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(2261, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
 
             #endregion
 
@@ -525,8 +525,29 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Gloursonde (2988)
             // ENEMY_ALL => ALLY_ALL
-            FixEffectOnAllLevels(2988, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+            FixEffectOnAllLevels(2988, 0, (level, effect, critical) => effect.Targets = SpellTargetType.NONE, false);
             FixEffectOnAllLevels(2988, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
+            // Glourdavu (2488)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2488, 0, (level, effect, critical) => effect.Targets = SpellTargetType.NONE, false);
+            FixEffectOnAllLevels(2488, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
+            // Glours poursuite (2489)
+            // ENEMY_ALL => ONLY_SELF
+            FixEffectOnAllLevels(2489, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            // Gloursculade (2490)
+            // ENEMY_ALL => ONLY_SELF
+            FixEffectOnAllLevels(2490, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            #endregion
+
+            #region Glourmand
+
+            // Gloursbi-boulga (2510)
+            // ENEMY_ALL => ONLY_SELF
+            FixEffectOnAllLevels(2510, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
 
             #endregion
 
