@@ -323,6 +323,8 @@ namespace Stump.Server.AuthServer.Database
 
         public bool IsBreedAvailable(PlayableBreedEnum breed)
         {
+            return true;
+
             if ((int) breed <= 0)
                 return false;
 

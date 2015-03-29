@@ -46,9 +46,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     case SpellIdEnum.RATTRAPAGE:
                         triggerType = BuffTriggerType.TACKLED;
                         break;
-                    case SpellIdEnum.GLOURS_POURSUITE:
-                        triggerType = BuffTriggerType.TURN_BEGIN;
+                    case SpellIdEnum.ÉVOLUTION:
+                        triggerType = BuffTriggerType.BUFF_ADDED;
+                        triggerHandler = EvolutionBuffTrigger;
                         break;
+                    case SpellIdEnum.GLOURS_POURSUITE:
                     case SpellIdEnum.GLOURSON_DE_CLOCHE:
                         break;
                     default:
@@ -75,6 +77,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         private static void DefaultBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+        }
+
+        private static void EvolutionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            if (buff.Spell.Id == (int)SpellIdEnum.ÉVOLUTION_II && !buff.Target.HasState((int)SpellStatesEnum.Evolution_II)
+                && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
+                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+            else if (buff.Spell.Id == (int)SpellIdEnum.ÉVOLUTION_III && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
+                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }
 
         private static void RemissionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
