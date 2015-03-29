@@ -45,7 +45,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     break;
             }
 
-            m_stats.Health.Base += (int)(((Summoner.Level - 1) * 5 + 55) * (baseCoef * m_spell.CurrentLevel)) + (Summoner.Stats[PlayerFields.Vitality].Base + Summoner.Stats[PlayerFields.Vitality].Equiped);
+            m_stats.Health.Base += (int)(((Summoner.Level - 1) * 5 + 55) * (baseCoef * m_spell.CurrentLevel))
+                + (int)((Summoner.Stats[PlayerFields.Vitality].Base + Summoner.Stats[PlayerFields.Vitality].Equiped)
+                * (baseCoef * m_spell.CurrentLevel));
         }
 
         public FightActor Caster
