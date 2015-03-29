@@ -224,8 +224,11 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public void Save(ORM.Database database)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(() => database.Update(Record));
-            IsDirty = false;
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() => {
+                database.Update(Record);
+                IsDirty = false;
+            });
+            
         }
     }
 }

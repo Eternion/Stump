@@ -790,7 +790,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             return list;
         }
 
-        protected void ApplyResults(IEnumerable<IFightResult> results)
+        protected virtual void ApplyResults(IEnumerable<IFightResult> results)
         {
             foreach (var fightResult in results.Where(fightResult => !fightResult.HasLeft))
             {
@@ -993,9 +993,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             var enumerator = shuffledCells.GetEnumerator();
             foreach (var fighter in team.GetAllFighters())
             {
-                enumerator.MoveNext();
-
-                fighter.ChangePrePlacement(enumerator.Current);
+                if (enumerator.MoveNext())
+                    fighter.ChangePrePlacement(enumerator.Current);
             }
             enumerator.Dispose();
         }

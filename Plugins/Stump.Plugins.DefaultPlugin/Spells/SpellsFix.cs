@@ -547,6 +547,18 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Fistulor
+
+            // Ami Célium (2688)
+            // NONE => ENEMY_ALL
+            FixEffectOnAllLevels(2688, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            // Spore Héole (2689)
+            // NONE => ALLY_ALL
+            FixEffectOnAllLevels(2689, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
+            #endregion
+
             #endregion
 
             #endregion

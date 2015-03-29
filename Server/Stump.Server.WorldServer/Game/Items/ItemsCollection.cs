@@ -146,7 +146,7 @@ namespace Stump.Server.WorldServer.Game.Items
                 T stackableWith;
                 if (IsStackable(item, out stackableWith))
                 {
-                    StackItem(stackableWith, (int)item.Stack);
+                    StackItem(stackableWith, (int)item.Stack, addItemMsg);
                     DeleteItem(item);
 
                     return stackableWith;

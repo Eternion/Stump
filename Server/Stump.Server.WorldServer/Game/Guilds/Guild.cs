@@ -760,12 +760,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 IsDirty = false;
                 Record.IsNew = false;
-            });
 
-            foreach (var member in Members.Where(x => !x.IsConnected && x.IsDirty))
-            {
-                member.Save(database);
-            }
+                foreach (var member in Members.Where(x => !x.IsConnected && x.IsDirty))
+                {
+                    member.Save(database);
+                }
+            });
         }
 
         protected void UpdateMember(GuildMember member)
