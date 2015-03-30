@@ -361,7 +361,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
                 if (effect.EffectId == EffectsEnum.Effect_SkipTurn) // Let say this effect counts as 2 damage per level of the target
                     ratio = target.Level * 2 * chanceToHappen;
-
+                
                 if (isFriend)
                     result.Curse -= 2 * ratio;
                 else

@@ -13,6 +13,7 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
@@ -310,12 +311,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 }
 
                 // update tokens amount
-                if ((Tokens != null || Owner.Account.Tokens <= 0) &&
-                    (Tokens == null || Owner.Account.Tokens == Tokens.Stack))
+                if ((Tokens != null || Owner.Account.Tokens <= 0) && (Tokens == null || Owner.Account.Tokens == Tokens.Stack))
+                {
+                    Owner.IsAuthSynced = true;
                     return;
+                }
 
                 Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
-                IPCAccessor.Instance.Send(new UpdateAccountMessage(Owner.Account));
+
+                IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Owner.Account),
+                    msg =>
+                    {
+                        Owner.OnSaved();
+                    });
             }
         }
 
