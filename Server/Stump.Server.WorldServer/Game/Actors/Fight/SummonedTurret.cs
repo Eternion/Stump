@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -25,7 +26,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
 
+            m_stats.MP.Modified += OnMPModified;
+
             AdjustStats();
+            KillOtherTurrets();
         }
 
         private void AdjustStats()
@@ -45,9 +49,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     break;
             }
 
-            m_stats.Health.Base += (int)(((Summoner.Level - 1) * 5 + 55) * (baseCoef * m_spell.CurrentLevel))
-                + (int)((Summoner.Stats[PlayerFields.Vitality].Base + Summoner.Stats[PlayerFields.Vitality].Equiped)
-                * (baseCoef * m_spell.CurrentLevel));
+            var coef = baseCoef + (0.2*(m_spell.CurrentLevel - 1));
+            m_stats.Health.Base += (int)(((Summoner.Level - 1) * 5 + 55) * coef) + (int)((Summoner.Stats[PlayerFields.Vitality].Base
+                + Summoner.Stats[PlayerFields.Vitality].Equiped) * coef);
+        }
+
+        private void KillOtherTurrets()
+        {
+            var turrets = Team.GetAllFighters<SummonedTurret>(x => x.IsAlive() && x.Monster.Template == Monster.Template);
+            foreach (var turret in turrets)
+                turret.Die();
+        }
+
+        private void OnMPModified(StatsData mpStats, int amount)
+        {
+            if (amount == 0)
+                return;
+
+            mpStats.Context = 0;
         }
 
         public FightActor Caster

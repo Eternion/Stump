@@ -1,22 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
-using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
-using Xceed.Wpf.Toolkit.Zoombox;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
@@ -29,13 +22,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             m_environment = environment;
             Fighter = fighter;
             Possibilities = new List<SpellCastInformations>();
-            Priorities = new Dictionary<SpellCategory, int>()
+            Priorities = new Dictionary<SpellCategory, int>
             {
                 {SpellCategory.Summoning, 5},
                 {SpellCategory.Buff, 4},
                 {SpellCategory.Damages, 3},
                 {SpellCategory.Healing, 2},
-                {SpellCategory.Curse, 1},
+                {SpellCategory.Curse, 1}
             };
         }
 
