@@ -122,15 +122,6 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                 }
             }
 
-            Character savingCharacter;
-            if (AccountManager.Instance.IsAccountBlocked(ticketAccount.Id, out savingCharacter))
-            {
-                IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage { Login = ticketAccount.Login },
-                msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnAccountReceived(msg, client)), error => client.Disconnect());
-
-                return;
-            }
-
             /* Bind Account & Characters */
             client.SetCurrentAccount(ticketAccount);
 

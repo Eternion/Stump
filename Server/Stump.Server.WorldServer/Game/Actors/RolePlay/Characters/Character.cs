@@ -138,7 +138,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public event Action<Character> Saved;
         private bool m_isLocalSaving;
 
-        private void OnSaved()
+        public void OnSaved()
         {
             UnBlockAccount();
 
@@ -2663,6 +2663,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DropItem(int itemId, int quantity)
         {
+            if (quantity <= 0)
+                return;
+
             var cell = Position.Point.GetAdjacentCells(x => Map.Cells[x].Walkable && Map.IsCellFree(x) && !Map.IsObjectItemOnCell(x)).FirstOrDefault();
             if (cell == null)
             {
@@ -2744,6 +2747,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get;
             private set;
+        }
+
+        public bool IsAuthSynced
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -2897,8 +2906,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
             }
 
-            OnSaved();
-
+            if (IsAuthSynced)
+                OnSaved();
         }
 
         private void LoadRecord()
