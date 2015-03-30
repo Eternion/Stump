@@ -81,11 +81,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         private static void EvolutionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            if (buff.Spell.Id == (int)SpellIdEnum.ÉVOLUTION_II && !buff.Target.HasState((int)SpellStatesEnum.Evolution_II)
-                && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
-                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
-            else if (buff.Spell.Id == (int)SpellIdEnum.ÉVOLUTION_III && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
-                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+            if (!buff.Target.HasState((int)SpellStatesEnum.Evolution_II) && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
+                buff.Target.CastSpell(new Spell((int)SpellIdEnum.ÉVOLUTION_II, buff.Spell.CurrentLevel), buff.Target.Cell, true, true);
+            else if (buff.Target.HasState((int)SpellStatesEnum.Evolution_II) && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
+                buff.Target.CastSpell(new Spell((int)SpellIdEnum.ÉVOLUTION_III, buff.Spell.CurrentLevel), buff.Target.Cell, true, true);
         }
 
         private static void RemissionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)

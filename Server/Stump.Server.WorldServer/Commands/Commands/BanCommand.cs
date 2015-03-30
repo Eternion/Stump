@@ -291,7 +291,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             if (accDefined)
             {
-                var message = new AccountRequestMessage() { Login = trigger.Get<string>("account") };
+                var message = new AccountRequestMessage { Login = trigger.Get<string>("account") };
                 IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(message, reply => OnReply(trigger, reply));
             }
             else
