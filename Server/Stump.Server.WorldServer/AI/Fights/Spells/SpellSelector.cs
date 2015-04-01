@@ -265,9 +265,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 return;
 
             if (Fighter is SummonedTurret)
-                isFriend = false;
+            {
+                isFriend = category == SpellCategory.Healing;
+            }
 
-            double chanceToHappen = 1.0; // 
+            var chanceToHappen = 1.0; // 
 
             // When chances to happen is under 100%, then we reduce spellImpact accordingly, for simplicity, but after having apply damage bonus & reduction. 
             // So average damage should remain exact even if Min and Max are not. 

@@ -35,6 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             TargetedPoint = new MapPoint(TargetedCell);
             Critical = critical;
             Targets = effect.Targets;
+            Category = SpellIdentifier.GetEffectCategories(effect.EffectId);
         }
 
         public EffectDice Dice

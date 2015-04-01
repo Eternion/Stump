@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
                 return false;
 
             var target = Fight.GetFirstFighter<FightActor>(x => x.GetBuffs(y => y.Caster == turret.Summoner && (y is StateBuff)
-                && ((StateBuff)y).State.Id == requiredState).Any() && !x.HasState((int)SpellStatesEnum.Corselet));
+                && ((StateBuff)y).State.Id == requiredState).Any());
 
             if (target == null)
                 return false;
