@@ -424,6 +424,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(3205, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
             FixEffectOnAllLevels(3205, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
 
+            // Flibuste (3206)
+            FixEffectOnAllLevels(3206, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3206, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3206, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
             // Selpâtre (3207)
             FixEffectOnAllLevels(3207, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
             FixEffectOnAllLevels(3207, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
