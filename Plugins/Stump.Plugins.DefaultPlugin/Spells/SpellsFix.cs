@@ -473,8 +473,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(3215, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS, false);
 
             // Cuirasse (3216)
-            FixEffectOnAllLevels(3216, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
-            FixEffectOnAllLevels(3216, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+            FixEffectOnAllLevels(3216, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL ^ SpellTargetType.ENEMY_TURRETS, false);
+            FixEffectOnAllLevels(3216, 1, (level, effect, critical) => effect.Targets = (SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS) | SpellTargetType.SELF, false);
 
             // Armure de Sel (3217)
             RemoveEffectOnAllLevels(3217, 0);

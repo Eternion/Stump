@@ -60,6 +60,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_HealHP_108:
                 case EffectsEnum.Effect_HealHP_143:
                 case EffectsEnum.Effect_HealHP_81:
+                case EffectsEnum.Effect_RestoreHPPercent:
                     return SpellCategory.Healing;
                 case EffectsEnum.Effect_Kill:
                     return SpellCategory.Damages;
