@@ -28,6 +28,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target.IsCarrying())
                 return false;
 
+            if ((target is SummonedTurret) && !(Caster is SummonedTurret))
+                return false;
+            
             Caster.ExchangePositions(target);
 
             target.OnActorMoved(Caster, false);

@@ -571,7 +571,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(3240, 0, false);
             RemoveEffectOnAllLevels(3240, 0, false);
             RemoveEffectOnAllLevels(3240, 0, false);
-            FixEffectOnAllLevels(3240, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3240, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TURRETS ^ SpellTargetType.SELF, false);
             //FixEffectOnAllLevels(3240, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
             FixEffectOnAllLevels(3240, 0, (level, effect, critical) => level.MaxCastPerTarget = 1, false);
 
