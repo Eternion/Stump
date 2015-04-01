@@ -19,7 +19,7 @@ namespace DBSynchroniser.Records
     {
         public const String MODULE = "CompanionCharacteristics";
         public int id;
-        public String labelId;
+        public int caracId;
         public int companionId;
         public int order;
         public int initialValue;
@@ -41,11 +41,10 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        [NullString]
-        public String LabelId
+        public int CaracId
         {
-            get { return labelId; }
-            set { labelId = value; }
+            get { return caracId; }
+            set { caracId = value; }
         }
 
         [D2OIgnore]
@@ -86,9 +85,9 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (CompanionCharacteristic)obj;
-            
+
             Id = castedObj.id;
-            LabelId = castedObj.labelId;
+            CaracId = castedObj.caracId;
             CompanionId = castedObj.companionId;
             Order = castedObj.order;
             InitialValue = castedObj.initialValue;
@@ -100,7 +99,7 @@ namespace DBSynchroniser.Records
         {
             var obj = parent != null ? (CompanionCharacteristic)parent : new CompanionCharacteristic();
             obj.id = Id;
-            obj.labelId = LabelId;
+            obj.caracId = CaracId;
             obj.companionId = CompanionId;
             obj.order = Order;
             obj.initialValue = InitialValue;
