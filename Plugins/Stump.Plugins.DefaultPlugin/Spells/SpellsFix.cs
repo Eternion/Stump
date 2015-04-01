@@ -406,8 +406,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #region STEAMER
 
             // Marée (3203)
-            FixEffectOnAllLevels(3203, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3203, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(3203, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(3203, 0, (level, effect, critical) => effect.Targets = SpellTargetType.NONE, false);
+            FixEffectOnAllLevels(3203, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(3203, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
 
             // Ressac (3204)
             FixEffectOnAllLevels(3204, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
@@ -481,9 +484,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(3218, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
             // Longue Vue (3220)
+            FixEffectOnAllLevels(3220, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(3220, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
             FixEffectOnAllLevels(3220, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
-            FixEffectOnAllLevels(3220, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
             FixEffectOnAllLevels(3220, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
             FixEffectOnAllLevels(3220, 6, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
 
@@ -492,10 +495,85 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(3221, 0, false);
             FixEffectOnAllLevels(3221, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
 
+            // Boumf I (3222)
+            FixEffectOnAllLevels(3222, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3222, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boume I (3223)
+            FixEffectOnAllLevels(3223, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3223, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumt I (3224)
+            FixEffectOnAllLevels(3224, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3224, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumf II (3225)
+            FixEffectOnAllLevels(3225, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3225, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boume II (3226)
+            FixEffectOnAllLevels(3226, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3226, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumt II (3227)
+            FixEffectOnAllLevels(3227, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3227, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumf III (3228)
+            FixEffectOnAllLevels(3228, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3228, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boume III (3229)
+            FixEffectOnAllLevels(3229, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3229, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumt III (3230)
+            FixEffectOnAllLevels(3230, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3230, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Cinétik I (3233)
+            RemoveEffectOnAllLevels(3233, 0, false);
+            RemoveEffectOnAllLevels(3233, 0, false);
+            FixEffectOnAllLevels(3233, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3233, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Cinétik II (3234)
+            RemoveEffectOnAllLevels(3234, 0, false);
+            RemoveEffectOnAllLevels(3234, 0, false);
+            FixEffectOnAllLevels(3234, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3234, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Cinétik III (3235)
+            RemoveEffectOnAllLevels(3235, 0, false);
+            RemoveEffectOnAllLevels(3235, 0, false);
+            FixEffectOnAllLevels(3235, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3235, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Magnétor I (3236)
+            RemoveEffectOnAllLevels(3236, 0, false);
+            RemoveEffectOnAllLevels(3236, 0, false);
+            FixEffectOnAllLevels(3236, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3236, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Magnétor II (3237)
+            RemoveEffectOnAllLevels(3237, 0, false);
+            RemoveEffectOnAllLevels(3237, 0, false);
+            FixEffectOnAllLevels(3237, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3237, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Magnétor III (3238)
+            RemoveEffectOnAllLevels(3238, 0, false);
+            RemoveEffectOnAllLevels(3238, 0, false);
+            FixEffectOnAllLevels(3238, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3238, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
             // Transko (3240)
             RemoveEffectOnAllLevels(3240, 0, false);
             RemoveEffectOnAllLevels(3240, 0, false);
             RemoveEffectOnAllLevels(3240, 0, false);
+            FixEffectOnAllLevels(3240, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
+            //FixEffectOnAllLevels(3240, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3240, 0, (level, effect, critical) => level.MaxCastPerTarget = 1, false);
 
             // Evolution II (3281)
             FixEffectOnAllLevels(3281, 0, (level, effect, critical) => effect.Value = 3282, false);

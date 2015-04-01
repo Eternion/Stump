@@ -259,10 +259,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var isFriend = Fighter.Team.Id == target.Team.Id;
             var result = new SpellTarget();
 
-            var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+             var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
 
             if (category == 0)
                 return;
+
+            if (Fighter is SummonedTurret)
+                isFriend = false;
 
             double chanceToHappen = 1.0; // 
 
@@ -361,7 +364,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
                 if (effect.EffectId == EffectsEnum.Effect_SkipTurn) // Let say this effect counts as 2 damage per level of the target
                     ratio = target.Level * 2 * chanceToHappen;
-                
+
                 if (isFriend)
                     result.Curse -= 2 * ratio;
                 else

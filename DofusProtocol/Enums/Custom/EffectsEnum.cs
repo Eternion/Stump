@@ -1526,7 +1526,7 @@
         /// <summary>
         /// Switches positions
         /// </summary>
-        Effect_1023 = 1023,
+        Effect_SwitchPosition_1023 = 1023,
         /// <summary>
         /// Creates illusions
         /// </summary>

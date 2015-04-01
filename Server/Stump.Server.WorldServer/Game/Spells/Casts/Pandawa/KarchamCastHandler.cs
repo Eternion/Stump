@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Pandawa
         {
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             base.Initialize();
 
@@ -22,6 +22,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Pandawa
                 TargetedActor = targetActor;
 
             TargetedCell = Caster.Cell;
+
+            return true;
         }
 
         public override void Execute()

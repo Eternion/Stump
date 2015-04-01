@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                     return true;
 
                 if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter && !(actor is SummonedTurret))
                     return true;
 
                 if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS) && actor is SummonedBomb)

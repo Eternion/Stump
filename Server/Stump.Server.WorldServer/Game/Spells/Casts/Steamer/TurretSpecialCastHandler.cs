@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -19,22 +18,26 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
         {
         }
 
-        public override void Execute()
+        public override bool Initialize()
         {
-            if (!m_initialized)
-                Initialize();
+            base.Initialize();
+
+            foreach (var handler in Handlers)
+            {
+                handler.SetAffectedActors(new FightActor[0]);
+            }
 
             var requiredState = 0;
 
             switch (Spell.Id)
             {
-                case (int) SpellIdEnum.BOUMBOUMF:
-                case (int) SpellIdEnum.BOUMBOUME:
-                case (int) SpellIdEnum.BOUMBOUMT:
-                    requiredState = (int) SpellStatesEnum.Ambush;
+                case (int)SpellIdEnum.BOUMBOUMF:
+                case (int)SpellIdEnum.BOUMBOUME:
+                case (int)SpellIdEnum.BOUMBOUMT:
+                    requiredState = (int)SpellStatesEnum.Ambush;
                     break;
                 case (int)SpellIdEnum.TRANSKO:
-                    requiredState = (int)SpellStatesEnum.Spyglass;
+                    requiredState = (int)SpellStatesEnum.Periscope;
                     break;
                 case (int)SpellIdEnum.SAUVETAGE:
                     requiredState = (int)SpellStatesEnum.First_Aid;
@@ -42,17 +45,29 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
             }
 
             if (requiredState == 0)
-                return;
+                return false;
 
-            var target = Fight.GetOneFighter(x => x.Team != Caster.Team && x.HasState(requiredState));
+            var turret = Caster as SummonedTurret;
+            if (turret == null)
+                return false;
+
+            var target = Fight.GetFirstFighter<FightActor>(x => x.GetBuffs(y => y.Caster == turret.Summoner && (y is StateBuff)
+                && ((StateBuff)y).State.Id == requiredState).Any() && !x.HasState((int)SpellStatesEnum.Corselet));
 
             if (target == null)
-                return;
+                return false;
+
+            if (Caster.CanCastSpell(Spell, target.Position.Cell) != SpellCastResult.OK)
+                return false;
+
+            TargetedActor = target;
 
             foreach (var handler in Handlers)
+            {
                 handler.AddAffectedActor(target);
+            }
 
-            base.Execute();
+            return true;
         }
     }
 }
