@@ -28,6 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 var look = actor.Look.Clone();
                 var driverLook = look.SubLooks.FirstOrDefault(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER);
                 short skinId = -1;
+                var bonesId = Dice.Value;
 
                 switch (Dice.Value)
                 {
@@ -37,6 +38,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     case 1576: //Zobal - Psychopathe
                         skinId = 1449;
                         break;
+                    case 1035: //Steamer - Scaphrandre
+                        skinId = 1955;
+                        bonesId = 1;
+                        break;
                 }
 
                 if (driverLook != null)
@@ -44,8 +49,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     if (skinId != -1)
                         driverLook.Look.AddSkin(skinId);
 
-                    if (Dice.Value == 923)
-                        look.BonesID = Dice.Value;
+                    if (bonesId == 923)
+                        look.BonesID = bonesId;
                     else
                         look.SetRiderLook(driverLook.Look);
                 }
@@ -54,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     if (skinId != -1)
                         look.AddSkin(skinId);
 
-                    look.BonesID = Dice.Value;
+                    look.BonesID = bonesId;
                 }
                 
                 if (Dice.Value >= 0)
