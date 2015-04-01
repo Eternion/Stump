@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -26,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
 
-            var state = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.Unmovable);
+            var state = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.Rooted);
             AddState(state);
 
             m_stats.MP.Modified += OnMPModified;
@@ -61,9 +62,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats.Strength.Base = (short)(m_stats.Strength.Base * (1 + (Summoner.Level / 100d)));
             m_stats.Agility.Base = (short)(m_stats.Agility.Base * (1 + (Summoner.Level / 100d)));
             m_stats.Wisdom.Base = (short)(m_stats.Wisdom.Base * (1 + (Summoner.Level / 100d)));
-
-            //Disable tackle
-            m_stats[PlayerFields.TackleBlock].Base = 0;
         }
 
         private void KillOtherTurrets()
@@ -79,6 +77,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return;
 
             mpStats.Context = 0;
+        }
+
+        public override bool CanAddBuff(Buff buff)
+        {
+            if (!(buff is StateBuff))
+                return true;
+
+            var state = ((StateBuff)buff).State;
+
+            if ((state.Id == (int) SpellStatesEnum.Fire || state.Id == (int) SpellStatesEnum.Water
+                 || state.Id == (int) SpellStatesEnum.Earth) && Monster.Template.Id != 3287)
+                return false;
+
+            if (state.Id == (int) SpellStatesEnum.Magnatron && Monster.Template.Id != 3289)
+                return false;
+
+            return true;
         }
 
         public FightActor Caster
