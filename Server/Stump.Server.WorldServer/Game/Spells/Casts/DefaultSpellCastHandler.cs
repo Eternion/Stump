@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             get { return m_initialized && Handlers.Any(entry => entry.RequireSilentCast()); }
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             var random = new AsyncRandom();
 
@@ -69,6 +69,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
             Handlers = handlers.ToArray();
             m_initialized = true;
+
+            return true;
        } 
 
         public override void Execute()

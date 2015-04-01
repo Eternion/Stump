@@ -2,10 +2,10 @@
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.Stats;
-using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -25,6 +25,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_spell = spell;
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
+
+            var state = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.Unmovable);
+            AddState(state);
 
             m_stats.MP.Modified += OnMPModified;
 
@@ -52,6 +55,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var coef = baseCoef + (0.2*(m_spell.CurrentLevel - 1));
             m_stats.Health.Base += (int)(((Summoner.Level - 1) * 5 + 55) * coef) + (int)((Summoner.Stats[PlayerFields.Vitality].Base
                 + Summoner.Stats[PlayerFields.Vitality].Equiped) * coef);
+
+            m_stats.Intelligence.Base = (short)(m_stats.Intelligence.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Chance.Base = (short)(m_stats.Chance.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Strength.Base = (short)(m_stats.Strength.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Agility.Base = (short)(m_stats.Agility.Base * (1 + (Summoner.Level / 100d)));
+            m_stats.Wisdom.Base = (short)(m_stats.Wisdom.Base * (1 + (Summoner.Level / 100d)));
+
+            //Disable tackle
+            m_stats[PlayerFields.TackleBlock].Base = 0;
         }
 
         private void KillOtherTurrets()

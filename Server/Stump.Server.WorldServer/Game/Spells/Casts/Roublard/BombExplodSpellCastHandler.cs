@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
             set;
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             /*var len = Spell.CurrentSpellLevel.Effects.Count;
             Handlers = Spell.CurrentSpellLevel.Effects.GetRange(0, ActiveBonus ? len : len - 1)
@@ -69,6 +69,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 
                 handler.SetAffectedActors(affectedActors);
             }
+
+            return true;
         }
     }
 }

@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             get { return Fight.Map; }
         }
 
-        public abstract void Initialize();
+        public abstract bool Initialize();
         public abstract void Execute();
 
         public virtual IEnumerable<SpellEffectHandler> GetEffectHandlers()
