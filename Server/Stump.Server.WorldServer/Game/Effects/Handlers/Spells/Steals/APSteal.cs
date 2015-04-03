@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 }
                 else
                 {
-                    Caster.RegainAP(integerEffect.Value);
+                    Caster.WinAP(integerEffect.Value);
                 }
             }
 

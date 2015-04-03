@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 }
                 else
                 {
-                    Caster.RegainMP(integerEffect.Value);
+                    Caster.WinMP(integerEffect.Value);
                 }
             }
 

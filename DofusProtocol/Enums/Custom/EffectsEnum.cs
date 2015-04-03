@@ -1231,7 +1231,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_Putsch = 793,
+        Effect_TriggerBuff_793 = 793,
         /// <summary>
         /// Hunting Weapon
         /// </summary>
@@ -1883,7 +1883,7 @@
         /// <summary>
         /// [!]
         /// </summary>
-        Effect_1123 = 1123,
+        Effect_Putsch = 1123,
         /// <summary>
         /// (not found)
         /// </summary>
