@@ -156,7 +156,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, target))
                             continue;
 
-
                         var impact = ComputeSpellImpact(spell, target, cell);
                         
 
@@ -241,8 +240,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             SpellTarget damages = null;
             var cast = SpellManager.Instance.GetSpellCastHandler(Fighter, spell, targetCell, false);
-            cast.Initialize();
-
+            if (!cast.Initialize())
+                return null;
+            
             foreach (var handler in cast.GetEffectHandlers())
             {
                 foreach (var target in handler.GetAffectedActors())

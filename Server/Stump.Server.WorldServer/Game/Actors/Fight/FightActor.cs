@@ -567,8 +567,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool RegainAP(short amount)
         {
-            /*if (amount > Stats.AP.Used)
-                amount = Stats.AP.Used;*/
+            if (amount > Stats.AP.Used)
+                amount = Stats.AP.Used;
 
             Stats.AP.Used -= amount;
 
@@ -579,10 +579,28 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool RegainMP(short amount)
         {
-            /*if (amount > Stats.MP.Used)
-                amount = Stats.MP.Used;*/
+            if (amount > Stats.MP.Used)
+                amount = Stats.MP.Used;
 
             Stats.MP.Used -= amount;
+
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, amount);
+
+            return true;
+        }
+
+        public virtual bool WinAP(short amount)
+        {
+            Stats.AP.Context += amount;
+
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_WIN, this, this, amount);
+
+            return true;
+        }
+
+        public virtual bool WinMP(short amount)
+        {
+            Stats.MP.Context += amount;
 
             OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, amount);
 

@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
@@ -9,6 +10,7 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_TriggerBuff)]
+    [EffectHandler(EffectsEnum.Effect_TriggerBuff_793)]
     public class BuffTrigger : SpellEffectHandler
     {
         public BuffTrigger(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -27,6 +29,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 {
                     case SpellIdEnum.FRICTION:
                         triggerHandler = FrictionBuffTrigger;
+                        break;
+                    case SpellIdEnum.POUTCH:
+                    case SpellIdEnum.BRISE_L_ÂME:
+                        triggerType = BuffTriggerType.BUFF_ADDED;
                         break;
                     case SpellIdEnum.RÉMISSION:
                         triggerHandler = RemissionBuffTrigger;
