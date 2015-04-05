@@ -202,6 +202,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(421, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
             FixEffectOnAllLevels(421, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
+            // Coopération (445)
+            FixEffectOnAllLevels(445, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(445, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+
             #endregion
 
             #region PANDAWA

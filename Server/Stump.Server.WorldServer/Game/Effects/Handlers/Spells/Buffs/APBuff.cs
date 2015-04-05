@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 }
                 else
                 {
-                    actor.WinAP(integerEffect.Value);
+                    actor.RegainAP(integerEffect.Value);
                 }
             }
 

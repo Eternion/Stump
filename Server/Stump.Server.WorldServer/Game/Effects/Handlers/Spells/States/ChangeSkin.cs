@@ -28,6 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 var look = actor.Look.Clone();
                 var driverLook = look.SubLooks.FirstOrDefault(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER);
                 short skinId = -1;
+                short scale = -1;
                 var bonesId = Dice.Value;
 
                 switch (Dice.Value)
@@ -42,12 +43,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         skinId = 1955;
                         bonesId = 1;
                         break;
+                    case 874: //Pandawa - Colère de Zatoïshwan
+                        bonesId = 453;
+                        scale = 80;
+                        break;
                 }
 
                 if (driverLook != null)
                 {
                     if (skinId != -1)
                         driverLook.Look.AddSkin(skinId);
+                    if (scale != -1)
+                        driverLook.Look.SetScales(scale);
 
                     if (bonesId == 923)
                         look.BonesID = bonesId;
@@ -58,6 +65,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 {
                     if (skinId != -1)
                         look.AddSkin(skinId);
+                    if (scale != -1)
+                        look.SetScales(scale);
 
                     look.BonesID = bonesId;
                 }

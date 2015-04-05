@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target == null)
                 return false;
 
-            if (target.HasState((int) SpellStatesEnum.Unmovable) && !(target is SummonedBomb))
+            if (target.HasState((int) SpellStatesEnum.Unmovable) || target.HasState((int) SpellStatesEnum.Rooted))
                 return false;
 
             if (target.IsCarrying())

@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 }
                 else
                 {
-                    Caster.WinAP((short)(value));
+                    Caster.RegainAP((short)(value));
                 }
             }
 
