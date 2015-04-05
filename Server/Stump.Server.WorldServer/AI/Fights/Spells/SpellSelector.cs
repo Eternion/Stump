@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         public Cell[] ExpandCellsZone(Cell[] cells, Spell spell)
         {
             var zones =
-                spell.CurrentSpellLevel.Effects.Where(x => x.ZoneShape == SpellShapeEnum.X || x.ZoneShape == SpellShapeEnum.C)
+                spell.CurrentSpellLevel.Effects.Where(x => x.ZoneShape == SpellShapeEnum.X || x.ZoneShape == SpellShapeEnum.C || x.ZoneShape == SpellShapeEnum.L)
                      .Select(x => new Zone(x.ZoneShape, (byte) x.ZoneSize) {MinRadius = (byte)x.ZoneMinSize});
 
             return cells.Union(cells.SelectMany(x => zones.SelectMany(z => z.GetCells(x, Fighter.Map)))).ToArray();
