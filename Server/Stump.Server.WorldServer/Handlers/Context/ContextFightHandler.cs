@@ -121,10 +121,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         [WorldHandler(GameFightPlacementPositionRequestMessage.Id)]
-        public static void HandleGameFightPlacementPositionRequestMessage(WorldClient client,
-                                                                          GameFightPlacementPositionRequestMessage
-                                                                              message)
+        public static void HandleGameFightPlacementPositionRequestMessage(WorldClient client, GameFightPlacementPositionRequestMessage message)
         {
+            if (!client.Character.IsFighting())
+                return;
+
             if (client.Character.Fighter.Position.Cell.Id != message.cellId)
             {
                 client.Character.Fighter.ChangePrePlacement(client.Character.Fight.Map.Cells[message.cellId]);
@@ -402,7 +403,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             var fighterInfos = fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
-                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
 
             client.Send(new GameFightShowFighterMessage(fighterInfos));
         }
@@ -412,7 +413,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             var fighterInfos = fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
-                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
 
             client.Send(new GameFightRefreshFighterMessage(fighterInfos));
         }

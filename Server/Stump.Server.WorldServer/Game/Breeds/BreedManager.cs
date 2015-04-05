@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Stump.Core.Attributes;
-using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Breeds;
 
 namespace Stump.Server.WorldServer.Game.Breeds
@@ -34,6 +31,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 PlayableBreedEnum.Pandawa,
                 PlayableBreedEnum.Roublard,
                 PlayableBreedEnum.Zobal,
+                PlayableBreedEnum.Steamer
             };
 
         public uint AvailableBreedsFlags
@@ -44,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
             }
         }
 
-        private Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
+        private readonly Dictionary<int, Breed> m_breeds = new Dictionary<int, Breed>();
         private Dictionary<int, Head> m_heads = new Dictionary<int, Head>();
 
         [Initialization(InitializationPass.Third)]
@@ -97,7 +95,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
         {
             if(defineId)
             {
-                int id = m_breeds.Keys.Max() + 1;
+                var id = m_breeds.Keys.Max() + 1;
                 breed.Id = id;
             }
 

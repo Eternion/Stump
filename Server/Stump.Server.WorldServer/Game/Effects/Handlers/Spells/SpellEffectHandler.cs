@@ -13,7 +13,6 @@ using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
-using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
@@ -35,6 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             TargetedPoint = new MapPoint(TargetedCell);
             Critical = critical;
             Targets = effect.Targets;
+            Category = SpellIdentifier.GetEffectCategories(effect.EffectId);
         }
 
         public EffectDice Dice
@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                     return true;
 
                 if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter && !(actor is SummonedTurret))
                     return true;
 
                 if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS) && actor is SummonedBomb)

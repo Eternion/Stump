@@ -109,16 +109,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             foreach (var member in m_members)
             {
-                if (member.IsBoss)
-                {
-                    if (Boss != null)
-                    {
-                        logger.Error("There is at least two boss in guild {0} ({1})", Id, Name);
-                    }
-
-                    Boss = member;
-                }
-
                 BindMemberEvents(member);
                 member.BindGuild(this);
             }
@@ -126,6 +116,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (Boss == null)
             {
                 logger.Error("There is at no boss in guild {0} ({1}) -> Promote new Boss", Id, Name);
+                var newBoss = Members.OrderBy(x => x.RankId).FirstOrDefault();
+                if (newBoss != null)
+                    newBoss.RankId = 1;
             }
 
             // load spells
@@ -167,8 +160,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public GuildMember Boss
         {
-            get;
-            private set;
+            get { return Members.FirstOrDefault(x => x.RankId == 1); }
         }
 
         public long Experience
@@ -530,6 +522,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             return m_spells.Where(x => x != null).ToList().AsReadOnly();
         }
+
         public int[] GetTaxCollectorSpellsLevels() // faster
         {
             return m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
@@ -610,29 +603,30 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 if (Boss == guildMember)
                     return;
 
-                if (Boss != null)
+                WorldServer.Instance.IOTaskPool.AddMessage(() =>
                 {
-                    Boss.RankId = 0;
-                    Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
-
-                    if (m_members.Count > 1)
+                    if (Boss != null)
                     {
+                        var oldBoss = Boss;
+
+                        oldBoss.RankId = 0;
+                        oldBoss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+
                         // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
                         BasicHandler.SendTextInformationMessage(m_clients,
                             TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199,
-                            guildMember.Name, Boss.Name, Name);
+                            guildMember.Name, oldBoss.Name, Name);
+
+                        UpdateMember(oldBoss);
+                        oldBoss.Save(WorldServer.Instance.DBAccessor.Database);
                     }
 
-                    UpdateMember(Boss);
-                    Boss.Save(WorldServer.Instance.DBAccessor.Database);
-                }
+                    guildMember.RankId = 1;
+                    guildMember.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
 
-                Boss = guildMember;
-                Boss.RankId = 1;
-                Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
-
-                UpdateMember(Boss);
-                Boss.Save(WorldServer.Instance.DBAccessor.Database);
+                    UpdateMember(guildMember);
+                    guildMember.Save(WorldServer.Instance.DBAccessor.Database);
+                });
             }
         }
 
@@ -760,12 +754,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 IsDirty = false;
                 Record.IsNew = false;
-            });
 
-            foreach (var member in Members.Where(x => !x.IsConnected && x.IsDirty))
-            {
-                member.Save(database);
-            }
+                foreach (var member in Members.Where(x => !x.IsConnected && x.IsDirty))
+                {
+                    member.Save(database);
+                }
+            });
         }
 
         protected void UpdateMember(GuildMember member)

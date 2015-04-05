@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using CSScriptLibrary;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Benchmark;
 
 namespace Stump.Server.BaseServer.Commands.Commands

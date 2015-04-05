@@ -257,6 +257,7 @@ namespace Stump.Server.AuthServer.IPC
 
             Database.Update(account);
             Client.ReplyRequest(new CommonOKMessage(), message);
+            //Client.ReplyRequest(new UpdateAccountMessage(account.Serialize()), message);
         }
 
         private void Handle(DeleteAccountMessage message)

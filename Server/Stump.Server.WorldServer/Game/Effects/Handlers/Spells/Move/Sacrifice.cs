@@ -42,17 +42,31 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target.IsSacrificeProtected)
                 return;
 
-            target.IsSacrificeProtected = true;
-
             var damage = token as Fights.Damage;
             if (damage == null)
                 return;
 
-            Caster.ExchangePositions(target);
+            target.IsSacrificeProtected = true;
+
+            if (buff.Spell.Template.Id == (int)SpellIdEnum.SACRIFICE_440)
+                Caster.ExchangePositions(target);
+            else if (Caster is SummonedTurret)
+            {
+                target.IsSacrificeProtected = false;
+
+                var source = damage.Source;
+
+                if (!source.Position.Point.IsAdjacentTo(target.Position.Point))
+                    return;
+
+                if (!Caster.Position.Point.IsAdjacentTo(target.Position.Point))
+                    return;
+            }
 
             // first, apply damage to sacrifier
             Caster.InflictDamage(damage);
-            // then, negate damage done to target
+
+            // then, negate damage given to target
             damage.IgnoreDamageBoost = true;
             damage.IgnoreDamageReduction = true;
             damage.Generated = true;

@@ -1,22 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Brain;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
-using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
-using Xceed.Wpf.Toolkit.Zoombox;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
@@ -29,13 +22,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             m_environment = environment;
             Fighter = fighter;
             Possibilities = new List<SpellCastInformations>();
-            Priorities = new Dictionary<SpellCategory, int>()
+            Priorities = new Dictionary<SpellCategory, int>
             {
                 {SpellCategory.Summoning, 5},
                 {SpellCategory.Buff, 4},
                 {SpellCategory.Damages, 3},
                 {SpellCategory.Healing, 2},
-                {SpellCategory.Curse, 1},
+                {SpellCategory.Curse, 1}
             };
         }
 
@@ -163,7 +156,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, target))
                             continue;
 
-
                         var impact = ComputeSpellImpact(spell, target, cell);
                         
 
@@ -248,8 +240,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             SpellTarget damages = null;
             var cast = SpellManager.Instance.GetSpellCastHandler(Fighter, spell, targetCell, false);
-            cast.Initialize();
-
+            if (!cast.Initialize())
+                return null;
+            
             foreach (var handler in cast.GetEffectHandlers())
             {
                 foreach (var target in handler.GetAffectedActors())
@@ -266,12 +259,17 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var isFriend = Fighter.Team.Id == target.Team.Id;
             var result = new SpellTarget();
 
-            var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+             var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
 
             if (category == 0)
                 return;
 
-            double chanceToHappen = 1.0; // 
+            if (Fighter is SummonedTurret)
+            {
+                isFriend = category == SpellCategory.Healing;
+            }
+
+            var chanceToHappen = 1.0; // 
 
             // When chances to happen is under 100%, then we reduce spellImpact accordingly, for simplicity, but after having apply damage bonus & reduction. 
             // So average damage should remain exact even if Min and Max are not. 

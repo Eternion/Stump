@@ -737,7 +737,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
 
-            handler.Initialize();
+            if (!handler.Initialize())
+                return false;
 
             OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
             if (!ApFree)
@@ -1298,6 +1299,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return m_buffList.Where(entry => predicate(entry));
         }
 
+        public virtual bool CanAddBuff(Buff buff)
+        {
+            return true;
+        }
+
         public bool BuffMaxStackReached(Buff buff)
         {
             return buff.Spell.CurrentSpellLevel.MaxStack > 0 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell && entry.Effect.EffectId == buff.Effect.EffectId && !(buff is DelayBuff));
@@ -1305,7 +1311,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool AddAndApplyBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
         {
-            if (BuffMaxStackReached(buff) && !bypassMaxStack)
+            if (!CanAddBuff(buff) || (BuffMaxStackReached(buff) && !bypassMaxStack))
             {
                 if (freeIdIfFail)
                     FreeBuffId(buff.Id);
@@ -1318,7 +1324,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!(buff is TriggerBuff) && !(buff is DelayBuff))
                 buff.Apply();
 
-            if (buff is TriggerBuff && ((buff as TriggerBuff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
+            if (buff is TriggerBuff && (((TriggerBuff) buff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
                 buff.Apply();
 
             return true;
@@ -1326,7 +1332,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool AddBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
         {
-            if (BuffMaxStackReached(buff) && !bypassMaxStack)
+            if (!CanAddBuff(buff) || (BuffMaxStackReached(buff) && !bypassMaxStack))
             {
                 if (freeIdIfFail)
                     FreeBuffId(buff.Id);

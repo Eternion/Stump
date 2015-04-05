@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
         {
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             base.Initialize();
 
@@ -22,6 +22,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
             {
                 handler.CastPoint = handler.TargetedPoint;
             }
+
+            return true;
         }
     }
 }

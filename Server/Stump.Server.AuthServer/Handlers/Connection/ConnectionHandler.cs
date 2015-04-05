@@ -141,6 +141,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                     account = AccountManager.Instance.FindAccountById(account.Id);
 
                 /* Bind Account to Client */
+                client.Account = account;
                 client.UserGroup = AccountManager.Instance.FindUserGroup(account.UserGroupId);
 
                 if (client.UserGroup == null)

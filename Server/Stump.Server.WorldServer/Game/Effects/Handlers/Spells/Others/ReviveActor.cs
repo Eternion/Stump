@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             var cell = TargetedCell;
             if (!Fight.IsCellFree(cell))
-                return;
+                cell = Map.GetRandomAdjacentFreeCell(TargetedPoint, true);
 
             HealHpPercent(actor, heal);
             actor.Position.Cell = cell;

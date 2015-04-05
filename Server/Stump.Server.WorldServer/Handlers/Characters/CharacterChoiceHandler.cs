@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
@@ -180,7 +183,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
-            InventoryHandler.SendInventoryContentAndPresetMessage(client);
+            if (client.Character.Inventory.Presets.Any())
+                InventoryHandler.SendInventoryContentAndPresetMessage(client);
+            else
+                InventoryHandler.SendInventoryContentMessage(client);
 
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR);
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
@@ -233,6 +239,17 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             character.LastUsage = DateTime.Now;
             WorldServer.Instance.DBAccessor.Database.Update(character);
+
+            var document = new BsonDocument
+            {
+                { "AcctId", client.WorldAccount.Id },
+                { "CharacterId", character.Id },
+                { "IPAddress", client.IP },
+                { "Action", "Login" },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("characters_connections", document);
         }
 
 
