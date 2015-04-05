@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
@@ -9,6 +10,7 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_TriggerBuff)]
+    [EffectHandler(EffectsEnum.Effect_TriggerBuff_793)]
     public class BuffTrigger : SpellEffectHandler
     {
         public BuffTrigger(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -28,6 +30,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     case SpellIdEnum.FRICTION:
                         triggerHandler = FrictionBuffTrigger;
                         break;
+                    case SpellIdEnum.POUTCH:
+                    case SpellIdEnum.BRISE_L_ÂME:
+                        triggerType = BuffTriggerType.BUFF_ADDED;
+                        break;
                     case SpellIdEnum.RÉMISSION:
                         triggerHandler = RemissionBuffTrigger;
                         break;
@@ -45,6 +51,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                         break;
                     case SpellIdEnum.RATTRAPAGE:
                         triggerType = BuffTriggerType.TACKLED;
+                        break;
+                    case SpellIdEnum.ÉVOLUTION:
+                        triggerType = BuffTriggerType.BUFF_ADDED;
+                        triggerHandler = EvolutionBuffTrigger;
+                        break;
+                    case SpellIdEnum.GLOURS_POURSUITE:
+                    case SpellIdEnum.GLOURSON_DE_CLOCHE:
                         break;
                     default:
                         return false;
@@ -70,6 +83,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         private static void DefaultBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+        }
+
+        private static void EvolutionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            if (!buff.Target.HasState((int)SpellStatesEnum.Evolution_II) && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
+                buff.Target.CastSpell(new Spell((int)SpellIdEnum.ÉVOLUTION_II, buff.Spell.CurrentLevel), buff.Target.Cell, true, true);
+            else if (buff.Target.HasState((int)SpellStatesEnum.Evolution_II) && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
+                buff.Target.CastSpell(new Spell((int)SpellIdEnum.ÉVOLUTION_III, buff.Spell.CurrentLevel), buff.Target.Cell, true, true);
         }
 
         private static void RemissionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)

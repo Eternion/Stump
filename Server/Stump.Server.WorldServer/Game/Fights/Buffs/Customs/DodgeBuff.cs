@@ -73,7 +73,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
             var casterDirection = cell.OrientationTo(source.Position.Point, false);
             var direction = cell.GetOppositeDirection(casterDirection);
-            var targetedCell = target.Map.Cells[cell.GetNearestCellInDirection(direction).CellId];
+            var nearestCell = cell.GetNearestCellInDirection(direction);
+
+            if (nearestCell == null)
+                return;
+
+            var targetedCell = target.Map.Cells[nearestCell.CellId];
 
             damage.GenerateDamages();
             damage.Amount = 0;

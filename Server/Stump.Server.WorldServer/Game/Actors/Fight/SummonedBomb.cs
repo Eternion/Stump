@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (player == Summoner)
                 IncreaseDamageBonus();
 
-            if (player == this)
+            if (IsFighterTurn())
                 PassTurn();
         }
 

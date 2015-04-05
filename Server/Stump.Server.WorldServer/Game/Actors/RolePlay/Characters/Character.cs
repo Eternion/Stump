@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using MongoDB.Bson;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Threading;
@@ -11,6 +13,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.IPC.Objects;
+using Stump.Server.BaseServer.Logging;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
@@ -131,6 +134,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (ArenaPopup != null)
                 ArenaPopup.Deny();
 
+            var document = new BsonDocument
+            {
+                { "AcctId", Client.Account.Id },
+                { "CharacterId", Id },
+                { "IPAddress", Client.IP },
+                { "Action", "Loggout" },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("characters_connections", document);
+
             var handler = LoggedOut;
             if (handler != null) handler(this);
         }
@@ -138,7 +152,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public event Action<Character> Saved;
         private bool m_isLocalSaving;
 
-        private void OnSaved()
+        public void OnSaved()
         {
             UnBlockAccount();
 
@@ -2663,6 +2677,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DropItem(int itemId, int quantity)
         {
+            if (quantity <= 0)
+                return;
+
             var cell = Position.Point.GetAdjacentCells(x => Map.Cells[x].Walkable && Map.IsCellFree(x) && !Map.IsObjectItemOnCell(x)).FirstOrDefault();
             if (cell == null)
             {
@@ -2744,6 +2761,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get;
             private set;
+        }
+
+        public bool IsAuthSynced
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -2897,8 +2920,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
             }
 
-            OnSaved();
-
+            if (IsAuthSynced)
+                OnSaved();
         }
 
         private void LoadRecord()

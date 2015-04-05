@@ -657,8 +657,8 @@ namespace Stump.Server.WorldServer.Database.Characters
             CellId = breed.StartCell;
             Direction = breed.StartDirection;
 
-            SpellsPoints = breed.StartLevel;
-            StatsPoints = (ushort) (breed.StartLevel*5);
+            SpellsPoints = 0;
+            StatsPoints = (ushort) ((breed.StartLevel - 1) * 5);
             Kamas = breed.StartKamas;
 
             CanRestat = true;

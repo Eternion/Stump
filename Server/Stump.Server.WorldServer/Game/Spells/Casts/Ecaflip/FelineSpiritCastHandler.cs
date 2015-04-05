@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
         {
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             base.Initialize();
 
@@ -22,6 +22,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 
             if (damageHandler != null)
                 damageHandler.BuffTriggerType = BuffTriggerType.BUFF_ENDED_TURNEND;
+
+            return true;
         }
 
         public override void Execute()
