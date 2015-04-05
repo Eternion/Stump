@@ -44,6 +44,12 @@ SELECT COUNT(*) FROM characters_shortcuts_items WHERE OwnerId NOT IN (SELECT Id 
 */
 DELETE FROM characters_shortcuts_items WHERE OwnerId NOT IN (SELECT Id FROM characters);
 
+-- Cleanup characters_shortcuts_items_presets to remove items shortcuts doesn't have character associated
+/*
+SELECT COUNT(*) FROM characters_shortcuts_items_presets WHERE OwnerId NOT IN (SELECT Id FROM characters);
+*/
+DELETE FROM characters_shortcuts_items_presets WHERE OwnerId NOT IN (SELECT Id FROM characters);
+
 -- Cleanup characters_shortcuts_spells to remove spells shortcuts doesn't have character associated
 /*
 SELECT COUNT(*) FROM characters_shortcuts_spells WHERE OwnerId NOT IN (SELECT Id FROM characters);

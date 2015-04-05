@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 if (Effect.Duration == 0)
                 {
-                    actor.WinMP(integerEffect.Value);   
+                    actor.RegainMP(integerEffect.Value);   
                 }
                 else
                 {

@@ -403,7 +403,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             var fighterInfos = fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
-                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
 
             client.Send(new GameFightShowFighterMessage(fighterInfos));
         }
@@ -413,7 +413,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             var fighterInfos = fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
-                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
 
             client.Send(new GameFightRefreshFighterMessage(fighterInfos));
         }
