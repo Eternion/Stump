@@ -437,6 +437,12 @@
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
     <Compile Include="Game\Fights\Buffs\DelayBuff.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\DesigneVolontaireChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\StatueChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\ZombieChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\DefaultChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\ChallengeIdentifierAttribute.cs" />
+    <Compile Include="Game\Fights\Challenges\ChallengeManager.cs" />
     <Compile Include="Game\Fights\Damage.cs" />
     <Compile Include="Game\Fights\Fight.cs" />
     <Compile Include="Game\Fights\FightAgression.cs" />
@@ -548,6 +554,7 @@
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
     <Compile Include="Handlers\Context\ContextArenaHandler.cs" />
+    <Compile Include="Handlers\Context\ContextChallengeHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Guilds\GuildHandler.cs" />

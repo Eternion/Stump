@@ -5,6 +5,7 @@ using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
+using Stump.Core.Mathematics;
 using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
@@ -22,13 +23,12 @@ using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using TriggerType = Stump.Server.WorldServer.Game.Fights.Triggers.TriggerType;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -253,6 +253,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         void StartTurn();
         event Action<IFight, FightActor> TurnStarted;
         void StopTurn();
+        event Action<IFight, FightActor> BeforeTurnStopped;
         event Action<IFight, FightActor> TurnStopped;
         void SwitchFighters(FightActor fighter1, FightActor fighter2);
         IEnumerable<Buff> GetBuffs();
@@ -284,6 +285,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         FightActor GetOneFighter(int id);
         FightActor GetOneFighter(Cell cell);
         FightActor GetOneFighter(Predicate<FightActor> predicate);
+        T GetRandomFighter<T>() where T : FightActor;
         T GetOneFighter<T>(int id) where T : FightActor;
         T GetOneFighter<T>(Cell cell) where T : FightActor;
         T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor;
@@ -1458,10 +1460,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = ReadyChecker.RequestCheck(this, PassTurnAndCheck, LagAndPassTurn);
         }
 
+        public event Action<IFight, FightActor> BeforeTurnStopped;
         public event Action<IFight, FightActor> TurnStopped;
 
         protected virtual void OnTurnStopped()
         {
+            var evnt = BeforeTurnStopped;
+            if (evnt != null)
+                evnt(this, FighterPlaying);
+
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
             if (FighterPlaying.IsAlive())
@@ -1485,7 +1492,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (WaitAcknowledgment)
                 AcknowledgeAction();
 
-            var evnt = TurnStopped;
+            evnt = TurnStopped;
             if (evnt != null)
                 evnt(this, FighterPlaying);
 
@@ -2333,6 +2340,14 @@ namespace Stump.Server.WorldServer.Game.Fights
         public void FreeContextualId(sbyte id)
         {
             m_contextualIdProvider.Push(id);
+        }
+
+        public T GetRandomFighter<T>() where T : FightActor
+        {
+            var fighters = Fighters.Where(x => x is T).ToArray();
+            var random = new CryptoRandom().Next(0, (fighters.Count() + 1));
+
+            return fighters[random] as T;
         }
 
         public FightActor GetOneFighter(int id)

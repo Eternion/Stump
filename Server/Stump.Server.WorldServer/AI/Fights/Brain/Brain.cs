@@ -15,7 +15,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         public const int MaxMovesTries = 20;
         public const int MaxCastLimit = 20;
 
-
         [Variable(true)]
         public static bool DebugMode = false;
 

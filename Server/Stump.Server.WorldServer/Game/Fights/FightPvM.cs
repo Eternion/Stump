@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Challenges;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
@@ -32,6 +33,15 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_placementTimer.Dispose();
 
             base.StartFighting();
+        }
+
+        protected override void OnFightStarted()
+        {
+            base.OnFightStarted();
+
+            var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+
+            ContextHandler.SendChallengeInfoMessage(Clients, challenge);
         }
 
         protected override void OnFighterAdded(FightTeam team, FightActor actor)
