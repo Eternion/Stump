@@ -19,8 +19,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(fighter is CharacterFighter))
                 return;
 
-            if (fighter.UsedMP != 1)
-                UpdateStatus(ChallengeStatusEnum.FAILED);
+            if (fighter.UsedMP == 1)
+                return;
+
+            UpdateStatus(ChallengeStatusEnum.FAILED);
+            Fight.BeforeTurnStopped -= OnTurnStopped;
         }
     }
 }

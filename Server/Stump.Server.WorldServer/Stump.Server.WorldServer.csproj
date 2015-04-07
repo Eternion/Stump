@@ -438,7 +438,10 @@
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
     <Compile Include="Game\Fights\Buffs\DelayBuff.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\DesigneVolontaireChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\EconomeChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\StatueChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\SursisChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\VersatileChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\ZombieChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\DefaultChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\ChallengeIdentifierAttribute.cs" />

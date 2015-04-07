@@ -364,6 +364,7 @@ namespace Uplauncher
                 SetState("Le serveur est indisponible");
             }
         }
+
         private void OnPatchDownloaded(object sender, DownloadStringCompletedEventArgs e)
         {
             ProgressDownloadSpeedInfo = string.Empty;
@@ -441,6 +442,7 @@ namespace Uplauncher
             LocalChecksum = files.Count > 0 ? BitConverter.ToString(md5.Hash).Replace("-", "").ToLower() : string.Empty;
             File.WriteAllText(Constants.LocalChecksumFile, LocalChecksum);
         }
+
         private void MD5Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             SetState(string.Format(m_bytesFormatProvider, "Vérification de l'intégrité des fichiers en cours... ({0} % accompli) ({1:fs}/s)", e.ProgressPercentage, (double)e.UserState), Colors.Green);

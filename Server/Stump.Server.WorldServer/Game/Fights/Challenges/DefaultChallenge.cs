@@ -49,6 +49,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
 
         public void UpdateStatus(ChallengeStatusEnum status)
         {
+            if (Status != ChallengeStatusEnum.RUNNING)
+                return;
+
             Status = status;
 
             ContextHandler.SendChallengeResultMessage(Fight.Clients, this);
@@ -59,8 +62,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             if (winners is FightMonsterTeam)
                 UpdateStatus(ChallengeStatusEnum.FAILED);
 
-            if (Status == ChallengeStatusEnum.RUNNING)
-                UpdateStatus(ChallengeStatusEnum.SUCCESS);
+            UpdateStatus(ChallengeStatusEnum.SUCCESS);
         }
     }
 }
