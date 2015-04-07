@@ -1,15 +1,20 @@
-﻿using Stump.DofusProtocol.Enums.Custom;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier((int)ChallengeEnum.ZOMBIE)]
-    public class ZombieChallenge : DefaultChallenge
+    [ChallengeIdentifier((int)ChallengeEnum.NOMADE)]
+    public class NomadeChallenge : DefaultChallenge
     {
-        public ZombieChallenge(int id, IFight fight)
+        public NomadeChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 30;
+            Bonus = 20;
 
             Fight.BeforeTurnStopped += OnTurnStopped;
         }
@@ -19,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(fighter is CharacterFighter))
                 return;
 
-            if (fighter.UsedMP == 1)
+            if (fighter.MP <= 0)
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);

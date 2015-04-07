@@ -3,7 +3,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier(2)]
+    [ChallengeIdentifier((int)ChallengeEnum.STATUE)]
     public class StatueChallenge : DefaultChallenge
     {
         public StatueChallenge(int id, IFight fight)

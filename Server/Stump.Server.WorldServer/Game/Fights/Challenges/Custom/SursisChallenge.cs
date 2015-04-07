@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier(4)]
+    [ChallengeIdentifier((int)ChallengeEnum.SURSIS)]
     public class SursisChallenge : DefaultChallenge
     {
         public SursisChallenge(int id, IFight fight)

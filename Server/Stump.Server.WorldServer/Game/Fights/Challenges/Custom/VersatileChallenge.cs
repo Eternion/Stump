@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier(6)]
+    [ChallengeIdentifier((int)ChallengeEnum.VERSATILE)]
     public class VersatileChallenge : DefaultChallenge
     {
         public VersatileChallenge(int id, IFight fight)
