@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -31,8 +25,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         {
             if (victim == Target)
                 UpdateStatus(ChallengeStatusEnum.SUCCESS);
-            else if (victim != Target && Status == ChallengeStatusEnum.RUNNING)
-                UpdateStatus(ChallengeStatusEnum.FAILED);
+
+            UpdateStatus(ChallengeStatusEnum.FAILED);
         }
 
         public MonsterFighter Target

@@ -27,8 +27,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(fighter is CharacterFighter))
                 return;
 
-            if (fighter.Position.Cell.Id != m_startCell)
-                UpdateStatus(ChallengeStatusEnum.FAILED);
+            if (fighter.Position.Cell.Id == m_startCell)
+                return;
+
+            UpdateStatus(ChallengeStatusEnum.FAILED);
+
+            Fight.TurnStarted -= OnTurnStarted;
+            Fight.TurnStopped -= OnTurnStopped;
         }
     }
 }
