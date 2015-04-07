@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             ContextHandler.SendChallengeResultMessage(Fight.Clients, this);
         }
 
-        private void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        protected void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
         {
             if (winners is FightMonsterTeam)
                 UpdateStatus(ChallengeStatusEnum.FAILED);

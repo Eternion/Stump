@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier(5)]
+    [ChallengeIdentifier((int)ChallengeEnum.ÉCONOME)]
     public class EconomeChallenge : DefaultChallenge
     {
         public EconomeChallenge(int id, IFight fight)

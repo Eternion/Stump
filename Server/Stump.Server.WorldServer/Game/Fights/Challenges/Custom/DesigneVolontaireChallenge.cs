@@ -3,7 +3,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier(3)]
+    [ChallengeIdentifier((int)ChallengeEnum.DÉSIGNÉ_VOLONTAIRE)]
     public class DesigneVolontaireChallenge : DefaultChallenge
     {
         public DesigneVolontaireChallenge(int id, IFight fight)
