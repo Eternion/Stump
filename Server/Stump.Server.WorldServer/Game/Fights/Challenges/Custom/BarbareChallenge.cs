@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnSpellCasted(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            UpdateStatus(ChallengeStatusEnum.FAILED);
+            UpdateStatus(ChallengeStatusEnum.FAILED, caster);
         }
     }
 }

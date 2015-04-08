@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Fights.Challenges;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
@@ -136,6 +137,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         FightActor FighterPlaying
+        {
+            get;
+        }
+
+        DefaultChallenge Challenge
         {
             get;
         }
@@ -516,6 +522,12 @@ namespace Stump.Server.WorldServer.Game.Fights
         public FightActor FighterPlaying
         {
             get { return TimeLine.Current; }
+        }
+
+        public DefaultChallenge Challenge
+        {
+            get;
+            protected set;
         }
 
         public DateTime TurnStartTime

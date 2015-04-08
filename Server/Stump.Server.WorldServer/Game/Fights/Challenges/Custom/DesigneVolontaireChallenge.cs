@@ -17,8 +17,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             {
                 fighter.Dead += OnDead;
             }
-
-            TargetId = Target.Id;
         }
 
         private void OnDead(FightActor victim, FightActor killer)
@@ -27,12 +25,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 UpdateStatus(ChallengeStatusEnum.SUCCESS);
 
             UpdateStatus(ChallengeStatusEnum.FAILED);
-        }
-
-        public MonsterFighter Target
-        {
-            get;
-            private set;
         }
     }
 }

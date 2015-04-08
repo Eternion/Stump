@@ -9,25 +9,36 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.CRUEL)]
     public class CruelChallenge : DefaultChallenge
     {
+        private readonly MonsterFighter[] m_monsters;
+
         public CruelChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 40;
 
-            foreach (var fighter in fight.GetAllFighters<MonsterFighter>())
+            m_monsters = fight.GetAllFighters<MonsterFighter>().ToArray();
+            foreach (var fighter in m_monsters)
             {
                 fighter.Dead += OnDead;
             }
+
+            Target = GetNextTarget();
         }
 
         private void OnDead(FightActor victim, FightActor killer)
         {
-            foreach (var f in victim.Team.GetAllFighters(x => x.IsAlive()).Where(fighter => fighter.Level > victim.Level))
+            if (victim == Target)
             {
-                UpdateStatus(ChallengeStatusEnum.FAILED);
+                Target = GetNextTarget();
+                return;
             }
 
-            victim.Dead -= OnDead;
+            UpdateStatus(ChallengeStatusEnum.FAILED, killer);
+        }
+
+        private MonsterFighter GetNextTarget()
+        {
+            return m_monsters.OrderByDescending(x => x.Level).FirstOrDefault(x => x.IsAlive());
         }
     }
 }
