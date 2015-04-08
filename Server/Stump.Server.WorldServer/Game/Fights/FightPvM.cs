@@ -39,9 +39,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.OnFightStarted();
 
-            var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+            Challenge = ChallengeManager.Instance.GetRandomChallenge(this);
 
-            ContextHandler.SendChallengeInfoMessage(Clients, challenge);
+            ContextHandler.SendChallengeInfoMessage(Clients, Challenge);
         }
 
         protected override void OnFighterAdded(FightTeam team, FightActor actor)

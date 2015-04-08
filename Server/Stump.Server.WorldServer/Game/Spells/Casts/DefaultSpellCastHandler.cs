@@ -103,7 +103,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         public void BuffTrigger(DelayBuff buff, object token)
         {
             if (token is SpellEffectHandler)
-                (token as SpellEffectHandler).Apply();
+                ((SpellEffectHandler) token).Apply();
         }
 
         public override IEnumerable<SpellEffectHandler> GetEffectHandlers()

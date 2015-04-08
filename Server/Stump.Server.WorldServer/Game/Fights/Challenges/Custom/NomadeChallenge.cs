@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -29,6 +25,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             UpdateStatus(ChallengeStatusEnum.FAILED);
             Fight.BeforeTurnStopped -= OnTurnStopped;
+        }
+
+        protected override void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        {
+            OnTurnStopped(fight, fight.FighterPlaying);
+
+            base.OnWinnersDetermined(fight, winners, losers, draw);
         }
     }
 }

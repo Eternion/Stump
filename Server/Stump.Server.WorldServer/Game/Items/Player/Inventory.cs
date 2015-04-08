@@ -254,6 +254,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             PresetsToDelete = new Queue<PlayerPresetRecord>();
             Presets = ItemManager.Instance.FindPlayerPresets(Owner.Id);
+
+            foreach (var preset in Presets)
+            {
+                foreach (var item in preset.Objects.Where(item => !HasItem(item.objUid)).ToArray())
+                {
+                    preset.RemoveObject(item);
+                }
+            }
         }
 
         private void UnLoadInventory()
@@ -418,6 +426,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public bool IsPresetExist(int presetId)
         {
             return Presets.Any(x => x.PresetId == presetId);
+        }
+
+        public void DeleteItemFromPresets(BasePlayerItem item)
+        {
+            var presets = GetPresetsByItemGuid(item.Guid);
+
+            foreach (var preset in presets)
+            {
+                preset.RemoveObject(item.Guid);
+
+                InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 255, item.Template.Id, (preset.PresetId + 1));
+            }
         }
 
         public PresetSaveResultEnum AddPreset(int presetId, int symbolId, bool saveEquipement)
@@ -761,6 +782,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 UnStackItem(item, amount);
             }
 
+            DeleteItemFromPresets(item);
+
             var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
             newOwner.Inventory.AddItem(copy, false);
         }
@@ -934,16 +957,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             //Vous avez perdu %1 '$item%2'.
             if (removeItemMsg)
             {
-                var presets = GetPresetsByItemGuid(item.Guid);
-
-                foreach (var preset in presets)
-                {
-                    preset.RemoveObject(item.Guid);
-
-                    InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
-                    Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 255, item.Template.Id, (preset.PresetId + 1));
-                }
-
+                DeleteItemFromPresets(item);
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, item.Stack, item.Template.Id);
             }
 

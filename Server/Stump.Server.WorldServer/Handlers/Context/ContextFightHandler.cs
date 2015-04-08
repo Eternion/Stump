@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using NLog.Targets;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;

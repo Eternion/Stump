@@ -1,5 +1,8 @@
-﻿using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges
@@ -9,7 +12,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
         public DefaultChallenge(int id, IFight fight)
         {
             Id = id;
-            TargetId = -1;
             Bonus = 0;
             Fight = fight;
             Status = ChallengeStatusEnum.RUNNING;
@@ -35,10 +37,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             private set;
         }
 
-        public int TargetId
+        public FightActor Target
         {
             get;
-            protected set;
+            set;
         }
 
         public int Bonus
@@ -47,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             protected set;
         }
 
-        public void UpdateStatus(ChallengeStatusEnum status)
+        public void UpdateStatus(ChallengeStatusEnum status, FightActor from = null)
         {
             if (Status != ChallengeStatusEnum.RUNNING)
                 return;
@@ -55,9 +57,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             Status = status;
 
             ContextHandler.SendChallengeResultMessage(Fight.Clients, this);
+
+            if (Status == ChallengeStatusEnum.FAILED && @from is CharacterFighter)
+                BasicHandler.SendTextInformationMessage(Fight.Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 188, ((CharacterFighter)from).Name, Id);
         }
 
-        protected void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        protected virtual void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
         {
             if (winners is FightMonsterTeam)
                 UpdateStatus(ChallengeStatusEnum.FAILED);
