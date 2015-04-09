@@ -278,6 +278,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         void DecrementGlyphDuration(FightActor caster);
         int PopNextTriggerId();
         void FreeTriggerId(int id);
+        void SetChallenge(DefaultChallenge challenge);
         IEnumerable<Character> GetAllCharacters();
         IEnumerable<Character> GetAllCharacters(bool withSpectators = false);
         void ForEach(Action<Character> action);
@@ -527,7 +528,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public DefaultChallenge Challenge
         {
             get;
-            protected set;
+            private set;
         }
 
         public DateTime TurnStartTime
@@ -947,8 +948,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         #region Placement methods
-
-        
 
         public bool FindRandomFreeCell(FightActor fighter, out Cell cell, bool placement = true)
         {
@@ -2025,7 +2024,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 fighter.Die();
 
-                if (fighter is CharacterFighter && (fighter as CharacterFighter).Character.IsLoggedIn)
+                if (fighter is CharacterFighter && ((CharacterFighter) fighter).Character.IsLoggedIn)
                 {
                     // wait the character to be ready
                     var readyChecker = new ReadyChecker(this, new[] { ( (CharacterFighter)fighter ) });
@@ -2087,6 +2086,19 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             character.Fighter.LeaveFight();
+        }
+
+        #endregion
+
+        #region Challenges
+
+        public void SetChallenge(DefaultChallenge challenge)
+        {
+            if (Challenge != null)
+                return;
+            
+            Challenge = challenge;
+            ContextHandler.SendChallengeInfoMessage(Clients, challenge);
         }
 
         #endregion
