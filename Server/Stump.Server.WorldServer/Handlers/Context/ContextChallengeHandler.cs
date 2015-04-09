@@ -23,6 +23,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (challenge.Id != message.challengeId)
                 return;
 
+            if (challenge.Target == null)
+                return;
+
             SendChallengeTargetsListMessage(challenge.Fight.Clients, new[] { challenge.Target.Id }, new[] { challenge.Target.Cell.Id });
         }
 

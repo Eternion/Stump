@@ -49,6 +49,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             protected set;
         }
 
+        public virtual bool IsEligible()
+        {
+            return true;
+        }
+
         public void UpdateStatus(ChallengeStatusEnum status, FightActor from = null)
         {
             if (Status != ChallengeStatusEnum.RUNNING)

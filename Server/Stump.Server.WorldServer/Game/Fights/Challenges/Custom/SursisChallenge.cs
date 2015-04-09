@@ -17,6 +17,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             Target.Dead += OnDead;
         }
 
+        public override bool IsEligible()
+        {
+            return Fight.GetAllFighters<MonsterFighter>().Count() > 1;
+        }
+
         private void OnDead(FightActor victim, FightActor killer)
         {
             UpdateStatus(!victim.Team.GetAllFighters<MonsterFighter>(x => x.IsAlive()).Any()

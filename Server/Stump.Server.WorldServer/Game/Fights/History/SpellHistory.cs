@@ -36,6 +36,11 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             get { return Owner.Fight.TimeLine.RoundNumber; }
         }
 
+        public IEnumerable<SpellHistoryEntry> GetEntries()
+        {
+            return m_underlyingStack;
+        }
+
         public IEnumerable<SpellHistoryEntry> GetEntries(Predicate<SpellHistoryEntry> predicate)
         {
             return m_underlyingStack.Where(entry => predicate(entry));

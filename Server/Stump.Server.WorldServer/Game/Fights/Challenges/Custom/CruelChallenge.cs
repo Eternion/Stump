@@ -1,12 +1,11 @@
 ﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
-using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.CRUEL)]
+    [ChallengeIdentifier((int)ChallengeEnum.ORDONNÉ)]
     public class CruelChallenge : DefaultChallenge
     {
         private readonly MonsterFighter[] m_monsters;
@@ -25,6 +24,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             Target = GetNextTarget();
         }
 
+        public override bool IsEligible()
+        {
+            return Fight.GetAllFighters<MonsterFighter>().Count() > 1;
+        }
+
         private void OnDead(FightActor victim, FightActor killer)
         {
             if (victim == Target)
@@ -38,7 +42,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private MonsterFighter GetNextTarget()
         {
-            return m_monsters.OrderByDescending(x => x.Level).FirstOrDefault(x => x.IsAlive());
+            var monsters = m_monsters.OrderByDescending(x => x.Level);
+            if (Id == (int)ChallengeEnum.ORDONNÉ)
+                monsters = m_monsters.OrderBy(x => x.Level);
+
+            return monsters.FirstOrDefault(x => x.IsAlive());
         }
     }
 }
