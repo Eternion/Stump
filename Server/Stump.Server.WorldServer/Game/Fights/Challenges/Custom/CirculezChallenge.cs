@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
@@ -23,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (delta >= 0)
                 return;
 
-            if (!(source is CharacterFighter))
+            if (actor.IsFriendlyWith(source))
                 return;
 
             if (action != ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST)

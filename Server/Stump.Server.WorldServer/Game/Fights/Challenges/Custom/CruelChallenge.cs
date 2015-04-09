@@ -42,9 +42,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private MonsterFighter GetNextTarget()
         {
-            var monsters = m_monsters.OrderByDescending(x => x.Level);
+            var monsters = m_monsters.OrderBy(x => x.Level);
             if (Id == (int)ChallengeEnum.ORDONNÉ)
-                monsters = m_monsters.OrderBy(x => x.Level);
+                monsters = m_monsters.OrderByDescending(x => x.Level);
 
             return monsters.FirstOrDefault(x => x.IsAlive());
         }

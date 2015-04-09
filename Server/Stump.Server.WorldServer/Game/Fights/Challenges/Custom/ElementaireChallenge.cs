@@ -8,12 +8,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ELÉMENTAIRE)]
     public class ElementaireChallenge : DefaultChallenge
     {
-        private readonly Dictionary<CharacterFighter, EffectSchoolEnum> m_fightersElements = new Dictionary<CharacterFighter, EffectSchoolEnum>();
+        private EffectSchoolEnum m_element;
  
         public ElementaireChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 30;
+            m_element = EffectSchoolEnum.Unknown;
 
             foreach (var fighter in fight.GetAllFighters<MonsterFighter>())
             {
@@ -26,18 +27,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(damage.Source is CharacterFighter))
                 return;
 
-            if (m_fightersElements.ContainsKey((CharacterFighter)damage.Source))
-            {
-                EffectSchoolEnum school;
-                m_fightersElements.TryGetValue((CharacterFighter) damage.Source, out school);
-
-                if (damage.School != school)
-                    UpdateStatus(ChallengeStatusEnum.FAILED, damage.Source);
-            }
-            else
-            {
-                m_fightersElements.Add((CharacterFighter)damage.Source, damage.School);
-            }
+            if (m_element == EffectSchoolEnum.Unknown)
+                m_element = damage.School;
+            else if (m_element != damage.School)
+                UpdateStatus(ChallengeStatusEnum.FAILED, damage.Source);
         }
     }
 }
