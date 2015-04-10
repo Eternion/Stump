@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.CIRCULEZ)]
     public class TimeFliesChallenge : DefaultChallenge
     {
+        public TimeFliesChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public TimeFliesChallenge(int id, IFight fight)
             : base(id, fight)
         {

@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.SURSIS)]
     public class ReprieveChallenge : DefaultChallenge
     {
+        public ReprieveChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public ReprieveChallenge(int id, IFight fight)
             : base(id, fight)
         {

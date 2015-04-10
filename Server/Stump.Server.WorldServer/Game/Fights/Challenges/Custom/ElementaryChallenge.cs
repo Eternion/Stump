@@ -9,7 +9,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     public class ElementaryChallenge : DefaultChallenge
     {
         private EffectSchoolEnum m_element;
- 
+
+        public ElementaryChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public ElementaryChallenge(int id, IFight fight)
             : base(id, fight)
         {

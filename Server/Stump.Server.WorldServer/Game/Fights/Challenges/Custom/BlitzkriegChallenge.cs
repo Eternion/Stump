@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.BLITZKRIEG)]
     public class BlitzkriegChallenge : DefaultChallenge
     {
+        public BlitzkriegChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public BlitzkriegChallenge(int id, IFight fight)
             : base(id, fight)
         {

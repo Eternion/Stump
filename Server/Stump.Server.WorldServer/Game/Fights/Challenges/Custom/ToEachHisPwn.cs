@@ -6,23 +6,25 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier((int)ChallengeEnum.PARTAGE)]
-    public class SharingChallenge : DefaultChallenge
+    [ChallengeIdentifier((int)ChallengeEnum.CHACUN_SON_MONSTRE)]
+    public class ToEachHisPwn : DefaultChallenge
     {
+        private readonly Dictionary<MonsterFighter, CharacterFighter> m_history = new Dictionary<MonsterFighter, CharacterFighter>();
         private readonly List<CharacterFighter> m_killers = new List<CharacterFighter>();
 
-        public SharingChallenge(IFight fight)
+        public ToEachHisPwn(IFight fight)
             : base(fight)
         {
         }
 
-        public SharingChallenge(int id, IFight fight)
+        public ToEachHisPwn(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 50;
+            Bonus = 60;
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
+                fighter.DamageInflicted += OnDamageInflicted;
                 fighter.Dead += OnDead;
             }
         }
@@ -31,6 +33,28 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         {
             return Fight.GetAllFighters<MonsterFighter>().Count() > 1
                 && Fight.GetAllFighters<MonsterFighter>().Count() >= Fight.GetAllFighters<CharacterFighter>().Count();
+        }
+
+        private void OnDamageInflicted(FightActor fighter, Damage damage)
+        {
+            var source = (damage.Source is SummonedFighter) ? ((SummonedFighter)damage.Source).Summoner : damage.Source;
+
+            if (!(source is CharacterFighter))
+                return;
+
+            CharacterFighter caster;
+            m_history.TryGetValue((MonsterFighter)fighter, out caster);
+
+            if (caster == null)
+            {
+                m_history.Add((MonsterFighter)fighter, (CharacterFighter)source);
+                return;
+            }
+
+            if (caster == source)
+                return;
+
+            UpdateStatus(ChallengeStatusEnum.FAILED, source);
         }
 
         private void OnDead(FightActor fighter, FightActor killer)

@@ -9,6 +9,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int) ChallengeEnum.BARBARE)]
     public class BarbaricChallenge : DefaultChallenge
     {
+        public BarbaricChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public BarbaricChallenge(int id, IFight fight)
             : base(id, fight)
         {

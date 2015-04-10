@@ -10,6 +10,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.BORNÉ)]
     public class PigHeadChallenge : DefaultChallenge
     {
+        public PigHeadChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public PigHeadChallenge(int id, IFight fight)
             : base(id, fight)
         {

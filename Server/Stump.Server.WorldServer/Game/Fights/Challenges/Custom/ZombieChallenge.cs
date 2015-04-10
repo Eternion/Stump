@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ZOMBIE)]
     public class ZombieChallenge : DefaultChallenge
     {
+        public ZombieChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public ZombieChallenge(int id, IFight fight)
             : base(id, fight)
         {

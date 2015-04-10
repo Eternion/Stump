@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.STATUE)]
     public class StatueChallenge : DefaultChallenge
     {
+        public StatueChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public StatueChallenge(int id, IFight fight)
             : base(id, fight)
         {

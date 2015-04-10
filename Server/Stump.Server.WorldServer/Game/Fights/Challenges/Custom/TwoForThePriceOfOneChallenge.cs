@@ -9,6 +9,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private int m_kills;
 
+        public TwoForThePriceOfOneChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public TwoForThePriceOfOneChallenge(int id, IFight fight)
             : base(id, fight)
         {

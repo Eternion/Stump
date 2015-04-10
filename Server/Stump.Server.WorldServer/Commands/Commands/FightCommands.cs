@@ -279,6 +279,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             var fight = ((GameTrigger)trigger).Character.Fight;
 
             var challenge = ChallengeManager.Instance.GetChallenge(challengeId, fight);
+            challenge = ChallengeManager.Instance.InitializeChallenge(challenge, challengeId);
+
             fight.SetChallenge(challenge);
 
             trigger.Reply("Force challengeId {0} for current Fight", challenge.Id);
