@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ELITISTE)]
     public class ElitistChallenge : DefaultChallenge
     {
+        public ElitistChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public ElitistChallenge(int id, IFight fight)
             : base(id, fight)
         {

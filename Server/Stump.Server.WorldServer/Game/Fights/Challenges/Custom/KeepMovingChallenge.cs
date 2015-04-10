@@ -8,6 +8,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.CIRCULEZ)]
     public class KeepMovingChallenge : DefaultChallenge
     {
+        public KeepMovingChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public KeepMovingChallenge(int id, IFight fight)
             : base(id, fight)
         {

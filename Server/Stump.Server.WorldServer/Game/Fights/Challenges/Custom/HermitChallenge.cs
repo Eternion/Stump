@@ -11,6 +11,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly FightTeam m_team;
 
+        public HermitChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public HermitChallenge(int id, IFight fight)
             : base(id, fight)
         {

@@ -9,6 +9,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
 {
     public class DefaultChallenge
     {
+        public DefaultChallenge(IFight fight)
+        {
+            Fight = fight;
+        }
+
         public DefaultChallenge(int id, IFight fight)
         {
             Id = id;

@@ -10,6 +10,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly MonsterFighter[] m_monsters;
 
+        public CruelChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public CruelChallenge(int id, IFight fight)
             : base(id, fight)
         {

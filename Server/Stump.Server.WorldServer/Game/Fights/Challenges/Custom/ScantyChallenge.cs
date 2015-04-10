@@ -14,6 +14,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly List<FightActor> m_weaponsUsed = new List<FightActor>();
 
+        public ScantyChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public ScantyChallenge(int id, IFight fight)
             : base(id, fight)
         {

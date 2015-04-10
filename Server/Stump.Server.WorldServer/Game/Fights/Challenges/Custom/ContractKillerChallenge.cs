@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.TUEUR_À_GAGES)]
     public class ContractKillerChallenge : DefaultChallenge
     {
+        public ContractKillerChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public ContractKillerChallenge(int id, IFight fight)
             : base(id, fight)
         {

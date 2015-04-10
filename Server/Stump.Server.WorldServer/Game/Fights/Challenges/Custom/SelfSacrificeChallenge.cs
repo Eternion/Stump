@@ -6,6 +6,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ABNÉGATION)]
     public class SelfSacrificeChallenge : DefaultChallenge
     {
+        public SelfSacrificeChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public SelfSacrificeChallenge(int id, IFight fight)
             : base(id, fight)
         {

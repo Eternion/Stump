@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.DÉSIGNÉ_VOLONTAIRE)]
     public class VolunteerChallenge : DefaultChallenge
     {
+        public VolunteerChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public VolunteerChallenge(int id, IFight fight)
             : base(id, fight)
         {

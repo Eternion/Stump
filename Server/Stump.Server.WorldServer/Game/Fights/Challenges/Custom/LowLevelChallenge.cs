@@ -7,6 +7,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.LES_PETITS_D_ABORD)]
     public class LowLevelChallenge : DefaultChallenge
     {
+        public LowLevelChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public LowLevelChallenge(int id, IFight fight)
             : base(id, fight)
         {

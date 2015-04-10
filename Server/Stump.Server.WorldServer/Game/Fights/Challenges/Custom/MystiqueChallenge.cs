@@ -9,6 +9,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.MYSTIQUE)]
     public class MystiqueChallenge : DefaultChallenge
     {
+        public MystiqueChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public MystiqueChallenge(int id, IFight fight)
             : base(id, fight)
         {

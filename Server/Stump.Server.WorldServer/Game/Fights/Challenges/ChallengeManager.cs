@@ -54,18 +54,29 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
                 return null;
 
             var challengeType = m_challenges[identifier];
-            return (DefaultChallenge)Activator.CreateInstance(challengeType, identifier, fight);
+            return (DefaultChallenge)Activator.CreateInstance(challengeType, fight);
+        }
+
+        public DefaultChallenge InitializeChallenge(DefaultChallenge challenge, int identifier)
+        {
+            return (DefaultChallenge)Activator.CreateInstance(challenge.GetType(), identifier, challenge.Fight);
         }
 
         public DefaultChallenge GetRandomChallenge(IFight fight)
         {
-            var random = new CryptoRandom().Next(m_challenges.Keys.Min(), (m_challenges.Keys.Max() + 1));
-            var challenge = GetChallenge(random, fight);
+            while (true)
+            {
+                var random = new CryptoRandom().Next(m_challenges.Keys.Min(), (m_challenges.Keys.Max() + 1));
+                var challenge = GetChallenge(random, fight);
 
-            if (challenge == null)
-                return GetRandomChallenge(fight);
+                if (challenge == null)
+                    continue;
 
-            return !challenge.IsEligible() ? GetRandomChallenge(fight) : challenge;
+                if (!challenge.IsEligible())
+                    continue;
+
+                return InitializeChallenge(challenge, random);
+            }
         }
     }
 }

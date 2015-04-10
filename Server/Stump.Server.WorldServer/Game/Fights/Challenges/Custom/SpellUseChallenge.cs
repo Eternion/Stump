@@ -14,6 +14,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly int m_spell;
 
+        public SpellUseChallenge(IFight fight)
+            : base(fight)
+        {
+        }
+
         public SpellUseChallenge(int id, IFight fight)
             : base(id, fight)
         {
