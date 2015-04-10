@@ -24,6 +24,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             m_team = Fight.DefendersTeam is FightMonsterTeam ? Fight.DefendersTeam : Fight.ChallengersTeam;
             if (id == (int) ChallengeEnum.COLLANT)
                 m_team = m_team.OpposedTeam;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             Fight.BeforeTurnStopped += OnBeforeTurnStopped;
         }

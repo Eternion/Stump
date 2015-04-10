@@ -7,15 +7,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ZOMBIE)]
     public class ZombieChallenge : DefaultChallenge
     {
-        public ZombieChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ZombieChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 30;
+            Bonus = 30; 
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             Fight.BeforeTurnStopped += OnBeforeTurnStopped;
         }

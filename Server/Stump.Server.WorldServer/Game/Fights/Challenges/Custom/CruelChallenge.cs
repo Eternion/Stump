@@ -8,19 +8,19 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ORDONNÉ)]
     public class CruelChallenge : DefaultChallenge
     {
-        private readonly MonsterFighter[] m_monsters;
-
-        public CruelChallenge(IFight fight)
-            : base(fight)
-        {
-        }
+        private MonsterFighter[] m_monsters;
 
         public CruelChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 40;
+        }
 
-            m_monsters = fight.GetAllFighters<MonsterFighter>().ToArray();
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            m_monsters = Fight.GetAllFighters<MonsterFighter>().ToArray();
             foreach (var fighter in m_monsters)
             {
                 fighter.Dead += OnDead;

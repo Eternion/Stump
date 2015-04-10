@@ -11,16 +11,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly SexTypeEnum m_sexType;
 
-        public SexChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public SexChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 35;
             m_sexType = id == (int)ChallengeEnum.NI_PIOUTES_NI_SOUMISES ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {

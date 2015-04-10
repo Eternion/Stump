@@ -10,17 +10,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly Dictionary<FightActor, int> m_contaminedFighters = new Dictionary<FightActor, int>();
 
-        public ContaminationChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ContaminationChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 60;
+        }
 
-            foreach (var fighter in fight.GetAllFighters<CharacterFighter>())
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
             {
                 fighter.DamageInflicted += OnDamageInflicted;
                 fighter.Dead += OnDead;

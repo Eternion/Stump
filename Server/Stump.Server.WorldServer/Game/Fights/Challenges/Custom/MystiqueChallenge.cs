@@ -9,17 +9,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.MYSTIQUE)]
     public class MystiqueChallenge : DefaultChallenge
     {
-        public MystiqueChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public MystiqueChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 40;
+        }
 
-            foreach (var fighter in fight.GetAllFighters<CharacterFighter>())
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
             {
                 fighter.WeaponUsed += OnWeaponUsed;
             }

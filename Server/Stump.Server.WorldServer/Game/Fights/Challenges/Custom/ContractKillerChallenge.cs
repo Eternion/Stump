@@ -7,17 +7,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.TUEUR_À_GAGES)]
     public class ContractKillerChallenge : DefaultChallenge
     {
-        public ContractKillerChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ContractKillerChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 45;
+        }
 
-            foreach (var fighter in fight.GetAllFighters<MonsterFighter>())
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
                 fighter.Dead += OnDead;
             }

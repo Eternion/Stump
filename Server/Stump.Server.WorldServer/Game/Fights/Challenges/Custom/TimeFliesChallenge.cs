@@ -7,17 +7,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.CIRCULEZ)]
     public class TimeFliesChallenge : DefaultChallenge
     {
-        public TimeFliesChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public TimeFliesChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 30;
+        }
 
-            foreach (var fighter in fight.GetAllFighters<MonsterFighter>())
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
                 fighter.FightPointsVariation += OnFightPointsVariation;
             }

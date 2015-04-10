@@ -7,17 +7,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.DÉSIGNÉ_VOLONTAIRE)]
     public class VolunteerChallenge : DefaultChallenge
     {
-        public VolunteerChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public VolunteerChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 25;
+        }
 
-            Target = fight.GetRandomFighter<MonsterFighter>();
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            Target = Fight.GetRandomFighter<MonsterFighter>();
 
             foreach (var fighter in Target.Team.Fighters)
             {

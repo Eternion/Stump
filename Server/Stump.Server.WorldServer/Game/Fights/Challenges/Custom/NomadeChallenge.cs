@@ -8,15 +8,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.PÉTULANT)]
     public class NomadeChallenge : DefaultChallenge
     {
-        public NomadeChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public NomadeChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = id == (int)ChallengeEnum.NOMADE ? 20 : 10;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             Fight.BeforeTurnStopped += OnTurnStopped;
         }

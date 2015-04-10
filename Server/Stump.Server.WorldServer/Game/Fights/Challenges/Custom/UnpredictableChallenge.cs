@@ -7,15 +7,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.IMPRÉVISIBLE)]
     public class UnpredictableChallenge : DefaultChallenge
     {
-        public UnpredictableChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public UnpredictableChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 50;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             Fight.TurnStarted += OnTurnStarted;
 

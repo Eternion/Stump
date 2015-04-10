@@ -12,17 +12,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ARAKNOPHILE)]
     public class SpellUseChallenge : DefaultChallenge
     {
-        private readonly int m_spell;
-
-        public SpellUseChallenge(IFight fight)
-            : base(fight)
-        {
-        }
+        private int m_spell;
 
         public SpellUseChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = id == (int)ChallengeEnum.CASINO_ROYAL ? 30 : 10;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             switch ((ChallengeEnum)Id)
             {

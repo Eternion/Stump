@@ -7,17 +7,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.SURSIS)]
     public class ReprieveChallenge : DefaultChallenge
     {
-        public ReprieveChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ReprieveChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 20;
+        }
 
-            Target = fight.GetRandomFighter<MonsterFighter>();
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            Target = Fight.GetRandomFighter<MonsterFighter>();
 
             Target.Dead += OnDead;
         }

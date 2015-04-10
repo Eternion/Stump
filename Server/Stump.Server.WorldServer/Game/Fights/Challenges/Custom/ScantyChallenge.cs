@@ -14,15 +14,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly List<FightActor> m_weaponsUsed = new List<FightActor>();
 
-        public ScantyChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ScantyChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 160;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
             {

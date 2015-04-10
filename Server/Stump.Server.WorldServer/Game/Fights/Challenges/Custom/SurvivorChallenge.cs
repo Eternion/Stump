@@ -8,15 +8,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.PROTÉGEZ_VOS_MULES)]
     public class SurvivorChallenge : DefaultChallenge
     {
-        public SurvivorChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public SurvivorChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 30;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
             {

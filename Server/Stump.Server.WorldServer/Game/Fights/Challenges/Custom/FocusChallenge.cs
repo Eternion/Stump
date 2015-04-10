@@ -6,15 +6,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.FOCUS)]
     public class FocusChallenge : DefaultChallenge
     {
-        public FocusChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public FocusChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 30;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {

@@ -12,15 +12,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         private readonly Dictionary<MonsterFighter, CharacterFighter> m_history = new Dictionary<MonsterFighter, CharacterFighter>();
         private readonly List<CharacterFighter> m_killers = new List<CharacterFighter>();
 
-        public ToEachHisPwn(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ToEachHisPwn(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 60;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {

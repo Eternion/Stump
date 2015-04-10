@@ -8,17 +8,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.CIRCULEZ)]
     public class KeepMovingChallenge : DefaultChallenge
     {
-        public KeepMovingChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public KeepMovingChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 20;
+        }
 
-            foreach (var fighter in fight.GetAllFighters<MonsterFighter>())
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
                 fighter.FightPointsVariation += OnFightPointsVariation;
             }

@@ -9,23 +9,23 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private int m_kills;
 
-        public TwoForThePriceOfOneChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public TwoForThePriceOfOneChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 60;
             m_kills = 0;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
                 fighter.Dead += OnDead;
             }
 
-            fight.BeforeTurnStopped += OnBeforeTurnStopped;
+            Fight.BeforeTurnStopped += OnBeforeTurnStopped;
         }
 
         public override bool IsEligible()

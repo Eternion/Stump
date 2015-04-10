@@ -7,22 +7,21 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.LES_PETITS_D_ABORD)]
     public class LowLevelChallenge : DefaultChallenge
     {
-        public LowLevelChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public LowLevelChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 40;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
                 fighter.Dead += OnDead;
             }
         }
-
 
         public override bool IsEligible()
         {

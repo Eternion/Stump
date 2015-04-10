@@ -11,11 +11,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly FightTeam m_team;
 
-        public HermitChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public HermitChallenge(int id, IFight fight)
             : base(id, fight)
         {
@@ -23,7 +18,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             m_team = Fight.DefendersTeam is FightMonsterTeam ? Fight.DefendersTeam : Fight.ChallengersTeam;
             if (id == (int)ChallengeEnum.ANACHORÈTE)
-                m_team = m_team.OpposedTeam;
+                m_team = m_team.OpposedTeam; 
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             Fight.BeforeTurnStopped += OnBeforeTurnStopped;
         }

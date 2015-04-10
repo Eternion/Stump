@@ -10,15 +10,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly Dictionary<MonsterFighter, CharacterFighter> m_history = new Dictionary<MonsterFighter, CharacterFighter>();
 
-        public DuelChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public DuelChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 40;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
