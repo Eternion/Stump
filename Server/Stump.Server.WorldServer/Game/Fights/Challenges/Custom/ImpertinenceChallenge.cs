@@ -11,11 +11,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly FightTeam m_team;
 
-        public ImpertinenceChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ImpertinenceChallenge(int id, IFight fight)
             : base(id, fight)
         {
