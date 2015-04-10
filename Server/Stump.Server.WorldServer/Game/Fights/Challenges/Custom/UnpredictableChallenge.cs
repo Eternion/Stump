@@ -1,13 +1,14 @@
 ﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.IMPRÉVISIBLE)]
-    public class ImprevisibleChallenge : DefaultChallenge
+    public class UnpredictableChallenge : DefaultChallenge
     {
-        public ImprevisibleChallenge(int id, IFight fight)
+        public UnpredictableChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 50;
@@ -16,8 +17,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
-                fighter.DamageInflicted += OnDamageInflicted;
+                fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
+                fighter.Dead += OnDead;
             }
+        }
+
+        private void OnDead(FightActor fighter, FightActor killer)
+        {
+            if (Target == fighter)
+                Target = Fight.GetRandomFighter<MonsterFighter>();
         }
 
         private void OnTurnStarted(IFight fight, FightActor fighter)
@@ -31,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             return Fight.GetAllFighters<MonsterFighter>().Count() > 1;
         }
 
-        private void OnDamageInflicted(FightActor fighter, Damage damage)
+        private void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
         {
             if (!(damage.Source is CharacterFighter))
                 return;

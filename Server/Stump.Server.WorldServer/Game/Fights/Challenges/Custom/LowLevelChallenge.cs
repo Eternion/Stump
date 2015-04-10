@@ -5,9 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.LES_PETITS_D_ABORD)]
-    public class LesPetitsDabordChallenge : DefaultChallenge
+    public class LowLevelChallenge : DefaultChallenge
     {
-        public LesPetitsDabordChallenge(int id, IFight fight)
+        public LowLevelChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 40;

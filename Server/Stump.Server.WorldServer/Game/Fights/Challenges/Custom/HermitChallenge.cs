@@ -1,18 +1,31 @@
-﻿using Stump.DofusProtocol.Enums.Custom;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier((int)ChallengeEnum.ZOMBIE)]
-    public class ZombieChallenge : DefaultChallenge
+    [ChallengeIdentifier((int)ChallengeEnum.ANACHORÈTE)]
+    [ChallengeIdentifier((int)ChallengeEnum.PUSILLANIME)]
+    public class HermitChallenge : DefaultChallenge
     {
-        public ZombieChallenge(int id, IFight fight)
+        private readonly FightTeam m_team;
+
+        public HermitChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 30;
+            Bonus = id == (int)ChallengeEnum.ANACHORÈTE ? 20 : 30;
+
+            m_team = Fight.DefendersTeam is FightMonsterTeam ? Fight.DefendersTeam : Fight.ChallengersTeam;
+            if (id == (int)ChallengeEnum.ANACHORÈTE)
+                m_team = m_team.OpposedTeam;
 
             Fight.BeforeTurnStopped += OnBeforeTurnStopped;
+        }
+
+        public override bool IsEligible()
+        {
+            return m_team.GetAllFighters().Count() > 1;
         }
 
         private void OnBeforeTurnStopped(IFight fight, FightActor fighter)
@@ -20,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(fighter is CharacterFighter))
                 return;
 
-            if (fighter.UsedMP == 1)
+            if (!fighter.Position.Point.GetAdjacentCells(x => m_team.GetOneFighter(Fight.Map.GetCell(x)) != null).Any())
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);

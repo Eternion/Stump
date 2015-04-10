@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public SpellUseChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 10;
+            Bonus = id == (int)ChallengeEnum.CASINO_ROYAL ? 30 : 10;
 
             switch ((ChallengeEnum)Id)
             {

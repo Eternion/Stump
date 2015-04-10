@@ -6,11 +6,11 @@ using Stump.Server.WorldServer.Game.Effects;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.ELÉMENTAIRE)]
-    public class ElementaireChallenge : DefaultChallenge
+    public class ElementaryChallenge : DefaultChallenge
     {
         private EffectSchoolEnum m_element;
  
-        public ElementaireChallenge(int id, IFight fight)
+        public ElementaryChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 30;

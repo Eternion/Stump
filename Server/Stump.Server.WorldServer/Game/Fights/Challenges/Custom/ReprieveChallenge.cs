@@ -5,9 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.SURSIS)]
-    public class SursisChallenge : DefaultChallenge
+    public class ReprieveChallenge : DefaultChallenge
     {
-        public SursisChallenge(int id, IFight fight)
+        public ReprieveChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 20;

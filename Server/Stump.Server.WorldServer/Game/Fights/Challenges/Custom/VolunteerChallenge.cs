@@ -5,9 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.DÉSIGNÉ_VOLONTAIRE)]
-    public class DesigneVolontaireChallenge : DefaultChallenge
+    public class VolunteerChallenge : DefaultChallenge
     {
-        public DesigneVolontaireChallenge(int id, IFight fight)
+        public VolunteerChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 25;
