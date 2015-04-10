@@ -6,15 +6,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.INCURABLE)]
     public class IncurableChallenge : DefaultChallenge
     {
-        public IncurableChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public IncurableChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 20;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
             {

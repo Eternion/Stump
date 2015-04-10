@@ -1,5 +1,8 @@
-﻿namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
+﻿using Stump.DofusProtocol.Enums.Custom;
+
+namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
+    [ChallengeIdentifier((int)ChallengeEnum.LE_CHEAT_DES_DEVS)]
     public class DodgyDevsChallenge : DefaultChallenge
     {
         public DodgyDevsChallenge(IFight fight)

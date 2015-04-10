@@ -9,17 +9,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int) ChallengeEnum.BARBARE)]
     public class BarbaricChallenge : DefaultChallenge
     {
-        public BarbaricChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public BarbaricChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 60;
+        }
 
-            foreach (var fighter in fight.GetAllFighters<CharacterFighter>())
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
             {
                 fighter.SpellCasted += OnSpellCasted;
             }

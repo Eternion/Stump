@@ -11,15 +11,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private readonly List<CharacterFighter> m_killers = new List<CharacterFighter>();
 
-        public SharingChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public SharingChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 50;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {

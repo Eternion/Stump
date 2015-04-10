@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
@@ -11,15 +7,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.LES_MULES_D_ABORD)]
     public class MulesChallenge : DefaultChallenge
     {
-        public MulesChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public MulesChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 20;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             Target = Fight.GetAllFighters<CharacterFighter>().OrderBy(x => x.Level).FirstOrDefault();
 

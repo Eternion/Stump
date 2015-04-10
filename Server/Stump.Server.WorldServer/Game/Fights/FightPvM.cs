@@ -40,6 +40,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.OnFightStarted();
 
             var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+            challenge.Initialize();
+
             SetChallenge(challenge);
         }
 

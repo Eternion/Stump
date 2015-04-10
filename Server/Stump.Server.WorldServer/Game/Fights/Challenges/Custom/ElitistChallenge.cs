@@ -7,17 +7,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ELITISTE)]
     public class ElitistChallenge : DefaultChallenge
     {
-        public ElitistChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ElitistChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 50;
+        }
 
-            Target = fight.GetRandomFighter<MonsterFighter>();
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            Target = Fight.GetRandomFighter<MonsterFighter>();
             Target.Dead += OnDead;
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())

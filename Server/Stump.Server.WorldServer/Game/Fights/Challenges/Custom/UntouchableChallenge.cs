@@ -6,15 +6,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.INTOUCHABLE)]
     public class UntouchableChallenge : DefaultChallenge
     {
-        public UntouchableChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public UntouchableChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 40;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             foreach (var fighter in Fight.GetAllFighters<CharacterFighter>())
             {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 
@@ -10,18 +9,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     {
         private EffectSchoolEnum m_element;
 
-        public ElementaryChallenge(IFight fight)
-            : base(fight)
-        {
-        }
-
         public ElementaryChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 30;
             m_element = EffectSchoolEnum.Unknown;
+        }
 
-            foreach (var fighter in fight.GetAllFighters<MonsterFighter>())
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
                 fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
             }

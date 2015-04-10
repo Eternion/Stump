@@ -9,19 +9,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
 {
     public class DefaultChallenge
     {
-        public DefaultChallenge(IFight fight)
-        {
-            Fight = fight;
-        }
-
         public DefaultChallenge(int id, IFight fight)
         {
             Id = id;
             Bonus = 0;
             Fight = fight;
             Status = ChallengeStatusEnum.RUNNING;
-
-            Fight.WinnersDetermined += OnWinnersDetermined;
         }
 
         public int Id
@@ -52,6 +45,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
         {
             get;
             protected set;
+        }
+
+        public virtual void Initialize()
+        {
+            Fight.WinnersDetermined += OnWinnersDetermined;
         }
 
         public virtual bool IsEligible()
