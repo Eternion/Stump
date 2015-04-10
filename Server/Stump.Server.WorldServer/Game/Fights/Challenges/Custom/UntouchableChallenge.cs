@@ -4,9 +4,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.INTOUCHABLE)]
-    public class IntouchableChallenge : DefaultChallenge
+    public class UntouchableChallenge : DefaultChallenge
     {
-        public IntouchableChallenge(int id, IFight fight)
+        public UntouchableChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 40;

@@ -5,12 +5,13 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.NOMADE)]
+    [ChallengeIdentifier((int)ChallengeEnum.PÉTULANT)]
     public class NomadeChallenge : DefaultChallenge
     {
         public NomadeChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 20;
+            Bonus = id == (int)ChallengeEnum.NOMADE ? 20 : 10;
 
             Fight.BeforeTurnStopped += OnTurnStopped;
         }
@@ -20,7 +21,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(fighter is CharacterFighter))
                 return;
 
-            if (fighter.MP <= 0)
+            if (Id == (int)ChallengeEnum.NOMADE && fighter.MP <= 0)
+                return;
+
+            if (Id == (int)ChallengeEnum.PÉTULANT && fighter.AP <= 0)
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);

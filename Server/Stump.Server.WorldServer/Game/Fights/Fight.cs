@@ -2369,6 +2369,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         public T GetRandomFighter<T>() where T : FightActor
         {
             var fighters = Fighters.Where(x => x is T && x.IsAlive()).ToArray();
+
+            if (!fighters.Any())
+                return null;
+
             var random = new CryptoRandom().Next(0, fighters.Count());
 
             return fighters[random] as T;

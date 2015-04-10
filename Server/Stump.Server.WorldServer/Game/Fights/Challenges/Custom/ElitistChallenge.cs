@@ -5,9 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.ELITISTE)]
-    public class ElitisteChallenge : DefaultChallenge
+    public class ElitistChallenge : DefaultChallenge
     {
-        public ElitisteChallenge(int id, IFight fight)
+        public ElitistChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 50;
@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
-                fighter.DamageInflicted += OnDamageInflicted;
+                fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
             }
         }
 
@@ -30,10 +30,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         {
             Target.Dead -= OnDead;
             Target = Fight.GetRandomFighter<MonsterFighter>();
-            Target.Dead += OnDead;
+
+            if (Target != null)
+                Target.Dead += OnDead;
         }
 
-        private void OnDamageInflicted(FightActor fighter, Damage damage)
+        private void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
         {
             if (!(damage.Source is CharacterFighter))
                 return;

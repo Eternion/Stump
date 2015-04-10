@@ -7,9 +7,9 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int) ChallengeEnum.BARBARE)]
-    public class BarbareChallenge : DefaultChallenge
+    public class BarbaricChallenge : DefaultChallenge
     {
-        public BarbareChallenge(int id, IFight fight)
+        public BarbaricChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 60;

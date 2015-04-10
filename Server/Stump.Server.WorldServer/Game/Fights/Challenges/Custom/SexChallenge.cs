@@ -6,12 +6,16 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.NI_PIOUTES_NI_SOUMISES)]
-    public class NiPioutesNiSoumisesChallenge : DefaultChallenge
+    [ChallengeIdentifier((int)ChallengeEnum.NI_PIOUS_NI_SOUMIS)]
+    public class SexChallenge : DefaultChallenge
     {
-        public NiPioutesNiSoumisesChallenge(int id, IFight fight)
+        private readonly SexTypeEnum m_sexType;
+
+        public SexChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 40;
+            Bonus = 35;
+            m_sexType = id == (int)ChallengeEnum.NI_PIOUTES_NI_SOUMISES ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
@@ -30,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(killer is CharacterFighter))
                 return;
 
-            if (((CharacterFighter)killer).Character.Sex == SexTypeEnum.SEX_FEMALE)
+            if (((CharacterFighter)killer).Character.Sex == m_sexType)
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);

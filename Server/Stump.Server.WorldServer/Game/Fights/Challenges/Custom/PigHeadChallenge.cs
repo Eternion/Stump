@@ -8,9 +8,9 @@ using Stump.Server.WorldServer.Game.Spells;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.BORNÉ)]
-    public class BorneChallenge : DefaultChallenge
+    public class PigHeadChallenge : DefaultChallenge
     {
-        public BorneChallenge(int id, IFight fight)
+        public PigHeadChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 50;

@@ -6,9 +6,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.CIRCULEZ)]
-    public class CirculezChallenge : DefaultChallenge
+    public class KeepMovingChallenge : DefaultChallenge
     {
-        public CirculezChallenge(int id, IFight fight)
+        public KeepMovingChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 20;

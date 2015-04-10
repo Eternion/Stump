@@ -5,9 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.CIRCULEZ)]
-    public class LeTempsQuiCourtChallenge : DefaultChallenge
+    public class TimeFliesChallenge : DefaultChallenge
     {
-        public LeTempsQuiCourtChallenge(int id, IFight fight)
+        public TimeFliesChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 30;
@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (delta >= 0)
                 return;
 
-            if (!(source is CharacterFighter))
+            if (actor.IsFriendlyWith(source))
                 return;
 
             if (action != ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST)

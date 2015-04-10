@@ -5,9 +5,9 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.SURVIVANT)]
-    public class SurvivantChallenge : DefaultChallenge
+    public class SurvivorChallenge : DefaultChallenge
     {
-        public SurvivantChallenge(int id, IFight fight)
+        public SurvivorChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = 30;
