@@ -12,17 +12,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.ARAKNOPHILE)]
     public class SpellUseChallenge : DefaultChallenge
     {
-        private int m_spell;
+        private readonly int m_spell;
 
         public SpellUseChallenge(int id, IFight fight)
             : base(id, fight)
         {
             Bonus = id == (int)ChallengeEnum.CASINO_ROYAL ? 30 : 10;
-        }
-
-        public override void Initialize()
-        {
-            base.Initialize();
 
             switch ((ChallengeEnum)Id)
             {
@@ -39,6 +34,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                     m_spell = (int)SpellIdEnum.INVOCATION_D_ARAKNE_370;
                     break;
             }
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
 
             Fight.TurnStopped += OnTurnStopped;
         }
