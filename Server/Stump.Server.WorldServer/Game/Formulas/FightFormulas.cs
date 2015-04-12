@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -78,7 +79,8 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
             var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
-            var xp = (int)Math.Truncate(Math.Truncate(baseXp * ((100 + fighter.Wisdom) + fighter.Fight.Challenge.Bonus)/ 100d) * multiplicator * Rates.XpRate);
+            var challengeBonus = fighter.Fight.Challenge.Status == ChallengeStatusEnum.SUCCESS ? fighter.Fight.Challenge.Bonus : 0;
+            var xp = (int)Math.Truncate(Math.Truncate(baseXp * ((100 + fighter.Wisdom) + challengeBonus)/ 100d) * multiplicator * Rates.XpRate);
 
             return InvokeWinXpModifier(fighter, xp);
         }
