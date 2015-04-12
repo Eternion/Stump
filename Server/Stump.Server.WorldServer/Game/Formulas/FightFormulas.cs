@@ -80,24 +80,29 @@ namespace Stump.Server.WorldServer.Game.Formulas
             var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
             var challengeBonus = fighter.Fight.Challenge.Status == ChallengeStatusEnum.SUCCESS ? fighter.Fight.Challenge.Bonus : 0;
-            var xp = (int)Math.Truncate(Math.Truncate(baseXp * ((100 + fighter.Wisdom) + challengeBonus)/ 100d) * multiplicator * Rates.XpRate);
-
+            var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + fighter.Wisdom)/ 100d) * multiplicator * Rates.XpRate);
+            xp += (int)Math.Truncate(xp*(challengeBonus/100d));
+  
             return InvokeWinXpModifier(fighter, xp);
         }
 
         public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas)
         {
-            var looterPP = looter.Prospecting;
+            var challengeBonus = looter.Fight.Challenge.Status == ChallengeStatusEnum.SUCCESS ? looter.Fight.Challenge.Bonus : 0;
+            var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
 
             var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + looter.Fight.AgeBonus / 100d;
-            var kamas = (int)( baseKamas * ( (double)looterPP / teamPP ) * multiplicator * Rates.KamasRate );
+            var kamas = (int)( baseKamas * (looterPP / teamPP) * multiplicator * Rates.KamasRate );
 
             return InvokeWinKamasModifier(looter, kamas);
         }
 
         public static double AdjustDropChance(IFightResult looter, DroppableItem item, Monster dropper, int monsterAgeBonus)
         {
-            var rate = item.GetDropRate((int) dropper.Grade.GradeId) * ( looter.Prospecting / 100d ) * ( ( monsterAgeBonus / 100d ) + 1 ) * Rates.DropsRate;
+            var challengeBonus = looter.Fight.Challenge.Status == ChallengeStatusEnum.SUCCESS ? looter.Fight.Challenge.Bonus : 0;
+            var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
+
+            var rate = item.GetDropRate((int)dropper.Grade.GradeId) * (looterPP / 100d) * ((monsterAgeBonus / 100d) + 1) * Rates.DropsRate;
 
             return InvokeDropRateModifier(looter, item, rate);
         }
