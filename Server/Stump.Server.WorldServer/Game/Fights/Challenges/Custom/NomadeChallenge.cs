@@ -11,7 +11,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public NomadeChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = id == (int)ChallengeEnum.NOMADE ? 20 : 10;
+            if (id == (int)ChallengeEnum.NOMADE)
+            {
+                BonusMin = 20;
+                BonusMax = 55;
+            }
+            else
+            {
+                BonusMin = 10;
+                BonusMax = 10;
+            }
         }
 
         public override void Initialize()

@@ -12,7 +12,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public BarbaricChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 60;
+            BonusMin = 60;
+            BonusMax = 75;
         }
 
         public override void Initialize()

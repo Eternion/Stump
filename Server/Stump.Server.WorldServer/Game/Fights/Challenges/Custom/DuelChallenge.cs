@@ -13,7 +13,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public DuelChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 40;
+            BonusMin = 40;
+            BonusMax = 40;
         }
 
         public override void Initialize()

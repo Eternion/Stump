@@ -14,7 +14,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public SexChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 35;
+            BonusMin = 35;
+            BonusMax = 35;
+
             m_sexType = id == (int)ChallengeEnum.NI_PIOUTES_NI_SOUMISES ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
         }
 

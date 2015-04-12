@@ -13,7 +13,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public CruelChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 40;
+            if (id == (int)ChallengeEnum.CRUEL)
+            {
+                BonusMin = 40;
+                BonusMax = 80;
+            }
+            else
+            {
+                BonusMin = 40;
+                BonusMax = 60;
+            }
         }
 
         public override void Initialize()

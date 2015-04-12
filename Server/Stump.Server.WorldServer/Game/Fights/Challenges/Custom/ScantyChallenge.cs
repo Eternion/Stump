@@ -17,7 +17,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public ScantyChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 160;
+            BonusMin = 160;
+            BonusMax = 220;
         }
 
         public override void Initialize()

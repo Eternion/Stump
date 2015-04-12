@@ -10,7 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public VolunteerChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 25;
+            BonusMin = 30;
+            BonusMax = 60;
         }
 
         public override void Initialize()

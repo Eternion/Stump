@@ -14,7 +14,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public SharingChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 50;
+            BonusMin = 50;
+            BonusMax = 50;
         }
 
         public override void Initialize()

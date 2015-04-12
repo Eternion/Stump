@@ -12,7 +12,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public ElementaryChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 30;
+            BonusMin = 30;
+            BonusMax = 50;
+
             m_element = EffectSchoolEnum.Unknown;
         }
 

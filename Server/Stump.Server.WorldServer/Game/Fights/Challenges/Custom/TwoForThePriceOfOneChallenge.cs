@@ -12,7 +12,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public TwoForThePriceOfOneChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 60;
+            BonusMin = 60;
+            BonusMax = 60;
+
             m_kills = 0;
         }
 

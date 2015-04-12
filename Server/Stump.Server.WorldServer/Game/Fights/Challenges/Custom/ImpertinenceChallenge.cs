@@ -14,7 +14,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public ImpertinenceChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = id == (int)ChallengeEnum.HARDI ? 25: 40;
+            if (id == (int)ChallengeEnum.HARDI)
+            {
+                BonusMin = 25;
+                BonusMax = 25;
+            }
+            else
+            {
+                BonusMin = 40;
+                BonusMax = 40;
+            }
 
             m_team = Fight.DefendersTeam is FightMonsterTeam ? Fight.DefendersTeam : Fight.ChallengersTeam;
             if (id == (int) ChallengeEnum.COLLANT)

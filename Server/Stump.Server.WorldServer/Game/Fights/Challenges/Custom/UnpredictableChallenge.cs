@@ -10,7 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public UnpredictableChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 50;
+            BonusMin = 50;
+            BonusMax = 70;
         }
 
         public override void Initialize()

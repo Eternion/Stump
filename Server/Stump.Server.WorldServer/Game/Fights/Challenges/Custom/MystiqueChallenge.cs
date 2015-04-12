@@ -12,7 +12,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public MystiqueChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 40;
+            BonusMin = 40;
+            BonusMax = 60;
         }
 
         public override void Initialize()

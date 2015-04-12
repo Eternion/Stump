@@ -10,7 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public BlitzkriegChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 80;
+            BonusMin = 80;
+            BonusMax = 125;
         }
 
         public override void Initialize()

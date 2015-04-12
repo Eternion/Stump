@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
@@ -11,7 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public KeepMovingChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 20;
+            BonusMin = 20;
+            BonusMax = 20;
         }
 
         public override void Initialize()

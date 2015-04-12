@@ -13,7 +13,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public PigHeadChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 50;
+            BonusMin = 50;
+            BonusMax = 80;
         }
 
         public override void Initialize()
