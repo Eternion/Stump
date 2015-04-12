@@ -19,6 +19,7 @@ using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -72,7 +73,10 @@ namespace ArkalysPlugin
             var monsters = fight.GetAllFighters<MonsterFighter>(entry => entry.IsDead()).ToList();
             var players = fight.GetAllFighters<CharacterFighter>().ToList();
 
+            var challengeBonus = fight.Challenge.Status == ChallengeStatusEnum.SUCCESS ? fight.Challenge.Bonus : 0;
+
             var totalOrbs = (uint) monsters.Sum(x => GetMonsterDroppedOrbs(x));
+            totalOrbs += (uint)Math.Truncate(totalOrbs * (challengeBonus / 100d));
 
             foreach (var player in players)
             {                
