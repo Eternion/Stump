@@ -10,7 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public ContractKillerChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 45;
+            BonusMin = 45;
+            BonusMax = 65;
         }
 
         public override void Initialize()

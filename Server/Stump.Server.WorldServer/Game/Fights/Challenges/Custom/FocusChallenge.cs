@@ -9,7 +9,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public FocusChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 30;
+            BonusMin = 30;
+            BonusMax = 50;
         }
 
         public override void Initialize()

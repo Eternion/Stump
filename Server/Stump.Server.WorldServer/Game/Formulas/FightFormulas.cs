@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Threading;
+using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
             var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
-            var xp = (int)Math.Truncate(Math.Truncate(baseXp * ( 100 + fighter.Wisdom ) / 100d) * multiplicator * Rates.XpRate);
+            var xp = (int)Math.Truncate(Math.Truncate(baseXp * ((100 + fighter.Wisdom) + fighter.Fight.Challenge.Bonus)/ 100d) * multiplicator * Rates.XpRate);
 
             return InvokeWinXpModifier(fighter, xp);
         }
@@ -102,7 +102,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static int CalculatePushBackDamages(FightActor source, FightActor target, int range)
         {
-            return (8 + new AsyncRandom().Next(1, 8) * (source.Level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
+            return (8 + new CryptoRandom().Next(1, 8) * (source.Level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
         }
     }
 }

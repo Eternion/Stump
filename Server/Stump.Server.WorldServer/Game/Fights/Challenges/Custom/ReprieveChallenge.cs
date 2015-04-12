@@ -10,7 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public ReprieveChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 20;
+            BonusMin = 20;
+            BonusMax = 55;
         }
 
         public override void Initialize()

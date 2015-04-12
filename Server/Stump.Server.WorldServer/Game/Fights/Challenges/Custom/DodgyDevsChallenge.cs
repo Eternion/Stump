@@ -8,7 +8,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public DodgyDevsChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 1;
+            BonusMin = 1;
+            BonusMax = 1;
         }
     }
 }

@@ -14,7 +14,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public HermitChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = id == (int)ChallengeEnum.ANACHORÈTE ? 20 : 30;
+            if (id == (int)ChallengeEnum.ANACHORÈTE)
+            {
+                BonusMin = 20;
+                BonusMax = 30;
+            }
+            else
+            {
+                BonusMin = 30;
+                BonusMax = 30;  
+            }
 
             m_team = Fight.DefendersTeam is FightMonsterTeam ? Fight.DefendersTeam : Fight.ChallengersTeam;
             if (id == (int)ChallengeEnum.ANACHORÈTE)

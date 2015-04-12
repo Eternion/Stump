@@ -9,7 +9,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public IncurableChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 20;
+            BonusMin = 20;
+            BonusMax = 40;
         }
 
         public override void Initialize()

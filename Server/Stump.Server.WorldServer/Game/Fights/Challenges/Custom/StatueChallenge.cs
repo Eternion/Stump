@@ -12,7 +12,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public StatueChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 25;
+            BonusMin = 25;
+            BonusMax = 55;
         }
 
         public override void Initialize()

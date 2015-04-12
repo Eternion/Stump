@@ -9,7 +9,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public SelfSacrificeChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 10;
+            BonusMin = 10;
+            BonusMax = 25;
         }
 
         public override void Initialize()

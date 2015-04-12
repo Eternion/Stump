@@ -15,7 +15,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public ToEachHisPwn(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 60;
+            BonusMin = 60;
+            BonusMax = 90;
         }
 
         public override void Initialize()

@@ -17,7 +17,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public VersatileChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 50;
+            BonusMin = 50;
+            BonusMax = 85;
         }
 
         public override void Initialize()

@@ -10,7 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public TimeFliesChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 30;
+            BonusMin = 20;
+            BonusMax = 20;
         }
 
         public override void Initialize()

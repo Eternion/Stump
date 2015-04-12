@@ -9,7 +9,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public UntouchableChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 40;
+            BonusMin = 40;
+            BonusMax = 70;
         }
 
         public override void Initialize()

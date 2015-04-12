@@ -10,7 +10,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         public MulesChallenge(int id, IFight fight)
             : base(id, fight)
         {
-            Bonus = 20;
+            BonusMin = 30;
+            BonusMax = 30;
         }
 
         public override void Initialize()
