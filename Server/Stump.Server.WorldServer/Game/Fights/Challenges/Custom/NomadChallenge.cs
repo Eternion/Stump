@@ -6,9 +6,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
     [ChallengeIdentifier((int)ChallengeEnum.NOMADE)]
     [ChallengeIdentifier((int)ChallengeEnum.PÉTULANT)]
-    public class NomadeChallenge : DefaultChallenge
+    public class NomadChallenge : DefaultChallenge
     {
-        public NomadeChallenge(int id, IFight fight)
+        public NomadChallenge(int id, IFight fight)
             : base(id, fight)
         {
             if (id == (int)ChallengeEnum.NOMADE)
@@ -28,6 +28,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             base.Initialize();
 
             Fight.BeforeTurnStopped += OnTurnStopped;
+            Fight.Tackled += OnTackled;
+        }
+
+        private void OnTackled(FightActor fighter, int apTackled, int mpTackled)
+        {
+            if (!(fighter is CharacterFighter))
+                return;
+
+            Fight.Tackled -= OnTackled;
+            UpdateStatus(ChallengeStatusEnum.FAILED, fighter);
         }
 
         private void OnTurnStopped(IFight fight, FightActor fighter)

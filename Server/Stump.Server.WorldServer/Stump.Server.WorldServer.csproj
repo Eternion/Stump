@@ -439,6 +439,7 @@
     <Compile Include="Game\Fights\Buffs\DelayBuff.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\BarbaricChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\BlitzkriegChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\CleanHandsChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\ContaminationChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\DodgyDevsChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\DuelChallenge.cs" />
@@ -451,6 +452,7 @@
     <Compile Include="Game\Fights\Challenges\Custom\CruelChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\SelfSacrificeChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\SharingChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\SightseeingChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\ToEachHisPwn.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\TwoForThePriceOfOneChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\VolunteerChallenge.cs" />
@@ -465,7 +467,7 @@
     <Compile Include="Game\Fights\Challenges\Custom\TimeFliesChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\MystiqueChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\SexChallenge.cs" />
-    <Compile Include="Game\Fights\Challenges\Custom\NomadeChallenge.cs" />
+    <Compile Include="Game\Fights\Challenges\Custom\NomadChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\SpellUseChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\StatueChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\ReprieveChallenge.cs" />
