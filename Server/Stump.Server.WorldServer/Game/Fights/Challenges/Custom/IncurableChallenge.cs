@@ -1,4 +1,6 @@
-﻿using Stump.DofusProtocol.Enums.Custom;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
@@ -21,6 +23,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             {
                 fighter.LifePointsChanged += OnLifePointsChanged;
             }
+        }
+
+        public override bool IsEligible()
+        {
+            return Fight.GetAllCharacters().Any(x => x.BreedId != PlayableBreedEnum.Pandawa);
         }
 
         private void OnLifePointsChanged(FightActor fighter, int delta, int shieldDamages, int permanentDamages, FightActor from)

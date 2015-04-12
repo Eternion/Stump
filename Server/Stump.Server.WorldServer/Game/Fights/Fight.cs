@@ -225,8 +225,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         event Action<IFight> FightStarted;
-        event Action<IFight>  FightEnded;
-
+        event Action<IFight> FightEnded;
+        
         void Initialize();
         void StartFighting();
         bool CheckFightEnd();
@@ -261,6 +261,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         void StopTurn();
         event Action<IFight, FightActor> BeforeTurnStopped;
         event Action<IFight, FightActor> TurnStopped;
+        event Action<FightActor, int, int> Tackled;
         void SwitchFighters(FightActor fighter1, FightActor fighter2);
         IEnumerable<Buff> GetBuffs();
         void UpdateBuff(Buff buff);
@@ -1755,6 +1756,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
         }
 
+        public event Action<FightActor, int, int> Tackled;
+
         protected virtual void OnTackled(FightActor actor, Path path)
         {
             var tacklers = actor.GetTacklers();
@@ -1775,6 +1778,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 path.CutPath(actor.MP + 1);
 
             actor.TriggerBuffs(BuffTriggerType.TACKLED);
+
+            var handler = Tackled;
+            if (handler != null)
+                handler(actor, apTackled, mpTackled);
         }
 
         protected virtual void OnStopMoving(ContextActor actor, Path path, bool canceled)
