@@ -64,24 +64,24 @@ namespace ArkalysPlugin
         {
             if (fight is FightPvM)
             {
-                fight.WinnersDetermined += OnWinnersDetermined;
+                fight.ResultGenerated += OnResultGenerated;
             }
         }
 
-        private static void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        private static void OnResultGenerated(IFight fight)
         {
             var monsters = fight.GetAllFighters<MonsterFighter>(entry => entry.IsDead()).ToList();
             var players = fight.GetAllFighters<CharacterFighter>().ToList();
 
-            var challengeBonus = fight.Challenge.Status == ChallengeStatusEnum.SUCCESS ? fight.Challenge.Bonus : 0;
+            var challengeBonus = fight.Challenge.Status == ChallengeStatusEnum.SUCCESS ? fight.Challenge.Bonus : 1;
 
-            var totalOrbs = (uint) monsters.Sum(x => GetMonsterDroppedOrbs(x));
+            var totalOrbs = (uint)monsters.Sum(x => GetMonsterDroppedOrbs(x));
             totalOrbs += (uint)Math.Truncate(totalOrbs * (challengeBonus / 100d));
 
             foreach (var player in players)
-            {                
+            {
                 var teamPP = player.Team.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-                var orbs = (uint) (((double)player.Stats[PlayerFields.Prospecting].Total/teamPP)*totalOrbs);
+                var orbs = (uint)(((double)player.Stats[PlayerFields.Prospecting].Total / teamPP) * totalOrbs);
 
                 if (orbs > 0)
                     player.Loot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
@@ -98,8 +98,8 @@ namespace ArkalysPlugin
                 limit -= (int)item.Stack;
             }
 
-            var collectorOrbs = (uint) (((double)fight.Map.TaxCollector.Guild.TaxCollectorProspecting/
-                                players.Sum(entry => entry.Stats[PlayerFields.Prospecting].Total))*totalOrbs*0.05);
+            var collectorOrbs = (uint)(((double)fight.Map.TaxCollector.Guild.TaxCollectorProspecting /
+                                players.Sum(entry => entry.Stats[PlayerFields.Prospecting].Total)) * totalOrbs * 0.05);
 
             if (collectorOrbs > limit)
                 collectorOrbs = (uint)limit;

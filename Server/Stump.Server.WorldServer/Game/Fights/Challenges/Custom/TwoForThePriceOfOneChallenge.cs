@@ -37,8 +37,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnBeforeTurnStopped(IFight fight, FightActor fighter)
         {
+            if (fighter is SummonedFighter && m_kills > 1)
+                UpdateStatus(ChallengeStatusEnum.FAILED, fighter);
+
             if (!(fighter is CharacterFighter))
+            {
+                m_kills = 0;
                 return;
+            }
 
             if (m_kills == 0)
                 return;
