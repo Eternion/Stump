@@ -508,7 +508,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 default:
                     logger.Error("Cannot manage party of type {0}", type);
                     break;
-            }        }
+            }
+
+            CompassHandler.SendCompassResetMessage(Client, CompassTypeEnum.COMPASS_TYPE_PARTY);
+        }
 
         #endregion
 

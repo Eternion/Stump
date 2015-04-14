@@ -7,8 +7,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.STATUE)]
     public class StatueChallenge : DefaultChallenge
     {
-        private int m_startCell;
-
         public StatueChallenge(int id, IFight fight)
             : base(id, fight)
         {
@@ -20,13 +18,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         {
             base.Initialize();
 
-            Fight.TurnStarted += OnTurnStarted;
             Fight.TurnStopped += OnTurnStopped;
-        }
-
-        private void OnTurnStarted(IFight fight, FightActor fighter)
-        {
-            m_startCell = fighter.Position.Cell.Id;
         }
 
         private void OnTurnStopped(IFight fight, FightActor fighter)
@@ -34,12 +26,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(fighter is CharacterFighter))
                 return;
 
-            if (fighter.Position.Cell.Id == m_startCell)
+            if (fighter.Position.Cell.Id == fighter.TurnStartPosition.Cell.Id)
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);
 
-            Fight.TurnStarted -= OnTurnStarted;
             Fight.TurnStopped -= OnTurnStopped;
         }
 

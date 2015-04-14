@@ -32,9 +32,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Elementary
             if (cawotte == null)
                 return;
 
-            var stateRooted = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Rooted);
+            var stateUnmovable = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
 
-            var stateBuff = new StateBuff(cawotte.PopNextBuffId(), cawotte, cawotte, summonEffect.Effect, Spell, false, stateRooted)
+            var stateBuff = new StateBuff(cawotte.PopNextBuffId(), cawotte, cawotte, summonEffect.Effect, Spell, false, stateUnmovable)
             {
                 Duration = -1
             };
