@@ -198,7 +198,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
                 else
                 {
-                    TaxCollector = actor as TaxCollectorFighter;
+                    TaxCollector = (TaxCollectorFighter) actor;
                     TaxCollector.Dead += OnTaxCollectorDeath;
                 }
             }

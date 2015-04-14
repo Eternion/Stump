@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         public override bool IsEligible()
         {
-            return Fight.GetAllFighters<MonsterFighter>().Count() > 1
+            return Fight.GetAllFighters<CharacterFighter>().Count() > 1
                 && Fight.GetAllFighters<MonsterFighter>().Count() >= Fight.GetAllFighters<CharacterFighter>().Count();
         }
 

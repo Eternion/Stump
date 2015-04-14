@@ -73,7 +73,7 @@ namespace ArkalysPlugin
             var monsters = fight.GetAllFighters<MonsterFighter>(entry => entry.IsDead()).ToList();
             var players = fight.GetAllFighters<CharacterFighter>().ToList();
 
-            var challengeBonus = fight.Challenge.Status == ChallengeStatusEnum.SUCCESS ? fight.Challenge.Bonus : 1;
+            var challengeBonus = fight.GetChallengeBonus();
 
             var totalOrbs = (uint)monsters.Sum(x => GetMonsterDroppedOrbs(x));
             totalOrbs += (uint)Math.Truncate(totalOrbs * (challengeBonus / 100d));
