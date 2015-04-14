@@ -14,6 +14,7 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Threading;
+using Stump.Core.Timers;
 using Stump.Core.Xml.Config;
 using Stump.ORM;
 using Stump.Server.BaseServer.Commands;
@@ -162,6 +163,12 @@ namespace Stump.Server.BaseServer
         }
 
         public string ScheduledShutdownReason
+        {
+            get;
+            protected set;
+        }
+
+        public SimpleTimerEntry ScheduledShutdownTimer
         {
             get;
             protected set;
@@ -393,7 +400,6 @@ namespace Stump.Server.BaseServer
             Initializing = false;
 
             IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(10).TotalMilliseconds, KeepSQLConnectionAlive);
-            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(5).TotalMilliseconds, CheckScheduledShutdown);
         }
 
 
@@ -435,7 +441,7 @@ namespace Stump.Server.BaseServer
             var afkClients = ClientManager.FindAll(client =>
                 DateTime.Now.Subtract(client.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
 
-            foreach (BaseClient client in afkClients)
+            foreach (var client in afkClients)
             {
                 client.Disconnect();
             }
@@ -458,6 +464,11 @@ namespace Stump.Server.BaseServer
         {
             IsShutdownScheduled = true;
             ScheduledShutdownDate = DateTime.Now + timeBeforeShuttingDown;
+
+            if (ScheduledShutdownTimer != null)
+                IOTaskPool.CancelSimpleTimer(ScheduledShutdownTimer);
+
+            ScheduledShutdownTimer = IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(1).TotalMilliseconds, CheckScheduledShutdown);
         }
 
         public virtual void CancelScheduledShutdown()
@@ -465,6 +476,9 @@ namespace Stump.Server.BaseServer
             IsShutdownScheduled = false;
             ScheduledShutdownDate = DateTime.MaxValue;
             ScheduledShutdownReason = null;
+
+            IOTaskPool.CancelSimpleTimer(ScheduledShutdownTimer);
+            ScheduledShutdownTimer = null;
         }
 
         protected virtual void CheckScheduledShutdown()
