@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Stats;
@@ -23,6 +24,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             {
                 fighter.Stats[PlayerFields.Range].Modified += OnRangeModified;
             }
+        }
+
+        public override bool IsEligible()
+        {
+            return Fight.GetAllCharacters().Any(x => x.BreedId != PlayableBreedEnum.Roublard);
         }
 
         private void OnRangeModified(StatsData stats, int amount)

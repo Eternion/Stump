@@ -78,6 +78,8 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
+            base.GenerateResults();
+
             var challengersRank =
                 (int) ChallengersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             var defendersRank =

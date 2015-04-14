@@ -72,8 +72,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Dispell()
         {
-            if (ApplyDelayedHandler != null)
-                ApplyDelayedHandler(this, Token);
+            if (RemoveDelayedHandler != null)
+                RemoveDelayedHandler(this);
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()

@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
-                fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
+                fighter.DamageInflicted += OnBeforeDamageInflicted;
             }
         }
 

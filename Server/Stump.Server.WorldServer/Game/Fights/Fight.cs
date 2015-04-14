@@ -233,6 +233,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         void CancelFight();
         void EndFight();
         event FightWinnersDelegate WinnersDetermined;
+        event Action<IFight> ResultGenerated;
         void StartPlacement();
         void ShowBlades();
         void HideBlades();
@@ -783,7 +784,16 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        protected abstract IEnumerable<IFightResult> GenerateResults();
+        public event Action<IFight> ResultGenerated;
+
+        protected virtual IEnumerable<IFightResult> GenerateResults()
+        {
+            var handler = ResultGenerated;
+            if (handler != null)
+                handler(this);
+
+            return new IFightResult[0];
+        }
 
         protected virtual IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver,
             out IFightResult leaverResult)
