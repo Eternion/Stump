@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Collections;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -12,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
     [ChallengeIdentifier((int)ChallengeEnum.VERSATILE)]
     public class VersatileChallenge : DefaultChallenge
     {
-        private readonly List<FightActor> m_weaponsUsed = new List<FightActor>();
+        private readonly List<Pair<FightActor, int>> m_weaponsUsed = new List<Pair<FightActor, int>>();
 
         public VersatileChallenge(int id, IFight fight)
             : base(id, fight)
@@ -37,10 +39,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                 return;
 
-            if (m_weaponsUsed.Contains(fighter))
+            if (m_weaponsUsed.Any(x => x.First == fighter && x.Second == Fight.TimeLine.RoundNumber))
                 UpdateStatus(ChallengeStatusEnum.FAILED);
             else
-                m_weaponsUsed.Add(fighter);
+                m_weaponsUsed.Add(new Pair<FightActor, int>(fighter, Fight.TimeLine.RoundNumber));
         }
 
         private void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)

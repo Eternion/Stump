@@ -1,7 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Enums.Custom;
+﻿using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Actors.Stats;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -29,6 +27,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
         {
             if (!(damage.Source is CharacterFighter))
                 return;
+
+            if (damage.Spell == null)
+            {
+                UpdateStatus(ChallengeStatusEnum.FAILED, damage.Source);
+                return;
+            }
 
             if (fighter.IsIndirectSpellCast(damage.Spell) || fighter.IsPoisonSpellCast(damage.Spell))
                 return;
