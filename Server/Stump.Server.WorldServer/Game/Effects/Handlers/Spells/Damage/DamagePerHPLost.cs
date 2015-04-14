@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
                 };
 
-                var damagesAmount = Math.Round(((actor.Stats.Health.DamageTaken * Dice.DiceNum) / 100d));
+                var damagesAmount = Math.Round(((Caster.Stats.Health.DamageTaken * Dice.DiceNum) / 100d));
 
                 damages.Amount = (int)damagesAmount;
 
