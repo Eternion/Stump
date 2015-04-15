@@ -216,23 +216,27 @@ namespace Stump.Server.WorldServer
 
                 if (diff > TimeSpan.FromHours(1) && announceDiff >= TimeSpan.FromHours(1))
                 {
-                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(5)), automatic);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromHours(diff.TotalHours.RoundToNearest(1)), automatic);
                 }
-                else if (diff > TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(5))
+                else if (diff > TimeSpan.FromMinutes(30) && diff <= TimeSpan.FromHours(1) && announceDiff >= TimeSpan.FromMinutes(30))
                 {
-                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(5)), automatic);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(30)), automatic);
                 }
-                else if (diff > TimeSpan.FromMinutes(5) && diff <= TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(1))
+                else if (diff > TimeSpan.FromMinutes(10) && diff <= TimeSpan.FromMinutes(30) && announceDiff >= TimeSpan.FromMinutes(10))
+                {
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(10)), automatic);
+                }
+                else if (diff > TimeSpan.FromMinutes(5) && diff <= TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(5))
                 {
                     AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes), automatic);
                 }
-                else if (diff > TimeSpan.FromMinutes(1) && diff <= TimeSpan.FromMinutes(5) && announceDiff >= TimeSpan.FromSeconds(30))
+                else if (diff > TimeSpan.FromMinutes(1) && diff <= TimeSpan.FromMinutes(5) && announceDiff >= TimeSpan.FromMinutes(1))
                 {
-                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(30)), automatic);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(1)), automatic);
                 }
                 else if (diff > TimeSpan.FromSeconds(10) && diff <= TimeSpan.FromMinutes(1) && announceDiff >= TimeSpan.FromSeconds(10))
                 {
-                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(10)), automatic);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromSeconds(diff.TotalSeconds.RoundToNearest(10)), automatic);
                 }
                 else if (diff <= TimeSpan.FromSeconds(10) && diff > TimeSpan.Zero)
                 {
