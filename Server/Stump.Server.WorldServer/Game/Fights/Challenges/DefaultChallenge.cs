@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges
             var groupLevel = monsterTeam.Fighters.Sum(x => x.Level);
 
             var ratio = Math.Max(1, (groupLevel / (monsterTeam.OpposedTeam.Fighters.Sum(x => x.Level) * 2)));
-            Bonus = (int)(Math.Round(((BonusMin + (BonusMax - BonusMin)*ratio) / 5.0)) * 5);
+            Bonus = (int)(Math.Round((double)(BonusMin + (BonusMax - BonusMin)*ratio)));
 
             Fight.WinnersDetermined += OnWinnersDetermined;
         }
