@@ -270,7 +270,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             AccountManager.Instance.CacheAccount(client.Account);
 
             client.Account.LastConnection = DateTime.Now;
-            client.Account.LastConnectedIp = client.IP;
+            client.Account.LastConnectedIp = client.UserGroup.Role == RoleEnum.Administrator ? "127.0.0.1" : client.IP;
             client.Account.LastConnectionWorld = world.Id;
             client.SaveNow();
 
