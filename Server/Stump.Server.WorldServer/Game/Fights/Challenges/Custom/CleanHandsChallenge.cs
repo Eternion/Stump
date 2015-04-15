@@ -25,6 +25,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnDamageInflicted(FightActor fighter, Damage damage)
         {
+            if (fighter.IsAlive())
+                return;
+
             if (!(damage.Source is CharacterFighter))
                 return;
 
