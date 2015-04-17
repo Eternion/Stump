@@ -687,6 +687,15 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region LivingChest
+
+            // Prospection (495)
+            FixEffectOnAllLevels(495, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(495, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(495, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
+            #endregion
+
             #endregion
 
             #region Monsters
