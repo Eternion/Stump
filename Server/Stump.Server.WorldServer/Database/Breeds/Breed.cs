@@ -582,7 +582,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
         {
             return m_startPosition ??
                    (m_startPosition =
-                    new ObjectPosition(Game.World.Instance.GetMap(StartMap), StartCell, (DirectionsEnum) StartDirection));
+                    new ObjectPosition(Game.World.Instance.GetMap(StartMap), StartCell, StartDirection));
         }
 
         public uint[][] GetThresholds(StatsBoostTypeEnum statsid)

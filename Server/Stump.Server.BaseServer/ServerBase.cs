@@ -11,6 +11,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
+using SharpRaven;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Threading;
@@ -44,6 +45,17 @@ namespace Stump.Server.BaseServer
 
         [Variable] public static string CommandsInfoFilePath = "./commands.xml";
 
+        [Variable(Priority = 10, DefinableRunning = true)]
+        public static bool IsExceptionLoggerEnabled = false;
+
+        [Variable(Priority = 10)]
+        public static string ExceptionLoggerDSN = "";
+
+        public static RavenClient ExceptionLogger
+        {
+            get;
+            protected set;
+        }
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -183,6 +195,9 @@ namespace Stump.Server.BaseServer
             NLogHelper.DefineLogProfile(true, true);
             NLogHelper.EnableLogging();
             logger = LogManager.GetCurrentClassLogger();
+
+            if (IsExceptionLoggerEnabled)
+                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
 
             if (!Debugger.IsAttached)
             {

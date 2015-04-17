@@ -18,7 +18,7 @@ namespace Stump.Plugins.DebugPlugin.Commands
             if (!(trigger is GameTrigger))
                 return;
 
-            var character = ( trigger as GameTrigger ).Character;
+            var character = ( (GameTrigger) trigger ).Character;
 
             character.Teleport(character.Breed.GetStartPosition());
 

@@ -12,7 +12,7 @@ namespace Stump.Server.BaseServer.Logging
     public class MongoLogger : Singleton<MongoLogger>
     {
         [Variable(Priority = 10)] 
-        public static bool IsMongoLoggerEnabled = true;
+        public static bool IsMongoLoggerEnabled = false;
 
         [Variable(Priority = 10)]
         public static DatabaseConfiguration MongoDBConfiguration = new DatabaseConfiguration

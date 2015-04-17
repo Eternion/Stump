@@ -7,7 +7,7 @@ namespace Stump.Server.BaseServer.Exceptions
 {
     public class ExceptionManager : Singleton<ExceptionManager>
     {
-        private List<Exception> m_exceptions = new List<Exception>();
+        private readonly List<Exception> m_exceptions = new List<Exception>();
 
         public ReadOnlyCollection<Exception> Exceptions
         {
@@ -16,6 +16,9 @@ namespace Stump.Server.BaseServer.Exceptions
 
         public void RegisterException(Exception ex)
         {
+            if (ServerBase.IsExceptionLoggerEnabled)
+                ServerBase.ExceptionLogger.CaptureException(ex);
+
             m_exceptions.Add(ex);
         }
     }
