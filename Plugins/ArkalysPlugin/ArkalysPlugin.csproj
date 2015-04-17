@@ -113,6 +113,7 @@
     <Compile Include="Commands\TeleportCommand.cs" />
     <Compile Include="Commands\WelcomeCommand.cs" />
     <Compile Include="Npcs\NpcAlignement.cs" />
+    <Compile Include="Npcs\NpcClassChange.cs" />
     <Compile Include="Npcs\NpcDofus.cs" />
     <Compile Include="Npcs\NpcExchange.cs" />
     <Compile Include="Npcs\NpcGuilds.cs" />

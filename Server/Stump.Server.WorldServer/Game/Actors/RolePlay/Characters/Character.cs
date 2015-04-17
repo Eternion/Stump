@@ -705,7 +705,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ActorLook RealLook
         {
             get { return m_record.EntityLook; }
-            private set
+            set
             {
                 m_record.EntityLook = value;
                 base.Look = value;
@@ -1169,6 +1169,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsGameMaster()
         {
             return UserGroup.IsGameMaster;
+        }
+
+        public void SetBreed(PlayableBreedEnum breed)
+        {
+            BreedId = breed;
         }
 
         #endregion
@@ -1811,6 +1816,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion
+
         #endregion
 
         #region Actions
@@ -3244,7 +3250,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
-        internal CharacterRecord Record
+        public CharacterRecord Record
         {
             get { return m_record; }
         }
