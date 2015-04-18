@@ -7,13 +7,11 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
 using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace ArkalysPlugin.Npcs
@@ -76,6 +74,9 @@ namespace ArkalysPlugin.Npcs
         //Je souhaite devenir Steamer !
         public static short ReplySteamer = 20127;
 
+        //Je n'ai pas assez de Jetons pour le moment, je repasserais plus tard !
+        public static short ReplyNoTokens = 20128;
+
         public static NpcMessage Message;
         private static bool m_scriptDisabled;
 
@@ -131,6 +132,8 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcClassChangeDialog : NpcDialog
     {
+        private int m_price = 0;
+
         public NpcClassChangeDialog(Character character, Npc npc)
             : base(character, npc)
         {
@@ -141,7 +144,13 @@ namespace ArkalysPlugin.Npcs
         {
             base.Open();
 
-            var price = 600 + (40 * Character.PrestigeRank);
+            m_price = 600 + (40 * Character.PrestigeRank);
+
+            if (Character.Inventory.Tokens.Stack < m_price)
+            {
+                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcClassChange.ReplyNoTokens });
+                return;
+            }
 
             ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] {
                 NpcClassChange.ReplyFeca,
@@ -159,7 +168,7 @@ namespace ArkalysPlugin.Npcs
                 NpcClassChange.ReplyRoublard,
                 NpcClassChange.ReplyZobal,
                 NpcClassChange.ReplySteamer
-            }, price.ToString());
+            }, m_price.ToString());
         }
 
         public override void Reply(short replyId)
@@ -200,10 +209,12 @@ namespace ArkalysPlugin.Npcs
             if (bread != PlayableBreedEnum.UNDEFINED)
                 ChangeBreed(bread);
 
+            Character.Inventory.UnStackItem(Character.Inventory.Tokens, m_price);
+
             Close();
         }
 
-        private SpellLevelTemplate GetSpecialSpell(PlayableBreedEnum breedId)
+        private static SpellLevelTemplate GetSpecialSpell(PlayableBreedEnum breedId)
         {
             var spellId = -1;
 
