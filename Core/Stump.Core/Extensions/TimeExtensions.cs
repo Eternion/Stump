@@ -17,7 +17,7 @@ namespace Stump.Core.Extensions
 
         public static int GetUnixTimeStamp(this DateTime date)
         {
-            return (int)( date - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime() ).TotalSeconds;
+            return (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
         }
 
         public static string ToPrettyFormat(this TimeSpan span)

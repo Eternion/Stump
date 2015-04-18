@@ -1,13 +1,19 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Npcs;
 using Stump.Server.WorldServer.Database.Npcs.Actions;
+using Stump.Server.WorldServer.Database.Spells;
+using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
+using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace ArkalysPlugin.Npcs
@@ -17,7 +23,7 @@ namespace ArkalysPlugin.Npcs
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         [Variable]
-        public static int NpcId = 3050;
+        public static int NpcId = 3013;
 
         //Oyé oyé nobles aventuriers,
         //Vous voulez assumer votre véritable personnalité et changez votre façon de jouer en changeant de classe et en conservant la même puissance ?
@@ -135,6 +141,8 @@ namespace ArkalysPlugin.Npcs
         {
             base.Open();
 
+            var price = 600 + (40 * Character.PrestigeRank);
+
             ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] {
                 NpcClassChange.ReplyFeca,
                 NpcClassChange.ReplyOsamodas,
@@ -151,7 +159,7 @@ namespace ArkalysPlugin.Npcs
                 NpcClassChange.ReplyRoublard,
                 NpcClassChange.ReplyZobal,
                 NpcClassChange.ReplySteamer
-            });
+            }, price.ToString());
         }
 
         public override void Reply(short replyId)
@@ -195,10 +203,68 @@ namespace ArkalysPlugin.Npcs
             Close();
         }
 
+        private SpellLevelTemplate GetSpecialSpell(PlayableBreedEnum breedId)
+        {
+            var spellId = -1;
+
+            switch (breedId)
+            {
+                case PlayableBreedEnum.Feca:
+                    spellId = 2108;
+                    break;
+                case PlayableBreedEnum.Osamodas:
+                    spellId = 2098;
+                    break;
+                case PlayableBreedEnum.Enutrof:
+                    spellId = 2123;
+                    break;
+                case PlayableBreedEnum.Sram:
+                    spellId = 2078;
+                    break;
+                case PlayableBreedEnum.Xelor:
+                    spellId = 2118;
+                    break;
+                case PlayableBreedEnum.Ecaflip:
+                    spellId = 2058;
+                    break;
+                case PlayableBreedEnum.Eniripsa:
+                    spellId = 2133;
+                    break;
+                case PlayableBreedEnum.Iop:
+                    spellId = 2048;
+                    break;
+                case PlayableBreedEnum.Cra:
+                    spellId = 2088;
+                    break;
+                case PlayableBreedEnum.Sadida:
+                    spellId = 2128;
+                    break;
+                case PlayableBreedEnum.Sacrieur:
+                    spellId = 2103;
+                    break;
+                case PlayableBreedEnum.Pandawa:
+                    spellId = 2113;
+                    break;
+                case PlayableBreedEnum.Roublard:
+                    spellId = 2148;
+                    break;
+                case PlayableBreedEnum.Zobal:
+                    spellId = 18596;
+                    break;
+                case PlayableBreedEnum.Steamer:
+                    spellId = 20109;
+                    break;
+            }
+
+            return SpellManager.Instance.GetSpellLevel(spellId);
+        }
+
         private void ChangeBreed(PlayableBreedEnum breed)
         {
             Character.Spells.ForgetAllSpells();
             Character.ResetStats();
+
+            var specialSpell = GetSpecialSpell(Character.BreedId);
 
             foreach (var breedSpell in Character.Breed.Spells)
             {
@@ -212,10 +278,26 @@ namespace ArkalysPlugin.Npcs
                 Character.Spells.LearnSpell(breedSpell.Spell);
             }
 
-            Character.Record.Relook = 1;
-            Character.Record.Recolor = true;
+            if (Character.Spells.HasSpell((int)specialSpell.SpellId))
+            {
+                Character.Spells.UnLearnSpell((int)specialSpell.SpellId);
 
-            Character.RealLook = Character.Sex == SexTypeEnum.SEX_MALE ? Character.Breed.MaleLook : Character.Breed.FemaleLook;
+                specialSpell = GetSpecialSpell(Character.BreedId);
+
+                Character.Spells.LearnSpell((int)specialSpell.SpellId);
+            }
+
+            Character.Record.Relook = 1;
+
+            Character.RealLook = Character.Breed.GetLook(Character.Sex, true);
+            Character.Head = BreedManager.Instance.GetHead(x => x.Breed == Character.Breed.Id && x.Gender == (int)Character.Sex);
+            Character.RealLook.SetColors(Character.Breed.GetColors(Character.Sex).Select(x => Color.FromArgb((int)x)).ToArray());
+
+            foreach (var skin in Character.Head.Skins)
+                Character.RealLook.AddSkin(skin);
+
+            Character.SendSystemMessage(50, true, "Pour finaliser le changement de classe reconnectez vous sur", Character.Name);
+            Character.Client.Disconnect();
         }
     }
 }

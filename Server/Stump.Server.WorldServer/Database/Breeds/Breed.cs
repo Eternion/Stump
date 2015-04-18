@@ -631,5 +631,10 @@ namespace Stump.Server.WorldServer.Database.Breeds
 
             return sex == SexTypeEnum.SEX_FEMALE ? FemaleLook : MaleLook;
         }
+
+        public uint[] GetColors(SexTypeEnum sex)
+        {
+            return sex == SexTypeEnum.SEX_FEMALE ? FemaleColors : MaleColors;
+        }
     }
 }
