@@ -19,7 +19,7 @@ namespace Stump.Server.BaseServer.Exceptions
             if (ServerBase.IsExceptionLoggerEnabled)
                 ServerBase.ExceptionLogger.CaptureException(ex);
 
-            m_exceptions.Add(ex);
+            //m_exceptions.Add(ex);
         }
     }
 }
