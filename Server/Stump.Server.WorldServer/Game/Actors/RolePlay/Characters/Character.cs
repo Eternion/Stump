@@ -803,7 +803,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public Head Head
         {
             get;
-            private set;
+            set;
         }
 
         public bool Invisible
@@ -1595,7 +1595,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 string.Format(
                     "Vous venez de passer au rang prestige {0}. \r\nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
                     PrestigeRank, item.Template.Name) +
-                "les bonus s'appliquent sans équiper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.");
+                "les bonus s'appliquent sans équiper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.", "PRESTIGE", 0);
 
             foreach (var equippedItem in Inventory.ToArray())
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
