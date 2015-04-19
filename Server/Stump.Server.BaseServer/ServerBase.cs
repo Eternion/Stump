@@ -196,9 +196,6 @@ namespace Stump.Server.BaseServer
             NLogHelper.EnableLogging();
             logger = LogManager.GetCurrentClassLogger();
 
-            if (IsExceptionLoggerEnabled)
-                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
-
             if (!Debugger.IsAttached)
             {
                 AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
@@ -264,6 +261,9 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
+
+            if (IsExceptionLoggerEnabled)
+                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
         }
 
         public virtual void UpdateConfigFiles()

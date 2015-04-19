@@ -146,9 +146,9 @@ namespace ArkalysPlugin.Npcs
 
             m_price = 600 + (40 * Character.PrestigeRank);
 
-            if (Character.Inventory.Tokens.Stack < m_price)
+            if (Character.Inventory.Tokens == null || Character.Inventory.Tokens.Stack < m_price)
             {
-                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcClassChange.ReplyNoTokens });
+                ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, new[] { NpcClassChange.ReplyNoTokens }, m_price.ToString());
                 return;
             }
 
@@ -206,9 +206,13 @@ namespace ArkalysPlugin.Npcs
             else if (replyId == NpcClassChange.ReplySteamer)
                 bread = PlayableBreedEnum.Steamer;
 
-            if (bread != PlayableBreedEnum.UNDEFINED)
-                ChangeBreed(bread);
+            if (bread == PlayableBreedEnum.UNDEFINED)
+            {
+                Close();
+                return;
+            }
 
+            ChangeBreed(bread);
             Character.Inventory.UnStackItem(Character.Inventory.Tokens, m_price);
 
             Close();
