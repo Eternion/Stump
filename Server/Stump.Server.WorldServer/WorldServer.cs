@@ -183,7 +183,7 @@ namespace Stump.Server.WorldServer
             return ClientManager.FindAll(predicate);
         }
 
-        private TimeSpan? m_lastAnnouncedTime;
+        private DateTime m_lastAnnouncedTime;
 
         public override void ScheduleShutdown(TimeSpan timeBeforeShuttingDown)
         {
@@ -210,29 +210,37 @@ namespace Stump.Server.WorldServer
                 automatic = false;
             }
 
-            if (diff < TimeSpan.FromMinutes(30))
+            if (diff < TimeSpan.FromHours(12))
             {
-                var announceDiff = m_lastAnnouncedTime.HasValue ? TimeSpan.MaxValue : m_lastAnnouncedTime - diff;
+                var announceDiff = DateTime.Now - m_lastAnnouncedTime;
 
-                if (diff > TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(5))
+                if (diff > TimeSpan.FromHours(1) && announceDiff >= TimeSpan.FromHours(1))
                 {
-                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(5)), automatic);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromHours(diff.TotalHours.RoundToNearest(1)), automatic);
                 }
-                if (diff > TimeSpan.FromMinutes(5) && diff <= TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(1))
+                else if (diff > TimeSpan.FromMinutes(30) && diff <= TimeSpan.FromHours(1) && announceDiff >= TimeSpan.FromMinutes(30))
+                {
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(30)), automatic);
+                }
+                else if (diff > TimeSpan.FromMinutes(10) && diff <= TimeSpan.FromMinutes(30) && announceDiff >= TimeSpan.FromMinutes(10))
+                {
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(10)), automatic);
+                }
+                else if (diff > TimeSpan.FromMinutes(5) && diff <= TimeSpan.FromMinutes(10) && announceDiff >= TimeSpan.FromMinutes(5))
                 {
                     AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes), automatic);
                 }
-                if (diff > TimeSpan.FromMinutes(1) && diff <= TimeSpan.FromMinutes(5) && announceDiff >= TimeSpan.FromSeconds(30))
+                else if (diff > TimeSpan.FromMinutes(1) && diff <= TimeSpan.FromMinutes(5) && announceDiff >= TimeSpan.FromMinutes(1))
                 {
-                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(30)), automatic);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromMinutes(diff.TotalMinutes.RoundToNearest(1)), automatic);
                 }
-                if (diff > TimeSpan.FromSeconds(10) && diff <= TimeSpan.FromMinutes(1) && announceDiff >= TimeSpan.FromSeconds(10))
+                else if (diff > TimeSpan.FromSeconds(10) && diff <= TimeSpan.FromMinutes(1) && announceDiff >= TimeSpan.FromSeconds(10))
                 {
-                    AnnounceTimeBeforeShutdown(new TimeSpan(0, 0, 0, (int)diff.TotalSeconds.RoundToNearest(10)), automatic);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromSeconds(diff.TotalSeconds.RoundToNearest(10)), automatic);
                 }
-                if (diff <= TimeSpan.FromSeconds(10) && diff > TimeSpan.Zero)
+                else if (diff <= TimeSpan.FromSeconds(10) && diff > TimeSpan.Zero)
                 {
-                    AnnounceTimeBeforeShutdown(TimeSpan.FromSeconds(diff.Seconds.RoundToNearest(5)), automatic);
+                    AnnounceTimeBeforeShutdown(TimeSpan.FromSeconds(diff.Seconds), automatic);
                 }
             }
 
@@ -248,7 +256,7 @@ namespace Stump.Server.WorldServer
 
             World.Instance.SendAnnounce(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 15, time);
 
-            m_lastAnnouncedTime = time;
+            m_lastAnnouncedTime = DateTime.Now;
         }
 
         protected override void OnShutdown()

@@ -328,12 +328,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get;
         }
 
-        public FightActor CarriedActor
-        {
-            get;
-            protected set;
-        }
-
         public virtual bool IsReady
         {
             get;
@@ -1653,6 +1647,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnVisibleStateChanged(source, lastState);
         }
 
+        public bool IsIndirectSpellCast(Spell spell)
+        {
+            return spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_MASSE
+                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_MASSE_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_MORTEL
+                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_SILENCE
+                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_SILENCE_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.CONCENTRATION_DE_CHAKRA
+                   || spell.Template.Id == (int) SpellIdEnum.VERTIGE
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_ENFLAMMÉ
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_ENFLAMMÉ_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_1503
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_17
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_DE_RÉPULSION
+                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_DE_RÉPULSION_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.CONTRE
+                   || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE
+                   || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.MUR_DE_FEU
+                   || spell.Template.Id == (int) SpellIdEnum.MUR_D_AIR
+                   || spell.Template.Id == (int) SpellIdEnum.MUR_D_EAU
+                   || spell.Template.Id == (int) SpellIdEnum.EXPLOSION_ROUBLARDE
+                   || spell.Template.Id == (int) SpellIdEnum.AVERSE_ROUBLARDE
+                   || spell.Template.Id == (int) SpellIdEnum.TORNADE_ROUBLARDE;
+        }
+
         public bool IsPoisonSpellCast(Spell spell)
         {
             return spell.Template.Id == (int) SpellIdEnum.POISON_INSIDIEUX ||
@@ -2033,7 +2054,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations(WorldClient client = null)
         {
-            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.Character) ? Cell.Id : (short)-1 ) : Cell.Id, (sbyte)Direction, CarriedActor != null ? CarriedActor.Id : 0);
+            return new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.Character) ? Cell.Id : (short)-1 ) : Cell.Id, (sbyte)Direction, GetCarryingActor() != null ? GetCarryingActor().Id : 0);
         }
 
         public virtual GameFightMinimalStats GetGameFightMinimalStats()

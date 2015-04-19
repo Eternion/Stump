@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                 var dispel = false;
 
-                if (state.Id == (int)SpellStatesEnum.Invulnerable)
+                if (state.Id == (int)SpellStatesEnum.Invulnerable || state.Id == (int)SpellStatesEnum.Drunk)
                 {
                     dispel = true;
 

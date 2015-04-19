@@ -56,6 +56,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
+            base.GenerateResults();
+
             var results = GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).
                 Select(fighter => fighter.GetFightResult()).ToArray();
 

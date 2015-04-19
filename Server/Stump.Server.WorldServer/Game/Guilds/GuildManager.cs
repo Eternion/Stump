@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (guildalogemme == null)
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
 
-            if (!Regex.IsMatch(name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            if (!Regex.IsMatch(name, "^\\b[A-Z][A-Za-z\\s-']{4,30}\\b$", RegexOptions.Compiled) || Regex.IsMatch(name, "^\\s\\s$"))
             {
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_INVALID;
             }

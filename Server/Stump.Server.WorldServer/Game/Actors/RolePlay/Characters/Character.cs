@@ -53,6 +53,7 @@ using Stump.Server.WorldServer.Game.Social;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
+using Stump.Server.WorldServer.Handlers.Compass;
 using Stump.Server.WorldServer.Handlers.Context;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay.Party;
@@ -421,6 +422,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private readonly Dictionary<int, PartyInvitation> m_partyInvitations
             = new Dictionary<int, PartyInvitation>();
 
+        private Character m_followedCharacter;
 
         public Party Party
         {
@@ -506,7 +508,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 default:
                     logger.Error("Cannot manage party of type {0}", type);
                     break;
-            }        }
+            }
+
+            CompassHandler.SendCompassResetMessage(Client, CompassTypeEnum.COMPASS_TYPE_PARTY);
+        }
 
         #endregion
 
@@ -700,7 +705,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public ActorLook RealLook
         {
             get { return m_record.EntityLook; }
-            private set
+            set
             {
                 m_record.EntityLook = value;
                 base.Look = value;
@@ -798,7 +803,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public Head Head
         {
             get;
-            private set;
+            set;
         }
 
         public bool Invisible
@@ -1164,6 +1169,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public bool IsGameMaster()
         {
             return UserGroup.IsGameMaster;
+        }
+
+        public void SetBreed(PlayableBreedEnum breed)
+        {
+            BreedId = breed;
         }
 
         #endregion
@@ -1585,7 +1595,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 string.Format(
                     "Vous venez de passer au rang prestige {0}. \r\nVous repassez niveau 1 et vous avez acquis des bonus permanents visible sur l'objet '{1}' de votre inventaire, ",
                     PrestigeRank, item.Template.Name) +
-                "les bonus s'appliquent sans équiper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.");
+                "les bonus s'appliquent sans équiper l'objet. \r\nVous devez vous reconnecter pour actualiser votre niveau.", "PRESTIGE", 0);
 
             foreach (var equippedItem in Inventory.ToArray())
                 Inventory.MoveItem(equippedItem, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
@@ -1806,6 +1816,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion
+
         #endregion
 
         #region Actions
@@ -2197,6 +2208,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnPartyMemberRemoved(Party party, Character member, bool kicked)
         {
+            if (m_followedCharacter == member)
+                UnfollowMember();
+
             if (member != this)
                 return;
 
@@ -2212,6 +2226,38 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             party.PartyDeleted -= OnPartyDeleted;
 
             ResetParty(party.Type);
+        }
+
+        public void FollowMember(Character character)
+        {
+            if (m_followedCharacter != null)
+                UnfollowMember();
+
+            m_followedCharacter = character;
+            character.EnterMap += OnFollowedMemberEnterMap;
+
+            PartyHandler.SendPartyFollowStatusUpdateMessage(Client, Party, true, character.Id);
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, Party, character);
+        }
+
+        public void UnfollowMember()
+        {
+            if (m_followedCharacter == null)
+                return;
+
+            m_followedCharacter.EnterMap -= OnFollowedMemberEnterMap;
+
+            PartyHandler.SendPartyFollowStatusUpdateMessage(Client, Party, true, 0);
+
+            m_followedCharacter = null;
+        }
+
+        private void OnFollowedMemberEnterMap(RolePlayActor actor, Map map)
+        {
+            if (!(actor is Character))
+                return;
+
+            CompassHandler.SendCompassUpdatePartyMemberMessage(Client, Party, (Character) actor);
         }
 
         #endregion
@@ -3204,7 +3250,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
-        internal CharacterRecord Record
+        public CharacterRecord Record
         {
             get { return m_record; }
         }

@@ -141,6 +141,8 @@
   <ItemGroup>
     <Compile Include="Custom\AcquaintanceErrorEnum.cs" />
     <Compile Include="Custom\ActionsEnum.cs" />
+    <Compile Include="Custom\ChallengeEnum.cs" />
+    <Compile Include="Custom\ChallengeStatusEnum.cs" />
     <Compile Include="Custom\InteractiveTypeEnum.cs" />
     <Compile Include="Custom\ItemSuperTypeEnum.cs" />
     <Compile Include="Custom\MountStateEnum.cs" />
