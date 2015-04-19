@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts
@@ -102,8 +103,11 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
         public void BuffTrigger(DelayBuff buff, object token)
         {
+            if (Fight.State == FightState.Ended)
+                return;
+
             if (token is SpellEffectHandler)
-                (token as SpellEffectHandler).Apply();
+                ((SpellEffectHandler) token).Apply();
         }
 
         public override IEnumerable<SpellEffectHandler> GetEffectHandlers()

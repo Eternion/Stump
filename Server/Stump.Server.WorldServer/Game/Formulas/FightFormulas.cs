@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Stump.Core.Threading;
+using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -78,31 +79,38 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
             var baseXp = Math.Truncate(xpRatio / 100 * Math.Truncate(sumMonsterXp * GroupCoefficients[regularGroupRatio - 1] * levelCoeff));
             var multiplicator = fighter.Fight.AgeBonus <= 0 ? 1 : 1 + fighter.Fight.AgeBonus / 100d;
-            var xp = (int)Math.Truncate(Math.Truncate(baseXp * ( 100 + fighter.Wisdom ) / 100d) * multiplicator * Rates.XpRate);
+            var challengeBonus = fighter.Fight.GetChallengeBonus();
 
+            var xp = (int)Math.Truncate(Math.Truncate(baseXp * (100 + fighter.Wisdom)/ 100d) * multiplicator * Rates.XpRate);
+            xp += (int)Math.Truncate(xp*(challengeBonus/100d));
+  
             return InvokeWinXpModifier(fighter, xp);
         }
 
         public static int AdjustDroppedKamas(IFightResult looter, int teamPP, long baseKamas)
         {
-            var looterPP = looter.Prospecting;
+            var challengeBonus = looter.Fight.GetChallengeBonus();
+            var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
 
             var multiplicator = looter.Fight.AgeBonus <= 0 ? 1 : 1 + looter.Fight.AgeBonus / 100d;
-            var kamas = (int)( baseKamas * ( (double)looterPP / teamPP ) * multiplicator * Rates.KamasRate );
+            var kamas = (int)( baseKamas * (looterPP / teamPP) * multiplicator * Rates.KamasRate );
 
             return InvokeWinKamasModifier(looter, kamas);
         }
 
         public static double AdjustDropChance(IFightResult looter, DroppableItem item, Monster dropper, int monsterAgeBonus)
         {
-            var rate = item.GetDropRate((int) dropper.Grade.GradeId) * ( looter.Prospecting / 100d ) * ( ( monsterAgeBonus / 100d ) + 1 ) * Rates.DropsRate;
+            var challengeBonus = looter.Fight.GetChallengeBonus();
+            var looterPP = looter.Prospecting + ((looter.Prospecting * challengeBonus) / 100d);
+
+            var rate = item.GetDropRate((int)dropper.Grade.GradeId) * (looterPP / 100d) * ((monsterAgeBonus / 100d) + 1) * Rates.DropsRate;
 
             return InvokeDropRateModifier(looter, item, rate);
         }
 
         public static int CalculatePushBackDamages(FightActor source, FightActor target, int range)
         {
-            return (8 + new AsyncRandom().Next(1, 8) * (source.Level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
+            return (8 + new CryptoRandom().Next(1, 8) * (source.Level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using NLog;
+﻿using System;
+using System.Collections.Generic;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Spells;
 using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.History
@@ -31,6 +34,16 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         private int CurrentRound
         {
             get { return Owner.Fight.TimeLine.RoundNumber; }
+        }
+
+        public IEnumerable<SpellHistoryEntry> GetEntries()
+        {
+            return m_underlyingStack;
+        }
+
+        public IEnumerable<SpellHistoryEntry> GetEntries(Predicate<SpellHistoryEntry> predicate)
+        {
+            return m_underlyingStack.Where(entry => predicate(entry));
         }
 
         public void RegisterCastedSpell(SpellHistoryEntry entry)

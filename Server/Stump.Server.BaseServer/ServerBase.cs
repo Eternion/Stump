@@ -11,9 +11,11 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
+using SharpRaven;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Threading;
+using Stump.Core.Timers;
 using Stump.Core.Xml.Config;
 using Stump.ORM;
 using Stump.Server.BaseServer.Commands;
@@ -43,6 +45,17 @@ namespace Stump.Server.BaseServer
 
         [Variable] public static string CommandsInfoFilePath = "./commands.xml";
 
+        [Variable(Priority = 10, DefinableRunning = true)]
+        public static bool IsExceptionLoggerEnabled = false;
+
+        [Variable(Priority = 10)]
+        public static string ExceptionLoggerDSN = "";
+
+        public static RavenClient ExceptionLogger
+        {
+            get;
+            protected set;
+        }
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
@@ -167,6 +180,12 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public SimpleTimerEntry ScheduledShutdownTimer
+        {
+            get;
+            protected set;
+        }
+
         public virtual void Initialize()
         {
             InstanceAsBase = this;
@@ -242,6 +261,9 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
+
+            if (IsExceptionLoggerEnabled)
+                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
         }
 
         public virtual void UpdateConfigFiles()
@@ -393,7 +415,6 @@ namespace Stump.Server.BaseServer
             Initializing = false;
 
             IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(10).TotalMilliseconds, KeepSQLConnectionAlive);
-            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(5).TotalMilliseconds, CheckScheduledShutdown);
         }
 
 
@@ -435,7 +456,7 @@ namespace Stump.Server.BaseServer
             var afkClients = ClientManager.FindAll(client =>
                 DateTime.Now.Subtract(client.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
 
-            foreach (BaseClient client in afkClients)
+            foreach (var client in afkClients)
             {
                 client.Disconnect();
             }
@@ -458,6 +479,11 @@ namespace Stump.Server.BaseServer
         {
             IsShutdownScheduled = true;
             ScheduledShutdownDate = DateTime.Now + timeBeforeShuttingDown;
+
+            if (ScheduledShutdownTimer != null)
+                IOTaskPool.CancelSimpleTimer(ScheduledShutdownTimer);
+
+            ScheduledShutdownTimer = IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(1).TotalMilliseconds, CheckScheduledShutdown);
         }
 
         public virtual void CancelScheduledShutdown()
@@ -465,6 +491,9 @@ namespace Stump.Server.BaseServer
             IsShutdownScheduled = false;
             ScheduledShutdownDate = DateTime.MaxValue;
             ScheduledShutdownReason = null;
+
+            IOTaskPool.CancelSimpleTimer(ScheduledShutdownTimer);
+            ScheduledShutdownTimer = null;
         }
 
         protected virtual void CheckScheduledShutdown()

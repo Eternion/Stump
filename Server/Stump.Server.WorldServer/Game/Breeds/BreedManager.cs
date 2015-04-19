@@ -81,6 +81,11 @@ namespace Stump.Server.WorldServer.Game.Breeds
             return head;
         }
 
+        public Head GetHead(Predicate<Head> predicate)
+        {
+            return m_heads.Values.FirstOrDefault(x => predicate(x));
+        }
+
         public bool IsBreedAvailable(int id)
         {
             return AvailableBreeds.Contains((PlayableBreedEnum)id);

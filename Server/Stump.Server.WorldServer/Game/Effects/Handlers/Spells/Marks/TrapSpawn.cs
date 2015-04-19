@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             if (Fight.GetTriggers(TargetedCell).Length > 0)
             {
                 if (Caster is CharacterFighter)
-                    BasicHandler.SendTextInformationMessage(( Caster as CharacterFighter ).Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 229);
+                    BasicHandler.SendTextInformationMessage(( (CharacterFighter) Caster ).Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 229);
 
                 return false;
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Challenges;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
@@ -34,6 +35,16 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.StartFighting();
         }
 
+        protected override void OnFightStarted()
+        {
+            base.OnFightStarted();
+
+            var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+            challenge.Initialize();
+
+            SetChallenge(challenge);
+        }
+
         protected override void OnFighterAdded(FightTeam team, FightActor actor)
         {
             base.OnFighterAdded(team, actor);
@@ -60,8 +71,11 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
+            base.GenerateResults();
+
             var results = new List<IFightResult>();
-            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(entry => entry.GetFightResult()));
+            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)
+                && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(entry => entry.GetFightResult()));
 
             if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
                 results.Add(new TaxCollectorProspectingResult(Map.TaxCollector, this));

@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         [Variable(true)] public static uint MaxCharacterSlot = 5;
 
         private static readonly Regex m_nameCheckerRegex = new Regex(
-            "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
+            "^[A-Z][a-z]{2,9}(?:-[A-Za-z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
 
         public CharacterRecord GetCharacterById(int id)
         {
@@ -235,9 +235,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public string GenerateName()
         {
-            string name;
+            var rand = new Random();
+            var namelen = rand.Next(5, 10);
+            var name = string.Empty;
 
-            do
+            var vowel = rand.Next(0, 2) == 0;
+            name += GetChar(vowel, rand).ToString(CultureInfo.InvariantCulture).ToUpper();
+            vowel = !vowel;
+
+            for (var i = 0; i < namelen - 1; i++)
+            {
+                name += GetChar(vowel, rand);
+                vowel = !vowel;
+            }
+
+            /*do
             {
                 var rand = new Random();
                 var namelen = rand.Next(5, 10);
@@ -252,7 +264,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     name += GetChar(vowel, rand);
                     vowel = !vowel;
                 }
-            } while (DoesNameExist(name));
+            } while (DoesNameExist(name));*/
 
             return name;
         }
