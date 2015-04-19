@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
             foreach (var fighter in Fight.GetAllFighters<MonsterFighter>())
             {
-                fighter.DamageInflicted += OnDamageInflicted;
+                fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
                 fighter.Dead += OnDead;
             }
         }
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
                 Target = null;
         }
 
-        private void OnDamageInflicted(FightActor fighter, Damage damage)
+        private void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
         {
             if (!(damage.Source is CharacterFighter))
                 return;

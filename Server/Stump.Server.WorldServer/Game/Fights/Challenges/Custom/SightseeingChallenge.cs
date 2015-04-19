@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         public override bool IsEligible()
         {
-            return Fight.GetAllCharacters().Any(x => x.BreedId != PlayableBreedEnum.Roublard);
+            return Fight.GetAllCharacters().Any(x => x.BreedId == PlayableBreedEnum.Enutrof || x.BreedId == PlayableBreedEnum.Ecaflip || x.BreedId == PlayableBreedEnum.Cra);
         }
 
         private void OnRangeModified(StatsData stats, int amount)
