@@ -194,7 +194,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
                     if (possibleCast.IsSummoningSpell)
                     {
-                        yield return new SpellCast(possibleCast.Spell, possibleCast.SummonCell);
+                        var target = new SpellTarget() {Target = possibleCast.SummonCell, CastCell = Fighter.Cell, AffectedCells = new []{possibleCast.SummonCell}};
+                        yield return new SpellCast(possibleCast.Spell, target);
                     }
                     else
                     {
@@ -204,7 +205,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                             if (impact.CastCell != Fighter.Cell && !CanReach(impact.Target, possibleCast.Spell, out castSpell))
                                 continue;
 
-                            var cast = new SpellCast(possibleCast.Spell, impact.Target);;
+                            var cast = new SpellCast(possibleCast.Spell, impact);;
                             if (castSpell == Fighter.Cell)
                             {
                                 yield return cast;
@@ -251,6 +252,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         CumulEffects(handler.Dice, ref damages, target, spell);
                 }
             }
+
+            if (damages != null)
+                damages.AffectedCells = cast.GetEffectHandlers().SelectMany(x => x.AffectedCells).ToArray();
+
             return damages;
         }
 
