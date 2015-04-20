@@ -22,10 +22,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
     public class SpellCast
     {
-        public SpellCast(Spell spell, Cell targetCell)
+        public SpellCast(Spell spell, SpellTarget target)
         {
+            Target = target;
             Spell = spell;
-            TargetCell = targetCell;
         }
 
         public Spell Spell
@@ -33,11 +33,16 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             get;
             set;
         }
+        
+        public SpellTarget Target
+        {
+            get;
+            private set;
+        }
 
         public Cell TargetCell
         {
-            get;
-            set;
+            get { return Target.CastCell; }
         }
 
         public Path MoveBefore
