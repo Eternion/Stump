@@ -3,7 +3,9 @@ using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Spells;
+using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using TreeSharp;
@@ -144,11 +146,21 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
             }
 
+            FightActor target = Fighter.Fight.GetOneFighter(cast.TargetCell);
+
+
             var i = 0;
             while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell) == SpellCastResult.OK && i <= MaxCastLimit)
             {
                 if (!Fighter.CastSpell(cast.Spell, cast.TargetCell))
                     break;
+
+                if (target != null && target.Cell != cast.TargetCell && Fighter.AP > 0) // target has moved, we re-analyse the situation
+                {
+                    SpellSelector.AnalysePossibilities();
+                    ExecuteAllSpellCast();
+                    break;
+                }
 
                 i++;
             }
