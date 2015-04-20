@@ -4,7 +4,6 @@ using System.Linq;
 using Stump.Core.Attributes;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Initialization;
@@ -13,10 +12,8 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -43,6 +40,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         [Variable]
         public static readonly int TokenTemplateId = (int)ItemIdEnum.GameMasterToken;
         public static ItemTemplate TokenTemplate;
+
+        [Variable(true, DefinableRunning = true)]
+        public static bool WeightEnabled = true;
 
         [Initialization(typeof(ItemManager), Silent=true)]
         private static void InitializeTokenTemplate()
@@ -187,7 +187,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public uint WeightTotal
         {
-            get { return 1000; } // todo : manage weight properly
+            get { return 1000 + (uint)(5 * Owner.Stats.Strength.Total) + (uint)Owner.Stats[PlayerFields.Weight].Total; } //todo: add jobs
         }
 
         public uint WeaponCriticalHit
