@@ -40,7 +40,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 {
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
-                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
+                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel
+                        && Spell.Template.Id != 0 && !Caster.IsIndirectSpellCast(Spell) && !Caster.IsPoisonSpellCast(Spell))
                     {
                         NotifySpellReflected(actor);
                         var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell)
