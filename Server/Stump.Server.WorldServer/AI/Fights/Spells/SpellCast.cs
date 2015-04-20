@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public Cell TargetCell
         {
-            get { return Target.CastCell; }
+            get { return Target.Target; }
         }
 
         public Path MoveBefore
