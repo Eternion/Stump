@@ -194,6 +194,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.MagicDamage, new StatsData(Owner, PlayerFields.MagicDamage, 0));
             Fields.Add(PlayerFields.PhysicalDamageReduction, new StatsData(Owner, PlayerFields.PhysicalDamageReduction, 0));
             Fields.Add(PlayerFields.MagicDamageReduction, new StatsData(Owner, PlayerFields.MagicDamageReduction, 0));
+            Fields.Add(PlayerFields.Weight, new StatsData(Owner, PlayerFields.Weight, 0));
 
             // custom fields
             Fields.Add(PlayerFields.WaterDamageArmor, new StatsData(Owner, PlayerFields.WaterDamageArmor, 0));
