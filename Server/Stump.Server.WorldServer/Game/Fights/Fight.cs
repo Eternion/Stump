@@ -2074,6 +2074,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnPlayerReadyToLeave(CharacterFighter fighter)
         {
+            if (fighter.Fight != fighter.Character.Fight)
+                return;
+
             fighter.PersonalReadyChecker = null;
             var isfighterTurn = fighter.IsFighterTurn();
 
@@ -2089,7 +2092,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fightend = CheckFightEnd();
 
             if (!fightend && isfighterTurn)
-                StopTurn();   
+                StopTurn();
 
             fighter.ResetFightProperties();
             fighter.Character.RejoinMap();
