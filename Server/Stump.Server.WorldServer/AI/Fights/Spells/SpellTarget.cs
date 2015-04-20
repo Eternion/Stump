@@ -123,6 +123,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             set;
         }
 
+        public Cell[] AffectedCells
+        {
+            get;
+            set;
+        }
+
         public MapPoint TargetPoint
         {
             get { return m_point ?? (m_point = new MapPoint(Target)); }
