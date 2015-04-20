@@ -1,3 +1,4 @@
+using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -146,8 +147,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
             }
 
-            FightActor target = Fighter.Fight.GetOneFighter(cast.TargetCell);
-
+            var targets = Fighter.Fight.GetAllFighters(cast.Target.AffectedCells).ToArray();
 
             var i = 0;
             while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell) == SpellCastResult.OK && i <= MaxCastLimit)
@@ -155,7 +155,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 if (!Fighter.CastSpell(cast.Spell, cast.TargetCell))
                     break;
 
-                if (target != null && target.Cell != cast.TargetCell && Fighter.AP > 0) // target has moved, we re-analyse the situation
+                if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell))) // target has moved, we re-analyse the situation
                 {
                     SpellSelector.AnalysePossibilities();
                     ExecuteAllSpellCast();
