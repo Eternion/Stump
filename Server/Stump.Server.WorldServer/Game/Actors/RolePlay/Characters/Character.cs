@@ -1924,7 +1924,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanMove()
         {
-            return base.CanMove() && !IsDialoging();
+            if (Inventory.Weight <= Inventory.WeightTotal)
+                return base.CanMove() && !IsDialoging();
+
+            if (!Inventory.WeightEnabled)
+                return base.CanMove() && !IsDialoging();
+
+            SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 12);
+
+            return false;
         }
 
         public override bool StartMove(Path movementPath)
