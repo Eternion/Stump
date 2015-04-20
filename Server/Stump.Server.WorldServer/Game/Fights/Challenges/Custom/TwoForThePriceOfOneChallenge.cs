@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         public override bool IsEligible()
         {
-            return Fight.GetAllFighters<MonsterFighter>().Count() > 1;
+            return Fight.GetAllFighters<MonsterFighter>().Count() % 2 == 0;
         }
 
         private void OnBeforeTurnStopped(IFight fight, FightActor fighter)
