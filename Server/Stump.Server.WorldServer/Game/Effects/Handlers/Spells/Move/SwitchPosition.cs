@@ -22,7 +22,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target == null)
                 return false;
 
-            if (target.HasState((int) SpellStatesEnum.Rooted))
+            if ((target is SummonedMonster && ((SummonedMonster)target).Monster.Template.Id != 556)
+                && (target.HasState((int) SpellStatesEnum.Unmovable) || target.HasState((int) SpellStatesEnum.Rooted)))
                 return false;
 
             if (target.IsCarrying())
@@ -30,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             if ((target is SummonedTurret) && !(Caster is SummonedTurret))
                 return false;
-            
+
             Caster.ExchangePositions(target);
 
             target.OnActorMoved(Caster, false);
