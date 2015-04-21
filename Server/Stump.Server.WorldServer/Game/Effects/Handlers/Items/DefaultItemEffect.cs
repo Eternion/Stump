@@ -180,7 +180,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                     {EffectsEnum.Effect_AddIntelligence, PlayerFields.Intelligence},
                     {EffectsEnum.Effect_AddRange, PlayerFields.Range},
                     {EffectsEnum.Effect_AddSummonLimit, PlayerFields.SummonLimit},
-                    {EffectsEnum.Effect_AddDamageReflection, PlayerFields.DamageReflection},
+                    {EffectsEnum.Effect_AddDamageReflection_220, PlayerFields.DamageReflection},
                     {EffectsEnum.Effect_AddCriticalHit, PlayerFields.CriticalHit},
                     {EffectsEnum.Effect_AddCriticalMiss, PlayerFields.CriticalMiss},
                     {EffectsEnum.Effect_AddHealBonus, PlayerFields.HealBonus},

@@ -828,7 +828,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                     if (reflected > 0)
                     {
-                        damage.Source.InflictDirectDamage(reflected, this);
+                        var reflectedDamage = new Damage(reflected)
+                        {
+                            ReflectedDamages = true,
+                            Source = this,
+                            School = EffectSchoolEnum.Unknown,
+                            IgnoreDamageBoost = true,
+                            IgnoreDamageReduction = true
+                        };
+
+                        damage.Source.InflictDamage(reflectedDamage);
                         OnDamageReflected(damage.Source, reflected);
                     }
                 }
