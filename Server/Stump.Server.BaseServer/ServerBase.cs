@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
