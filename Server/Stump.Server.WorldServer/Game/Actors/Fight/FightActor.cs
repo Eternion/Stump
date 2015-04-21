@@ -734,6 +734,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!handler.Initialize())
             {
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+                OnSpellCastFailed(spell, handler.TargetedCell);
+
                 return false;
             }
 

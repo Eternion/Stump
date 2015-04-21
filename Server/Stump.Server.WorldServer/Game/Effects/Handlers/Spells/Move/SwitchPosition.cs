@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target == null)
                 return false;
 
-            if ((target is SummonedMonster && ((SummonedMonster)target).Monster.Template.Id != 556)
+            if ((!(target is SummonedMonster) || ((SummonedMonster)target).Monster.Template.Id != 556)
                 && (target.HasState((int) SpellStatesEnum.Unmovable) || target.HasState((int) SpellStatesEnum.Rooted)))
                 return false;
 
