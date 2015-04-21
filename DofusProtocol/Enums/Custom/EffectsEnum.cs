@@ -517,7 +517,7 @@
         /// <summary>
         /// Reflects #1 damage
         /// </summary>
-        Effect_220 = 220,
+        Effect_AddDamageReflection_220 = 220,
         /// <summary>
         /// What's in there?
         /// </summary>
