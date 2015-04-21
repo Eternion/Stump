@@ -65,6 +65,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                 if (MarkTrigger != null)
                     handler.MarkTrigger = MarkTrigger;
 
+                if (!handler.CanApply())
+                    return false;
+
                 handlers.Add(handler);
             }
 

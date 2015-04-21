@@ -29,14 +29,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
                 return false;
             }
 
-            if (Fight.GetTriggers(TargetedCell).Length > 0)
-            {
-                if (Caster is CharacterFighter)
-                    BasicHandler.SendTextInformationMessage(( (CharacterFighter) Caster ).Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 229);
-
-                return false;
-            }
-
             // todo : find usage of Dice.Value
             var trap = EffectZone.ShapeType == SpellShapeEnum.Q ?
                 new Trap((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, trapSpell, TargetedCell, GameActionMarkCellsTypeEnum.CELLS_CROSS, (byte) Effect.ZoneSize) :
@@ -44,6 +36,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
             Fight.AddTriger(trap);
             return true;
+        }
+
+        public override bool CanApply()
+        {
+            if (Fight.GetTriggers(TargetedCell).Length <= 0)
+                return base.CanApply();
+
+            if (Caster is CharacterFighter)
+                BasicHandler.SendTextInformationMessage(((CharacterFighter)Caster).Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 229);
+
+            return false;
         }
 
         public override bool RequireSilentCast()

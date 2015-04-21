@@ -732,7 +732,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
 
             if (!handler.Initialize())
+            {
+                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
                 return false;
+            }
 
             OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
             if (!ApFree)

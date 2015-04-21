@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -62,6 +63,7 @@ namespace Stump.Server.AuthServer
         };
 
         private byte[] m_patchBuffer;
+        public bool m_maintenanceMode;
 
         public IPCHost IpcHost
         {
@@ -122,6 +124,9 @@ namespace Stump.Server.AuthServer
 
                 InitializationManager.InitializeAll();
                 IsInitialized = true;
+
+                if (Environment.GetCommandLineArgs().Contains("-maintenance"))
+                    m_maintenanceMode = true;
             }
             catch (Exception ex)
             {
