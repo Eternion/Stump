@@ -37,10 +37,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             Target.Dead -= OnDead;
             Target.BeforeDamageInflicted -= OnBeforeDamageInflicted;
 
-            Target = Fight.GetRandomFighter<MonsterFighter>();
-
-            if (Target != null)
-                Target.Dead += OnDead;
+            UpdateStatus(ChallengeStatusEnum.SUCCESS);
         }
 
         private void OnBeforeDamageInflicted(FightActor fighter, Damage damage)
