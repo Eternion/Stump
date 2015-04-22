@@ -316,7 +316,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Delay = 1);
             FixEffectOnAllLevels(2811, 1, (level, effect, critical) => level.Effects.Move(effect, 2), false);
-            FixCriticalEffectOnAllLevels(2811, 1, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
             FixEffectOnAllLevels(2811, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2811, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
 

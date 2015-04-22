@@ -31,8 +31,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 else
                 {
                     HealHpPercent(actor, integerEffect.Value);
-                    DealHpPercent(Caster, integerEffect.Value);
+                    
                 }
+
+                DealHpPercent(Caster, integerEffect.Value);
             }
 
             return true;
