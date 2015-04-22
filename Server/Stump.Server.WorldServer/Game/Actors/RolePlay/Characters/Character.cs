@@ -3026,8 +3026,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory.LoadInventory();
             Inventory.LoadPresets();
 
-            UpdateLook(false);
-
             Bank = new Bank(this); // lazy loading here !
 
             MerchantBag = new CharacterMerchantBag(this);
@@ -3035,6 +3033,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             MerchantBag.LoadMerchantBag();
 
             GuildMember = GuildManager.Instance.TryGetGuildMember(Id);
+
+            UpdateLook(false);
 
             Mount = MountManager.Instance.TryGetMountByCharacterId(Id) != null ? new Mount(this) : null;
 
