@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (delta >= 0)
                 return;
 
-            if (actor.IsFriendlyWith(source))
+            if (actor == source)
                 return;
 
             if (action != ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST)
