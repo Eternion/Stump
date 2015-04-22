@@ -134,6 +134,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
+        public void RemoveColor(int index)
+        {
+            m_colors.Remove(index);
+        }
+
         public void SetColors(params Color[] colors)
         {
             var index = 1;

@@ -847,6 +847,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             skins.AddRange(Head.Skins);
             skins.AddRange(Inventory.GetItemsSkins());
 
+            if (skins.Contains(2990) && Guild != null)
+            {
+                skins.Remove(2990); //Old ApparenceId
+                skins.Add(1730); //New ApparenceId
+
+                skins.Add((short)Guild.Emblem.Template.SkinId); //Emblem Skin
+
+                if (RealLook.Colors.ContainsKey(7))
+                    RealLook.RemoveColor(7);
+                if (RealLook.Colors.ContainsKey(8))
+                    RealLook.RemoveColor(8);
+
+                RealLook.AddColor(8, Guild.Emblem.SymbolColor);
+                RealLook.AddColor(7, Guild.Emblem.BackgroundColor);
+            }
+
             RealLook.SetSkins(skins.ToArray());
 
             var petSkin = Inventory.GetPetSkin();
