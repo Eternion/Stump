@@ -10,19 +10,20 @@ using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
     [Discriminator(Discriminator, typeof(NpcActionDatabase), typeof(NpcActionRecord))]
-    public class NpcBidBuyAction : NpcActionDatabase
+    public class NpcBidSellAction : NpcActionDatabase
     {
-        public const string Discriminator = "BidBuy";
+        public const string Discriminator = "BidSell";
 
-        public NpcBidBuyAction(NpcActionRecord record)
+        public NpcBidSellAction(NpcActionRecord record)
             : base(record)
         {
         }
 
         public override NpcActionTypeEnum ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_BUY; }
+            get { return NpcActionTypeEnum.ACTION_SELL; }
         }
+
 
         private IEnumerable<int> m_types;
 
@@ -47,7 +48,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
 
         public override void Execute(Npc npc, Character character)
         {
-            var dialog = new NpcBidDialog(character, npc, Types, true);
+            var dialog = new NpcBidDialog(character, npc, Types, false);
             dialog.Open();
         }
     }

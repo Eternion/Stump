@@ -233,6 +233,7 @@
     <Compile Include="Database\Npcs\Actions\NpcAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcActionDatabase.cs" />
     <Compile Include="Database\Npcs\Actions\NpcBidBuyAction.cs" />
+    <Compile Include="Database\Npcs\Actions\NpcBidSellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcBuySellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcTalkAction.cs" />
     <Compile Include="Database\Npcs\NpcActionRecord.cs" />
@@ -336,6 +337,7 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
+    <Compile Include="Game\Dialogs\Npcs\NpcBidDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\BuffTrigger.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />

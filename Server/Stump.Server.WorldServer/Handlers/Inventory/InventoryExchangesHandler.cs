@@ -293,6 +293,40 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             }
         }
 
+        [WorldHandler(ExchangeBidHouseTypeMessage.Id)]
+        public static void HandleExchangeBidHouseTypeMessage(WorldClient client, ExchangeBidHouseTypeMessage message)
+        {
+            var dialog = client.Character.Dialog as NpcBidDialog;
+            if (dialog == null)
+                return;
+
+            var items = dialog.GetItemsForType(message.type);
+
+            SendExchangeTypesExchangerDescriptionForUserMessage(client, items.Select(x => x.Id));
+        }
+
+        [WorldHandler(ExchangeBidHouseListMessage.Id)]
+        public static void HandleExchangeBidHouseListMessage(WorldClient client, ExchangeBidHouseListMessage message)
+        {
+            var dialog = client.Character.Dialog as NpcBidDialog;
+            if (dialog == null)
+                return;
+
+            var bids = dialog.GetBidsForItem(message.id);
+
+            SendExchangeTypesItemsExchangerDescriptionForUserMessage(client, bids);
+        }
+
+        [WorldHandler(ExchangeBidHousePriceMessage.Id)]
+        public static void HandleExchangeBidHousePriceMessage(WorldClient client, ExchangeBidHousePriceMessage message)
+        {
+            var dialog = client.Character.Dialog as NpcBidDialog;
+            if (dialog == null)
+                return;
+
+            SendExchangeBidPriceForSellerMessage(client, message.genId);
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
@@ -399,6 +433,31 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeMountStableRemoveMessage(IPacketReceiver client, Mount mount)
         {
             client.Send(new ExchangeMountStableRemoveMessage(mount.Id));
+        }
+
+        public static void SendExchangeStartedBidBuyerMessage(IPacketReceiver client, NpcBidDialog dialog)
+        {
+            client.Send(new ExchangeStartedBidBuyerMessage(dialog.GetBuyerDescriptor()));
+        }
+
+        public static void SendExchangeStartedBidSellerMessage(IPacketReceiver client, NpcBidDialog dialog)
+        {
+            client.Send(new ExchangeStartedBidSellerMessage(dialog.GetBuyerDescriptor(), new ObjectItemToSellInBid[0]));
+        }
+
+        public static void SendExchangeTypesExchangerDescriptionForUserMessage(IPacketReceiver client, IEnumerable<int> items)
+        {
+            client.Send(new ExchangeTypesExchangerDescriptionForUserMessage(items));
+        }
+
+        public static void SendExchangeTypesItemsExchangerDescriptionForUserMessage(IPacketReceiver client, IEnumerable<BidExchangerObjectInfo> items)
+        {
+            client.Send(new ExchangeTypesItemsExchangerDescriptionForUserMessage(items));
+        }
+
+        public static void SendExchangeBidPriceForSellerMessage(IPacketReceiver client, int itemId)
+        {
+            client.Send(new ExchangeBidPriceMessage(itemId, 10));
         }
     }
 }
