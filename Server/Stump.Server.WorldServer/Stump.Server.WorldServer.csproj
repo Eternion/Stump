@@ -232,6 +232,7 @@
     <Compile Include="Database\Mounts\MountTemplate.cs" />
     <Compile Include="Database\Npcs\Actions\NpcAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcActionDatabase.cs" />
+    <Compile Include="Database\Npcs\Actions\NpcBidBuyAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcBuySellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcTalkAction.cs" />
     <Compile Include="Database\Npcs\NpcActionRecord.cs" />
