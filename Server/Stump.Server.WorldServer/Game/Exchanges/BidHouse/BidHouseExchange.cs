@@ -13,12 +13,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
     {
         private readonly BidHouseExchanger m_exchanger;
 
-        public BidHouseExchange(Character character, Npc npc, IEnumerable<int> types, bool buy)
+        public BidHouseExchange(Character character, Npc npc, IEnumerable<int> types, int maxItemLevel, bool buy)
         {
             Character = character;
             Npc = npc;
             Types = types;
+            MaxItemLevel = maxItemLevel;
             Buy = buy;
+
             m_exchanger = new BidHouseExchanger(character, this);
         }
 
@@ -40,7 +42,19 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             protected set;
         }
 
+        public int MaxItemLevel
+        {
+            get;
+            protected set;
+        }
+
         public bool Buy
+        {
+            get;
+            protected set;
+        }
+
+        public int CurrentViewedItem
         {
             get;
             protected set;
@@ -68,14 +82,15 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (Buy)
             {
                 InventoryHandler.SendExchangeStartedBidBuyerMessage(Character.Client, this);
-                BidHouseManager.Instance.ItemAdded += OnBidHouseItemAdded;
-                BidHouseManager.Instance.ItemRemoved += OnBidHouseItemRemoved;
             } 
             else
             {
                 var items = BidHouseManager.Instance.GetBidHouseItems(Character.Account.Id);
                 InventoryHandler.SendExchangeStartedBidSellerMessage(Character.Client, this, items.Select(x => x.GetObjectItemToSellInBid()));
             }
+
+            BidHouseManager.Instance.ItemAdded += OnBidHouseItemAdded;
+            BidHouseManager.Instance.ItemRemoved += OnBidHouseItemRemoved;
         }
 
         public void Close()
@@ -83,12 +98,22 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
 
-            if (!Buy)
-                return;
-
             BidHouseManager.Instance.ItemAdded -= OnBidHouseItemAdded;
             BidHouseManager.Instance.ItemRemoved -= OnBidHouseItemRemoved;
         }
+
+        #region Functions
+
+        public void UpdateCurrentViewedItem(int itemId)
+        {
+            CurrentViewedItem = itemId;
+
+            var bids = BidHouseManager.Instance.GetBidsForItem(itemId).Select(x => x.GetBidExchangerObjectInfo());
+
+            InventoryHandler.SendExchangeTypesItemsExchangerDescriptionForUserMessage(Character.Client, bids);
+        }
+
+        #endregion
 
         #region Events
 
@@ -99,6 +124,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
             if (BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum) item.Template.TypeId).All(x => x.Template.Id != item.Template.Id))
                 InventoryHandler.SendExchangeBidHouseGenericItemAddedMessage(Character.Client, item);
+
+            if (CurrentViewedItem == item.Template.Id)
+                UpdateCurrentViewedItem(item.Template.Id);
         }
 
         private void OnBidHouseItemRemoved(BidHouseItem item)
@@ -108,6 +136,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
             if (BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum) item.Template.TypeId).All(x => x.Template.Id != item.Template.Id))
                 InventoryHandler.SendExchangeBidHouseGenericItemRemovedMessage(Character.Client, item);
+
+            if (CurrentViewedItem == item.Template.Id)
+                UpdateCurrentViewedItem(item.Template.Id);
         }
 
         #endregion
@@ -118,7 +149,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
         public SellerBuyerDescriptor GetBuyerDescriptor()
         {
-            return new SellerBuyerDescriptor(BidHouseManager.Quantities, Types, BidHouseManager.TaxPercent, 60, 7, Npc.Id, (short)BidHouseManager.UnsoldDelay);
+            return new SellerBuyerDescriptor(BidHouseManager.Quantities, Types, BidHouseManager.TaxPercent, MaxItemLevel, 7, Npc.Id, (short)BidHouseManager.UnsoldDelay);
         }
 
         #endregion
