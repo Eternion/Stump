@@ -33,7 +33,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
             Character.Inventory.AddItem(newItem);
 
-
             InventoryHandler.SendExchangeBidHouseItemRemoveOkMessage(Character.Client, item.Guid);
 
             return true;

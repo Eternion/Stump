@@ -68,14 +68,45 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             {
                 var items = BidHouseManager.Instance.GetBidHouseItems(Character.Id);
                 InventoryHandler.SendExchangeStartedBidSellerMessage(Character.Client, this, items.Select(x => x.GetObjectItemToSellInBid()));
-            }       
+            }
+
+            BidHouseManager.Instance.ItemAdded += OnBidHouseItemAdded;
+            BidHouseManager.Instance.ItemRemoved += OnBidHouseItemRemoved;
         }
 
         public void Close()
         {
             InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
             Character.CloseDialog(this);
+
+            BidHouseManager.Instance.ItemAdded -= OnBidHouseItemAdded;
+            BidHouseManager.Instance.ItemRemoved -= OnBidHouseItemRemoved;
         }
+
+        #region Events
+
+        private void OnBidHouseItemAdded(BidHouseItem item)
+        {
+            if (!Types.Contains((int)item.Template.TypeId))
+                return;
+
+            if (BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum)item.Template.TypeId).Any(x => x.Template.Id == item.Template.Id))
+                InventoryHandler.SendExchangeBidHouseInListAddedMessage(Character.Client, item);
+            else
+                InventoryHandler.SendExchangeBidHouseGenericItemAddedMessage(Character.Client, item);
+        }
+
+        private void OnBidHouseItemRemoved(BidHouseItem item)
+        {
+            if (!Types.Contains((int)item.Template.TypeId))
+                return;
+            if (BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum)item.Template.TypeId).Any(x => x.Template.Id == item.Template.Id))
+                InventoryHandler.SendExchangeBidHouseInListRemovedMessage(Character.Client, item);
+            else
+                InventoryHandler.SendExchangeBidHouseGenericItemRemovedMessage(Character.Client, item);
+        }
+
+        #endregion
 
         #endregion
 
