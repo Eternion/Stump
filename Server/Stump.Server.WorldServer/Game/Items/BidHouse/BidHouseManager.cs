@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public List<BidHouseItem> GetBidsForItem(int itemId)
         {
-            return m_bidHouseItems.Where(x => x.Template.Id == itemId).ToList();
+            return m_bidHouseItems.Where(x => x.Template.Id == itemId).Distinct(new BidHouseItemComparer()).ToList();
         }
 
         public IEnumerable<int> GetBidsPriceForItem(int itemId)
@@ -115,6 +115,11 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return m_bidHouseItems.FirstOrDefault(x => x.Guid == guid);
         }
 
+        public BidHouseItem GetBidHouseItem(int itemId, int quantity, int price)
+        {
+            return m_bidHouseItems.FirstOrDefault(x => x.Template.Id == itemId && x.Stack == quantity && x.Price == price);
+        }
+
         public int GetAveragePriceForItem(int itemId)
         {
             var items = m_bidHouseItems.Where(x => x.Template.Id == itemId).Select(x => (int)(x.Price / x.Stack)).ToArray();
@@ -129,13 +134,22 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         #region Functions
 
+        public event Action<BidHouseItem> ItemAdded;
+
         public void AddBidHouseItem(BidHouseItem item)
         {
             lock(m_lock)
             {
                 m_bidHouseItems.Add(item);
             }
+
+            var handler = ItemAdded;
+
+            if (handler != null)
+                handler(item);
         }
+
+        public event Action<BidHouseItem> ItemRemoved;
 
         public void RemoveBidHouseItem(BidHouseItem item)
         {
@@ -146,6 +160,11 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             {
                 m_bidHouseItems.Remove(item);
             }
+
+            var handler = ItemRemoved;
+
+            if (handler != null)
+                handler(item);
         }
 
         #endregion
@@ -162,7 +181,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         }
     }
 
-    public class EffectsComparer : IEqualityComparer<BidHouseItem>
+    public class BidHouseItemComparer : IEqualityComparer<BidHouseItem>
     {
         public bool Equals(BidHouseItem x, BidHouseItem y)
         {
@@ -171,7 +190,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public int GetHashCode(BidHouseItem obj)
         {
-            return 1;
+            return 0;
         }
     }
 }
