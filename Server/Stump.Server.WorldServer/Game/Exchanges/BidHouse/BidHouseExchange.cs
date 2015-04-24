@@ -149,7 +149,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
         public SellerBuyerDescriptor GetBuyerDescriptor()
         {
-            return new SellerBuyerDescriptor(BidHouseManager.Quantities, Types, BidHouseManager.TaxPercent, MaxItemLevel, 7, Npc.Id, (short)BidHouseManager.UnsoldDelay);
+            return new SellerBuyerDescriptor(BidHouseManager.Quantities, Types, BidHouseManager.TaxPercent, MaxItemLevel, Character.Level, Npc.Id, (short)BidHouseManager.UnsoldDelay);
         }
 
         #endregion
