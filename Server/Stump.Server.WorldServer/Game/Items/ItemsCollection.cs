@@ -311,7 +311,7 @@ namespace Stump.Server.WorldServer.Game.Items
 
         public T TryGetItem(ItemTemplate template, IEnumerable<EffectBase> effects)
         {   
-            IEnumerable<T> entries = from entry in Items.Values
+            var entries = from entry in Items.Values
                                         where entry.Template.Id == template.Id && effects.CompareEnumerable(entry.Effects)
                                         select entry;
 

@@ -14,12 +14,14 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges.BidHouse;
 using Stump.Server.WorldServer.Game.Exchanges.Merchant;
 using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 using Stump.Server.WorldServer.Game.Exchanges.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
+using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
@@ -169,10 +171,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!client.Character.IsInExchange())
                 return;
 
-            var merchantExchanger = client.Character.Exchanger as CharacterMerchant;
-
-            if (merchantExchanger != null)
-                merchantExchanger.MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
+            if(client.Character.Exchanger is CharacterMerchant)
+            {
+                ((CharacterMerchant)client.Character.Exchanger).MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
+            }
+            else if (client.Character.Exchanger is BidHouseExchanger)
+            {
+                ((BidHouseExchanger)client.Character.Exchanger).MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
+            }
         }
 
         [WorldHandler(ExchangeObjectModifyPricedMessage.Id)]
@@ -184,12 +190,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!client.Character.IsInExchange())
                 return;
 
-            var merchantExchanger = client.Character.Exchanger as CharacterMerchant;
-
-            if (merchantExchanger == null)
-                return;
-
-            merchantExchanger.ModifyItem(message.objectUID, message.quantity, (uint)message.price);
+            if (client.Character.Exchanger is CharacterMerchant)
+            {
+                ((CharacterMerchant)client.Character.Exchanger).ModifyItem(message.objectUID, message.quantity, (uint)message.price);
+            }
+            else if (client.Character.Exchanger is BidHouseExchanger)
+            {
+                ((BidHouseExchanger)client.Character.Exchanger).ModifyItem(message.objectUID, (uint)message.price);
+            }
         }
 
         [WorldHandler(ExchangeStartAsVendorMessage.Id)]
@@ -296,23 +304,21 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeBidHouseTypeMessage.Id)]
         public static void HandleExchangeBidHouseTypeMessage(WorldClient client, ExchangeBidHouseTypeMessage message)
         {
-            var dialog = client.Character.Dialog as NpcBidDialog;
-            if (dialog == null)
+            if (!client.Character.IsInExchange())
                 return;
 
-            var items = dialog.GetItemsForType(message.type);
+            var items = BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum)message.type);
 
-            SendExchangeTypesExchangerDescriptionForUserMessage(client, items.Select(x => x.Id));
+            SendExchangeTypesExchangerDescriptionForUserMessage(client, items.Select(x => x.Template.Id));
         }
 
         [WorldHandler(ExchangeBidHouseListMessage.Id)]
         public static void HandleExchangeBidHouseListMessage(WorldClient client, ExchangeBidHouseListMessage message)
         {
-            var dialog = client.Character.Dialog as NpcBidDialog;
-            if (dialog == null)
+            if (!client.Character.IsInExchange())
                 return;
 
-            var bids = dialog.GetBidsForItem(message.id);
+            var bids = BidHouseManager.Instance.GetBidsForItem(message.id).Select(x => x.GetBidExchangerObjectInfo());
 
             SendExchangeTypesItemsExchangerDescriptionForUserMessage(client, bids);
         }
@@ -320,11 +326,29 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeBidHousePriceMessage.Id)]
         public static void HandleExchangeBidHousePriceMessage(WorldClient client, ExchangeBidHousePriceMessage message)
         {
-            var dialog = client.Character.Dialog as NpcBidDialog;
-            if (dialog == null)
+            if (!client.Character.IsInExchange())
                 return;
 
-            SendExchangeBidPriceForSellerMessage(client, message.genId);
+            var averagePrice = BidHouseManager.Instance.GetAveragePriceForItem(message.genId);
+
+            SendExchangeBidPriceMessage(client, message.genId, averagePrice);
+        }
+
+        [WorldHandler(ExchangeBidHouseSearchMessage.Id)]
+        public static void HandleExchangeBidHouseSearchMessage(WorldClient client, ExchangeBidHouseSearchMessage message)
+        {
+            var exchange = client.Character.Exchange as BidHouseExchange;
+            if (exchange == null)
+                return;
+
+            if (!exchange.Types.Contains(message.type))
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.BID_SEARCH_ERROR);
+                return;
+            }
+
+            var bids = BidHouseManager.Instance.GetBidsForItem(message.genId).Select(x => x.GetBidExchangerObjectInfo());
+            SendExchangeTypesItemsExchangerDescriptionForUserMessage(client, bids);
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
@@ -435,14 +459,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeMountStableRemoveMessage(mount.Id));
         }
 
-        public static void SendExchangeStartedBidBuyerMessage(IPacketReceiver client, NpcBidDialog dialog)
+        public static void SendExchangeStartedBidBuyerMessage(IPacketReceiver client, BidHouseExchange exchange)
         {
-            client.Send(new ExchangeStartedBidBuyerMessage(dialog.GetBuyerDescriptor()));
+            client.Send(new ExchangeStartedBidBuyerMessage(exchange.GetBuyerDescriptor()));
         }
 
-        public static void SendExchangeStartedBidSellerMessage(IPacketReceiver client, NpcBidDialog dialog)
+        public static void SendExchangeStartedBidSellerMessage(IPacketReceiver client, BidHouseExchange exchange, IEnumerable<ObjectItemToSellInBid> items)
         {
-            client.Send(new ExchangeStartedBidSellerMessage(dialog.GetBuyerDescriptor(), new ObjectItemToSellInBid[0]));
+            client.Send(new ExchangeStartedBidSellerMessage(exchange.GetBuyerDescriptor(), items));
         }
 
         public static void SendExchangeTypesExchangerDescriptionForUserMessage(IPacketReceiver client, IEnumerable<int> items)
@@ -455,9 +479,19 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeTypesItemsExchangerDescriptionForUserMessage(items));
         }
 
-        public static void SendExchangeBidPriceForSellerMessage(IPacketReceiver client, int itemId)
+        public static void SendExchangeBidPriceMessage(IPacketReceiver client, int itemId, int averagePrice)
         {
-            client.Send(new ExchangeBidPriceMessage(itemId, 10));
+            client.Send(new ExchangeBidPriceMessage(itemId, averagePrice));
+        }
+
+        public static void SendExchangeBidHouseItemAddOkMessage(IPacketReceiver client, ObjectItemToSellInBid item)
+        {
+            client.Send(new ExchangeBidHouseItemAddOkMessage(item));
+        }
+
+        public static void SendExchangeBidHouseItemRemoveOkMessage(IPacketReceiver client, int sellerId)
+        {
+            client.Send(new ExchangeBidHouseItemRemoveOkMessage(sellerId));
         }
     }
 }
