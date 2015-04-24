@@ -315,12 +315,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeBidHouseListMessage.Id)]
         public static void HandleExchangeBidHouseListMessage(WorldClient client, ExchangeBidHouseListMessage message)
         {
-            if (!client.Character.IsInExchange())
+            var exchange = client.Character.Exchange as BidHouseExchange;
+            if (exchange == null)
                 return;
 
-            var bids = BidHouseManager.Instance.GetBidsForItem(message.id).Select(x => x.GetBidExchangerObjectInfo());
-
-            SendExchangeTypesItemsExchangerDescriptionForUserMessage(client, bids);
+            exchange.UpdateCurrentViewedItem(message.id);
         }
 
         [WorldHandler(ExchangeBidHousePriceMessage.Id)]

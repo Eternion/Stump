@@ -36,6 +36,15 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             set { Record.SetParameter(0, value); }
         }
 
+        /// <summary>
+        /// Parameter 1
+        /// </summary>
+        private int MaxItemLevel
+        {
+            get { return Record.GetParameter<int>(1); }
+            set { Record.SetParameter(1, value); }
+        }
+
         public IEnumerable<int> Types
         {
             get { return m_types ?? (m_types = TypesId.Split('|').Select(int.Parse)); }
@@ -48,7 +57,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
 
         public override void Execute(Npc npc, Character character)
         {
-            var exchange = new BidHouseExchange(character, npc, Types, false);
+            var exchange = new BidHouseExchange(character, npc, Types, MaxItemLevel, false);
             exchange.Open();
         }
     }

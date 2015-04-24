@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
@@ -41,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
         public bool MovePricedItem(int id, int quantity, uint price)
         {
-            if (quantity != 1 && quantity != 10 && quantity != 100)
+            if (!BidHouseManager.Quantities.Contains(quantity))
                 return false;
 
             var item = Character.Inventory.TryGetItem(id);
@@ -50,6 +51,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
                 return false;
 
             if (item.IsLinkedToPlayer() || item.IsLinkedToAccount())
+                return false;
+
+            if (item.Template.Level > ((BidHouseExchange) Dialog).MaxItemLevel)
                 return false;
 
             if (quantity > item.Stack)
@@ -82,6 +86,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             var item = BidHouseManager.Instance.GetBidHouseItem(id);
 
             if (item == null)
+                return false;
+
+            if (item.Template.Level > ((BidHouseExchange)Dialog).MaxItemLevel)
                 return false;
 
             item.Price = price;
