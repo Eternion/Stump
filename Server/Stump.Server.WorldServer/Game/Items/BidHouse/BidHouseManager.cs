@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
@@ -50,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             var record = new BidHouseItemRecord // create the associated record
             {
                 Id = guid,
-                OwnerId = character.Id,
+                OwnerId = character.Account.Id,
                 Price = price,
                 SellDate = DateTime.Now,
                 Template = item.Template,

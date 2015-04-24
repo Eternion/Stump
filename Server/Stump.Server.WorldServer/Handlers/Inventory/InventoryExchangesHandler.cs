@@ -347,7 +347,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            var bids = BidHouseManager.Instance.GetBidsForItem(message.genId).Select(x => x.GetBidExchangerObjectInfo());
+            var bids = BidHouseManager.Instance.GetBidsForItem(message.genId).Select(x => x.GetBidExchangerObjectInfo()).ToArray();
+
+            if (!bids.Any())
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.BID_SEARCH_ERROR);
+                return;
+            }
+
             SendExchangeTypesItemsExchangerDescriptionForUserMessage(client, bids);
         }
 
@@ -367,7 +374,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (item == null)
                 return;
 
-            if (item.Price > client.Character.Kamas)
+            if (!item.SellItem(client.Character))
             {
                 SendExchangeBidHouseBuyResultMessage(client, item.Guid, false);
                 return;
@@ -379,6 +386,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 client.Character.Inventory.SubKamas((int)item.Price);
 
             SendExchangeBidHouseBuyResultMessage(client, item.Guid, result);
+
+            //Lot acheté.
+            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 68);
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
