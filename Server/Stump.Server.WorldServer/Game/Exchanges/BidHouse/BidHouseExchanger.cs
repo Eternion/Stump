@@ -1,4 +1,5 @@
-﻿using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Handlers.Inventory;
@@ -57,7 +58,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             var tax = (int)(price*BidHouseManager.TaxPercent)/100;
 
             if (Character.Kamas < tax)
+            {
+                //Vous ne disposez pas d'assez de kamas pour acquiter la taxe de mise en vente...
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 57);
+
                 return false;
+            }
 
             Character.Inventory.SubKamas(tax);
 
