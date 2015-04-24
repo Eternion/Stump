@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:35
+// Generated on 04/24/2015 03:38:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,7 +92,7 @@ namespace Stump.DofusProtocol.Messages
             leaderId = reader.ReadVarInt();
             if (leaderId < 0)
                 throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var members_ = new Types.PartyInvitationMemberInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -100,7 +100,7 @@ namespace Stump.DofusProtocol.Messages
                  members_[i].Deserialize(reader);
             }
             members = members_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var guests_ = new Types.PartyGuestInformations[limit];
             for (int i = 0; i < limit; i++)
             {

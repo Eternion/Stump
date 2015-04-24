@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:33
+// Generated on 04/24/2015 03:38:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
             playerId = reader.ReadVarInt();
             if (playerId < 0)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var skills_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {

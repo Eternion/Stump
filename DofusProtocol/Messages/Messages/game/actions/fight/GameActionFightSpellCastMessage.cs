@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:23
+// Generated on 04/24/2015 03:37:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +63,7 @@ namespace Stump.DofusProtocol.Messages
             spellLevel = reader.ReadSByte();
             if (spellLevel < 1 || spellLevel > 6)
                 throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var portalsIds_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {

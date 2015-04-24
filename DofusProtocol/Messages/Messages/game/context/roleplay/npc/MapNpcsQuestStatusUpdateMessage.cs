@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:34
+// Generated on 04/24/2015 03:38:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,14 +82,14 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             mapId = reader.ReadInt();
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var npcsIdsWithQuest_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  npcsIdsWithQuest_[i] = reader.ReadInt();
             }
             npcsIdsWithQuest = npcsIdsWithQuest_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var questFlags_ = new Types.GameRolePlayNpcQuestFlag[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -97,7 +97,7 @@ namespace Stump.DofusProtocol.Messages
                  questFlags_[i].Deserialize(reader);
             }
             questFlags = questFlags_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var npcsIdsWithoutQuest_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

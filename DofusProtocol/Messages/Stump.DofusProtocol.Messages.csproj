@@ -310,6 +310,7 @@
     <Compile Include="Messages\game\approach\AuthenticationTicketMessage.cs" />
     <Compile Include="Messages\game\approach\AuthenticationTicketRefusedMessage.cs" />
     <Compile Include="Messages\game\approach\HelloGameMessage.cs" />
+    <Compile Include="Messages\game\approach\ReloginTokenRequestMessage.cs" />
     <Compile Include="Messages\game\approach\ReloginTokenStatusMessage.cs" />
     <Compile Include="Messages\game\approach\ServerOptionalFeaturesMessage.cs" />
     <Compile Include="Messages\game\approach\ServerSessionConstantsMessage.cs" />

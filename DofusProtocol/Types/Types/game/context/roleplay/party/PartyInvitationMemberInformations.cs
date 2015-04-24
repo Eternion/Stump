@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:39
+// Generated on 04/24/2015 03:38:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +72,7 @@ namespace Stump.DofusProtocol.Types
             subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var companions_ = new Types.PartyCompanionBaseInformations[limit];
             for (int i = 0; i < limit; i++)
             {

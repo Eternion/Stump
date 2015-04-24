@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:24
+// Generated on 04/24/2015 03:37:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,7 +105,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var alliances_ = new Types.AllianceInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -113,21 +113,21 @@ namespace Stump.DofusProtocol.Messages
                  alliances_[i].Deserialize(reader);
             }
             alliances = alliances_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var allianceNbMembers_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  allianceNbMembers_[i] = reader.ReadVarShort();
             }
             allianceNbMembers = allianceNbMembers_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var allianceRoundWeigth_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  allianceRoundWeigth_[i] = reader.ReadVarInt();
             }
             allianceRoundWeigth = allianceRoundWeigth_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var allianceMatchScore_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {

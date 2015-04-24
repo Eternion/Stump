@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:36
+// Generated on 04/24/2015 03:38:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +88,7 @@ namespace Stump.DofusProtocol.Types
             fightType = reader.ReadSByte();
             if (fightType < 0)
                 throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var fightTeams_ = new Types.FightTeamInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -96,14 +96,14 @@ namespace Stump.DofusProtocol.Types
                  fightTeams_[i].Deserialize(reader);
             }
             fightTeams = fightTeams_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var fightTeamsPositions_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  fightTeamsPositions_[i] = reader.ReadVarShort();
             }
             fightTeamsPositions = fightTeamsPositions_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var fightTeamsOptions_ = new Types.FightOptionsInformations[limit];
             for (int i = 0; i < limit; i++)
             {

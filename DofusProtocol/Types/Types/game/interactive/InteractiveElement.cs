@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:40
+// Generated on 04/24/2015 03:38:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,7 +74,7 @@ namespace Stump.DofusProtocol.Types
             if (elementId < 0)
                 throw new Exception("Forbidden value on elementId = " + elementId + ", it doesn't respect the following condition : elementId < 0");
             elementTypeId = reader.ReadInt();
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var enabledSkills_ = new Types.InteractiveElementSkill[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -82,7 +82,7 @@ namespace Stump.DofusProtocol.Types
                  enabledSkills_[i].Deserialize(reader);
             }
             enabledSkills = enabledSkills_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var disabledSkills_ = new Types.InteractiveElementSkill[limit];
             for (int i = 0; i < limit; i++)
             {

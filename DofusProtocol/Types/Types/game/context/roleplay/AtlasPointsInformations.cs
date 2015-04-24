@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:37
+// Generated on 04/24/2015 03:38:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +53,7 @@ namespace Stump.DofusProtocol.Types
             type = reader.ReadSByte();
             if (type < 0)
                 throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var coords_ = new Types.MapCoordinatesExtended[limit];
             for (int i = 0; i < limit; i++)
             {

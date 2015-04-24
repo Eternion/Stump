@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:40
+// Generated on 04/24/2015 03:38:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
             nbcollectorMax = reader.ReadSByte();
             if (nbcollectorMax < 0)
                 throw new Exception("Forbidden value on nbcollectorMax = " + nbcollectorMax + ", it doesn't respect the following condition : nbcollectorMax < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var fightersInformations_ = new Types.TaxCollectorFightersInformation[limit];
             for (int i = 0; i < limit; i++)
             {

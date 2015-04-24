@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:41
+// Generated on 04/24/2015 03:38:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Messages
             inviterId = reader.ReadVarInt();
             if (inviterId < 0)
                 throw new Exception("Forbidden value on inviterId = " + inviterId + ", it doesn't respect the following condition : inviterId < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var invalidBuddiesIds_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

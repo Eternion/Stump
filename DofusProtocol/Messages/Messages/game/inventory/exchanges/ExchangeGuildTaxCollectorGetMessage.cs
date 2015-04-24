@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:42
+// Generated on 04/24/2015 03:38:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,7 +84,7 @@ namespace Stump.DofusProtocol.Messages
             experience = reader.ReadDouble();
             if (experience < -9.007199254740992E15 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9.007199254740992E15 || experience > 9.007199254740992E15");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var objectsInfos_ = new Types.ObjectItemGenericQuantity[limit];
             for (int i = 0; i < limit; i++)
             {

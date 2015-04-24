@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:38
+// Generated on 04/24/2015 03:38:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Types
             nbWaves = reader.ReadSByte();
             if (nbWaves < 0)
                 throw new Exception("Forbidden value on nbWaves = " + nbWaves + ", it doesn't respect the following condition : nbWaves < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var alternatives_ = new Types.GroupMonsterStaticInformations[limit];
             for (int i = 0; i < limit; i++)
             {
