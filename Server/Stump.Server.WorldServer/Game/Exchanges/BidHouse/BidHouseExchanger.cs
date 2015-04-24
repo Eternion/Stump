@@ -56,6 +56,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (item.Template.Level > ((BidHouseExchange) Dialog).MaxItemLevel)
                 return false;
 
+            if (BidHouseManager.Instance.GetBidHouseItems(Character.Account.Id).Count() >= Character.Level)
+                return false;
+
             if (quantity > item.Stack)
                 quantity = (int)item.Stack;
 
