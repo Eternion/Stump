@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:47
+// Generated on 04/24/2015 03:38:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Messages
             code = reader.ReadSByte();
             if (code < 0)
                 throw new Exception("Forbidden value on code = " + code + ", it doesn't respect the following condition : code < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var unlinkedPosition_ = new byte[limit];
             for (int i = 0; i < limit; i++)
             {

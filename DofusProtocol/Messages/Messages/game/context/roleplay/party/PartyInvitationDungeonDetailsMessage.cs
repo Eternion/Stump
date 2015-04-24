@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:35
+// Generated on 04/24/2015 03:38:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
             dungeonId = reader.ReadVarShort();
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var playersDungeonReady_ = new bool[limit];
             for (int i = 0; i < limit; i++)
             {

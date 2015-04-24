@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:29
+// Generated on 04/24/2015 03:38:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var spellCooldowns_ = new Types.GameFightSpellCooldown[limit];
             for (int i = 0; i < limit; i++)
             {

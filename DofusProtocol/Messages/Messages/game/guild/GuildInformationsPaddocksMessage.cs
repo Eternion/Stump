@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:39
+// Generated on 04/24/2015 03:38:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             nbPaddockMax = reader.ReadSByte();
             if (nbPaddockMax < 0)
                 throw new Exception("Forbidden value on nbPaddockMax = " + nbPaddockMax + ", it doesn't respect the following condition : nbPaddockMax < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var paddocksInformations_ = new Types.PaddockContentInformations[limit];
             for (int i = 0; i < limit; i++)
             {

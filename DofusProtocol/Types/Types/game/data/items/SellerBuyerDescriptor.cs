@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:40
+// Generated on 04/24/2015 03:38:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,14 +80,14 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var quantities_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  quantities_[i] = reader.ReadVarInt();
             }
             quantities = quantities_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var types_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {

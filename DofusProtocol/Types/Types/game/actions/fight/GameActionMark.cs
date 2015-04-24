@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:35
+// Generated on 04/24/2015 03:38:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +86,7 @@ namespace Stump.DofusProtocol.Types
             markimpactCell = reader.ReadShort();
             if (markimpactCell < -1 || markimpactCell > 559)
                 throw new Exception("Forbidden value on markimpactCell = " + markimpactCell + ", it doesn't respect the following condition : markimpactCell < -1 || markimpactCell > 559");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var cells_ = new Types.GameActionMarkedCell[limit];
             for (int i = 0; i < limit; i++)
             {

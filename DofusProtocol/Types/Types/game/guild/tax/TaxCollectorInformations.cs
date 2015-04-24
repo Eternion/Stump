@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:40
+// Generated on 04/24/2015 03:38:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,7 +98,7 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
             look = new Types.EntityLook();
             look.Deserialize(reader);
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var complements_ = new Types.TaxCollectorComplementaryInformations[limit];
             for (int i = 0; i < limit; i++)
             {

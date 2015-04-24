@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:21
+// Generated on 04/24/2015 03:37:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +26,13 @@ namespace Stump.DofusProtocol.Messages
         public IEnumerable<sbyte> credentials;
         public short serverId;
         public double sessionOptionalSalt;
+        public IEnumerable<short> failedAttempts;
         
         public IdentificationMessage()
         {
         }
         
-        public IdentificationMessage(bool autoconnect, bool useCertificate, bool useLoginToken, Types.VersionExtended version, string lang, IEnumerable<sbyte> credentials, short serverId, double sessionOptionalSalt)
+        public IdentificationMessage(bool autoconnect, bool useCertificate, bool useLoginToken, Types.VersionExtended version, string lang, IEnumerable<sbyte> credentials, short serverId, double sessionOptionalSalt, IEnumerable<short> failedAttempts)
         {
             this.autoconnect = autoconnect;
             this.useCertificate = useCertificate;
@@ -41,6 +42,7 @@ namespace Stump.DofusProtocol.Messages
             this.credentials = credentials;
             this.serverId = serverId;
             this.sessionOptionalSalt = sessionOptionalSalt;
+            this.failedAttempts = failedAttempts;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -67,6 +69,19 @@ namespace Stump.DofusProtocol.Messages
 
             writer.WriteShort(serverId);
             writer.WriteDouble(sessionOptionalSalt);
+            var failedAttempts_before = writer.Position;
+            var failedAttempts_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in failedAttempts)
+            {
+                 writer.WriteVarShort(entry);
+                 failedAttempts_count++;
+            }
+            var failedAttempts_after = writer.Position;
+            writer.Seek((int)failedAttempts_before);
+            writer.WriteUShort((ushort)failedAttempts_count);
+            writer.Seek((int)failedAttempts_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -78,7 +93,7 @@ namespace Stump.DofusProtocol.Messages
             version = new Types.VersionExtended();
             version.Deserialize(reader);
             lang = reader.ReadUTF();
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var credentials_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -89,6 +104,13 @@ namespace Stump.DofusProtocol.Messages
             sessionOptionalSalt = reader.ReadDouble();
             if (sessionOptionalSalt < -9.007199254740992E15 || sessionOptionalSalt > 9.007199254740992E15)
                 throw new Exception("Forbidden value on sessionOptionalSalt = " + sessionOptionalSalt + ", it doesn't respect the following condition : sessionOptionalSalt < -9.007199254740992E15 || sessionOptionalSalt > 9.007199254740992E15");
+            limit = reader.ReadUShort();
+            var failedAttempts_ = new short[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 failedAttempts_[i] = reader.ReadVarShort();
+            }
+            failedAttempts = failedAttempts_;
         }
         
     }

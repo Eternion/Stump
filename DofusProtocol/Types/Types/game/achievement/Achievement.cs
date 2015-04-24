@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:35
+// Generated on 04/24/2015 03:38:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +68,7 @@ namespace Stump.DofusProtocol.Types
             id = reader.ReadVarShort();
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var finishedObjective_ = new Types.AchievementObjective[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -76,7 +76,7 @@ namespace Stump.DofusProtocol.Types
                  finishedObjective_[i].Deserialize(reader);
             }
             finishedObjective = finishedObjective_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var startedObjectives_ = new Types.AchievementStartedObjective[limit];
             for (int i = 0; i < limit; i++)
             {

@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:41
+// Generated on 04/24/2015 03:38:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,7 +75,7 @@ namespace Stump.DofusProtocol.Types
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             waitingForHelpInfo = new Types.ProtectedEntityWaitingForHelpInfo();
             waitingForHelpInfo.Deserialize(reader);
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var allyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -83,7 +83,7 @@ namespace Stump.DofusProtocol.Types
                  allyCharactersInformations_[i].Deserialize(reader);
             }
             allyCharactersInformations = allyCharactersInformations_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var enemyCharactersInformations_ = new Types.CharacterMinimalPlusLookInformations[limit];
             for (int i = 0; i < limit; i++)
             {

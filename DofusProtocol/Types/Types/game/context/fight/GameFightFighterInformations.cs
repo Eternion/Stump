@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:37
+// Generated on 04/24/2015 03:38:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +72,7 @@ namespace Stump.DofusProtocol.Types
             alive = reader.ReadBoolean();
             stats = Types.ProtocolTypeManager.GetInstance<Types.GameFightMinimalStats>(reader.ReadShort());
             stats.Deserialize(reader);
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var previousPositions_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {

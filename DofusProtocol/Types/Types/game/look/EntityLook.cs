@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:41
+// Generated on 04/24/2015 03:38:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,28 +98,28 @@ namespace Stump.DofusProtocol.Types
             bonesId = reader.ReadVarShort();
             if (bonesId < 0)
                 throw new Exception("Forbidden value on bonesId = " + bonesId + ", it doesn't respect the following condition : bonesId < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var skins_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  skins_[i] = reader.ReadVarShort();
             }
             skins = skins_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var indexedColors_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
                  indexedColors_[i] = reader.ReadInt();
             }
             indexedColors = indexedColors_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var scales_ = new short[limit];
             for (int i = 0; i < limit; i++)
             {
                  scales_[i] = reader.ReadVarShort();
             }
             scales = scales_;
-            limit = reader.ReadVarInt();
+            limit = reader.ReadUShort();
             var subentities_ = new Types.SubEntity[limit];
             for (int i = 0; i < limit; i++)
             {

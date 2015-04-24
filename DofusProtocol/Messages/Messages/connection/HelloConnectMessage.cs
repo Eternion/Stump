@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:20
+// Generated on 04/24/2015 03:37:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +52,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             salt = reader.ReadUTF();
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var key_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
@@ -60,6 +60,7 @@ namespace Stump.DofusProtocol.Messages
             }
             key = key_;
         }
+        
     }
     
 }

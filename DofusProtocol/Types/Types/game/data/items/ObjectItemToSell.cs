@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:10:39
+// Generated on 04/24/2015 03:38:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +65,7 @@ namespace Stump.DofusProtocol.Types
             objectGID = reader.ReadVarShort();
             if (objectGID < 0)
                 throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var effects_ = new Types.ObjectEffect[limit];
             for (int i = 0; i < limit; i++)
             {

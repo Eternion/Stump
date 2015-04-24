@@ -1,6 +1,6 @@
 
 
-// Generated on 02/19/2015 12:09:48
+// Generated on 04/24/2015 03:38:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Messages
             barType = reader.ReadSByte();
             if (barType < 0)
                 throw new Exception("Forbidden value on barType = " + barType + ", it doesn't respect the following condition : barType < 0");
-            var limit = reader.ReadVarInt();
+            var limit = reader.ReadUShort();
             var shortcuts_ = new Types.Shortcut[limit];
             for (int i = 0; i < limit; i++)
             {
