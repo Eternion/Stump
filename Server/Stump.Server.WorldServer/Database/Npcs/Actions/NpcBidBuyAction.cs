@@ -6,6 +6,7 @@ using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges.BidHouse;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Actions
 {
@@ -47,8 +48,8 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
 
         public override void Execute(Npc npc, Character character)
         {
-            var dialog = new NpcBidDialog(character, npc, Types, true);
-            dialog.Open();
+            var exchange = new BidHouseExchange(character, npc, Types, true);
+            exchange.Open();
         }
     }
 }
