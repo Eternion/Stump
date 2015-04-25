@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
+using Stump.Core.Pool;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
@@ -20,12 +22,11 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         #region Fields
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private UniqueIdProvider m_idProvider;
 
-        private List<BidHouseItem> m_bidHouseItems = new List<BidHouseItem>();
+        private ConcurrentList<BidHouseItem> m_bidHouseItems = new ConcurrentList<BidHouseItem>();
+        private ConcurrentList<BidHouseCategory> m_bidHouseCategories = new ConcurrentList<BidHouseCategory>();
 
-        private readonly object m_lock = new object();
-
-        [Variable]
         public static int UnsoldDelay = 672;
 
         [Variable]
@@ -67,7 +68,21 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         [Initialization(typeof(ItemManager))]
         public override void Initialize()
         {
-            m_bidHouseItems = Database.Query<BidHouseItemRecord>(BidHouseItemRelator.FetchQuery).Select(x => new BidHouseItem(x)).ToList();
+            m_idProvider = new UniqueIdProvider(1);
+            m_bidHouseItems = new ConcurrentList<BidHouseItem>(Database.Query<BidHouseItemRecord>(BidHouseItemRelator.FetchQuery).Select(x => new BidHouseItem(x)));
+
+            foreach (var item in m_bidHouseItems)
+            {
+                var category = GetBidHouseCategory(item);
+
+                if (category == null)
+                {
+                    category = new BidHouseCategory(m_idProvider.Pop(), item);
+                    m_bidHouseCategories.Add(category);
+                }
+
+                category.Items.Add(item);
+            }
 
             World.Instance.RegisterSaveableInstance(this);
         }
@@ -76,36 +91,30 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         #region Getters
 
+        public BidHouseCategory GetBidHouseCategory(BidHouseItem item)
+        {
+            return m_bidHouseCategories.FirstOrDefault(x => x.IsValidForThisCategory(item));
+        }
+
+        public BidHouseCategory GetBidHouseCategory(int categoryId)
+        {
+            return m_bidHouseCategories.FirstOrDefault(x => x.Id == categoryId);
+        }
+
+        public List<BidHouseCategory> GetBidHouseCategories(int itemId)
+        {
+            return m_bidHouseCategories.Where(x => x.TemplateId == itemId).ToList();
+        }
+
         public List<BidHouseItem> GetBidHouseItems(ItemTypeEnum type, int maxItemLevel)
         {
-            return m_bidHouseItems.Where(x => x.Template.TypeId == (int)type && x.Template.Level >= maxItemLevel)
+            return m_bidHouseItems.Where(x => x.Template.TypeId == (int)type && x.Template.Level <= maxItemLevel)
                 .GroupBy(x => x.Template.Id).Select(x => x.First()).ToList();
         }
 
         public List<BidHouseItem> GetBidHouseItems(int ownerId)
         {
             return m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId).ToList();
-        }
-
-        public List<BidHouseItem> GetBidsForItem(int itemId)
-        {
-            return m_bidHouseItems.Where(x => x.Template.Id == itemId).Distinct(new BidHouseItemComparer()).ToList();
-        }
-
-        public IEnumerable<int> GetBidsPriceForItem(int itemId)
-        {
-            var prices = new List<int>();
-
-            foreach (var item in Quantities.Select(quantity => m_bidHouseItems.Where(x => x.Template.Id == itemId && x.Stack == quantity)
-                .OrderBy(x => x.Price).FirstOrDefault()))
-            {
-                if (item != null)
-                    prices.Add((int) item.Price);
-                else
-                    prices.Add(0);
-            }
-
-            return prices;
         }
 
         public BidHouseItem GetBidHouseItem(int guid)
@@ -136,10 +145,17 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public void AddBidHouseItem(BidHouseItem item)
         {
-            lock(m_lock)
+            m_bidHouseItems.Add(item);
+
+            var category = GetBidHouseCategory(item);
+
+            if (category == null)
             {
-                m_bidHouseItems.Add(item);
+                category = new BidHouseCategory(m_idProvider.Pop(), item);
+                m_bidHouseCategories.Add(category);
             }
+
+            category.Items.Add(item);
 
             var handler = ItemAdded;
 
@@ -154,10 +170,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             WorldServer.Instance.IOTaskPool.AddMessage(
                 () => Database.Delete(item.Record));
 
-            lock (m_lock)
-            {
-                m_bidHouseItems.Remove(item);
-            }
+            m_bidHouseItems.Remove(item);
 
             var handler = ItemRemoved;
 
@@ -169,12 +182,9 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public void Save()
         {
-            lock (m_lock)
+            foreach (var item in m_bidHouseItems.Where(item => item.Record.IsDirty))
             {
-                foreach (var item in m_bidHouseItems.Where(item => item.Record.IsDirty))
-                {
-                    item.Save(Database);
-                }
+                item.Save(Database);
             }
         }
     }
