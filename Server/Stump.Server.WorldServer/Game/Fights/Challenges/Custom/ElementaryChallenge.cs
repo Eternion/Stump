@@ -33,6 +33,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(damage.Source is CharacterFighter))
                 return;
 
+            if (damage.ReflectedDamages)
+                return;
+
             if (m_element == EffectSchoolEnum.Unknown)
                 m_element = damage.School;
             else if (m_element != damage.School)

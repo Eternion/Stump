@@ -15,11 +15,22 @@ namespace Stump.Server.AuthServer.Network
 
         public AuthClient(Socket socket) : base(socket)
         {
+            if (AuthServer.Instance.m_maintenanceMode)
+            {
+                CanReceive = true;
+
+                Send(new SystemMessageDisplayMessage(true, 13, new string[0]));
+                Disconnect();
+
+                return;
+            }
+
             var patch = AuthServer.Instance.GetConnectionSwfPatch();
             if (patch != null)
                 Send(new RawDataMessageFixed(patch));
 
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
+
             Send(new HelloConnectMessage(CredentialManager.Instance.GetSalt(), CredentialManager.Instance.GetRSAPublicKey()));
 
             CanReceive = true;

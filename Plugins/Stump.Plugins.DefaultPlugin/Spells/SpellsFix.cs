@@ -316,7 +316,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2811, 0, (level, effect, critical) => effect.Delay = 1);
             FixEffectOnAllLevels(2811, 1, (level, effect, critical) => level.Effects.Move(effect, 2), false);
-            FixCriticalEffectOnAllLevels(2811, 1, (level, effect, critical) => level.Effects.Move(effect, 2));
             FixEffectOnAllLevels(2811, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_BOMBS);
             FixEffectOnAllLevels(2811, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
 
@@ -380,8 +379,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Swap Effects index
             FixEffectOnAllLevels(2889, EffectsEnum.Effect_AddPushDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(2889, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(2889, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
-            FixCriticalEffectOnAllLevels(2889, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
+            FixEffectOnAllLevels(2889, 3, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+            FixCriticalEffectOnAllLevels(2889, 3, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
 
             // Plastron (2890)
             // NONE -> ALLY_ALL && SELF

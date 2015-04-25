@@ -35,6 +35,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(damage.Source is CharacterFighter))
                 return;
 
+            if (damage.ReflectedDamages)
+                return;
+
             if (Target == null || Target == fighter)
                 Target = fighter;
             else

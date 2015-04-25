@@ -241,7 +241,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event FightPointsVariationHandler FightPointsVariation;
 
-        protected virtual void OnFightPointsVariation(ActionsEnum action, FightActor source, FightActor target, short delta)
+        public virtual void OnFightPointsVariation(ActionsEnum action, FightActor source, FightActor target, short delta)
         {
             switch (action)
             {
@@ -732,7 +732,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
 
             if (!handler.Initialize())
+            {
+                Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+                OnSpellCastFailed(spell, handler.TargetedCell);
+
                 return false;
+            }
 
             OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
             if (!ApFree)
@@ -825,7 +830,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                     if (reflected > 0)
                     {
-                        damage.Source.InflictDirectDamage(reflected, this);
+                        var reflectedDamage = new Damage(reflected)
+                        {
+                            ReflectedDamages = true,
+                            Source = this,
+                            School = EffectSchoolEnum.Unknown,
+                            IgnoreDamageBoost = true,
+                            IgnoreDamageReduction = true
+                        };
+
+                        damage.Source.InflictDamage(reflectedDamage);
                         OnDamageReflected(damage.Source, reflected);
                     }
                 }
@@ -1649,20 +1663,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsIndirectSpellCast(Spell spell)
         {
-            return spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_MASSE
-                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_MASSE_DU_DOPEUL
-                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_MORTEL
-                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_SILENCE
-                   || spell.Template.Id == (int) SpellIdEnum.PIÈGE_DE_SILENCE_DU_DOPEUL
+            return spell.Template.Id == (int) SpellIdEnum.EXPLOSION_SOURNOISE
+                   || spell.Template.Id == (int) SpellIdEnum.EXPLOSION_DE_MASSE
+                   || spell.Template.Id == (int)SpellIdEnum.PIÈGE_MORTEL_SRAM
                    || spell.Template.Id == (int) SpellIdEnum.CONCENTRATION_DE_CHAKRA
                    || spell.Template.Id == (int) SpellIdEnum.VERTIGE
-                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_ENFLAMMÉ
-                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_ENFLAMMÉ_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.SORT_ENFLAMMÉ
                    || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_1503
-                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_17
-                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_DU_DOPEUL
-                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_DE_RÉPULSION
-                   || spell.Template.Id == (int) SpellIdEnum.GLYPHE_DE_RÉPULSION_DU_DOPEUL
+                   || spell.Template.Id == (int) SpellIdEnum.PULSE
                    || spell.Template.Id == (int) SpellIdEnum.CONTRE
                    || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE
                    || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE_DU_DOPEUL
