@@ -47,9 +47,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
             if (integerEffect == null)
                 return;
 
+            var target = buff.Target;
+            if (target is SummonedBomb)
+            {
+                target = ((SummonedBomb) target).Summoner;
+            }
+
             foreach (var caracteristic in GetAssociatedCaracteristics(buff.Spell.Id))
             {
-                buff.Target.Stats[caracteristic].Context += buff.Target.CalculateArmorValue(integerEffect.Value);
+                buff.Target.Stats[caracteristic].Context += target.CalculateArmorValue(integerEffect.Value);
             }
         }
 

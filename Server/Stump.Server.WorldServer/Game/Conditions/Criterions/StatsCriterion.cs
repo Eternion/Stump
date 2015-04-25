@@ -33,8 +33,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             {"Cv", PlayerFields.Vitality},
         };
 
-        private static readonly string[] ExtraCriterions = new[]
-        {
+        private static readonly string[] ExtraCriterions = {
             "Ce",
             "CE",
             "CD",
@@ -79,24 +78,22 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         public override bool Eval(Character character)
         {
             // extra field
-            if (!Field.HasValue)
-            {
-                switch (Identifier)
-                {
-                    case "Ce":
-                        return Compare(character.Energy, (short)Comparand);
-                    case "CE":
-                        return Compare(character.EnergyMax, (short)Comparand);
-                    case "CD":
-                        return true; // dishonor
-                    case "CH":
-                        return true; // honnor
-                    default:
-                        throw new Exception(string.Format("Cannot eval StatsCriterion {0}, {1} is not a stats identifier", this, Identifier));
-                }
-            }
+            if (Field.HasValue)
+                return Compare(Base ? character.Stats[Field.Value].Base : character.Stats[Field.Value].Total, Comparand);
 
-            return Compare(Base ? character.Stats[Field.Value].Base : character.Stats[Field.Value].Total, Comparand);
+            switch (Identifier)
+            {
+                case "Ce":
+                    return Compare(character.Energy, (short)Comparand);
+                case "CE":
+                    return Compare(character.EnergyMax, (short)Comparand);
+                case "CD":
+                    return true; // dishonor
+                case "CH":
+                    return true; // honnor
+                default:
+                    throw new Exception(string.Format("Cannot eval StatsCriterion {0}, {1} is not a stats identifier", this, Identifier));
+            }
         }
 
         public override void Build()

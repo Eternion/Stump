@@ -237,7 +237,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
         public ActorLook RefreshLook()
         {
-            m_look = new ActorLook()
+            m_look = new ActorLook
                 {BonesID = TAXCOLLECTOR_BONES};
             if (Guild.Emblem.Template != null)
                 m_look.AddSkin((short)Guild.Emblem.Template.SkinId);
