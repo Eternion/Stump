@@ -76,9 +76,9 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         #region Getters
 
-        public List<BidHouseItem> GetBidHouseItems(ItemTypeEnum type)
+        public List<BidHouseItem> GetBidHouseItems(ItemTypeEnum type, int maxItemLevel)
         {
-            return m_bidHouseItems.Where(x => x.Template.TypeId == (int)type)
+            return m_bidHouseItems.Where(x => x.Template.TypeId == (int)type && x.Template.Level >= maxItemLevel)
                 .GroupBy(x => x.Template.Id).Select(x => x.First()).ToList();
         }
 

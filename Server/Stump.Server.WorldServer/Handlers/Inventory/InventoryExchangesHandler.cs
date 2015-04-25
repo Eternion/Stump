@@ -304,10 +304,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeBidHouseTypeMessage.Id)]
         public static void HandleExchangeBidHouseTypeMessage(WorldClient client, ExchangeBidHouseTypeMessage message)
         {
-            if (!client.Character.IsInExchange())
+            var exchange = client.Character.Exchange as BidHouseExchange;
+            if (exchange == null)
                 return;
 
-            var items = BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum)message.type);
+            var items = BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum)message.type, exchange.MaxItemLevel);
 
             SendExchangeTypesExchangerDescriptionForUserMessage(client, items.Select(x => x.Template.Id));
         }
