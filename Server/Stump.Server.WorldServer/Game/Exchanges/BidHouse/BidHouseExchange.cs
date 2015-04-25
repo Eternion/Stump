@@ -108,9 +108,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
         {
             CurrentViewedItem = itemId;
 
-            var bids = BidHouseManager.Instance.GetBidsForItem(itemId).Select(x => x.GetBidExchangerObjectInfo());
+            var categories = BidHouseManager.Instance.GetBidHouseCategories(itemId).Select(x => x.GetBidExchangerObjectInfo());
 
-            InventoryHandler.SendExchangeTypesItemsExchangerDescriptionForUserMessage(Character.Client, bids);
+            InventoryHandler.SendExchangeTypesItemsExchangerDescriptionForUserMessage(Character.Client, categories);
         }
 
         #endregion
@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (!Types.Contains((int)item.Template.TypeId))
                 return;
 
-            if (BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum) item.Template.TypeId).All(x => x.Template.Id != item.Template.Id))
+            if (BidHouseManager.Instance.GetBidHouseItems((int)item.Template.TypeId).All(x => x.Template.Id != item.Template.Id))
                 InventoryHandler.SendExchangeBidHouseGenericItemAddedMessage(Character.Client, item);
 
             if (CurrentViewedItem == item.Template.Id)
@@ -134,7 +134,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (!Types.Contains((int)item.Template.TypeId))
                 return;
 
-            if (BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum) item.Template.TypeId).All(x => x.Template.Id != item.Template.Id))
+            if (BidHouseManager.Instance.GetBidHouseItems((int) item.Template.TypeId).All(x => x.Template.Id != item.Template.Id))
                 InventoryHandler.SendExchangeBidHouseGenericItemRemovedMessage(Character.Client, item);
 
             if (CurrentViewedItem == item.Template.Id)

@@ -347,15 +347,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            var bids = BidHouseManager.Instance.GetBidsForItem(message.genId).Select(x => x.GetBidExchangerObjectInfo()).ToArray();
+            var categories = BidHouseManager.Instance.GetBidHouseCategories(message.genId).Select(x => x.GetBidExchangerObjectInfo()).ToArray();
 
-            if (!bids.Any())
+            if (!categories.Any())
             {
                 SendExchangeErrorMessage(client, ExchangeErrorEnum.BID_SEARCH_ERROR);
                 return;
             }
 
-            SendExchangeTypesItemsExchangerDescriptionForUserMessage(client, bids);
+            SendExchangeTypesItemsExchangerDescriptionForUserMessage(client, categories);
         }
 
         [WorldHandler(ExchangeBidHouseBuyMessage.Id)]
@@ -364,23 +364,19 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!client.Character.IsInExchange())
                 return;
 
-            var bidItem = BidHouseManager.Instance.GetBidHouseItem(message.uid);
+            var category = BidHouseManager.Instance.GetBidHouseCategory(message.uid);
 
-            if (bidItem == null)
+            if (category == null)
                 return;
 
-            var item = BidHouseManager.Instance.GetBidHouseItem(bidItem.Template.Id, message.qty, message.price);
-
-            if (item == null)
-                return;
-
+            var item = category.GetItem(message.qty, message.price);
             if (!item.SellItem(client.Character))
             {
                 SendExchangeBidHouseBuyResultMessage(client, item.Guid, false);
                 return;
             }
 
-            var result = client.Character.Exchanger.MoveItem(item.Guid, message.qty);
+            var result = client.Character.Exchanger.MoveItem(item.Guid, (int)item.Stack);
 
             if (result)
                 client.Character.Inventory.SubKamas((int)item.Price);
@@ -541,13 +537,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeBidHouseInListAddedMessage(IPacketReceiver client, BidHouseItem item)
         {
-            var prices = BidHouseManager.Instance.GetBidsPriceForItem(item.Template.Id);
-            client.Send(new ExchangeBidHouseInListAddedMessage(item.Guid, item.Template.Id, 0, false, item.Effects.Select(x => x.GetObjectEffect()), prices));
+            var category = BidHouseManager.Instance.GetBidHouseCategory(item);
+            client.Send(new ExchangeBidHouseInListAddedMessage(category.Id, category.TemplateId, 0, false, category.Effects.Select(x => x.GetObjectEffect()), category.GetPrices()));
         }
 
         public static void SendExchangeBidHouseInListRemovedMessage(IPacketReceiver client, BidHouseItem item)
         {
-            client.Send(new ExchangeBidHouseInListRemovedMessage(item.Guid));
+            var category = BidHouseManager.Instance.GetBidHouseCategory(item);
+            client.Send(new ExchangeBidHouseInListRemovedMessage(category.Id));
         }
 
         public static void SendExchangeBidHouseGenericItemAddedMessage(IPacketReceiver client, BidHouseItem item)
