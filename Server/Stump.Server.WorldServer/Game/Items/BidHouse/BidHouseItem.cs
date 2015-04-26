@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
                 character.Bank.AddKamas((int)Price);
 
                 //Banque : + %1 Kamas (vente de %4 $item%3).
-                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 65, Price, Stack, Template.Id);
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 65, Price, 0, Template.Id, Stack);
             }
 
             return true;
