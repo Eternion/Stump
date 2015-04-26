@@ -140,7 +140,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
                 return;
 
             if (!BidHouseManager.Instance.GetBidHouseCategories(item.Template.Id, MaxItemLevel).Any())
+            {
+                CurrentViewedItem = 0;
                 InventoryHandler.SendExchangeBidHouseGenericItemRemovedMessage(Character.Client, item);
+                UpdateCurrentViewedItem(item.Template.Id);
+
+                return;
+            }  
 
             if (CurrentViewedItem != item.Template.Id)
                 return;
