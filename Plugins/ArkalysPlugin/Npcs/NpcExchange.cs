@@ -60,16 +60,16 @@ namespace ArkalysPlugin.Npcs
             if (m_scriptDisabled)
                 template.NpcSpawned -= OnNpcSpawned;
 
-            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_EXCHANGE);
+            npc.Actions.RemoveAll(x => x.ActionType.Contains(NpcActionTypeEnum.ACTION_EXCHANGE));
             npc.Actions.Add(new NpcExchangeActionScript());
         }
     }
 
     public class NpcExchangeActionScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_EXCHANGE; }
+            get { return new [] { NpcActionTypeEnum.ACTION_EXCHANGE }; }
         }
 
         public override void Execute(Npc npc, Character character)

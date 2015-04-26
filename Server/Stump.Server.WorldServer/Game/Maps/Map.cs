@@ -526,6 +526,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             private set;
         }
 
+        protected TimedTimerEntry DroppedItemsCleaner
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         #region Restrictions
@@ -1289,12 +1295,23 @@ namespace Stump.Server.WorldServer.Game.Maps
                 });
         }
 
+        private void CleanObjets()
+        {
+            foreach (var item in m_objectItems.Where(x => (DateTime.Now - x.SpawnDate).TotalMinutes >= 5).ToArray())
+            {
+                Leave(item);
+            }
+        }
+
         private void OnObjectEnter(WorldObjectItem objectItem)
         {
             ForEach(x =>
             {
                 ContextRoleplayHandler.SendObjectGroundAddedMessage(x.Client, objectItem);   
             });
+
+            if (DroppedItemsCleaner == null)
+                DroppedItemsCleaner = Area.CallPeriodically(30000, CleanObjets);
         }
 
         private void OnObjectLeave(WorldObjectItem objectItem)
@@ -1303,6 +1320,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 ContextRoleplayHandler.SendObjectGroundRemovedMessage(x.Client, objectItem);
             });
+
+            if (DroppedItemsCleaner == null || IsAnyDroppedItems())
+                return;
+
+            DroppedItemsCleaner.Dispose();
+            DroppedItemsCleaner = null;
         }
 
         private void OnEnter(RolePlayActor actor)
@@ -1722,6 +1745,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         public bool ToggleMute()
         {
             return IsMuted = !IsMuted;
+        }
+
+        public bool IsAnyDroppedItems()
+        {
+            return m_objectItems.Any();
         }
     }
 
