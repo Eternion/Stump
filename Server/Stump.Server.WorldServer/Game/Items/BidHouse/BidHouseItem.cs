@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         public ObjectItemToSellInBid GetObjectItemToSellInBid()
         {
             return new ObjectItemToSellInBid((short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid,
-                (short)Stack, (short)Price, (short)UnsoldDelay);
+                (int)Stack, (int)Price, (short)UnsoldDelay);
         }
 
         public bool SellItem(Character buyer)
