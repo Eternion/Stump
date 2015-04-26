@@ -201,6 +201,7 @@
     <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
+    <Compile Include="Database\Items\BidHouse\BidHouseItemRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
     <Compile Include="Database\IAssignedByD2o.cs" />
@@ -232,6 +233,8 @@
     <Compile Include="Database\Mounts\MountTemplate.cs" />
     <Compile Include="Database\Npcs\Actions\NpcAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcActionDatabase.cs" />
+    <Compile Include="Database\Npcs\Actions\NpcBidBuyAction.cs" />
+    <Compile Include="Database\Npcs\Actions\NpcBidSellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcBuySellAction.cs" />
     <Compile Include="Database\Npcs\Actions\NpcTalkAction.cs" />
     <Compile Include="Database\Npcs\NpcActionRecord.cs" />
@@ -374,6 +377,8 @@
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rollback.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Sacrifice.cs" />
     <Compile Include="Game\Exchanges\Bank\BankCustomer.cs" />
+    <Compile Include="Game\Exchanges\BidHouse\BidHouseExchanger.cs" />
+    <Compile Include="Game\Exchanges\BidHouse\BidHouseExchange.cs" />
     <Compile Include="Game\Exchanges\IExchange.cs" />
     <Compile Include="Game\Exchanges\Exchanger.cs" />
     <Compile Include="Game\Exchanges\Merchant\CharacterMerchant.cs" />
@@ -510,6 +515,9 @@
     <Compile Include="Game\Interactives\Skills\SkillZaapiTeleport.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />
+    <Compile Include="Game\Items\BidHouse\BidHouseCategory.cs" />
+    <Compile Include="Game\Items\BidHouse\BidHouseItem.cs" />
+    <Compile Include="Game\Items\BidHouse\BidHouseManager.cs" />
     <Compile Include="Game\Items\Player\Bank.cs" />
     <Compile Include="Game\Items\Player\BankItem.cs" />
     <Compile Include="Database\Items\BankItemRecord.cs" />

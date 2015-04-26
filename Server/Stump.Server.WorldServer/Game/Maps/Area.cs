@@ -319,7 +319,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public TimedTimerEntry CallPeriodically(int interval, Action action)
         {
-            var timer = new TimedTimerEntry()
+            var timer = new TimedTimerEntry
             {
                 Interval = interval,
                 Action = action
