@@ -72,9 +72,9 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
             set { Record.SetParameter(2, value); }
         }
 
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_BUY_SELL; }
+            get { return new[] { NpcActionTypeEnum.ACTION_BUY_SELL, NpcActionTypeEnum.ACTION_SELL, NpcActionTypeEnum.ACTION_BUY }; }
         }
 
         public override void Execute(Npc npc, Character character)
