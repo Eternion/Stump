@@ -19,9 +19,9 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
         {
         }
 
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_SELL; }
+            get { return new [] { NpcActionTypeEnum.ACTION_SELL }; }
         }
 
 
