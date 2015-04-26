@@ -312,6 +312,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (mountId == -1)
                 return false;
 
+            if (Character.Level < item.Template.Level)
+            {
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
+                return false;
+            }
+
             Character.Inventory.RemoveItem(item);
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
