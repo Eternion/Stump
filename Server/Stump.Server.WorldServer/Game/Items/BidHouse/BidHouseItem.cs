@@ -69,7 +69,11 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         public bool SellItem(Character buyer)
         {
             if (Price > buyer.Kamas)
+            {
+                //Vous ne disposez pas d'assez de kamas pour acheter cet objet.
+                buyer.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 63);
                 return false;
+            }
 
             var character = World.Instance.GetCharacter(x => x.Account.Id == Record.OwnerId);
 

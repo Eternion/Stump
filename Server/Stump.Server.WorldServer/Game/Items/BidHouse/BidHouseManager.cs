@@ -101,9 +101,9 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             return m_bidHouseCategories.FirstOrDefault(x => x.Id == categoryId);
         }
 
-        public List<BidHouseCategory> GetBidHouseCategories(int itemId)
+        public List<BidHouseCategory> GetBidHouseCategories(int itemId, int maxLevel)
         {
-            return m_bidHouseCategories.Where(x => x.TemplateId == itemId).ToList();
+            return m_bidHouseCategories.Where(x => x.TemplateId == itemId && x.ItemLevel <= maxLevel).ToList();
         }
 
         public List<BidHouseItem> GetBidHouseItems(ItemTypeEnum type, int maxItemLevel)
@@ -112,9 +112,9 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
                 .GroupBy(x => x.Template.Id).Select(x => x.First()).ToList();
         }
 
-        public List<BidHouseItem> GetBidHouseItems(int ownerId)
+        public List<BidHouseItem> GetBidHouseItems(int ownerId, IEnumerable<int> types)
         {
-            return m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId).ToList();
+            return m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId && types.Contains((int)x.Template.TypeId)).ToList();
         }
 
         public BidHouseItem GetBidHouseItem(int guid)
