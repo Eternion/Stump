@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (!CanInteractWith(actionType, dialoguer))
                 return;
 
-            var action = Actions.First(entry => entry.ActionType == actionType && entry.CanExecute(this, dialoguer));
+            var action = Actions.First(entry => entry.ActionType.Contains(actionType) && entry.CanExecute(this, dialoguer));
 
             action.Execute(this, dialoguer);
             OnInteracted(actionType, action, dialoguer);
@@ -102,7 +102,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
             if (dialoguer.Map != Position.Map)
                 return false;
 
-            return Actions.Count > 0 && Actions.Any(entry => entry.ActionType == action && entry.CanExecute(this, dialoguer));
+            return Actions.Count > 0 && Actions.Any(entry => entry.ActionType.Contains(action) && entry.CanExecute(this, dialoguer));
         }
 
         public void SpeakWith(Character dialoguer)
