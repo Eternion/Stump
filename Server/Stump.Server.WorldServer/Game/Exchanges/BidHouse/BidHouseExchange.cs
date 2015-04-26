@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             } 
             else
             {
-                var items = BidHouseManager.Instance.GetBidHouseItems(Character.Account.Id);
+                var items = BidHouseManager.Instance.GetBidHouseItems(Character.Account.Id, Types);
                 InventoryHandler.SendExchangeStartedBidSellerMessage(Character.Client, this, items.Select(x => x.GetObjectItemToSellInBid()));
             }
 
@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
         {
             CurrentViewedItem = itemId;
 
-            var categories = BidHouseManager.Instance.GetBidHouseCategories(itemId).Select(x => x.GetBidExchangerObjectInfo());
+            var categories = BidHouseManager.Instance.GetBidHouseCategories(itemId, MaxItemLevel).Select(x => x.GetBidExchangerObjectInfo());
 
             InventoryHandler.SendExchangeTypesItemsExchangerDescriptionForUserMessage(Character.Client, categories);
         }
@@ -122,7 +122,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (!Types.Contains((int)item.Template.TypeId))
                 return;
 
-            if (!BidHouseManager.Instance.GetBidHouseCategories(item.Template.Id).Any())
+            if (!BidHouseManager.Instance.GetBidHouseCategories(item.Template.Id, MaxItemLevel).Any())
                 InventoryHandler.SendExchangeBidHouseGenericItemAddedMessage(Character.Client, item);
 
             if (CurrentViewedItem != item.Template.Id)
@@ -139,7 +139,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (!Types.Contains((int)item.Template.TypeId))
                 return;
 
-            if (!BidHouseManager.Instance.GetBidHouseCategories(item.Template.Id).Any())
+            if (!BidHouseManager.Instance.GetBidHouseCategories(item.Template.Id, MaxItemLevel).Any())
                 InventoryHandler.SendExchangeBidHouseGenericItemRemovedMessage(Character.Client, item);
 
             if (CurrentViewedItem != item.Template.Id)

@@ -347,7 +347,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            var categories = BidHouseManager.Instance.GetBidHouseCategories(message.genId).Select(x => x.GetBidExchangerObjectInfo()).ToArray();
+            var categories = BidHouseManager.Instance.GetBidHouseCategories(message.genId, exchange.MaxItemLevel).Select(x => x.GetBidExchangerObjectInfo()).ToArray();
 
             if (!categories.Any())
             {
@@ -370,6 +370,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
 
             var item = category.GetItem(message.qty, message.price);
+            if (item == null)
+            {
+                //Cet objet n'est plus disponible à ce prix. Quelqu'un a été plus rapide...
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 64);
+
+                SendExchangeBidHouseBuyResultMessage(client, message.uid, false);
+                return;
+            }
+
             if (!item.SellItem(client.Character))
             {
                 SendExchangeBidHouseBuyResultMessage(client, item.Guid, false);
