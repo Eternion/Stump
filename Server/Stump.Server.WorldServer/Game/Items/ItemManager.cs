@@ -222,8 +222,7 @@ namespace Stump.Server.WorldServer.Game.Items
             }
             m_itemsSets = Database.Query<ItemSetTemplate>(ItemSetTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_npcShopItems = Database.Query<NpcItem>(NpcItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_livingObjects =
-                Database.Query<LivingObjectRecord>(LivingObjectRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_livingObjects = Database.Query<LivingObjectRecord>(LivingObjectRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
             InitializeItemCtors();
         }
@@ -483,7 +482,6 @@ namespace Stump.Server.WorldServer.Game.Items
             m_itemTemplates.Add(template.Id, template);
             Database.Insert(template);
         }
-
 
         public LivingObjectRecord TryGetLivingObjectRecord(int id)
         {

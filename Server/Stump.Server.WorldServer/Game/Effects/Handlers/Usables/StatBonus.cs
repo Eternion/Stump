@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 
             var bonus = AdjustBonusStat((short) (effect.Value * NumberOfUses));
 
-            if (bonus == 0)
+            if (bonus == 0 || bonus + Target.Stats[GetEffectCharacteristic(Effect.EffectId)].Base > StatBonusLimit)
             {
                 Target.SendServerMessage(string.Format("Bonus limit reached : {0}", StatBonusLimit), Color.Red);
                 return false;
