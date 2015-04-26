@@ -141,18 +141,21 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         #region Functions
 
-        public event Action<BidHouseItem> ItemAdded;
+        public event Action<BidHouseItem, BidHouseCategory, bool> ItemAdded;
 
         public void AddBidHouseItem(BidHouseItem item)
         {
             m_bidHouseItems.Add(item);
 
             var category = GetBidHouseCategory(item);
+            var newCategory = false;
 
             if (category == null)
             {
                 category = new BidHouseCategory(m_idProvider.Pop(), item);
                 m_bidHouseCategories.Add(category);
+
+                newCategory = true;
             }
 
             category.Items.Add(item);
@@ -160,10 +163,10 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             var handler = ItemAdded;
 
             if (handler != null)
-                handler(item);
+                handler(item, category, newCategory);
         }
 
-        public event Action<BidHouseItem> ItemRemoved;
+        public event Action<BidHouseItem, BidHouseCategory, bool> ItemRemoved;
 
         public void RemoveBidHouseItem(BidHouseItem item)
         {
@@ -172,10 +175,21 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
             m_bidHouseItems.Remove(item);
 
+            var category = GetBidHouseCategory(item);
+            var categoryDeleted = false;
+
+            category.Items.Remove(item);
+
+            if (category.IsEmpty())
+            {
+                m_bidHouseCategories.Remove(category);
+                categoryDeleted = true;
+            }
+
             var handler = ItemRemoved;
 
             if (handler != null)
-                handler(item);
+                handler(item, category, categoryDeleted);
         }
 
         #endregion

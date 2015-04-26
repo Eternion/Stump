@@ -117,28 +117,38 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
 
         #region Events
 
-        private void OnBidHouseItemAdded(BidHouseItem item)
+        private void OnBidHouseItemAdded(BidHouseItem item, BidHouseCategory category, bool newCategory)
         {
             if (!Types.Contains((int)item.Template.TypeId))
                 return;
 
-            if (BidHouseManager.Instance.GetBidHouseItems((int)item.Template.TypeId).All(x => x.Template.Id != item.Template.Id))
+            if (!BidHouseManager.Instance.GetBidHouseCategories(item.Template.Id).Any())
                 InventoryHandler.SendExchangeBidHouseGenericItemAddedMessage(Character.Client, item);
 
-            if (CurrentViewedItem == item.Template.Id)
-                UpdateCurrentViewedItem(item.Template.Id);
+            if (CurrentViewedItem != item.Template.Id)
+                return;
+
+            if (newCategory)
+                InventoryHandler.SendExchangeBidHouseInListAddedMessage(Character.Client, category);
+            else
+                InventoryHandler.SendExchangeBidHouseInListUpdatedMessage(Character.Client, category);
         }
 
-        private void OnBidHouseItemRemoved(BidHouseItem item)
+        private void OnBidHouseItemRemoved(BidHouseItem item, BidHouseCategory category, bool categoryDeleted)
         {
             if (!Types.Contains((int)item.Template.TypeId))
                 return;
 
-            if (BidHouseManager.Instance.GetBidHouseItems((int) item.Template.TypeId).All(x => x.Template.Id != item.Template.Id))
+            if (!BidHouseManager.Instance.GetBidHouseCategories(item.Template.Id).Any())
                 InventoryHandler.SendExchangeBidHouseGenericItemRemovedMessage(Character.Client, item);
 
-            if (CurrentViewedItem == item.Template.Id)
-                UpdateCurrentViewedItem(item.Template.Id);
+            if (CurrentViewedItem != item.Template.Id)
+                return;
+
+            if (categoryDeleted)
+                InventoryHandler.SendExchangeBidHouseInListRemovedMessage(Character.Client, category);
+            else
+                InventoryHandler.SendExchangeBidHouseInListUpdatedMessage(Character.Client, category);
         }
 
         #endregion

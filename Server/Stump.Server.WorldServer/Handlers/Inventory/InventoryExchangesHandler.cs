@@ -535,16 +535,19 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeBidHouseBuyResultMessage(guid, bought));
         }
 
-        public static void SendExchangeBidHouseInListAddedMessage(IPacketReceiver client, BidHouseItem item)
+        public static void SendExchangeBidHouseInListAddedMessage(IPacketReceiver client, BidHouseCategory category)
         {
-            var category = BidHouseManager.Instance.GetBidHouseCategory(item);
             client.Send(new ExchangeBidHouseInListAddedMessage(category.Id, category.TemplateId, 0, false, category.Effects.Select(x => x.GetObjectEffect()), category.GetPrices()));
         }
 
-        public static void SendExchangeBidHouseInListRemovedMessage(IPacketReceiver client, BidHouseItem item)
+        public static void SendExchangeBidHouseInListRemovedMessage(IPacketReceiver client, BidHouseCategory category)
         {
-            var category = BidHouseManager.Instance.GetBidHouseCategory(item);
             client.Send(new ExchangeBidHouseInListRemovedMessage(category.Id));
+        }
+
+        public static void SendExchangeBidHouseInListUpdatedMessage(IPacketReceiver client, BidHouseCategory category)
+        {
+            client.Send(new ExchangeBidHouseInListUpdatedMessage(category.Id, category.TemplateId, 0, false, category.Effects.Select(x => x.GetObjectEffect()), category.GetPrices()));
         }
 
         public static void SendExchangeBidHouseGenericItemAddedMessage(IPacketReceiver client, BidHouseItem item)
