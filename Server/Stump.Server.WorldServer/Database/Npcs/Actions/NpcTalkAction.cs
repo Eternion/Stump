@@ -9,11 +9,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
     [Discriminator("Talk", typeof(NpcActionDatabase), typeof(NpcActionRecord))]
     public class NpcTalkAction : NpcActionDatabase
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
             get
             {
-                return NpcActionTypeEnum.ACTION_TALK;
+                return new [] { NpcActionTypeEnum.ACTION_TALK };
             }
         }
 

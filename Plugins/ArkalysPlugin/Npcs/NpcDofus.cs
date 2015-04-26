@@ -61,7 +61,7 @@ namespace ArkalysPlugin.Npcs
             if (m_scriptDisabled)
                 template.NpcSpawned -= OnNpcSpawned;
 
-            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_EXCHANGE || x.ActionType == NpcActionTypeEnum.ACTION_TALK);
+            npc.Actions.RemoveAll(x => x.ActionType.Contains(NpcActionTypeEnum.ACTION_EXCHANGE) || x.ActionType.Contains(NpcActionTypeEnum.ACTION_TALK));
             npc.Actions.Add(new NpcDofusActionScript());
             npc.Actions.Add(new NpcDofusTalkScript());
         }
@@ -69,11 +69,11 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcDofusTalkScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
             get
             {
-                return NpcActionTypeEnum.ACTION_TALK;
+                return new [] { NpcActionTypeEnum.ACTION_TALK };
             }
         }
 
@@ -107,9 +107,9 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcDofusActionScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_EXCHANGE; }
+            get { return new [] { NpcActionTypeEnum.ACTION_EXCHANGE }; }
         }
 
         public override void Execute(Npc npc, Character character)

@@ -111,16 +111,16 @@ namespace ArkalysPlugin.Npcs
             if (m_scriptDisabled)
                 template.NpcSpawned -= OnNpcSpawned;
 
-            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_TALK);
+            npc.Actions.RemoveAll(x => x.ActionType.Contains(NpcActionTypeEnum.ACTION_TALK));
             npc.Actions.Add(new NpcClassChangeScript());
         }
     }
 
     public class NpcClassChangeScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_TALK; }
+            get { return new [] { NpcActionTypeEnum.ACTION_TALK }; }
         }
 
         public override void Execute(Npc npc, Character character)

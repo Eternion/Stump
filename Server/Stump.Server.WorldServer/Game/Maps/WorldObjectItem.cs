@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -15,6 +16,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             Quantity = quantity;
             Item = template;
             Effects = effects;
+            SpawnDate = DateTime.Now;
         }
 
         public override int Id
@@ -36,6 +38,12 @@ namespace Stump.Server.WorldServer.Game.Maps
         }
 
         public int Quantity
+        {
+            get;
+            protected set;
+        }
+
+        public DateTime SpawnDate
         {
             get;
             protected set;
