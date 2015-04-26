@@ -57,6 +57,8 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             private set;
         }
 
+        #region Functions
+
         public List<BidHouseItem> GetItems()
         {
             var items = new List<BidHouseItem>();
@@ -98,6 +100,13 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         {
             return item.Template.Id == TemplateId && Effects.CompareEnumerable(item.Effects);
         }
+
+        public bool IsEmpty()
+        {
+            return !Items.Any();
+        }
+
+        #endregion
 
         #region Network
 

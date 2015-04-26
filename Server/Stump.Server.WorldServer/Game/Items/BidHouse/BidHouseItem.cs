@@ -60,12 +60,6 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
                 (int)Stack);
         }
 
-        public BidExchangerObjectInfo GetBidExchangerObjectInfo()
-        {
-            return new BidExchangerObjectInfo(Guid, 0, false, Effects.Select(x => x.GetObjectEffect()),
-                BidHouseManager.Instance.GetBidsPriceForItem(Template.Id));
-        }
-
         public ObjectItemToSellInBid GetObjectItemToSellInBid()
         {
             return new ObjectItemToSellInBid((short)Template.Id, 0, false, Effects.Select(x => x.GetObjectEffect()), Guid,
