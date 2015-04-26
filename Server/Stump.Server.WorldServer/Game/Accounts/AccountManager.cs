@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Accounts
         public static UserGroup DefaultUserGroup = new UserGroup(new UserGroupData() { Id = 0, IsGameMaster = false, Name = "Default", Role = RoleEnum.Player});
 
         private Dictionary<int, UserGroup> m_userGroups;
-        private ConcurrentDictionary<int, Character> m_savingCharacters = new ConcurrentDictionary<int, Character>(); 
+        private readonly ConcurrentDictionary<int, Character> m_savingCharacters = new ConcurrentDictionary<int, Character>(); 
 
         public override void Initialize()
         {

@@ -183,28 +183,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return false;
             } 
             
-            var saleItem = Items.FirstOrDefault(entry => entry.Item.Id == item.Template.Id);
-
-            int price;
-
-            if (saleItem != null)
-                price = (int) Math.Ceiling(saleItem.Price/10) * amount;
-            else
-                price = (int) Math.Ceiling(item.Template.Price / 10) * amount;
+            var price = (int) Math.Ceiling(item.Template.Price / 10) * amount;
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     22, amount, item.Template.Id);
 
             Character.Inventory.RemoveItem(item, amount);
 
-            if (Token != null)
-            {
-                Character.Inventory.AddItem(Token, price);
-            }
-            else
-            {
-                Character.Inventory.AddKamas(price);
-            }
+            Character.Inventory.AddKamas(price);
 
             Character.Client.Send(new ExchangeSellOkMessage());
             return true;
