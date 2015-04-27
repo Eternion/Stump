@@ -14,6 +14,7 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Server.WorldServer.Core.Network;
@@ -55,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             IsDirty = true;
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
 
-            base.OnItemStackChanged(item, difference);
+            base.OnItemStackChanged(item, difference, removeMsg);
         }
 
         protected override void OnItemAdded(MerchantItem item, bool addItemMsg)
@@ -64,6 +65,42 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.OpenDialogs.Select(x => x.Character).ToClients(), item);
 
             base.OnItemAdded(item, false);
+        }
+
+        public override int RemoveItem(MerchantItem item, int amount, bool delete = true)
+        {
+            if (!HasItem(item))
+                return 0;
+
+            if (item.Stack <= amount)
+            {
+                item.StackSold = item.Stack;
+                item.Stack = 0;
+
+                return (int)item.Stack;
+            }
+
+            UnStackItem(item, amount);
+            return amount;
+        }
+
+        public override void UnStackItem(MerchantItem item, int amount, bool stackMsg = true)
+        {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+            if (item.Stack - amount <= 0)
+            {
+                item.StackSold = item.Stack;
+                item.Stack = 0;
+            }
+            else
+            {
+                item.Stack -= (uint) amount;
+                item.StackSold += (uint) amount;
+
+                NotifyItemStackChanged(item, -amount, stackMsg);
+            }
         }
 
         protected override void OnItemRemoved(MerchantItem item, bool removeItemMsg)

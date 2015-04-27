@@ -308,7 +308,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (exchange == null)
                 return;
 
-            var items = BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum)message.type, exchange.MaxItemLevel);
+            var items = BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum)message.type, exchange.MaxItemLevel).ToArray();
 
             SendExchangeTypesExchangerDescriptionForUserMessage(client, items.Select(x => x.Template.Id));
         }
@@ -430,7 +430,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)
         {
-            client.Send(new ExchangeStartOkHumanVendorMessage(merchant.Id, merchant.Bag.Select(x => x.GetObjectItemToSellInHumanVendorShop())));
+            client.Send(new ExchangeStartOkHumanVendorMessage(merchant.Id, merchant.Bag.Where(x => x.Stack > 0).Select(x => x.GetObjectItemToSellInHumanVendorShop())));
         }
 
         public static void SendExchangeStartOkNpcTradeMessage(IPacketReceiver client, NpcTrade trade)
@@ -476,7 +476,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeShopStockStartedMessage(IPacketReceiver client, CharacterMerchantBag merchantBag)
         {
             client.Send(new ExchangeShopStockStartedMessage(
-                            merchantBag.Select(x => x.GetObjectItemToSell())));
+                            merchantBag.Where(x => x.Stack > 0).Select(x => x.GetObjectItemToSell())));
         }
 
         public static void SendExchangeStartOkMountMessage(IPacketReceiver client, List<Mount> stabledMounts, List<Mount> paddockedMounts)

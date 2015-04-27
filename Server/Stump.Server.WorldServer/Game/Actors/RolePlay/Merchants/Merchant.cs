@@ -106,12 +106,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             get { return m_record.Name; }
         }
 
-        public uint KamasEarned
-        {
-            get { return m_record.KamasEarned; }
-            set { m_record.KamasEarned = value; }
-        }
-
         public bool IsRecordDirty
         {
             get { return m_isRecordDirty || Bag.IsDirty; }

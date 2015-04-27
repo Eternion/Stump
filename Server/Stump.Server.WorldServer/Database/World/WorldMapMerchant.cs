@@ -104,12 +104,6 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
-        public uint KamasEarned
-        {
-            get;
-            set;
-        }
-
         public bool IsActive
         {
             get;
