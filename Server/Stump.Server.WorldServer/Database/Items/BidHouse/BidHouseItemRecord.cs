@@ -41,6 +41,18 @@ namespace Stump.Server.WorldServer.Database.Items.BidHouse
             }
         }
 
+        private bool m_sold;
+
+        public bool Sold
+        {
+            get { return m_sold; }
+            set
+            {
+                m_sold = value;
+                IsDirty = true;
+            }
+        }
+
         private DateTime m_sellDate;
 
         public DateTime SellDate

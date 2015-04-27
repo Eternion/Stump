@@ -21,6 +21,12 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
             set { Record.Price = value; }
         }
 
+        public bool Sold
+        {
+            get { return Record.Sold; }
+            set { Record.Sold = value; }
+        }
+
         public int UnsoldDelay
         {
             get { return Math.Abs(BidHouseManager.UnsoldDelay - (DateTime.Now - Record.SellDate).Minutes); }
@@ -79,11 +85,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
             if (character == null)
             {
-                var account = AccountManager.Instance.FindById(Record.OwnerId);
-                if (account == null)
-                    return false;
-
-                account.BankKamas += (int)Price;
+                Sold = true;
             }
             else
             {
