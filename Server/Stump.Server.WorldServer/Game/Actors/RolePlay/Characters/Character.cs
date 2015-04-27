@@ -41,6 +41,7 @@ using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Guilds;
+using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
 using Stump.Server.WorldServer.Game.Maps;
@@ -1865,6 +1866,20 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (m_earnKamasInMerchant > 0)
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, m_earnKamasInMerchant, 1);
+
+            var soldItems = BidHouseManager.Instance.GetSoldBidHouseItems(Account.Id);
+            var kamas = 0;
+
+            foreach (var item in soldItems)
+            {
+                kamas += (int)item.Price;
+                BidHouseManager.Instance.RemoveBidHouseItem(item, true);
+
+                //Banque : + %1 Kamas (vente de %4 $item%3 hors jeu).
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, kamas, 0, item.Template.Id, item.Stack);
+            }
+
+            Inventory.AddKamas(kamas);
         }
 
         public void SendServerMessage(string message)

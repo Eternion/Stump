@@ -93,7 +93,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         public BidHouseItem GetItem(int quantity, int price)
         {
-            return Items.FirstOrDefault(x => x.Stack == quantity && x.Price == price);
+            return Items.FirstOrDefault(x => x.Stack == quantity && x.Price == price && !x.Sold);
         }
 
         public bool IsValidForThisCategory(BidHouseItem item)
