@@ -538,23 +538,23 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public virtual bool LostAP(short amount)
+        public virtual bool LostAP(short amount, FightActor source)
         {
             if (Stats[PlayerFields.AP].Total - amount < 0)
                 return false;
 
             Stats.AP.Used += amount;
 
-            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, this, this, (short)( -amount ));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, source, this, (short)( -amount ));
 
             return true;
         }
 
-        public virtual bool LostMP(short amount)
+        public virtual bool LostMP(short amount, FightActor source)
         {
             Stats.MP.Used += amount;
 
-            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, this, this, (short)( -amount ));
+            OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, source, this, (short)( -amount ));
 
             return true;
         }

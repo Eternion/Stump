@@ -381,20 +381,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Character.GodMode || base.UseMP(amount);
         }
 
-        public override bool LostAP(short amount)
+        public override bool LostAP(short amount, FightActor source)
         {
             if (!Character.GodMode)
-                return base.LostAP(amount);
+                return base.LostAP(amount, source);
 
-            base.LostAP(amount);
+            base.LostAP(amount, source);
             RegainAP(amount);
 
             return true;
         }
 
-        public override bool LostMP(short amount)
+        public override bool LostMP(short amount, FightActor source)
         {
-            return Character.GodMode || base.LostMP(amount);
+            return Character.GodMode || base.LostMP(amount, source);
         }
 
 

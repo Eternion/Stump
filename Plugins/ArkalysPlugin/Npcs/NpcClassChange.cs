@@ -144,7 +144,7 @@ namespace ArkalysPlugin.Npcs
         {
             base.Open();
 
-            m_price = 600 + (40 * Character.PrestigeRank);
+            m_price = 700 + (40 * Character.PrestigeRank);
 
             if (Character.Inventory.Tokens == null || Character.Inventory.Tokens.Stack < m_price)
             {

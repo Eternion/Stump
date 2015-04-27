@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 }
                 else
                 {
-                    target.LostAP(integerEffect.Value);
+                    target.LostAP(integerEffect.Value, Caster);
                 }
 
                 target.TriggerBuffs(BuffTriggerType.LOST_AP);

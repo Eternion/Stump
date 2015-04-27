@@ -1783,8 +1783,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, tacklers);
-            actor.LostAP((short)apTackled);
-            actor.LostMP((short)mpTackled);
+            actor.LostAP((short)apTackled, actor);
+            actor.LostMP((short)mpTackled, actor);
 
             if (path.MPCost > actor.MP)
                 path.CutPath(actor.MP + 1);

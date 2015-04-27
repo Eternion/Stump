@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                     return false;
 
                 //AddStatBuff(actor, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
-                actor.LostAP((short)value);
+                actor.LostAP((short)value, Caster);
                 actor.TriggerBuffs(BuffTriggerType.LOST_AP);
 
                 if (Effect.Duration > 0)
