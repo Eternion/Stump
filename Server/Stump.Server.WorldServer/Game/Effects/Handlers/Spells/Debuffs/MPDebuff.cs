@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 }
                 else
                 {
-                    actor.LostMP(integerEffect.Value);
+                    actor.LostMP(integerEffect.Value, Caster);
                 }
 
                 actor.TriggerBuffs(BuffTriggerType.LOST_MP);

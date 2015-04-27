@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
@@ -62,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (quantity > item.Stack)
                 quantity = (int)item.Stack;
 
-            var tax = (int)(price*BidHouseManager.TaxPercent)/100;
+            var tax = (int)Math.Round((price * BidHouseManager.TaxPercent) / 100);
 
             if (Character.Kamas < tax)
             {
