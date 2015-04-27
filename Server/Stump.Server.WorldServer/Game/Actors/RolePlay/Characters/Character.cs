@@ -229,8 +229,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        private int m_earnKamasInMerchant;
-
         #region Identifier
 
         public override string Name
@@ -1864,22 +1862,40 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 153, Client.IP);
             }
 
-            if (m_earnKamasInMerchant > 0)
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, m_earnKamasInMerchant, 1);
+            var kamasMerchant = 0;
+
+            foreach (var item in MerchantBag)
+            {
+                if (item.StackSold <= 0)
+                    continue;
+
+                var price = (int) (item.Price*item.StackSold);
+                kamasMerchant += price;
+
+                //Vous avez gagné %1 kamas suite à la vente en mode marchand de %4 '$item%3' lorsque vous étiez hors jeu.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, price, 0, item.Template.Id, item.StackSold);
+
+                item.StackSold = 0;
+
+                if (item.Stack == 0)
+                    MerchantBag.RemoveItem(item, true, false);
+            }
+
+            Inventory.AddKamas(kamasMerchant);
 
             var soldItems = BidHouseManager.Instance.GetSoldBidHouseItems(Account.Id);
-            var kamas = 0;
+            var kamasBidHouse = 0;
 
             foreach (var item in soldItems)
             {
-                kamas += (int)item.Price;
+                kamasBidHouse += (int)item.Price;
                 BidHouseManager.Instance.RemoveBidHouseItem(item, true);
 
                 //Banque : + %1 Kamas (vente de %4 $item%3 hors jeu).
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, kamas, 0, item.Template.Id, item.Stack);
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, kamasBidHouse, 0, item.Template.Id, item.Stack);
             }
 
-            Inventory.AddKamas(kamas);
+            Bank.AddKamas(kamasBidHouse);
         }
 
         public void SendServerMessage(string message)
@@ -2707,11 +2723,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                 if (merchant.Record.CharacterId != Id)
                     continue;
-                if (merchant.KamasEarned > 0)
-                {
-                    Inventory.AddKamas((int) merchant.KamasEarned);
-                    m_earnKamasInMerchant = (int) merchant.KamasEarned;
-                }
+
                 MerchantBag.LoadMerchantBag(merchant.Bag);
 
                 MerchantManager.Instance.RemoveMerchantSpawn(merchant.Record);
@@ -2722,8 +2734,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (record == null)
                 return;
 
-            Inventory.AddKamas((int) record.KamasEarned);
-            m_earnKamasInMerchant = (int) record.KamasEarned;
             MerchantManager.Instance.RemoveMerchantSpawn(record);
         }
 

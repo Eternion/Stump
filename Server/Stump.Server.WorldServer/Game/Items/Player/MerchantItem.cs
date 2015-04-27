@@ -19,6 +19,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             set { Record.Price = value; }
         }
 
+        public uint StackSold
+        {
+            get { return Record.StackSold; }
+            set { Record.StackSold = value; }
+        }
+
         #endregion
 
         #region Constructors

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Collections;
 using Stump.Core.Extensions;
@@ -79,7 +78,7 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         {
             var prices = new List<int>();
 
-            foreach (var item in BidHouseManager.Quantities.Select(quantity => Items.Where(x => x.Stack == quantity)
+            foreach (var item in BidHouseManager.Quantities.Select(quantity => Items.ToArray().Where(x => x.Stack == quantity)
                 .OrderBy(x => x.Price).FirstOrDefault()))
             {
                 if (item != null)
