@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Game.Items
             set;
         }
 
-        public int Count
+        public virtual int Count
         {
             get { return Items.Count; }
         }
