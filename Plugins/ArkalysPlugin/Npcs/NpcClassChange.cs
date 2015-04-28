@@ -132,7 +132,7 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcClassChangeDialog : NpcDialog
     {
-        private int m_price = 0;
+        private int m_price;
 
         public NpcClassChangeDialog(Character character, Npc npc)
             : base(character, npc)
@@ -212,8 +212,8 @@ namespace ArkalysPlugin.Npcs
                 return;
             }
 
-            ChangeBreed(bread);
             Character.Inventory.UnStackItem(Character.Inventory.Tokens, m_price);
+            ChangeBreed(bread);
 
             Close();
         }

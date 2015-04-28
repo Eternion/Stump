@@ -296,6 +296,7 @@
     <Compile Include="Game\Conditions\Criterions\AdminRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AlignementLevelCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AlignmentCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\AreaCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BonesCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
@@ -331,6 +332,7 @@
     <Compile Include="Game\Conditions\Criterions\StatsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SubAreaCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SubscribeCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\UnknownCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\UnusableCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\WeightCriterion.cs" />
     <Compile Include="Game\Conditions\ConditionExpression.cs" />

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
@@ -8,6 +8,56 @@ using Stump.Server.WorldServer.Handlers.Mounts;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
+    [ItemId(ItemIdEnum.BontarianIntercityExpressPotion)]
+    public class BontarianPotion : BasePlayerItem
+    {
+        [Variable]
+        private const int m_destinationMap = 5506048;
+
+        [Variable]
+        private const int m_destinationCell = 359;
+
+        public BontarianPotion(Character owner, PlayerItemRecord record)
+            : base(owner, record)
+        {
+        }
+
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
+        {
+            var map = World.Instance.GetMap(m_destinationMap);
+            var cell = map.Cells[m_destinationCell];
+
+            Owner.Teleport(map, cell);
+
+            return 1;
+        }
+    }
+
+    [ItemId(ItemIdEnum.BrakmarianIntercityExpressPotion)]
+    public class BrakmarianPotion : BasePlayerItem
+    {
+        [Variable]
+        private const int m_destinationMap = 13631488;
+
+        [Variable]
+        private const int m_destinationCell = 373;
+
+        public BrakmarianPotion(Character owner, PlayerItemRecord record)
+            : base(owner, record)
+        {
+        }
+
+        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
+        {
+            var map = World.Instance.GetMap(m_destinationMap);
+            var cell = map.Cells[m_destinationCell];
+
+            Owner.Teleport(map, cell);
+
+            return 1;
+        }
+    }
+
     [ItemId(ItemIdEnum.NamechangePotion)]
     public class NameChangePotion : BasePlayerItem
     {

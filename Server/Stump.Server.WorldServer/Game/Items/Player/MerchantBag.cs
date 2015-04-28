@@ -79,8 +79,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (item.Stack <= amount)
             {
-                item.StackSold = item.Stack;
+                item.StackSold += item.Stack;
                 item.Stack = 0;
+
+                NotifyItemRemoved(item, false);
 
                 return (int)item.Stack;
             }
@@ -96,8 +98,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (item.Stack - amount <= 0)
             {
-                item.StackSold = item.Stack;
+                item.StackSold += item.Stack;
                 item.Stack = 0;
+
+                NotifyItemRemoved(item, false);
             }
             else
             {
