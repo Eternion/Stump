@@ -26,6 +26,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             get { return false; } // don't know why
         }
+
         public override bool IsMultiAccountRestricted
         {
             get { return true; }

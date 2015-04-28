@@ -1864,7 +1864,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             var kamasMerchant = 0;
 
-            foreach (var item in MerchantBag)
+            foreach (var item in MerchantBag.ToArray())
             {
                 if (item.StackSold <= 0)
                     continue;
@@ -1960,10 +1960,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (MustBeJailed() && !IsInJail())
                 TeleportToJail();
-            else if (!MustBeJailed() && IsInJail())
+            else if (!MustBeJailed() && IsInJail() && !IsGameMaster())
                 Teleport(Breed.GetStartPosition());
 
-            if (IsRiding() && !map.Outdoor)
+            if (IsRiding() && !map.Outdoor && ArenaManager.Instance.Arenas.All(x => x.Value.MapId != map.Id))
                 Mount.Dismount(this);
 
             base.OnEnterMap(map);
@@ -2690,14 +2690,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return false;
             }
 
-            if (Kamas <= MerchantBag.GetMerchantTax())
-            {
-                if (sendError)
-                    SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 76);
-                return false;
-            }
+            if (Kamas >= MerchantBag.GetMerchantTax())
+                return true;
 
-            return true;
+            if (sendError)
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 76);
+            return false;
         }
 
         public bool EnableMerchantMode()
@@ -2717,7 +2715,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void CheckMerchantModeReconnection()
         {
-            foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
+           foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
             {
                 merchant.Save();
 

@@ -67,6 +67,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
         public void UnActiveMerchant(Merchant merchant)
         {
             merchant.Delete();
+
             m_activeMerchants.Remove(merchant);
         }
 
