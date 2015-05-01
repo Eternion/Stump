@@ -20,6 +20,7 @@ namespace ArkalysAuthPlugin.Votes
         {
             
         }
+
         public VoteNotificationMessage(int[] accountsId)
         {
             AccountsToNotify = accountsId;
