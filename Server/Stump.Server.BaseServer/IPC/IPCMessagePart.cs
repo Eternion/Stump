@@ -58,7 +58,10 @@ namespace Stump.Server.BaseServer.IPC
                 return false;
 
             if (count >= 1 && !LengthBytesCount.HasValue)
+            {
                 LengthBytesCount = reader.ReadByte();
+                count--;
+            } 
 
             if (LengthBytesCount.HasValue &&
                 count >= LengthBytesCount && !Length.HasValue)
@@ -92,6 +95,9 @@ namespace Stump.Server.BaseServer.IPC
                 if (!(Length > count))
                     return IsValid;
 
+                if (count < 0)
+                    return IsValid;
+
                 Data = reader.ReadBytes((int) count);
 
                 m_dataMissing = true;
@@ -107,6 +113,10 @@ namespace Stump.Server.BaseServer.IPC
             {
                 var lastLength = m_data.Length;
                 Array.Resize(ref m_data, (int) (Data.Length + count));
+
+                if (count < 0)
+                    return false;
+
                 var array = reader.ReadBytes((int) count);
 
                 Array.Copy(array, 0, Data, lastLength, array.Length);
@@ -120,8 +130,11 @@ namespace Stump.Server.BaseServer.IPC
             {
                 var bytesToRead = Length.Value - Data.Length;
 
-
                 Array.Resize(ref m_data, Data.Length + bytesToRead);
+
+                if (bytesToRead < 0)
+                    return false;
+
                 var array = reader.ReadBytes(bytesToRead);
 
                 Array.Copy(array, 0, Data, Data.Length - bytesToRead, bytesToRead);
