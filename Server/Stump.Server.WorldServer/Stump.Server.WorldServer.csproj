@@ -107,6 +107,10 @@
     <Reference Include="ServiceStack.Text">
       <HintPath>..\..\Library\ServiceStack.Text.dll</HintPath>
     </Reference>
+    <Reference Include="SharpRaven, Version=1.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpRaven.1.4.5\lib\net45\SharpRaven.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
