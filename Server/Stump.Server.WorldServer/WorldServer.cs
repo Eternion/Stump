@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
@@ -23,6 +24,7 @@ using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game;
 using ServiceStack.Text;
+using SharpRaven.Data;
 using DatabaseConfiguration = Stump.ORM.DatabaseConfiguration;
 
 namespace Stump.Server.WorldServer
@@ -105,6 +107,7 @@ namespace Stump.Server.WorldServer
             DBAccessor.OpenConnection();
             DataManager.DefaultDatabase = DBAccessor.Database;
             DataManagerAllocator.Assembly = Assembly.GetExecutingAssembly();
+            DBAccessor.Database.ExecutingCommand += OnExecutingDBCommand;
 
             logger.Info("Register Messages...");
             MessageReceiver.Initialize();
@@ -120,6 +123,18 @@ namespace Stump.Server.WorldServer
             InitializationManager.InitializeAll();
             CommandManager.LoadOrCreateCommandsInfo(CommandsInfoFilePath);
             IsInitialized = true;
+        }
+
+        private void OnExecutingDBCommand(ORM.Database arg1, IDbCommand arg2)
+        {
+            if (!Initializing && !IOTaskPool.IsInContext)
+            {
+                logger.Warn("Execute DB command out the IO task pool : " + arg2.CommandText);
+                if (IsExceptionLoggerEnabled)
+                    ExceptionLogger.CaptureMessage(
+                        new SentryMessage("Execute DB command out the IO task pool : " + arg2.CommandText),
+                        ErrorLevel.Warning);
+            }
         }
 
         protected override void OnPluginAdded(PluginContext plugincontext)
