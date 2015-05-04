@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool EquipToPaddock(int mountId)
         {
-            if (Character.HasEquipedMount())
+            if (!Character.HasEquipedMount())
                 return false;
 
             if (!HasMountRight(Character.Mount))
@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                if (Character.HasEquipedMount())
+                if (!Character.HasEquipedMount())
                     return;
 
                 Paddock.AddMountToPaddock(Character.Mount);
@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool EquipToStable(int mountId)
         {
-            if (Character.HasEquipedMount())
+            if (!Character.HasEquipedMount())
                 return false;
 
             if (!HasMountRight(Character.Mount))
@@ -105,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                if (Character.HasEquipedMount())
+                if (!Character.HasEquipedMount())
                     return;
 
                 Paddock.AddMountToStable(Character.Mount);
@@ -243,7 +243,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool EquipToInventory(int mountId)
         {
-            if (Character.HasEquipedMount())
+            if (!Character.HasEquipedMount())
                 return false;
 
             if (!HasMountRight(Character.Mount))

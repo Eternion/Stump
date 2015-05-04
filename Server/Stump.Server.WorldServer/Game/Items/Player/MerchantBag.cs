@@ -74,17 +74,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public override int RemoveItem(MerchantItem item, int amount, bool delete = true)
         {
-            if (!HasItem(item))
+            if (!HasItem(item) || item.Stack == 0)
                 return 0;
 
             if (item.Stack <= amount)
             {
-                item.StackSold += item.Stack;
+                var removed = item.Stack;
+
+                item.StackSold += removed;
                 item.Stack = 0;
 
                 NotifyItemRemoved(item, false);
 
-                return (int)item.Stack;
+                return (int)removed;
             }
 
             UnStackItem(item, amount);
