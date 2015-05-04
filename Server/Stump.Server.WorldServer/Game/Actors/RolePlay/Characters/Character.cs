@@ -2370,7 +2370,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target == this)
                 return FighterRefusedReasonEnum.FIGHT_MYSELF;
 
-            if (target.Map != Map || !Map.AllowFightChallenges)
+            if (target.Map != Map || !Map.AllowChallenge)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;

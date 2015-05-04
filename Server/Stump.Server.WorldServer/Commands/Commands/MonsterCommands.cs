@@ -331,31 +331,20 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 map.AddSpawningPool(pool);
             }
 
-            var cell = trigger.IsArgumentDefined("cell") ? trigger.Get<Cell>("cell") : ((GameTrigger) trigger).Character.Cell;
+            var cell = trigger.IsArgumentDefined("cell") ? trigger.Get<short>("cell") : ((GameTrigger)trigger).Character.Cell.Id;
             var direction = trigger.IsArgumentDefined("direction") ? trigger.Get<DirectionsEnum>("direction") : ((GameTrigger)trigger).Character.Direction;
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                var group = pool.Spawns.FirstOrDefault();
-
-                if (group == null)
+                var group = new MonsterStaticSpawn
                 {
-                    group = new MonsterStaticSpawn
-                    {
-                        Map = map,
-                        GroupMonsters = new List<MonsterGrade> { grade },
-                        Cell = cell,
-                        Direction = (uint)direction
-                    };
-                    WorldServer.Instance.DBAccessor.Database.Insert(group);
-                }
-                else
-                {
-                    if (group.GroupMonsters == null)
-                        group.GroupMonsters = new List<MonsterGrade>();
+                    Map = map,
+                    GroupMonsters = new List<MonsterGrade> { grade },
+                    CellId = cell,
+                    Direction = (uint)direction
+                };
 
-                    group.GroupMonsters.Add(grade);
-                }
+                WorldServer.Instance.DBAccessor.Database.Insert(group);
 
                 var record = new MonsterStaticSpawnEntity
                 {

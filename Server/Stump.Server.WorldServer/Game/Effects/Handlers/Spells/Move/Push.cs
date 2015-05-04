@@ -113,8 +113,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (actor.IsCarrying())
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
-                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actor.IsVisibleFor))
-                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actor, startCell.CellId, endCell.CellId);
+                foreach (var character in Fight.GetCharactersAndSpectators().Where(actor.IsVisibleFor))
+                    ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actor, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
                 actor.OnActorMoved(Caster, takeDamage);
