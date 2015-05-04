@@ -229,6 +229,7 @@
     <Compile Include="Database\Monsters\MonsterRace.cs" />
     <Compile Include="Database\Monsters\MonsterSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterSpell.cs" />
+    <Compile Include="Database\Monsters\MonsterStaticSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterSuperRace.cs" />
     <Compile Include="Database\Monsters\MonsterTemplate.cs" />
     <Compile Include="Database\Mounts\MountCharacter.cs" />
@@ -561,6 +562,7 @@
     <Compile Include="Game\Maps\Paddocks\Paddock.cs" />
     <Compile Include="Game\Maps\Paddocks\PaddockManager.cs" />
     <Compile Include="Game\Maps\Spawns\GroupSize.cs" />
+    <Compile Include="Game\Maps\Spawns\StaticSpawningPool.cs" />
     <Compile Include="Game\Maps\WorldObjectItem.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
