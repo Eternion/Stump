@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
@@ -73,8 +74,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendMapRunningFightDetailsMessage(IPacketReceiver client, IFight fight)
         {
-            var redFighters = fight.ChallengersTeam.GetAllFighters().ToArray();
-            var blueFighters = fight.DefendersTeam.GetAllFighters().ToArray();
+            var redFighters = fight.ChallengersTeam.GetAllFighters(x => !(x is SummonedFighter)).ToArray();
+            var blueFighters = fight.DefendersTeam.GetAllFighters(x => !(x is SummonedFighter)).ToArray();
 
             var fighters = redFighters.Concat(blueFighters).ToArray();
 
