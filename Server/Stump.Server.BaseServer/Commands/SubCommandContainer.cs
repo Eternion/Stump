@@ -36,7 +36,7 @@ namespace Stump.Server.BaseServer.Commands
             }
         }
 
-            #region IEnumerable<SubCommand> Members
+        #region IEnumerable<SubCommand> Members
 
         public IEnumerator<SubCommand> GetEnumerator()
         {

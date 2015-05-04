@@ -900,6 +900,32 @@ namespace Stump.Server.WorldServer.Game.Maps
                 pool.StopAutoSpawn();
         }
 
+        public void AddMonsterStaticSpawn(MonsterStaticSpawn spawn)
+        {
+            var pool = m_spawningPools.FirstOrDefault(entry => entry is StaticSpawningPool) as StaticSpawningPool;
+
+            if (pool == null)
+                AddSpawningPool(pool = new StaticSpawningPool(this, StaticSpawningPool.StaticSpawnsInterval));
+
+            pool.AddSpawn(spawn);
+
+            if (!pool.AutoSpawnEnabled)
+                pool.StartAutoSpawn();
+        }
+
+        public void RemoveMonsterStaticSpawn(MonsterStaticSpawn spawn)
+        {
+            var pool = m_spawningPools.FirstOrDefault(entry => entry is StaticSpawningPool) as StaticSpawningPool;
+
+            if (pool == null)
+                return;
+
+            pool.RemoveSpawn(spawn);
+
+            if (pool.SpawnsCount == 0)
+                pool.StopAutoSpawn();
+        }
+
         public MonsterGroup GenerateRandomMonsterGroup()
         {
             return GenerateRandomMonsterGroup(SubArea.RollMonsterLengthLimit());
@@ -1038,8 +1064,14 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void MoveRandomlyActors()
         {
-            foreach(var actor in Actors.Where(x => x is IAutoMovedEntity && (x as IAutoMovedEntity).NextMoveDate <= DateTime.Now))
+            foreach(var actor in Actors.Where(x => x is IAutoMovedEntity && ((IAutoMovedEntity) x).NextMoveDate <= DateTime.Now))
             {
+                if (actor is MonsterGroup)
+                {
+                    if (((MonsterGroup) actor).SpawningPool is StaticSpawningPool)
+                        continue;
+                }
+
                 var circle = new Lozenge(1, 4);
                 var dest = circle.GetCells(actor.Cell, this).
                     Where(entry => entry.Walkable && !entry.NonWalkableDuringRP && entry.MapChangeData == 0).RandomElementOrDefault();
@@ -1354,14 +1386,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
             if (actor is IAutoMovedEntity)
             {
-                /*(actor as IAutoMovedEntity).NextMoveDate =
+                (actor as IAutoMovedEntity).NextMoveDate =
                     DateTime.Now + TimeSpan.FromSeconds(new AsyncRandom().Next(AutoMoveActorMinInverval,
                         AutoMoveActorMaxInverval + 1));
 
                 // if the timer wasn't active (=no actors)
                 if (m_autoMoveTimer == null) // call every (max+min)/2/10 to have an average 5% accuracy
                     m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval)/20*1000,
-                        MoveRandomlyActors);*/
+                        MoveRandomlyActors);
             }
 
             ForEach(x =>
