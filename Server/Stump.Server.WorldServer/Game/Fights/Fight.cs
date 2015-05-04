@@ -1349,6 +1349,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
 
+            if (Challenge != null)
+                ContextHandler.SendChallengeInfoMessage(spectator.Client, Challenge);
+
             // Spectator 'X' joined
             BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
 
@@ -2162,9 +2165,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             trigger.Triggered += OnMarkTriggered;
             m_triggers.Add(trigger);
 
-            foreach (var fighter in GetAllFighters<CharacterFighter>())
+            foreach (var character in GetCharactersAndSpectators())
             {
-                ContextHandler.SendGameActionFightMarkCellsMessage(fighter.Character.Client, trigger, trigger.DoesSeeTrigger(fighter));
+                ContextHandler.SendGameActionFightMarkCellsMessage(character.Client, trigger, character.Fighter != null && trigger.DoesSeeTrigger(character.Fighter));
             }
 
             if (!trigger.TriggerType.HasFlag(TriggerType.CREATION))

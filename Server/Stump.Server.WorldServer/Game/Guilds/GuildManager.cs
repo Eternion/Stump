@@ -174,7 +174,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DeleteGuildMember(GuildMember member)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(
                 () => Database.Delete(member.Record));
 
             lock (m_lock)

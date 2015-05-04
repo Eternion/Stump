@@ -39,6 +39,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             base.OnFightStarted();
 
+            if (!Map.AllowFightChallenges)
+                return;
+
             var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
             challenge.Initialize();
 

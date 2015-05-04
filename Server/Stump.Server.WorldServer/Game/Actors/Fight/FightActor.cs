@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected internal virtual void OnDamageReflected(FightActor target, int reflected)
         {
-            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, (int)reflected);
+            ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target, reflected);
 
             var handler = DamageReflected;
             if (handler != null)
@@ -1759,7 +1759,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Fight.ForEach(entry => ActionsHandler.SendGameActionFightInvisibilityMessage(entry.Client, source, this, GetVisibleStateFor(entry)), true);
         
             if (lastState == GameActionFightInvisibilityStateEnum.INVISIBLE)
-                Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, this));
+                Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, this), true);
         }
 
         #endregion
