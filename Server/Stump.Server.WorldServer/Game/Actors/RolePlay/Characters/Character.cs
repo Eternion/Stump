@@ -1892,7 +1892,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 BidHouseManager.Instance.RemoveBidHouseItem(item, true);
 
                 //Banque : + %1 Kamas (vente de %4 $item%3 hors jeu).
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, kamasBidHouse, 0, item.Template.Id, item.Stack);
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, item.Price, 0, item.Template.Id, item.Stack);
             }
 
             Bank.AddKamas(kamasBidHouse);
