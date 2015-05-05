@@ -45,6 +45,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnDead(FightActor victim, FightActor killer)
         {
+            if (Target == null)
+                return;
+
             if (victim == Target || victim.Level == Target.Level)
             {
                 Target = GetNextTarget();

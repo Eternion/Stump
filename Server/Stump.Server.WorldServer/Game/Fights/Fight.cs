@@ -2533,7 +2533,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightExternalInformations GetFightExternalInformations()
         {
-            return new FightExternalInformations(Id, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting, m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+            return new FightExternalInformations(Id, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting,
+                m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
         }
 
 

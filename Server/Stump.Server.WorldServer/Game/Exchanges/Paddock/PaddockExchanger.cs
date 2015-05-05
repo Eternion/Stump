@@ -264,6 +264,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
         public bool InventoryToStable(int itemId)
         {
             var item = Character.Inventory.TryGetItem(itemId);
+            if (item == null)
+                return false;
+
             var mountId = GetMountByItem(item);
             if (mountId == -1)
                 return false;

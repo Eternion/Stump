@@ -234,7 +234,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             if (fight.IsStarted)
             {
-                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character))
+                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character) && !client.Character.IsInFight())
                 {
                     fight.AddSpectator(client.Character.CreateSpectator(fight));
                 }
