@@ -1389,6 +1389,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnSpectatorRemoved(FightSpectator spectator)
         {
+            ContextHandler.SendGameFightLeaveMessage(spectator.Client, spectator);
             spectator.Character.RejoinMap();
         }
 

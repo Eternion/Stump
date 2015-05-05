@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         public bool IsCompatibleWith(ArenaQueueMember member)
         {
             return Math.Max(member.MinMatchableRank, MinMatchableRank) <= Math.Max(member.MaxMatchableRank, MaxMatchableRank)
-                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference;
+                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference && member.Character.Client.IP != Character.Client.IP;
         }
     }
 }
