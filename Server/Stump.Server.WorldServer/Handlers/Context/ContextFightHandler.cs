@@ -427,6 +427,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightLeaveMessage(fighter.Id));
         }
 
+        public static void SendGameFightLeaveMessage(IPacketReceiver client, FightSpectator spectator)
+        {
+            client.Send(new GameFightLeaveMessage(spectator.Character.Id));
+        }
+
         public static void SendGameFightPlacementPossiblePositionsMessage(IPacketReceiver client, IFight fight, sbyte team)
         {
             client.Send(new GameFightPlacementPossiblePositionsMessage(
