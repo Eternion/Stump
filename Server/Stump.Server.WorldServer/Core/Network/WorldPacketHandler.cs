@@ -56,7 +56,12 @@ namespace Stump.Server.WorldServer.Core.Network
 
                     var context = GetContextHandler(handler.Attribute, client, message);
                     if (context != null)
+                    {
+                        if (!context.IsRunning)
+                            context.Start();
+
                         context.AddMessage(new HandledMessage<WorldClient>(handler.Action, client, message));
+                    }
                 }
             }
             else

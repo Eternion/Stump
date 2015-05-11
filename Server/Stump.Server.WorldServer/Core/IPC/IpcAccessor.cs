@@ -67,7 +67,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         private readonly Dictionary<Type, IPCMessageHandler> m_additionalsHandlers =
             new Dictionary<Type, IPCMessageHandler>();
 
-        private readonly TimerEntry m_updateTimer;
+        private readonly TimedTimerEntry m_updateTimer;
         private IPCMessagePart m_messagePart;
         private bool m_requestingAccess;
         private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         public IPCAccessor()
         {
             TaskPool = new SelfRunningTaskPool(TaskPoolInterval, "IPCAccessor Task Pool");
-            m_updateTimer = new TimerEntry(0, UpdateInterval, Tick);
+            m_updateTimer = TaskPool.CallPeriodically(UpdateInterval, Tick);
         }
 
         public static IPCAccessor Instance
@@ -234,7 +234,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
         }
 
-        private void Tick(int dt)
+        private void Tick()
         {
             if (!Running)
             {
@@ -295,12 +295,9 @@ namespace Stump.Server.WorldServer.Core.IPC
             e.Dispose();
         }
 
-        protected override TimerEntry RegisterTimer(Action<int> action, int timeout)
+        protected override TimedTimerEntry RegisterTimer(Action action, int timeout)
         {
-            var timer = new TimerEntry {Action = action, InitialDelay = timeout};
-            TaskPool.AddTimer(timer);
-
-            return timer;
+            return TaskPool.CallDelayed(timeout, action);
         }
 
         private void ReceiveLoop()

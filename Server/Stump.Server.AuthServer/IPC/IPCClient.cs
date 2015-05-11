@@ -85,12 +85,9 @@ namespace Stump.Server.AuthServer.IPC
             get { return DefaultRequestTimeout; }
         }
 
-        protected override TimerEntry RegisterTimer(Action<int> action, int timeout)
+        protected override TimedTimerEntry RegisterTimer(Action action, int timeout)
         {
-            var timer = new TimerEntry() {Action = action, InitialDelay = timeout};
-            AuthServer.Instance.IOTaskPool.AddTimer(timer);
-
-            return timer;
+            return AuthServer.Instance.IOTaskPool.CallDelayed(timeout, action);
         }
 
         public override void Send(IPCMessage message)

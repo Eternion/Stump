@@ -27,7 +27,7 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
-        TimerEntry TimeoutTimer
+        TimedTimerEntry TimeoutTimer
         {
             get;
             set;
@@ -45,7 +45,7 @@ namespace Stump.Server.BaseServer.IPC
     public class IPCRequest<T> : IIPCRequest where T : IPCMessage
     {
         public IPCRequest(IPCMessage requestMessage, Guid guid, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback,
-            RequestCallbackDefaultDelegate defaultCallback, TimerEntry timeoutTimer)
+            RequestCallbackDefaultDelegate defaultCallback, TimedTimerEntry timeoutTimer)
         {
             RequestMessage = requestMessage;
             Guid = guid;
@@ -67,7 +67,7 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
-        public TimerEntry TimeoutTimer
+        public TimedTimerEntry TimeoutTimer
         {
             get;
             set;

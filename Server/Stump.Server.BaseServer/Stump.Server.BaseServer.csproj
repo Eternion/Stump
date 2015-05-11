@@ -294,6 +294,7 @@
     <Compile Include="Network\HandledMessage.cs" />
     <Compile Include="Network\IpAddressRange.cs" />
     <Compile Include="Network\MessagePart.cs" />
+    <Compile Include="Network\PoolableSocketArgs.cs" />
     <Compile Include="Network\VersionExtension.cs" />
     <Compile Include="Network\IPacketReceiver.cs" />
     <Compile Include="Plugins\IPlugin.cs" />

@@ -50,8 +50,8 @@ namespace Stump.Server.AuthServer.Managers
         private readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
         private List<IpBan> m_ipBans = new List<IpBan>();
         private List<ClientKeyBan> m_keyBans = new List<ClientKeyBan>(); 
-        private SimpleTimerEntry m_timer;
-        private SimpleTimerEntry m_bansTimer;
+        private TimedTimerEntry m_timer;
+        private TimedTimerEntry m_bansTimer;
 
         public AccountManager()
         {
@@ -69,8 +69,8 @@ namespace Stump.Server.AuthServer.Managers
 
         public override void TearDown()
         {
-            AuthServer.Instance.IOTaskPool.CancelSimpleTimer(m_timer);
-            AuthServer.Instance.IOTaskPool.CancelSimpleTimer(m_bansTimer);
+            AuthServer.Instance.IOTaskPool.RemoveTimer(m_timer);
+            AuthServer.Instance.IOTaskPool.RemoveTimer(m_bansTimer);
         }
 
         private void TimerTick()

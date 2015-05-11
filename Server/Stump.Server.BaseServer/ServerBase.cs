@@ -179,7 +179,7 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
-        public SimpleTimerEntry ScheduledShutdownTimer
+        public TimedTimerEntry ScheduledShutdownTimer
         {
             get;
             protected set;
@@ -480,7 +480,7 @@ namespace Stump.Server.BaseServer
             ScheduledShutdownDate = DateTime.Now + timeBeforeShuttingDown;
 
             if (ScheduledShutdownTimer != null)
-                IOTaskPool.CancelSimpleTimer(ScheduledShutdownTimer);
+                IOTaskPool.RemoveTimer(ScheduledShutdownTimer);
 
             ScheduledShutdownTimer = IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(1).TotalMilliseconds, CheckScheduledShutdown);
         }
@@ -491,7 +491,7 @@ namespace Stump.Server.BaseServer
             ScheduledShutdownDate = DateTime.MaxValue;
             ScheduledShutdownReason = null;
 
-            IOTaskPool.CancelSimpleTimer(ScheduledShutdownTimer);
+            IOTaskPool.RemoveTimer(ScheduledShutdownTimer);
             ScheduledShutdownTimer = null;
         }
 

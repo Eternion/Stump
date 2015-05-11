@@ -99,7 +99,7 @@ namespace Stump.Server.BaseServer.Network
                 return;
             }
                             
-            var args = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
+            var args = ObjectPoolMgr.ObtainObject<PoolableSocketArgs>();
             try
             {
                 args.Completed += OnSendCompleted;
@@ -130,7 +130,7 @@ namespace Stump.Server.BaseServer.Network
             if (stream != null)
                 stream.Dispose();
 
-            ObjectPoolMgr.ReleaseObject(args);
+            ObjectPoolMgr.ReleaseObject((PoolableSocketArgs)args);
         }
 
         #endregion
@@ -216,7 +216,7 @@ namespace Stump.Server.BaseServer.Network
             finally
             {
                 args.Completed -= ProcessReceive;
-                ClientManager.Instance.PushSocketArg(args);
+                ClientManager.Instance.PushSocketArg((PoolableSocketArgs)args);
             }
         }
 

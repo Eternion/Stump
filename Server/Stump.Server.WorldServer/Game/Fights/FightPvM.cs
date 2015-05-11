@@ -139,5 +139,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             return (int)timeleft;
         }
 
+        protected override void OnDisposed()
+        {
+            if (m_placementTimer != null)
+                m_placementTimer.Dispose();
+
+            base.OnDisposed();
+        }
     }
 }

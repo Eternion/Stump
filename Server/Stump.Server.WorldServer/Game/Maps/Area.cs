@@ -193,7 +193,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void AddMessage(IMessage msg)
         {
             // make sure, Map is running
-            Start();
+            // Start();
             m_messageQueue.Enqueue(msg);
         }
 
@@ -262,7 +262,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public void Stop(bool wait = false)
+        public void Stop()
+        {
+            Stop(false);
+        }
+
+        public void Stop(bool wait)
         {
             if (!m_running)
                 return;
@@ -283,24 +288,19 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void RegisterTimer(TimedTimerEntry timer)
         {
-            EnsureContext();
-            m_timers.Push(timer);
+            ExecuteInContext(() =>
+            {
+                if (!timer.Enabled)
+                    timer.Start();
+
+                m_timers.Push(timer);
+            });
         }
 
         public void UnregisterTimer(TimedTimerEntry timer)
         {
             EnsureContext();
             m_timers.Remove(timer);
-        }
-
-        public void RegisterTimerLater(TimedTimerEntry timer)
-        {
-            m_messageQueue.Enqueue(new Message(() => RegisterTimer(timer)));
-        }
-
-        public void UnregisterTimerLater(TimedTimerEntry timer)
-        {
-            m_messageQueue.Enqueue(new Message(() => UnregisterTimer(timer)));
         }
 
         public TimedTimerEntry CallDelayed(int delay, Action action)
@@ -313,7 +313,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             };
 
             timer.Start();
-            RegisterTimerLater(timer);
+            RegisterTimer(timer);
             return timer;
         }
 
@@ -326,7 +326,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             };
 
             timer.Start();
-            RegisterTimerLater(timer);
+            RegisterTimer(timer);
             return timer;
         }
 
