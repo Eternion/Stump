@@ -286,7 +286,7 @@ namespace Stump.Server.WorldServer
                         wait.Set();
                     });
 
-                wait.WaitOne();
+                wait.WaitOne(-1);
             }
 
             IPCAccessor.Instance.Stop();

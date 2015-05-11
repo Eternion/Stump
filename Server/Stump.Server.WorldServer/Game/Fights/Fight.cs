@@ -849,6 +849,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnDisposed()
         {
+            Clients.Dispose();
+
             if (ReadyChecker != null)
                 ReadyChecker.Cancel();
 

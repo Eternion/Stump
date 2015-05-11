@@ -139,10 +139,10 @@ namespace Stump.Server.BaseServer.Network
             if (IsInitialized)
                 throw new Exception("ClientManager already initialized");
 
-            if (!ObjectPoolMgr.ContainsType<SocketAsyncEventArgs>())
+            if (!ObjectPoolMgr.ContainsType<PoolableSocketArgs>())
             {
-                ObjectPoolMgr.RegisterType(() => new SocketAsyncEventArgs());
-                ObjectPoolMgr.SetMinimumSize<SocketAsyncEventArgs>(100);
+                ObjectPoolMgr.RegisterType(() => new PoolableSocketArgs());
+                ObjectPoolMgr.SetMinimumSize<PoolableSocketArgs>(MaxConcurrentConnections);
             }
 
             m_createClientDelegate = createClientHandler;
@@ -240,7 +240,6 @@ namespace Stump.Server.BaseServer.Network
         /// <param name="e"></param>
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
-            SocketAsyncEventArgs readAsyncEventArgs = null;
             try
             {
                 // do not accept connections while pausing
@@ -253,32 +252,34 @@ namespace Stump.Server.BaseServer.Network
 
                 try
                 {
-                    var IP = ((IPEndPoint)e.AcceptSocket.RemoteEndPoint).Address;
+                    if (e.AcceptSocket.RemoteEndPoint == null)
+                    {
+                        logger.Error("Invalid remote end-point (null)");
+
+                        m_semaphore.Release();
+                        return;
+                    }
+
+                    var IP = ((IPEndPoint) e.AcceptSocket.RemoteEndPoint).Address;
 
                     if (MaxIPConnexions.HasValue && CountClientWithSameIp(IP) > MaxIPConnexions.Value)
                     {
-                        logger.Error("Client {0} try to connect more then {1} times", e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
+                        logger.Error("Client {0} try to connect more then {1} times",
+                            e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
                         m_semaphore.Release();
-
-                        StartAccept();
-                        return;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    logger.Error("Invalid remote end-point. Exception : {0}", ex);
+                    logger.Error("Invalid remote end-point {1}. Exception : {0}", ex, e.AcceptSocket.RemoteEndPoint);
                     m_semaphore.Release();
-
-                    StartAccept();
                     return;
                 }
 
                 // use a async arg from the pool avoid to re-allocate memory on each connection
-                readAsyncEventArgs = PopSocketArg();
 
                 // create the client instance
                 var client = m_createClientDelegate(e.AcceptSocket);
-                readAsyncEventArgs.UserToken = client;
 
                 lock (m_clients)
                     m_clients.Add(client);
@@ -286,8 +287,6 @@ namespace Stump.Server.BaseServer.Network
                 NotifyClientConnected(client);
 
                 client.BeginReceive();
-
-                StartAccept();
             }
             catch (Exception ex)
             {
@@ -296,16 +295,14 @@ namespace Stump.Server.BaseServer.Network
 
                 m_semaphore.Release();
 
-                if (readAsyncEventArgs != null)
-                    PushSocketArg(readAsyncEventArgs);
-
                 if (e.AcceptSocket != null)
                 {
                     if (e.AcceptSocket.Connected)
                         e.AcceptSocket.Disconnect(false);
                 }
-
-
+            }
+            finally
+            {
                 StartAccept();
             }
         }
@@ -324,13 +321,13 @@ namespace Stump.Server.BaseServer.Network
             m_semaphore.Release();
         }
 
-        public SocketAsyncEventArgs PopSocketArg()
+        public PoolableSocketArgs PopSocketArg()
         {
-            var arg = ObjectPoolMgr.ObtainObject<SocketAsyncEventArgs>();
+            var arg = ObjectPoolMgr.ObtainObject<PoolableSocketArgs>();
             return arg;
         }
 
-        public void PushSocketArg(SocketAsyncEventArgs args)
+        public void PushSocketArg(PoolableSocketArgs args)
         {
             ObjectPoolMgr.ReleaseObject(args);
         }
@@ -366,7 +363,7 @@ namespace Stump.Server.BaseServer.Network
                 return
                     m_clients.Count(
                         t =>
-                        t.Socket != null && t.Socket.Connected &&
+                        t.Socket != null && t.Socket.Connected && t.Socket.RemoteEndPoint != null &&
                         ((IPEndPoint) t.Socket.RemoteEndPoint).Address.Equals(ipAddress));
             }
         }

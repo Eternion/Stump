@@ -27,7 +27,7 @@ namespace Stump.Server.BaseServer.IPC
 
         public abstract void Send(IPCMessage message);
 
-        protected abstract TimerEntry RegisterTimer(Action<int> action, int timeout);
+        protected abstract TimedTimerEntry RegisterTimer(Action action, int timeout);
 
         protected abstract void ProcessRequest(IPCMessage request);
         protected abstract void ProcessAnswer(IIPCRequest request, IPCMessage answer);
@@ -39,7 +39,10 @@ namespace Stump.Server.BaseServer.IPC
 
             var request = TryGetRequest(message.RequestGuid);
             if (request != null)
+            {
                 ProcessAnswer(request, message);
+                m_requests.Remove(message.RequestGuid);
+            }
             else
                 ProcessRequest(message);
         }

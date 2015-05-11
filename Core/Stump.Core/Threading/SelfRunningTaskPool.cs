@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -19,9 +20,12 @@ namespace Stump.Core.Threading
 
         private readonly LockFreeQueue<IMessage> m_messageQueue;
         private readonly Stopwatch m_queueTimer;
-        private readonly List<SimpleTimerEntry> m_simpleTimers;
         private readonly ManualResetEvent m_stoppedAsync = new ManualResetEvent(false);
-        private readonly List<TimerEntry> m_timers;
+        private readonly PriorityQueueB<TimedTimerEntry> m_timers = new PriorityQueueB<TimedTimerEntry>(new TimedTimerComparer());
+        private readonly List<TimedTimerEntry> m_pausedTimers = new List<TimedTimerEntry>();
+        private readonly TimedTimerComparer m_timerComparer = new TimedTimerComparer();
+
+        public readonly TimeSpan TimerTimeout = TimeSpan.FromMinutes(5);
 
         private int m_currentThreadId;
         private int m_lastUpdate;
@@ -31,8 +35,6 @@ namespace Stump.Core.Threading
         {
             m_messageQueue = new LockFreeQueue<IMessage>();
             m_queueTimer = Stopwatch.StartNew();
-            m_simpleTimers = new List<SimpleTimerEntry>();
-            m_timers = new List<TimerEntry>();
             UpdateInterval = interval;
             Name = name;
 
@@ -60,16 +62,6 @@ namespace Stump.Core.Threading
         {
             get;
             protected set;
-        }
-
-        public ReadOnlyCollection<TimerEntry> Timers
-        {
-            get { return m_timers.AsReadOnly(); }
-        }
-
-        public ReadOnlyCollection<SimpleTimerEntry> SimpleTimers
-        {
-            get { return m_simpleTimers.AsReadOnly(); }
         }
 
         public bool IsInContext
@@ -114,7 +106,12 @@ namespace Stump.Core.Threading
             m_updateTask = Task.Factory.StartNewDelayed(UpdateInterval, ProcessCallback, this);
         }
 
-        public void Stop(bool async = false)
+        public void Stop()
+        {
+            Stop(false);
+        }
+
+        public void Stop(bool async)
         {
             IsRunning = false;
 
@@ -130,38 +127,37 @@ namespace Stump.Core.Threading
             }
         }
 
-        public void AddTimer(TimerEntry timer)
+        public void AddTimer(TimedTimerEntry timer)
         {
-            AddMessage(() => m_timers.Add(timer));
+            ExecuteInContext(() =>
+            {
+                m_timers.Push(timer);
+                if (!timer.Enabled)
+                    timer.Start();
+            });
         }
 
-        public void RemoveTimer(TimerEntry timer)
+        public void RemoveTimer(TimedTimerEntry timer)
         {
-            AddMessage(() => m_timers.Remove(timer));
+            ExecuteInContext(() =>
+            {
+                m_timers.Remove(timer);
+                timer.Dispose();
+            });
         }
 
-        public void CancelSimpleTimer(SimpleTimerEntry timer)
+        public TimedTimerEntry CallPeriodically(int delayMillis, Action callback)
         {
-            m_simpleTimers.Remove(timer);
-        }
-
-        public SimpleTimerEntry CallPeriodically(int delayMillis, Action callback)
-        {
-            var timer = new SimpleTimerEntry(delayMillis, callback, LastUpdateTime, false);
-            m_simpleTimers.Add(timer);
+            var timer = new TimedTimerEntry(delayMillis, callback);
+            AddTimer(timer);
             return timer;
         }
 
-        public SimpleTimerEntry CallDelayed(int delayMillis, Action callback)
+        public TimedTimerEntry CallDelayed(int delayMillis, Action callback)
         {
-            var timer = new SimpleTimerEntry(delayMillis, callback, LastUpdateTime, true);
-            m_simpleTimers.Add(timer);
+            var timer = new TimedTimerEntry(delayMillis, -1, callback);
+            AddTimer(timer);
             return timer;
-        }
-
-        internal int GetDelayUntilNextExecution(SimpleTimerEntry timer)
-        {
-            return timer.Delay - (int) (LastUpdateTime - timer.LastCallTime);
         }
 
         protected void ProcessCallback(object state)
@@ -174,53 +170,12 @@ namespace Stump.Core.Threading
             if (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) != 0)
                 return;
             long timerStart = 0;
-            try
-            {
                 // get the time at the start of our task processing
                 timerStart = m_queueTimer.ElapsedMilliseconds;
                 var updateDt = (int) (timerStart - m_lastUpdate);
                 m_lastUpdate = (int) timerStart;
-
-                // process timer entries
-                foreach (var timer in m_timers)
-                {
-                    try
-                    {
-                        timer.Update(updateDt);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error("Failed to update {0} : {1}", timer, ex);
-                    }
-                    if (!IsRunning)
-                    {
-                        return;
-                    }
-                }
-
-                // process timers
-                var count = m_simpleTimers.Count;
-                for (var i = count - 1; i >= 0; i--)
-                {
-                    var timer = m_simpleTimers[i];
-                    if (GetDelayUntilNextExecution(timer) <= 0)
-                    {
-                        try
-                        {
-                            timer.Execute(this);
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Error("Failed to execute timer {0} : {1}", timer, ex);
-                        }
-                    }
-
-                    if (!IsRunning)
-                    {
-                        return;
-                    }
-                }
-
+            try
+            {
                 // process messages
                 IMessage msg;
                 while (m_messageQueue.TryDequeue(out msg))
@@ -239,6 +194,39 @@ namespace Stump.Core.Threading
                         return;
                     }
                 }
+                
+                foreach (var timer in m_pausedTimers.Where(timer => timer.Enabled))
+                {
+                    m_timers.Push(timer);
+                }
+
+                TimedTimerEntry peek;
+                while (( peek = m_timers.Peek() ) != null && peek.NextTick <= DateTime.Now)
+                {
+                    var timer = m_timers.Pop();
+
+                    if (!timer.Enabled)
+                    {
+                        if (!timer.IsDisposed)
+                            m_pausedTimers.Add(timer);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            timer.Trigger();
+
+                            if (timer.Enabled)
+                                m_timers.Push(timer);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error("Exception raised when processing TimerEntry {2} in {0} : {1}.", this, ex, timer);
+                        }
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {

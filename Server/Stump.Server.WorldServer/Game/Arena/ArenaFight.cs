@@ -151,5 +151,13 @@ namespace Stump.Server.WorldServer.Game.Arena
             var opposedTeamRank = (int)character.OpposedTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             return ArenaRankFormulas.AdjustRank(character.Character.ArenaRank, opposedTeamRank, false);
         }
+
+        protected override void OnDisposed()
+        {
+            if (m_placementTimer != null)
+                m_placementTimer.Dispose();
+
+            base.OnDisposed();
+        }
     }
 }
