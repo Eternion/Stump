@@ -382,8 +382,6 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
         {
-            request.TimeoutTimer.Stop();
-            TaskPool.RemoveTimer(request.TimeoutTimer);
             request.ProcessMessage(answer);
         }
 
@@ -396,6 +394,10 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             if (m_additionalsHandlers.ContainsKey(request.GetType()))
                 m_additionalsHandlers[request.GetType()](request);
+            else
+            {
+                logger.Warn("IPC Message {0} not handled", request);
+            }
         }
 
         public void AddMessageHandler(Type messageType, IPCMessageHandler handler)
