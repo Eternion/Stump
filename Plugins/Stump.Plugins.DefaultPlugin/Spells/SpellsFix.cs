@@ -616,6 +616,17 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Elementary
+
+            // Boomerang Perfide (364)
+            // ENEMY_ALL -> ALL
+            FixEffectOnAllLevels(364, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(364, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(364, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(364, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+
+            #endregion
+
             #region Monsters
 
             #region Boss
