@@ -201,6 +201,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     {
                         foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
                         {
+                            if (impactComparer.GetScore(impact) <= 0)
+                                continue;
+
                             Cell castSpell = impact.CastCell;
                             if (impact.CastCell != Fighter.Cell && !CanReach(impact.Target, possibleCast.Spell, out castSpell))
                                 continue;
@@ -409,8 +412,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
             if (negativ) // or IsFriend
             {
-                minDamage *= -1.5; // High penalty for firing on friends
-                maxDamage *= -1.5; // High penalty for firing on friends
+                minDamage *= -0.3; // High penalty for firing on friends
+                maxDamage *= -0.3; // High penalty for firing on friends
             }
 
             switch (category)
@@ -571,6 +574,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 return 0;
 
             return m_comparers[Category](cast1, cast2);
+        }
+
+        public double GetScore(SpellTarget cast)
+        {
+            return cast.Boost + cast.Damage + cast.Heal + cast.Curse;
         }
 
         public static int CompareBoost(SpellTarget impact1, SpellTarget impact2)
