@@ -406,7 +406,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\SkipTurn.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\RestoreHpPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\DamageSharing.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Move\Dodge.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Dodge.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rewind.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SwitchPosition.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Steals\APStealNonFix.cs" />
