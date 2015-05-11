@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         public override bool Apply()
         {
-            var actors = GetAffectedActors(x => x is CharacterFighter && x.IsFriendlyWith(Caster)).ToArray();
+            var actors = GetAffectedActors(x => x is CharacterFighter && x.IsFriendlyWith(Caster) && x != Caster).ToArray();
             foreach (var actor in actors)
             {
                 var buffId = actor.PopNextBuffId();
