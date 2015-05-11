@@ -40,7 +40,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 Source = buff.Caster,
                 Buff = buff,
-                IgnoreDamageReduction = true,
                 School = GetEffectSchool(buff.Dice.EffectId),
                 MarkTrigger = MarkTrigger,
                 IsCritical = Critical

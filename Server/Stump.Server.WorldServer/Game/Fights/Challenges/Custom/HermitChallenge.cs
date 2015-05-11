@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             if (!(fighter is CharacterFighter))
                 return;
 
-            if (!fighter.Position.Point.GetAdjacentCells(x => m_team.GetOneFighter(Fight.Map.GetCell(x)) != null).Any())
+            if (!fighter.Position.Point.GetAdjacentCells(x => m_team.GetOneFighter(y => y.IsAlive() && y.Cell == Fight.Map.GetCell(x)) != null).Any())
                 return;
 
             UpdateStatus(ChallengeStatusEnum.FAILED);
