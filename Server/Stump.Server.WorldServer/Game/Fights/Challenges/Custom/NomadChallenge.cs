@@ -42,6 +42,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnTurnStopped(IFight fight, FightActor fighter)
         {
+            if (fighter.IsDead())
+                return;
+
             if (!(fighter is CharacterFighter))
                 return;
 
