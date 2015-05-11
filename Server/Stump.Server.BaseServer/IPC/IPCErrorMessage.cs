@@ -49,5 +49,10 @@ namespace Stump.Server.BaseServer.IPC
             get;
             set;
         }
+
+        public override string ToString()
+        {
+            return Message + " " + StackTrace;
+        }
     }
 }

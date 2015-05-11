@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using NLog;
 using Stump.Core.Timers;
 
 namespace Stump.Server.BaseServer.IPC
@@ -44,6 +45,8 @@ namespace Stump.Server.BaseServer.IPC
 
     public class IPCRequest<T> : IIPCRequest where T : IPCMessage
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public IPCRequest(IPCMessage requestMessage, Guid guid, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback,
             RequestCallbackDefaultDelegate defaultCallback, TimedTimerEntry timeoutTimer)
         {
@@ -93,12 +96,15 @@ namespace Stump.Server.BaseServer.IPC
 
         public bool ProcessMessage(IPCMessage message)
         {
-            TimeoutTimer.Stop();
+            TimeoutTimer.Dispose();
 
             if (message is T)
                 Callback(message as T);
             else if (message is IPCErrorMessage)
+            {
+                logger.Warn("IPC Error on message recv {0}", message);
                 ErrorCallback(message as IPCErrorMessage);
+            }
             else
                 DefaultCallback(message);
 
