@@ -659,7 +659,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Rattrapage (2261)
             // ENEMY_ALL -> ALLY_ALL
-            FixEffectOnAllLevels(2261, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(2261, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
             FixEffectOnAllLevels(2261, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
             FixEffectOnAllLevels(2261, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
 
