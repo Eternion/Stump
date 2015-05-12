@@ -214,8 +214,8 @@ namespace Stump.Server.WorldServer.Core.IPC
         {
             m_requestingAccess = false;
 
-            if (error is IPCErrorTimeoutMessage)
-                return;
+            /*if (error is IPCErrorTimeoutMessage)
+                return;*/
 
             AccessGranted = false;
             logger.Error("Access to auth. server denied ! Reason : {0}", error.Message);
@@ -268,7 +268,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 SendRequest<CommonOKMessage>(new HandshakeMessage(WorldServer.ServerInformation), OnAccessGranted,
                     OnAccessDenied);
             }
-            else
+            else if (AccessGranted)
                 // update server
                 Send(new ServerUpdateMessage(WorldServer.Instance.ClientManager.Count));
         }
@@ -394,7 +394,8 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             if (m_additionalsHandlers.ContainsKey(request.GetType()))
                 m_additionalsHandlers[request.GetType()](request);
-            else
+            else if (!(request is IPCErrorMessage) && !(request is DisconnectClientMessage) &&
+                !(request is CommonOKMessage))
             {
                 logger.Warn("IPC Message {0} not handled", request);
             }

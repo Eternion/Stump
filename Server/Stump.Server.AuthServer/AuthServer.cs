@@ -149,6 +149,8 @@ namespace Stump.Server.AuthServer
             m_host = HostAutoDefined ? IPAddress.Loopback.ToString() : CustomHost;
             ClientManager.Start(m_host, Port);
 
+            IOTaskPool.Start();
+
             StartTime = DateTime.Now;
         }
 

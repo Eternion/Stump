@@ -92,7 +92,7 @@ namespace Stump.Server.BaseServer.IPC
         public void SendRequest<T>(IPCMessage message, RequestCallbackDelegate<T> callback)
             where T : IPCMessage
         {
-            SendRequest(message, callback, DefaultRequestErrorCallback, RequestTimeout);
+            SendRequest(message, callback, DefaultRequestErrorCallback, RequestTimeout * 1000);
         }
 
         public void SendRequest(IPCMessage message, RequestCallbackDelegate<CommonOKMessage> callback, RequestCallbackErrorDelegate errorCallback,
@@ -114,7 +114,7 @@ namespace Stump.Server.BaseServer.IPC
 
         public void SendRequest(IPCMessage message, RequestCallbackDelegate<CommonOKMessage> callback)
         {
-            SendRequest<CommonOKMessage>(message, callback, DefaultRequestErrorCallback, RequestTimeout);
+            SendRequest<CommonOKMessage>(message, callback, DefaultRequestErrorCallback, RequestTimeout * 1000);
         }
 
         private IIPCRequest TryGetRequest(Guid guid)

@@ -160,6 +160,8 @@ namespace Stump.Server.WorldServer
             logger.Info("Start listening on port : " + Port + "...");
             ClientManager.Start(Host, Port);
 
+            IOTaskPool.Start();
+
             StartTime = DateTime.Now;
         }
 
