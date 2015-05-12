@@ -38,7 +38,7 @@ namespace Stump.Core.Timers
 
         public TimedTimerEntry(int delay, int interval, Action action)
         {
-            m_delay = m_delay;
+            m_delay = delay;
             Interval = interval;
             Action = action;
         }

@@ -37,8 +37,6 @@ namespace Stump.Core.Threading
             m_queueTimer = Stopwatch.StartNew();
             UpdateInterval = interval;
             Name = name;
-
-            Start();
         }
 
         public string Name
@@ -131,9 +129,10 @@ namespace Stump.Core.Threading
         {
             ExecuteInContext(() =>
             {
-                m_timers.Push(timer);
                 if (!timer.Enabled)
                     timer.Start();
+
+                m_timers.Push(timer);
             });
         }
 
