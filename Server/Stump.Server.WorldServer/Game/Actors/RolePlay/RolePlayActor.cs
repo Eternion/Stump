@@ -95,7 +95,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
             LastMap = Map;
 
             Position.Map.Leave(this);
-            
+
+            if (!NextMap.Area.IsRunning)
+                NextMap.Area.Start();
+
             NextMap.Area.ExecuteInContext(() =>
                 {
                     Position = destination.Clone();

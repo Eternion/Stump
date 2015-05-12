@@ -18,7 +18,7 @@ namespace Stump.Server.BaseServer.Exceptions
         public void RegisterException(Exception ex)
         {
             if (ServerBase.IsExceptionLoggerEnabled)
-                ServerBase.ExceptionLogger.CaptureException(ex, new SentryMessage(ex.StackTrace));
+                ServerBase.InstanceAsBase.ExceptionLogger.CaptureException(ex, new SentryMessage(ex.StackTrace));
 
             //m_exceptions.Add(ex);
         }
