@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             if (cast.MoveBefore != null)
             {
                 Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                var success = true; //Fighter.StartMove(cast.MoveBefore);
+                var success = Fighter.StartMove(cast.MoveBefore);
                 var lastPos = Fighter.Cell.Id;
 
                 var tries = 0;

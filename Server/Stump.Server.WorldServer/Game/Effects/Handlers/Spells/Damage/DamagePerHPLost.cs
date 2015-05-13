@@ -30,8 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     IgnoreDamageBoost = true,
                     School = GetEffectSchool(Dice.EffectId),
                     MarkTrigger = MarkTrigger,
-                    IsCritical = Critical,
-
+                    IsCritical = Critical
                 };
 
                 var damagesAmount = Math.Round(((Caster.Stats.Health.DamageTaken * Dice.DiceNum) / 100d));
