@@ -97,10 +97,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public void ExecuteAllSpellCast()
         {
-            foreach (var cast in SpellSelector.EnumerateSpellsCast())
-            {
-                ExecuteSpellCast(cast);
-            }
+            var first = SpellSelector.EnumerateSpellsCast().FirstOrDefault();
+
+            if (first != null)
+                ExecuteSpellCast(first);
         }
 
         public void ExecuteSpellCast(SpellCast cast)
@@ -163,6 +163,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 }
 
                 i++;
+            }
+
+            if (Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))
+            {
+                SpellSelector.AnalysePossibilities();
+                ExecuteAllSpellCast();
             }
         }
 
