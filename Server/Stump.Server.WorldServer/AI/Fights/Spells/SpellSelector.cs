@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             foreach (var spell in Fighter.Spells.Values)
             {
                 var category = SpellIdentifier.GetSpellCategories(spell);
-                if (category.HasFlag(SpellCategory.Damages))
+                if ((category & SpellCategory.Damages) != 0)
                 {
                     if (spell.CurrentSpellLevel.MinRange > 0 && min < spell.CurrentSpellLevel.MinRange)
                         min = (int)spell.CurrentSpellLevel.MinRange;
