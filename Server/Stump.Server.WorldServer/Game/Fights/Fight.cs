@@ -1797,6 +1797,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             actor.TriggerBuffs(BuffTriggerType.TACKLED);
 
+            foreach (var tackler in tacklers)
+                tackler.TriggerBuffs(BuffTriggerType.TACKLE);
+
             var handler = Tackled;
             if (handler != null)
                 handler(actor, apTackled, mpTackled);

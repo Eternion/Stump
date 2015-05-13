@@ -1684,7 +1684,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsPoisonSpellCast(Spell spell)
         {
-            return spell.Template.Id == (int) SpellIdEnum.POISON_INSIDIEUX ||
+            return spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX ||
                    spell.Template.Id == (int)SpellIdEnum.POISON_INSIDIEUX_DU_DOPEUL ||
                    spell.Template.Id == (int)SpellIdEnum.POISON_PARALYSANT ||
                    spell.Template.Id == (int)SpellIdEnum.POISON_PARALYSANT_DU_DOPEUL ||
@@ -1699,7 +1699,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    spell.Template.Id == (int)SpellIdEnum.VENT_EMPOISONNÉ ||
                    spell.Template.Id == (int)SpellIdEnum.VENT_EMPOISONNÉ_DU_DOPEUL ||
                    spell.Template.Id == (int)SpellIdEnum.TREMBLEMENT ||
-                   spell.Template.Id == (int)SpellIdEnum.RONCE_INSOLENTE;
+                   spell.Template.Id == (int)SpellIdEnum.RONCE_INSOLENTE ||
+                   spell.Template.Id == (int)SpellIdEnum.VERTIGE ||
+                   spell.Template.Id == (int)SpellIdEnum.SILENCE_DU_SRAM;
         }
 
         public bool IsInvisibleSpellCast(Spell spell)

@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                         triggerType = BuffTriggerType.DAMAGES_PUSHBACK;
                         break;
                     case SpellIdEnum.RATTRAPAGE:
-                        triggerType = BuffTriggerType.TACKLED;
+                        triggerType = BuffTriggerType.TACKLE;
                         break;
                     case SpellIdEnum.ÉVOLUTION:
                         triggerType = BuffTriggerType.BUFF_ADDED;
