@@ -23,6 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         LOST_MP = 0x00008000,
         LOST_AP = 0x00010000,
         TACKLED = 0x00020000,
+        TACKLE = 0x00040000,
         UNKNOWN = 0x7FFFFFFF,
     }
 }

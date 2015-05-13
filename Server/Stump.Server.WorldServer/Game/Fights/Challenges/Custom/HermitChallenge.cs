@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 
         private void OnBeforeTurnStopped(IFight fight, FightActor fighter)
         {
-            if (!(fighter is CharacterFighter))
+            if (!(fighter is CharacterFighter) || fighter.IsDead())
                 return;
 
             if (!fighter.Position.Point.GetAdjacentCells(x => m_team.GetOneFighter(y => y.IsAlive() && y.Cell == Fight.Map.GetCell(x)) != null).Any())
