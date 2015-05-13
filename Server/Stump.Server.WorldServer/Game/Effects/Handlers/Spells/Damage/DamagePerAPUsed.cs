@@ -42,7 +42,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 Buff = buff,
                 School = GetEffectSchool(buff.Dice.EffectId),
                 MarkTrigger = MarkTrigger,
-                IsCritical = Critical
+                IsCritical = Critical,
+                Spell = buff.Spell
             };
 
             damages.GenerateDamages();
