@@ -63,8 +63,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             var diff = spellRange - dist;
 
             if (diff >= 0 && dist >= minSpellRange &&
-                target.Direction == DirectionFlagEnum.ALL_DIRECTIONS || target.Direction == DirectionFlagEnum.NONE ||
-                (Fighter.Position.Point.OrientationTo(targetPoint).GetFlag() & target.Direction) != 0)
+                (target.Direction == DirectionFlagEnum.ALL_DIRECTIONS || target.Direction == DirectionFlagEnum.NONE ||
+                (Fighter.Position.Point.OrientationTo(targetPoint).GetFlag() & target.Direction) != 0))
             {
                 castCell = Fighter.Cell;
                 return true;

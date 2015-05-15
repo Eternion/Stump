@@ -2508,12 +2508,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Map == null)
                 return;
 
+            if (!NextMap.Area.IsRunning)
+                NextMap.Area.Start();
+
             NextMap.Area.ExecuteInContext(() =>
             {
-                LastMap = Map;
-                Map = NextMap;
-                Map.Enter(this);
-                NextMap = null;
+                if (IsLoggedIn)
+                {
+                    LastMap = Map;
+                    Map = NextMap;
+                    Map.Enter(this);
+                    NextMap = null;
+                }
             });
         }
 
