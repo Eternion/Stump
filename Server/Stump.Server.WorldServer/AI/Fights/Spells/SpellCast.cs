@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             private set;
         }
 
-        public Cell TargetCell
+        public TargetCell TargetCell
         {
             get { return Target.Target; }
         }

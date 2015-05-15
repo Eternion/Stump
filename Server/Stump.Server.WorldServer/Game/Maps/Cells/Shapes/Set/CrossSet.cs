@@ -40,10 +40,15 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         {
             for (int i = MinRange; i <= MaxRange; i++)
             {
-                yield return Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_EAST, i);
-                yield return Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_EAST, i);
-                yield return Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, i);
-                yield return Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_WEST, i);
+                MapPoint point;
+                if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_EAST, i)) != null)
+                    yield return point;
+                if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_EAST, i)) != null)
+                    yield return point;                
+                if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, i)) != null)
+                    yield return point;
+                if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_WEST, i)) != null)
+                    yield return point;
             }
         }
 

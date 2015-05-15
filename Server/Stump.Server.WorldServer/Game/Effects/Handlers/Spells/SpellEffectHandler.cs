@@ -23,6 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         private Cell[] m_affectedCells;
         private MapPoint m_castPoint;
         private Zone m_effectZone;
+        private Cell m_customCastCell;
 
         protected SpellEffectHandler(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect)
@@ -88,7 +89,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public Cell CastCell
         {
-            get { return MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell; }
+            get { return m_customCastCell ?? (MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell); }
+            set { m_customCastCell = value; }
         }
 
         public MapPoint CastPoint

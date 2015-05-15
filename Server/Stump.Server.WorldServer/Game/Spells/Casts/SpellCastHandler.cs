@@ -21,6 +21,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         }
 
         private MapPoint m_castPoint;
+        private Cell m_customCastCell;
 
         public FightActor Caster
         {
@@ -76,7 +77,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
         public Cell CastCell
         {
-            get { return MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell; }
+            get { return m_customCastCell ?? (MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell); }
+            set { m_customCastCell = value; }
+
         }
 
         public MapPoint CastPoint

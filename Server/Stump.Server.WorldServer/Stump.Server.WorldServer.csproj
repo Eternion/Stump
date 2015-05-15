@@ -148,6 +148,7 @@
     <Compile Include="AI\Fights\Behaviors\EfficienceCalculator.cs" />
     <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Spells\SpellTargetStrategy.cs" />
+    <Compile Include="AI\Fights\Spells\TargetCell.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
     <Compile Include="Commands\Commands\AICommands.cs" />
@@ -550,6 +551,7 @@
     <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
+    <Compile Include="Game\Maps\Cells\DirectionFlagEnum.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Complement.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\CrossSet.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Difference.cs" />
