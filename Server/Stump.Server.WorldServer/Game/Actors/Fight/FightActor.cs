@@ -28,6 +28,7 @@ using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
@@ -630,9 +631,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return SpellCastResult.STATE_REQUIRED;
             }
 
-            var castZone = GetCastZone(spellLevel);
-
-            if (!castZone.Contains(cell))
+            if (!IsInCastZone(spellLevel, Position.Point, cell))
             {
                 return SpellCastResult.NOT_IN_ZONE;
             }
@@ -650,6 +649,36 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return SpellCastResult.OK;
         }
 
+        public bool IsInCastZone(SpellLevelTemplate spellLevel, MapPoint castCell, MapPoint cell)
+        {
+            var range = (int)spellLevel.Range;
+            Set set;
+
+            if (spellLevel.RangeCanBeBoosted)
+            {
+                range += Stats[PlayerFields.Range].Total;
+
+                if (range < spellLevel.MinRange)
+                    range = (int)spellLevel.MinRange;
+
+                range = Math.Min(range, 63);
+            }
+
+            if (spellLevel.CastInDiagonal || spellLevel.CastInLine)
+            {
+                set = new CrossSet(castCell, range, (int)spellLevel.MinRange)
+                {
+                    AllDirections = spellLevel.CastInDiagonal && spellLevel.CastInLine,
+                    Diagonal = spellLevel.CastInDiagonal
+                };
+            }
+            else
+            {
+                set = new LozengeSet(castCell, range, (int)spellLevel.MinRange);
+            }
+
+            return set.BelongToSet(cell);
+        }
 
         public virtual Cell[] GetCastZone(SpellLevelTemplate spellLevel)
         {
