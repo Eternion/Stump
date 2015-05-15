@@ -295,7 +295,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             }
         }
 
-        public MapPoint GetCellInDirection(DirectionsEnum direction, short step)
+        public MapPoint GetCellInDirection(DirectionsEnum direction, int step)
         {
             MapPoint mapPoint = null;
             switch (direction)

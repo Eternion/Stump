@@ -96,7 +96,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 var category = SpellIdentifier.GetSpellCategories(spell);
                 if ((category & SpellCategory.Damages) != 0)
                 {
-                    if (spell.CurrentSpellLevel.MinRange > 0 && min < spell.CurrentSpellLevel.MinRange)
+                    if (min < spell.CurrentSpellLevel.MinRange)
                         min = (int)spell.CurrentSpellLevel.MinRange;
 
                     if (spell.CurrentSpellLevel.Range > max)
