@@ -5,13 +5,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
 {
     public class CrossSet : Set
     {
-
-        public CrossSet(MapPoint center, int maxRange)
-            : this(center, 0, maxRange)
-        {
-        }
-
-        public CrossSet(MapPoint center, int minRange, int maxRange)
+        public CrossSet(MapPoint center, int maxRange, int minRange=0)
         {
             Center = center;
             MinRange = minRange;
