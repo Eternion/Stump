@@ -441,6 +441,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return GetPoint(cell.Id);
         }
 
+        public static implicit operator MapPoint(Cell cell)
+        {
+            return new MapPoint(cell);
+        }
+
         public override string ToString()
         {
             return "[MapPoint(x:" + m_x + ", y:" + m_y + ", id:" + m_cellId + ")]";

@@ -149,15 +149,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 {
                     if (!Fighter.CastSpell(cast.Spell, cast.TargetCell.Cell))
                         break;
+                    
+                    i++;
 
                     if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell))) // target has moved, we re-analyse the situation
                     {
                         SpellSelector.AnalysePossibilities();
                         break;
                     }
-
-
-                    i++;
                 }
 
                 if (i > 0 && Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))

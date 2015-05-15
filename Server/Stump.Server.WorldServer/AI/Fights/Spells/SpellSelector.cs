@@ -64,7 +64,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
             if (diff >= 0 && dist >= minSpellRange &&
                 (target.Direction == DirectionFlagEnum.ALL_DIRECTIONS || target.Direction == DirectionFlagEnum.NONE ||
-                (Fighter.Position.Point.OrientationTo(targetPoint).GetFlag() & target.Direction) != 0))
+                (Fighter.Position.Point.OrientationTo(targetPoint).GetFlag() & target.Direction) != 0) &&
+                Fighter.IsInCastZone(spell.CurrentSpellLevel, Fighter.Position.Point, target.Cell))
             {
                 castCell = Fighter.Cell;
                 return true;
@@ -216,7 +217,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             {
                 // find best spell
                 var impactComparer = new SpellImpactComparer(this, priority.Key);
-                foreach (var possibleCast in Possibilities.OrderBy(x => x, new SpellCastComparer(this, priority.Key)))
+                foreach (var possibleCast in Possibilities.OrderByDescending(x => x, new SpellCastComparer(this, priority.Key)))
                 {
                     var category = SpellIdentifier.GetSpellCategories(possibleCast.Spell);
 
@@ -280,7 +281,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         return casts[1];
 
                     var pathfinder = new Pathfinder(m_environment.CellInformationProvider);
-                    var path = pathfinder.FindPath(casts[1].MoveBefore.EndCell.Id, casts[0].MoveBefore.EndCell.Id, false);
+                    var path = pathfinder.FindPath(casts[1].MoveBefore.EndCell.Id, casts[0].MoveBefore != null ? casts[0].MoveBefore.EndCell.Id : Fighter.Cell.Id, false);
 
                     if (path.MPCost + casts[1].MPCost <= Fighter.MP)
                         return casts[1];
