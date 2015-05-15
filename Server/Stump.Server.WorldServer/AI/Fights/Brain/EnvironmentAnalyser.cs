@@ -58,9 +58,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         {
             var moveZone = new LozengeSet(Fighter.Position.Point, Fighter.MP);
             Set castRange;
-            if (spell.CurrentSpellLevel.CastInLine)
-                castRange = new CrossSet(target.Point, Fighter.GetSpellRange(spell.CurrentSpellLevel), 
-                    spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1);
+            if (spell.CurrentSpellLevel.CastInLine || spell.CurrentSpellLevel.CastInDiagonal)
+                castRange = new CrossSet(target.Point, Fighter.GetSpellRange(spell.CurrentSpellLevel),
+                    spell.CurrentSpellLevel.MinRange != 0 ? (int) spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1)
+                {
+                    Diagonal = spell.CurrentSpellLevel.CastInDiagonal,
+                    AllDirections = spell.CurrentSpellLevel.CastInLine && spell.CurrentSpellLevel.CastInDiagonal
+                };
             else
              castRange = new LozengeSet(target.Point, Fighter.GetSpellRange(spell.CurrentSpellLevel), 
                 spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1);
