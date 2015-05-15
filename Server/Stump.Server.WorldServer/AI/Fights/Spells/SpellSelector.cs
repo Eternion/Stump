@@ -202,7 +202,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     }
                 }
 
-                if (cast.Impacts.Count > 0)
+                if (cast.Impacts.Count > 0 || cast.IsSummoningSpell)
                     Possibilities.Add(cast);
             }
         }
