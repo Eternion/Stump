@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.AI.Fights.Actions;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
@@ -53,20 +54,22 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             return cell != null ? CellInformationProvider.GetCellInformation(cell.CellId).Cell : null;
         }
 
-        public Cell GetCellToCastSpell(Cell target, Spell spell, bool LoS, bool nearFirst = true)
+        public Cell GetCellToCastSpell(TargetCell target, Spell spell, bool LoS, bool nearFirst = true)
         {
             var moveZone = new LozengeSet(Fighter.Position.Point, Fighter.MP);
             Set castRange;
             if (spell.CurrentSpellLevel.CastInLine)
-                castRange = new CrossSet(MapPoint.GetPoint(target), Fighter.GetSpellRange(spell.CurrentSpellLevel), 
-                    spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Id) ? 0 : 1);
+                castRange = new CrossSet(target.Point, Fighter.GetSpellRange(spell.CurrentSpellLevel), 
+                    spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1);
             else
-             castRange = new LozengeSet(MapPoint.GetPoint(target), Fighter.GetSpellRange(spell.CurrentSpellLevel), 
-                spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Id) ? 0 : 1);
+             castRange = new LozengeSet(target.Point, Fighter.GetSpellRange(spell.CurrentSpellLevel), 
+                spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Cell.Id) ? 0 : 1);
 
             var intersection = new Intersection(moveZone, castRange);
 
-            var closestPoint = intersection.EnumerateValidPoints().Where(x => Fight.Cells[x.CellId].Walkable && !LoS || Fight.CanBeSeen(x, MapPoint.GetPoint(target))).
+            var closestPoint = intersection.EnumerateValidPoints().Where(x => Fight.Cells[x.CellId].Walkable && 
+                (target.Direction == DirectionFlagEnum.ALL_DIRECTIONS || target.Direction == DirectionFlagEnum.NONE || (x.OrientationTo(target.Point).GetFlag() & target.Direction) != 0) &&
+                (!LoS || Fight.CanBeSeen(x, MapPoint.GetPoint(target.Cell)))).
                 OrderBy(x => (nearFirst ? 1 : -1)*x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
             return closestPoint != null ? Fighter.Fight.Cells[closestPoint.CellId] : null;

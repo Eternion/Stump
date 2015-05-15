@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
 
         public IEnumerable<MapPoint> EnumerateValidPoints()
         {
-            return EnumerateSet().Where(x => x.IsInMap());
+            return EnumerateSet().Where(x => x!= null && x.IsInMap());
         }
 
         public Set IntersectWith(Set A)

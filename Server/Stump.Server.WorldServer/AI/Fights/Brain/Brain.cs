@@ -150,9 +150,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             var targets = Fighter.Fight.GetAllFighters(cast.Target.AffectedCells).ToArray();
 
             var i = 0;
-            while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell) == SpellCastResult.OK && i <= MaxCastLimit)
+            while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell.Cell) == SpellCastResult.OK && i <= MaxCastLimit)
             {
-                if (!Fighter.CastSpell(cast.Spell, cast.TargetCell))
+                if (!Fighter.CastSpell(cast.Spell, cast.TargetCell.Cell))
                     break;
 
                 if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell))) // target has moved, we re-analyse the situation

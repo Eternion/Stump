@@ -117,7 +117,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         /// <summary>
         /// Can be null
         /// </summary>
-        public Cell Target
+        public TargetCell Target
         {
             get;
             set;
@@ -131,7 +131,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
         public MapPoint TargetPoint
         {
-            get { return m_point ?? (m_point = new MapPoint(Target)); }
+            get { return Target.Point; }
         }
 
         public Cell CastCell

@@ -215,7 +215,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var spell in aiFighter.Spells.Values)
             {
-                var cell = aiFighter.Brain.Environment.GetCellToCastSpell(enemy.Cell, spell, spell.CurrentSpellLevel.CastTestLos);
+                var cell = aiFighter.Brain.Environment.GetCellToCastSpell(new TargetCell(enemy.Cell), spell, spell.CurrentSpellLevel.CastTestLos);
                 if (cell != null)
                     trigger.Reply(trigger.Color("Cast " + spell, trigger.Character.HighlightCell(cell)));
             }
