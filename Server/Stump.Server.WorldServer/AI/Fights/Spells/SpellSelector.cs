@@ -93,10 +93,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             switch (shape)
             {
                 case SpellShapeEnum.X:
-                    return new CrossSet(new MapPoint(center), minRange, maxRange).
+                    return new CrossSet(new MapPoint(center), maxRange, minRange).
                         EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
                 case SpellShapeEnum.C:
-                    return new LozengeSet(new MapPoint(center), minRange, maxRange).
+                    return new LozengeSet(new MapPoint(center), maxRange, minRange).
                         EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
                 case SpellShapeEnum.L:
                     return new LineSet(new MapPoint(center).GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_EAST, minRange), maxRange, DirectionsEnum.DIRECTION_NORTH_EAST).

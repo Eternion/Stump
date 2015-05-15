@@ -30,19 +30,47 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
             set;
         }
 
+        public bool Diagonal
+        {
+            get;
+            set;
+        }
+
+        public bool AllDirections
+        {
+            get;
+            set;
+        }
+
         public override IEnumerable<MapPoint> EnumerateSet()
         {
             for (int i = MinRange; i <= MaxRange; i++)
             {
-                MapPoint point;
-                if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_EAST, i)) != null)
-                    yield return point;
-                if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_EAST, i)) != null)
-                    yield return point;                
-                if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, i)) != null)
-                    yield return point;
-                if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_WEST, i)) != null)
-                    yield return point;
+                if (!Diagonal)
+                {
+                    MapPoint point;
+                    if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_EAST, i)) != null)
+                        yield return point;
+                    if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_EAST, i)) != null)
+                        yield return point;
+                    if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, i)) != null)
+                        yield return point;
+                    if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_WEST, i)) != null)
+                        yield return point;
+                }
+
+                if (Diagonal || AllDirections)
+                {
+                    MapPoint point;
+                    if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_EAST, i)) != null)
+                        yield return point;
+                    if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH, i)) != null)
+                        yield return point;
+                    if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_WEST, i)) != null)
+                        yield return point;
+                    if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH, i)) != null)
+                        yield return point;                
+                }
             }
         }
 
