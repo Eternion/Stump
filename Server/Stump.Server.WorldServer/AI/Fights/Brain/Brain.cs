@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
             if (!Fighter.Fight.AIDebugMode)
             {
-                ExecuteAllSpellCast();
+                ExecuteSpellCast();
                 ExecutePostMove();
             }
         }
@@ -95,81 +95,75 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             }
         }
 
-        public void ExecuteAllSpellCast()
+        public void ExecuteSpellCast()
         {
-            var first = SpellSelector.EnumerateSpellsCast().FirstOrDefault();
-
-            if (first != null)
-                ExecuteSpellCast(first);
-        }
-
-        public void ExecuteSpellCast(SpellCast cast)
-        {
-            if (cast.MoveBefore != null)
+            SpellCast cast;
+            while ((cast = SpellSelector.FindFirstSpellCast()) != null)
             {
-                Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                var success = Fighter.StartMove(cast.MoveBefore);
-                var lastPos = Fighter.Cell.Id;
-
-                var tries = 0;
-                var destinationId = cast.MoveBefore.EndCell.Id;
-                // re-attempt to move if we didn't reach the cell i.e as we trigger a trap
-                while (success && Fighter.Cell.Id != destinationId && Fighter.CanMove() && tries <= MaxMovesTries)
+                if (cast.MoveBefore != null)
                 {
-                    var pathfinder = new Pathfinder(Environment.CellInformationProvider);
-                    var path = pathfinder.FindPath(Fighter.Position.Cell.Id, destinationId, false, Fighter.MP);
+                    Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+                    var success = Fighter.StartMove(cast.MoveBefore);
+                    var lastPos = Fighter.Cell.Id;
 
-                    if (path == null || path.IsEmpty())
+                    var tries = 0;
+                    var destinationId = cast.MoveBefore.EndCell.Id;
+                    // re-attempt to move if we didn't reach the cell i.e as we trigger a trap
+                    while (success && Fighter.Cell.Id != destinationId && Fighter.CanMove() && tries <= MaxMovesTries)
                     {
-                        Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                        break;
+                        var pathfinder = new Pathfinder(Environment.CellInformationProvider);
+                        var path = pathfinder.FindPath(Fighter.Position.Cell.Id, destinationId, false, Fighter.MP);
+
+                        if (path == null || path.IsEmpty())
+                        {
+                            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+                            break;
+                        }
+
+                        if (path.MPCost > Fighter.MP)
+                        {
+                            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+                            break;
+                        }
+
+                        success = Fighter.StartMove(path);
+
+                        // the mob didn't move so we give up
+                        if (Fighter.Cell.Id == lastPos)
+                        {
+                            Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+                            break;
+                        }
+
+                        lastPos = Fighter.Cell.Id;
+                        tries++; // avoid infinite loops
                     }
 
-                    if (path.MPCost > Fighter.MP)
-                    {
-                        Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                        break;
-                    }
-
-                    success = Fighter.StartMove(path);
-
-                    // the mob didn't move so we give up
-                    if (Fighter.Cell.Id == lastPos)
-                    {
-                        Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-                        break;
-                    }
-
-                    lastPos = Fighter.Cell.Id;
-                    tries++; // avoid infinite loops
+                    Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                 }
 
-                Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
-            }
+                var targets = Fighter.Fight.GetAllFighters(cast.Target.AffectedCells).ToArray();
 
-            var targets = Fighter.Fight.GetAllFighters(cast.Target.AffectedCells).ToArray();
-
-            var i = 0;
-            while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell.Cell) == SpellCastResult.OK && i <= MaxCastLimit)
-            {
-                if (!Fighter.CastSpell(cast.Spell, cast.TargetCell.Cell))
-                    break;
-
-                if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell))) // target has moved, we re-analyse the situation
+                var i = 0;
+                while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell.Cell) == SpellCastResult.OK && i <= cast.MaxConsecutiveCast)
                 {
+                    if (!Fighter.CastSpell(cast.Spell, cast.TargetCell.Cell))
+                        break;
+
+                    if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell))) // target has moved, we re-analyse the situation
+                    {
+                        SpellSelector.AnalysePossibilities();
+                        break;
+                    }
+
+
+                    i++;
+                }
+
+                if (i > 0 && Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))
                     SpellSelector.AnalysePossibilities();
-                    ExecuteAllSpellCast();
+                else
                     break;
-                }
-                
-
-                i++;
-            }
-
-            if (i > 0 && Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))
-            {
-                SpellSelector.AnalysePossibilities();
-                ExecuteAllSpellCast();
             }
         }
 
