@@ -551,6 +551,7 @@
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Complement.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\CrossSet.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Difference.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Intersection.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Set.cs" />

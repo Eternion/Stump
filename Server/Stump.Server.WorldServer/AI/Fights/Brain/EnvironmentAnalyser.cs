@@ -56,7 +56,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         public Cell GetCellToCastSpell(Cell target, Spell spell, bool LoS, bool nearFirst = true)
         {
             var moveZone = new LozengeSet(Fighter.Position.Point, Fighter.MP);
-            var castRange = new LozengeSet(MapPoint.GetPoint(target), Fighter.GetSpellRange(spell.CurrentSpellLevel), 
+            Set castRange;
+            if (spell.CurrentSpellLevel.CastInLine)
+                castRange = new CrossSet(MapPoint.GetPoint(target), Fighter.GetSpellRange(spell.CurrentSpellLevel), 
+                    spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Id) ? 0 : 1);
+            else
+             castRange = new LozengeSet(MapPoint.GetPoint(target), Fighter.GetSpellRange(spell.CurrentSpellLevel), 
                 spell.CurrentSpellLevel.MinRange != 0 ? (int)spell.CurrentSpellLevel.MinRange : CellInformationProvider.IsCellWalkable(target.Id) ? 0 : 1);
 
             var intersection = new Intersection(moveZone, castRange);

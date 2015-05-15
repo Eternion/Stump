@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             {
                 action = new FleeAction(Fighter);
             }*/
-            if (hasRangeAttack && maxRange > 3)
+            if (hasRangeAttack && maxRange > 3 && minRange < maxRange)
             {
                 action = new StayInRange(Fighter, minRange, maxRange);
             }
@@ -161,11 +161,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                     ExecuteAllSpellCast();
                     break;
                 }
+                
 
                 i++;
             }
 
-            if (Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))
+            if (i > 0 && Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))
             {
                 SpellSelector.AnalysePossibilities();
                 ExecuteAllSpellCast();
