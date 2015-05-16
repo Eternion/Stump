@@ -1,30 +1,12 @@
-﻿#region License GNU GPL
-// OrbsManager.cs
-// 
-// Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
-// under the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
-// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
-
-using System;
+﻿using System;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace ArkalysPlugin
@@ -109,6 +91,9 @@ namespace ArkalysPlugin
 
         private static uint GetMonsterDroppedOrbs(MonsterFighter monster)
         {
+            if (monster.Monster.Grade.GradeXp == 0)
+                return 0;
+
             return (uint)Math.Floor(FormulasCoefficient * (monster.Monster.Template.IsBoss ? 8 : 1) * Math.Pow(monster.Level, FormulasExponent)) +
                 (uint)Math.Floor(Math.Pow(Math.Log(2 * monster.Level), 0.6));
         }

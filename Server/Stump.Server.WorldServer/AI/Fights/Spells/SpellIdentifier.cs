@@ -16,6 +16,7 @@
 
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
@@ -24,7 +25,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
     {
         public static SpellCategory GetSpellCategories(Spell spell)
         {
-            return spell.CurrentSpellLevel.Effects.Aggregate(SpellCategory.None, (current, effect) => current | GetEffectCategories(effect.EffectId));
+            return GetSpellCategories(spell.CurrentSpellLevel);
+        }
+
+        public static SpellCategory GetSpellCategories(SpellLevelTemplate spellLevel)
+        {
+            return spellLevel.Effects.Aggregate(SpellCategory.None, (current, effect) => current | GetEffectCategories(effect.EffectId));
         }
 
         public static SpellCategory GetEffectCategories(EffectsEnum effectId)
