@@ -116,7 +116,6 @@ namespace Stump.Server.BaseServer.Network
             }
             catch
             {
-                args.Dispose();
                 stream.Dispose();
                 ObjectPoolMgr.ReleaseObject(args);
                 throw;
