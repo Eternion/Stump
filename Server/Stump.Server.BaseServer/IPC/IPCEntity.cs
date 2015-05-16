@@ -41,7 +41,8 @@ namespace Stump.Server.BaseServer.IPC
             if (request != null)
             {
                 ProcessAnswer(request, message);
-                m_requests.Remove(message.RequestGuid);
+                lock(m_requests)
+                    m_requests.Remove(message.RequestGuid);
             }
             else
                 ProcessRequest(message);
@@ -123,7 +124,8 @@ namespace Stump.Server.BaseServer.IPC
                 return null;
 
             IIPCRequest request;
-            m_requests.TryGetValue(guid, out request);
+            lock(m_requests)
+                m_requests.TryGetValue(guid, out request);
             return request;
         }
 
