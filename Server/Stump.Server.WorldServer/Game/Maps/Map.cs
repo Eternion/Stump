@@ -1645,6 +1645,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             return cells[rand.Next(0, cells.Length)];
         }
 
+        public Cell GetFirstFreeCellNearMiddle()
+        {
+            return m_freeCells.FirstOrDefault();
+        }
+
         public Cell GetRandomAdjacentFreeCell(MapPoint cell, bool actorFree = false)
         {
             if (actorFree)
