@@ -32,6 +32,7 @@ using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
@@ -212,7 +213,10 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void UpdateCells()
         {
             CellsInfoProvider = new MapCellsInformationProvider(this);
-            m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).ToArray();
+
+            var middle = new MapPoint((int) MapPoint.MapWidth/2, (int) MapPoint.MapHeight/2);
+            m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).
+                OrderBy(x => middle.ManhattanDistanceTo(x)).ToArray();
         }
 
         #endregion
@@ -1628,7 +1632,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return (DirectionsEnum)array.GetValue(rand.Next(0, array.Length));
         }
 
-        public Cell GetRandomFreeCell(bool actorFree = false)
+        public Cell GetRandomFreeCell(bool actorFree = false, bool nearMiddle = false)
         {
             var rand = new AsyncRandom();
 

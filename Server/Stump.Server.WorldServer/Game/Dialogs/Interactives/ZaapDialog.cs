@@ -4,6 +4,7 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
@@ -67,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
             if (!m_destinations.Contains(map))
                 return;
 
-            var cell = map.GetCell(280);
+            Cell cell;
 
             if (map.Zaap != null)
             {
@@ -85,6 +86,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
                     cell = map.GetCell(adjacents[0].CellId);
                 }
             }
+            else
+                cell = map.GetFirstFreeCellNearMiddle();
 
             var cost = GetCostTo(map);
 
