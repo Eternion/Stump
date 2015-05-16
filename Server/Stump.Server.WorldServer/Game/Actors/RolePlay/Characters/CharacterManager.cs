@@ -45,16 +45,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public CharacterRecord GetCharacterById(int id)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             return Database.Query<CharacterRecord>(string.Format(CharacterRelator.FetchById, id)).FirstOrDefault();
         }
 
         public CharacterRecord GetCharacterByName(string name)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             return Database.Query<CharacterRecord>(CharacterRelator.FetchByName, name).FirstOrDefault();
         }
 
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             if (client.Account.Characters == null ||
                 client.Account.Characters.Count == 0)
                 return new List<CharacterRecord>();
@@ -89,12 +92,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool DoesNameExist(string name)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0", name) != null;
         }
 
         public void CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
                                                            IEnumerable<int> colors, int headId, Action successCallback, Action<CharacterCreationResultEnum> failCallback)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             if (client.Characters.Count >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
             {
                 failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
@@ -214,7 +219,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
-        {   
+        {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             // todo cascade
             var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
 
