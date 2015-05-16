@@ -34,15 +34,16 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
             var zone = Fighter.Brain.Environment.GetVisibleEnemies()
                               .Select(x => (Set)new LozengeSet(x.Position.Point, MaxRange, MinRange))
-                              .Aggregate((set, current) => set.IntersectWith(current))
-                              .IntersectWith(new LozengeSet(Fighter.Position.Point, Fighter.MP));
+                              .Aggregate((set, current) => set.IntersectWith(current));
 
-            var result = zone.EnumerateValidPoints().FirstOrDefault();
+            var result = zone.EnumerateValidPoints().Where(x =>
+                Fighter.Brain.Environment.CellInformationProvider.IsCellWalkable(x.CellId)).
+                              OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
             if (result == null)
                 return RunStatus.Failure;
 
-            var move = new MoveAction(Fighter, result);
+            var move = new MoveAction(Fighter, result) {AttemptOnly = true};
             return move.YieldExecute(context);
         }
     }
