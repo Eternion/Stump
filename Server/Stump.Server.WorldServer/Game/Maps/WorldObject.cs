@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnDisposed()
         {
-            Position = null;
+            //Position = null;
         }
 
         #endregion

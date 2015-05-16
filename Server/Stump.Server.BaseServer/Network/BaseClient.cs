@@ -79,10 +79,10 @@ namespace Stump.Server.BaseServer.Network
             {
                 message.Pack(writer);
             }
-            catch
+            catch(Exception ex)
             {
                 stream.Dispose();
-                throw;
+                throw new Exception(ex.Message + "(" + message + ")", ex);
             }
 
             Send(stream);

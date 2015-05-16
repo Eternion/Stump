@@ -1142,7 +1142,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Ended)
             {
-                throw new Exception("Fight ended");
+                return;
             }
 
             if (actor is SummonedFighter)
