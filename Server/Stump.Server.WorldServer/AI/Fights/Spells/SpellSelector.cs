@@ -183,12 +183,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         Cell cell;
                         if (!CanReach(target, spell, out cell))
                             continue;
-
-                        if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, target.Cell))
+                        
+                        if (Fighter.CanCastSpell(spell, target.Cell, cell) != SpellCastResult.OK)
                             continue;
 
                         var impact = ComputeSpellImpact(spell, target.Cell, cell);
-                        
 
                         if (impact == null)
                             continue;
@@ -275,7 +274,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             {
                 // check if the second spell can be casted before
                 var max = MaxConsecutiveSpellCast(casts[0].Spell, Fighter.AP);
-                if (casts[1].Spell.CurrentSpellLevel.ApCost < Fighter.AP - max*casts[0].Spell.CurrentSpellLevel.ApCost)
+                if (casts[1].Spell.CurrentSpellLevel.ApCost <= Fighter.AP - max*casts[0].Spell.CurrentSpellLevel.ApCost)
                 {
                     if (casts[1].MoveBefore == null)
                         return casts[1];

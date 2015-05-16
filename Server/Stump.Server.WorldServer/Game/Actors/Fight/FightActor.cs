@@ -592,6 +592,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual SpellCastResult CanCastSpell(Spell spell, Cell cell)
         {
+            return CanCastSpell(spell, cell, Cell);
+        }
+
+        public virtual SpellCastResult CanCastSpell(Spell spell, Cell cell, Cell castCell)
+        {
             if (!IsFighterTurn() || IsDead())
             {
                 return SpellCastResult.CANNOT_PLAY;
@@ -631,7 +636,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return SpellCastResult.STATE_REQUIRED;
             }
 
-            if (!IsInCastZone(spellLevel, Position.Point, cell))
+            if (!IsInCastZone(spellLevel, castCell, cell))
             {
                 return SpellCastResult.NOT_IN_ZONE;
             }
@@ -641,7 +646,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return SpellCastResult.HISTORY_ERROR;
             }
 
-            if (spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(Cell, cell))
+            if (spell.CurrentSpellLevel.CastTestLos && !Fight.CanBeSeen(castCell, cell))
             {
                 return SpellCastResult.NO_LOS;
             }
