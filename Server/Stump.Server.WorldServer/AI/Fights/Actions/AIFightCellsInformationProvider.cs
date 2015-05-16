@@ -20,7 +20,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
 
         public override CellInformation GetCellInformation(short cell)
         {
-            return new CellInformation(Fight.Map.Cells[cell], IsCellWalkable(cell), true, true, 1, null, null);
+            // ignore the cell where the fighter already is (in case we perform pathfinding with others cells and suppose the fighter has already moved)
+            return new CellInformation(Fight.Map.Cells[cell], Fighter.Cell.Id  == cell || IsCellWalkable(cell), true, true, 1, null, null);
         }
     }
 }

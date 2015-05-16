@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         {
             for (int i = MinRange; i <= MaxRange; i++)
             {
-                if (!Diagonal)
+                if (!Diagonal || AllDirections)
                 {
                     MapPoint point;
                     if ((point = Center.GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_EAST, i)) != null)
@@ -77,6 +77,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         public override bool BelongToSet(MapPoint point)
         {
             var dist = point.ManhattanDistanceTo(Center);
+
+            if (AllDirections)
+                return point.IsOnSameLine(Center) || point.IsOnSameDiagonal(Center) && dist >= MinRange && dist <= MaxRange;
+
+            if (Diagonal) // dist/2 because we mesaure distances in diagonal
+                return point.IsOnSameDiagonal(Center) && dist/2 >= MinRange && dist/2 <= MaxRange;
+            
             return point.IsOnSameLine(Center) && dist >= MinRange && dist <= MaxRange;
         }
     }

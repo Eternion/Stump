@@ -173,17 +173,16 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             return new Path(CellsInformationProvider.Map, closedList.Select(entry => CellsInformationProvider.Map.Cells[entry.Cell]));
         }
 
-        public Cell[] FindReachableCells(MapPoint from, int distance)
+        public MapPoint[] FindReachableCells(MapPoint from, int distance)
         {
-            var result = new List<Cell>();
+            var result = new List<MapPoint>();
             var matrix = new PathNode[MapPoint.MapSize + 1];
             var openList = new PriorityQueueB<short>(new ComparePfNodeMatrix(matrix));
-            var closedList = new List<PathNode>();
             var location = from.CellId;
             var counter = 0;
 
             if (distance == 0)
-                return new [] {CellsInformationProvider.Map.Cells[from.CellId]};
+                return new [] {new MapPoint(from.CellId)};
 
             matrix[location].Cell = location;
             matrix[location].Parent = -1;
@@ -236,7 +235,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
                     if (newG <= distance)
                     {
-                        result.Add(CellsInformationProvider.Map.Cells[newLocation]);
+                        result.Add(newLocationPoint);
                         openList.Push(newLocation);
                         matrix[newLocation].Status = NodeState.Open;
                     }
