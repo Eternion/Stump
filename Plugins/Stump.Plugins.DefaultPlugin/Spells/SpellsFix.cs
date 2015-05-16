@@ -4,6 +4,7 @@ using NLog;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
@@ -17,6 +18,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         [Initialization(typeof(SpellManager), Silent = true)]
         public static void ApplyFix()
         {
+            logger.Debug("Apply Spells Targets fix");
+
+            FixSpellsTargets();
+
             logger.Debug("Apply spells fix");
 
             #region FECA
@@ -204,7 +209,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Coopération (445)
             FixEffectOnAllLevels(445, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
-            FixEffectOnAllLevels(445, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            //FixEffectOnAllLevels(445, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
 
             #endregion
 
@@ -795,6 +800,32 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+        }
+
+        public static void FixSpellsTargets()
+        {
+            var spells = SpellManager.Instance.GetSpellLevels();
+
+            foreach (var spell in spells.Where(x => x.Spell.TypeId == 0))
+            {
+                foreach (var effect in spell.Effects)
+                {
+                    var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+
+
+                    if (((category & SpellCategory.Healing) != 0 || (category & SpellCategory.Buff) != 0) && (category & SpellCategory.Damages) == 0 && (category & SpellCategory.Curse) == 0)
+                        effect.Targets = SpellTargetType.NONE;
+                }
+
+                foreach (var effect in spell.CriticalEffects)
+                {
+                    var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+
+
+                    if (((category & SpellCategory.Healing) != 0 || (category & SpellCategory.Buff) != 0) && (category & SpellCategory.Damages) == 0 && (category & SpellCategory.Curse) == 0)
+                        effect.Targets = SpellTargetType.ALLY_ALL;
+                }
+            }
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer, bool critical = true)
