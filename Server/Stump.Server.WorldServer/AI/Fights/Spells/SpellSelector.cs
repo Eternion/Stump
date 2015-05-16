@@ -183,12 +183,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         Cell cell;
                         if (!CanReach(target, spell, out cell))
                             continue;
-
-                        if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, target.Cell))
+                        
+                        if (Fighter.CanCastSpell(spell, target.Cell, cell) != SpellCastResult.OK)
                             continue;
 
                         var impact = ComputeSpellImpact(spell, target.Cell, cell);
-                        
 
                         if (impact == null)
                             continue;
@@ -251,15 +250,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                             minUsedAP += (int)possibleCast.Spell.CurrentSpellLevel.ApCost;
                             continue;
                         }
-                                                
-                        var dist = Fighter.Position.Point.ManhattanDistanceTo(new MapPoint(impact.CastCell));
-                        if (Fighter.MP - minUsedPM < dist)
-                            continue;
 
                         var pathfinder = new Pathfinder(m_environment.CellInformationProvider);
                         var path = pathfinder.FindPath(Fighter.Position.Cell.Id, castSpell.Id, false);
 
-                        if (path.IsEmpty() || path.MPCost > Fighter.MP - minUsedPM)
+                        if (path.IsEmpty() || path.MPCost > Fighter.MP)
                             continue;
 
                         cast.MoveBefore = path;
@@ -267,6 +262,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         casts.Add(cast);
                         minUsedAP += (int)possibleCast.Spell.CurrentSpellLevel.ApCost;
                         minUsedPM += path.MPCost;
+                        break;
                     }
                 }
             }
@@ -275,7 +271,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             {
                 // check if the second spell can be casted before
                 var max = MaxConsecutiveSpellCast(casts[0].Spell, Fighter.AP);
-                if (casts[1].Spell.CurrentSpellLevel.ApCost < Fighter.AP - max*casts[0].Spell.CurrentSpellLevel.ApCost)
+                if (casts[1].Spell.CurrentSpellLevel.ApCost <= Fighter.AP - max*casts[0].Spell.CurrentSpellLevel.ApCost)
                 {
                     if (casts[1].MoveBefore == null)
                         return casts[1];
@@ -661,8 +657,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 return scoreComparaison;
             
             // if scores are the same we choose the nearest reachable cell
-            return new MapPoint(cast1.CastCell).ManhattanDistanceTo(m_spellSelector.Fighter.Position.Point).CompareTo(
-                new MapPoint(cast2.CastCell).ManhattanDistanceTo(m_spellSelector.Fighter.Position.Point));
+            // note : inverse comparaison (smaller better not bigger better)
+            return new MapPoint(cast2.CastCell).ManhattanDistanceTo(m_spellSelector.Fighter.Position.Point).CompareTo(
+                new MapPoint(cast1.CastCell).ManhattanDistanceTo(m_spellSelector.Fighter.Position.Point));
         }
 
         public double GetScore(SpellTarget cast)

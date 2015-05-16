@@ -220,6 +220,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return point.X == X || point.Y == Y;
         }
 
+        public bool IsOnSameDiagonal(MapPoint point)
+        {
+            return point.X + point.Y == X + Y ||
+                point.X - point.Y == X - Y;
+        }
+
         /// <summary>
         /// Returns true whenever this point is between points A and B
         /// </summary>
