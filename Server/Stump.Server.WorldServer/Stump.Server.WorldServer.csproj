@@ -136,6 +136,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Boss\KorriandreBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\MeruletteBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
