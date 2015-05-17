@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
 
         public override bool BelongToSet(MapPoint point)
         {
-            var dist = point.EuclideanDistanceTo(Center);
+            var dist = point.ManhattanDistanceTo(Center);
             return dist <= Radius && dist >= MinRadius;
         }
     }

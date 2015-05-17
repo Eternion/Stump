@@ -152,7 +152,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                     
                     i++;
 
-                    if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell))) // target has moved, we re-analyse the situation
+                    if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell)) ||
+                        targets.Any(x => x.IsDead())) // target has moved, we re-analyse the situation
                     {
                         SpellSelector.AnalysePossibilities();
                         break;
