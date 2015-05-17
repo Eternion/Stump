@@ -838,7 +838,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                         continue;
 
                     if (((category & SpellCategory.Healing) != 0 || (category & SpellCategory.Buff) != 0) && (category & SpellCategory.Damages) == 0 && (category & SpellCategory.Curse) == 0)
-                        effect.Targets = SpellTargetType.NONE;
+                        effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF;
                 }
 
                 foreach (var effect in spell.CriticalEffects)
@@ -849,7 +849,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                         continue;
 
                     if (((category & SpellCategory.Healing) != 0 || (category & SpellCategory.Buff) != 0) && (category & SpellCategory.Damages) == 0 && (category & SpellCategory.Curse) == 0)
-                        effect.Targets = SpellTargetType.NONE;
+                        effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF;
                 }
             }
         }
