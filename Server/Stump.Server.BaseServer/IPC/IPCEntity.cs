@@ -36,16 +36,18 @@ namespace Stump.Server.BaseServer.IPC
         {
             if (message.RequestGuid == Guid.Empty)
                 ProcessRequest(message);
-
-            var request = TryGetRequest(message.RequestGuid);
-            if (request != null)
-            {
-                ProcessAnswer(request, message);
-                lock(m_requests)
-                    m_requests.Remove(message.RequestGuid);
-            }
             else
-                ProcessRequest(message);
+            {
+                var request = TryGetRequest(message.RequestGuid);
+                if (request != null)
+                {
+                    ProcessAnswer(request, message);
+                    lock (m_requests)
+                        m_requests.Remove(message.RequestGuid);
+                }
+                else
+                    ProcessRequest(message);
+            }
         }
 
         public void ReplyRequest(IPCMessage message, IPCMessage request)
