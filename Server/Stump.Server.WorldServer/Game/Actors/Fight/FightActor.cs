@@ -685,10 +685,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return set.BelongToSet(cell);
         }
 
-        public virtual Cell[] GetCastZone(SpellLevelTemplate spellLevel)
+        public virtual Set GetCastZoneSet(SpellLevelTemplate spellLevel, MapPoint castCell)
         {
             var range = spellLevel.Range;
-            IShape shape;
+            Set shape;
 
             if (spellLevel.RangeCanBeBoosted)
             {
@@ -697,33 +697,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 if (range < spellLevel.MinRange)
                     range = spellLevel.MinRange;
 
-                range = Math.Min(range, MapPoint.MapHeight * MapPoint.MapWidth);
+                range = Math.Min(range, 63);
             }
 
             if (spellLevel.CastInDiagonal && spellLevel.CastInLine)
             {
-                shape = new Cross((byte)spellLevel.MinRange, (byte)range)
+                shape = new CrossSet(castCell, (int)range, (int)spellLevel.MinRange)
                 {
                     AllDirections = true
                 };
             }
             else if (spellLevel.CastInLine)
             {
-                shape = new Cross((byte) spellLevel.MinRange, (byte) range);
+                shape = new CrossSet(castCell, (int) range, (int) spellLevel.MinRange);
             }
             else if (spellLevel.CastInDiagonal)
             {
-                shape = new Cross((byte)spellLevel.MinRange, (byte)range)
+                shape = new CrossSet(castCell, (int) range, (int) spellLevel.MinRange)
                 {
                     Diagonal = true
                 };
             }
             else
             {
-                shape = new Lozenge((byte)spellLevel.MinRange, (byte)range);
+                shape = new LozengeSet(castCell, (int) range, (int) spellLevel.MinRange);
             }
 
-            return shape.GetCells(Cell, Map);
+            return shape;
         }
 
         public int GetSpellRange(SpellLevelTemplate spell)
