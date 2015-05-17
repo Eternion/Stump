@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
 
         public override IEnumerable<MapPoint> EnumerateSet()
         {
-            return A.EnumerateSet().Except(Container.EnumerateSet());
+            return Container.EnumerateSet().Except(A.EnumerateSet());
         }
 
         public override bool BelongToSet(MapPoint point)
