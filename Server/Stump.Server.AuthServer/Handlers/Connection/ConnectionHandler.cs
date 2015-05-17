@@ -166,7 +166,11 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                     SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
                 else
                     SendServersListMessage(client);
-            }));
+            }), () =>
+            {
+                client.Disconnect();
+                logger.Error("Error while joining last used world server, connection aborted");
+            });
         }
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)

@@ -32,7 +32,7 @@ namespace Stump.Server.AuthServer.IPC
     public class IPCClient : IPCEntity
     {
         [Variable(DefinableRunning = true)]
-        public static int DefaultRequestTimeout = 5;
+        public static int DefaultRequestTimeout = 60;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly object m_recvLock = new object();
@@ -208,6 +208,12 @@ namespace Stump.Server.AuthServer.IPC
 
         protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
         {
+            if (request.TimedOut)
+            {
+                logger.Warn("Message {0} already timed out, message ignored", request.RequestMessage.GetType());
+                return;
+            }
+
             request.TimeoutTimer.Stop();
             AuthServer.Instance.IOTaskPool.RemoveTimer(request.TimeoutTimer);
             request.ProcessMessage(answer);

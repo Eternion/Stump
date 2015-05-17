@@ -275,6 +275,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public override void Save()
         {
+            Save(true);
+        }
+
+        public void Save(bool updateAccount)
+        {
             lock (Locker)
             {
                 var database = WorldServer.Instance.DBAccessor.Database;
@@ -322,16 +327,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if ((Tokens != null || Owner.Account.Tokens <= 0) && (Tokens == null || Owner.Account.Tokens == Tokens.Stack))
                 {
                     Owner.IsAuthSynced = true;
-                    return;
                 }
-
-                Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
-
-                IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Owner.Account),
-                    msg =>
+                else
+                {
+                    Owner.IsAuthSynced = false;
+                    Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
+                    if (updateAccount)
                     {
-                        Owner.OnSaved();
-                    });
+                        IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Owner.Account),
+                            msg =>
+                            {
+                                Owner.OnSaved();
+                            });
+                    }
+                }
             }
         }
 
