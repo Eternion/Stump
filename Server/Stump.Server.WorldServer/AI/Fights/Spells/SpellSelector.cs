@@ -111,7 +111,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                         Union(new LineSet(new MapPoint(center).GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_WEST, minRange),
                             maxRange, DirectionsEnum.DIRECTION_NORTH_WEST).EnumerateValidPoints().
                         Select(x => new TargetCell(Fighter.Map.Cells[x.CellId], DirectionFlagEnum.DIRECTION_SOUTH_EAST)));
-
+                case SpellShapeEnum.I:
+                    return new Complement(new LozengeSet(center, maxRange, minRange), new AllPoints())
+                        .EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
                 default:
                     return new[] {new TargetCell(center)};
             }

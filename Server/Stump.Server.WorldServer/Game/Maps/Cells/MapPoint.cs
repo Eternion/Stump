@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public short CellId
         {
             get { return m_cellId; }
-            set
+            private set
             {
                 m_cellId = value;
                 SetFromCellId();
@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public int X
         {
             get { return m_x; }
-            set
+            private set
             {
                 m_x = value;
                 SetFromCoords();
@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public int Y
         {
             get { return m_y; }
-            set
+            private set
             {
                 m_y = value;
                 SetFromCoords();
@@ -445,6 +445,14 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public static MapPoint GetPoint(Cell cell)
         {
             return GetPoint(cell.Id);
+        }
+
+        public static MapPoint[] GetAllPoints()
+        {
+            if (!m_initialized)
+                InitializeStaticGrid();
+
+            return OrthogonalGridReference;
         }
 
         public static implicit operator MapPoint(Cell cell)
