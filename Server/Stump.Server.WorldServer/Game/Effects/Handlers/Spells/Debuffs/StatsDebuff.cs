@@ -40,10 +40,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration > 0)
-                {
-                    AddStatBuff(actor, (short) (-integerEffect.Value), GetEffectCaracteristic(Effect.EffectId), true);
-                }
+                if (Effect.Duration <= 0)
+                    continue;
+
+                if (Effect.EffectId == EffectsEnum.Effect_SubRange)
+                    actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_DEBOOST_RANGE, Caster, actor, (short)(-integerEffect.Value));
+
+                AddStatBuff(actor, (short) (-integerEffect.Value), GetEffectCaracteristic(Effect.EffectId), true);
             }
 
             return true;

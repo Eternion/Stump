@@ -49,19 +49,24 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     return SpellCategory.DamagesNeutral | SpellCategory.Healing;
                 case EffectsEnum.Effect_DamageFire:
                 case EffectsEnum.Effect_DamageFirePerHPLost:
+                case EffectsEnum.Effect_DamageFirePerAP:
                     return SpellCategory.DamagesFire;
                 case EffectsEnum.Effect_DamageWater:
                 case EffectsEnum.Effect_DamageWaterPerHPLost:
+                case EffectsEnum.Effect_DamageWaterPerAP:
                     return SpellCategory.DamagesWater;
                 case EffectsEnum.Effect_DamageAir:
                 case EffectsEnum.Effect_DamageAirPerHPLost:
+                case EffectsEnum.Effect_DamageAirPerAP:
                     return SpellCategory.DamagesAir;
                 case EffectsEnum.Effect_DamageNeutral:
                 case EffectsEnum.Effect_DamageNeutralPerHPLost:
+                case EffectsEnum.Effect_DamageNeutralPerAP:
                 case EffectsEnum.Effect_Punishment_Damage:
                     return SpellCategory.DamagesNeutral;
                 case EffectsEnum.Effect_DamageEarth:
                 case EffectsEnum.Effect_DamageEarthPerHPLost:
+                case EffectsEnum.Effect_DamageEarthPerAP:
                     return SpellCategory.DamagesEarth;
                 case EffectsEnum.Effect_HealHP_108:
                 case EffectsEnum.Effect_HealHP_143:
@@ -72,6 +77,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     return SpellCategory.Damages;
                 case EffectsEnum.Effect_Summon:
                 case EffectsEnum.Effect_Double:
+                case EffectsEnum.Effect_ReviveAndGiveHPToLastDiedAlly:
                 case EffectsEnum.Effect_185:
                 case EffectsEnum.Effect_621:
                 case EffectsEnum.Effect_623:
@@ -131,6 +137,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_RegainAP:
                 case EffectsEnum.Effect_TriggerBuff:
                 case EffectsEnum.Effect_DamageIntercept:
+                case EffectsEnum.Effect_HealOrMultiply:
                     return SpellCategory.Buff;
                 case EffectsEnum.Effect_Teleport:
                     return SpellCategory.Teleport;
@@ -156,6 +163,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_SubStrength:
                 case EffectsEnum.Effect_SubDodgeAPProbability:
                 case EffectsEnum.Effect_SubDodgeMPProbability:
+                case EffectsEnum.Effect_SubLock:
+                case EffectsEnum.Effect_SubDodge:
                 case EffectsEnum.Effect_SubAP:
                 case EffectsEnum.Effect_SubMP:
                 case EffectsEnum.Effect_SubCriticalHit:

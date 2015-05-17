@@ -93,6 +93,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             //Add State
             m_iniMouthHandlers[3].Apply();
 
+            var buff = Fighter.GetBuffs(x => x.Spell.Id == (int)SpellIdEnum.INIMOUTH && x.Effect.EffectId == EffectsEnum.Effect_AddMP_128).FirstOrDefault();
+
+            if (buff != null)
+                Fighter.RemoveAndDispellBuff(buff);
+
             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
         }
     }

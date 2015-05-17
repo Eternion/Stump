@@ -656,6 +656,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Mansomure (2607)
             // remove effect
+            FixEffectOnAllLevels(2607, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
             RemoveEffectOnAllLevels(2607, 1, false);
 
             #endregion
@@ -796,6 +797,27 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Fu Mansot
+
+            FixEffectOnAllLevels(2241, 2, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+            FixCriticalEffectOnAllLevels(2241, 2, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
+
+            #endregion
+
+            #region Mansobèse
+
+            FixEffectOnAllLevels(2237, 1, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+            FixCriticalEffectOnAllLevels(2237, 1, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
+
+            #endregion
+
+            #region Shamansot
+
+            FixEffectOnAllLevels(2232, 2, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+            FixCriticalEffectOnAllLevels(2232, 2, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
+
+            #endregion
+
             #endregion
 
             #endregion
@@ -812,6 +834,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                 {
                     var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
 
+                    if (effect.Targets != (SpellTargetType.ENEMY_1 | SpellTargetType.ENEMY_2 | SpellTargetType.ENEMY_SUMMONS | SpellTargetType.ENEMY_STATIC_SUMMONS))
+                        continue;
 
                     if (((category & SpellCategory.Healing) != 0 || (category & SpellCategory.Buff) != 0) && (category & SpellCategory.Damages) == 0 && (category & SpellCategory.Curse) == 0)
                         effect.Targets = SpellTargetType.NONE;
@@ -821,9 +845,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                 {
                     var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
 
+                    if (effect.Targets != (SpellTargetType.ENEMY_1 | SpellTargetType.ENEMY_2 | SpellTargetType.ENEMY_SUMMONS | SpellTargetType.ENEMY_STATIC_SUMMONS))
+                        continue;
 
                     if (((category & SpellCategory.Healing) != 0 || (category & SpellCategory.Buff) != 0) && (category & SpellCategory.Damages) == 0 && (category & SpellCategory.Curse) == 0)
-                        effect.Targets = SpellTargetType.ALLY_ALL;
+                        effect.Targets = SpellTargetType.NONE;
                 }
             }
         }

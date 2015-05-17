@@ -56,8 +56,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                         triggerType = BuffTriggerType.BUFF_ADDED;
                         triggerHandler = EvolutionBuffTrigger;
                         break;
+                    case SpellIdEnum.POLLEN:
+                        triggerType = BuffTriggerType.AFTER_ATTACKED;
+                        triggerHandler = PollenBuffTrigger;
+                        break;
                     case SpellIdEnum.GLOURS_POURSUITE:
                     case SpellIdEnum.GLOURSON_DE_CLOCHE:
+                    case SpellIdEnum.MÉRULE_TRAÇON:
                         break;
                     default:
                         return false;
@@ -149,6 +154,27 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             var effect = new Pull(buff.Dice, source, buff.Spell, source.Cell, buff.Critical);
             effect.AddAffectedActor(target);
             effect.Apply();
+        }
+
+        private static void PollenBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            var damage = token as Fights.Damage;
+            if (damage == null)
+                return;
+
+            if (damage.Source == null)
+                return;
+
+            var source = damage.Source;
+            var target = buff.Target;
+
+            if (damage.Source == target)
+                return;
+
+            if (!target.Position.Point.IsAdjacentTo(source.Position.Point))
+                return;
+
+            target.CastSpell(buff.Spell, target.Cell, true, true);
         }
 
         private static bool IsValidSpell(FightActor actor, Spell spell)

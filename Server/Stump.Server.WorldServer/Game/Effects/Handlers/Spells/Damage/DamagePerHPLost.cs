@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
-    [EffectHandler(EffectsEnum.Effect_DamageWaterPerHPLost)]
+    [EffectHandler(EffectsEnum.Effect_DamageAirPerHPLost)]
     [EffectHandler(EffectsEnum.Effect_DamageEarthPerHPLost)]
     [EffectHandler(EffectsEnum.Effect_DamageFirePerHPLost)]
     [EffectHandler(EffectsEnum.Effect_DamageWaterPerHPLost)]
