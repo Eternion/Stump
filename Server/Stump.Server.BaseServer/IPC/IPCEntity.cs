@@ -75,7 +75,7 @@ namespace Stump.Server.BaseServer.IPC
         public void SendRequest<T>(IPCMessage message, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback,
             int timeout) where T : IPCMessage
         {
-            SendRequest(message, callback, errorCallback, DefaultRequestUnattemptCallback, timeout);
+            SendRequest(message, callback, errorCallback, DefaultRequestUnexpectedCallback, timeout);
         }
 
         public void SendRequest<T>(IPCMessage message, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback,
@@ -99,7 +99,7 @@ namespace Stump.Server.BaseServer.IPC
         public void SendRequest(IPCMessage message, RequestCallbackDelegate<CommonOKMessage> callback, RequestCallbackErrorDelegate errorCallback,
     int timeout)
         {
-            SendRequest(message, callback, errorCallback, DefaultRequestUnattemptCallback, timeout);
+            SendRequest(message, callback, errorCallback, DefaultRequestUnexpectedCallback, timeout);
         }
 
         public void SendRequest(IPCMessage message, RequestCallbackDelegate<CommonOKMessage> callback, RequestCallbackErrorDelegate errorCallback,
@@ -131,6 +131,7 @@ namespace Stump.Server.BaseServer.IPC
 
         private void RequestTimedOut(IIPCRequest request)
         {
+            request.TimedOut = true;
             request.ProcessMessage(new IPCErrorTimeoutMessage(string.Format("Request {0} timed out", request.RequestMessage.GetType())));
         }
 
@@ -141,9 +142,9 @@ namespace Stump.Server.BaseServer.IPC
                 errorMessage.GetType(), request.RequestMessage.GetType(), errorMessage.Message, errorMessage.StackTrace);
         }
 
-        private void DefaultRequestUnattemptCallback(IPCMessage message)
+        private void DefaultRequestUnexpectedCallback(IPCMessage message)
         {
-            logger.Error("Unattempt message {0}. Request {1}", message.GetType(), TryGetRequest(message.RequestGuid).RequestMessage.GetType());
+            logger.Error("Unexpected message {0}. Request {1}", message.GetType(), TryGetRequest(message.RequestGuid).RequestMessage.GetType());
         }
 
     }

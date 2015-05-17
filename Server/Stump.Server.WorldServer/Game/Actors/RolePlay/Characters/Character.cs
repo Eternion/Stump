@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using MongoDB.Bson;
 using NLog;
 using Stump.Core.Attributes;
@@ -12,8 +13,10 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Commands;
+using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.IPC.Objects;
 using Stump.Server.BaseServer.Logging;
+using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
@@ -156,6 +159,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void OnSaved()
         {
+            IsAuthSynced = true;
             UnBlockAccount();
 
             var handler = Saved;
@@ -2947,12 +2951,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
                 finally
                 {
+                    BlockAccount();
                     WorldServer.Instance.IOTaskPool.AddMessage(
                         () =>
                         {
                             try
                             {
-                                BlockAccount();
                                 SaveNow();
                                 UnLoadRecord();
                             }
@@ -2967,7 +2971,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SaveLater()
         {
-            BlockAccount();
+            BlockAccount(); 
             WorldServer.Instance.IOTaskPool.AddMessage(SaveNow);
         }
 
@@ -2982,8 +2986,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 using (var transaction = WorldServer.Instance.DBAccessor.Database.GetTransaction())
                 {
-                    // do something better here
-                    Inventory.Save();
+                    Inventory.Save(false);
                     if (Bank.IsLoaded)
                         Bank.Save();
                     MerchantBag.Save();
@@ -3021,6 +3024,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (IsAuthSynced)
                 OnSaved();
+            else
+            {
+                IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Account),
+                    msg =>
+                    {
+                        OnSaved();
+                    });
+            }
         }
 
         private void LoadRecord()

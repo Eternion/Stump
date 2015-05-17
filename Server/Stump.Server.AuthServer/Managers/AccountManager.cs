@@ -300,10 +300,10 @@ namespace Stump.Server.AuthServer.Managers
 
         public void DisconnectClientsUsingAccount(Account account, AuthClient except = null)
         {
-            DisconnectClientsUsingAccount(account, except, result => { }); // do nothing
+            DisconnectClientsUsingAccount(account, except, result => { }, () => { }); // do nothing
         }
 
-        public void DisconnectClientsUsingAccount(Account account, AuthClient except, Action<bool> callback)
+        public void DisconnectClientsUsingAccount(Account account, AuthClient except, Action<bool> callback, Action errorCallBack)
         {
             var clients = AuthServer.Instance.FindClients(entry => entry != except && entry.Account != null && entry.Account.Id == account.Id).ToArray();
 
@@ -324,7 +324,7 @@ namespace Stump.Server.AuthServer.Managers
             if (server != null && server.Connected && server.IPCClient != null)
             {
                 server.IPCClient.SendRequest<DisconnectedClientMessage>(new DisconnectClientMessage(account.Id),
-                    msg => callback(msg.Disconnected), msg => callback(false));
+                    msg => callback(msg.Disconnected), msg => errorCallBack());
             }
             else
             {

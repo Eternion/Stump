@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         /// <summary>
         ///     In seconds
         /// </summary>
-        [Variable(DefinableRunning = true)] public static int DefaultRequestTimeout = 5;
+        [Variable(DefinableRunning = true)] public static int DefaultRequestTimeout = 60;
 
         /// <summary>
         ///     In milliseconds
@@ -382,6 +382,12 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
         {
+            if (request.TimedOut)
+            {
+                logger.Warn("Message {0} already timed out, message ignored", request.RequestMessage.GetType());
+                return;
+            }
+
             request.ProcessMessage(answer);
         }
 

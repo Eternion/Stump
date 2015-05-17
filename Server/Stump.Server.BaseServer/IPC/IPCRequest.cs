@@ -40,6 +40,12 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
+        bool TimedOut
+        {
+            get;
+            set;
+        }
+
         bool ProcessMessage(IPCMessage message);
     }
 
@@ -59,6 +65,12 @@ namespace Stump.Server.BaseServer.IPC
         }
 
         public IPCMessage RequestMessage
+        {
+            get;
+            set;
+        }
+
+        public bool TimedOut
         {
             get;
             set;

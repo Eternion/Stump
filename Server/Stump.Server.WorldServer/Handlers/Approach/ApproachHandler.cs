@@ -88,6 +88,13 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
         private static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
         {
+            Character dummy;
+            if (AccountManager.Instance.IsAccountBlocked(message.Account.Id, out dummy))
+            {
+                logger.Error("Account blocked, connection unallowed");
+                client.Disconnect();
+            }
+
             lock (ConnectionQueue.SyncRoot)
                 ConnectionQueue.Remove(client);
 
