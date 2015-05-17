@@ -166,13 +166,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 // summoning is the priority
                 if (( category & SpellCategory.Summoning ) != 0 && Fighter.CanSummon())
                 {
-                    var adjacentCell = m_environment.GetFreeAdjacentCell();
+                    var adjacentCell = Fighter.GetCastZoneSet(spell.CurrentSpellLevel, Fighter.Position.Point).EnumerateValidPoints().
+                        OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).
+                        FirstOrDefault(x => m_environment.CellInformationProvider.IsCellWalkable(x.CellId));
 
                     if (adjacentCell == null)
                         continue;
 
                     cast.IsSummoningSpell = true;
-                    cast.SummonCell = adjacentCell;
+                    cast.SummonCell = Fighter.Map.Cells[adjacentCell.CellId];
                 }
                 else
                 {
@@ -273,7 +275,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             {
                 // check if the second spell can be casted before
                 var max = MaxConsecutiveSpellCast(casts[0].Spell, Fighter.AP);
-                if (casts[1].Spell.CurrentSpellLevel.ApCost <= Fighter.AP - max*casts[0].Spell.CurrentSpellLevel.ApCost)
+                if (casts[1].Spell.CurrentSpellLevel.ApCost <= Fighter.AP - max*casts[0].Spell.CurrentSpellLevel.ApCost &&
+                    casts[0].MoveBefore != null)
                 {
                     if (casts[1].MoveBefore == null)
                         return casts[1];
@@ -281,7 +284,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     var pathfinder = new Pathfinder(m_environment.CellInformationProvider);
                     var path = pathfinder.FindPath(casts[1].MoveBefore.EndCell.Id, casts[0].MoveBefore != null ? casts[0].MoveBefore.EndCell.Id : Fighter.Cell.Id, false);
 
-                    if (path.MPCost + casts[1].MPCost <= Fighter.MP)
+                    if (!path.IsEmpty() && path.MPCost + casts[1].MPCost <= Fighter.MP)
                         return casts[1];
                 }
             }
@@ -295,6 +298,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 return 1;
 
             var max = (int)(ap/spell.CurrentSpellLevel.ApCost);
+            var category = SpellIdentifier.GetSpellCategories(spell);
+
+            if ((category & SpellCategory.Summoning) != 0)
+            {
+                return 1;
+            }
 
             if (spell.CurrentSpellLevel.MaxCastPerTarget > 0 &&
                 max > spell.CurrentSpellLevel.MaxCastPerTarget)
