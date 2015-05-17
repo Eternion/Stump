@@ -32,8 +32,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (!Fighter.CanMove())
                 return RunStatus.Failure;
 
-            var zone = Fighter.Brain.Environment.GetVisibleEnemies()
-                              .Select(x => (Set)new LozengeSet(x.Position.Point, MaxRange, MinRange))
+            var enemies = Fighter.Brain.Environment.GetVisibleEnemies().ToArray();
+
+            if (enemies.Length <= 0)
+                return RunStatus.Failure;
+
+            var zone = enemies.Select(x => (Set)new LozengeSet(x.Position.Point, MaxRange, MinRange))
                               .Aggregate((set, current) => set.IntersectWith(current));
 
             var result = zone.EnumerateValidPoints().Where(x =>
