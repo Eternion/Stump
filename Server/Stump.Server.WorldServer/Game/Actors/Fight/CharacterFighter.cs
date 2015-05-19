@@ -327,7 +327,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Fight.IsDeathTemporarily)
                 Stats.Health.DamageTaken = m_damageTakenBeforeFight;
             else if (Stats.Health.Total <= 0)
-                Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
+                Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
         }
 
         public void EnterDisconnectedState()

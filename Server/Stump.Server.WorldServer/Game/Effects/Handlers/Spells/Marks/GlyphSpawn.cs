@@ -29,11 +29,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
                 logger.Error("Cannot find glyph spell id = {0}, level = {1}. Casted Spell = {2}", Dice.DiceNum, Dice.DiceFace, Spell.Id);
                 return false;
             }
-            
+
+            var spell = Spell;
+
+            if (spell.Id == (int) SpellIdEnum.DAIPIPAY)
+                spell = glyphSpell;
+
             // todo : find usage of Dice.Value
             var glyph = EffectZone.ShapeType == SpellShapeEnum.Q ?
-                new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, GameActionMarkCellsTypeEnum.CELLS_CROSS, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell)) :
-                new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell));
+                new Glyph((short)Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell, GameActionMarkCellsTypeEnum.CELLS_CROSS, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell)) :
+                new Glyph((short)Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell));
 
             Fight.AddTriger(glyph);
 

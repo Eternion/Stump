@@ -24,6 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
     [EffectHandler(EffectsEnum.Effect_SubDodgeMPProbability)]
     [EffectHandler(EffectsEnum.Effect_SubAPAttack)]
     [EffectHandler(EffectsEnum.Effect_SubMPAttack)]
+    [EffectHandler(EffectsEnum.Effect_SubHealBonus)]
     public class StatsDebuff : SpellEffectHandler
     {
         public StatsDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -89,7 +90,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     return PlayerFields.APAttack;
                 case EffectsEnum.Effect_SubMPAttack:
                     return PlayerFields.MPAttack;
-
+                case EffectsEnum.Effect_SubHealBonus:
+                    return PlayerFields.HealBonus;
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }
