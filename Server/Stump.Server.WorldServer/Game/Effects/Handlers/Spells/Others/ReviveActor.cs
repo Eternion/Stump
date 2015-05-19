@@ -22,6 +22,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             private set;
         }
 
+        public override bool CanApply()
+        {
+            return base.CanApply();
+            //return Caster.Team.GetLastDeadFighter() != null;
+        }
+
         public override bool Apply()
         {
             var integerEffect = GenerateEffect();

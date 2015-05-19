@@ -2344,7 +2344,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Direction = dest.Direction;
 
             // energy lost go here
-            Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
+            Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
 
             var handler = Died;
             if (handler != null) handler(this);
@@ -2564,7 +2564,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (regainedLife > 0)
             {
-                Stats.Health.DamageTaken -= (short) regainedLife;
+                Stats.Health.DamageTaken -= regainedLife;
             }
 
             CharacterHandler.SendLifePointsRegenEndMessage(Client, regainedLife);
@@ -2587,7 +2587,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (regainedLife > 0)
             {
-                Stats.Health.DamageTaken -= (short) regainedLife;
+                Stats.Health.DamageTaken -= regainedLife;
                 CharacterHandler.SendUpdateLifePointsMessage(Client);
             }
 
