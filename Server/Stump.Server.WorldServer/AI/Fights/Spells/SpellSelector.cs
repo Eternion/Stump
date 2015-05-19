@@ -325,7 +325,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 return null;
             
             foreach (var handler in cast.GetEffectHandlers())
-            {            
+            {
+                if (handler.CanApply())
+                    return null;
+                       
                 handler.CastCell = castCell;
                 foreach (var target in handler.GetAffectedActors())
                 {
