@@ -155,7 +155,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             Dispose();
         }
 
-        public bool IsGonnaChangeZone()
+        public virtual bool IsGonnaChangeZone()
         {
             return NextMap == null || NextMap.Area.Id != Area.Id;
         }

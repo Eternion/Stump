@@ -87,12 +87,12 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public bool IsFriend(int accountId)
         {
-            return Friends.ToArray().FirstOrDefault(x => x.Account.Id == accountId) != null;
+            return m_friends.Values.Any(x => x.Account.Id == accountId);
         }
 
         public bool IsIgnored(int accountId)
         {
-            return Ignoreds.ToArray().FirstOrDefault(x => x.Account.Id == accountId) != null;
+            return m_ignoreds.Values.Any(x => x.Account.Id == accountId);
         }
 
         public bool AddFriend(WorldAccount friendAccount)
@@ -141,7 +141,7 @@ namespace Stump.Server.WorldServer.Game.Social
         public bool RemoveFriend(Friend friend)
         {
             if (friend.IsOnline())
-                OnCharacterLogout(friend.Character); // unregister the events
+                OnFriendLogout(friend.Character); // unregister the events
 
             Friend dummy;
             if (m_friends.TryRemove(friend.Account.Id, out dummy))
@@ -217,6 +217,7 @@ namespace Stump.Server.WorldServer.Game.Social
             if (m_ignoreds.TryRemove(ignored.Account.Id, out dummy))
             {
                 m_relationsToRemove.Push(ignored.Relation);
+                ignored.SetOffline();
                 FriendHandler.SendIgnoredDeleteResultMessage(Owner.Client, true, ignored.Session,
                     ignored.Account.Nickname);
 
@@ -244,14 +245,22 @@ namespace Stump.Server.WorldServer.Game.Social
             }
             Ignored ignored;
             if (m_ignoreds.TryGetValue(character.Client.WorldAccount.Id, out ignored))
+            {
                 ignored.SetOnline(character);
+                OnIgnoredOnline(ignored);
+            }
         }
 
         private void OnFriendOnline(Friend friend)
         {
-            friend.Character.LoggedOut += OnCharacterLogout;
+            friend.Character.LoggedOut += OnFriendLogout;
             friend.Character.LevelChanged += OnLevelChanged;
             friend.Character.ContextChanged += OnContextChanged;
+        }
+
+        private void OnIgnoredOnline(Ignored ignored)
+        {
+            ignored.Character.LoggedOut += OnIgnoredLogout;
         }
 
         private void OnContextChanged(Character character, bool infight)
@@ -286,18 +295,33 @@ namespace Stump.Server.WorldServer.Game.Social
                 CharacterHandler.SendCharacterLevelUpInformationMessage(Owner.Client, character, character.Level);
         }
 
-        private void OnCharacterLogout(Character character)
+        private void OnFriendLogout(Character character)
         {
             var friend = TryGetFriend(character);
 
             if (friend == null)
                 logger.Error("Sad, friend bound with character {0} is not found :(", character);
             else
+            {
                 friend.SetOffline();
 
-            character.LoggedOut -= OnCharacterLogout;
-            character.LevelChanged -= OnLevelChanged;
-            character.ContextChanged -= OnContextChanged;
+                character.LoggedOut -= OnFriendLogout;
+                character.LevelChanged -= OnLevelChanged;
+                character.ContextChanged -= OnContextChanged;
+            }
+        }
+
+        private void OnIgnoredLogout(Character character)
+        {
+            Ignored ignored;
+            if (!m_ignoreds.TryGetValue(character.Id, out ignored))
+                logger.Error("Ignored {0} disconnect but not found", character);
+            else
+            {
+                ignored.SetOffline();
+
+                character.LoggedOut -= OnIgnoredLogout;
+            }
         }
 
         public void Load()

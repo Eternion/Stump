@@ -335,7 +335,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             }
 
             if (damages != null)
-                damages.AffectedCells = cast.GetEffectHandlers().SelectMany(x => x.AffectedCells).ToArray();
+                damages.AffectedCells = cast.GetEffectHandlers().SelectMany(x => x.AffectedCells).Distinct().ToArray();
 
             return damages;
         }

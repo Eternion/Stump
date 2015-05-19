@@ -1986,6 +1986,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return false;
         }
 
+        public override bool IsGonnaChangeZone()
+        {
+            return base.IsGonnaChangeZone() || !IsLoggedIn;
+        }
+
         public override bool StartMove(Path movementPath)
         {
             if (IsFighting() || MustBeJailed() || !IsInJail())
