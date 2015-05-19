@@ -37,9 +37,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public override StatsData Clone()
+        public override StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            var clone = new StatsAP(Owner, ValueBase, Limit)
+            var clone = new StatsAP(owner, ValueBase, Limit)
             {
                 Equiped = Equiped,
                 Used = 0
