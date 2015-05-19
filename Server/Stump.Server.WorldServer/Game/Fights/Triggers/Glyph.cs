@@ -12,7 +12,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Glyph : MarkTrigger
     {
-        private static readonly int[] SPELLS_GLYPH_END_TURN = {13, 2035}; // glyphe de répulsion
+        private static readonly int[] SPELLS_GLYPH_END_TURN =
+        {
+            (int)SpellIdEnum.GLYPHE_DE_RÉPULSION,
+            (int)SpellIdEnum.GLYPHE_DE_RÉPULSION_DU_DOPEUL,
+            (int)SpellIdEnum.GLYPHE_DAIVAIN
+        };
 
         public Glyph(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell,
                      Cell centerCell, byte size, Color color)
