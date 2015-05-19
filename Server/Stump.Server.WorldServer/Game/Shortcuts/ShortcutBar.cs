@@ -62,9 +62,16 @@ namespace Stump.Server.WorldServer.Game.Shortcuts
             if (shortcut is ShortcutSpell && barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
                 AddSpellShortcut(shortcut.slot, ((ShortcutSpell) shortcut).spellId);
             else if (shortcut is ShortcutObjectItem && barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
-                AddItemShortcut(shortcut.slot, Owner.Inventory.TryGetItem(((ShortcutObjectItem) shortcut).itemUID));
+            {
+                var item = Owner.Inventory.TryGetItem(((ShortcutObjectItem) shortcut).itemUID);
+
+                if (item != null)
+                    AddItemShortcut(shortcut.slot, item);
+                else
+                    ShortcutHandler.SendShortcutBarAddErrorMessage(Owner.Client);
+            }
             else if (shortcut is ShortcutObjectPreset && barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
-                AddPresetShortcut(shortcut.slot, ((ShortcutObjectPreset)shortcut).presetId);
+                AddPresetShortcut(shortcut.slot, ((ShortcutObjectPreset) shortcut).presetId);
             else
             {
                 ShortcutHandler.SendShortcutBarAddErrorMessage(Owner.Client);
