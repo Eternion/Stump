@@ -777,7 +777,7 @@
         /// <summary>
         /// Kills and replaces with a summon
         /// </summary>
-        Effect_405 = 405,
+        Effect_KillAndSummon = 405,
         /// <summary>
         /// Removes the effects of %1
         /// </summary>

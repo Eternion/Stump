@@ -74,6 +74,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_RestoreHPPercent:
                     return SpellCategory.Healing;
                 case EffectsEnum.Effect_Kill:
+                case EffectsEnum.Effect_KillAndSummon:
                     return SpellCategory.Damages;
                 case EffectsEnum.Effect_Summon:
                 case EffectsEnum.Effect_Double:
@@ -213,6 +214,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_ReduceEffectsDuration:
                 case EffectsEnum.Effect_GiveHpPercentWhenAttack:
                 case EffectsEnum.Effect_GiveHPPercent:
+                case EffectsEnum.Effect_DispelMagicEffects:
                     return SpellCategory.Curse;
             }
             return SpellCategory.None;

@@ -57,12 +57,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                         triggerHandler = EvolutionBuffTrigger;
                         break;
                     case SpellIdEnum.POLLEN:
-                        triggerType = BuffTriggerType.AFTER_ATTACKED;
                         triggerHandler = PollenBuffTrigger;
+                        break;
+                    case SpellIdEnum.MÉRULE_TRAÇON:
+                        triggerHandler = MeruleBuffTrigger;
+                        break;
+                    case SpellIdEnum.MANSOPOUDRAGE:
+                    case SpellIdEnum.HAIMJI:
+                        triggerType = BuffTriggerType.PUSH;
                         break;
                     case SpellIdEnum.GLOURS_POURSUITE:
                     case SpellIdEnum.GLOURSON_DE_CLOCHE:
-                    case SpellIdEnum.MÉRULE_TRAÇON:
                         break;
                     default:
                         return false;
@@ -165,16 +170,36 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (damage.Source == null)
                 return;
 
+            var target = buff.Target;
+
+            if (damage.Source == target)
+                return;
+
+            if (damage.Spell != null && damage.Spell.Id != (int)SpellIdEnum.COUP_DE_POING)
+                return;
+
+            target.CastSpell(buff.Spell, target.Cell, true, true);
+        }
+
+        private static void MeruleBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            var damage = token as Fights.Damage;
+            if (damage == null)
+                return;
+
+            if (damage.Source == null)
+                return;
+
             var source = damage.Source;
             var target = buff.Target;
 
             if (damage.Source == target)
                 return;
 
-            if (!target.Position.Point.IsAdjacentTo(source.Position.Point))
+            if (damage.Spell == null || damage.Spell.Id == (int)SpellIdEnum.COUP_DE_POING)
                 return;
 
-            target.CastSpell(buff.Spell, target.Cell, true, true);
+            source.CastSpell(buff.Spell, source.Cell, true, true);
         }
 
         private static bool IsValidSpell(FightActor actor, Spell spell)

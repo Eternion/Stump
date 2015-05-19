@@ -137,6 +137,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Monsters\MeruletteBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\SporakneBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\RoyalMouthBrain.cs" />
     <Compile Include="AI\Fights\Spells\SpellCast.cs" />
@@ -355,6 +356,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Move\Advance.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Attract.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Retreat.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
@@ -584,6 +586,8 @@
     <Compile Include="Game\Spells\Casts\Elementary\CawotteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\OldToyParadeCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\PunishmentCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\VertigoCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\BombExplodSpellCastHandler.cs" />

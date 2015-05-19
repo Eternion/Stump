@@ -76,7 +76,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
                 if (stateBuff == null)
                     return;
 
+                Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+
                 player.RemoveAndDispellBuff(stateBuff);
+
+                Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
             }
 
             if (!(player is CharacterFighter) || player.Team.Id == Fighter.Team.Id)
@@ -109,24 +113,24 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             Fighter.CastSpell(spell, Fighter.Cell, true, true);
         }
 
-        private void OnBossMoved(FightActor fighter, bool takeDamage)
+        private void OnBossMoved(FightActor source, bool takeDamage)
         {
-            if (fighter == Fighter)
+            if (source == Fighter)
                 return;
 
             //State Résuglours
             GetEffectHandler(SpellIdEnum.GLOURSONGEUR, Fighter.Cell, 3).Apply();
         }
 
-        private void OnActorMoved(FightActor fighter, bool takeDamage)
+        private void OnActorMoved(FightActor source, bool takeDamage)
         {
             if (!takeDamage)
                 return;
 
             //Kill
-            var handler = GetEffectHandler(SpellIdEnum.GLOURSONGEUR, fighter.Cell, 1);
+            var handler = GetEffectHandler(SpellIdEnum.GLOURSONGEUR, source.Cell, 1);
 
-            handler.AddAffectedActor(fighter);
+            handler.AddAffectedActor(source);
             handler.Apply();
         }
 

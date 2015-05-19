@@ -41,7 +41,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             if (damage == null)
                 return;
 
-            HealHpPercent(damage.Source, damage.Amount, integerEffect.Value);
+            var source = damage.Source;
+            if (Spell.Id == (int)SpellIdEnum.MANSOMNAMBULE)
+                source = buff.Target;
+
+            HealHpPercent(source, damage.Amount, integerEffect.Value);
         }
 
         private static void HealHpPercent(FightActor actor, int amount, int percent)

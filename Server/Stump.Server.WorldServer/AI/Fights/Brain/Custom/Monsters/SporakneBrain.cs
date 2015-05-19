@@ -5,10 +5,10 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Monsters
 {
-    [BrainIdentifier(2900)]
-    public class MeruletteBrain : Brain
+    [BrainIdentifier(2969)]
+    public class SporakneBrain : Brain
     {
-        public MeruletteBrain(AIFighter fighter)
+        public SporakneBrain(AIFighter fighter)
             : base(fighter)
         {
             fighter.Fight.TurnStarted += OnTurnStarted;
@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Monsters
             if (fighter != Fighter)
                 return;
 
-            fighter.CastSpell(new Spell((int)SpellIdEnum.MÉRULE_TRAÇON, 1), fighter.Cell, true, true);
+            fighter.CastSpell(new Spell((int)SpellIdEnum.HAIMJI, 1), fighter.Cell, true, true);
             fighter.Fight.TurnStarted -= OnTurnStarted;
         }
     }
