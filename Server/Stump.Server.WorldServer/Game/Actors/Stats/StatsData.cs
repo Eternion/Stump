@@ -191,9 +191,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             return string.Format("{0}({1}+{2}+{3})", Total, Base, Equiped, Context);
         }
 
-        public virtual StatsData Clone()
+        public virtual StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            var clone = new StatsData(Owner, Name, ValueBase, Limit, m_limitEquippedOnly)
+            var clone = new StatsData(owner, Name, ValueBase, Limit, m_limitEquippedOnly)
             {
                 Base = Base,
                 Context = 0,
@@ -202,14 +202,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             };
 
             return clone;
-        }
-
-        public StatsData CloneAndChangeOwner(IStatsOwner owner)
-        {
-            var data = Clone();
-            data.Owner = owner;
-
-            return data;
         }
     }
 }

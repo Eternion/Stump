@@ -144,6 +144,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Name;
         }
 
+        protected override void OnDisposed()
+        {
+            m_stats.MP.Modified -= OnMPModified;
+            base.OnDisposed();
+        }
+
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             return new GameFightMonsterInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
