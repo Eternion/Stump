@@ -25,6 +25,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
     [EffectHandler(EffectsEnum.Effect_SubAPAttack)]
     [EffectHandler(EffectsEnum.Effect_SubMPAttack)]
     [EffectHandler(EffectsEnum.Effect_SubHealBonus)]
+    [EffectHandler(EffectsEnum.Effect_SubNeutralResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_SubEarthResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_SubWaterResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_SubAirResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_SubFireResistPercent)]
     public class StatsDebuff : SpellEffectHandler
     {
         public StatsDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -92,6 +97,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     return PlayerFields.MPAttack;
                 case EffectsEnum.Effect_SubHealBonus:
                     return PlayerFields.HealBonus;
+                case EffectsEnum.Effect_SubNeutralResistPercent:
+                    return PlayerFields.NeutralResistPercent;
+                case EffectsEnum.Effect_SubEarthResistPercent:
+                    return PlayerFields.EarthResistPercent;
+                case EffectsEnum.Effect_SubWaterResistPercent:
+                    return PlayerFields.WaterResistPercent;
+                case EffectsEnum.Effect_SubAirResistPercent:
+                    return PlayerFields.AirResistPercent;
+                case EffectsEnum.Effect_SubFireResistPercent:
+                    return PlayerFields.FireResistPercent;
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }
