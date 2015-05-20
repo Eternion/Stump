@@ -674,8 +674,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #region Père Fwetar
 
             // Parade des vieux jouets (913)
-            // NONE => SELF
-            FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
             // Vilain Garnement (2557)
             // NONE => ONLY_SELF
@@ -879,8 +879,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2771, EffectsEnum.Effect_HealHP_108, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
             // Malédiction de la Cawotte (2773)
-            // NONE => SELF
-            FixEffectOnAllLevels(2773, EffectsEnum.Effect_AddVitality, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(2773, EffectsEnum.Effect_AddVitality, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(2773, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
+            FixCriticalEffectOnAllLevels(2773, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
 
             #endregion
 
