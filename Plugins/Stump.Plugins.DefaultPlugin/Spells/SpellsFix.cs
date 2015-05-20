@@ -674,8 +674,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #region Père Fwetar
 
             // Parade des vieux jouets (913)
-            // NONE => ONLY_SELF
-            FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            // NONE => SELF
+            FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
 
             // Vilain Garnement (2557)
             // NONE => ONLY_SELF
@@ -869,6 +869,18 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Bouboule de Neige (864)
             // NONE => ENEMY_ALL
             FixEffectOnAllLevels(2220, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            #endregion
+
+            #region Peluche Wabbit
+
+            // Rembourrage (2771)
+            // NONE => ALLY_ALL
+            FixEffectOnAllLevels(2771, EffectsEnum.Effect_HealHP_108, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            // Malédiction de la Cawotte (2773)
+            // NONE => SELF
+            FixEffectOnAllLevels(2773, EffectsEnum.Effect_AddVitality, (level, effect, critical) => effect.Targets = SpellTargetType.SELF);
 
             #endregion
 
