@@ -671,6 +671,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Père Fwetar
+
+            // Infantophagie (2792)
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(2792, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            #endregion
+
             #endregion
 
             #region Summon
@@ -844,7 +852,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2220, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(2220, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
             FixEffectOnAllLevels(2220, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
-            FixEffectOnAllLevels(2220, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2220, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
 
             #endregion
 
