@@ -673,9 +673,17 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region Père Fwetar
 
+            // Parade des vieux jouets (913)
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            // Vilain Garnement (2557)
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(2557, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
             // Infantophagie (2792)
             // NONE => ONLY_SELF
-            FixEffectOnAllLevels(2792, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(2792, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
 
             #endregion
 
