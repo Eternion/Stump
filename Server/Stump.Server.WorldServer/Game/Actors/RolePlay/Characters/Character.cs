@@ -127,6 +127,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnLoggedOut()
         {
+            if (Fight != null && Fight.State == FightState.Fighting)
+                Record.LeftFightId = Fight.Id;
+            else
+                Record.LeftFightId = null;
+
             if (GuildMember != null)
                 GuildMember.OnCharacterDisconnected(this);
 
@@ -2487,6 +2492,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Spectator;
         }
 
+        private CharacterFighter RejoinFightAfterDisconnection(CharacterFighter oldFighter)
+        {
+            NextMap = Map; // we do not leave the map
+            Map.Leave(this);
+            StopRegen();
+
+            ContextHandler.SendGameContextDestroyMessage(Client);
+            ContextHandler.SendGameContextCreateMessage(Client, 2);
+            ContextRoleplayHandler.SendCurrentMapMessage(Client, Map.Id);
+            ContextRoleplayHandler.SendMapComplementaryInformationsDataMessage(Client);
+
+
+            oldFighter.RestoreFighterFromDisconnection(this);
+            Fighter = oldFighter;
+            
+            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType);
+            Fighter.Fight.RejoinFightFromDisconnection(Fighter);
+            OnCharacterContextChanged(true);
+
+            return Fighter;
+        }
+
         /// <summary>
         /// Rejoin the map after a fight
         /// </summary>
@@ -2885,12 +2912,38 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (IsInWorld)
                 return;
 
-            Map.Area.AddMessage(() =>
+            CharacterFighter fighter = null;
+            if (Record.LeftFightId != null)
             {
-                Map.Enter(this);
+                var fight = FightManager.Instance.GetFight(Record.LeftFightId.Value);
 
-                StartRegen();
-            });
+                if (fight != null)
+                {
+                    fighter = fight.GetLeaver(Id);
+                }
+            }
+
+            if (fighter != null)
+            {
+                Map.Area.AddMessage(() =>
+                {
+                    RejoinFightAfterDisconnection(fighter);
+                });
+            }
+            else
+            {
+                ContextHandler.SendGameContextDestroyMessage(Client);
+                ContextHandler.SendGameContextCreateMessage(Client, 1);
+
+                RefreshStats();
+
+                Map.Area.AddMessage(() =>
+                {
+                    Map.Enter(this);
+
+                    StartRegen();
+                });
+            }
 
             World.Instance.Enter(this);
             m_inWorld = true;
