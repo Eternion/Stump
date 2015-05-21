@@ -9,11 +9,13 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Logging;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -261,6 +263,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 SendCharactersListWithModificationsMessage(client);
 
 
+                var characterInFight = FindCharacterFightReconnection(client);
+                if (characterInFight != null)
+                {
+                    client.ForceCharacterSelection = characterInFight;
+                    SendCharacterSelectedForceMessage(client, characterInFight.Id);
+                }
+
                 if (client.WorldAccount != null && client.StartupActions.Count > 0)
                 {
                     StartupHandler.SendStartupActionsListMessage(client, client.StartupActions);
@@ -272,6 +281,26 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 client.DisconnectLater(1000);
             }
         }
+
+        [WorldHandler(CharacterSelectedForceReadyMessage.Id, IsGamePacket = false, ShouldBeLogged = false)]
+        public static void HandleCharacterSelectedForceReadyMessage(WorldClient client, CharacterSelectedForceReadyMessage message)
+        {
+            if (client.ForceCharacterSelection == null)
+                client.Disconnect();
+            else
+                CommonCharacterSelection(client, client.ForceCharacterSelection);
+        }
+
+        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
+        {
+            return (from characterInFight in client.Characters.Where(x => x.LeftFightId != null)
+                    let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value)
+                    where fight != null
+                    let fighter = fight.GetLeaver(characterInFight.Id)
+                    where fighter != null
+                    select characterInFight).FirstOrDefault();
+        }
+
 
         public static void SendCharactersListMessage(WorldClient client)
         {
@@ -338,6 +367,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)
         {
             client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations()));
+        }
+
+        public static void SendCharacterSelectedForceMessage(IPacketReceiver client, int id)
+        {
+            client.Send(new CharacterSelectedForceMessage(id));
         }
 
         public static void SendCharacterCapabilitiesMessage(WorldClient client)

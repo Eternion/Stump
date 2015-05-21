@@ -321,6 +321,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         bool CanBeSeen(Cell from, Cell to, bool throughEntities = false);
         bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false);
         int GetPlacementTimeLeft();
+
+        void RejoinFightFromDisconnection(CharacterFighter character);
     }
 
     // this is necessary since we can't read static field dynamically in a generic class
@@ -1004,7 +1006,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             Cell cell;
             if (!FindRandomFreeCell(fighter, out cell))
             {
-                fighter.LeaveFight(); // no place more than we kick the actor to avoid bugs
+                if (fighter is CharacterFighter)
+                    ((CharacterFighter)fighter).LeaveFight(); // no place more than we kick the actor to avoid bugs
+                else
+                    fighter.Team.RemoveFighter(fighter);
                 return false;
             }
 
@@ -1635,6 +1640,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State == FightState.Placement)
             {
                 actor.FighterLeft += OnPlayerLeft;
+
                 actor.ReadyStateChanged += OnSetReady;
                 actor.PrePlacementChanged += OnChangePreplacementPosition;
             }
@@ -1642,6 +1648,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State == FightState.Fighting)
             {
                 actor.FighterLeft += OnPlayerLeft;
+
                 actor.StartMoving += OnStartMoving;
                 actor.StopMoving += OnStopMoving;
                 actor.PositionChanged += OnPositionChanged;
@@ -1705,7 +1712,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null && !fighter.IsFighterTurn())
                 return;
 
-            if (path.IsEmpty() || path.MPCost == 0)
+            if (path.IsEmpty() || path.MPCost <= 0)
                 return;
 
             StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
@@ -2031,50 +2038,48 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnPlayerLeft(FightActor fighter)
         {
+            if (!(fighter is CharacterFighter))
+            {
+                logger.Error("Only characters can leave a fight");
+                return;
+            }
+
+            var characterFighter = ((CharacterFighter)fighter);
+
             if (State == FightState.Placement)
             {
-                var characterFighter = ((CharacterFighter)fighter);
-
-                if (characterFighter != null)
-                    characterFighter.ResetFightProperties();
+                characterFighter.ResetFightProperties();
 
                 if (CheckFightEnd())
                     return;
 
                 fighter.Team.RemoveFighter(fighter);
-
-                if (characterFighter == null)
-                    return;
-
                 characterFighter.Character.RejoinMap();
             }
             else
             {
-                fighter.Die();
-
-                if (fighter is CharacterFighter && ((CharacterFighter) fighter).Character.IsLoggedIn)
+                if (characterFighter.Character.IsLoggedIn)
                 {
-                    // wait the character to be ready
-                    var readyChecker = new ReadyChecker(this, new[] { ( (CharacterFighter)fighter ) });
-                    readyChecker.Success += obj => OnPlayerReadyToLeave(fighter as CharacterFighter);
-                    readyChecker.Timeout += (obj, laggers) => OnPlayerReadyToLeave(fighter as CharacterFighter);
+                    fighter.Die();
 
-                    ((CharacterFighter)fighter).PersonalReadyChecker = readyChecker;
-                    // Clients.Remove(character.Client); // can be instant so we remove him before to start the checker .. why ???
+                    // wait the character to be ready
+                    var readyChecker = new ReadyChecker(this, new[] { characterFighter });
+                    readyChecker.Success += obj => OnPlayerReadyToLeave(characterFighter);
+                    readyChecker.Timeout += (obj, laggers) => OnPlayerReadyToLeave(characterFighter);
+
+                    characterFighter.PersonalReadyChecker = readyChecker;
                     readyChecker.Start();
                 }
                 else
                 {
                     var isfighterTurn = fighter.IsFighterTurn();
-
-                    ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
+                    characterFighter.EnterDisconnectedState();
 
                     if (!CheckFightEnd() && isfighterTurn)
                         StopTurn();
 
                     fighter.ResetFightProperties();
-
-                    fighter.Team.RemoveFighter(fighter);
+                    
                     fighter.Team.AddLeaver(fighter);
                     m_leavers.Add(fighter);
                 } 
@@ -2085,6 +2090,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (fighter.Fight != fighter.Character.Fight)
                 return;
+
 
             fighter.PersonalReadyChecker = null;
             var isfighterTurn = fighter.IsFighterTurn();
@@ -2106,7 +2112,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             fighter.ResetFightProperties();
             fighter.Character.RejoinMap();
 
-            fighter.Team.RemoveFighter(fighter);
             fighter.Team.AddLeaver(fighter);
             m_leavers.Add(fighter);
         }
@@ -2117,6 +2122,30 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             character.Fighter.LeaveFight();
+        }
+
+        public void RejoinFightFromDisconnection(CharacterFighter fighter)
+        {
+            fighter.Team.RemoveLeaver(fighter);
+            m_leavers.Remove(fighter);
+            fighter.LeaveDisconnectedState();
+
+            Clients.Add(fighter.Character.Client);
+
+            SendGameFightJoinMessage(fighter);
+            
+            foreach (var fightMember in GetAllFighters())
+                ContextHandler.SendGameFightShowFighterMessage(fighter.Character.Client, fightMember);
+
+            fighter.Character.RefreshStats();
+
+            ContextHandler.SendGameEntitiesDispositionMessage(fighter.Character.Client, GetAllFighters());
+            ContextHandler.SendGameFightResumeMessage(fighter.Character.Client, fighter);
+            ContextHandler.SendGameFightTurnListMessage(fighter.Character.Client, this);
+            ContextHandler.SendGameFightSynchronizeMessage(fighter.Character.Client, this);
+            ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
+            ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, ChallengersTeam);
+            ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, DefendersTeam);
         }
 
         #endregion
