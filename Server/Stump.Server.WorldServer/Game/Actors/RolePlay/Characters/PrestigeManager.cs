@@ -40,49 +40,42 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private static readonly EffectInteger[][] m_prestigesBonus =
         {
+            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 2)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddVitality, 25)},
+            new[]
+            {
+                new EffectInteger(EffectsEnum.Effect_AddChance, 20),
+                new EffectInteger(EffectsEnum.Effect_AddIntelligence, 20),
+                new EffectInteger(EffectsEnum.Effect_AddWisdom, 20),
+                new EffectInteger(EffectsEnum.Effect_AddAgility, 20),
+                new EffectInteger(EffectsEnum.Effect_AddStrength, 20)
+            },
             new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 3)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddVitality, 100)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddVitality, 50)},
             new[]
             {
-                new EffectInteger(EffectsEnum.Effect_AddChance, 25),
-                new EffectInteger(EffectsEnum.Effect_AddIntelligence, 25),
-                new EffectInteger(EffectsEnum.Effect_AddWisdom, 25),
-                new EffectInteger(EffectsEnum.Effect_AddAgility, 25),
-                new EffectInteger(EffectsEnum.Effect_AddStrength, 25)
+                new EffectInteger(EffectsEnum.Effect_AddChance, 30),
+                new EffectInteger(EffectsEnum.Effect_AddIntelligence, 30),
+                new EffectInteger(EffectsEnum.Effect_AddWisdom, 30),
+                new EffectInteger(EffectsEnum.Effect_AddAgility, 30),
+                new EffectInteger(EffectsEnum.Effect_AddStrength, 30)
             },
-            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 6)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddVitality, 100)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 5)},
+            new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 20)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 10)},
             new[]
             {
-                new EffectInteger(EffectsEnum.Effect_AddChance, 50),
-                new EffectInteger(EffectsEnum.Effect_AddIntelligence, 50),
-                new EffectInteger(EffectsEnum.Effect_AddWisdom, 50),
-                new EffectInteger(EffectsEnum.Effect_AddAgility, 50),
-                new EffectInteger(EffectsEnum.Effect_AddStrength, 50)
+                new EffectInteger(EffectsEnum.Effect_AddAirElementReduction, 10),
+                new EffectInteger(EffectsEnum.Effect_AddEarthElementReduction, 10),
+                new EffectInteger(EffectsEnum.Effect_AddFireElementReduction, 10),
+                new EffectInteger(EffectsEnum.Effect_AddWaterElementReduction, 10),
+                new EffectInteger(EffectsEnum.Effect_AddNeutralElementReduction, 10)
             },
-            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 9)},
-            new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 25)},
-            new[]
-            {
-                new EffectInteger(EffectsEnum.Effect_AddAirElementReduction, 5),
-                new EffectInteger(EffectsEnum.Effect_AddEarthElementReduction, 5),
-                new EffectInteger(EffectsEnum.Effect_AddFireElementReduction, 5),
-                new EffectInteger(EffectsEnum.Effect_AddWaterElementReduction, 5),
-                new EffectInteger(EffectsEnum.Effect_AddNeutralElementReduction, 5)
-            },
-            new[] {new EffectInteger(EffectsEnum.Effect_AddDamageBonus, 12)},
-            new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 50)},
-            new[]
-            {
-                new EffectInteger(EffectsEnum.Effect_AddAirResistPercent, 5),
-                new EffectInteger(EffectsEnum.Effect_AddEarthResistPercent, 5),
-                new EffectInteger(EffectsEnum.Effect_AddFireResistPercent, 5),
-                new EffectInteger(EffectsEnum.Effect_AddWaterResistPercent, 5),
-                new EffectInteger(EffectsEnum.Effect_AddNeutralResistPercent, 5)
-            },
+            new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 20)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddVitality, 50)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddCriticalDamageBonus, 7)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddRange, 1)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddMP_128, 1)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddAP_111, 1)},
 
         };
 

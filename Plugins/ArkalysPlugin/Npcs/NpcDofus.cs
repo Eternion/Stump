@@ -123,13 +123,12 @@ namespace ArkalysPlugin.Npcs
     {
         private readonly List<RequiredItem> REQUIRED_ITEMS = new List<RequiredItem>
             {
-                new RequiredItem(972, 100),
-                new RequiredItem(20015, 50),
-                new RequiredItem(694, 45),
-                new RequiredItem(7113, 40),
-                new RequiredItem(739, 35),
-                new RequiredItem(7754, 30),
-                new RequiredItem(6980, 25),
+                new RequiredItem(972, 50),
+                new RequiredItem(20015, 30),
+                new RequiredItem(694, 35),
+                new RequiredItem(7113, 30),
+                new RequiredItem(739, 25),
+                new RequiredItem(6980, 15),
                 new RequiredItem(20140, 20)
             };
 
