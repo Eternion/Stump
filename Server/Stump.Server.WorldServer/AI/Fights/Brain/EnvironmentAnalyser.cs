@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public MapPoint[] GetMoveZone()
         {
-            return m_moveZone ?? (m_moveZone = Pathfinding.FindReachableCells(Fighter.Position.Point, Fighter.MP));
+            return m_moveZone = Pathfinding.FindReachableCells(Fighter.Position.Point, Fighter.MP);
         }
 
         public bool TryToReach(MapPoint point, out Path path)
@@ -179,7 +179,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public FightActor GetNearestAlly()
         {
-            return GetNearestFighter(entry => entry.IsFriendlyWith(Fighter));
+            return GetNearestFighter(entry => entry.IsFriendlyWith(Fighter) && entry != Fighter);
         }
 
         public FightActor GetNearestEnemy()

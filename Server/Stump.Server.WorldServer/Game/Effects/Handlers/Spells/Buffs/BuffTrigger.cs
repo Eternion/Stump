@@ -76,9 +76,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 var buffId = actor.PopNextBuffId();
 
                 var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
-                var effect = spell.CurrentSpellLevel.Effects[0];
+                var effect = Effect as EffectDice;
 
-                var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, false, false,
+                var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, Spell, false, false,
                     triggerType, triggerHandler)
                 {
                     Duration = (short)Dice.Duration

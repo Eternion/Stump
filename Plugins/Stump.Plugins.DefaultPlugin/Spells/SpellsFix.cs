@@ -677,6 +677,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // NONE => ONLY_SELF
             FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
+            // Invocation de jouet cassé (914)
+            // Duration => -1
+            FixEffectOnAllLevels(914, EffectsEnum.Effect_AddMP, (level, effect, critical) => effect.Duration = -1);
+
             // Vilain Garnement (2557)
             // NONE => ONLY_SELF
             FixEffectOnAllLevels(2557, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
@@ -883,6 +887,13 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2773, EffectsEnum.Effect_AddVitality, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             FixEffectOnAllLevels(2773, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
             FixCriticalEffectOnAllLevels(2773, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
+
+            #endregion
+
+            #region Cadob'Omb
+
+            // Jalousie maladive (893)
+            FixEffectOnAllLevels(893, 5, (level, effect, critical) => level.Effects.Move(effect, 0), false);
 
             #endregion
 

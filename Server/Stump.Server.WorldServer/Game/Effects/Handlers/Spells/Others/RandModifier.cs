@@ -20,7 +20,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var target in GetAffectedActors())
             {
-                AddTriggerBuff(target, true, BuffTriggerType.BEFORE_ATTACKED, DamageModifier);
+                AddTriggerBuff(target, true, Dice.EffectId == EffectsEnum.Effect_RandDownModifier ?
+                BuffTriggerType.BEFORE_ATTACK : BuffTriggerType.BEFORE_ATTACKED, DamageModifier);
             }
 
             return true;

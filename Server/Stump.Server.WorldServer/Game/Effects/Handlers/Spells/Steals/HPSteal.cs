@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
             foreach (var actor in GetAffectedActors())
             {
-                if (Effect.Duration > 0)
+                if (Effect.Duration > 0 && Spell.Id != (int)SpellIdEnum.MARTEAU_D_OKIM)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, StealHpBuffTrigger);
                 }
