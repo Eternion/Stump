@@ -137,6 +137,8 @@
     <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\PereFwetarBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\MamansotBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\MansobeseBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Monsters\MeruletteBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Monsters\SporakneBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
@@ -587,6 +589,7 @@
     <Compile Include="Game\Spells\Casts\Elementary\CawotteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\NaughtyChildCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\OldToyParadeCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\PunishmentCastHandler.cs" />

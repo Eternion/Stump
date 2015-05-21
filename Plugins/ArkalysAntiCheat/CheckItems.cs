@@ -15,10 +15,7 @@ namespace ArkalysAntiCheat
 
         public static readonly short[] checkItems =
         {
-            20348,
-            20353,
-            20362,
-            20356
+            20392
         };
 
         [Initialization(InitializationPass.Last)]
@@ -49,7 +46,26 @@ namespace ArkalysAntiCheat
                     item.Effects = ItemManager.Instance.GenerateItemEffects(item.Template);
                 }
 
-                World.Instance.Database.Update(item);
+                if (item.Id == 20392)
+                {
+                    World.Instance.Database.Delete(item);
+
+                    var template = ItemManager.Instance.TryGetTemplate(20000);
+
+                    var orbes = new PlayerItemRecord
+                    {
+                        Effects = ItemManager.Instance.GenerateItemEffects(template),
+                        IsNew = true,
+                        ItemId = 20000,
+                        OwnerId = item.OwnerId,
+                        Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
+                        Stack = 1000000
+                    };
+
+                    World.Instance.Database.Insert(orbes);
+                }
+                else
+                    World.Instance.Database.Update(item);
 
                 Logger.Info("Update Item {0}", item.ItemId);
             }

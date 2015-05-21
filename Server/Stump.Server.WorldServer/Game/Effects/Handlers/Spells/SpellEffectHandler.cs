@@ -273,7 +273,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                                           TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger);
 
             target.AddAndApplyBuff(buff);
 
@@ -284,7 +284,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                                           object token, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger)
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger)
             {
                 Token = token
             };
@@ -298,7 +298,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                                           TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger,
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger,
                                        removeTrigger);
 
             target.AddAndApplyBuff(buff);

@@ -137,6 +137,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_AddSummonLimit:
                 case EffectsEnum.Effect_AddVitality:
                 case EffectsEnum.Effect_AddVitalityPercent:
+                case EffectsEnum.Effect_AddLock:
+                case EffectsEnum.Effect_AddDodge:
                 case EffectsEnum.Effect_Dodge:
                 case EffectsEnum.Effect_AddDodgeAPProbability:
                 case EffectsEnum.Effect_AddDodgeMPProbability:

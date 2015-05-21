@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             var buffId = Caster.PopNextBuffId();
             var effect = Spell.CurrentSpellLevel.Effects[0];
 
-            var buff = new TriggerBuff(buffId, Caster, Caster, effect, Spell, false, false, BuffTriggerType.LOST_MP, SpellBuffTrigger)
+            var buff = new TriggerBuff(buffId, Caster, Caster, effect, Spell, Spell, false, false, BuffTriggerType.LOST_MP, SpellBuffTrigger)
             {
                 Duration = (short)effect.Duration
             };

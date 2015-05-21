@@ -142,6 +142,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             return hasRangeAttack;
         }
 
+        public event Action<AIFighter> AnalysePossibilitiesFinished;
+
         public void AnalysePossibilities()
         {
             Possibilities = new List<SpellCastInformations>();
@@ -209,6 +211,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 if (cast.Impacts.Count > 0 || cast.IsSummoningSpell)
                     Possibilities.Add(cast);
             }
+
+            var evnt = AnalysePossibilitiesFinished;
+            if (evnt != null)
+                evnt(Fighter);
         }
 
         public SpellCast FindFirstSpellCast()
