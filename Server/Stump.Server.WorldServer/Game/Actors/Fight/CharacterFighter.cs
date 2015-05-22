@@ -151,12 +151,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool CanPlay()
         {
-            return base.CanPlay() &&(!HasLeft() || !Fight.GetAllFighters<CharacterFighter>().Any());
+            return base.CanPlay() && (!HasLeft() || IsDisconnected);
         }
 
         #endregion
 
-        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
+        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
         {
             if (!IsFighterTurn() && !force)
                 return false;
@@ -164,7 +164,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             // weapon attack
             if (spell.Id != 0 ||
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
-                return base.CastSpell(spell, cell, force, ApFree);
+                return base.CastSpell(spell, cell, force, apFree);
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate =  weapon.Template as WeaponTemplate;
 
@@ -184,7 +184,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 case FightSpellCastCriticalEnum.CRITICAL_FAIL:
                     OnWeaponUsed(weaponTemplate, cell, critical, false);
 
-                    if (!ApFree)
+                    if (!apFree)
                         UseAP((short) weaponTemplate.ApCost);
                 
                     Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
@@ -226,7 +226,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnWeaponUsed(weaponTemplate, cell, critical, silentCast);
 
-            if (!ApFree)
+            if (!apFree)
                 UseAP((short) weaponTemplate.ApCost);
 
             foreach (var handler in handlers)

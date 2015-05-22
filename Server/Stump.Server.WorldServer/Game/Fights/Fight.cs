@@ -352,7 +352,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public static int EndFightTimeOut = 10000;
 
         [Variable]
-        public static int TurnsBeforeDisconnection = 10;
+        public static int TurnsBeforeDisconnection = 2;
     }
 
     public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, IFight
@@ -1452,7 +1452,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (TimeLine.NewRound)
             {
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
-                CheckLeavers();
             }
 
             if (FighterPlaying.MustSkipTurn())
@@ -1575,6 +1574,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (CheckFightEnd())
                 return;
 
+            redo:
             if (!TimeLine.SelectNextFighter())
             {
                 if (!CheckFightEnd())
@@ -1584,6 +1584,45 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 return;
             }
+
+            // player left but is disconnected
+            // pass turn is there are others players
+            if (FighterPlaying.HasLeft() && FighterPlaying is CharacterFighter)
+            {
+
+                var leaver = (CharacterFighter) FighterPlaying;
+                if (leaver.IsDisconnected &&
+                    leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection <= TimeLine.RoundNumber)
+                {
+                    leaver.Die();
+                    IFightResult leaverResult;
+                    var results = GenerateLeaverResults(leaver, out leaverResult);
+
+                    leaverResult.Apply();
+
+                    ContextHandler.SendGameFightLeaveMessage(Clients, leaver);
+                    
+                    leaver.ResetFightProperties();
+                    leaver.Character.RejoinMap();
+                    leaver.Character.SaveLater();
+                    if (CheckFightEnd())
+                        return;
+
+
+
+                    goto redo;
+                }
+                else
+                {
+                    // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
+                    BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182,
+                        FighterPlaying.GetMapRunningFighterName(), leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection - TimeLine.RoundNumber);
+
+                    if (GetAllFighters<CharacterFighter>().Any(x => !x.HasLeft()))
+                        goto redo;
+                }
+            }
+
 
             OnTurnPassed();
 
@@ -2142,27 +2181,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             character.Fighter.LeaveFight();
         }
 
-        private void CheckLeavers()
-        {
-            foreach (var leaver in m_leavers.OfType<CharacterFighter>())
-            {
-                if (leaver.IsDisconnected &&
-                    leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection <= TimeLine.RoundNumber)
-                {
-                    leaver.Die();
-
-                    var isfighterTurn = leaver.IsFighterTurn();
-                    
-                    ContextHandler.SendGameFightLeaveMessage(Clients, leaver);
-
-                    if (!CheckFightEnd() && isfighterTurn)
-                        StopTurn();
-
-                    leaver.ResetFightProperties();
-                    
-                }
-            }
-        }
 
         public void RejoinFightFromDisconnection(CharacterFighter fighter)
         {

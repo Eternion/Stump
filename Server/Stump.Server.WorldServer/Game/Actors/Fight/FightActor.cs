@@ -718,7 +718,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
         }
 
-        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
+        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
         {
             if (!force && (!IsFighterTurn() || IsDead()))
                 return false;
@@ -739,7 +739,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 OnSpellCasting(spell, cell, critical, false);
 
-                if (!ApFree)
+                if (!apFree)
                     UseAP((short) spellLevel.ApCost);
 
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
@@ -761,7 +761,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
-            if (!ApFree)
+            if (!apFree)
                 UseAP((short)spellLevel.ApCost);
 
             var fighter = handler.TargetedActor ?? Fight.GetOneFighter(handler.TargetedCell);
