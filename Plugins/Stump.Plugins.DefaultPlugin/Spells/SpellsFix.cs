@@ -898,6 +898,21 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Tronkoblop
+
+            // Blopzone (1167)
+            FixEffectOnAllLevels(1167, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            #endregion
+
+            #region Gloutoblop
+
+            // Gloutage (1164)
+            FixEffectOnAllLevels(1164, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
+            FixCriticalEffectOnAllLevels(1164, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
+
+            #endregion
+
             #endregion
 
             #endregion
