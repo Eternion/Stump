@@ -11,6 +11,7 @@ using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Types;
+using Stump.ORM.SubSonic.Extensions;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -349,6 +350,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         /// </summary>
         [Variable]
         public static int EndFightTimeOut = 10000;
+
+        [Variable]
+        public static int TurnsBeforeDisconnection = 10;
     }
 
     public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, IFight
@@ -543,6 +547,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             protected set;
         }
 
+        public TimeSpan TurnTimeLeft
+        {
+            get { return TurnStartTime + TimeSpan.FromMilliseconds(FightConfiguration.TurnTime) - DateTime.Now; }
+        }
+
         public ReadyChecker ReadyChecker
         {
             get;
@@ -660,7 +669,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public bool CheckFightEnd()
         {
-            if (!ChallengersTeam.AreAllDead() && !DefendersTeam.AreAllDead() && Clients.Count > 0)
+            if (!ChallengersTeam.AreAllDead() && !DefendersTeam.AreAllDead())
                 return false;
 
             EndFight();
@@ -1439,9 +1448,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             // can die with triggers
             if (CheckFightEnd())
                 return;
-            
+
             if (TimeLine.NewRound)
+            {
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
+                CheckLeavers();
+            }
 
             if (FighterPlaying.MustSkipTurn())
             {
@@ -2082,6 +2094,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                     
                     fighter.Team.AddLeaver(fighter);
                     m_leavers.Add(fighter);
+
+                    // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
+                    BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182, 
+                        fighter.GetMapRunningFighterName(), FightConfiguration.TurnsBeforeDisconnection);
+
                 } 
             }
         }
@@ -2110,7 +2127,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 StopTurn();
 
             fighter.ResetFightProperties();
-            fighter.Character.RejoinMap();
+            
 
             fighter.Team.AddLeaver(fighter);
             m_leavers.Add(fighter);
@@ -2118,14 +2135,38 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnPlayerLoggout(Character character)
         {
+            character.LoggedOut -= OnPlayerLoggout;
             if (!character.IsFighting() || character.Fight != this)
                 return;
 
             character.Fighter.LeaveFight();
         }
 
+        private void CheckLeavers()
+        {
+            foreach (var leaver in m_leavers.OfType<CharacterFighter>())
+            {
+                if (leaver.IsDisconnected &&
+                    leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection <= TimeLine.RoundNumber)
+                {
+                    leaver.Die();
+
+                    var isfighterTurn = leaver.IsFighterTurn();
+                    
+                    ContextHandler.SendGameFightLeaveMessage(Clients, leaver);
+
+                    if (!CheckFightEnd() && isfighterTurn)
+                        StopTurn();
+
+                    leaver.ResetFightProperties();
+                    
+                }
+            }
+        }
+
         public void RejoinFightFromDisconnection(CharacterFighter fighter)
         {
+            fighter.Character.LoggedOut += OnPlayerLoggout;
             fighter.Team.RemoveLeaver(fighter);
             m_leavers.Remove(fighter);
             fighter.LeaveDisconnectedState();
@@ -2143,9 +2184,14 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightResumeMessage(fighter.Character.Client, fighter);
             ContextHandler.SendGameFightTurnListMessage(fighter.Character.Client, this);
             ContextHandler.SendGameFightSynchronizeMessage(fighter.Character.Client, this);
-            ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
+            ContextHandler.SendGameFightNewRoundMessage(fighter.Character.Client, TimeLine.RoundNumber);
             ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, ChallengersTeam);
             ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, DefendersTeam);
+
+            ContextHandler.SendGameFightTurnStartMessage(fighter.Character.Client, FighterPlaying.Id, (int)TurnTimeLeft.TotalMilliseconds);
+
+            // <b>%1</b> vient de se reconnecter en combat.
+            BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 184, fighter.GetMapRunningFighterName());
         }
 
         #endregion

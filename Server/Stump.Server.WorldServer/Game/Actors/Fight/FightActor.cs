@@ -2043,7 +2043,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CanPlay()
         {
-            return IsAlive() && !HasLeft();
+            return IsAlive();
         }
 
         public virtual bool HasLeft()
