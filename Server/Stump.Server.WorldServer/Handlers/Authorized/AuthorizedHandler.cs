@@ -40,8 +40,11 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
         [WorldHandler(AdminCommandMessage.Id)]
         public static void HandleAdminCommandMessage(WorldClient client, AdminCommandMessage message)
         {
-            if (client.UserGroup.Role < RoleEnum.GameMaster_Padawan)
+            if (!client.UserGroup.IsGameMaster)
+            {
+                SendConsoleMessage(client, ConsoleMessageTypeEnum.CONSOLE_ERR_MESSAGE, "You don't have access to console");
                 return;
+            }
 
             if (client.Character == null)
                 return;
