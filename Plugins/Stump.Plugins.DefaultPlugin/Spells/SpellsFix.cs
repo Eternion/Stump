@@ -675,7 +675,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Parade des vieux jouets (913)
             // NONE => ONLY_SELF
-            FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+            RemoveEffectOnAllLevels(913, 4, false);
 
             // Invocation de jouet cassé (914)
             // Duration => -1
