@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             },
             new[] {new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, 20)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddVitality, 50)},
-            new[] {new EffectInteger(EffectsEnum.Effect_AddCriticalDamageBonus, 7)},
+            new[] {new EffectInteger(EffectsEnum.Effect_AddCriticalHit, 7)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddRange, 1)},
             new[] {new EffectInteger(EffectsEnum.Effect_AddMP_128, 1)},
 

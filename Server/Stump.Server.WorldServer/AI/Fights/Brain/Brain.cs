@@ -56,6 +56,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public virtual void Play()
         {
+            Environment.ResetMoveZone();
+
             SpellSelector.AnalysePossibilities();
 
             if (!Fighter.Fight.AIDebugMode)

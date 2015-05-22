@@ -60,6 +60,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         private void OnPositionChanged(ContextActor arg1, ObjectPosition arg2)
         {
+            ResetMoveZone();
+        }
+
+        public void ResetMoveZone()
+        {
             m_moveZone = null;
         }
 
@@ -104,7 +109,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public MapPoint[] GetMoveZone()
         {
-            return m_moveZone = Pathfinding.FindReachableCells(Fighter.Position.Point, Fighter.MP);
+            return m_moveZone ?? (m_moveZone = Pathfinding.FindReachableCells(Fighter.Position.Point, Fighter.MP));
         }
 
         public bool TryToReach(MapPoint point, out Path path)
