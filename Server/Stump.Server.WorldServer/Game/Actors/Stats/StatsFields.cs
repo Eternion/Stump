@@ -217,9 +217,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, 100, FormulasChanceDependant));
             Fields.Add(PlayerFields.AP, new StatsAP(Owner, (short) record.ActionPoints));
             Fields.Add(PlayerFields.MP, new StatsMP(Owner, (short) record.MovementPoints));
-            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));
-            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));                             
-            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short) record.LifePoints, 0));
+            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, record.Strength));            
+            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, record.Vitality));             
+            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, (short) record.LifePoints, 0));    
             Fields.Add(PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, record.Wisdom));
             Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, record.Chance));
             Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, record.Agility));
@@ -304,9 +304,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.Prospecting, new StatsData(Owner, PlayerFields.Prospecting, taxCollector.Guild.TaxCollectorProspecting, FormulasChanceDependant));
             Fields.Add(PlayerFields.AP, new StatsAP(Owner, TaxCollectorNpc.BaseAP));
             Fields.Add(PlayerFields.MP, new StatsMP(Owner, TaxCollectorNpc.BaseMP));
-            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, 0));
-            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, 0));                             
-            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, taxCollector.Guild.TaxCollectorHealth, 0));
+            Fields.Add(PlayerFields.Strength, new StatsData(Owner, PlayerFields.Strength, 0));         
+            Fields.Add(PlayerFields.Vitality, new StatsData(Owner, PlayerFields.Vitality, 0));                
+            Fields.Add(PlayerFields.Health, new StatsHealth(Owner, taxCollector.Guild.TaxCollectorHealth, 0));    
             Fields.Add(PlayerFields.Wisdom, new StatsData(Owner, PlayerFields.Wisdom, taxCollector.Guild.TaxCollectorWisdom));
             Fields.Add(PlayerFields.Chance, new StatsData(Owner, PlayerFields.Chance, 0));
             Fields.Add(PlayerFields.Agility, new StatsData(Owner, PlayerFields.Agility, 0));
@@ -378,10 +378,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public StatsFields CloneAndChangeOwner(IStatsOwner owner)
         {
-            var fields = new StatsFields(owner)
+            var fields = new StatsFields(owner);
+
+            foreach (var field in Fields)
             {
-                Fields = Fields.ToDictionary(x => x.Key, x => x.Value.CloneAndChangeOwner(owner))
-            };
+                fields.Fields.Add(field.Key, field.Value.CloneAndChangeOwner(owner));
+            }
 
             return fields;
         }
