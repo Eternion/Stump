@@ -43,6 +43,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
                 return;
             }
 
+            Environment.ResetMoveZone();
+
             var spellId = target.IsFriendlyWith(monster) ? (int)SpellIdEnum.PARADE_DES_VIEUX_JOUETS : (int)SpellIdEnum.ASPIR_NENFAN;
             var spell = new Spell(spellId, (byte) monster.Monster.Grade.Level);
 
