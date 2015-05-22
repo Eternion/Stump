@@ -149,6 +149,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return m_left;
         }
 
+        public override bool CanPlay()
+        {
+            return base.CanPlay() &&(!HasLeft() || !Fight.GetAllFighters<CharacterFighter>().Any());
+        }
+
         #endregion
 
         public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
@@ -370,6 +375,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void LeaveDisconnectedState()
         {
             IsDisconnected = false;
+            m_left = false;
         }
 
         public void RestoreFighterFromDisconnection(Character character)
