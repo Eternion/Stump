@@ -64,6 +64,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event Action<FightActor, int, int, int, FightActor> LifePointsChanged;
 
+        public event Action<FightActor> FighterLeft;
+        protected virtual void OnLeft()
+        {
+            var evnt = FighterLeft;
+            if (evnt != null)
+                evnt(this);
+        }
+
         protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from)
         {
             var handler = LifePointsChanged;
@@ -112,7 +120,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, target, reflected);
         }
 
-        public event Action<FightActor> FighterLeft;
 
         public event Action<FightActor, ObjectPosition> PrePlacementChanged;
 
@@ -338,7 +345,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public SpellHistory SpellHistory
         {
             get;
-            private set;
+            protected set;
         }
 
         public ObjectPosition TurnStartPosition
@@ -475,26 +482,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #endregion
 
-        #region Leave
-
-        public void LeaveFight(bool force = false)
-        {
-            if (HasLeft())
-                return;
-
-            m_left = !force;
-
-            OnLeft();
-        }
-
-        protected virtual void OnLeft()
-        {
-            var evnt = FighterLeft;
-            if (evnt != null)
-                evnt(this);
-        }
-
-        #endregion
 
         #region Fighting
 
@@ -731,7 +718,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
         }
 
-        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
+        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
         {
             if (!force && (!IsFighterTurn() || IsDead()))
                 return false;
@@ -752,7 +739,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 OnSpellCasting(spell, cell, critical, false);
 
-                if (!ApFree)
+                if (!apFree)
                     UseAP((short) spellLevel.ApCost);
 
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
@@ -774,7 +761,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
-            if (!ApFree)
+            if (!apFree)
                 UseAP((short)spellLevel.ApCost);
 
             var fighter = handler.TargetedActor ?? Fight.GetOneFighter(handler.TargetedCell);
@@ -1999,9 +1986,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Conditions
 
-        public bool IsAlive()
+        public virtual bool IsAlive()
         {
-            return Stats.Health.Total > 0 && !HasLeft();
+            return Stats.Health.Total > 0;
         }
 
         public bool IsDead()
@@ -2014,13 +2001,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (IsDead())
                 OnDead(source);
         }
-
-        private bool m_left;
-        public bool HasLeft()
-        {
-            return m_left;
-        }
-
         public bool HasLost()
         {
             return Fight.Losers == Team;
@@ -2063,7 +2043,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CanPlay()
         {
-            return IsAlive() && !HasLeft();
+            return IsAlive();
+        }
+
+        public virtual bool HasLeft()
+        {
+            return false;
         }
 
         public override bool CanSee(WorldObject obj)

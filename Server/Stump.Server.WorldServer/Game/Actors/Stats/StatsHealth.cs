@@ -167,5 +167,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
             return clone;
         }
+
+        public override void CopyContext(StatsData target)
+        {
+            base.CopyContext(target);
+
+            var health = target as StatsHealth;
+
+            if (health == null)
+                return;
+
+            health.DamageTaken = DamageTaken;
+            health.PermanentDamages = PermanentDamages;
+        }
     }
 }

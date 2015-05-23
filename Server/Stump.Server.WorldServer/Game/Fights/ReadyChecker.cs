@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (m_fighters.Count <= 0)
             {
-                NotifySuccess();
+                m_timer = m_fight.Map.Area.CallDelayed(0, NotifySuccess);
                 return;
             }
 
