@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             m_invulnerabilityBreaker = null;
         }
 
-        private void OnActorMoved(FightActor fighter, bool takeDamage)
+        private void OnActorMoved(FightActor fighter, FightActor source, bool takeDamage)
         {
             if (fighter == Fighter)
                 return;
