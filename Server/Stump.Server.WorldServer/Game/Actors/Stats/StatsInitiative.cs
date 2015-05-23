@@ -16,18 +16,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                return (int) (Owner.Stats.Health.Total <= 0
+                return Owner.Stats.Health.Total <= 0
                     ? 0
-                    : ((m_custom ?? (Owner.Stats[PlayerFields.Chance] +
+                    : (m_custom ?? (Owner.Stats[PlayerFields.Chance] +
                                      Owner.Stats[PlayerFields.Intelligence] +
                                      Owner.Stats[PlayerFields.Agility] +
-                                     Owner.Stats[PlayerFields.Strength]))*
-                       (Owner.Stats.Health.Total/(double) Owner.Stats.Health.TotalMax)));
+                                     Owner.Stats[PlayerFields.Strength]));
             }
             set
             {
                 m_custom = value;
             }
+        }
+
+        public int TotalWithLife 
+        {
+            get { return (int) (Total*(Owner.Stats.Health.Total/(double) Owner.Stats.Health.TotalMax)); }
         }
     }
 }

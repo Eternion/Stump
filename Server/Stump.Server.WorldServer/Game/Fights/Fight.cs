@@ -874,9 +874,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             RandomnizePositions(ChallengersTeam);
             RandomnizePositions(DefendersTeam);
 
-            TimeLine.OrderLine();
-            ContextHandler.SendGameFightTurnListMessage(Clients, this);
-
             ShowBlades();
             Map.AddFight(this);
         }
@@ -1168,7 +1165,6 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (State == FightState.Placement)
             {
-                TimeLine.OrderLine();
                 if (!RandomnizePosition(actor))
                     return;
             }

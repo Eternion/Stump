@@ -109,6 +109,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             get { return this[PlayerFields.Intelligence]; }
         }
 
+        public StatsInitiative Initiative
+        {
+            get { return this[PlayerFields.Initiative] as StatsInitiative; }
+        }
+
         public StatsData this[PlayerFields name]
         {
             get
