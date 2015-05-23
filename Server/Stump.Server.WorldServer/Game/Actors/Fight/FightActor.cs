@@ -2110,6 +2110,39 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var pvp = Fight.IsPvP;
 
+            if (Fight.State == FightState.Placement || Fight.State == FightState.NotStarted)
+                return new GameFightMinimalStatsPreparation(
+                Stats.Health.Total,
+                Stats.Health.TotalMax,
+                Stats.Health.Base,
+                Stats[PlayerFields.PermanentDamagePercent].Total,
+                Stats.Shield.TotalSafe,
+                (short)Stats.AP.Total,
+                (short)Stats.AP.TotalMax,
+                (short)Stats.MP.Total,
+                (short)Stats.MP.TotalMax,
+                0,
+                false,
+                (short)(Stats[PlayerFields.NeutralResistPercent].Total + (pvp ? Stats[PlayerFields.PvpNeutralResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.EarthResistPercent].Total + (pvp ? Stats[PlayerFields.PvpEarthResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.WaterResistPercent].Total + (pvp ? Stats[PlayerFields.PvpWaterResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.AirResistPercent].Total + (pvp ? Stats[PlayerFields.PvpAirResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.FireResistPercent].Total + (pvp ? Stats[PlayerFields.PvpFireResistPercent].Total : 0)),
+                (short)(Stats[PlayerFields.NeutralElementReduction].Total + (pvp ? Stats[PlayerFields.PvpNeutralElementReduction].Total : 0)),
+                (short)(Stats[PlayerFields.EarthElementReduction].Total + (pvp ? Stats[PlayerFields.PvpEarthElementReduction].Total : 0)),
+                (short)(Stats[PlayerFields.WaterElementReduction].Total + (pvp ? Stats[PlayerFields.PvpWaterElementReduction].Total : 0)),
+                (short)(Stats[PlayerFields.AirElementReduction].Total + (pvp ? Stats[PlayerFields.PvpAirElementReduction].Total : 0)),
+                (short)(Stats[PlayerFields.FireElementReduction].Total + (pvp ? Stats[PlayerFields.PvpFireElementReduction].Total : 0)),
+                (short)Stats[PlayerFields.PushDamageReduction].Total,
+                (short)Stats[PlayerFields.CriticalDamageReduction].Total,
+                (short)Stats[PlayerFields.DodgeAPProbability].Total,
+                (short)Stats[PlayerFields.DodgeMPProbability].Total,
+                (short)Stats[PlayerFields.TackleBlock].Total,
+                (short)Stats[PlayerFields.TackleEvade].Total,
+                (sbyte)( client == null ? VisibleState : GetVisibleStateFor(client.Character) ),
+                Stats[PlayerFields.Initiative].Total// invisibility state
+                );
+            
             return new GameFightMinimalStats(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
@@ -2142,6 +2175,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 );
         }
 
+
         public virtual FightTeamMemberInformations GetFightTeamMemberInformations()
         {
             return new FightTeamMemberInformations(Id);
@@ -2158,7 +2192,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
-                (sbyte)Team.Id,
+                (sbyte) Team.Id,
                 IsAlive(),
                 GetGameFightMinimalStats(client));
         }

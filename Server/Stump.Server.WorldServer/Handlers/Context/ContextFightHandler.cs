@@ -399,10 +399,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightShowFighterMessage(WorldClient client, FightActor fighter)
         {
-            var fighterInfos = fighter.GetGameFightFighterInformations(client);
-
-            if (fighter is SummonedClone)
-                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
+            var clone = fighter as SummonedClone;
+            var fighterInfos = clone != null ? clone.GetGameFightFighterNamedInformations() : fighter.GetGameFightFighterInformations(client);
 
             client.Send(new GameFightShowFighterMessage(fighterInfos));
         }
