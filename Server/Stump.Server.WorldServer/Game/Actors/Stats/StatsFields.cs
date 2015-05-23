@@ -385,5 +385,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
             return fields;
         }
+
+        public void CopyContext(StatsFields fields)
+        {
+            foreach (var field in Fields)
+            {
+                field.Value.CopyContext(fields[field.Key]);
+            }
+        }
     }
 }

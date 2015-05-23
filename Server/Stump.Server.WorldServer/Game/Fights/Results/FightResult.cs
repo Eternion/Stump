@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public bool HasLeft
         {
-            get { return Fight.Leavers.Contains(Fighter); }
+            get { return Fighter.HasLeft(); }
         }
 
         public int Id

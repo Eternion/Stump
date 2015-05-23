@@ -2129,8 +2129,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                     if (!CheckFightEnd() && isfighterTurn)
                         StopTurn();
 
-                    fighter.ResetFightProperties();
-                    
                     fighter.Team.AddLeaver(fighter);
                     m_leavers.Add(fighter);
 
@@ -2585,7 +2583,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<FightActor> GetFightersAndLeavers()
         {
-            return Fighters.Concat(Leavers);
+            return Fighters.Concat(Leavers.Where(x => !(x is CharacterFighter) || !((CharacterFighter)x).IsDisconnected));
         }
 
         public IEnumerable<FightActor> GetAllFighters(Cell[] cells)
