@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public bool Alive
         {
-            get { return Fighter.IsAlive() && !Fighter.HasLeft(); }
+            get { return Fighter.IsAlive(); }
         }
 
         public bool HasLeft

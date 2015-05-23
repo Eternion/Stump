@@ -500,5 +500,17 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
         }
+        
+
+        public static void SendGameFightResumeMessage(IPacketReceiver client, CharacterFighter fighter)
+        {
+            client.Send(new GameFightResumeMessage(
+                fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
+                fighter.Fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
+                fighter.Fight.TimeLine.RoundNumber,
+                fighter.SpellHistory.GetCooldowns(),
+                (sbyte) fighter.SummonedCount,
+                (sbyte) fighter.BombsCount));
+        }
     }
 }

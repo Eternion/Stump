@@ -143,17 +143,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             if (client.UserGroup.Role >= RoleEnum.Moderator)
                 SendConsoleCommandsListMessage(client, CommandManager.Instance.AvailableCommands.Where(x => client.UserGroup.IsCommandAvailable(x)));
 
-            var characterInFight = FindCharacterFightReconnection(client);
-            if (characterInFight != null)
-                CharacterHandler.CommonCharacterSelection(client, characterInFight);
 
         }
-        
-        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
-        {
-            return (from characterInFight in client.Characters.Where(x => x.LeftFightId != null) let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value) where fight != null let fighter = fight.GetLeaver(characterInFight.Id) where fighter != null select characterInFight).FirstOrDefault();
-        }
-
         public static void SendStartupActionsListMessage(IPacketReceiver client)
         {
             client.Send(new StartupActionsListMessage());

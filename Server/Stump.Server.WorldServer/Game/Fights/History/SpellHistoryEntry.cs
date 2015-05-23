@@ -5,6 +5,8 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 {
     public class SpellHistoryEntry
     {
+        private readonly int m_cooldownDuration;
+
         public SpellHistoryEntry(SpellHistory history, SpellLevelTemplate spell, FightActor caster, FightActor target, int castRound, int cooldownDuration)
         {
             History = history;
@@ -12,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             Caster = caster;
             Target = target;
             CastRound = castRound;
-            CooldownDuration = cooldownDuration;
+            m_cooldownDuration = cooldownDuration;
         }
 
         public SpellHistory History
@@ -47,8 +49,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public int CooldownDuration
         {
-            get;
-            private set;
+            get { return m_cooldownDuration > 0 ? m_cooldownDuration : (int)Spell.MinCastInterval; }
         }
 
         public int GetElapsedRounds(int currentRound)
@@ -58,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public bool IsGlobalCooldownActive(int currentRound)
         {
-            return GetElapsedRounds(currentRound) < (CooldownDuration != 0 ? (uint)CooldownDuration : Spell.MinCastInterval);
+            return GetElapsedRounds(currentRound) < CooldownDuration;
         }
     }
 }
