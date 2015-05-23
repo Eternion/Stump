@@ -632,7 +632,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
-            #region Monsters
+            #region Monsters    
 
             #region Boss
 

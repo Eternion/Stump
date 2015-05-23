@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             Fighter.CastSpell(spell, Fighter.Cell, true, true);
         }
 
-        private void OnBossMoved(FightActor source, bool takeDamage)
+        private void OnBossMoved(FightActor source, FightActor target, bool takeDamage)
         {
             if (source == Fighter)
                 return;
@@ -122,15 +122,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             GetEffectHandler(SpellIdEnum.GLOURSONGEUR, Fighter.Cell, 3).Apply();
         }
 
-        private void OnActorMoved(FightActor source, bool takeDamage)
+        private void OnActorMoved(FightActor source, FightActor target, bool takeDamage)
         {
             if (!takeDamage)
                 return;
 
             //Kill
-            var handler = GetEffectHandler(SpellIdEnum.GLOURSONGEUR, source.Cell, 1);
+            var handler = GetEffectHandler(SpellIdEnum.GLOURSONGEUR, target.Cell, 1);
 
-            handler.AddAffectedActor(source);
+            handler.AddAffectedActor(target);
             handler.Apply();
         }
 
