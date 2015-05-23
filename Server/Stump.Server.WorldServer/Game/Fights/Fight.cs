@@ -318,8 +318,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         IEnumerable<int> GetAliveFightersIds();
         FightCommonInformations GetFightCommonInformations();
         FightExternalInformations GetFightExternalInformations();
-        bool CanBeSeen(Cell from, Cell to, bool throughEntities = false);
-        bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false);
+        bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false, WorldObject except = null);
         int GetPlacementTimeLeft();
     }
 
