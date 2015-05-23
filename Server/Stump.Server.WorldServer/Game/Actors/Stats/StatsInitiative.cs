@@ -5,6 +5,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 {
     public class StatsInitiative : StatsData
     {
+        private int? m_custom;
+
         public StatsInitiative(IStatsOwner owner, short valueBase)
             : base(owner, PlayerFields.Initiative, valueBase)
         {
@@ -14,16 +16,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             get
             {
-                return (int) ( Owner.Stats.Health.Total <= 0
-                                   ? 0
-                                   : ( Owner.Stats[PlayerFields.Chance] +
-                                       Owner.Stats[PlayerFields.Intelligence] +
-                                       Owner.Stats[PlayerFields.Agility] +
-                                       Owner.Stats[PlayerFields.Strength] ) *
-                                     ( Owner.Stats.Health.Total / (double)Owner.Stats.Health.TotalMax ) );
+                return (int) (Owner.Stats.Health.Total <= 0
+                    ? 0
+                    : ((m_custom ?? (Owner.Stats[PlayerFields.Chance] +
+                                     Owner.Stats[PlayerFields.Intelligence] +
+                                     Owner.Stats[PlayerFields.Agility] +
+                                     Owner.Stats[PlayerFields.Strength]))*
+                       (Owner.Stats.Health.Total/(double) Owner.Stats.Health.TotalMax)));
             }
             set
             {
+                m_custom = value;
             }
         }
     }

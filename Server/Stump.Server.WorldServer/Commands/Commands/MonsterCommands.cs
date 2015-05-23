@@ -197,6 +197,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
+
     #region Static Monsters
 
     public class StaticCommands : SubCommandContainer
