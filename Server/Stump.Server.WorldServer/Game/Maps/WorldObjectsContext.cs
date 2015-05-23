@@ -35,12 +35,8 @@ namespace Stump.Server.WorldServer.Game.Maps
             get;
         }
 
-        public bool CanBeSeen(Cell from, Cell to, bool throughEntities = false)
-        {
-            return CanBeSeen(MapPoint.GetPoint(from), MapPoint.GetPoint(to), throughEntities);
-        }
 
-        public bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false)
+        public bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false, WorldObject except = null)
         {
             if (from == null || to == null) return false;
             if (from == to)
@@ -48,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             
             var occupiedCells = new short[0];
             if (!throughEntities)
-                occupiedCells = Objects.Where(x => x.BlockSight).Select(x => x.Cell.Id).ToArray();
+                occupiedCells = Objects.Where(x => x.BlockSight && x != except).Select(x => x.Cell.Id).ToArray();
 
             var line = new LineSet(from, to);
             return !(from point in line.EnumerateValidPoints().Skip(1) where to.CellId != point.CellId let cell = Cells[point.CellId]
