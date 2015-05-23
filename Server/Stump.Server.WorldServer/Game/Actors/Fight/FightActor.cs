@@ -278,13 +278,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 handler(this, amount);
         }
 
-        public event Action<FightActor, bool> ActorMoved;
+        public event Action<FightActor, FightActor, bool> ActorMoved;
 
         public virtual void OnActorMoved(FightActor source, bool takeDamage)
         {
             var handler = ActorMoved;
             if (handler != null)
-                handler(source, takeDamage);
+                handler(source, this, takeDamage);
         }
 
         #endregion
