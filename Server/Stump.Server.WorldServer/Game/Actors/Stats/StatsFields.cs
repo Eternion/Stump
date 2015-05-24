@@ -45,6 +45,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         public StatsFields(IStatsOwner owner)
         {
             Owner = owner;
+            Fields = new Dictionary<PlayerFields, StatsData>();
         }
 
         public Dictionary<PlayerFields, StatsData> Fields
@@ -381,17 +382,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.Shield, new StatsData(Owner, PlayerFields.Shield, 0));
         }
 
-        public StatsFields CloneAndChangeOwner(IStatsOwner owner)
+        public void InitializeFromStats(StatsFields fields)
         {
-            var fields = new StatsFields(owner);
-
-            foreach (var field in Fields)
+            foreach (var field in fields.Fields)
             {
-                fields.Fields.Add(field.Key, field.Value.CloneAndChangeOwner(owner));
+                Fields.Add(field.Key, field.Value.CloneAndChangeOwner(Owner));
             }
-
-            return fields;
         }
+
 
         public void CopyContext(StatsFields fields)
         {
