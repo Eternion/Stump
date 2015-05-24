@@ -323,6 +323,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         int GetPlacementTimeLeft();
 
         void RejoinFightFromDisconnection(CharacterFighter character);
+        void RefreshActor(FightActor actor);
     }
 
     // this is necessary since we can't read static field dynamically in a generic class
@@ -664,6 +665,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             StartTurn();
         }
 
+        public void RefreshActor(FightActor actor)
+        {
+            ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, actor), true);
+        }
+
         #region EndFight
 
         public bool CheckFightEnd()
@@ -830,7 +836,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void ApplyResults(IEnumerable<IFightResult> results)
         {
-            foreach (var fightResult in results.Where(fightResult => !fightResult.HasLeft))
+            foreach (var fightResult in results.Where(fightResult => !fightResult.HasLeft ||
+                !(fightResult is FightPlayerResult) ||
+                ((FightPlayerResult) fightResult).Fighter.IsDisconnected))
             {
                 fightResult.Apply();
             }

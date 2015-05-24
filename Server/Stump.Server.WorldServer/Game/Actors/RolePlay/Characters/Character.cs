@@ -886,11 +886,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void RefreshActor()
         {
-            if (Map != null)
+            if (Fight != null)
+            {
+                Fighter.Look = Look.Clone();
+                Fight.Map.Area.ExecuteInContext(() =>
+                    Fight.RefreshActor(Fighter));
+            }
+            else if (Map != null)
             {
                 Map.Area.ExecuteInContext(() =>
-                    Map.Refresh(this)
-                    );
+                    Map.Refresh(this));
             }
         }
 
@@ -2527,7 +2532,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (GodMode)
                 Stats.Health.DamageTaken = 0;
-            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team) && !Fight.IsDeathTemporarily)
+            else if (Fighter != null && (Fighter.HasLeft() && !Fighter.IsDisconnected || Fight.Losers == Fighter.Team) && !Fight.IsDeathTemporarily)
                 OnDied();
 
             Fighter = null;
@@ -2560,6 +2565,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     }
                 });
             }
+            else
+                SaveLater(); // if disconnected in fight we must save the change at the end of the fight
         }
 
         #endregion
