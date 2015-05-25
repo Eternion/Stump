@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
         [WorldHandler(AdminQuietCommandMessage.Id)]
         public static void HandleAdminQuietCommandMessage(WorldClient client, AdminQuietCommandMessage message)
         {
-            if (client.UserGroup.Role < RoleEnum.GameMaster_Padawan)
+            if (!client.UserGroup.IsGameMaster)
                 return;
 
             var data = message.content.Split(' ');

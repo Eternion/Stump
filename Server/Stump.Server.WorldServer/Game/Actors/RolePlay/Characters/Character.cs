@@ -187,6 +187,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (handler != null) handler(this);
         }
 
+        public event Action<Character> LookRefreshed;
+
+        private void OnLookRefreshed()
+        {
+            var handler = LookRefreshed;
+            if (handler != null) handler(this);
+        }
+
+        public event Action<Character> StatsResfreshed;
+        
+        private void OnStatsResfreshed()
+        {
+            var handler = StatsResfreshed;
+            if (handler != null) handler(this);
+        }
+
         #endregion
 
         #region Properties
@@ -899,6 +915,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Map.Area.ExecuteInContext(() =>
                     Map.Refresh(this));
             }
+
+            OnLookRefreshed();
         }
 
         #endregion
@@ -1190,6 +1208,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 UpdateRegenedLife();
 
             CharacterHandler.SendCharacterStatsListMessage(Client);
+
+            OnStatsResfreshed();
         }
 
         public void ToggleGodMode(bool state)
@@ -3414,5 +3434,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             return string.Format("{0} ({1})", Name, Id);
         }
+
+        
     }
 }

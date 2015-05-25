@@ -145,6 +145,12 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        public bool TaxCollectorCannotLoot
+        {
+            get;
+            set;
+        }
+
         public void SetDropRate(double rate)
         {
             DropRateForGrade1 = rate;
