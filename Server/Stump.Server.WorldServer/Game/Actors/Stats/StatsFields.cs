@@ -244,8 +244,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.PermanentDamagePercent, new StatsData(Owner, PlayerFields.PermanentDamagePercent, 0));
             Fields.Add(PlayerFields.TackleBlock, new StatsData(Owner, PlayerFields.TackleBlock, record.TackleBlock, FormulasAgilityDependant));
             Fields.Add(PlayerFields.TackleEvade, new StatsData(Owner, PlayerFields.TackleEvade, record.TackleEvade, FormulasAgilityDependant));
-            Fields.Add(PlayerFields.APAttack, new StatsData(Owner, PlayerFields.APAttack, 0));
-            Fields.Add(PlayerFields.MPAttack, new StatsData(Owner, PlayerFields.MPAttack, 0));
+            Fields.Add(PlayerFields.APAttack, new StatsData(Owner, PlayerFields.APAttack, 0, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.MPAttack, new StatsData(Owner, PlayerFields.MPAttack, 0, FormulasWisdomDependant));
             Fields.Add(PlayerFields.PushDamageBonus, new StatsData(Owner, PlayerFields.PushDamageBonus, 0));
             Fields.Add(PlayerFields.CriticalDamageBonus, new StatsData(Owner, PlayerFields.CriticalDamageBonus, 0));
             Fields.Add(PlayerFields.NeutralDamageBonus, new StatsData(Owner, PlayerFields.NeutralDamageBonus, 0));
@@ -331,8 +331,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Fields.Add(PlayerFields.PermanentDamagePercent, new StatsData(Owner, PlayerFields.PermanentDamagePercent, 0));
             Fields.Add(PlayerFields.TackleBlock, new StatsData(Owner, PlayerFields.TackleBlock, 50, FormulasAgilityDependant));
             Fields.Add(PlayerFields.TackleEvade, new StatsData(Owner, PlayerFields.TackleEvade, 50, FormulasAgilityDependant));
-            Fields.Add(PlayerFields.APAttack, new StatsData(Owner, PlayerFields.APAttack, 50));
-            Fields.Add(PlayerFields.MPAttack, new StatsData(Owner, PlayerFields.MPAttack, 50));
+            Fields.Add(PlayerFields.APAttack, new StatsData(Owner, PlayerFields.APAttack, 50, FormulasWisdomDependant));
+            Fields.Add(PlayerFields.MPAttack, new StatsData(Owner, PlayerFields.MPAttack, 50, FormulasWisdomDependant));
             Fields.Add(PlayerFields.PushDamageBonus, new StatsData(Owner, PlayerFields.PushDamageBonus, 0));
             Fields.Add(PlayerFields.CriticalDamageBonus, new StatsData(Owner, PlayerFields.CriticalDamageBonus, 0));
             Fields.Add(PlayerFields.NeutralDamageBonus, new StatsData(Owner, PlayerFields.NeutralDamageBonus, 0));
