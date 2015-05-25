@@ -111,7 +111,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 if (droppedGroups.Contains(droppableItem.DropGroup))
                     continue;
 
-                if (looter is TaxCollectorFightResult && droppableItem.TaxCollectorCannotLoot)
+                if (looter is TaxCollectorProspectingResult && droppableItem.TaxCollectorCannotLoot)
                     continue;
 
                 for (var i = 0; i < droppableItem.RollsCounter; i++)
