@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
 
-namespace ArkalysAntiCheat
+namespace ArkalysScriptPlugin
 {
     public static class CheckItems
     {
