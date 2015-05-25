@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             client.Send(new TrustStatusMessage(true)); // Restrict actions if account is not trust
 
             /* Just to get console AutoCompletion */
-            if (client.UserGroup.Role >= RoleEnum.Moderator)
+            if (client.UserGroup.IsGameMaster)
                 SendConsoleCommandsListMessage(client, CommandManager.Instance.AvailableCommands.Where(x => client.UserGroup.IsCommandAvailable(x)));
 
 

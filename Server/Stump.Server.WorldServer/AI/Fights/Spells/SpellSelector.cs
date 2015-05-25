@@ -230,7 +230,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 {
                     var category = SpellIdentifier.GetSpellCategories(possibleCast.Spell);
 
-                    if (( category & priority.Key ) == 0)
+                    var dummy = possibleCast;
+                    if (( category & priority.Key ) == 0 || casts.Any(x => x.Spell == dummy.Spell)) // spell already used
                         continue;
 
                     if (Fighter.AP - minUsedAP < possibleCast.Spell.CurrentSpellLevel.ApCost)
