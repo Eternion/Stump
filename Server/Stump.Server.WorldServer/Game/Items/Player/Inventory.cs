@@ -266,11 +266,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         private void UnLoadInventory()
         {
-            Items.Clear();
+            // we must keep then in case it's a fight disconnection
+            /*Items.Clear();
             foreach (var item in m_itemsByPosition)
             {
                 m_itemsByPosition[item.Key].Clear();
-            }
+            }*/
         }
 
         public override void Save()
