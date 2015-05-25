@@ -614,9 +614,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected void SetFightState(FightState state)
         {
-            State = state;
-
             UnBindFightersEvents();
+            State = state;
             BindFightersEvents();
 
             OnStateChanged();
@@ -664,11 +663,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             StartTurn();
         }
-
-        public void RefreshActor(FightActor actor)
-        {
-            ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, actor), true);
-        }
+        
 
         #region EndFight
 
@@ -896,6 +891,16 @@ namespace Stump.Server.WorldServer.Game.Fights
             ShowBlades();
             Map.AddFight(this);
         }
+        public void RefreshActor(FightActor actor)
+        {
+            ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, actor), true);
+        }
+        
+        private void OnStatsRefreshed(Character character)
+        {
+            ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, character.Fighter), true);
+        }
+
 
         #region Blades
 
@@ -1678,6 +1683,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null)
             {
                 fighter.Character.LoggedOut -= OnPlayerLoggout;
+                fighter.Character.StatsResfreshed -= OnStatsRefreshed;
             }
         }
 
@@ -1726,9 +1732,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null)
             {
                 fighter.Character.LoggedOut += OnPlayerLoggout;
+
+                if (State == FightState.Placement)
+                {
+                    fighter.Character.StatsResfreshed += OnStatsRefreshed;
+                }
             }
         }
-
 
         #endregion
 

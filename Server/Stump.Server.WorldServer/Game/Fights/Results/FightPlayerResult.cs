@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public void AddEarnedExperience(int experience)
         {
-            if (Fighter.HasLeft())
+            if (Fighter.HasLeft() && !Fighter.IsDisconnected)
                 return;
 
             if (ExperienceData == null)

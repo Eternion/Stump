@@ -254,7 +254,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                      string message,
                                                      int timestamp, string fingerprint)
         {
-            if (sender.UserGroup.Role <= RoleEnum.Moderator)
+            if (!sender.UserGroup.IsGameMaster)
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerCopyMessage(
@@ -276,7 +276,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                                      string message,
                                                      int timestamp, string fingerprint, IEnumerable<ObjectItem> objectItems)
         {
-            if (sender.UserGroup.Role <= RoleEnum.Moderator)
+            if (!sender.UserGroup.IsGameMaster)
                 message = message.HtmlEntities();
 
             client.Send(new ChatServerCopyWithObjectMessage(
