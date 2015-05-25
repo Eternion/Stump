@@ -352,7 +352,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         public static int EndFightTimeOut = 10000;
 
         [Variable]
-        public static int TurnsBeforeDisconnection = 2;
+        public static int TurnsBeforeDisconnection = 10;
     }
 
     public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, IFight

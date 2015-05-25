@@ -16,8 +16,8 @@ namespace Stump.Plugins.DefaultPlugin.Security
         [Initialization(InitializationPass.First)]
         public static void Initialize()
         {
-            WorldServer.Instance.IOTaskPool.CallPeriodically(5000, SecurityChecker.TimeoutCheck);
-            WorldServer.Instance.HandlerManager.Register(typeof (SecurityChecker));
+            //WorldServer.Instance.IOTaskPool.CallPeriodically(5000, SecurityChecker.TimeoutCheck);
+            //WorldServer.Instance.HandlerManager.Register(typeof (SecurityChecker));
         }
     }
 

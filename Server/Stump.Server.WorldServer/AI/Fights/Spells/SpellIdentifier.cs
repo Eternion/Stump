@@ -83,13 +83,14 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     return SpellCategory.Damages;
                 case EffectsEnum.Effect_Summon:
                 case EffectsEnum.Effect_Double:
-                case EffectsEnum.Effect_ReviveAndGiveHPToLastDiedAlly:
                 case EffectsEnum.Effect_185:
                 case EffectsEnum.Effect_621:
                 case EffectsEnum.Effect_623:
                 case EffectsEnum.Effect_Glyph:
                 case EffectsEnum.Effect_Glyph_402:
                     return SpellCategory.Summoning;
+                case EffectsEnum.Effect_ReviveAndGiveHPToLastDiedAlly:
+                    return SpellCategory.Summoning | SpellCategory.Healing;
                 case EffectsEnum.Effect_AddArmorDamageReduction:
                 case EffectsEnum.Effect_AddAirResistPercent:
                 case EffectsEnum.Effect_AddFireResistPercent:

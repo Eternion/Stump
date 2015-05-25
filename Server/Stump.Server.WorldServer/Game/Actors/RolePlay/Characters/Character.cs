@@ -889,6 +889,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Fight != null)
             {
                 Fighter.Look = Look.Clone();
+                Fighter.Look.RemoveAuras();
+
                 Fight.Map.Area.ExecuteInContext(() =>
                     Fight.RefreshActor(Fighter));
             }

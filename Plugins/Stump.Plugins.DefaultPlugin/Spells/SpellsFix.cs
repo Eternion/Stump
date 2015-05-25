@@ -824,6 +824,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Fongeur
+
+            // Volve Hérine (2690)
+            // NONE => ALLY_ALL
+            FixEffectOnAllLevels(2690, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            #endregion
+
             #region Fu Mansot
 
             // Mansoron (2241)

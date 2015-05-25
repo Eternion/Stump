@@ -166,7 +166,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     continue;
 
                 // summoning is the priority
-                if (( category & SpellCategory.Summoning ) != 0 && Fighter.CanSummon())
+                if ((category & SpellCategory.Summoning) != 0 && (Fighter.CanSummon() || (category & SpellCategory.Healing) != 0))
                 {
                     var adjacentCell = Fighter.GetCastZoneSet(spell.CurrentSpellLevel, Fighter.Position.Point).EnumerateValidPoints().
                         OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).

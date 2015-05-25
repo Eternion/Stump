@@ -110,7 +110,13 @@ namespace Stump.Server.WorldServer.Game.Formulas
 
         public static int CalculatePushBackDamages(FightActor source, FightActor target, int range)
         {
-            return (8 + new CryptoRandom().Next(1, 8) * (source.Level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
+            var level = source.Level;
+
+            var summon = source as SummonedMonster;
+            if (summon != null)
+                level = summon.Summoner.Level;
+
+            return (8 + new CryptoRandom().Next(1, 8) * (level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
         }
     }
 }
