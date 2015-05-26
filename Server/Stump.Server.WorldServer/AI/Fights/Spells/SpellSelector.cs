@@ -384,6 +384,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             {
                 min = max = (uint) Math.Round(((Fighter.Stats.Health.DamageTaken*effect.DiceNum)/100d));
             }
+            else if (handler is Kill)
+            {
+                min = max = (uint)target.LifePoints;
+            }
             else
             {
                 min = (uint) Math.Min(effect.DiceNum, effect.DiceFace);

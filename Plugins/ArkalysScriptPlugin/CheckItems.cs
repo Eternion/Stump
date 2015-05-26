@@ -46,23 +46,36 @@ namespace ArkalysScriptPlugin
                     item.Effects = ItemManager.Instance.GenerateItemEffects(item.Template);
                 }
 
-                if (item.Id == 20392)
+                if (item.ItemId == 20392)
                 {
                     World.Instance.Database.Delete(item);
 
                     var template = ItemManager.Instance.TryGetTemplate(20000);
 
-                    var orbes = new PlayerItemRecord
-                    {
-                        Effects = ItemManager.Instance.GenerateItemEffects(template),
-                        IsNew = true,
-                        ItemId = 20000,
-                        OwnerId = item.OwnerId,
-                        Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
-                        Stack = 1000000
-                    };
+                    var orbes = World.Instance.Database.Fetch<PlayerItemRecord>(string.Format("SELECT * FROM characters_items WHERE OwnerId={0} AND ItemId={1}", item.OwnerId, 20000)).FirstOrDefault();
 
-                    World.Instance.Database.Insert(orbes);
+                    if (orbes == null)
+                    {
+                        orbes = new PlayerItemRecord
+                        {
+                            Id = PlayerItemRecord.PopNextId(),
+                            Effects = ItemManager.Instance.GenerateItemEffects(template),
+                            IsNew = true,
+                            ItemId = 20000,
+                            OwnerId = item.OwnerId,
+                            Position = CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED,
+                            Stack = 820000
+                        };
+
+                        World.Instance.Database.Insert(orbes);
+                    }
+                    else
+                    {
+                        orbes.Stack += 820000;
+
+                        World.Instance.Database.Update(orbes);
+                    }   
+                    
                 }
                 else
                     World.Instance.Database.Update(item);
