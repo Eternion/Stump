@@ -129,7 +129,8 @@ namespace ArkalysPlugin.Npcs
                 new RequiredItem(7113, 30),
                 new RequiredItem(739, 25),
                 new RequiredItem(6980, 15),
-                new RequiredItem(20140, 20)
+                new RequiredItem(20140, 20),
+                new RequiredItem(7754, 30)
             };
 
         public NpcDofusExchangeDialog(Character character, Npc npc)

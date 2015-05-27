@@ -2177,10 +2177,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 StopTurn();
 
             fighter.ResetFightProperties();
-            
 
             fighter.Team.AddLeaver(fighter);
             m_leavers.Add(fighter);
+
+            fighter.Team.RemoveFighter(fighter);
+            fighter.Character.RejoinMap();
         }
 
         protected virtual void OnPlayerLoggout(Character character)
