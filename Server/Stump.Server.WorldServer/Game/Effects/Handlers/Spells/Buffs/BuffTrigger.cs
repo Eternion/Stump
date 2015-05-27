@@ -193,7 +193,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             var source = damage.Source;
             var target = buff.Target;
 
-            if (damage.Source == target)
+            if (source == target || source.IsFriendlyWith(target))
                 return;
 
             if (damage.Spell == null || damage.Spell.Id == (int)SpellIdEnum.COUP_DE_POING)
