@@ -203,5 +203,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
             return clone;
         }
+
+        public virtual void CopyContext(StatsData target)
+        {
+            target.Context = Context;
+        }
     }
 }

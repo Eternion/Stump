@@ -142,6 +142,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             return hasRangeAttack;
         }
 
+        public event Action<AIFighter> AnalysePossibilitiesFinished;
+
         public void AnalysePossibilities()
         {
             Possibilities = new List<SpellCastInformations>();
@@ -164,7 +166,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     continue;
 
                 // summoning is the priority
-                if (( category & SpellCategory.Summoning ) != 0 && Fighter.CanSummon())
+                if ((category & SpellCategory.Summoning) != 0 && (Fighter.CanSummon() || (category & SpellCategory.Healing) != 0))
                 {
                     var adjacentCell = Fighter.GetCastZoneSet(spell.CurrentSpellLevel, Fighter.Position.Point).EnumerateValidPoints().
                         OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).
@@ -209,6 +211,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 if (cast.Impacts.Count > 0 || cast.IsSummoningSpell)
                     Possibilities.Add(cast);
             }
+
+            var evnt = AnalysePossibilitiesFinished;
+            if (evnt != null)
+                evnt(Fighter);
         }
 
         public SpellCast FindFirstSpellCast()
@@ -224,7 +230,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 {
                     var category = SpellIdentifier.GetSpellCategories(possibleCast.Spell);
 
-                    if (( category & priority.Key ) == 0)
+                    var dummy = possibleCast;
+                    if (( category & priority.Key ) == 0 || casts.Any(x => x.Spell == dummy.Spell)) // spell already used
                         continue;
 
                     if (Fighter.AP - minUsedAP < possibleCast.Spell.CurrentSpellLevel.ApCost)
@@ -376,6 +383,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             if (handler is DamagePerHPLost)
             {
                 min = max = (uint) Math.Round(((Fighter.Stats.Health.DamageTaken*effect.DiceNum)/100d));
+            }
+            else if (handler is Kill)
+            {
+                min = max = (uint)target.LifePoints;
             }
             else
             {

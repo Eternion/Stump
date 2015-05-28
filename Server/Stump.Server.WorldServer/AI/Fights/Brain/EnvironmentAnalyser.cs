@@ -60,6 +60,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         private void OnPositionChanged(ContextActor arg1, ObjectPosition arg2)
         {
+            ResetMoveZone();
+        }
+
+        public void ResetMoveZone()
+        {
             m_moveZone = null;
         }
 
@@ -82,7 +87,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
             var closestPoint = intersection.Where(x => Fight.Cells[x.CellId].Walkable && 
                 (target.Direction == DirectionFlagEnum.ALL_DIRECTIONS || target.Direction == DirectionFlagEnum.NONE || (x.OrientationTo(target.Point).GetFlag() & target.Direction) != 0) &&
-                (!LoS || Fight.CanBeSeen(x, MapPoint.GetPoint(target.Cell)))).
+                (!LoS || Fight.CanBeSeen(x, MapPoint.GetPoint(target.Cell), false, Fighter))).
                 OrderBy(x => (nearFirst ? 1 : -1)*x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
             return closestPoint != null ? Fighter.Fight.Cells[closestPoint.CellId] : null;
@@ -179,7 +184,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public FightActor GetNearestAlly()
         {
-            return GetNearestFighter(entry => entry.IsFriendlyWith(Fighter));
+            return GetNearestFighter(entry => entry.IsFriendlyWith(Fighter) && entry != Fighter);
         }
 
         public FightActor GetNearestEnemy()

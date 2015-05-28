@@ -156,7 +156,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 record = new CharacterRecord(breed)
                     {
-                        Experience = ExperienceManager.Instance.GetCharacterLevelExperience(breed.StartLevel),
+                        Experience = ExperienceManager.Instance.GetCharacterLevelExperience((byte)breed.StartLevel),
                         Name = name,
                         Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
                         Head = headId,

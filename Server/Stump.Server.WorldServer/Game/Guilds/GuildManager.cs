@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public GuildCreationResultEnum CreateGuild(Character character, string name, NetworkGuildEmblem emblem)
         {
             var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.Guildalogem));
-            if (guildalogemme == null)
+            if (guildalogemme == null && !character.IsGameMaster())
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_REQUIREMENT_UNMET;
 
             if (!Regex.IsMatch(name, "^\\b[A-Z][A-Za-z\\s-']{4,30}\\b$", RegexOptions.Compiled) || Regex.IsMatch(name, "^\\s\\s$"))
