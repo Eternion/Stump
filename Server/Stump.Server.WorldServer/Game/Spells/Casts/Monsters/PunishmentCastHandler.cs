@@ -7,6 +7,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
 {
     [SpellCastHandler(SpellIdEnum.PROPOLIS)]
     [SpellCastHandler(SpellIdEnum.GLOURSBI_BOULGA)]
+    [SpellCastHandler(SpellIdEnum.RUSE_DU_WABBIT)]
     public class PunishmentCastHandler : DefaultSpellCastHandler
     {
         public PunishmentCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -22,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             var buffId = Caster.PopNextBuffId();
             var effect = Spell.CurrentSpellLevel.Effects[0];
 
-            var buff = new TriggerBuff(buffId, Caster, Caster, effect, Spell, false, false, BuffTriggerType.AFTER_ATTACKED, SpellBuffTrigger)
+            var buff = new TriggerBuff(buffId, Caster, Caster, effect, Spell, Spell, false, false, BuffTriggerType.AFTER_ATTACKED, SpellBuffTrigger)
             {
                 Duration = (short)effect.Duration
             };
@@ -48,7 +49,10 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             if (target.Position.Point.IsAdjacentTo(source.Position.Point))
                 return;
 
-            Handlers[0].Apply();
+            foreach (var handler in Handlers)
+            {
+                handler.Apply();
+            }
         }
     }
 }

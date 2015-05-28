@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stump.Server.WorldServer</RootNamespace>
     <AssemblyName>Stump.Server.WorldServer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -137,6 +137,8 @@
     <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\PereFwetarBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\MamansotBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Monsters\MansobeseBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Monsters\MeruletteBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Monsters\SporakneBrain.cs" />
     <Compile Include="AI\Fights\Brain\EnvironmentAnalyser.cs" />
@@ -587,6 +589,7 @@
     <Compile Include="Game\Spells\Casts\Elementary\CawotteCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\HammerCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\NaughtyChildCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\OldToyParadeCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Monsters\PunishmentCastHandler.cs" />

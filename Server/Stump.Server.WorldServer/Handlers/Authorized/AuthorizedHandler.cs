@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
         [WorldHandler(AdminQuietCommandMessage.Id)]
         public static void HandleAdminQuietCommandMessage(WorldClient client, AdminQuietCommandMessage message)
         {
-            if (client.UserGroup.Role < RoleEnum.GameMaster_Padawan)
+            if (!client.UserGroup.IsGameMaster)
                 return;
 
             var data = message.content.Split(' ');
@@ -40,8 +40,11 @@ namespace Stump.Server.WorldServer.Handlers.Authorized
         [WorldHandler(AdminCommandMessage.Id)]
         public static void HandleAdminCommandMessage(WorldClient client, AdminCommandMessage message)
         {
-            if (client.UserGroup.Role < RoleEnum.GameMaster_Padawan)
+            if (!client.UserGroup.IsGameMaster)
+            {
+                SendConsoleMessage(client, ConsoleMessageTypeEnum.CONSOLE_ERR_MESSAGE, "You don't have access to console");
                 return;
+            }
 
             if (client.Character == null)
                 return;

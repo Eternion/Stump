@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Sram
             foreach (var target in m_affectedActors)
             {
                 var id = target.PopNextBuffId();
-                var buff = new TriggerBuff(id, target, Caster, Handlers[0].Dice, Spell, false, false, BuffTriggerType.BEFORE_ATTACKED, ChakraConcentrationBuffTrigger)
+                var buff = new TriggerBuff(id, target, Caster, Handlers[0].Dice, Spell, Spell, false, false, BuffTriggerType.BEFORE_ATTACKED, ChakraConcentrationBuffTrigger)
                 {
                     Duration = 1
                 };

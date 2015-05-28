@@ -127,6 +127,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnLoggedOut()
         {
+            if (Fight != null && Fight.State == FightState.Fighting)
+                Record.LeftFightId = Fight.Id;
+            else
+                Record.LeftFightId = null;
+
             if (GuildMember != null)
                 GuildMember.OnCharacterDisconnected(this);
 
@@ -179,6 +184,22 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private void OnAccountUnblocked()
         {
             Action<Character> handler = AccountUnblocked;
+            if (handler != null) handler(this);
+        }
+
+        public event Action<Character> LookRefreshed;
+
+        private void OnLookRefreshed()
+        {
+            var handler = LookRefreshed;
+            if (handler != null) handler(this);
+        }
+
+        public event Action<Character> StatsResfreshed;
+        
+        private void OnStatsResfreshed()
+        {
+            var handler = StatsResfreshed;
             if (handler != null) handler(this);
         }
 
@@ -881,12 +902,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void RefreshActor()
         {
-            if (Map != null)
+            if (Fight != null)
+            {
+                Fighter.Look = Look.Clone();
+                Fighter.Look.RemoveAuras();
+
+                Fight.Map.Area.ExecuteInContext(() =>
+                    Fight.RefreshActor(Fighter));
+            }
+            else if (Map != null)
             {
                 Map.Area.ExecuteInContext(() =>
-                    Map.Refresh(this)
-                    );
+                    Map.Refresh(this));
             }
+
+            OnLookRefreshed();
         }
 
         #endregion
@@ -1178,6 +1208,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 UpdateRegenedLife();
 
             CharacterHandler.SendCharacterStatsListMessage(Client);
+
+            OnStatsResfreshed();
         }
 
         public void ToggleGodMode(bool state)
@@ -2487,6 +2519,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Spectator;
         }
 
+        private CharacterFighter RejoinFightAfterDisconnection(CharacterFighter oldFighter)
+        {
+            NextMap = Map; // we do not leave the map
+            Map.Leave(this);
+            StopRegen();
+
+            ContextHandler.SendGameContextDestroyMessage(Client);
+            ContextHandler.SendGameContextCreateMessage(Client, 2);
+            ContextRoleplayHandler.SendCurrentMapMessage(Client, Map.Id);
+            ContextRoleplayHandler.SendMapComplementaryInformationsDataMessage(Client);
+
+
+            oldFighter.RestoreFighterFromDisconnection(this);
+            Fighter = oldFighter;
+            
+            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType);
+            Fighter.Fight.RejoinFightFromDisconnection(Fighter);
+            OnCharacterContextChanged(true);
+
+            return Fighter;
+        }
+
         /// <summary>
         /// Rejoin the map after a fight
         /// </summary>
@@ -2500,7 +2554,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (GodMode)
                 Stats.Health.DamageTaken = 0;
-            else if (Fighter != null && (Fighter.HasLeft() || Fight.Losers == Fighter.Team) && !Fight.IsDeathTemporarily)
+            else if (Fighter != null && (Fighter.HasLeft() && !Fighter.IsDisconnected || Fight.Losers == Fighter.Team) && !Fight.IsDeathTemporarily)
                 OnDied();
 
             Fighter = null;
@@ -2517,19 +2571,24 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Map == null)
                 return;
 
-            if (!NextMap.Area.IsRunning)
-                NextMap.Area.Start();
-
-            NextMap.Area.ExecuteInContext(() =>
+            if (IsLoggedIn)
             {
-                if (IsLoggedIn)
+                if (!NextMap.Area.IsRunning)
+                    NextMap.Area.Start();
+
+                NextMap.Area.ExecuteInContext(() =>
                 {
-                    LastMap = Map;
-                    Map = NextMap;
-                    Map.Enter(this);
-                    NextMap = null;
-                }
-            });
+                    if (IsLoggedIn)
+                    {
+                        LastMap = Map;
+                        Map = NextMap;
+                        Map.Enter(this);
+                        NextMap = null;
+                    }
+                });
+            }
+            else
+                SaveLater(); // if disconnected in fight we must save the change at the end of the fight
         }
 
         #endregion
@@ -2885,12 +2944,38 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (IsInWorld)
                 return;
 
-            Map.Area.AddMessage(() =>
+            CharacterFighter fighter = null;
+            if (Record.LeftFightId != null)
             {
-                Map.Enter(this);
+                var fight = FightManager.Instance.GetFight(Record.LeftFightId.Value);
 
-                StartRegen();
-            });
+                if (fight != null)
+                {
+                    fighter = fight.GetLeaver(Id);
+                }
+            }
+
+            if (fighter != null)
+            {
+                Map.Area.AddMessage(() =>
+                {
+                    RejoinFightAfterDisconnection(fighter);
+                });
+            }
+            else
+            {
+                ContextHandler.SendGameContextDestroyMessage(Client);
+                ContextHandler.SendGameContextCreateMessage(Client, 1);
+
+                RefreshStats();
+
+                Map.Area.AddMessage(() =>
+                {
+                    Map.Enter(this);
+
+                    StartRegen();
+                });
+            }
 
             World.Instance.Enter(this);
             m_inWorld = true;
@@ -2985,9 +3070,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             try
             {
                 WorldServer.Instance.IOTaskPool.EnsureContext();
-
-                if (!m_recordLoaded)
-                    return;
 
                 lock (SaveSync)
                 {
@@ -3352,5 +3434,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             return string.Format("{0} ({1})", Name, Id);
         }
+
+        
     }
 }

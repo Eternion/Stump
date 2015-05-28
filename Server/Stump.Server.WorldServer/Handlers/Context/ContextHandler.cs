@@ -29,11 +29,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 return;
             }
 
-            SendGameContextDestroyMessage(client);
-            SendGameContextCreateMessage(client, 1);
-
-            client.Character.RefreshStats();
-
             client.Character.LogIn();
         }
 

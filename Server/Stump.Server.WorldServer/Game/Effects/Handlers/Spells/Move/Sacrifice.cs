@@ -12,19 +12,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
     [EffectHandler(EffectsEnum.Effect_DamageIntercept)]
     public class Sacrifice : SpellEffectHandler
     {
-        private List<FightActor> m_targets;
-
         public Sacrifice(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
+        }
+
+        public override bool CanApply()
+        {
+            return !GetAffectedActors().Any(x => x.GetBuffs(y => y.Effect.EffectId == EffectsEnum.Effect_DamageIntercept).Any());
         }
 
         public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())
             {
-                //m_targets.Add(actor);
-
                 AddTriggerBuff(actor, false, BuffTriggerType.BEFORE_ATTACKED, TriggerBuffApply);
                 AddTriggerBuff(actor, false, BuffTriggerType.AFTER_ATTACKED, PostTriggerBuffApply);
             }

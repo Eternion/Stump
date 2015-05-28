@@ -399,10 +399,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightShowFighterMessage(WorldClient client, FightActor fighter)
         {
-            var fighterInfos = fighter.GetGameFightFighterInformations(client);
-
-            if (fighter is SummonedClone)
-                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
+            var clone = fighter as SummonedClone;
+            var fighterInfos = clone != null ? clone.GetGameFightFighterNamedInformations() : fighter.GetGameFightFighterInformations(client);
 
             client.Send(new GameFightShowFighterMessage(fighterInfos));
         }
@@ -501,6 +499,18 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SlaveFighter actor)
         {
             client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
+        }
+        
+
+        public static void SendGameFightResumeMessage(IPacketReceiver client, CharacterFighter fighter)
+        {
+            client.Send(new GameFightResumeMessage(
+                fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
+                fighter.Fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
+                fighter.Fight.TimeLine.RoundNumber,
+                fighter.SpellHistory.GetCooldowns(),
+                (sbyte) fighter.SummonedCount,
+                (sbyte) fighter.BombsCount));
         }
     }
 }

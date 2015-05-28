@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Commands
                            if (Enum.TryParse(entry, CommandBase.IgnoreCommandCase, out result))
                                return result;
 
-                           throw new ConverterException(string.Format("Cannot convert '{0}' to a {1}", entry, type.Name));
+                           throw new ConverterException(string.Format("Cannot convert '{0}' to a {1}. Possible values : {2}", entry, type.Name, string.Join(", ", Enum.GetNames(typeof(T)))));
                        };
         }
 

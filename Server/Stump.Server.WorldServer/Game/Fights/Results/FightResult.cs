@@ -2,6 +2,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights.Teams;
+using Stump.Server.WorldServer.Game.Items;
 
 namespace Stump.Server.WorldServer.Game.Fights.Results
 {
@@ -25,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Results
 
         public bool Alive
         {
-            get { return Fighter.IsAlive() && !Fighter.HasLeft(); }
+            get { return Fighter.IsAlive(); }
         }
 
         public bool HasLeft

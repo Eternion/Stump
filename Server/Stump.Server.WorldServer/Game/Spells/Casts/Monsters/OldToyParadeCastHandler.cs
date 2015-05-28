@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             if (fighter.Monster.MonsterId != 494)
                 return;
 
-            Handlers[0].Apply();
+            //Handlers[0].Apply();
 
             base.Execute();
         }

@@ -321,7 +321,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             set;
         }
 
-        public byte StartLevel
+        public short StartLevel
         {
             get;
             set;
