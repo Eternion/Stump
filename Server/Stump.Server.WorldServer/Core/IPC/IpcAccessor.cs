@@ -439,8 +439,9 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
 
             Character character;
-            if (AccountManager.Instance.IsAccountBlocked(message.AccountId, out character))
+            if (!isLogged && AccountManager.Instance.IsAccountBlocked(message.AccountId, out character))
             {
+                logger.Warn("Account {0} blocked, waiting release", message.AccountId);
                 Action<Character> ev = null;
                     ev = chr =>
                     {

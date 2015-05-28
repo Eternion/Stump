@@ -2982,60 +2982,68 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         internal void SaveNow()
         {
-            WorldServer.Instance.IOTaskPool.EnsureContext();
-
-            if (!m_recordLoaded)
-                return;
-
-            lock (SaveSync)
+            try
             {
-                using (var transaction = WorldServer.Instance.DBAccessor.Database.GetTransaction())
+                WorldServer.Instance.IOTaskPool.EnsureContext();
+
+                if (!m_recordLoaded)
+                    return;
+
+                lock (SaveSync)
                 {
-                    Inventory.Save(false);
-                    if (Bank.IsLoaded)
-                        Bank.Save();
-                    MerchantBag.Save();
-                    Spells.Save();
-                    Shortcuts.Save();
-                    FriendsBook.Save();
+                    using (var transaction = WorldServer.Instance.DBAccessor.Database.GetTransaction())
+                    {
+                        Inventory.Save(false);
+                        if (Bank.IsLoaded)
+                            Bank.Save();
+                        MerchantBag.Save();
+                        Spells.Save();
+                        Shortcuts.Save();
+                        FriendsBook.Save();
 
-                    if (GuildMember != null && GuildMember.IsDirty)
-                        GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
+                        if (GuildMember != null && GuildMember.IsDirty)
+                            GuildMember.Save(WorldServer.Instance.DBAccessor.Database);
 
-                    if (Mount != null)
-                        Mount.Save(WorldServer.Instance.DBAccessor.Database);
+                        if (Mount != null)
+                            Mount.Save(WorldServer.Instance.DBAccessor.Database);
 
-                    m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
-                    m_record.CellId = Cell.Id;
-                    m_record.Direction = Direction;
+                        m_record.MapId = NextMap != null ? NextMap.Id : Map.Id;
+                        m_record.CellId = Cell.Id;
+                        m_record.Direction = Direction;
 
-                    m_record.AP = Stats[PlayerFields.AP].Base;
-                    m_record.MP = Stats[PlayerFields.MP].Base;
-                    m_record.Strength = Stats[PlayerFields.Strength].Base;
-                    m_record.Agility = Stats[PlayerFields.Agility].Base;
-                    m_record.Chance = Stats[PlayerFields.Chance].Base;
-                    m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
-                    m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
-                    m_record.Vitality = Stats[PlayerFields.Vitality].Base;
-                    m_record.BaseHealth = Stats.Health.Base;
-                    m_record.DamageTaken = Stats.Health.DamageTaken;
+                        m_record.AP = Stats[PlayerFields.AP].Base;
+                        m_record.MP = Stats[PlayerFields.MP].Base;
+                        m_record.Strength = Stats[PlayerFields.Strength].Base;
+                        m_record.Agility = Stats[PlayerFields.Agility].Base;
+                        m_record.Chance = Stats[PlayerFields.Chance].Base;
+                        m_record.Intelligence = Stats[PlayerFields.Intelligence].Base;
+                        m_record.Wisdom = Stats[PlayerFields.Wisdom].Base;
+                        m_record.Vitality = Stats[PlayerFields.Vitality].Base;
+                        m_record.BaseHealth = Stats.Health.Base;
+                        m_record.DamageTaken = Stats.Health.DamageTaken;
 
-                    WorldServer.Instance.DBAccessor.Database.Update(m_record);
-                    WorldServer.Instance.DBAccessor.Database.Update(Client.WorldAccount);
+                        WorldServer.Instance.DBAccessor.Database.Update(m_record);
+                        WorldServer.Instance.DBAccessor.Database.Update(Client.WorldAccount);
 
-                    transaction.Complete();
+                        transaction.Complete();
+                    }
+                }
+
+                if (IsAuthSynced)
+                    OnSaved();
+                else
+                {
+                    IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Account),
+                        msg =>
+                        {
+                            OnSaved();
+                        });
                 }
             }
-
-            if (IsAuthSynced)
-                OnSaved();
-            else
+            catch
             {
-                IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Account),
-                    msg =>
-                    {
-                        OnSaved();
-                    });
+                UnBlockAccount();
+                throw;
             }
         }
 
