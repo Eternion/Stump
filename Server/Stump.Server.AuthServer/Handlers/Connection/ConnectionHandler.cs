@@ -207,7 +207,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendIdentificationFailedBannedMessage(AuthClient client, DateTime date)
         {
-            client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED,
+            client.Send(new IdentificationFailedBannedMessage((sbyte)IdentificationFailureReasonEnum.BANNED,
                 date.GetUnixTimeStampLong()));
         }
 

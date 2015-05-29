@@ -13,7 +13,7 @@ namespace ArkalysAuthPlugin.Votes
         [Initialization(InitializationPass.Last)]
         public void Initialize()
         {
-            AuthServer.Instance.IOTaskPool.CallPeriodically(10000, CheckVotes);
+            AuthServer.Instance.IOTaskPool.CallPeriodically(300000, CheckVotes);
         }
 
         private static void CheckVotes()
