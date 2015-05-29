@@ -15,6 +15,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(EmotePlayRequestMessage.Id)]
         public static void HandleEmotePlayRequestMessage(WorldClient client, EmotePlayRequestMessage message)
         {
+            if (!client.Character.AvailableEmotes.Contains((EmotesEnum) message.emoteId))
+                return;
+
             client.Character.PlayEmote((EmotesEnum) message.emoteId);
         }
 
@@ -24,7 +27,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                             (sbyte) emote,
                             DateTime.Now.GetUnixTimeStampLong(),
                             character.Id,
-                            (int) character.Account.Id
+                            character.Account.Id
                             ));
         }
 

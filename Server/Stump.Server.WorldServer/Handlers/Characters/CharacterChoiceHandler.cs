@@ -194,7 +194,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
             //ContextHandler.SendSpellForgottenMessage(client);
 
-            ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 21).Select(entry => (sbyte)entry).ToList());
+            ContextRoleplayHandler.SendEmoteListMessage(client, client.Character.AvailableEmotes.Select(x => (sbyte)x));
             ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
 
             PvPHandler.SendAlignmentRankUpdateMessage(client);
