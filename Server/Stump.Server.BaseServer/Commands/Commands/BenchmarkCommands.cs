@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSScriptLibrary;
+using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Benchmark;
 
@@ -26,7 +27,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            trigger.Reply(BenchmarkManager.Instance.GenerateReport());
+            trigger.Reply(BenchmarkManager.Instance.GenerateReport().HtmlEntities());
         }
     }
 
