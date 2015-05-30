@@ -126,7 +126,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (DoesEmblemExist(emblem))
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
 
-            character.Inventory.RemoveItem(guildalogemme, 1);
+            if (!character.IsGameMaster())
+                character.Inventory.RemoveItem(guildalogemme, 1);
 
             var guild = CreateGuild(name);
             if (guild == null)

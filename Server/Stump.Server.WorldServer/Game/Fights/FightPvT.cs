@@ -300,7 +300,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             // dispatch loots
             foreach (var looter in looters)
             {
-                var count = (int) Math.Ceiling(TaxCollector.Items.Count*((double) looter.Prospecting/teamPP));
+                var count = i + (int) Math.Ceiling(TaxCollector.Items.Count*((double) looter.Prospecting/teamPP)) - 1;
                 for (; i < count && i < TaxCollector.Items.Count; i++)
                 {
                     looter.Loot.AddItem(TaxCollector.Items[i]);

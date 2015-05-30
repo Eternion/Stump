@@ -55,7 +55,7 @@ namespace Stump.Server.BaseServer.Commands
             var str = trigger.Args.NextWord();
 
             SubCommand command;
-            if (!TryGetSubCommand(IgnoreCommandCase ? str.ToLower() : str, out command) || command.RequiredRole > trigger.UserRole)
+            if (!TryGetSubCommand(IgnoreCommandCase ? str.ToLower() : str, out command) || !trigger.CanAccessCommand(command))
             {
                 HelpCommand.DisplayFullCommandDescription(trigger, this);
                 return;
