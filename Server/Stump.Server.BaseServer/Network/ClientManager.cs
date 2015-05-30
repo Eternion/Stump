@@ -267,6 +267,7 @@ namespace Stump.Server.BaseServer.Network
                         logger.Error("Client {0} try to connect more then {1} times",
                             e.AcceptSocket.RemoteEndPoint.ToString(), MaxIPConnexions.Value);
                         m_semaphore.Release();
+                        return;
                     }
                 }
                 catch (Exception ex)
