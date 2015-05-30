@@ -225,7 +225,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         public bool AreAllDead()
         {
             return m_fighters.Count <= 0 || m_fighters.Where(x => !(x is SummonedFighter) && !(x is SummonedBomb)).
-                All(entry => entry.IsDead() || (entry.HasLeft() && Fight.GetAllFighters<CharacterFighter>().All(x => x.IsDisconnected)));
+                All(entry => entry.IsDead() || (entry.HasLeft() && (!(entry is CharacterFighter) || !((CharacterFighter)entry).IsDisconnected)));
         }
 
         public bool IsFull()

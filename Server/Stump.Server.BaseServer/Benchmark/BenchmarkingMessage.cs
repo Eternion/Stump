@@ -22,7 +22,8 @@ namespace Stump.Server.BaseServer.Benchmark
                 sw.Start();
                 m_message.Execute();
                 sw.Stop();
-                BenchmarkManager.Instance.Add(BenchmarkEntry.Create(m_message + "[IO]", sw.Elapsed));
+                if (sw.ElapsedMilliseconds>1)
+                    BenchmarkManager.Instance.Add(BenchmarkEntry.Create(m_message + "[IO]", sw.Elapsed));
             }
         }
     }
