@@ -161,6 +161,7 @@
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
     <Compile Include="Commands\Commands\BankCommand.cs" />
+    <Compile Include="Commands\Commands\DebugCommands.cs" />
     <Compile Include="Commands\Commands\DungeonCommands.cs" />
     <Compile Include="Commands\Commands\FightCommands.cs" />
     <Compile Include="Commands\Commands\FightPlacementCommand.cs" />

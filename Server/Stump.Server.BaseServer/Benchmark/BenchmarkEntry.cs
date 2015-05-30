@@ -6,6 +6,7 @@ namespace Stump.Server.BaseServer.Benchmark
 {
     public class BenchmarkEntry
     {
+
         public string MessageType
         {
             get;

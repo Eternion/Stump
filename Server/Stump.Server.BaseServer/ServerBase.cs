@@ -20,6 +20,7 @@ using Stump.Core.Threading;
 using Stump.Core.Timers;
 using Stump.Core.Xml.Config;
 using Stump.ORM;
+using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Exceptions;
 using Stump.Server.BaseServer.Initialization;
@@ -237,7 +238,7 @@ namespace Stump.Server.BaseServer
                 Config.Load();
 
             logger.Info("Initialize Task Pool");
-            IOTaskPool = new SelfRunningTaskPool(IOTaskInterval, "IO Task Pool");
+            IOTaskPool = new BenchmarkedTaskPool(IOTaskInterval, "IO Task Pool");
 
             CommandManager = CommandManager.Instance;
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());

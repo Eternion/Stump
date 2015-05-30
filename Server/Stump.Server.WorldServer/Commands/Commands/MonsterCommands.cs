@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -194,6 +195,73 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 trigger.Reply("{0} groups spawned", i);
             }
+        }
+    }
+
+    public class MonsterStarsCommand : SubCommand
+    {
+        public MonsterStarsCommand()
+        {
+            Aliases = new[] { "stars" };
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Set monster group stars bonus";
+            ParentCommandType = typeof(MonsterCommands);
+            AddParameter<int>("bonus", "stars", "Bonus bewteen 0 and " + MonsterGroup.StarsBonusLimit + "%");
+            AddParameter("map", "m", "Map", isOptional: true, converter: ParametersConverter.MapConverter);
+            AddParameter("subarea", "subarea", "If defined spawn a monster on each map", isOptional: true, converter: ParametersConverter.SubAreaConverter);
+            AddParameter<bool>("all", "all", "All monsters", isOptional: true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            Map map = null;
+            SubArea subarea = null;
+            var bonus = trigger.Get<int>("bonus");
+
+            if (bonus < 0 || bonus > MonsterGroup.StarsBonusLimit)
+            {
+                trigger.ReplyError("Bonus between 0 and 200%");
+                return;
+            }
+            if (!trigger.IsArgumentDefined("map") && !trigger.IsArgumentDefined("subarea") && !trigger.IsArgumentDefined("all"))
+            {
+                if (!(trigger is GameTrigger))
+                {
+                    trigger.ReplyError("You have to define a map or a subarea if your are not ingame");
+                    return;
+                }
+
+                map = (trigger as GameTrigger).Character.Map;
+            }
+            else if (trigger.IsArgumentDefined("map"))
+                map = trigger.Get<Map>("map");
+            else if (trigger.IsArgumentDefined("subarea"))
+                subarea = trigger.Get<SubArea>("subarea");
+
+            if (map != null)
+            {
+                foreach (var monster in map.Actors.OfType<MonsterGroup>())
+                {
+                    monster.AgeBonus = (short)bonus;
+                }
+            }
+            else if (subarea != null)
+            {
+                foreach (var monster in subarea.Maps.SelectMany(x => x.Actors.OfType<MonsterGroup>()))
+                {
+                    monster.AgeBonus = (short) bonus;
+                }
+
+            }
+            else
+            {
+                foreach (var monster in World.Instance.GetMaps().SelectMany(x => x.Actors.OfType<MonsterGroup>()))
+                {
+                    monster.AgeBonus = (short) bonus;
+                }
+            }
+
+            trigger.Reply("Monsters stars set to " + bonus);
         }
     }
 
