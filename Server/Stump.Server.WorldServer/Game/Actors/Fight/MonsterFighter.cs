@@ -93,6 +93,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return Monster.Grade.GradeXp;
         }
+        
+        public bool CanDrop()
+        {
+            return true;
+        }
 
         public override IEnumerable<DroppedItem> RollLoot(IFightResult looter)
         {

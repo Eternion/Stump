@@ -1944,6 +1944,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return new DroppedItem[0];
         }
+        public bool CanDrop()
+        {
+            return false;
+        }
 
         public virtual uint GetDroppedKamas()
         {
@@ -2190,5 +2194,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public abstract string GetMapRunningFighterName();
 
         #endregion
+       
     }
 }
