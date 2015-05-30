@@ -67,14 +67,14 @@ namespace Stump.Core.Threading
             get { return Thread.CurrentThread.ManagedThreadId == m_currentThreadId; }
         }
 
-        public void AddMessage(IMessage message)
+        public virtual void AddMessage(IMessage message)
         {
             m_messageQueue.Enqueue(message);
         }
 
         public void AddMessage(Action action)
         {
-            m_messageQueue.Enqueue(new Message(action));
+            AddMessage(new Message(action));
         }
 
         public bool ExecuteInContext(Action action)
@@ -125,7 +125,7 @@ namespace Stump.Core.Threading
             }
         }
 
-        public void AddTimer(TimedTimerEntry timer)
+        public virtual void AddTimer(TimedTimerEntry timer)
         {
             ExecuteInContext(() =>
             {
@@ -136,7 +136,7 @@ namespace Stump.Core.Threading
             });
         }
 
-        public void RemoveTimer(TimedTimerEntry timer)
+        public virtual void RemoveTimer(TimedTimerEntry timer)
         {
             ExecuteInContext(() =>
             {
@@ -254,6 +254,12 @@ namespace Stump.Core.Threading
                     m_stoppedAsync.Set();
                 }
             }
+        }
+
+        public string GetDebugInformations()
+        {
+            return string.Format("Messages {0}, timers {1}",
+                m_messageQueue.Count, m_timers.Count);
         }
     }
 }

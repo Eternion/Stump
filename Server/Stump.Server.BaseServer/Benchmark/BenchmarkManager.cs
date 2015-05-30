@@ -19,7 +19,7 @@ namespace Stump.Server.BaseServer.Benchmark
         public static BenchmarkingType BenchmarkingType = BenchmarkingType.Complete;
 
         [Variable(true)]
-        public static int EntriesLimit = 1000;
+        public static int EntriesLimit = 10000;
 
         public ReadOnlyCollection<BenchmarkEntry> Entries
         {

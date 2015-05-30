@@ -24,13 +24,13 @@ namespace ArkalysPlugin
         public static ItemTemplate OrbItemTemplate;
 
         [Variable]
-        public static double FormulasCoefficient = 0.014;
+        public static double FormulasCoefficient = 0.0022;
 
         [Variable]
-        public static double FormulasExponent = 0.82;
+        public static double FormulasExponent = 2.18;
 
         [Variable]
-        public static double BossFactor = 2;
+        public static double BossFactor = 8;
 
 
 
@@ -97,7 +97,12 @@ namespace ArkalysPlugin
             if (monster.Monster.Grade.GradeXp == 0)
                 return 0;
 
-            return (uint) Math.Floor(FormulasCoefficient*(monster.Monster.Template.IsBoss ? BossFactor : 1)*Math.Pow(monster.Monster.Grade.GradeXp, FormulasExponent));
+
+             return (uint)Math.Floor(FormulasCoefficient * (monster.Monster.Template.IsBoss ? BossFactor : 1) * Math.Pow(monster.Level, FormulasExponent)) +
+                (uint)Math.Floor(Math.Pow(Math.Log(2 * monster.Level), 0.6));
+
+            // formulas based on xp
+            //return (uint) Math.Floor(FormulasCoefficient*(monster.Monster.Template.IsBoss ? BossFactor : 1)*Math.Pow(monster.Monster.Grade.GradeXp, FormulasExponent));
         }
     }
 }

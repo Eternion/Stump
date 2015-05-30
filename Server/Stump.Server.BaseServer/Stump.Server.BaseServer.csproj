@@ -208,7 +208,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Benchmark\BenchmarkedTaskPool.cs" />
     <Compile Include="Benchmark\BenchmarkEntry.cs" />
+    <Compile Include="Benchmark\BenchmarkingMessage.cs" />
     <Compile Include="Benchmark\BenchmarkingType.cs" />
     <Compile Include="Benchmark\BenchmarkManager.cs" />
     <Compile Include="Commands\CommandBase.cs" />

@@ -1626,7 +1626,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182,
                         FighterPlaying.GetMapRunningFighterName(), leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection - TimeLine.RoundNumber);
 
-                    if (GetAllFighters<CharacterFighter>().Any(x => !x.HasLeft()))
+                    if (FighterPlaying.Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay()))
                         goto redo;
                 }
             }
