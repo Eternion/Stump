@@ -1603,32 +1603,37 @@ namespace Stump.Server.WorldServer.Game.Fights
                     leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection <= TimeLine.RoundNumber)
                 {
                     leaver.Die();
+
+                    if (CheckFightEnd())
+                        return;
+
                     IFightResult leaverResult;
                     var results = GenerateLeaverResults(leaver, out leaverResult);
 
                     leaverResult.Apply();
 
                     ContextHandler.SendGameFightLeaveMessage(Clients, leaver);
-                    
+
                     leaver.ResetFightProperties();
+
+                    leaver.Team.AddLeaver(leaver);
+                    m_leavers.Add(leaver);
+                    leaver.Team.RemoveFighter(leaver);
+
+                    leaver.LeaveDisconnectedState(false);
+
                     leaver.Character.RejoinMap();
                     leaver.Character.SaveLater();
-                    if (CheckFightEnd())
-                        return;
-
-
-
+ 
                     goto redo;
                 }
-                else
-                {
-                    // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
-                    BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182,
-                        FighterPlaying.GetMapRunningFighterName(), leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection - TimeLine.RoundNumber);
 
-                    if (FighterPlaying.Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay()))
-                        goto redo;
-                }
+                // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
+                BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182,
+                    FighterPlaying.GetMapRunningFighterName(), leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection - TimeLine.RoundNumber);
+
+                if (FighterPlaying.Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay()))
+                    goto redo;
             }
 
 

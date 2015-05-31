@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Monster.Grade.GradeXp;
         }
         
-        public bool CanDrop()
+        public override bool CanDrop()
         {
             return true;
         }

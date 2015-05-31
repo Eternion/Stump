@@ -1944,7 +1944,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return new DroppedItem[0];
         }
-        public bool CanDrop()
+        public virtual bool CanDrop()
         {
             return false;
         }
