@@ -121,9 +121,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (!target.Position.Point.IsAdjacentTo(source.Position.Point))
                 return;
 
-            var effect = new Push(buff.Dice, target, buff.Spell, target.Cell, buff.Critical);
-            effect.AddAffectedActor(source);
-            effect.Apply();
+            target.CastSpell(buff.Spell, target.Cell, true, true);
         }
 
         private static void FrictionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)

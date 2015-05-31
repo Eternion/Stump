@@ -3014,7 +3014,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 }
             }
 
-            if (fighter != null)
+            if (fighter != null && fighter.IsDisconnected)
             {
                 Map.Area.AddMessage(() =>
                 {

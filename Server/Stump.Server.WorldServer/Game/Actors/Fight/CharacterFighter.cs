@@ -372,10 +372,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             LeftRound = Fight.TimeLine.RoundNumber;
         }
 
-        public void LeaveDisconnectedState()
+        public void LeaveDisconnectedState(bool left = true)
         {
             IsDisconnected = false;
-            m_left = false;
+
+            if (left)
+                m_left = false;
         }
 
         public void RestoreFighterFromDisconnection(Character character)
