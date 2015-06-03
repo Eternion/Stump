@@ -25,6 +25,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        [Index]
         public int OwnerId
         {
             get;
