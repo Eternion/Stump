@@ -18,6 +18,7 @@ namespace Stump.Server.WorldServer.Database.Items
     {
         private int m_ownerId;
 
+        [Index]
         public int OwnerId
         {
             get { return m_ownerId; }
