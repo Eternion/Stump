@@ -132,6 +132,8 @@ namespace Stump.Server.WorldServer.Game.Social
 
             if (success && isConnected)
                 OnFriendOnline(friend);
+            else
+                friend.SetOffline();
 
             FriendHandler.SendFriendAddedMessage(Owner.Client, friend);
 
@@ -213,11 +215,14 @@ namespace Stump.Server.WorldServer.Game.Social
 
         public bool RemoveIgnored(Ignored ignored)
         {
+            if (ignored.IsOnline())
+                OnIgnoredLogout(ignored.Character);
+
             Ignored dummy;
             if (m_ignoreds.TryRemove(ignored.Account.Id, out dummy))
             {
                 m_relationsToRemove.Push(ignored.Relation);
-                ignored.SetOffline();
+
                 FriendHandler.SendIgnoredDeleteResultMessage(Owner.Client, true, ignored.Session,
                     ignored.Account.Nickname);
 
