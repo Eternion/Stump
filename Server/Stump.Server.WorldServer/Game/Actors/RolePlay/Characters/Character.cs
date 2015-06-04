@@ -3086,6 +3086,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
                     if (Map != null && Map.IsActor(this))
                         Map.Leave(this);
+                    else if (Area != null)
+                        Area.Leave(this);
+                    
 
                     if (Map != null && m_merchantToSpawn != null)
                         Map.Enter(m_merchantToSpawn);
