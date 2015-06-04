@@ -23,24 +23,28 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Monsters
                 return;
 
             var target = Environment.GetNearestAlly();
-            var spell = new Spell((int)SpellIdEnum.MANSOLDAT, (byte)monster.Monster.Grade.Level);
 
-            if (Fighter.CanCastSpell(spell, target.Cell) == SpellCastResult.OK)
+            if (target != null)
             {
-                var cell = Environment.GetCellToCastSpell(new TargetCell(target.Cell),
-                    spell, spell.CurrentSpellLevel.CastTestLos);
+                var spell = new Spell((int)SpellIdEnum.MANSOLDAT, (byte)monster.Monster.Grade.Level);
 
-                if (cell != null)
+                if (Fighter.CanCastSpell(spell, target.Cell) == SpellCastResult.OK)
                 {
-                    var action = new MoveAction(Fighter, cell);
+                    var cell = Environment.GetCellToCastSpell(new TargetCell(target.Cell),
+                        spell, spell.CurrentSpellLevel.CastTestLos);
 
-                    foreach (var result in action.Execute(this))
+                    if (cell != null)
                     {
-                        if (result == RunStatus.Failure)
-                            break;
-                    }
+                        var action = new MoveAction(Fighter, cell);
 
-                    Fighter.CastSpell(spell, target.Cell);
+                        foreach (var result in action.Execute(this))
+                        {
+                            if (result == RunStatus.Failure)
+                                break;
+                        }
+
+                        Fighter.CastSpell(spell, target.Cell);
+                    }
                 }
             }
 
