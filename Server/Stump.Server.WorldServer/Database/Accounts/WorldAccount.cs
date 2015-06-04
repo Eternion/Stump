@@ -24,6 +24,7 @@ namespace Stump.Server.WorldServer.Database.Accounts
         {
         }
 
+        [Index]
         [PrimaryKey("Id", false)]
         public int Id
         {

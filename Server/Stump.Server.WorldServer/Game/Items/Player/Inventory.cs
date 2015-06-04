@@ -811,7 +811,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (!HasItem(item.Guid) || !item.IsUsable())
                 return false;
 
-            if (Owner.IsInFight() && Owner.Fight.State != FightState.Placement)
+            if (Owner.IsInExchange() || (Owner.IsInFight() && Owner.Fight.State != FightState.Placement))
                 return false;
 
             if (!item.AreConditionFilled(Owner))
