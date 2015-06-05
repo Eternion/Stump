@@ -34,6 +34,9 @@ namespace Stump.Server.BaseServer.Network
 			Socket = socket;
 			IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
 			m_bufferSegment = BufferManager.GetSegment(ClientManager.BufferSize);
+#if DEBUG
+		    m_bufferSegment.Token = this;
+#endif
 		}
 
 		public Socket Socket

@@ -87,6 +87,12 @@ namespace Stump.Core.Pool
             get;
             set;
         }
+
+        public object Token
+        {
+            get;
+            set;
+        }
 #endif
 
         /// <summary>
