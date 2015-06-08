@@ -921,6 +921,17 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region Poutch Ingball
+
+            // Tuerie (411)
+            FixEffectOnAllLevels(411, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(411, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(411, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(411, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(411, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            #endregion
+
             #endregion
 
             #endregion
