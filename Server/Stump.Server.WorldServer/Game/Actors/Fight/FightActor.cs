@@ -1243,7 +1243,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 }
             }
 
-            percentLost = 1 - percentLost;
+            percentLost = percentLost - 1;
 
             if (percentLost < 0)
                 percentLost = 0d;
@@ -1280,7 +1280,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 }
             }
 
-            percentLost = 1 - percentLost;
+            percentLost = percentLost - 1;
 
             if (percentLost < 0)
                 percentLost = 0d;
@@ -1292,7 +1292,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private double GetTacklePercent(IStatsOwner tackler)
         {
-            if (tackler.Stats[PlayerFields.TackleBlock].Total == -2)
+            if (tackler.Stats[PlayerFields.TackleBlock].Total < 0)
                 return 0;
 
             return (Stats[PlayerFields.TackleEvade].Total + 2)/((2d*(tackler.Stats[PlayerFields.TackleBlock].Total + 2)));
