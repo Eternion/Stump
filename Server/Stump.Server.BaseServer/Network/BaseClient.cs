@@ -12,7 +12,7 @@ using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Network
 {
-	public abstract class BaseClient : IPacketReceiver, IDisposable
+	public abstract class BaseClient : IPacketReceiver, IDisposable, IClient
 	{
 		[Variable(DefinableRunning = true)]
 		public static bool LogPackets = false;
@@ -35,7 +35,7 @@ namespace Stump.Server.BaseServer.Network
 			IP = ( (IPEndPoint)socket.RemoteEndPoint ).Address.ToString();
 			m_bufferSegment = BufferManager.GetSegment(ClientManager.BufferSize);
 #if DEBUG
-		    m_bufferSegment.Token = this;
+			m_bufferSegment.Token = this;
 #endif
 		}
 

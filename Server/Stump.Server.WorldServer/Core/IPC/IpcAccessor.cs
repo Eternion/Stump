@@ -23,6 +23,9 @@ using System.Linq;
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
+using Stump.Core.IO;
+using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC;
@@ -57,6 +60,8 @@ namespace Stump.Server.WorldServer.Core.IPC
         /// </summary>
         [Variable(DefinableRunning = true)] public static int UpdateInterval = 10000;
 
+        [Variable] public static int BufferSize = 8192;
+
         [Variable] public static string RemoteHost = "localhost";
 
         [Variable] public static int RemotePort = 9100;
@@ -68,15 +73,23 @@ namespace Stump.Server.WorldServer.Core.IPC
             new Dictionary<Type, IPCMessageHandler>();
 
         private readonly TimedTimerEntry m_updateTimer;
-        private IPCMessagePart m_messagePart;
         private bool m_requestingAccess;
         private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
         private bool m_wasConnected;
+
+        private BufferSegment m_bufferSegment;
+        private IPCMessagePart m_messagePart;
+        private int m_writeOffset;
+        private int m_readOffset;
+        private int m_remainingLength;
+        private SocketAsyncEventArgs m_readArgs;
 
         public IPCAccessor()
         {
             TaskPool = new SelfRunningTaskPool(TaskPoolInterval, "IPCAccessor Task Pool");
             m_updateTimer = TaskPool.CallPeriodically(UpdateInterval, Tick);
+            m_readArgs = new SocketAsyncEventArgs();
+            m_bufferSegment = BufferManager.GetSegment(BufferSize);
         }
 
         public static IPCAccessor Instance
@@ -195,7 +208,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             Socket.Connect(RemoteHost, RemotePort);
             OnClientConnected();
 
-            ReceiveLoop();
+            BeginReceive();
         }
 
         private void OnAccessGranted(CommonOKMessage msg)
@@ -300,85 +313,122 @@ namespace Stump.Server.WorldServer.Core.IPC
             return TaskPool.CallDelayed(timeout, action);
         }
 
-        private void ReceiveLoop()
+        public void BeginReceive()
         {
-            if (!IsReacheable)
-                return;
-
-            var args = new SocketAsyncEventArgs();
-            args.Completed += OnReceiveCompleted;
-            args.SetBuffer(new byte[8192], 0, 8192);
-
-            if (!Socket.ReceiveAsync(args))
-                ProcessReceiveCompleted(args);
+            ResumeReceive();
         }
 
-        private void OnReceiveCompleted(object sender, SocketAsyncEventArgs args)
+        private void ResumeReceive()
         {
-            switch (args.LastOperation)
+            if (Socket == null || !Socket.Connected)
+                return;
+
+            m_readArgs.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_writeOffset, m_bufferSegment.Length - m_writeOffset);
+            m_readArgs.Completed += ProcessReceive;
+
+            var willRaiseEvent = Socket.ReceiveAsync(m_readArgs);
+            if (!willRaiseEvent)
             {
-                case SocketAsyncOperation.Receive:
-                    ProcessReceiveCompleted(args);
-                    break;
-                case SocketAsyncOperation.Disconnect:
-                    Disconnect();
-                    break;
+                ProcessReceive(this, m_readArgs);
             }
         }
 
-        private void ProcessReceiveCompleted(SocketAsyncEventArgs args)
+        private void ProcessReceive(object sender, SocketAsyncEventArgs e)
         {
-            if (!IsReacheable)
-                return;
-
-            if (args.BytesTransferred <= 0 ||
-                args.SocketError != SocketError.Success)
+            if (e.BytesTransferred <= 0 || e.SocketError != SocketError.Success)
             {
-                args.Dispose();
+                Disconnect();
+                return;
+            }
+
+            m_remainingLength += e.BytesTransferred;
+            try
+            {
+                BuildMessage(m_bufferSegment);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Forced disconnection during reception : " + ex);
+
                 Disconnect();
             }
-            else
-            {
-                Receive(args.Buffer, args.Offset, args.BytesTransferred);
 
-                args.Dispose();
-                ReceiveLoop();
-            }
+            ResumeReceive();
         }
 
-        private void Receive(byte[] data, int offset, int count)
+        protected virtual bool BuildMessage(BufferSegment buffer)
         {
-            var reader = new BinaryReader(new MemoryStream(data, offset, count));
+            if (m_messagePart == null)
+                m_messagePart = new IPCMessagePart();
 
-            while (reader.BaseStream.Length - reader.BaseStream.Position > 0)
+            var reader = new FastBigEndianReader(buffer)
             {
-                if (m_messagePart == null)
-                    m_messagePart = new IPCMessagePart();
-
-                m_messagePart.Build(reader, reader.BaseStream.Length - reader.BaseStream.Position);
-
-                if (!m_messagePart.IsValid)
-                    return;
+                Position = buffer.Offset + m_readOffset,
+                MaxPosition = buffer.Offset + m_readOffset + m_remainingLength,
+            };
+            // if message is complete
+            if (m_messagePart.Build(reader))
+            {
+                var dataPos = reader.Position;
+                // prevent to read above
+                reader.MaxPosition = dataPos + m_messagePart.Length.Value;
 
                 IPCMessage message;
-
                 try
                 {
                     message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    logger.Error("Cannot deserialize received message ! Exception : {0}" + ex);
-                    return;
-                }
-                finally
-                {
-                    m_messagePart = null;
+                    reader.Seek(dataPos, SeekOrigin.Begin);
+                    logger.Debug("Message = {0}", reader.ReadBytes(m_messagePart.Length.Value).ToString(" "));
+                    throw;
                 }
 
                 TaskPool.AddMessage(() => ProcessMessage(message));
+
+                m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+                m_writeOffset = m_readOffset = (int)reader.Position - buffer.Offset;
+                m_messagePart = null;
+
+                return m_remainingLength <= 0 || BuildMessage(buffer);
             }
+
+            m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+            m_readOffset = (int)reader.Position - buffer.Offset;
+            m_writeOffset = m_readOffset + m_remainingLength;
+
+            EnsureBuffer(m_messagePart.Length.HasValue ? m_messagePart.Length.Value : 3);
+
+            return false;
         }
+
+        /// <summary>
+        ///     Makes sure the underlying buffer is big enough
+        /// </summary>
+        protected bool EnsureBuffer(int length)
+        {
+            if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
+            {
+                var newSegment = BufferManager.GetSegment(length + m_remainingLength);
+
+                Array.Copy(m_bufferSegment.Buffer.Array,
+                           m_bufferSegment.Offset + m_readOffset,
+                           newSegment.Buffer.Array,
+                           newSegment.Offset,
+                           m_remainingLength);
+
+                m_bufferSegment.DecrementUsage();
+                m_bufferSegment = newSegment;
+                m_writeOffset = m_remainingLength;
+                m_readOffset = 0;
+
+                return true;
+            }
+
+            return false;
+        }
+
 
         protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
         {

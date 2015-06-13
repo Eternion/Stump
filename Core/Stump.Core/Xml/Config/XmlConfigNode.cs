@@ -179,7 +179,7 @@ namespace Stump.Core.Xml.Config
                 return BindedProperty.GetValue(Instance, new object[0]);
             }
 
-            throw new Exception(string.Format("Cannot read the config node '{0}' because no member has been binded to it", Path));
+            throw new Exception(string.Format("Cannot read the config node '{0}' because no member has been bind to it", Path));
         }
 
         public void SetValue(object value, bool alreadyRunning = false)

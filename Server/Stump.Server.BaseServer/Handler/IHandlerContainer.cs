@@ -4,6 +4,6 @@ namespace Stump.Server.BaseServer.Handler
 {
     public interface IHandlerContainer
     {
-        bool CanHandleMessage(BaseClient client, uint messageId);
+        bool CanHandleMessage(IClient client, uint messageId);
     }
 }

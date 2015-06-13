@@ -14,7 +14,7 @@ namespace Stump.Server.BaseServer.Handler
         where THandler : HandlerManager<THandler, TAttribute, TContainer, TClient> 
         where TContainer : IHandlerContainer
         where TAttribute : HandlerAttribute
-        where TClient : BaseClient
+        where TClient : IClient
     {
         protected class MessageHandler
         {
@@ -161,7 +161,7 @@ namespace Stump.Server.BaseServer.Handler
                     client.Disconnect();
                 }
             }
-            else
+            else 
             {
                 m_logger.Debug("Received Unknown packet : " + message);
             }

@@ -70,6 +70,11 @@ namespace Stump.Server.WorldServer.Game.Accounts
             return m_userGroups.TryGetValue(id, out group) ? group : DefaultUserGroup;
         }
 
+        public void AddUserGroup(UserGroup userGroup)
+        {
+            m_userGroups.Add(userGroup.Id, userGroup);
+        }
+
         public WorldAccount CreateWorldAccount(WorldClient client)
         {
             /* Create WorldAccount */
