@@ -52,6 +52,16 @@ namespace Stump.Server.AuthServer.Database
             AvailableServers = new List<int>();
         }
 
+        public UserGroupRecord(UserGroupData userGroup)
+        {
+            Id = userGroup.Id;
+            Name = userGroup.Name;
+            Role = userGroup.Role;
+            IsGameMaster = userGroup.IsGameMaster;
+            AvailableServers = userGroup.Servers == null ? new List<int>() : userGroup.Servers.ToList();
+            AvailableCommands = userGroup.Commands == null ? new List<string>() : userGroup.Commands.ToList();
+        }
+
         [PrimaryKey("Id")]
         public int Id
         {

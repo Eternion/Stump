@@ -1,11 +1,14 @@
 using System;
 using System.IO;
+using NLog;
 using Stump.Core.IO;
 
 namespace Stump.Server.BaseServer.IPC
 {
     public class IPCMessagePart
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private byte[] m_data;
         private bool m_dataMissing;
 
@@ -46,25 +49,27 @@ namespace Stump.Server.BaseServer.IPC
         /// <summary>
         ///     Build or continue building the message. Returns true if the resulted message is valid and ready to be parsed
         /// </summary>
-        public bool Build(BinaryReader reader, long count)
+        public bool Build(IDataReader reader)
         {
-            if (count <= 0)
+            if (reader.BytesAvailable <= 0)
                 return false;
 
             if (IsValid)
                 return true;
 
-            if (!LengthBytesCount.HasValue && count < 1)
+            if (!LengthBytesCount.HasValue && reader.BytesAvailable < 1)
                 return false;
 
-            if (count >= 1 && !LengthBytesCount.HasValue)
+            if (reader.BytesAvailable >= 1 && !LengthBytesCount.HasValue)
             {
                 LengthBytesCount = reader.ReadByte();
-                count--;
+
+                if (LengthBytesCount > 3)
+                    logger.Error("Invalid message LengthBytesCount = {0}", LengthBytesCount);
             } 
 
             if (LengthBytesCount.HasValue &&
-                count >= LengthBytesCount && !Length.HasValue)
+                reader.BytesAvailable >= LengthBytesCount && !Length.HasValue)
             {
                 Length = 0;
 
@@ -72,7 +77,13 @@ namespace Stump.Server.BaseServer.IPC
                 {
                     Length |= reader.ReadByte() << (i*8);
                 }
+
+                if (Length < 0)
+                    logger.Error("Invalid message Length = {0}", LengthBytesCount);
             }
+
+            if (reader.BytesAvailable <= 0)
+                return IsValid;
 
             // first case : no data read
             if (Length.HasValue && !m_dataMissing)
@@ -84,7 +95,7 @@ namespace Stump.Server.BaseServer.IPC
                 }
 
                 // enough bytes in the buffer to build a complete message
-                if (count >= Length)
+                if (reader.BytesAvailable >= Length)
                 {
                     Data = reader.ReadBytes(Length.Value);
 
@@ -92,13 +103,7 @@ namespace Stump.Server.BaseServer.IPC
                 }
 
                 // not enough bytes, so we read what we can
-                if (!(Length > count))
-                    return IsValid;
-
-                if (count < 0)
-                    return IsValid;
-
-                Data = reader.ReadBytes((int) count);
+                Data = reader.ReadBytes((int) reader.BytesAvailable);
 
                 m_dataMissing = true;
                 return false;
@@ -109,15 +114,15 @@ namespace Stump.Server.BaseServer.IPC
                 return IsValid;
 
             // still miss some bytes ...
-            if (Data.Length + count < Length)
+            if (Data.Length + reader.BytesAvailable < Length)
             {
                 var lastLength = m_data.Length;
-                Array.Resize(ref m_data, (int) (Data.Length + count));
+                Array.Resize(ref m_data, (int) (Data.Length + reader.BytesAvailable));
 
-                if (count < 0)
+                if (reader.BytesAvailable < 0)
                     return false;
 
-                var array = reader.ReadBytes((int) count);
+                var array = reader.ReadBytes((int) reader.BytesAvailable);
 
                 Array.Copy(array, 0, Data, lastLength, array.Length);
 
@@ -126,7 +131,7 @@ namespace Stump.Server.BaseServer.IPC
             }
 
             // there is enough bytes in the buffer to complete the message :)
-            if (Data.Length + count >= Length)
+            if (Data.Length + reader.BytesAvailable >= Length)
             {
                 var bytesToRead = Length.Value - Data.Length;
 

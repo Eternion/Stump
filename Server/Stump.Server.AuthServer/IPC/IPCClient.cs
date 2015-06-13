@@ -21,11 +21,16 @@ using System.Net.Sockets;
 using System.Threading;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
+using Stump.Core.IO;
+using Stump.Core.Pool;
 using Stump.Core.Timers;
+using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Database;
 using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
+using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.IPC
 {
@@ -35,16 +40,23 @@ namespace Stump.Server.AuthServer.IPC
         public static int DefaultRequestTimeout = 60;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly object m_recvLock = new object();
-        private bool m_recvLockAcquired;
+        private BufferSegment m_bufferSegment;
         private IPCMessagePart m_messagePart;
+        private int m_writeOffset;
+        private int m_readOffset;
+        private int m_remainingLength;
 
         public IPCClient(Socket socket)
         {
             Socket = socket;
+            m_readArgs = new SocketAsyncEventArgs(); 
+            m_readArgs.UserToken = this;
+            m_bufferSegment = BufferManager.GetSegment(IPCHost.BufferSize);
         }
 
         private IPCOperations m_operations;
+        private SocketAsyncEventArgs m_readArgs;
+        public event Action<IPCClient> Disconnected;
 
         public WorldServer Server
         {
@@ -114,54 +126,122 @@ namespace Stump.Server.AuthServer.IPC
             e.Dispose();
         }
 
-        internal void ProcessReceive(byte[] data, int offset, int count)
+        public void BeginReceive()
         {
-            var reader = new BinaryReader(new MemoryStream(data, offset, count));
+            ResumeReceive();
+        }
 
-            while (reader.BaseStream.Length - reader.BaseStream.Position > 0)
+        private void ResumeReceive()
+        {
+            if (Socket == null || !Socket.Connected)
+                return;
+
+            m_readArgs.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_writeOffset, m_bufferSegment.Length - m_writeOffset);
+            m_readArgs.Completed += ProcessReceive;
+
+            var willRaiseEvent = Socket.ReceiveAsync(m_readArgs);
+            if (!willRaiseEvent)
             {
+                ProcessReceive(this, m_readArgs);
+            }
+        }
+
+        private void ProcessReceive(object sender, SocketAsyncEventArgs e)
+        {
+            if (e.BytesTransferred <= 0 || e.SocketError != SocketError.Success)
+            {
+                Disconnect();
+                return;
+            }
+
+            m_remainingLength += e.BytesTransferred;
+            try
+            {
+                BuildMessage(m_bufferSegment);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Forced disconnection during reception : " + ex);
+
+                Disconnect();
+            }
+
+            ResumeReceive();
+        }
+
+        protected virtual bool BuildMessage(BufferSegment buffer)
+        {
+            if (m_messagePart == null)
+                m_messagePart = new IPCMessagePart();
+
+            var reader = new FastBigEndianReader(buffer)
+            {
+                Position = buffer.Offset + m_readOffset,
+                MaxPosition = buffer.Offset + m_readOffset + m_remainingLength,
+            };
+            // if message is complete
+            if (m_messagePart.Build(reader))
+            {
+                var dataPos = reader.Position;
+                // prevent to read above
+                reader.MaxPosition = dataPos + m_messagePart.Length.Value;
+
+                IPCMessage message;
                 try
                 {
-                    // stuff
-                    LastActivity = DateTime.Now;
-
-                    if (m_messagePart == null)
-                        m_messagePart = new IPCMessagePart();
-
-                    m_messagePart.Build(reader, reader.BaseStream.Length - reader.BaseStream.Position);
-
-                    if (!m_messagePart.IsValid)
-                        return;
-
-                    var message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
-
-                    if (m_recvLockAcquired)
-                    {
-                        logger.Error("Recv lock should not be set 'cause it's mono thread !");
-                    }
-
-                    Monitor.Enter(m_recvLock, ref m_recvLockAcquired);
-                    try
-                    {
-                        ProcessMessage(message);
-                    }
-                    finally
-                    {
-                        Monitor.Exit(m_recvLock);
-                        m_recvLockAcquired = false;
-                    }
+                    message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    logger.Error("Forced disconnection during reception : " + ex);
+                    reader.Seek(dataPos, SeekOrigin.Begin);
+                    logger.Debug("Message = {0}", reader.ReadBytes(m_messagePart.Length.Value).ToString(" "));
+                    throw;
+                }
 
-                    Disconnect();
-                }
-                finally
-                {
-                    m_messagePart = null;
-                }
+                LastActivity = DateTime.Now;
+
+                ProcessMessage(message);
+
+                m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+                m_writeOffset = m_readOffset = (int)reader.Position - buffer.Offset;
+                m_messagePart = null;
+
+                return m_remainingLength <= 0 || BuildMessage(buffer);
             }
+
+            m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+            m_readOffset = (int)reader.Position - buffer.Offset;
+            m_writeOffset = m_readOffset + m_remainingLength;
+
+            EnsureBuffer(m_messagePart.Length.HasValue ? m_messagePart.Length.Value : 3);
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Makes sure the underlying buffer is big enough
+        /// </summary>
+        protected bool EnsureBuffer(int length)
+        {
+            if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
+            {
+                var newSegment = BufferManager.GetSegment(length + m_remainingLength);
+
+                Array.Copy(m_bufferSegment.Buffer.Array,
+                           m_bufferSegment.Offset + m_readOffset,
+                           newSegment.Buffer.Array,
+                           newSegment.Offset,
+                           m_remainingLength);
+
+                m_bufferSegment.DecrementUsage();
+                m_bufferSegment = newSegment;
+                m_writeOffset = m_remainingLength;
+                m_readOffset = 0;
+
+                return true;
+            }
+
+            return false;
         }
 
         protected override void ProcessMessage(IPCMessage message)
@@ -256,6 +336,14 @@ namespace Stump.Server.AuthServer.IPC
             m_operations = null;
         }
 
+        protected void OnDisconnected()
+        {
+            var evnt = Disconnected;
+            if (evnt != null)
+                evnt(this);
+        }
+
         #endregion
+
     }
 }

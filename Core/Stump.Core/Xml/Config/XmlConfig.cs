@@ -455,6 +455,7 @@ namespace Stump.Core.Xml.Config
             writer.WriteStartElement("Configuration");
 
             var groupsByNamespace = from entry in m_nodes
+                                    where entry.Value.Attribute != null
                                     group entry by entry.Value.Namespace
                                     into grp
                                     let priority = grp.Max(subentry => subentry.Value.Attribute.Priority)

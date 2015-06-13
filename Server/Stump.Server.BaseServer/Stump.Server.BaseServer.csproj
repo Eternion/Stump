@@ -260,6 +260,8 @@
     <Compile Include="IPC\IPCRequest.cs" />
     <Compile Include="IPC\Messages\AccountAnswerMessage.cs" />
     <Compile Include="IPC\Messages\AccountRequestMessage.cs" />
+    <Compile Include="IPC\Messages\AccountsAnswerMessage.cs" />
+    <Compile Include="IPC\Messages\AccountsRequestMessage.cs" />
     <Compile Include="IPC\Messages\AddCharacterMessage.cs" />
     <Compile Include="IPC\Messages\BanAccountMessage.cs" />
     <Compile Include="IPC\Messages\BanClientKeyAnswerMessage.cs" />
@@ -272,11 +274,13 @@
     <Compile Include="IPC\Messages\DeleteCharacterMessage.cs" />
     <Compile Include="IPC\Messages\DisconnectClientMessage.cs" />
     <Compile Include="IPC\Messages\DisconnectedClientMessage.cs" />
+    <Compile Include="IPC\Messages\GroupAddMessage.cs" />
     <Compile Include="IPC\Messages\GroupsListMessage.cs" />
     <Compile Include="IPC\Messages\GroupsRequestMessage.cs" />
     <Compile Include="IPC\Messages\HandshakeMessage.cs" />
     <Compile Include="IPC\IPCErrorMessage.cs" />
     <Compile Include="IPC\Messages\CommonOKMessage.cs" />
+    <Compile Include="IPC\Messages\GroupAddResultMessage.cs" />
     <Compile Include="IPC\Messages\ServerUpdateMessage.cs" />
     <Compile Include="IPC\Messages\UnBanAccountMessage.cs" />
     <Compile Include="IPC\Messages\UnBanClientKeyMessage.cs" />
@@ -294,6 +298,7 @@
     <Compile Include="Network\ClientManager.cs" />
     <Compile Include="Network\ClientMessage.cs" />
     <Compile Include="Network\HandledMessage.cs" />
+    <Compile Include="Network\IClient.cs" />
     <Compile Include="Network\IpAddressRange.cs" />
     <Compile Include="Network\MessagePart.cs" />
     <Compile Include="Network\PoolableSocketArgs.cs" />

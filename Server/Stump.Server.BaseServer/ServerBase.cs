@@ -64,6 +64,8 @@ namespace Stump.Server.BaseServer
         protected Logger logger;
         private bool m_ignoreReload;
 
+        public event Action ServerStarted;
+
         protected ServerBase(string configFile, string schemaFile)
         {
             ConfigFilePath = configFile;
@@ -440,6 +442,10 @@ namespace Stump.Server.BaseServer
             Initializing = false;
 
             IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(10).TotalMilliseconds, KeepSQLConnectionAlive);
+
+            var evnt = ServerStarted;
+            if (evnt != null)
+                evnt();
         }
 
 

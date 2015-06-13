@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
             }
 
-            if (!m_nameCheckerRegex.IsMatch(name))
+            if (!client.UserGroup.IsGameMaster && !m_nameCheckerRegex.IsMatch(name))
             {
                 failCallback(CharacterCreationResultEnum.ERR_INVALID_NAME);
                 return;

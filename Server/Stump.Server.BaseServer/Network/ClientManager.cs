@@ -361,11 +361,18 @@ namespace Stump.Server.BaseServer.Network
         {
             lock (m_clients)
             {
-                return
-                    m_clients.Count(
-                        t =>
-                        t.Socket != null && t.Socket.Connected && t.Socket.RemoteEndPoint != null &&
-                        ((IPEndPoint) t.Socket.RemoteEndPoint).Address.Equals(ipAddress));
+                int count = 0;
+                foreach (var t in m_clients)
+                {
+                    if (t.Socket != null && t.Socket.Connected && t.Socket.RemoteEndPoint != null)
+                    {
+                        var ip = ((IPEndPoint) t.Socket.RemoteEndPoint).Address;
+                        if (ip.Equals(ipAddress) && ip.AddressFamily != AddressFamily.InterNetwork) // not a fake client
+                            count++;
+                    }
+                }
+
+                return count;
             }
         }
     }
