@@ -41,6 +41,7 @@ namespace Stump.Server.BaseServer.Logging
             var server = client.GetServer();
             m_database = server.GetDatabase(MongoDBConfiguration.DbName);
             m_taskPool = new SelfRunningTaskPool(100, "Mongo logger");
+            m_taskPool.Start();
         }
 
         public bool Insert(string collection, BsonDocument document)

@@ -526,12 +526,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_UNKNOWN;
         }
 
-        public PresetUseResultEnum EquipPreset(int presetId)
+        public void EquipPreset(int presetId)
         {
+            var unlinkedPosition = new List<byte>();
+
             var preset = GetPreset(presetId);
 
             if (preset == null)
-                return PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID;
+            {
+                InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID, unlinkedPosition);
+                return;
+            }
+                
 
             var itemsToMove = new List<Pair<BasePlayerItem, CharacterInventoryPositionEnum>>();
 
@@ -550,6 +556,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_MALUS)
                     continue;
 
+                if (preset.Objects.Exists(x => x.objUid == item.Guid))
+                    continue;
+
+                unlinkedPosition.Add((byte)item.Position);
+
                 MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
             }
 
@@ -565,17 +576,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 }
 
                 if (!CanEquip(item, (CharacterInventoryPositionEnum)presetItem.position))
-                    return PresetUseResultEnum.PRESET_USE_ERR_CRITERION;
+                {
+                    InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), PresetUseResultEnum.PRESET_USE_ERR_CRITERION, unlinkedPosition);
+                    return;
+                }
 
                 itemsToMove.Add(new Pair<BasePlayerItem, CharacterInventoryPositionEnum>(item, (CharacterInventoryPositionEnum)presetItem.position));
             }
+
+            InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK, unlinkedPosition);
 
             foreach (var item in itemsToMove)
             {
                 MoveItem(item.First, item.Second);
             }
-
-            return partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK;
         }
 
         public PlayerPresetRecord[] GetPresetsByItemGuid(int itemGuid)
