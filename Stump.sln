@@ -90,6 +90,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArkalysScriptPlugin", "Plug
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeClients", "Plugins\FakeClients\FakeClients.csproj", "{A715BA09-854E-4DAC-B20D-9B34420AB64B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AEAEB4A5-2630-436F-B981-D80BB1E6D593}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -653,6 +658,9 @@ Global
 		{72E591D6-8F83-4D8C-8F67-9C325E623234} = {38155C42-AA0B-483C-98FB-EE1F0FA9B293}
 		{DB81988F-E0F2-45A0-A1FD-8C37F3D35244} = {38155C42-AA0B-483C-98FB-EE1F0FA9B293}
 		{8374E4D7-2A91-48F1-9360-09B09CF27C3F} = {38155C42-AA0B-483C-98FB-EE1F0FA9B293}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Stump.vsmdi
