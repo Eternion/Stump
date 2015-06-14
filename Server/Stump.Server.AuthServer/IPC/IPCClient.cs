@@ -148,6 +148,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void ProcessReceive(object sender, SocketAsyncEventArgs e)
         {
+            m_readArgs.Completed -= ProcessReceive;
             if (e.BytesTransferred <= 0 || e.SocketError != SocketError.Success)
             {
                 Disconnect();
@@ -157,7 +158,17 @@ namespace Stump.Server.AuthServer.IPC
             m_remainingLength += e.BytesTransferred;
             try
             {
-                BuildMessage(m_bufferSegment);
+                if (BuildMessage(m_bufferSegment))
+                {
+                    m_writeOffset = m_readOffset = 0;
+					if (m_bufferSegment.Length != IPCHost.BufferSize)
+					{
+						m_bufferSegment.DecrementUsage();
+						m_bufferSegment = BufferManager.GetSegment(IPCHost.BufferSize);
+					}
+                }
+
+                ResumeReceive();
             }
             catch (Exception ex)
             {
@@ -165,8 +176,6 @@ namespace Stump.Server.AuthServer.IPC
 
                 Disconnect();
             }
-
-            ResumeReceive();
         }
 
         protected virtual bool BuildMessage(BufferSegment buffer)
@@ -194,7 +203,7 @@ namespace Stump.Server.AuthServer.IPC
                 catch (Exception)
                 {
                     reader.Seek(dataPos, SeekOrigin.Begin);
-                    logger.Debug("Message = {0}", reader.ReadBytes(m_messagePart.Length.Value).ToString(" "));
+                    logger.Debug("Message = {0}", m_messagePart.Data.ToString(" "));
                     throw;
                 }
 

@@ -978,7 +978,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             foreach (var level in spellLevels)
             {
                 fixer(level, level.Effects[effectIndex], false);
-                if (critical)
+                if (critical && level.CriticalEffects.Count > effectIndex)
                     fixer(level, level.CriticalEffects[effectIndex], true);
             }
         }
