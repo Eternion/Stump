@@ -1243,7 +1243,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 }
             }
 
-            percentLost = percentLost - 1;
+            if (percentLost > 0)
+                percentLost = 1 - percentLost;
 
             if (percentLost < 0)
                 percentLost = 0d;
@@ -1280,7 +1281,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 }
             }
 
-            percentLost = percentLost - 1;
+            if (percentLost > 0)
+                percentLost = 1 - percentLost;
 
             if (percentLost < 0)
                 percentLost = 0d;

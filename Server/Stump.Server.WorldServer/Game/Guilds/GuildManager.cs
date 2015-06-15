@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
-                return m_guilds.FirstOrDefault(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase)).Value;
+                return m_guilds.FirstOrDefault(x => String.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase)).Value;
             }
         }
 
