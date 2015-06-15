@@ -10,7 +10,11 @@ namespace Stump.Server.WorldServer.Game.Arena
 {
     public class ArenaQueueMember
     {
-        [Variable] public static int ArenaMargeIncreasePerMinutes = 30;
+        [Variable]
+        public static int ArenaMargeIncreasePerMinutes = 30;
+
+        [Variable(true, DefinableRunning = true)]
+        public static bool ArenaCheckIP = true;
 
         public ArenaQueueMember(Character character)
         {
@@ -85,7 +89,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         public bool IsCompatibleWith(ArenaQueueMember member)
         {
             return Math.Max(member.MinMatchableRank, MinMatchableRank) <= Math.Max(member.MaxMatchableRank, MaxMatchableRank)
-                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference && !member.EnumerateClients().Any(x => EnumerateClients().Any(y => y.IP == x.IP));
+                && Math.Abs(member.Level - Level) < ArenaManager.ArenaMaxLevelDifference && (!ArenaCheckIP || !member.EnumerateClients().Any(x => EnumerateClients().Any(y => y.IP == x.IP)));
         }
     }
 }

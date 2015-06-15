@@ -111,16 +111,22 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 if (character.Relook == 2)
                     character.Sex = character.Sex == SexTypeEnum.SEX_MALE ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
 
-                /* Set Look */
+                /* Get Head */
                 var head = BreedManager.Instance.GetHead(message.cosmeticId);
+                /* Get character Breed */
+                var breed = BreedManager.Instance.GetBreed((int)character.Breed);
 
-                if (head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
+                if (breed == null || head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
                 {
                     client.Send(new CharacterSelectedErrorMessage());
                     return;
                 }
 
                 character.Head = head.Id;
+
+                foreach (var scale in character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Scales : breed.FemaleLook.Scales)
+                    character.EntityLook.SetScales(scale);
+
                 character.Relook = 0;
 
                 WorldServer.Instance.DBAccessor.Database.Update(character);
