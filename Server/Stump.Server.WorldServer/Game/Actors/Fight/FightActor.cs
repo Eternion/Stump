@@ -1294,10 +1294,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private double GetTacklePercent(IStatsOwner tackler)
         {
-            if (tackler.Stats[PlayerFields.TackleBlock].Total < 0)
+            var tackleBlock = tackler.Stats[PlayerFields.TackleBlock].Total;
+            var tackleEvade = Stats[PlayerFields.TackleEvade].Total;
+
+            if (tackleBlock < 0)
                 return 0;
 
-            return (Stats[PlayerFields.TackleEvade].Total + 2)/((2d*(tackler.Stats[PlayerFields.TackleBlock].Total + 2)));
+            if (tackleEvade < 0)
+                tackleEvade = 0;
+
+            return (tackleEvade + 2) / ((2d * (tackleBlock + 2)));
         }
 
         #endregion

@@ -124,6 +124,9 @@ namespace Stump.Server.WorldServer.Game.Arena
             if (characterFighter == null)
                 return;
 
+            if (characterFighter.IsDisconnected)
+                return;
+
             characterFighter.Character.ToggleArenaPenality();
 
             if (characterFighter.Character.ArenaParty != null)

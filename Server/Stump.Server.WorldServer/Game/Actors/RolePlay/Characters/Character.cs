@@ -2521,8 +2521,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private CharacterFighter RejoinFightAfterDisconnection(CharacterFighter oldFighter)
         {
-            NextMap = Map; // we do not leave the map
             Map.Leave(this);
+            Map = oldFighter.Map;
+            NextMap = oldFighter.Character.NextMap;
+
             StopRegen();
 
             ContextHandler.SendGameContextDestroyMessage(Client);
@@ -2530,13 +2532,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextRoleplayHandler.SendCurrentMapMessage(Client, Map.Id);
             ContextRoleplayHandler.SendMapComplementaryInformationsDataMessage(Client);
 
-
             oldFighter.RestoreFighterFromDisconnection(this);
             Fighter = oldFighter;
             
             ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType);
             Fighter.Fight.RejoinFightFromDisconnection(Fighter);
             OnCharacterContextChanged(true);
+
+            if (Fight.Challenge != null)
+                ContextHandler.SendChallengeInfoMessage(Client, Fight.Challenge);
 
             return Fighter;
         }
