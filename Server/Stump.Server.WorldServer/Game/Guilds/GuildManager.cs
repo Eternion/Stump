@@ -120,6 +120,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_INVALID;
             }
 
+            if (emblem.symbolShape >= 324)
+                return GuildCreationResultEnum.GUILD_CREATE_ERROR_EMBLEM_INVALID;
+
             if (DoesNameExist(name))
                 return GuildCreationResultEnum.GUILD_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
