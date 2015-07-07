@@ -166,7 +166,7 @@ namespace FakeClients
 
         private void OnClientDisconnected(FakeClient obj, bool planned)
         {
-            if (!obj.ConnectingToAuth)
+            if (!obj.ConnectingToWorld)
                 m_clients.Remove(obj);
         }
 

@@ -80,7 +80,6 @@ namespace Stump.Server.AuthServer.Managers
             foreach (var keyPair in toRemove)
             {
                 m_accountsCache.Remove(keyPair.Key);
-                logger.Debug("Ticket {0} uncached (life time : {1} DateTime.Now={2})", keyPair.Key, keyPair.Value.Item1, DateTime.Now);
             }
         }
 
@@ -198,7 +197,6 @@ namespace Stump.Server.AuthServer.Managers
         public void UnCacheAccount(Account account)
         {
             m_accountsCache.Remove(account.Ticket);
-            logger.Debug("Uncache ticket {0}", account.Ticket);
         }
 
         public Account FindCachedAccountByTicket(string ticket)

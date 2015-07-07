@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -37,7 +38,8 @@ namespace Stump.Server.AuthServer.IPC
     public class IPCClient : IPCEntity
     {
         [Variable(DefinableRunning = true)]
-        public static int DefaultRequestTimeout = 60;
+        public static int DefaultRequestTimeout = -1;
+        //public static int DefaultRequestTimeout = 60;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private BufferSegment m_bufferSegment;
@@ -234,7 +236,7 @@ namespace Stump.Server.AuthServer.IPC
         {
             if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
             {
-                var newSegment = BufferManager.GetSegment(length + m_remainingLength);
+                var newSegment = BufferManager.GetSegment(length + m_remainingLength, true);
 
                 Array.Copy(m_bufferSegment.Buffer.Array,
                            m_bufferSegment.Offset + m_readOffset,
@@ -303,8 +305,12 @@ namespace Stump.Server.AuthServer.IPC
                 return;
             }
 
-            request.TimeoutTimer.Stop();
-            AuthServer.Instance.IOTaskPool.RemoveTimer(request.TimeoutTimer);
+            if (request.TimeoutTimer != null)
+            {
+                request.TimeoutTimer.Stop();
+                AuthServer.Instance.IOTaskPool.RemoveTimer(request.TimeoutTimer);
+            }
+
             request.ProcessMessage(answer);
         }
 
@@ -343,10 +349,16 @@ namespace Stump.Server.AuthServer.IPC
 
             Server = null;
             m_operations = null;
+            OnDisconnected();
         }
 
         protected void OnDisconnected()
         {
+            foreach (var request in Requests.Values)
+            {
+                request.Cancel();
+            }
+
             var evnt = Disconnected;
             if (evnt != null)
                 evnt(this);
