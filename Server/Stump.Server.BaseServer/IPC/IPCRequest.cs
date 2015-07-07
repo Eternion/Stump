@@ -46,6 +46,7 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
+        void Cancel();
         bool ProcessMessage(IPCMessage message);
     }
 
@@ -106,9 +107,15 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
+        public void Cancel()
+        {
+            ErrorCallback(new IPCErrorMessage("Cancelled"));
+        }
+
         public bool ProcessMessage(IPCMessage message)
         {
-            TimeoutTimer.Dispose();
+            if (TimeoutTimer != null)
+                TimeoutTimer.Dispose();
 
             if (message is T)
                 Callback(message as T);

@@ -25,6 +25,11 @@ namespace Stump.Server.BaseServer.IPC
             get;
         }
 
+        protected IDictionary<Guid, IIPCRequest> Requests
+        {
+            get { return m_requests; }
+        }
+
         public abstract void Send(IPCMessage message);
 
         protected abstract TimedTimerEntry RegisterTimer(Action action, int timeout);
@@ -65,10 +70,15 @@ namespace Stump.Server.BaseServer.IPC
             message.RequestGuid = guid;
 
             IPCRequest<T> request = null;
-            var timer = RegisterTimer(delegate { RequestTimedOut(request); }, timeout);
-            request = new IPCRequest<T>(message, guid, callback, errorCallback, defaultCallback, timer);
-             
-            lock (m_requests)
+             if (timeout > 0)
+             {
+                 var timer = RegisterTimer(delegate { RequestTimedOut(request); }, timeout);
+                 request = new IPCRequest<T>(message, guid, callback, errorCallback, defaultCallback, timer);
+             }
+             else
+                 request = new IPCRequest<T>(message, guid, callback, errorCallback, defaultCallback, null);
+
+             lock (m_requests)
                 m_requests.Add(guid, request);
 
             Send(message);

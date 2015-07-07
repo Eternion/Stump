@@ -43,7 +43,7 @@ namespace FakeClients
             set;
         }
 
-        public bool ConnectingToAuth
+        public bool ConnectingToWorld
         {
             get;
             set;
@@ -194,7 +194,7 @@ namespace FakeClients
 
                 if (bytesReceived == 0)
                 {
-                    Disconnect();
+                    Disconnect(ConnectingToWorld);
                 }
                 else
                 {

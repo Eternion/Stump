@@ -169,16 +169,22 @@ namespace Stump.Core.Threading
             if (Interlocked.CompareExchange(ref m_currentThreadId, Thread.CurrentThread.ManagedThreadId, 0) != 0)
                 return;
             long timerStart = 0;
-                // get the time at the start of our task processing
-                timerStart = m_queueTimer.ElapsedMilliseconds;
-                var updateDt = (int) (timerStart - m_lastUpdate);
-                m_lastUpdate = (int) timerStart;
+            // get the time at the start of our task processing
+            timerStart = m_queueTimer.ElapsedMilliseconds;
+            var updateDt = (int) (timerStart - m_lastUpdate);
+            m_lastUpdate = (int) timerStart;
+
+            int msgCount = 0;
+            int timersCount = 0;
+            var list = new List<IMessage>();
             try
             {
                 // process messages
                 IMessage msg;
                 while (m_messageQueue.TryDequeue(out msg))
                 {
+                    msgCount++;
+                    list.Add(msg);
                     try
                     {
                         msg.Execute();
@@ -202,6 +208,7 @@ namespace Stump.Core.Threading
                 TimedTimerEntry peek;
                 while (( peek = m_timers.Peek() ) != null && peek.NextTick <= DateTime.Now)
                 {
+                    timersCount++;
                     var timer = m_timers.Pop();
 
                     if (!timer.Enabled)
@@ -242,8 +249,26 @@ namespace Stump.Core.Threading
                 Interlocked.Exchange(ref m_currentThreadId, 0);
 
                 if (updateLagged)
-                    logger.Debug("TaskPool '{0}' update lagged ({1}ms)", Name, timerStop - timerStart);
-
+                {
+#if DEBUG
+                    logger.Debug("TaskPool '{0}' update lagged ({1}ms) (msg:{2}, timers:{3}/{4})", Name, timerStop - timerStart, msgCount, timersCount, m_timers.Count);
+                    var orderList = list.OrderByDescending(x =>
+                    {
+                        try
+                        {
+                            return ((dynamic) x).ElapsedTime;
+                        }
+                        catch
+                        {
+                            return 0;
+                        }
+                    }).ToList();
+                    for (int i = 0; i < 10 && i < orderList.Count; i++)
+                    {
+                        logger.Debug("{0}", orderList[i]);
+                    }
+#endif
+                }
                 if (IsRunning)
                 {
                     // re-register the Update-callback

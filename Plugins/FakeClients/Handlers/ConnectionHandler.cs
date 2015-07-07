@@ -32,7 +32,6 @@ namespace FakeClients.Handlers
         [FakeHandler(SelectedServerDataMessage.Id)]
         public static void HandleSelectedServerDataMessage(FakeClient client, SelectedServerDataMessage message)
         {
-            client.ConnectingToAuth = true;
             client.Disconnect(true);
             client.Ticket = message.ticket;
             client.Connect(message.address, message.port);
@@ -41,13 +40,14 @@ namespace FakeClients.Handlers
         [FakeHandler(ServersListMessage.Id)]
         public static void HandleServersListMessage(FakeClient client, ServersListMessage message)
         {
+            client.ConnectingToWorld = true;
             client.Send(new ServerSelectionMessage((short) WorldServer.ServerInformation.Id));
         }
 
         [FakeHandler(HelloGameMessage.Id)]
         public static void HandleHelloGameMessage(FakeClient client, HelloGameMessage message)
         {
-            client.ConnectingToAuth = false;
+            client.ConnectingToWorld = false;
             client.Send(new AuthenticationTicketMessage("fr", client.Ticket));
         }
 

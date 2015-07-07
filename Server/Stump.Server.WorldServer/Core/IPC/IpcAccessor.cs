@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -171,6 +172,11 @@ namespace Stump.Server.WorldServer.Core.IPC
             m_wasConnected = false;
             logger.Info("IPC connection lost");
 
+            foreach (var request in Requests.Values)
+            {
+                request.Cancel();
+            }
+
             var handler = Disconnected;
             if (handler != null)
                 handler(this);
@@ -226,9 +232,6 @@ namespace Stump.Server.WorldServer.Core.IPC
         private void OnAccessDenied(IPCErrorMessage error)
         {
             m_requestingAccess = false;
-
-            /*if (error is IPCErrorTimeoutMessage)
-                return;*/
 
             AccessGranted = false;
             logger.Error("Access to auth. server denied ! Reason : {0}", error.Message);
@@ -376,6 +379,8 @@ namespace Stump.Server.WorldServer.Core.IPC
                 Position = buffer.Offset + m_readOffset,
                 MaxPosition = buffer.Offset + m_readOffset + m_remainingLength,
             };
+
+            
             // if message is complete
             if (m_messagePart.Build(reader))
             {
@@ -420,7 +425,7 @@ namespace Stump.Server.WorldServer.Core.IPC
         {
             if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
             {
-                var newSegment = BufferManager.GetSegment(length + m_remainingLength);
+                var newSegment = BufferManager.GetSegment(length + m_remainingLength, true);
 
                 Array.Copy(m_bufferSegment.Buffer.Array,
                            m_bufferSegment.Offset + m_readOffset,
