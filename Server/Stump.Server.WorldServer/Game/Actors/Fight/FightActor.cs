@@ -1504,7 +1504,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return !m_buffedSpells.ContainsKey(spell) ? (short) 0 : m_buffedSpells[spell];
         }
 
-        public bool MustSkipTurn()
+        public virtual bool MustSkipTurn()
         {
             return GetBuffs(x => x is SkipTurnBuff).Any();
         }

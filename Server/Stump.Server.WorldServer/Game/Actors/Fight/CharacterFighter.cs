@@ -366,6 +366,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
         }
 
+        public override bool MustSkipTurn()
+        {
+            return base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
+        }
+
         public void EnterDisconnectedState()
         {
             IsDisconnected = true;
