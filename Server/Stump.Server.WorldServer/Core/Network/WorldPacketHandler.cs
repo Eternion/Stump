@@ -61,10 +61,7 @@ namespace Stump.Server.WorldServer.Core.Network
                         if (!context.IsRunning)
                             context.Start();
 
-                        if (BenchmarkManager.Enable)
-                            context.AddMessage(new BenchmarkingMessage(new HandledMessage<WorldClient>(handler.Action, client, message)));
-                        else
-                            context.AddMessage(new HandledMessage<WorldClient>(handler.Action, client, message));
+                        context.AddMessage(new HandledMessage<WorldClient>(handler.Action, client, message));
                     }
                 }
             }

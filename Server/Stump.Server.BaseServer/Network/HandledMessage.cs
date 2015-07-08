@@ -9,7 +9,7 @@ using Message = Stump.DofusProtocol.Messages.Message;
 namespace Stump.Server.BaseServer.Network
 {
     public class HandledMessage<T> : Message3<object, T, Message>
-        where T : BaseClient
+        where T : IClient
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 

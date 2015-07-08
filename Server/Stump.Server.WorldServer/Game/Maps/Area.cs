@@ -435,6 +435,11 @@ namespace Stump.Server.WorldServer.Game.Maps
                         callbackTimeout = 0;
                         logger.Debug("Area '{0}' update lagged ({1}ms) (msg:{2}ms, timers:{3}ms, timerProc:{4}/{5})",
                             this, (int) newUpdateDelta.TotalMilliseconds, messageProcessTime, timerProcessingTime, timerProcessed, m_timers.Count);
+                        foreach (var msg in processedMessages.OrderByDescending(x => x.Timestamp).Take(15))
+                        {
+                            logger.Debug(msg);
+                        }
+
                         BenchmarkManager.Instance.AddRange(processedMessages);
                     }
 

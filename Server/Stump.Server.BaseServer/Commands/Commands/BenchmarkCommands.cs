@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CSScriptLibrary;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
@@ -23,11 +24,34 @@ namespace Stump.Server.BaseServer.Commands.Commands
             Aliases = new[] { "summary", "sum" };
             RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof(BenchmarkCommands);
+            AddParameter<string>("type", "t", "Entry type", isOptional:true);
+            AddParameter<string>("msg", "m", "Specific message", isOptional:true);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            trigger.Reply(BenchmarkManager.Instance.GenerateReport().HtmlEntities());
+            if (trigger.IsArgumentDefined("type"))
+            {
+                var type = trigger.Get<string>("type");
+
+                var entries = BenchmarkManager.Instance.Entries.Where(x => x.AdditionalProperties.ContainsKey("type") 
+                    && x.AdditionalProperties["type"].Equals(type));
+
+                trigger.Reply(BenchmarkManager.Instance.GenerateReport(entries).HtmlEntities());
+            }
+            else if (trigger.IsArgumentDefined("msg"))
+            {
+                var msg = trigger.Get<string>("msg");
+
+                var entries = BenchmarkManager.Instance.Entries.Where(x => x.MessageType.Equals(msg, StringComparison.InvariantCultureIgnoreCase));
+
+                foreach (var entry in entries)
+                {
+                    trigger.Reply(entry.ToString());
+                }
+            }
+            else
+                trigger.Reply(BenchmarkManager.Instance.GenerateReport().HtmlEntities());
         }
     }
 

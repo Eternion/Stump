@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using Stump.Core.Threading;
 using Stump.Server.BaseServer;
+using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Handler;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer;
+using Stump.Server.WorldServer.Core.Network;
 using Message = Stump.DofusProtocol.Messages.Message;
 
 namespace FakeClients.Handlers
@@ -33,7 +36,7 @@ namespace FakeClients.Handlers
                             return;
                         }
 
-                        m_taskPool.AddMessage(() => handler.Action(null, client, message));
+                        m_taskPool.AddMessage(new BenchmarkingMessage(new HandledMessage<FakeClient>(handler.Action, client, message)));
                     }
                 }
                 catch (Exception ex)
