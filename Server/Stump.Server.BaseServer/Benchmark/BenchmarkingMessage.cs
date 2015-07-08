@@ -32,7 +32,7 @@ namespace Stump.Server.BaseServer.Benchmark
                 ElapsedTime = sw.Elapsed;
 
                 if (sw.ElapsedMilliseconds>1)
-                    BenchmarkManager.Instance.Add(BenchmarkEntry.Create(m_message + "[IO]", sw.Elapsed));
+                    BenchmarkManager.Instance.Add(BenchmarkEntry.Create(m_message + "[IO]", sw.Elapsed, "type", "io"));
             }
         }
 

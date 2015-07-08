@@ -1,7 +1,10 @@
+using System.Diagnostics;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Game.Actors;
@@ -56,6 +59,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
 
         public virtual void Play()
         {
+            Stopwatch sw = null;
+            if (BenchmarkManager.Enable)
+            {
+                sw = Stopwatch.StartNew();
+            }
+
             Environment.ResetMoveZone();
 
             SpellSelector.AnalysePossibilities();
@@ -64,6 +73,17 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             {
                 ExecuteSpellCast();
                 ExecutePostMove();
+            }            
+            
+            if (sw != null)
+            {
+                sw.Stop();
+
+                if (sw.ElapsedMilliseconds > 50)
+                {
+                    BenchmarkManager.Instance.Add(BenchmarkEntry.Create("[AI] " + Fighter, sw.Elapsed, "type", "ai",
+                        "spells", SpellSelector.Possibilities.Select(x => x.Spell.ToString()).ToCSV(",")));
+                }
             }
         }
 
