@@ -392,6 +392,29 @@ namespace Stump.Server.WorldServer.Game.Social
                 if (m_relationsToRemove.TryPop(out relation))
                     database.Delete(relation);
             }
+
+            CheckDC();
+        }
+
+        public void CheckDC()
+        {
+            foreach (var friend in Friends)
+            {
+                if (!friend.IsOnline() && friend.Character != null)
+                {
+                    logger.Warn("Friend {0} was not set offline !", friend.Character);
+                    friend.SetOffline();
+                }
+            }
+
+            foreach (var ignored in Ignoreds)
+            {
+                if (!ignored.IsOnline() && ignored.Character != null)
+                {
+                    logger.Warn("Ignored {0} was not set offline !", ignored.Character);
+                    ignored.SetOffline();
+                }
+            }
         }
 
         public Friend TryGetFriend(Character character)

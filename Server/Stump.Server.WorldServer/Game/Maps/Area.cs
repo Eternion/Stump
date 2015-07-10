@@ -55,6 +55,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private DateTime m_lastUpdateTime;
         private bool m_running;
         private int m_updateDelay;
+        private TimedTimerEntry m_checkDCtimer;
 
         public Area(AreaRecord record)
         {
@@ -224,6 +225,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnStarted()
         {
+            m_checkDCtimer = CallPeriodically((int)TimeSpan.FromMinutes(5).TotalMilliseconds, CheckDC);
+
             var handler = Started;
             if (handler != null)
                 handler(this);
@@ -487,6 +490,16 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (m_characters.Count <= 0 && IsRunning)
                 Stop();
+        }
+
+        public void CheckDC()
+        {
+            int count = m_characters.RemoveAll(x => !x.IsLoggedIn);
+
+            if (count > 0)
+            {
+                logger.Warn("{0} disconnected characters removed from {1}", count, this);
+            }
         }
 
         public void SpawnMapsLater()

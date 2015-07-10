@@ -127,6 +127,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         private void OnLoggedOut()
         {
+            EnterMap -= OnFollowedMemberEnterMap;
+
             if (Fight != null && Fight.State == FightState.Fighting)
                 Record.LeftFightId = Fight.Id;
             else
