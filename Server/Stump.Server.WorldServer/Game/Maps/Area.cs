@@ -494,7 +494,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void CheckDC()
         {
-            int count = m_characters.RemoveAll(x => !x.IsLoggedIn);
+            var count = m_characters.RemoveAll(x => !x.IsLoggedIn);
+            m_objects.RemoveAll(x => x is Character && !((Character) x).IsLoggedIn);
 
             if (count > 0)
             {
