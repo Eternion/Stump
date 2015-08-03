@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:37:54
+// Generated on 08/04/2015 00:36:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,44 +18,48 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public bool ssl;
-        public bool canCreateNewCharacter;
         public short serverId;
         public string address;
         public ushort port;
-        public string ticket;
+        public bool canCreateNewCharacter;
+        public IEnumerable<sbyte> ticket;
         
         public SelectedServerDataMessage()
         {
         }
         
-        public SelectedServerDataMessage(bool ssl, bool canCreateNewCharacter, short serverId, string address, ushort port, string ticket)
+        public SelectedServerDataMessage(short serverId, string address, ushort port, bool canCreateNewCharacter, IEnumerable<sbyte> ticket)
         {
-            this.ssl = ssl;
-            this.canCreateNewCharacter = canCreateNewCharacter;
             this.serverId = serverId;
             this.address = address;
             this.port = port;
+            this.canCreateNewCharacter = canCreateNewCharacter;
             this.ticket = ticket;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, ssl);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, canCreateNewCharacter);
-            writer.WriteByte(flag1);
             writer.WriteVarShort(serverId);
             writer.WriteUTF(address);
             writer.WriteUShort(port);
-            writer.WriteUTF(ticket);
+            writer.WriteBoolean(canCreateNewCharacter);
+            var ticket_before = writer.Position;
+            var ticket_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in ticket)
+            {
+                 writer.WriteSByte(entry);
+                 ticket_count++;
+            }
+            var ticket_after = writer.Position;
+            writer.Seek((int)ticket_before);
+            writer.WriteUShort((ushort)ticket_count);
+            writer.Seek((int)ticket_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            byte flag1 = reader.ReadByte();
-            ssl = BooleanByteWrapper.GetFlag(flag1, 0);
-            canCreateNewCharacter = BooleanByteWrapper.GetFlag(flag1, 1);
             serverId = reader.ReadVarShort();
             if (serverId < 0)
                 throw new Exception("Forbidden value on serverId = " + serverId + ", it doesn't respect the following condition : serverId < 0");
@@ -63,7 +67,14 @@ namespace Stump.DofusProtocol.Messages
             port = reader.ReadUShort();
             if (port < 0 || port > 65535)
                 throw new Exception("Forbidden value on port = " + port + ", it doesn't respect the following condition : port < 0 || port > 65535");
-            ticket = reader.ReadUTF();
+            canCreateNewCharacter = reader.ReadBoolean();
+            var limit = reader.ReadUShort();
+            var ticket_ = new sbyte[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 ticket_[i] = reader.ReadSByte();
+            }
+            ticket = ticket_;
         }
         
     }

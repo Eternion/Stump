@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:07
+// Generated on 08/04/2015 00:37:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +21,18 @@ namespace Stump.DofusProtocol.Messages
         public IEnumerable<short> finishedQuestsIds;
         public IEnumerable<short> finishedQuestsCounts;
         public IEnumerable<Types.QuestActiveInformations> activeQuests;
+        public IEnumerable<short> reinitDoneQuestsIds;
         
         public QuestListMessage()
         {
         }
         
-        public QuestListMessage(IEnumerable<short> finishedQuestsIds, IEnumerable<short> finishedQuestsCounts, IEnumerable<Types.QuestActiveInformations> activeQuests)
+        public QuestListMessage(IEnumerable<short> finishedQuestsIds, IEnumerable<short> finishedQuestsCounts, IEnumerable<Types.QuestActiveInformations> activeQuests, IEnumerable<short> reinitDoneQuestsIds)
         {
             this.finishedQuestsIds = finishedQuestsIds;
             this.finishedQuestsCounts = finishedQuestsCounts;
             this.activeQuests = activeQuests;
+            this.reinitDoneQuestsIds = reinitDoneQuestsIds;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -75,6 +77,19 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)activeQuests_count);
             writer.Seek((int)activeQuests_after);
 
+            var reinitDoneQuestsIds_before = writer.Position;
+            var reinitDoneQuestsIds_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in reinitDoneQuestsIds)
+            {
+                 writer.WriteVarShort(entry);
+                 reinitDoneQuestsIds_count++;
+            }
+            var reinitDoneQuestsIds_after = writer.Position;
+            writer.Seek((int)reinitDoneQuestsIds_before);
+            writer.WriteUShort((ushort)reinitDoneQuestsIds_count);
+            writer.Seek((int)reinitDoneQuestsIds_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -101,6 +116,13 @@ namespace Stump.DofusProtocol.Messages
                  activeQuests_[i].Deserialize(reader);
             }
             activeQuests = activeQuests_;
+            limit = reader.ReadUShort();
+            var reinitDoneQuestsIds_ = new short[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 reinitDoneQuestsIds_[i] = reader.ReadVarShort();
+            }
+            reinitDoneQuestsIds = reinitDoneQuestsIds_;
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:23
+// Generated on 08/04/2015 00:35:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,33 +17,27 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public sbyte maxSlots;
         public sbyte probability;
         
         public SkillActionDescriptionCraft()
         {
         }
         
-        public SkillActionDescriptionCraft(short skillId, sbyte maxSlots, sbyte probability)
+        public SkillActionDescriptionCraft(short skillId, sbyte probability)
          : base(skillId)
         {
-            this.maxSlots = maxSlots;
             this.probability = probability;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteSByte(maxSlots);
             writer.WriteSByte(probability);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            maxSlots = reader.ReadSByte();
-            if (maxSlots < 0)
-                throw new Exception("Forbidden value on maxSlots = " + maxSlots + ", it doesn't respect the following condition : maxSlots < 0");
             probability = reader.ReadSByte();
             if (probability < 0)
                 throw new Exception("Forbidden value on probability = " + probability + ", it doesn't respect the following condition : probability < 0");

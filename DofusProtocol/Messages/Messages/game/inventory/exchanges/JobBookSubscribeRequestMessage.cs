@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:04
+// Generated on 08/04/2015 00:37:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,36 +10,32 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class JobListedUpdateMessage : Message
+    public class JobBookSubscribeRequestMessage : Message
     {
-        public const uint Id = 6016;
+        public const uint Id = 6592;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public bool addedOrDeleted;
         public sbyte jobId;
         
-        public JobListedUpdateMessage()
+        public JobBookSubscribeRequestMessage()
         {
         }
         
-        public JobListedUpdateMessage(bool addedOrDeleted, sbyte jobId)
+        public JobBookSubscribeRequestMessage(sbyte jobId)
         {
-            this.addedOrDeleted = addedOrDeleted;
             this.jobId = jobId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteBoolean(addedOrDeleted);
             writer.WriteSByte(jobId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            addedOrDeleted = reader.ReadBoolean();
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");

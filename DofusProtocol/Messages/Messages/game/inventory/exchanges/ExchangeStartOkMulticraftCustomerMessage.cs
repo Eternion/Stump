@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:13
+// Generated on 08/04/2015 00:37:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,39 +18,33 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public sbyte maxCase;
         public int skillId;
-        public sbyte crafterJobLevel;
+        public byte crafterJobLevel;
         
         public ExchangeStartOkMulticraftCustomerMessage()
         {
         }
         
-        public ExchangeStartOkMulticraftCustomerMessage(sbyte maxCase, int skillId, sbyte crafterJobLevel)
+        public ExchangeStartOkMulticraftCustomerMessage(int skillId, byte crafterJobLevel)
         {
-            this.maxCase = maxCase;
             this.skillId = skillId;
             this.crafterJobLevel = crafterJobLevel;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteSByte(maxCase);
             writer.WriteVarInt(skillId);
-            writer.WriteSByte(crafterJobLevel);
+            writer.WriteByte(crafterJobLevel);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            maxCase = reader.ReadSByte();
-            if (maxCase < 0)
-                throw new Exception("Forbidden value on maxCase = " + maxCase + ", it doesn't respect the following condition : maxCase < 0");
             skillId = reader.ReadVarInt();
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
-            crafterJobLevel = reader.ReadSByte();
-            if (crafterJobLevel < 0)
-                throw new Exception("Forbidden value on crafterJobLevel = " + crafterJobLevel + ", it doesn't respect the following condition : crafterJobLevel < 0");
+            crafterJobLevel = reader.ReadByte();
+            if (crafterJobLevel < 0 || crafterJobLevel > 255)
+                throw new Exception("Forbidden value on crafterJobLevel = " + crafterJobLevel + ", it doesn't respect the following condition : crafterJobLevel < 0 || crafterJobLevel > 255");
         }
         
     }

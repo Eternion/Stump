@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:04
+// Generated on 08/04/2015 00:37:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +10,35 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class JobAllowMultiCraftRequestSetMessage : Message
+    public class ExchangeStoppedMessage : Message
     {
-        public const uint Id = 5749;
+        public const uint Id = 6589;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public bool enabled;
+        public int id;
         
-        public JobAllowMultiCraftRequestSetMessage()
+        public ExchangeStoppedMessage()
         {
         }
         
-        public JobAllowMultiCraftRequestSetMessage(bool enabled)
+        public ExchangeStoppedMessage(int id)
         {
-            this.enabled = enabled;
+            this.id = id;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteBoolean(enabled);
+            writer.WriteVarInt(id);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            enabled = reader.ReadBoolean();
+            id = reader.ReadVarInt();
+            if (id < 0)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
         }
         
     }

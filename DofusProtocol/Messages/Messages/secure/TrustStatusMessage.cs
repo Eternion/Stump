@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:18
+// Generated on 08/04/2015 00:37:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,24 +19,31 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public bool trusted;
+        public bool certified;
         
         public TrustStatusMessage()
         {
         }
         
-        public TrustStatusMessage(bool trusted)
+        public TrustStatusMessage(bool trusted, bool certified)
         {
             this.trusted = trusted;
+            this.certified = certified;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteBoolean(trusted);
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, trusted);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, certified);
+            writer.WriteByte(flag1);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            trusted = reader.ReadBoolean();
+            byte flag1 = reader.ReadByte();
+            trusted = BooleanByteWrapper.GetFlag(flag1, 0);
+            certified = BooleanByteWrapper.GetFlag(flag1, 1);
         }
         
     }
