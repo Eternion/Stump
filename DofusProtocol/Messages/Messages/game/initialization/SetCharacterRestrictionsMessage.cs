@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:10
+// Generated on 08/04/2015 00:37:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +18,28 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public int actorId;
         public Types.ActorRestrictionsInformations restrictions;
         
         public SetCharacterRestrictionsMessage()
         {
         }
         
-        public SetCharacterRestrictionsMessage(Types.ActorRestrictionsInformations restrictions)
+        public SetCharacterRestrictionsMessage(int actorId, Types.ActorRestrictionsInformations restrictions)
         {
+            this.actorId = actorId;
             this.restrictions = restrictions;
         }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteInt(actorId);
             restrictions.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            actorId = reader.ReadInt();
             restrictions = new Types.ActorRestrictionsInformations();
             restrictions.Deserialize(reader);
         }

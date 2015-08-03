@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:37:54
+// Generated on 08/04/2015 00:36:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +25,14 @@ namespace Stump.DofusProtocol.Messages
         public string lang;
         public IEnumerable<sbyte> credentials;
         public short serverId;
-        public double sessionOptionalSalt;
+        public long sessionOptionalSalt;
         public IEnumerable<short> failedAttempts;
         
         public IdentificationMessage()
         {
         }
         
-        public IdentificationMessage(bool autoconnect, bool useCertificate, bool useLoginToken, Types.VersionExtended version, string lang, IEnumerable<sbyte> credentials, short serverId, double sessionOptionalSalt, IEnumerable<short> failedAttempts)
+        public IdentificationMessage(bool autoconnect, bool useCertificate, bool useLoginToken, Types.VersionExtended version, string lang, IEnumerable<sbyte> credentials, short serverId, long sessionOptionalSalt, IEnumerable<short> failedAttempts)
         {
             this.autoconnect = autoconnect;
             this.useCertificate = useCertificate;
@@ -68,7 +68,7 @@ namespace Stump.DofusProtocol.Messages
             writer.Seek((int)credentials_after);
 
             writer.WriteShort(serverId);
-            writer.WriteDouble(sessionOptionalSalt);
+            writer.WriteVarLong(sessionOptionalSalt);
             var failedAttempts_before = writer.Position;
             var failedAttempts_count = 0;
             writer.WriteUShort(0);
@@ -101,7 +101,7 @@ namespace Stump.DofusProtocol.Messages
             }
             credentials = credentials_;
             serverId = reader.ReadShort();
-            sessionOptionalSalt = reader.ReadDouble();
+            sessionOptionalSalt = reader.ReadVarLong();
             if (sessionOptionalSalt < -9.007199254740992E15 || sessionOptionalSalt > 9.007199254740992E15)
                 throw new Exception("Forbidden value on sessionOptionalSalt = " + sessionOptionalSalt + ", it doesn't respect the following condition : sessionOptionalSalt < -9.007199254740992E15 || sessionOptionalSalt > 9.007199254740992E15");
             limit = reader.ReadUShort();

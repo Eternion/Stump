@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:37:55
+// Generated on 08/04/2015 00:36:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,18 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public IEnumerable<Types.GameServerInformations> servers;
+        public short alreadyConnectedToServerId;
+        public bool canCreateNewCharacter;
         
         public ServersListMessage()
         {
         }
         
-        public ServersListMessage(IEnumerable<Types.GameServerInformations> servers)
+        public ServersListMessage(IEnumerable<Types.GameServerInformations> servers, short alreadyConnectedToServerId, bool canCreateNewCharacter)
         {
             this.servers = servers;
+            this.alreadyConnectedToServerId = alreadyConnectedToServerId;
+            this.canCreateNewCharacter = canCreateNewCharacter;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -44,6 +48,8 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)servers_count);
             writer.Seek((int)servers_after);
 
+            writer.WriteVarShort(alreadyConnectedToServerId);
+            writer.WriteBoolean(canCreateNewCharacter);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -56,6 +62,10 @@ namespace Stump.DofusProtocol.Messages
                  servers_[i].Deserialize(reader);
             }
             servers = servers_;
+            alreadyConnectedToServerId = reader.ReadVarShort();
+            if (alreadyConnectedToServerId < 0)
+                throw new Exception("Forbidden value on alreadyConnectedToServerId = " + alreadyConnectedToServerId + ", it doesn't respect the following condition : alreadyConnectedToServerId < 0");
+            canCreateNewCharacter = reader.ReadBoolean();
         }
         
     }

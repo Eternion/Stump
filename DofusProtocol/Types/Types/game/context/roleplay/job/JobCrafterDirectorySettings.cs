@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:22
+// Generated on 08/04/2015 00:35:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,25 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte jobId;
-        public sbyte minSlot;
-        public sbyte userDefinedParams;
+        public byte minLevel;
+        public bool free;
         
         public JobCrafterDirectorySettings()
         {
         }
         
-        public JobCrafterDirectorySettings(sbyte jobId, sbyte minSlot, sbyte userDefinedParams)
+        public JobCrafterDirectorySettings(sbyte jobId, byte minLevel, bool free)
         {
             this.jobId = jobId;
-            this.minSlot = minSlot;
-            this.userDefinedParams = userDefinedParams;
+            this.minLevel = minLevel;
+            this.free = free;
         }
         
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
-            writer.WriteSByte(minSlot);
-            writer.WriteSByte(userDefinedParams);
+            writer.WriteByte(minLevel);
+            writer.WriteBoolean(free);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -44,12 +44,10 @@ namespace Stump.DofusProtocol.Types
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            minSlot = reader.ReadSByte();
-            if (minSlot < 0 || minSlot > 9)
-                throw new Exception("Forbidden value on minSlot = " + minSlot + ", it doesn't respect the following condition : minSlot < 0 || minSlot > 9");
-            userDefinedParams = reader.ReadSByte();
-            if (userDefinedParams < 0)
-                throw new Exception("Forbidden value on userDefinedParams = " + userDefinedParams + ", it doesn't respect the following condition : userDefinedParams < 0");
+            minLevel = reader.ReadByte();
+            if (minLevel < 0 || minLevel > 255)
+                throw new Exception("Forbidden value on minLevel = " + minLevel + ", it doesn't respect the following condition : minLevel < 0 || minLevel > 255");
+            free = reader.ReadBoolean();
         }
         
         

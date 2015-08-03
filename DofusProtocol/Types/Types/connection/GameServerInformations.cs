@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:19
+// Generated on 08/04/2015 00:35:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public ushort id;
+        public short id;
         public sbyte status;
         public sbyte completion;
         public bool isSelectable;
@@ -28,7 +28,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameServerInformations(ushort id, sbyte status, sbyte completion, bool isSelectable, sbyte charactersCount, double date)
+        public GameServerInformations(short id, sbyte status, sbyte completion, bool isSelectable, sbyte charactersCount, double date)
         {
             this.id = id;
             this.status = status;
@@ -40,7 +40,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteUShort(id);
+            writer.WriteVarShort(id);
             writer.WriteSByte(status);
             writer.WriteSByte(completion);
             writer.WriteBoolean(isSelectable);
@@ -50,9 +50,9 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            id = reader.ReadUShort();
-            if (id < 0 || id > 65535)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 65535");
+            id = reader.ReadVarShort();
+            if (id < 0)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
             status = reader.ReadSByte();
             if (status < 0)
                 throw new Exception("Forbidden value on status = " + status + ", it doesn't respect the following condition : status < 0");

@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:37:54
+// Generated on 08/04/2015 00:36:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +24,8 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public SelectedServerDataExtendedMessage(bool ssl, bool canCreateNewCharacter, short serverId, string address, ushort port, string ticket, IEnumerable<short> serverIds)
-         : base(ssl, canCreateNewCharacter, serverId, address, port, ticket)
+        public SelectedServerDataExtendedMessage(short serverId, string address, ushort port, bool canCreateNewCharacter, IEnumerable<sbyte> ticket, IEnumerable<short> serverIds)
+         : base(serverId, address, port, canCreateNewCharacter, ticket)
         {
             this.serverIds = serverIds;
         }
