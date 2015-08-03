@@ -129,6 +129,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             EnterMap -= OnFollowedMemberEnterMap;
 
+            if (FriendsBook != null)
+                FriendsBook.CheckDC(); // attempt to resolve leaks
+
             if (Fight != null && Fight.State == FightState.Fighting)
                 Record.LeftFightId = Fight.Id;
             else

@@ -342,7 +342,7 @@ namespace Stump.Server.AuthServer.IPC
         public void Disconnect()
         {
             if (Server != null)
-                WorldServerManager.Instance.RemoveWorld(Server);
+               WorldServerManager.Instance.RemoveWorld(Server);
 
             if (m_operations != null)
                 m_operations.Dispose();
