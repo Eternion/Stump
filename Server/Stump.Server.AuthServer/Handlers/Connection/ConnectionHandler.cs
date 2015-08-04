@@ -276,11 +276,11 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Account.LastConnectionWorld = world.Id;
             client.SaveNow();
 
-            client.Send(new SelectedServerDataMessage(false, true,
+            client.Send(new SelectedServerDataMessage(
                 (short) world.Id,
                 world.Address,
                 world.Port,
-                //(client.UserGroup.Role >= world.RequiredRole || client.UserGroup.AvailableServers.Contains(world.Id)),
+                (client.UserGroup.Role >= world.RequiredRole || client.UserGroup.AvailableServers.Contains(world.Id)),
                 client.Account.Ticket));
 
             client.Disconnect();

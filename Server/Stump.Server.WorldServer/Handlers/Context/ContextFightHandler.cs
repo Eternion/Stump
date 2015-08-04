@@ -313,7 +313,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightSpectateMessage(
                 fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
                 fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
-                fight.TimeLine.RoundNumber, 0));    
+                fight.TimeLine.RoundNumber, 0, Enumerable.Empty<Idol>()));    
         }
 
         public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor playingTurn, int waitTime)

@@ -400,6 +400,8 @@
     <Compile Include="Types\game\house\HouseInformationsForGuild.cs" />
     <Compile Include="Types\game\house\HouseInformationsForSell.cs" />
     <Compile Include="Types\game\house\HouseInformationsInside.cs" />
+    <Compile Include="Types\game\idol\Idol.cs" />
+    <Compile Include="Types\game\idol\PartyIdol.cs" />
     <Compile Include="Types\game\interactive\InteractiveElement.cs" />
     <Compile Include="Types\game\interactive\InteractiveElementNamedSkill.cs" />
     <Compile Include="Types\game\interactive\InteractiveElementSkill.cs" />

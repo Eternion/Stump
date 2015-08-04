@@ -19,7 +19,7 @@ namespace DofusProtocolBuilder.XmlPatterns
         }
 
         [XmlAttribute]
-        public string Limit
+        public string ArrayLength
         {
             get;
             set;

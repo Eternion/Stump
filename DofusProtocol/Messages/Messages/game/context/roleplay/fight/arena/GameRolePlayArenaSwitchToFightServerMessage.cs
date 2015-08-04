@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 00:37:04
+// Generated on 08/04/2015 13:25:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(port);
             var ticket_before = writer.Position;
             var ticket_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteVarInt(0);
             foreach (var entry in ticket)
             {
                  writer.WriteSByte(entry);
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var ticket_after = writer.Position;
             writer.Seek((int)ticket_before);
-            writer.WriteUShort((ushort)ticket_count);
+            writer.WriteVarInt((int)ticket_count);
             writer.Seek((int)ticket_after);
 
         }
@@ -58,7 +58,7 @@ namespace Stump.DofusProtocol.Messages
             port = reader.ReadUShort();
             if (port < 0 || port > 65535)
                 throw new Exception("Forbidden value on port = " + port + ", it doesn't respect the following condition : port < 0 || port > 65535");
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var ticket_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {

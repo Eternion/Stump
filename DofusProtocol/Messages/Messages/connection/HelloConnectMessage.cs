@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 00:36:51
+// Generated on 08/04/2015 13:24:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(salt);
             var key_before = writer.Position;
             var key_count = 0;
-            writer.WriteUShort(0);
+            writer.WriteVarInt(0);
             foreach (var entry in key)
             {
                  writer.WriteSByte(entry);
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Messages
             }
             var key_after = writer.Position;
             writer.Seek((int)key_before);
-            writer.WriteUShort((ushort)key_count);
+            writer.WriteVarInt((int)key_count);
             writer.Seek((int)key_after);
 
         }
@@ -52,7 +52,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             salt = reader.ReadUTF();
-            var limit = reader.ReadUShort();
+            var limit = reader.ReadVarInt();
             var key_ = new sbyte[limit];
             for (int i = 0; i < limit; i++)
             {
