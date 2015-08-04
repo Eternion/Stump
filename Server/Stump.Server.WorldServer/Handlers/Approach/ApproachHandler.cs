@@ -130,7 +130,7 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             SendServerOptionalFeaturesMessage(client, OptionalFeaturesEnum.PvpArena);
             SendAccountCapabilitiesMessage(client);
 
-            client.Send(new TrustStatusMessage(true)); // Restrict actions if account is not trust
+            client.Send(new TrustStatusMessage(true, true)); // Restrict actions if account is not trust
 
             /* Just to get console AutoCompletion */
             if (client.UserGroup.Role >= RoleEnum.Moderator)
@@ -159,10 +159,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
-            client.Send(new AccountCapabilitiesMessage(
+            client.Send(new AccountCapabilitiesMessage(false, true,
                             client.Account.Id,
-                            false,
-                            //(ushort)client.Account.BreedFlags,
                             (ushort)BreedManager.Instance.AvailableBreedsFlags,
                             (ushort)BreedManager.Instance.AvailableBreedsFlags,
                             (sbyte) client.UserGroup.Role));

@@ -176,6 +176,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BooleanByteWrapper.cs" />
+    <Compile Include="Custom\CustomIdentificationMessage.cs" />
+    <Compile Include="Custom\CustomTicketMessage.cs" />
     <Compile Include="Custom\ErrorMessage.cs" />
     <Compile Include="Custom\OverrideMessageAttribute.cs" />
     <Compile Include="Custom\RawDataMessageFixed.cs" />
@@ -523,6 +525,8 @@
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaFightPropositionMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaRegisterMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaRegistrationStatusMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaSwitchToFightServerMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaSwitchToGameServerMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUnregisterMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUpdatePlayerInfosMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayAggressionMessage.cs" />
@@ -554,7 +558,7 @@
     <Compile Include="Messages\game\context\roleplay\houses\HouseToSellListMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\houses\HouseToSellListRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobAllowMultiCraftRequestMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\job\JobAllowMultiCraftRequestSetMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\job\JobBookSubscriptionMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobCrafterDirectoryAddMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobCrafterDirectoryDefineSettingsMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobCrafterDirectoryEntryMessage.cs" />
@@ -567,9 +571,7 @@
     <Compile Include="Messages\game\context\roleplay\job\JobExperienceMultiUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobExperienceUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobLevelUpMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\job\JobListedUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobMultiCraftAvailableSkillsMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\job\JobUnlearntMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\lockable\LockableChangeCodeMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\lockable\LockableCodeResultMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\lockable\LockableShowCodeDialogMessage.cs" />
@@ -778,6 +780,8 @@
     <Compile Include="Messages\game\guild\GuildModificationNameValidMessage.cs" />
     <Compile Include="Messages\game\guild\GuildModificationStartedMessage.cs" />
     <Compile Include="Messages\game\guild\GuildModificationValidMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildMotdMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildMotdSetErrorMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockBoughtMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockRemovedMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockTeleportRequestMessage.cs" />
@@ -801,6 +805,14 @@
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementRemoveMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorStateUpdateMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TopTaxCollectorListMessage.cs" />
+    <Compile Include="Messages\game\idol\IdolFightPreparationUpdateMessage.cs" />
+    <Compile Include="Messages\game\idol\IdolListMessage.cs" />
+    <Compile Include="Messages\game\idol\IdolPartyLostMessage.cs" />
+    <Compile Include="Messages\game\idol\IdolPartyRefreshMessage.cs" />
+    <Compile Include="Messages\game\idol\IdolPartyRegisterRequestMessage.cs" />
+    <Compile Include="Messages\game\idol\IdolSelectedMessage.cs" />
+    <Compile Include="Messages\game\idol\IdolSelectErrorMessage.cs" />
+    <Compile Include="Messages\game\idol\IdolSelectRequestMessage.cs" />
     <Compile Include="Messages\game\initialization\CharacterCapabilitiesMessage.cs" />
     <Compile Include="Messages\game\initialization\CharacterLoadingCompleteMessage.cs" />
     <Compile Include="Messages\game\initialization\OnConnectionEventMessage.cs" />
@@ -823,6 +835,8 @@
     <Compile Include="Messages\game\interactive\zaap\TeleportDestinationsListMessage.cs" />
     <Compile Include="Messages\game\interactive\zaap\TeleportRequestMessage.cs" />
     <Compile Include="Messages\game\interactive\zaap\ZaapListMessage.cs" />
+    <Compile Include="Messages\game\interactive\zaap\ZaapRespawnSaveRequestMessage.cs" />
+    <Compile Include="Messages\game\interactive\zaap\ZaapRespawnUpdatedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\DecraftResultMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeAcceptMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseBuyMessage.cs" />
@@ -843,25 +857,20 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidSearchOkMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBuyMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBuyOkMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeClearPaymentForCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftInformationObjectMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftPaymentModificationRequestMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftPaymentModifiedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftResultMagicWithObjectDescMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftResultMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftResultWithObjectDescMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftResultWithObjectIdMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftSlotCountIncreasedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeErrorMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeGoldPaymentForCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeGuildTaxCollectorGetMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeHandleMountsStableMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeIsReadyMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeItemAutoCraftRemainingMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeItemAutoCraftStopedMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeItemGoldAddAsPaymentMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeItemObjectAddAsPaymentMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeItemPaymentForCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeLeaveMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeModifiedPaymentForCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeMountFreeFromPaddockMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeMountsPaddockAddMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeMountsPaddockRemoveMessage.cs" />
@@ -891,7 +900,6 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangePlayerMultiCraftRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangePlayerRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeReadyMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeRemovedPaymentForCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeReplayCountModifiedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeReplayMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeReplayStopMessage.cs" />
@@ -929,11 +937,13 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkNpcShopMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkNpcTradeMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkRunesTradeMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeStoppedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeTypesExchangerDescriptionForUserMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeTypesItemsExchangerDescriptionForUserMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeWaitingResultMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeWeightMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ItemNoMoreAvailableMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\JobBookSubscribeRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\UpdateMountBoostMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ExchangeKamaModifiedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ExchangeMultiCraftCrafterCanUseHisRessourcesMessage.cs" />

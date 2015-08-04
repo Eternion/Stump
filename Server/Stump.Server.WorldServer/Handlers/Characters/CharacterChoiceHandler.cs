@@ -160,7 +160,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             InventoryHandler.SendSpellListMessage(client, true);
             
-            InitializationHandler.SendSetCharacterRestrictionsMessage(client);
+            InitializationHandler.SendSetCharacterRestrictionsMessage(client, client.Character);
 
             InventoryHandler.SendInventoryWeightMessage(client);
 

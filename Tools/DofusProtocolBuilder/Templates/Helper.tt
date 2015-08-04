@@ -167,9 +167,11 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 	bool limitDefined = false;
     int? flagsCount = null;
     int? lastFlagOffset = null;
+    string limit = null;
+
     foreach(var field in fields)
     {
-		string limit = field.Limit;
+		string arrayLength = field.ArrayLength;
 		string type = field.Type;
 		string name = field.Name;
 
@@ -178,12 +180,15 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 		if (type.EndsWith("[]"))
 		{
             array = true;
+            int limitInt;
+            var hasLimit = int.TryParse(arrayLength, out limitInt);
+            limit = hasLimit ? limitInt.ToString() : "";
             
-			if (string.IsNullOrEmpty(limit))
+			if (!hasLimit)
 			{
 				if (!serializeMethod)
 				{
-					WriteLine((limitDefined ? string.Empty : "var ") + "limit = reader.ReadUShort();");
+					WriteLine((limitDefined ? string.Empty : "var ") + "limit = reader.Read" + GetIOMethodTypeName(arrayLength) + "();");
 					limitDefined = true;
 				}
 
@@ -195,11 +200,11 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
                     {
                         WriteLine("var " + name + "_before = writer.Position;");
                         WriteLine("var " + name + "_count = 0;");
-                        WriteLine("writer.WriteUShort(0);");
+                        WriteLine("writer.Write" + GetIOMethodTypeName(arrayLength) + "(0);");
                     }
 
 					else
-						WriteLine("writer.WriteUShort((ushort)" + name + ".Length);");
+						WriteLine("writer.Write" + GetIOMethodTypeName(arrayLength) + "(" + "(" + GetRealType(arrayLength) + ")" + name + ".Length);");
 				}
 			}
 
@@ -331,7 +336,7 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 			{
                 WriteLine("var " + field.Name + "_after = writer.Position;");
                 WriteLine("writer.Seek((int)" + field.Name + "_before);");
-                WriteLine("writer.WriteUShort((ushort)" + field.Name + "_count);");
+                WriteLine("writer.Write" + GetIOMethodTypeName(arrayLength) + "(" + "(" + GetRealType(arrayLength) + ")" + field.Name + "_count);");
                 WriteLine("writer.Seek((int)" + field.Name + "_after);");
                 WriteLine("");
             }
