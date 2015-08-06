@@ -16,8 +16,8 @@ namespace Stump.Server.AuthServer.Network
         public AuthClient(Socket socket) : base(socket)
         {
             var patch = AuthServer.Instance.GetConnectionSwfPatch();
-            //if (patch != null)
-            //    Send(new RawDataMessageFixed(patch));
+            if (patch != null)
+                Send(new RawDataMessageFixed(patch));
 
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
             Send(new HelloConnectMessage(CredentialManager.Instance.GetSalt(), CredentialManager.Instance.GetRSAPublicKey()));
