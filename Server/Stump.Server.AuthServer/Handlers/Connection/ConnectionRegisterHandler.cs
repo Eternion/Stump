@@ -48,7 +48,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
             client.Send(new NicknameAcceptedMessage());
             SendIdentificationSuccessMessage(client, false);
-            SendServersListMessage(client);
+            SendServersListMessage(client, 0, true);
         }
 
         public static bool CheckNickName(string nickName)

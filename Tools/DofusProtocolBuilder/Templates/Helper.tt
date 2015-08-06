@@ -198,9 +198,14 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 				{
                     if (Program.Configuration.UseIEnumerable)
                     {
-                        WriteLine("var " + name + "_before = writer.Position;");
-                        WriteLine("var " + name + "_count = 0;");
-                        WriteLine("writer.Write" + GetIOMethodTypeName(arrayLength) + "(0);");
+                        if (!arrayLength.StartsWith("var"))
+                        {
+                            WriteLine("var " + name + "_before = writer.Position;");
+                            WriteLine("var " + name + "_count = 0;");
+                            WriteLine("writer.Write" + GetIOMethodTypeName(arrayLength) + "(0);");
+                        }
+                        else
+                            WriteLine("writer.Write" + GetIOMethodTypeName(arrayLength) + "(" + "(" + GetRealType(arrayLength) + ")" + name + ".Count());");
                     }
 
 					else
@@ -332,7 +337,7 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 
             if (!serializeMethod)
                 WriteLine("{0} = {1};", field.Name, name.Remove(name.Length - 3)); // removes [i]
-            else if (limit == "limit" && Program.Configuration.UseIEnumerable)
+            else if (limit == "limit" && Program.Configuration.UseIEnumerable && !arrayLength.StartsWith("var"))
 			{
                 WriteLine("var " + field.Name + "_after = writer.Position;");
                 WriteLine("writer.Seek((int)" + field.Name + "_before);");

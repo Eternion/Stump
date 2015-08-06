@@ -10,7 +10,7 @@ namespace Stump.DofusProtocol.Messages.Custom
         public string password;
 
 
-        public const Id = 10000;
+        public const uint Id = 10000;
 
         public override uint MessageId
         {

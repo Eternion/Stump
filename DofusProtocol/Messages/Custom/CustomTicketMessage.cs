@@ -1,12 +1,14 @@
-﻿namespace Stump.DofusProtocol.Messages.Custom
+﻿using Stump.Core.IO;
+
+namespace Stump.DofusProtocol.Messages.Custom
 {
     public class CustomTicketMessage : Message
     {
-        
-        public string ticket
+
+        public string ticket;
 
 
-        public const Id = 10001;
+        public const uint Id = 10001;
 
         public override uint MessageId
         {

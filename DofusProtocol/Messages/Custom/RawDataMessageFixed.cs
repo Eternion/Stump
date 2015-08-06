@@ -44,13 +44,13 @@ namespace Stump.DofusProtocol.Messages.Custom
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteShort((short)content.Length);
+            writer.WriteVarInt(content.Length);
             writer.WriteBytes(content);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            var len = reader.ReadShort();
+            var len = reader.ReadVarInt();
             content = reader.ReadBytes(len);
         }
     }

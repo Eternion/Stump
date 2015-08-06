@@ -36,16 +36,12 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(salt);
             var key_before = writer.Position;
             var key_count = 0;
-            writer.WriteVarInt(0);
+            writer.WriteVarInt(key.Count());
             foreach (var entry in key)
             {
                  writer.WriteSByte(entry);
                  key_count++;
             }
-            var key_after = writer.Position;
-            writer.Seek((int)key_before);
-            writer.WriteVarInt((int)key_count);
-            writer.Seek((int)key_after);
 
         }
         
