@@ -55,26 +55,13 @@ namespace Stump.Server.WorldServer.Game.Maps
         public SubAreaRecord Record
         {
             get;
-            private set;
         }
 
-        public int Id
-        {
-            get { return Record.Id; }
-        }
+        public int Id => Record.Id;
 
-        public IEnumerable<Map> Maps
-        {
-            get { return m_maps; }
-        }
+        public IEnumerable<Map> Maps => m_maps;
 
-        public Dictionary<Point, List<Map>> MapsByPosition
-        {
-            get
-            {
-                return m_mapsByPoint;
-            }
-        }
+        public Dictionary<Point, List<Map>> MapsByPosition => m_mapsByPoint;
 
         public Area Area
         {
@@ -82,10 +69,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             internal set;
         }
 
-        public SuperArea SuperArea
-        {
-            get { return Area.SuperArea; }
-        }
+        public SuperArea SuperArea => Area.SuperArea;
 
         public Difficulty Difficulty
         {
@@ -177,10 +161,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public ReadOnlyCollection<MonsterSpawn> MonsterSpawns
-        {
-            get { return m_monsterSpawns.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<MonsterSpawn> MonsterSpawns => m_monsterSpawns.AsReadOnly();
 
         public int RollMonsterLengthLimit(int imposedLimit = 8)
         {
