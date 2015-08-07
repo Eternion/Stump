@@ -46,9 +46,9 @@ namespace ArkalysPlugin.Commands
 
             character.Inventory.RemoveItem(item, amount);
 
-            var amountPerPlayer = (int)Math.Ceiling((double)amount/players.Count() - 1);
+            var amountPerPlayer = (int)Math.Ceiling((double)amount/players.Count());
 
-            foreach (var player in players.Where(player => player != character))
+            foreach (var player in players)
             {
                 player.Inventory.AddItem(itemToken, amountPerPlayer);
             }
