@@ -1,12 +1,9 @@
 ﻿using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Items.Player;
-using Stump.Server.WorldServer.Game.Items.Player.Custom;
 
-namespace ArkalysPlugin.Items
+namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     [ItemType(ItemTypeEnum.TOKEN_SCROLL)]
     public sealed class TokenScroll : BasePlayerItem
@@ -32,7 +29,7 @@ namespace ArkalysPlugin.Items
             }
 
             WorldServer.Instance.IOTaskPool.AddMessage(() => Owner.Inventory.Save());
-            Owner.SendServerMessage($"Vous avez reçu {wonTokens} Jetons en utilisant votre {Template.Name}");
+            Owner.SendServerMessage(string.Format("Vous avez reçu {0} Jetons en utilisant votre {1}", wonTokens, Template.Name));
 
             return 1;
         }
