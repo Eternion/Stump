@@ -384,12 +384,14 @@ namespace Stump.Server.WorldServer.Core.IPC
             try
             {
                 built = m_messagePart.Build(reader);
+
             }
-            catch (Exception ex)
+            catch
             {
-                logger.Error("Cannot build message. Length={0}, RemainingLength={2}, Data={1}", m_messagePart.Length, m_messagePart.Data.ToString(" "), m_remainingLength);
+                logger.Error("Cannot build message. Length={0} LengthSize={3} RemainingLength={1} Data={2}", m_messagePart.Length, m_remainingLength, m_messagePart.Data, m_messagePart.LengthBytesCount);
                 throw;
             }
+
             // if message is complete
             if (built)
             {
