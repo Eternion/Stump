@@ -37,10 +37,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
     public class BrakmarianPotion : BasePlayerItem
     {
         [Variable]
-        private const int m_destinationMap = 13631488;
+        const int m_destinationMap = 13631488;
 
         [Variable]
-        private const int m_destinationCell = 373;
+        const int m_destinationCell = 373;
 
         public BrakmarianPotion(Character owner, PlayerItemRecord record)
             : base(owner, record)

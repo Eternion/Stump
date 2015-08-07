@@ -380,9 +380,18 @@ namespace Stump.Server.WorldServer.Core.IPC
                 MaxPosition = buffer.Offset + m_readOffset + m_remainingLength,
             };
 
-            
+            bool built;
+            try
+            {
+                built = m_messagePart.Build(reader);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Cannot build message. Length={0}, RemainingLength={2}, Data={1}", m_messagePart.Length, m_messagePart.Data.ToString(" "), m_remainingLength);
+                throw;
+            }
             // if message is complete
-            if (m_messagePart.Build(reader))
+            if (built)
             {
                 var dataPos = reader.Position;
                 // prevent to read above
