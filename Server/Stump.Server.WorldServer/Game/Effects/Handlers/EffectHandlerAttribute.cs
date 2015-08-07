@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.AI.Fights.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple=true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
     public class EffectHandlerAttribute : Attribute
     {
         public EffectHandlerAttribute(EffectsEnum effect)

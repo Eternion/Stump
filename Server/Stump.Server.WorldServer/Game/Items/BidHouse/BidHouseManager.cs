@@ -159,7 +159,6 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
             category.Items.Add(item);
 
-
             var handler = ItemAdded;
 
             if (handler != null)
