@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:24
+// Generated on 08/13/2015 17:13:43
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -10,36 +10,17 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("AmbientSound", "com.ankamagames.dofus.datacenter.ambientSounds")]
     [Serializable]
-    public class AmbientSound : IDataObject, IIndexedData
+    public class AmbientSound : PlaylistSound
     {
         public const int AMBIENT_TYPE_ROLEPLAY = 1;
         public const int AMBIENT_TYPE_AMBIENT = 2;
         public const int AMBIENT_TYPE_FIGHT = 3;
         public const int AMBIENT_TYPE_BOSS = 4;
         public const String MODULE = "AmbientSounds";
-        public int id;
-        public uint volume;
         public int criterionId;
         public uint silenceMin;
         public uint silenceMax;
-        public int channel;
         public int type_id;
-        int IIndexedData.Id
-        {
-            get { return (int)id; }
-        }
-        [D2OIgnore]
-        public int Id
-        {
-            get { return this.id; }
-            set { this.id = value; }
-        }
-        [D2OIgnore]
-        public uint Volume
-        {
-            get { return this.volume; }
-            set { this.volume = value; }
-        }
         [D2OIgnore]
         public int CriterionId
         {
@@ -57,12 +38,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.silenceMax; }
             set { this.silenceMax = value; }
-        }
-        [D2OIgnore]
-        public int Channel
-        {
-            get { return this.channel; }
-            set { this.channel = value; }
         }
         [D2OIgnore]
         public int Type_id

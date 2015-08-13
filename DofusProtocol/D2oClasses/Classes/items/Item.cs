@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:26
+// Generated on 08/13/2015 17:13:46
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public const uint RESSOURCES_CATEGORY = 2;
         public const uint QUEST_CATEGORY = 3;
         public const uint OTHER_CATEGORY = 4;
+        public const int MAX_JOB_LEVEL_GAP = 100;
         public int id;
         [I18NField]
         public uint nameId;
@@ -50,6 +51,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<EffectInstance> possibleEffects;
         public List<uint> favoriteSubAreas;
         public uint favoriteSubAreasBonus;
+        public int craftXpRatio;
+        public Boolean needUseConfirm;
         public uint weight;
         int IIndexedData.Id
         {
@@ -234,6 +237,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.favoriteSubAreasBonus; }
             set { this.favoriteSubAreasBonus = value; }
+        }
+        [D2OIgnore]
+        public int CraftXpRatio
+        {
+            get { return this.craftXpRatio; }
+            set { this.craftXpRatio = value; }
+        }
+        [D2OIgnore]
+        public Boolean NeedUseConfirm
+        {
+            get { return this.needUseConfirm; }
+            set { this.needUseConfirm = value; }
         }
         [D2OIgnore]
         public uint Weight

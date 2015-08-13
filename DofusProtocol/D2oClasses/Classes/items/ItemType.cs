@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:26
+// Generated on 08/13/2015 17:13:47
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -20,8 +20,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean plural;
         public uint gender;
         public String rawZone;
-        public Boolean needUseConfirm;
         public Boolean mimickable;
+        public int craftXpRatio;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -63,16 +63,16 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.rawZone = value; }
         }
         [D2OIgnore]
-        public Boolean NeedUseConfirm
-        {
-            get { return this.needUseConfirm; }
-            set { this.needUseConfirm = value; }
-        }
-        [D2OIgnore]
         public Boolean Mimickable
         {
             get { return this.mimickable; }
             set { this.mimickable = value; }
+        }
+        [D2OIgnore]
+        public int CraftXpRatio
+        {
+            get { return this.craftXpRatio; }
+            set { this.craftXpRatio = value; }
         }
     }
 }

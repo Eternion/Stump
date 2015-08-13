@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:28
+// Generated on 08/13/2015 17:13:52
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -21,7 +21,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public double percentDropForGrade4;
         public double percentDropForGrade5;
         public int count;
-        public int findCeil;
         public Boolean hasCriteria;
         int IIndexedData.Id
         {
@@ -80,12 +79,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.count; }
             set { this.count = value; }
-        }
-        [D2OIgnore]
-        public int FindCeil
-        {
-            get { return this.findCeil; }
-            set { this.findCeil = value; }
         }
         [D2OIgnore]
         public Boolean HasCriteria

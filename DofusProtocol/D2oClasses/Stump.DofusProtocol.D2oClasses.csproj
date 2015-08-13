@@ -195,6 +195,7 @@
     <Compile Include="Classes\alignments\AlignmentTitle.cs" />
     <Compile Include="Classes\almanax\AlmanaxCalendar.cs" />
     <Compile Include="Classes\ambientSounds\AmbientSound.cs" />
+    <Compile Include="Classes\ambientSounds\PlaylistSound.cs" />
     <Compile Include="Classes\appearance\Appearance.cs" />
     <Compile Include="Classes\appearance\CreatureBoneOverride.cs" />
     <Compile Include="Classes\appearance\CreatureBoneType.cs" />
@@ -234,6 +235,7 @@
     <Compile Include="Classes\guild\EmblemSymbolCategory.cs" />
     <Compile Include="Classes\guild\RankName.cs" />
     <Compile Include="Classes\houses\House.cs" />
+    <Compile Include="Classes\idols\Idol.cs" />
     <Compile Include="Classes\interactives\Interactive.cs" />
     <Compile Include="Classes\interactives\SkillName.cs" />
     <Compile Include="Classes\interactives\StealthBones.cs" />
@@ -328,12 +330,14 @@
     <Compile Include="Classes\npcs\NpcMessage.cs" />
     <Compile Include="Classes\npcs\TaxCollectorFirstname.cs" />
     <Compile Include="Classes\npcs\TaxCollectorName.cs" />
+    <Compile Include="Classes\playlists\Playlist.cs" />
     <Compile Include="Classes\quest\Achievement.cs" />
     <Compile Include="Classes\quest\AchievementCategory.cs" />
     <Compile Include="Classes\quest\AchievementObjective.cs" />
     <Compile Include="Classes\quest\AchievementReward.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveBringItemToNpc.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveBringSoulToNpc.cs" />
+    <Compile Include="Classes\quest\objectives\QuestObjectiveCraftItem.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveDiscoverMap.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveDiscoverSubArea.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveDuelSpecificPlayer.cs" />
