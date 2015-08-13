@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Threading;
@@ -80,6 +81,9 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                 client.DisconnectLater(1000);
                 return;
             }
+
+            String test = message.ticket.Split(',').Select(x => (Char) int.Parse(x)).ToArray().ToString();
+            message.ticket = Encoding.ASCII.GetString(message.ticket.Split(',').Select(x => (byte)int.Parse(x)).ToArray());
 
             logger.Debug("Client request ticket {0}", message.ticket);
             IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage { Ticket = message.ticket }, 

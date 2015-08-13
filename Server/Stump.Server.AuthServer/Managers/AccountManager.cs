@@ -36,6 +36,8 @@ namespace Stump.Server.AuthServer.Managers
             PlayableBreedEnum.Pandawa,
             PlayableBreedEnum.Roublard,
             PlayableBreedEnum.Zobal,
+            PlayableBreedEnum.Steamer,
+            PlayableBreedEnum.Eliotrope
             };
 
 
