@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:28
+// Generated on 08/13/2015 17:13:52
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -27,6 +27,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public int lifePoints;
         public int actionPoints;
         public int movementPoints;
+        public int damageReflect;
+        public uint hiddenLevel;
         int IIndexedData.Id
         {
             get { return (int)monsterId; }
@@ -120,6 +122,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.movementPoints; }
             set { this.movementPoints = value; }
+        }
+        [D2OIgnore]
+        public int DamageReflect
+        {
+            get { return this.damageReflect; }
+            set { this.damageReflect = value; }
+        }
+        [D2OIgnore]
+        public uint HiddenLevel
+        {
+            get { return this.hiddenLevel; }
+            set { this.hiddenLevel = value; }
         }
     }
 }

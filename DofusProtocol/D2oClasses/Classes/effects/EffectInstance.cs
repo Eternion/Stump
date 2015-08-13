@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:25
+// Generated on 08/13/2015 17:13:45
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -23,8 +23,9 @@ namespace Stump.DofusProtocol.D2oClasses
         public int modificator;
         public Boolean trigger;
         public String triggers;
-        public Boolean hidden;
-        public int order;
+        public Boolean visibleInTooltip = true;
+        public Boolean visibleInBuffUi = true;
+        public Boolean visibleInFightLog = true;
         public Object zoneSize;
         public uint zoneShape;
         public Object zoneMinSize;
@@ -102,16 +103,22 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.triggers = value; }
         }
         [D2OIgnore]
-        public Boolean Hidden
+        public Boolean VisibleInTooltip
         {
-            get { return this.hidden; }
-            set { this.hidden = value; }
+            get { return this.visibleInTooltip; }
+            set { this.visibleInTooltip = value; }
         }
         [D2OIgnore]
-        public int Order
+        public Boolean VisibleInBuffUi
         {
-            get { return this.order; }
-            set { this.order = value; }
+            get { return this.visibleInBuffUi; }
+            set { this.visibleInBuffUi = value; }
+        }
+        [D2OIgnore]
+        public Boolean VisibleInFightLog
+        {
+            get { return this.visibleInFightLog; }
+            set { this.visibleInFightLog = value; }
         }
         [D2OIgnore]
         public Object ZoneSize
