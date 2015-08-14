@@ -157,5 +157,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
                 m_damageTaken = m_realDamageTaken;
             }
         }
+
+        public override StatsData Clone()
+        {
+            var clone = new StatsHealth(Owner, Base, 0)
+            {
+                Equiped = Equiped + Owner.Stats[PlayerFields.Vitality].Equiped,
+                Given = Given
+            };
+
+            return clone;
+        }
     }
 }

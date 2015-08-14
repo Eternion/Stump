@@ -52,6 +52,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             get { return FightTypeEnum.FIGHT_TYPE_PvM; }
         }
+
         public override bool IsPvP
         {
             get { return false; }
@@ -60,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         protected override IEnumerable<IFightResult> GenerateResults()
         {
             var results = new List<IFightResult>();
-            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb)).Select(entry => entry.GetFightResult()));
+            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(entry => entry.GetFightResult()));
 
             if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
                 results.Add(new TaxCollectorProspectingResult(Map.TaxCollector, this));

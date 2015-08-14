@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public void RegisterCastedSpell(SpellLevelTemplate spell, FightActor target)
         {
-            RegisterCastedSpell(new SpellHistoryEntry(this, spell, Owner, target, CurrentRound));
+            RegisterCastedSpell(new SpellHistoryEntry(this, spell, Owner, target, CurrentRound, 0));
         }
 
         public bool CanCastSpell(SpellLevelTemplate spell, Cell targetedCell)

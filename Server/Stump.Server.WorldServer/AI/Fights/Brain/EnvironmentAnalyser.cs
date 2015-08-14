@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Threading;
 using Stump.Server.WorldServer.AI.Fights.Actions;
@@ -7,6 +8,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
@@ -43,11 +45,31 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             return cell != null ? CellInformationProvider.GetCellInformation(cell.CellId).Cell : null;
         }
 
-        public Cell GetCellToCastSpell(FightActor target, Spell spell)
+        public Cell GetCellToCastSpell(Cell target, Spell spell, bool nearFirst = true)
         {
-            var cell = target.Position.Point.GetAdjacentCells(CellInformationProvider.IsCellWalkable).OrderBy(entry => entry.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();
+            var moveZone = new LozengeSet(Fighter.Position.Point, Fighter.MP);
+            var castRange = new LozengeSet(MapPoint.GetPoint(target), Fighter.GetSpellRange(spell.CurrentSpellLevel));
 
-            return cell == null ? default(Cell) : CellInformationProvider.GetCellInformation(cell.CellId).Cell;
+            var intersection = new Intersection(moveZone, castRange);
+
+            var closestPoint = intersection.EnumerateValidPoints().Where(x => Fight.Cells[x.CellId].Walkable).
+                OrderBy(x => (nearFirst ? 1 : -1)*x.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
+
+            return closestPoint != null ? Fighter.Fight.Cells[closestPoint.CellId] : null;
+        }
+
+        public IEnumerable<Cell> GetCellsWithLoS(Cell target)
+        {
+            return GetCellsWithLoS(target, new LozengeSet(Fighter.Position.Point, Fighter.MP));
+        }
+
+        public IEnumerable<Cell> GetCellsWithLoS(Cell target, Set searchZone)
+        {            
+            foreach (var cell in searchZone.EnumerateSet())
+            {
+                if (Fight.CanBeSeen(cell, MapPoint.GetPoint(target)))
+                    yield return Fight.Cells[cell.CellId];
+            }
         }
 
         public Cell GetCellToFlee()
@@ -56,7 +78,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             var movementsCells = GetMovementCells();
             var fighters = Fight.GetAllFighters(entry => entry.IsEnnemyWith(Fighter));
 
-            var currentCellIndice = fighters.Sum(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)); 
+            var currentCellIndice = fighters.Sum(entry => entry.Position.Point.ManhattanDistanceTo(Fighter.Position.Point)); 
             Cell betterCell = null;
             long betterCellIndice = 0;
             foreach (var c in movementsCells)
@@ -64,7 +86,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                 if (!CellInformationProvider.IsCellWalkable(c.Id))
                     continue;
 
-                var indice = fighters.Sum(entry => entry.Position.Point.DistanceToCell(new MapPoint(c)));
+                var indice = fighters.Sum(entry => entry.Position.Point.ManhattanDistanceTo(new MapPoint(c)));
 
                 if (betterCellIndice < indice)
                 {
@@ -110,7 +132,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             return GetNearestFighter(entry => entry.IsFriendlyWith(Fighter));
         }
 
-        public FightActor GetNearestEnnemy()
+        public FightActor GetNearestEnemy()
         {
             return GetNearestFighter(entry => entry.IsEnnemyWith(Fighter));
         }
@@ -118,7 +140,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
         public FightActor GetNearestFighter(Predicate<FightActor> predicate)
         {
             return Fight.GetAllFighters(entry => predicate(entry) && Fighter.CanSee(entry)).
-                OrderBy(entry => entry.Position.Point.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();
+                OrderBy(entry => entry.Position.Point.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
         }
 
         public bool IsReachable(FightActor actor)

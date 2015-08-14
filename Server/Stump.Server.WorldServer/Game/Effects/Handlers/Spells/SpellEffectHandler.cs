@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -41,6 +42,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             private set;
         }
 
+        public SpellCategory Category
+        {
+            get;
+            private set;
+        }
+
         public FightActor Caster
         {
             get;
@@ -62,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public MapPoint TargetedPoint
         {
             get;
-            private set;
+            protected set;
         }
 
         public bool Critical
@@ -146,8 +153,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             {
                 if ((Targets.HasFlag(SpellTargetType.ALLY_1) ||
                     Targets.HasFlag(SpellTargetType.ALLY_2) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_4) ||
                     Targets.HasFlag(SpellTargetType.ALLY_5)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
+                    return true;
+
+                if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER) && Caster is SummonedFighter &&
+                    ((SummonedFighter) Caster).Summoner == actor)
                     return true;
 
                 if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
@@ -163,8 +173,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
             if ((Targets.HasFlag(SpellTargetType.ENEMY_1) ||
                  Targets.HasFlag(SpellTargetType.ENEMY_2) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_4) ||
                  Targets.HasFlag(SpellTargetType.ENEMY_5)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
+                return true;
+
+            if (Targets.HasFlag(SpellTargetType.ENEMY_SUMMONER) && Caster is SummonedFighter &&
+                ((SummonedFighter)Caster).Summoner == actor)
                 return true;
 
             if ((Targets.HasFlag(SpellTargetType.ENEMY_SUMMONS) ||

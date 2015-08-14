@@ -99,9 +99,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     break;
                 case SpellShapeEnum.T:
                     m_shape = new Cross(0, Radius)
-                                  {
-                                      OnlyPerpendicular = true
-                                  };
+                    {
+                        OnlyPerpendicular = true
+                    };
                     break;
                 case SpellShapeEnum.D:
                     m_shape = new Cross(0, Radius);
@@ -118,32 +118,35 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                 case SpellShapeEnum.Q:
                     m_shape = new Cross(1, Radius);
                     break;
+                case SpellShapeEnum.G:
+                    m_shape = new Square(0, Radius);
+                    break;
                 case SpellShapeEnum.V:
                     m_shape = new Cone(0, Radius);
                     break;
                 case SpellShapeEnum.W:
                     m_shape = new Square(0, Radius)
-                                  {
-                                      DiagonalFree = true
-                                  };
+                    {
+                        DiagonalFree = true
+                    };
                     break;
                 case SpellShapeEnum.plus:
                     m_shape = new Cross(0, Radius)
-                                  {
-                                      Diagonal = true
-                                  };
+                    {
+                        Diagonal = true
+                    };
                     break;
                 case SpellShapeEnum.sharp:
                     m_shape = new Cross(1, Radius)
-                                  {
-                                      Diagonal = true
-                                  };
+                    {
+                        Diagonal = true
+                    };
                     break;
                 case SpellShapeEnum.star:
                     m_shape = new Cross(0, Radius)
-                                  {
-                                      AllDirections = true
-                                  };
+                    {
+                        AllDirections = true
+                    };
                     break;
                 case SpellShapeEnum.slash:
                     m_shape = new Line(Radius);
@@ -157,15 +160,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                 case SpellShapeEnum.P:
                     m_shape = new Single();
                     break;
-                /*case SpellShapeEnum.Hammer:
+                case SpellShapeEnum.minus:
                     m_shape = new Cross(0, Radius)
                     {
-                        DisabledDirections = new List<DirectionsEnum>
-                        {
-                            (DirectionsEnum) ((int)Direction - 4 > 0 ? (int)Direction - 4 : (int)Direction + 4)
-                        }
+                        Diagonal = true,
+                        OnlyPerpendicular = true
                     };
-                    break;*/
+                    break;
                 default:
                     m_shape = new Cross(0, 0);
                     break;

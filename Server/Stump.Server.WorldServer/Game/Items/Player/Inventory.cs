@@ -322,9 +322,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return item;
         }
 
-        public override  bool RemoveItem(BasePlayerItem item, bool delete = true)
+        public override  bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true)
         {
-            return item.OnRemoveItem() && base.RemoveItem(item, delete);
+            return item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
         }
 
         public BasePlayerItem RefreshItemInstance(BasePlayerItem item)
@@ -500,7 +500,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             // delete the item if there is no more stack else we unstack it
             if (amount >= item.Stack)
             {
-                RemoveItem(item);
+                RemoveItem(item, true, false);
             }
             else
             {
@@ -508,7 +508,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
 
             var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
-            newOwner.Inventory.AddItem(copy);
+            newOwner.Inventory.AddItem(copy, false);
         }
 
         public void CheckItemsCriterias()
@@ -594,7 +594,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             Items.Add(newitem.Guid, newitem);
 
-            NotifyItemAdded(newitem);
+            NotifyItemAdded(newitem, true);
 
             return newitem;
         }
@@ -634,7 +634,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.DeleteItem(item);
         }
 
-        protected override void OnItemAdded(BasePlayerItem item)
+        protected override void OnItemAdded(BasePlayerItem item, bool addItemMsg)
         {
             m_itemsByPosition[item.Position].Add(item);
 
@@ -644,10 +644,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             InventoryHandler.SendObjectAddedMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
-            base.OnItemAdded(item);
+            //Vous avez obtenu %1 '$item%2'.
+            if (addItemMsg)
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 21, item.Stack, item.Template.Id);
+
+            base.OnItemAdded(item, addItemMsg);
         }
 
-        protected override void OnItemRemoved(BasePlayerItem item)
+        protected override void OnItemRemoved(BasePlayerItem item, bool removeItemMsg)
         {
             m_itemsByPosition[item.Position].Remove(item);
 
@@ -676,13 +680,17 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             InventoryHandler.SendObjectDeletedMessage(Owner.Client, item.Guid);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
+            //Vous avez perdu %1 '$item%2'.
+            if (removeItemMsg)
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, item.Stack, item.Template.Id);
+
             if (wasEquiped)
                 CheckItemsCriterias();
 
             if (wasEquiped && item.AppearanceId != 0)
                 Owner.UpdateLook();
 
-            base.OnItemRemoved(item);
+            base.OnItemRemoved(item, removeItemMsg);
         }
 
         private void OnItemMoved(BasePlayerItem  item, CharacterInventoryPositionEnum lastPosition)
@@ -736,12 +744,20 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
+            //Vous avez perdu %1 '$item%2'.
+            //Vous avez obtenu %1 '$item%2'.
+            if (difference != 0)
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, difference > 0 ? (short)21 : (short)22, Math.Abs(difference), item.Template.Id);
+
             base.OnItemStackChanged(item, difference);
         }
 
         protected override void OnKamasAmountChanged(int amount)
         {
-            InventoryHandler.SendKamasUpdateMessage(Owner.Client, amount);
+            if (amount != 0)
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, amount > 0 ? (short)45 : (short)46, Math.Abs(amount));
+            
+            InventoryHandler.SendKamasUpdateMessage(Owner.Client, Kamas);
 
             base.OnKamasAmountChanged(amount);
         }

@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     [ItemType(ItemTypeEnum.PETSMOUNT)]
+    [ItemType(ItemTypeEnum.PET)]
     public class PetItem : BasePlayerItem
     {
         public PetItem(Character owner, PlayerItemRecord record)
@@ -17,11 +18,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             if (unequip)
                 return base.OnEquipItem(true);
 
+            if (Owner.IsRiding())
+                Owner.Mount.Dismount(Owner);
 
-            if (Owner.HasEquipedMount())
-                Owner.Inventory.MoveItem(this, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
-
-            return true;
+            return base.OnEquipItem(false);
         }
     }
 }

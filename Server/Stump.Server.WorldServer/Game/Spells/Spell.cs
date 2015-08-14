@@ -143,5 +143,10 @@ namespace Stump.Server.WorldServer.Game.Spells
         {
             return new SpellItem(Position, Id, (sbyte) CurrentLevel);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", Template.Name, Template.Id);
+        }
     }
 }

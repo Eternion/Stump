@@ -15,6 +15,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         AFTER_ATTACK = 0x00000080,
         BUFF_ENDED = 0x00000100,
         BUFF_ENDED_TURNEND = 0x00000200,
+        BEFORE_HEALED = 0x00000400,
+        AFTER_HEALED = 0x00000800,
+        BEFORE_HEAL = 0x00001000,
+        AFTER_HEAL = 0x00002000,
+        DAMAGES_PUSHBACK = 0x00004000,
         UNKNOWN = 0x7FFFFFFF,
     }
 }

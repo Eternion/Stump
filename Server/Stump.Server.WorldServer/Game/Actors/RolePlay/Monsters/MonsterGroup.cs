@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
-using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
@@ -12,6 +11,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
@@ -30,14 +30,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         public const short ClientStarsBonusLimit = 200;
 
         public event Action<MonsterGroup, Character> EnterFight;
+        public event Action<MonsterGroup, IFight> ExitFight;
 
         private readonly List<Monster> m_monsters = new List<Monster>();
 
-        public MonsterGroup(int id, ObjectPosition position)
+        public MonsterGroup(int id, ObjectPosition position, SpawningPoolBase spawningPool = null)
         {
             ContextualId = id;
             Position = position;
             CreationDate = DateTime.Now;
+            SpawningPool = spawningPool;
         }
 
         public IFight Fight
@@ -56,6 +58,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
         {
             get;
             private set;
+        }
+
+        public SpawningPoolBase SpawningPool
+        {
+            get;
+            set;
+        }
+
+        public GroupSize GroupSize
+        {
+            get;
+            set;
         }
 
         public Monster Leader
@@ -136,7 +150,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return false;
         }
 
-        public override bool Teleport(ObjectPosition destination, bool performCheck)
+        public override bool Teleport(ObjectPosition destination, bool performCheck = true)
         {
             return false;
         }
@@ -173,13 +187,27 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             fight.StartPlacement();
 
             OnEnterFight(character);
+
+            Fight.FightEnded += OnFightEnded;
+        }
+
+        private void OnFightEnded(IFight fight)
+        {
+            OnExitFight(fight);
         }
 
         private void OnEnterFight(Character character)
         {
             var handler = EnterFight;
             if (handler != null)
-                EnterFight(this, character);
+                handler(this, character);
+        }
+        private void OnExitFight(IFight fight)
+        {
+            Fight = null;
+
+            var handler = ExitFight;
+            if (handler != null) handler(this, fight);
         }
 
         public IEnumerable<MonsterFighter> CreateFighters(FightMonsterTeam team)
@@ -189,6 +217,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
         public void AddMonster(Monster monster)
         {
+            monster.SetMonsterGroup(this);
             m_monsters.Add(monster);
 
             if (m_monsters.Count == 1)
@@ -241,14 +270,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
             return new GroupMonsterStaticInformations(Leader.GetMonsterInGroupLightInformations(), GetMonstersWithoutLeader().Select(entry => entry.GetMonsterInGroupInformations()));
         }
 
-        protected override void OnDisposed()
-        {
-            base.OnDisposed();
-        }
-
         public override string ToString()
         {
             return string.Format("{0} monsters ({1})", m_monsters.Count, Id);
         }
+
     }
 }

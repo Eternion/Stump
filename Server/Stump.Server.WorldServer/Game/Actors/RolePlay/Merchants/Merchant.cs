@@ -25,8 +25,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public Merchant(Character character)
         {
-            var look = character.Look.Clone();
-            look.RemoveAuras();
+            var look = character.RealLook.Clone();
 
             look.AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MERCHANT_BAG,
                                              new ActorLook
@@ -148,10 +147,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
 
         public void Save()
         {
-            if (Bag.IsDirty)
-                Bag.Save();
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                if (Bag.IsDirty)
+                    Bag.Save();
 
-            WorldServer.Instance.IOTaskPool.AddMessage(() => WorldServer.Instance.DBAccessor.Database.Update(m_record));
+                WorldServer.Instance.DBAccessor.Database.Update(m_record);
+            });
         }
 
         public bool IsMerchantOwner(WorldAccount account)

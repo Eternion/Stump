@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Database.Npcs.Replies
@@ -14,7 +16,6 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     {
         private bool m_mustRefreshPosition;
         private ObjectPosition m_position;
-        private ItemTemplate m_itemTemplate;
 
         public TeleportReply()
         {
@@ -74,34 +75,18 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
-        public int ItemId
-        {
-            get { return Record.GetParameter<int>(3); }
-            set { Record.SetParameter(3, value); }
-        }
-
-        public ItemTemplate Item
-        {
-            get { return m_itemTemplate ?? (m_itemTemplate = ItemManager.Instance.TryGetTemplate(ItemId)); }
-            set
-            {
-                m_itemTemplate = value;
-                ItemId = value.Id;
-            }
-        }
-
         /// <summary>
-        /// Parameter 1
+        /// Parameter 3
         /// </summary>
-        public uint Amount
+        public string ItemsParameter
         {
             get
             {
-                return Record.GetParameter<uint>(4);
+                return Record.GetParameter<string>(3, true);
             }
             set
             {
-                Record.SetParameter(4, value);
+                Record.SetParameter(3, value);
             }
         }
 
@@ -132,20 +117,48 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (!base.Execute(npc, character))
                 return false;
 
-            if (Item == null)
+            if (string.IsNullOrEmpty(ItemsParameter))
                 return character.Teleport(GetPosition());
 
-            var item = character.Inventory.TryGetItem(Item);
+            var parameter = ItemsParameter.Split(',');
+            var itemsToDelete = new Dictionary<BasePlayerItem, int>();
 
-            if (item == null)
-                return false;
+            foreach (var itemParameter in parameter.Select(x => x.Split('_')))
+            {
+                int itemId;
+                int amount;
 
-            if (item.Stack < Amount)
-                return false;
+                if (!int.TryParse(itemParameter[0], out itemId))
+                    return false;
 
-            character.Inventory.RemoveItem(item, (int)Amount);
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, Amount,
-                item.Template.Id);
+                if (!int.TryParse(itemParameter[1], out amount))
+                    return false;
+
+                var template = ItemManager.Instance.TryGetTemplate(itemId);
+                if (template == null)
+                    return false;
+
+                var item = character.Inventory.TryGetItem(template);
+
+                if (item == null)
+                {
+                    character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
+                    return false;
+                }
+
+                if (item.Stack < amount)
+                {
+                    character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
+                    return false;
+                }
+
+                itemsToDelete.Add(item, amount);
+            }
+
+            foreach (var itemToDelete in itemsToDelete)
+            {
+                character.Inventory.RemoveItem(itemToDelete.Key, itemToDelete.Value);
+            }
 
             return character.Teleport(GetPosition());
         }

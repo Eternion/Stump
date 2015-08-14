@@ -36,6 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (!Fight.IsCellFree(Fight.Map.Cells[cell.CellId]))
                 {
                     endCell = index > 0 ? Fight.Map.Cells[cells[index - 1].CellId] : startCell;
+                    break;
                 }
 
                 if (!Fight.ShouldTriggerOnMove(Fight.Map.Cells[cell.CellId]))

@@ -128,7 +128,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
 
             character.Inventory.RemoveItem(guildalogemme, 1);
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, guildalogemme.Template.Id);
 
             var guild = CreateGuild(name);
             if (guild == null)

@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
@@ -127,6 +128,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
 
             return items;
+        }
+
+        public override int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor, bool poison)
+        {
+            var percentResistance = CalculateTotalResistances(type, true, poison);
+            var fixResistance = CalculateTotalResistances(type, false, poison);
+            var armorResistance = withArmor && !poison ? CalculateArmorReduction(type) : 0;
+
+            var result = (int)((1 - percentResistance / 100d) * (damage - armorResistance - fixResistance)) -
+                         (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
+
+            return result;
         }
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)

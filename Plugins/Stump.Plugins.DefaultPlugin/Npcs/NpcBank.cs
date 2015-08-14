@@ -126,8 +126,6 @@ namespace Stump.Plugins.DefaultPlugin.Npcs
                 else
                 {
                     Character.Inventory.SubKamas(accessPrice);
-                    BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    46, accessPrice);
 
                     var dialog = new BankDialog(Character);
                     dialog.Open(); 

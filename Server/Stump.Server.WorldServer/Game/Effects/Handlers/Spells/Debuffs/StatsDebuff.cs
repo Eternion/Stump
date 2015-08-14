@@ -22,6 +22,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
     [EffectHandler(EffectsEnum.Effect_SubLock)]
     [EffectHandler(EffectsEnum.Effect_SubDodgeAPProbability)]
     [EffectHandler(EffectsEnum.Effect_SubDodgeMPProbability)]
+    [EffectHandler(EffectsEnum.Effect_SubAPAttack)]
+    [EffectHandler(EffectsEnum.Effect_SubMPAttack)]
     public class StatsDebuff : SpellEffectHandler
     {
         public StatsDebuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -80,6 +82,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     return PlayerFields.DodgeMPProbability;
                 case EffectsEnum.Effect_SubVitality:
                     return PlayerFields.Vitality;
+                case EffectsEnum.Effect_SubAPAttack:
+                    return PlayerFields.APAttack;
+                case EffectsEnum.Effect_SubMPAttack:
+                    return PlayerFields.MPAttack;
 
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));

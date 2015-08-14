@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 
 namespace Stump.Server.WorldServer.Game.Maps
 {
@@ -36,6 +37,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public bool CanBeSeen(Cell from, Cell to, bool throughEntities = false)
         {
+            return CanBeSeen(MapPoint.GetPoint(from), MapPoint.GetPoint(to), throughEntities);
+        }
+
+        public bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false)
+        {
             if (from == null || to == null) return false;
             if (from == to) return true;
             
@@ -43,10 +49,10 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (!throughEntities)
                 occupiedCells = Objects.Where(x => x.BlockSight).Select(x => x.Cell.Id).ToArray();
 
-            var line = MapPoint.GetPoint(from).GetCellsInLine(MapPoint.GetPoint(to));
-            foreach (var point in line.Skip(1)) // skip first cell
+            var line = new LineSet(from, to);
+            foreach (var point in line.EnumerateSet().Skip(1)) // skip first cell
             {
-                if (to.Id == point.CellId)
+                if (to.CellId == point.CellId)
                     continue;
 
                 var cell = Cells[point.CellId];
@@ -55,7 +61,6 @@ namespace Stump.Server.WorldServer.Game.Maps
                     return false;
             }
 
-            return true;
-        }
+            return true;        }
     }
 }

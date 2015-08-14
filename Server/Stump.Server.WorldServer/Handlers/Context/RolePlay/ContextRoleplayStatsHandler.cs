@@ -22,6 +22,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(StatsUpgradeRequestMessage.Id)]
         public static void HandleStatsUpgradeRequestMessage(WorldClient client, StatsUpgradeRequestMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var statsid = (StatsBoostTypeEnum)message.statId;
 
             if (statsid < StatsBoostTypeEnum.Strength ||

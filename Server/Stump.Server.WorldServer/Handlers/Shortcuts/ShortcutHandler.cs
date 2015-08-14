@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -31,6 +32,11 @@ namespace Stump.Server.WorldServer.Handlers.Shortcuts
         {
             client.Send(new ShortcutBarContentMessage((sbyte)barType,
                 client.Character.Shortcuts.GetShortcuts(barType).Select(entry => entry.GetNetworkShortcut())));
+        }
+
+        public static void SendShortcutBarContentMessage(WorldClient client, IEnumerable<DofusProtocol.Types.Shortcut> shortcuts, ShortcutBarEnum barType)
+        {
+            client.Send(new ShortcutBarContentMessage((sbyte)barType, shortcuts));
         }
 
         public static void SendShortcutBarRefreshMessage(IPacketReceiver client, ShortcutBarEnum barType, Shortcut shortcut)

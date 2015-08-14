@@ -19,7 +19,7 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells.Casts.Roublard;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -224,7 +224,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsBoundWith(SummonedBomb bomb)
         {
-            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+            var dist = Position.Point.ManhattanDistanceTo(bomb.Position.Point);
 
             return dist > WallMinSize && dist <= (WallMaxSize + 1) && // check the distance
                 MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
@@ -235,7 +235,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsInExplosionZone(SummonedBomb bomb)
         {
-            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+            var dist = Position.Point.ManhattanDistanceTo(bomb.Position.Point);
 
             return dist <= ExplosionZone;
         }
@@ -445,7 +445,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.TotalMax,
                 Stats.Health.Base,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
-                0, // shieldsPoints = ?
+                Stats.Shield.TotalSafe,
                 (short) Stats.AP.Total,
                 (short) Stats.AP.TotalMax,
                 (short) Stats.MP.Total,
