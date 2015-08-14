@@ -143,6 +143,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                     account = AccountManager.Instance.FindAccountById(account.Id);
 
                 /* Bind Account to Client */
+                client.Account = account;
                 client.UserGroup = AccountManager.Instance.FindUserGroup(account.UserGroupId);
 
                 if (client.UserGroup == null)
@@ -167,7 +168,11 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                     SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
                 else
                     SendServersListMessage(client, 0, true);
-            }));
+            }), () =>
+            {
+                client.Disconnect();
+                logger.Error("Error while joining last used world server, connection aborted");
+            });
         }
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
@@ -207,7 +212,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         public static void SendIdentificationFailedBannedMessage(AuthClient client, DateTime date)
         {
-            client.Send(new IdentificationFailedBannedMessage((sbyte) IdentificationFailureReasonEnum.BANNED,
+            client.Send(new IdentificationFailedBannedMessage((sbyte)IdentificationFailureReasonEnum.BANNED,
                 date.GetUnixTimeStampLong()));
         }
 
@@ -274,7 +279,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             AccountManager.Instance.CacheAccount(client.Account);
 
             client.Account.LastConnection = DateTime.Now;
-            client.Account.LastConnectedIp = client.IP;
+            client.Account.LastConnectedIp = client.UserGroup.Role == RoleEnum.Administrator ? "127.0.0.1" : client.IP;
             client.Account.LastConnectionWorld = world.Id;
             client.SaveNow();
 

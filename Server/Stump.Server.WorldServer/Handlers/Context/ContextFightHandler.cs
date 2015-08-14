@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using NLog.Targets;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -70,7 +69,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (fighter.IsSlaveTurn())
                 fighter.GetSlave().CastSpell(spell, target.Cell);
             else
-                fighter.CastSpell(spell, target.Cell);
+                fighter.CastSpell(spell, target.Cell);  
         }
 
 
@@ -121,10 +120,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         [WorldHandler(GameFightPlacementPositionRequestMessage.Id)]
-        public static void HandleGameFightPlacementPositionRequestMessage(WorldClient client,
-                                                                          GameFightPlacementPositionRequestMessage
-                                                                              message)
+        public static void HandleGameFightPlacementPositionRequestMessage(WorldClient client, GameFightPlacementPositionRequestMessage message)
         {
+            if (!client.Character.IsFighting())
+                return;
+
             if (client.Character.Fighter.Position.Cell.Id != message.cellId)
             {
                 client.Character.Fighter.ChangePrePlacement(client.Character.Fight.Map.Cells[message.cellId]);
@@ -234,7 +234,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             if (fight.IsStarted)
             {
-                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character))
+                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character) && !client.Character.IsInFight())
                 {
                     fight.AddSpectator(client.Character.CreateSpectator(fight));
                 }
@@ -409,7 +409,8 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightShowFighterMessage(WorldClient client, FightActor fighter)
         {
-            var fighterInfos = fighter.GetGameFightFighterInformations(client);
+            var clone = fighter as SummonedClone;
+            var fighterInfos = clone != null ? clone.GetGameFightFighterNamedInformations() : fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
                 fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
@@ -422,7 +423,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             var fighterInfos = fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
-                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
 
             client.Send(new GameFightRefreshFighterMessage(fighterInfos));
         }
@@ -435,6 +436,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameFightLeaveMessage(IPacketReceiver client, FightActor fighter)
         {
             client.Send(new GameFightLeaveMessage(fighter.Id));
+        }
+
+        public static void SendGameFightLeaveMessage(IPacketReceiver client, FightSpectator spectator)
+        {
+            client.Send(new GameFightLeaveMessage(spectator.Character.Id));
         }
 
         public static void SendGameFightPlacementPossiblePositionsMessage(IPacketReceiver client, IFight fight, sbyte team)
@@ -506,6 +512,20 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SlaveFighter actor)
         {
             //client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
+        }
+        
+
+        public static void SendGameFightResumeMessage(IPacketReceiver client, CharacterFighter fighter)
+        {
+            client.Send(new GameFightResumeMessage(
+                fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
+                fighter.Fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
+                fighter.Fight.TimeLine.RoundNumber,
+                0,
+                new Idol[0],
+                fighter.SpellHistory.GetCooldowns(),
+                (sbyte) fighter.SummonedCount,
+                (sbyte) fighter.BombsCount));
         }
     }
 }

@@ -224,7 +224,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public bool AreAllDead()
         {
-            return m_fighters.Count <= 0 || m_fighters.Where(x => !(x is SummonedFighter) && !(x is SummonedBomb)).All(entry => entry.IsDead() || entry.HasLeft());
+            return m_fighters.Count <= 0 || m_fighters.Where(x => !(x is SummonedFighter) && !(x is SummonedBomb)).
+                All(entry => entry.IsDead() || (entry.HasLeft() && (!(entry is CharacterFighter) || !((CharacterFighter)entry).IsDisconnected)));
         }
 
         public bool IsFull()
@@ -309,27 +310,27 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
 
         public FightActor GetOneFighter(int id)
         {
-            return m_fighters.SingleOrDefault(entry => entry.Id == id);
+            return m_fighters.FirstOrDefault(entry => entry.Id == id);
         }
 
         public FightActor GetOneFighter(Cell cell)
         {
-            return m_fighters.SingleOrDefault(entry => Equals(entry.Position.Cell, cell));
+            return m_fighters.FirstOrDefault(entry => Equals(entry.Position.Cell, cell));
         }
 
         public FightActor GetOneFighter(Predicate<FightActor> predicate)
         {
-            return m_fighters.SingleOrDefault(entry => predicate(entry));
+            return m_fighters.FirstOrDefault(entry => predicate(entry));
         }
 
         public T GetOneFighter<T>(int id) where T : FightActor
         {
-            return m_fighters.OfType<T>().SingleOrDefault(entry => entry.Id == id);
+            return m_fighters.OfType<T>().FirstOrDefault(entry => entry.Id == id);
         }
 
         public T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor
         {
-            return m_fighters.OfType<T>().SingleOrDefault(entry => predicate(entry));
+            return m_fighters.OfType<T>().FirstOrDefault(entry => predicate(entry));
         }
 
         public IEnumerable<FightActor> GetAllFighters()
@@ -399,7 +400,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         public FightTeamLightInformations GetFightTeamLightInformations()
         {
             return new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
-                                                  (sbyte) TeamType, 0, false, false, false, false, false, (sbyte) m_fighters.Count, 0);
+                                                  (sbyte)TeamType, 0, false, false, false, false, false, (sbyte)m_fighters.Count(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)), 0);
         }
     }
 }

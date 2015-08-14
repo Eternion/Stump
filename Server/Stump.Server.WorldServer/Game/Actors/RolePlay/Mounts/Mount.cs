@@ -10,6 +10,7 @@ using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Maps.Spawns;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Mounts;
 
@@ -376,7 +377,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                 return;
             }
 
-            if (!IsRiding && !character.Map.Outdoor)
+            if (!IsRiding && !character.Map.Outdoor && !character.Map.SpawningPools.Any(x => x is DungeonSpawningPool))
             {
                 //Impossible d'être sur une monture à l'intérieur d'une maison.
                 BasicHandler.SendTextInformationMessage(character.Client, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 117);

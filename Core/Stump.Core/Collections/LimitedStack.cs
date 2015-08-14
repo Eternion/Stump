@@ -13,6 +13,14 @@ namespace Stump.Core.Collections
             m_maxItems = num;
         }
 
+        public LimitedStack(int num, IEnumerable<T> items)
+            : base(items)
+        {
+            m_maxItems = num;
+        }
+
+
+
         public int MaxItems
         {
             get { return m_maxItems; }

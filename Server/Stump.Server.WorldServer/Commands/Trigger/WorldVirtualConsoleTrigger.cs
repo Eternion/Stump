@@ -61,5 +61,9 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         {
             throw new NotImplementedException();
         }
+
+        public override void Log()
+        {
+        }
     }
 }

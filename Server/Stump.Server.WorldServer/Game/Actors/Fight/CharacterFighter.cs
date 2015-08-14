@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,6 +16,7 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Fights.History;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -35,10 +37,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private bool m_isUsingWeapon;
 
 
+
+
         public CharacterFighter(Character character, FightTeam team)
             : base(team)
         {
             Character = character;
+
             Look = Character.Look.Clone();
             Look.RemoveAuras();
 
@@ -100,6 +105,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             private set;
         }
 
+        public int LeftRound
+        {
+            get;
+            private set;
+        }
+
         private void InitializeCharacterFighter()
         {
             m_damageTakenBeforeFight = Stats.Health.DamageTaken;
@@ -119,20 +130,49 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Fight.ReadyChecker.ToggleReady(this, ready);
         }
 
-        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
+        #region Leave
+
+        public void LeaveFight(bool force = false)
         {
-            if (!IsFighterTurn())
+            if (HasLeft())
+                return;
+
+            m_left = !force;
+
+            OnLeft();
+        }
+
+
+        private bool m_left;
+        public override bool HasLeft()
+        {
+            return m_left;
+        }
+
+        public override bool CanPlay()
+        {
+            return base.CanPlay() && (!HasLeft() || IsDisconnected);
+        }
+
+        #endregion
+
+        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
+        {
+            if (!IsFighterTurn() && !force)
                 return false;
 
             // weapon attack
             if (spell.Id != 0 ||
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
-                return base.CastSpell(spell, cell, force, ApFree);
+                return base.CastSpell(spell, cell, force, apFree);
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate =  weapon.Template as WeaponTemplate;
 
             if (weaponTemplate == null || !CanUseWeapon(cell, weaponTemplate))
+            {
+                OnSpellCastFailed(spell, cell);
                 return false;
+            }  
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
@@ -144,7 +184,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 case FightSpellCastCriticalEnum.CRITICAL_FAIL:
                     OnWeaponUsed(weaponTemplate, cell, critical, false);
 
-                    if (!ApFree)
+                    if (!apFree)
                         UseAP((short) weaponTemplate.ApCost);
                 
                     Fight.EndSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
@@ -186,7 +226,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnWeaponUsed(weaponTemplate, cell, critical, silentCast);
 
-            if (!ApFree)
+            if (!apFree)
                 UseAP((short) weaponTemplate.ApCost);
 
             foreach (var handler in handlers)
@@ -323,12 +363,37 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Fight.IsDeathTemporarily)
                 Stats.Health.DamageTaken = m_damageTakenBeforeFight;
             else if (Stats.Health.Total <= 0)
-                Stats.Health.DamageTaken = (short) (Stats.Health.TotalMax - 1);
+                Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
+        }
+
+        public override bool MustSkipTurn()
+        {
+            return base.MustSkipTurn() || (IsDisconnected && Team.GetAllFighters<CharacterFighter>().Any(x => x.CanPlay() && !x.IsDisconnected));
         }
 
         public void EnterDisconnectedState()
         {
             IsDisconnected = true;
+            LeftRound = Fight.TimeLine.RoundNumber;
+        }
+
+        public void LeaveDisconnectedState(bool left = true)
+        {
+            IsDisconnected = false;
+
+            if (left)
+                m_left = false;
+        }
+
+        public void RestoreFighterFromDisconnection(Character character)
+        {
+            if (!IsDisconnected)
+            {
+                throw new Exception("Fighter wasn't disconnected");
+            }
+
+            Character.Stats.CopyContext(character.Stats);
+            Character = character;
         }
 
         public override IFightResult GetFightResult(FightOutcomeEnum outcome)
@@ -392,20 +457,20 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Character.GodMode || base.UseMP(amount);
         }
 
-        public override bool LostAP(short amount)
+        public override bool LostAP(short amount, FightActor source)
         {
             if (!Character.GodMode)
-                return base.LostAP(amount);
+                return base.LostAP(amount, source);
 
-            base.LostAP(amount);
+            base.LostAP(amount, source);
             RegainAP(amount);
 
             return true;
         }
 
-        public override bool LostMP(short amount)
+        public override bool LostMP(short amount, FightActor source)
         {
-            return Character.GodMode || base.LostMP(amount);
+            return Character.GodMode || base.LostMP(amount, source);
         }
 
 

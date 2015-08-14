@@ -28,8 +28,14 @@ namespace PatchBuilder
             if (File.Exists(Path.Combine(patchDir, "patch.xml")))
                 File.Delete(Path.Combine(patchDir, "patch.xml"));
 
-            var files =
-                Directory.EnumerateFiles(patchDir, "*", SearchOption.AllDirectories).OrderBy(p => p).ToList();
+            var files = Directory.EnumerateFiles(patchDir, "*", SearchOption.AllDirectories).OrderBy(p => p).ToList();
+
+            foreach (var file in files.Where(file => file.StartsWith("patch\\Resources")).ToArray())
+            {
+                files.Remove(file);
+                files.Add(file);
+            }
+
             var tasks = new List<MetaFileEntry>();
             using (var md5Hasher = MD5.Create())
             {

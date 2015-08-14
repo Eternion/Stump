@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Challenges;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
@@ -34,6 +35,19 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.StartFighting();
         }
 
+        protected override void OnFightStarted()
+        {
+            base.OnFightStarted();
+
+            if (!Map.AllowFightChallenges)
+                return;
+
+            var challenge = ChallengeManager.Instance.GetRandomChallenge(this);
+            challenge.Initialize();
+
+            SetChallenge(challenge);
+        }
+
         protected override void OnFighterAdded(FightTeam team, FightActor actor)
         {
             base.OnFighterAdded(team, actor);
@@ -60,15 +74,18 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
+            base.GenerateResults();
+
             var results = new List<IFightResult>();
-            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(entry => entry.GetFightResult()));
+            results.AddRange(GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter)
+                && !(entry is SummonedBomb) && !(entry is SlaveFighter)).Select(entry => entry.GetFightResult()));
 
             if (Map.TaxCollector != null && Map.TaxCollector.CanGatherLoots())
                 results.Add(new TaxCollectorProspectingResult(Map.TaxCollector, this));
 
             foreach (var team in m_teams)
             {
-                IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead()).ToList();
+                IEnumerable<FightActor> droppers = team.OpposedTeam.GetAllFighters(entry => entry.IsDead() && entry.CanDrop()).ToList();
                 var looters = results.Where(x => x.CanLoot(team)).OrderByDescending(entry => entry is TaxCollectorProspectingResult ? -1 : entry.Prospecting); // tax collector loots at the end
                 var teamPP = team.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
                 var kamas = droppers.Sum(entry => entry.GetDroppedKamas());
@@ -87,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                     if (looter is IExperienceResult)
                     {
-                        (looter as IExperienceResult).AddEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters(), droppers));
+                        (looter as IExperienceResult).AddEarnedExperience(FightFormulas.CalculateWinExp(looter, team.GetAllFighters<CharacterFighter>(), droppers));
                     }
                 }
             }
@@ -122,5 +139,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             return TimeSpan.FromMilliseconds(timeleft);
         }
 
+        protected override void OnDisposed()
+        {
+            if (m_placementTimer != null)
+                m_placementTimer.Dispose();
+
+            base.OnDisposed();
+        }
     }
 }

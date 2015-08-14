@@ -78,7 +78,13 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
                 return false;
             }
 
-            Merchant.Bag.RemoveItem(item, quantity);
+            var removed = Merchant.Bag.RemoveItem(item, quantity);
+            
+            if (removed < quantity)
+            {
+                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
+                return false;
+            }
 
             var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, quantity,
                                                             item.Effects);
@@ -89,8 +95,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
 
             var finalPrice = item.Price*quantity;
             Character.Inventory.SubKamas((int)finalPrice);
-
-            Merchant.KamasEarned += (uint)finalPrice;
 
             Character.Client.Send(new ExchangeBuyOkMessage());
 

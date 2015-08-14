@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -42,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
 
-                var pushDirection = actor.Position.Point.OrientationTo(referenceCell, false);
+                var pushDirection = actor.Position.Point.OrientationTo(referenceCell);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
@@ -73,10 +74,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (actor.IsCarrying())
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
-                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actorCopy.IsVisibleFor))
-                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
+                foreach (var character in Fight.GetCharactersAndSpectators().Where(actorCopy.IsVisibleFor))
+                    ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actorCopy, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
+                actor.OnActorMoved(Caster, false);
+
+                Caster.TriggerBuffs(BuffTriggerType.PUSH);
             }
 
             return true;

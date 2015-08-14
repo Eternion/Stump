@@ -90,75 +90,39 @@ namespace ArkalysPlugin.Commands
         }
     }
 
-    public class TalkTPCommand : InGameSubCommand
+    public class PvPTPCommand : InGameSubCommand
     {
         [Variable(true)]
-        public static int TalkMap;
+        public static int PvPMap;
 
         [Variable(true)]
-        public static short TalkCell;
+        public static short PvPCell;
 
         [Variable(true)]
-        public static byte TalkDirection;
+        public static byte PvPDirection;
 
-        public TalkTPCommand()
+        public PvPTPCommand()
         {
-            Aliases = new[] { "talk" };
+            Aliases = new[] { "pvp" };
             RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à l'espace de discussion";
+            Description = "Téléporte à l'espace PvP";
             ParentCommandType = typeof(TPCommands);
         }
 
         public override void Execute(GameTrigger trigger)
         {
-            var map = World.Instance.GetMap(TalkMap);
+            var map = World.Instance.GetMap(PvPMap);
 
             if (map == null)
             {
-                trigger.ReplyError("Map {0} not found", TalkMap);
+                trigger.ReplyError("Map {0} not found", PvPMap);
                 return;
             }
 
-            var cell = map.Cells[TalkCell];
+            var cell = map.Cells[PvPCell];
 
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)TalkDirection));
-            trigger.Reply("Téléporté à l'espace de discussion");
-        }
-    }
-
-    public class DungeonTPCommand : InGameSubCommand
-    {
-        [Variable(true)]
-        public static int DungeonMap;
-
-        [Variable(true)]
-        public static short DungeonCell;
-
-        [Variable(true)]
-        public static byte DungeonDirection;
-
-        public DungeonTPCommand()
-        {
-            Aliases = new[] { "dungeon", "donjon", "dj" };
-            RequiredRole = RoleEnum.Player;
-            Description = "Téléporte à l'espace donjons";
-            ParentCommandType = typeof(TPCommands);
-        }
-
-        public override void Execute(GameTrigger trigger)
-        {
-            var map = World.Instance.GetMap(DungeonMap);
-
-            if (map == null)
-            {
-                trigger.ReplyError("Map {0} not found", DungeonMap);
-                return;
-            }
-
-            var cell = map.Cells[DungeonCell];
-
-            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)DungeonDirection));
-            trigger.Reply("Téléporté à l'espace donjons");
+            trigger.Character.Teleport(new ObjectPosition(map, cell, (DirectionsEnum)PvPDirection));
+            trigger.Reply("Téléporté à l'espace PvP");
         }
     }
 }

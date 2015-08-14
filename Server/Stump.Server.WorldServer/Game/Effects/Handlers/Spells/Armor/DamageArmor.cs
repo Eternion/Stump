@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                     return false;
 
                 // these spells cannot stacks
-                if (actor.GetBuffs(x => x.Effect.Id == Effect.Id).Any())
+                if (actor.GetBuffs(x => x.Effect.EffectId == Effect.EffectId && x.Spell.Template.Id == Spell.Template.Id).Any())
                     continue;
 
                 AddTriggerBuff(actor, true, BuffTriggerType.BUFF_ADDED, ApplyArmorBuff, RemoveArmorBuff);
@@ -47,9 +47,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
             if (integerEffect == null)
                 return;
 
+            var target = buff.Target;
+            if (target is SummonedBomb)
+            {
+                target = ((SummonedBomb) target).Summoner;
+            }
+
             foreach (var caracteristic in GetAssociatedCaracteristics(buff.Spell.Id))
             {
-                buff.Target.Stats[caracteristic].Context += buff.Target.CalculateArmorValue(integerEffect.Value);
+                buff.Target.Stats[caracteristic].Context += target.CalculateArmorValue(integerEffect.Value);
             }
         }
 

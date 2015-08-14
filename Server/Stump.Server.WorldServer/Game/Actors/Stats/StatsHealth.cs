@@ -61,7 +61,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             set
             {
                 ValueContext = value;
-                AdjustTakenDamage();
                 OnModified();
             }
         }
@@ -158,15 +157,29 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
-        public override StatsData Clone()
+        public override StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            var clone = new StatsHealth(Owner, Base, 0)
+            var clone = new StatsHealth(owner, Base, 0)
             {
-                Equiped = Equiped + Owner.Stats[PlayerFields.Vitality].Equiped,
+                Equiped = Equiped,
                 Given = Given
             };
 
             return clone;
+        }
+
+
+        public override void CopyContext(StatsData target)
+        {
+            base.CopyContext(target);
+
+            var health = target as StatsHealth;
+
+            if (health == null)
+                return;
+
+            health.DamageTaken = DamageTaken;
+            health.PermanentDamages = PermanentDamages;
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         [Variable] public static int WallMaxSize = 6;
         [Variable] public static int ExplosionZone = 2;
 
-        private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>()
+        private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>
         {
             {2, SpellIdEnum.MUR_DE_FEU},
             {3, SpellIdEnum.MUR_D_AIR},
@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (player == Summoner)
                 IncreaseDamageBonus();
 
-            if (player == this)
+            if (IsFighterTurn())
                 PassTurn();
         }
 
@@ -403,7 +403,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return 0;
         }
 
-        protected override void OnDead(FightActor killedBy)
+        protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
             if (HasState((int) SpellStatesEnum.Unmovable))
             {
@@ -413,7 +413,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Explode();
             }      
 
-            base.OnDead(killedBy);
+            base.OnDead(killedBy, passTurn);
 
             Summoner.RemoveBomb(this);
 

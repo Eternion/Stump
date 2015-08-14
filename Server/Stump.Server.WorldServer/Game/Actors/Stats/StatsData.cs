@@ -180,7 +180,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             return new CharacterBaseCharacteristic(
                 (short)( s1.Base > short.MaxValue ? short.MaxValue : s1.Base ),
                 0,
-                (short)( s1.Equiped > short.MaxValue ? short.MaxValue : s1.Equiped ),
+                (short)( s1.m_limitEquippedOnly && s1.Limit != null && s1.Equiped > s1.Limit.Value ? s1.Limit.Value : s1.Equiped ),
                 (short)( s1.Given > short.MaxValue ? short.MaxValue : s1.Given ),
                 (short)( s1.Context > short.MaxValue ? short.MaxValue : s1.Context ));
         }
@@ -192,10 +192,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             return string.Format("{0}({1}+{2}+{3})", Total, Base, Equiped, Context);
         }
 
-        public virtual StatsData Clone()
+        public virtual StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            var clone = new StatsData(Owner, Name, ValueBase, Limit, m_limitEquippedOnly)
+            var clone = new StatsData(owner, Name, ValueBase, Limit, m_limitEquippedOnly)
             {
+                Base = Base,
                 Context = 0,
                 Equiped = Equiped,
                 Given = Given
@@ -204,12 +205,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             return clone;
         }
 
-        public StatsData CloneAndChangeOwner(IStatsOwner owner)
+        public virtual void CopyContext(StatsData target)
         {
-            var data = Clone();
-            data.Owner = owner;
-
-            return data;
+            target.Context = Context;
         }
     }
 }

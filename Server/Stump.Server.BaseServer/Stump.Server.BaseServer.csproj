@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stump.Server.BaseServer</RootNamespace>
     <AssemblyName>Stump.Server.BaseServer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
     <TargetFrameworkProfile />
@@ -206,17 +206,24 @@
     <Reference Include="log4net">
       <HintPath>..\..\Library\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Bson, Version=1.8.3.9, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+    <Reference Include="MongoDB.Bson, Version=1.10.0.62, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Bson.dll</HintPath>
+      <HintPath>..\..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=1.8.3.9, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+    <Reference Include="MongoDB.Driver, Version=1.10.0.62, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Driver.dll</HintPath>
+      <HintPath>..\..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Driver.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.2.2.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Library\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpRaven">
+      <HintPath>..\..\packages\SharpRaven.1.4.5\lib\net45\SharpRaven.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AddIn" />
@@ -234,7 +241,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Benchmark\BenchmarkedTaskPool.cs" />
     <Compile Include="Benchmark\BenchmarkEntry.cs" />
+    <Compile Include="Benchmark\BenchmarkingMessage.cs" />
     <Compile Include="Benchmark\BenchmarkingType.cs" />
     <Compile Include="Benchmark\BenchmarkManager.cs" />
     <Compile Include="Commands\CommandBase.cs" />
@@ -284,6 +293,8 @@
     <Compile Include="IPC\IPCRequest.cs" />
     <Compile Include="IPC\Messages\AccountAnswerMessage.cs" />
     <Compile Include="IPC\Messages\AccountRequestMessage.cs" />
+    <Compile Include="IPC\Messages\AccountsAnswerMessage.cs" />
+    <Compile Include="IPC\Messages\AccountsRequestMessage.cs" />
     <Compile Include="IPC\Messages\AddCharacterMessage.cs" />
     <Compile Include="IPC\Messages\BanAccountMessage.cs" />
     <Compile Include="IPC\Messages\BanClientKeyAnswerMessage.cs" />
@@ -296,11 +307,13 @@
     <Compile Include="IPC\Messages\DeleteCharacterMessage.cs" />
     <Compile Include="IPC\Messages\DisconnectClientMessage.cs" />
     <Compile Include="IPC\Messages\DisconnectedClientMessage.cs" />
+    <Compile Include="IPC\Messages\GroupAddMessage.cs" />
     <Compile Include="IPC\Messages\GroupsListMessage.cs" />
     <Compile Include="IPC\Messages\GroupsRequestMessage.cs" />
     <Compile Include="IPC\Messages\HandshakeMessage.cs" />
     <Compile Include="IPC\IPCErrorMessage.cs" />
     <Compile Include="IPC\Messages\CommonOKMessage.cs" />
+    <Compile Include="IPC\Messages\GroupAddResultMessage.cs" />
     <Compile Include="IPC\Messages\ServerUpdateMessage.cs" />
     <Compile Include="IPC\Messages\UnBanAccountMessage.cs" />
     <Compile Include="IPC\Messages\UnBanClientKeyMessage.cs" />
@@ -318,8 +331,10 @@
     <Compile Include="Network\ClientManager.cs" />
     <Compile Include="Network\ClientMessage.cs" />
     <Compile Include="Network\HandledMessage.cs" />
+    <Compile Include="Network\IClient.cs" />
     <Compile Include="Network\IpAddressRange.cs" />
     <Compile Include="Network\MessagePart.cs" />
+    <Compile Include="Network\PoolableSocketArgs.cs" />
     <Compile Include="Network\VersionExtension.cs" />
     <Compile Include="Network\IPacketReceiver.cs" />
     <Compile Include="Plugins\IPlugin.cs" />

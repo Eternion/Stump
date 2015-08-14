@@ -136,6 +136,21 @@ namespace Stump.Server.WorldServer.Database.Monsters
             set;
         }
 
+        /// <summary>
+        /// Only one item per group can be dropped (group 0 does not follow this rule)
+        /// </summary>
+        public int DropGroup
+        {
+            get;
+            set;
+        }
+
+        public bool TaxCollectorCannotLoot
+        {
+            get;
+            set;
+        }
+
         public void SetDropRate(double rate)
         {
             DropRateForGrade1 = rate;

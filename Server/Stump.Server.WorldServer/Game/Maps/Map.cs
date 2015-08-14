@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using NLog;
@@ -32,6 +33,7 @@ using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Maps.Spawns;
@@ -83,6 +85,28 @@ namespace Stump.Server.WorldServer.Game.Maps
             var handler = ActorLeave;
             if (handler != null)
                 handler(this, actor);
+        }
+
+        public event Action<Map, WorldObjectItem> ObjectItemEnter;
+
+        protected virtual void OnObjectItemEnter(WorldObjectItem objectItem)
+        {
+            OnObjectEnter(objectItem);
+
+            var handler = ObjectItemEnter;
+            if (handler != null)
+                handler(this, objectItem);
+        }
+
+        public event Action<Map, WorldObjectItem> ObjectItemLeave;
+
+        protected virtual void OnObjectItemLeave(WorldObjectItem objectItem)
+        {
+            OnObjectLeave(objectItem);
+
+            var handler = ObjectItemLeave;
+            if (handler != null)
+                handler(this, objectItem);
         }
 
         public event Action<Map, IFight> FightCreated;
@@ -190,7 +214,10 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void UpdateCells()
         {
             CellsInfoProvider = new MapCellsInformationProvider(this);
-            m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).ToArray();
+
+            var middle = new MapPoint((int) MapPoint.MapWidth/2, (int) MapPoint.MapHeight/2);
+            m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).
+                OrderBy(x => middle.ManhattanDistanceTo(x)).ToArray();
         }
 
         #endregion
@@ -202,6 +229,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         /// </summary>
         public static MapPoint[] PointsGrid;
 
+        private readonly List<WorldObjectItem> m_objectItems = new List<WorldObjectItem>();
         private readonly List<RolePlayActor> m_actors = new List<RolePlayActor>();
         private readonly ConcurrentDictionary<int, RolePlayActor> m_actorsMap = new ConcurrentDictionary<int, RolePlayActor>();
         private readonly ReversedUniqueIdProvider m_contextualIds = new ReversedUniqueIdProvider(0);
@@ -501,6 +529,12 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             get;
             private set;
+        }
+
+        protected TimedTimerEntry DroppedItemsCleaner
+        {
+            get;
+            set;
         }
 
         #endregion
@@ -871,6 +905,32 @@ namespace Stump.Server.WorldServer.Game.Maps
                 pool.StopAutoSpawn();
         }
 
+        public void AddMonsterStaticSpawn(MonsterStaticSpawn spawn)
+        {
+            var pool = m_spawningPools.FirstOrDefault(entry => entry is StaticSpawningPool) as StaticSpawningPool;
+
+            if (pool == null)
+                AddSpawningPool(pool = new StaticSpawningPool(this, StaticSpawningPool.StaticSpawnsInterval));
+
+            pool.AddSpawn(spawn);
+
+            if (!pool.AutoSpawnEnabled)
+                pool.StartAutoSpawn();
+        }
+
+        public void RemoveMonsterStaticSpawn(MonsterStaticSpawn spawn)
+        {
+            var pool = m_spawningPools.FirstOrDefault(entry => entry is StaticSpawningPool) as StaticSpawningPool;
+
+            if (pool == null)
+                return;
+
+            pool.RemoveSpawn(spawn);
+
+            if (pool.SpawnsCount == 0)
+                pool.StopAutoSpawn();
+        }
+
         public MonsterGroup GenerateRandomMonsterGroup()
         {
             return GenerateRandomMonsterGroup(SubArea.RollMonsterLengthLimit());
@@ -1009,8 +1069,14 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void MoveRandomlyActors()
         {
-            foreach(var actor in Actors.Where(x => x is IAutoMovedEntity && (x as IAutoMovedEntity).NextMoveDate <= DateTime.Now))
+            foreach(var actor in Actors.Where(x => x is IAutoMovedEntity && ((IAutoMovedEntity) x).NextMoveDate <= DateTime.Now))
             {
+                if (actor is MonsterGroup)
+                {
+                    if (((MonsterGroup) actor).SpawningPool is StaticSpawningPool)
+                        continue;
+                }
+
                 var circle = new Lozenge(1, 4);
                 var dest = circle.GetCells(actor.Cell, this).
                     Where(entry => entry.Walkable && !entry.NonWalkableDuringRP && entry.MapChangeData == 0).RandomElementOrDefault();
@@ -1142,10 +1208,13 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Enter(RolePlayActor actor)
         {
-#if DEBUG
+            #if DEBUG
+
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
-#endif
+
+            #endif
+
             if (m_actors.Contains(actor))
             {
                 logger.Error("Map already contains actor {0}", actor);
@@ -1166,10 +1235,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(RolePlayActor actor)
         {
-#if DEBUG
+            #if DEBUG
+
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
-#endif
+
+            #endif
 
             if (!m_actors.Remove(actor))
                 return;
@@ -1187,10 +1258,13 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(int actorId)
         {
-#if DEBUG
+            #if DEBUG
+
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
-#endif
+
+            #endif
+
             RolePlayActor removedActor;
             if (m_actorsMap.TryRemove(actorId, out removedActor) && m_actors.Remove(removedActor))
             {
@@ -1198,12 +1272,55 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public void Refresh(RolePlayActor actor)
+        public void Enter(WorldObjectItem objectItem)
         {
-#if DEBUG
+            #if DEBUG
+
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
-#endif
+
+            #endif
+
+            if (m_objectItems.Contains(objectItem))
+            {
+                logger.Error("Map already contains objectItem {0}", objectItem.Item.Id);
+                Leave(objectItem);
+            }
+
+            if (IsObjectItemOnCell(objectItem.Cell.Id))
+            {
+                logger.Error("Cannot add {0} to the map, Cell {1} already occupied", objectItem, objectItem.Cell.Id);
+                return;
+            }
+
+            m_objectItems.Add(objectItem);
+
+            OnObjectItemEnter(objectItem);
+        }
+
+        public void Leave(WorldObjectItem objectItem)
+        {
+            #if DEBUG
+
+            if (WorldServer.Instance.IsInitialized)
+                Area.EnsureContext();
+
+            #endif
+
+            if (m_objectItems.Remove(objectItem))
+            {
+                OnObjectItemLeave(objectItem);
+            }
+        }
+
+        public void Refresh(RolePlayActor actor)
+        {
+            #if DEBUG
+
+            if (WorldServer.Instance.IsInitialized)
+                Area.EnsureContext();
+
+            #endif
 
             if (IsActor(actor))
                 ForEach(x =>
@@ -1213,6 +1330,39 @@ namespace Stump.Server.WorldServer.Game.Maps
                     else
                         ContextHandler.SendGameContextRemoveElementMessage(x.Client, actor);
                 });
+        }
+
+        private void CleanObjets()
+        {
+            foreach (var item in m_objectItems.Where(x => (DateTime.Now - x.SpawnDate).TotalMinutes >= 5).ToArray())
+            {
+                Leave(item);
+            }
+        }
+
+        private void OnObjectEnter(WorldObjectItem objectItem)
+        {
+            ForEach(x =>
+            {
+                ContextRoleplayHandler.SendObjectGroundAddedMessage(x.Client, objectItem);   
+            });
+
+            if (DroppedItemsCleaner == null)
+                DroppedItemsCleaner = Area.CallPeriodically(30000, CleanObjets);
+        }
+
+        private void OnObjectLeave(WorldObjectItem objectItem)
+        {
+            ForEach(x =>
+            {
+                ContextRoleplayHandler.SendObjectGroundRemovedMessage(x.Client, objectItem);
+            });
+
+            if (DroppedItemsCleaner == null || IsAnyDroppedItems())
+                return;
+
+            DroppedItemsCleaner.Dispose();
+            DroppedItemsCleaner = null;
         }
 
         private void OnEnter(RolePlayActor actor)
@@ -1241,14 +1391,14 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
             if (actor is IAutoMovedEntity)
             {
-                /*(actor as IAutoMovedEntity).NextMoveDate =
+                (actor as IAutoMovedEntity).NextMoveDate =
                     DateTime.Now + TimeSpan.FromSeconds(new AsyncRandom().Next(AutoMoveActorMinInverval,
                         AutoMoveActorMaxInverval + 1));
 
                 // if the timer wasn't active (=no actors)
                 if (m_autoMoveTimer == null) // call every (max+min)/2/10 to have an average 5% accuracy
                     m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval)/20*1000,
-                        MoveRandomlyActors);*/
+                        MoveRandomlyActors);
             }
 
             ForEach(x =>
@@ -1303,18 +1453,27 @@ namespace Stump.Server.WorldServer.Game.Maps
             ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
             BasicHandler.SendBasicNoOperationMessage(Clients);
 
+            actor.IsInMovement = true;
+
             var character = actor as Character;
             if (character == null)
                 return;
 
-            character.UnsetAuras();
+            Refresh(character);
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
         {
+            actor.IsInMovement = false;
+
             var character = actor as Character;
             if (character == null)
                 return;
+
+            var objectItem = GetObjectItem(actor.Cell.Id);
+
+            if (objectItem != null)
+                character.GetDroppedItem(objectItem);
 
             if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character))
                 return;
@@ -1324,14 +1483,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (monster != null)
                 monster.FightWith(character);
 
-            if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
-            {
-                character.SetAura(EmotesEnum.EMOTE_AURA_VAMPYRIQUE);
-            }
-            else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
-            {
-                character.SetAura(EmotesEnum.EMOTE_AURA_DE_PUISSANCE);
-            }
+            Refresh(character);
         }
 
         #endregion
@@ -1397,6 +1549,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             return exclude != null && Objects.All(x => x == exclude || x.Cell.Id != cell);
         }
 
+        public bool IsObjectItemOnCell(short cell)
+        {
+            return m_objectItems.Any(x => x.Cell.Id == cell);
+        }
+
         public T GetActor<T>(int id)
             where T : RolePlayActor
         {
@@ -1421,6 +1578,21 @@ namespace Stump.Server.WorldServer.Game.Maps
         public IEnumerable<T> GetActors<T>(Predicate<T> predicate)
         {
             return m_actors.OfType<T>().Where(entry => predicate(entry));
+        }
+
+        public IEnumerable<WorldObjectItem> GetObjectItems()
+        {
+            return m_objectItems;
+        }
+
+        public WorldObjectItem GetObjectItem(short cell)
+        {
+            return GetObjectItems().FirstOrDefault(x => x.Cell.Id == cell);
+        }
+
+        public IEnumerable<WorldObjectItem> GetObjectItems(Predicate<WorldObjectItem> predicate)
+        {
+            return m_objectItems.Where(entry => predicate(entry));
         }
 
         public Cell GetCell(int id)
@@ -1461,7 +1633,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             return (DirectionsEnum)array.GetValue(rand.Next(0, array.Length));
         }
 
-        public Cell GetRandomFreeCell(bool actorFree = false)
+        public Cell GetRandomFreeCell(bool actorFree = false, bool nearMiddle = false)
         {
             var rand = new AsyncRandom();
 
@@ -1472,6 +1644,11 @@ namespace Stump.Server.WorldServer.Game.Maps
             var cells = m_freeCells.Where(entry => !excludedCells.Contains(entry.Id)).ToArray();
 
             return cells[rand.Next(0, cells.Length)];
+        }
+
+        public Cell GetFirstFreeCellNearMiddle()
+        {
+            return m_freeCells.FirstOrDefault();
         }
 
         public Cell GetRandomAdjacentFreeCell(MapPoint cell, bool actorFree = false)
@@ -1609,6 +1786,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         public bool ToggleMute()
         {
             return IsMuted = !IsMuted;
+        }
+
+        public bool IsAnyDroppedItems()
+        {
+            return m_objectItems.Any();
         }
     }
 

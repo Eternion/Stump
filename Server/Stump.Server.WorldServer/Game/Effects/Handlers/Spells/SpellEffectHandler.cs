@@ -23,6 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         private Cell[] m_affectedCells;
         private MapPoint m_castPoint;
         private Zone m_effectZone;
+        private Cell m_customCastCell;
 
         protected SpellEffectHandler(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect)
@@ -34,6 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             TargetedPoint = new MapPoint(TargetedCell);
             Critical = critical;
             Targets = effect.Targets;
+            Category = SpellIdentifier.GetEffectCategories(effect.EffectId);
         }
 
         public EffectDice Dice
@@ -87,7 +89,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public Cell CastCell
         {
-            get { return MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell; }
+            get { return m_customCastCell ?? (MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell); }
+            set { m_customCastCell = value; }
         }
 
         public MapPoint CastPoint
@@ -152,8 +155,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Caster.IsFriendlyWith(actor) && Caster != actor)
             {
                 if ((Targets.HasFlag(SpellTargetType.ALLY_1) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_2) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_5)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
+                    Targets.HasFlag(SpellTargetType.ALLY_2)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
                     return true;
 
                 if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER) && Caster is SummonedFighter &&
@@ -161,10 +163,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                     return true;
 
                 if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter)
+                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter && !(actor is SummonedTurret))
                     return true;
 
                 if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS) && actor is SummonedBomb)
+                    return true;
+
+                if (Targets.HasFlag(SpellTargetType.ALLY_TURRETS) && actor is SummonedTurret)
                     return true;
             }
 
@@ -172,8 +177,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 return false;
 
             if ((Targets.HasFlag(SpellTargetType.ENEMY_1) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_2) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_5)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
+                 Targets.HasFlag(SpellTargetType.ENEMY_2)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
                 return true;
 
             if (Targets.HasFlag(SpellTargetType.ENEMY_SUMMONER) && Caster is SummonedFighter &&
@@ -185,6 +189,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 return true;
 
             if (Targets.HasFlag(SpellTargetType.ENEMY_BOMBS) && actor is SummonedBomb)
+                return true;
+
+            if (Targets.HasFlag(SpellTargetType.ENEMY_TURRETS) && actor is SummonedTurret)
                 return true;
 
             return false;
@@ -266,7 +273,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                                           TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger);
 
             target.AddAndApplyBuff(buff);
 
@@ -277,7 +284,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                                           object token, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger)
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger)
             {
                 Token = token
             };
@@ -291,7 +298,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                                           TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Critical, dispelable, trigger, applyTrigger,
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger,
                                        removeTrigger);
 
             target.AddAndApplyBuff(buff);
@@ -311,7 +318,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool RemoveStateBuff(FightActor target, SpellStatesEnum stateId)
         {
-            var state = target.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)stateId).FirstOrDefault();
+            var state = target.GetBuffs(x => x is StateBuff && ((StateBuff) x).State.Id == (int)stateId).FirstOrDefault();
             if (state == null)
                 return false;
 

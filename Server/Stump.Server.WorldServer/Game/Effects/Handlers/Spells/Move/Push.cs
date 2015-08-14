@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (referenceCell.CellId == actor.Position.Cell.Id)
                     continue;
 
-                var pushDirection = referenceCell.OrientationTo(actor.Position.Point, false);
+                var pushDirection = referenceCell.OrientationTo(actor.Position.Point);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
                 var range = SubRangeForActor == actor ? (integerEffect.Value - 1) : integerEffect.Value;
@@ -65,8 +65,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                         {
                             var damage = new Fights.Damage(pushbackDamages)
                             {
-                                Source = Caster,
-                                School = EffectSchoolEnum.Unknown,
+                                Source = actor,
+                                School = EffectSchoolEnum.Pushback,
                                 IgnoreDamageBoost = true,
                                 IgnoreDamageReduction = false
                             };
@@ -82,16 +82,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                     pushbackDamages = pushbackDamages / 2 - fighter.Stats[PlayerFields.PushDamageReduction];
                                     damage = new Fights.Damage(pushbackDamages)
                                     {
-                                        Source = actor,
-                                        School = EffectSchoolEnum.Unknown,
+                                        Source = fighter,
+                                        School = EffectSchoolEnum.Pushback,
                                         IgnoreDamageBoost = true,
                                         IgnoreDamageReduction = false
                                     };
 
                                     fighter.InflictDamage(damage);
                                     fighter.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
+                                    fighter.TriggerBuffs(BuffTriggerType.PUSH);
 
-                                    fighter.OnActorPushed(fighter, true);
+                                    fighter.OnActorMoved(actor, true);
                                 }
                             }
                         }
@@ -113,11 +114,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (actor.IsCarrying())
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
-                foreach (var fighter in Fight.GetAllFighters<CharacterFighter>().Where(actor.IsVisibleFor))
-                    ActionsHandler.SendGameActionFightSlideMessage(fighter.Character.Client, Caster, actor, startCell.CellId, endCell.CellId);
+                foreach (var character in Fight.GetCharactersAndSpectators().Where(actor.IsVisibleFor))
+                    ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actor, startCell.CellId, endCell.CellId);
 
                 actor.Position.Cell = Map.Cells[endCell.CellId];
-                actor.OnActorPushed(actor, takeDamage);
+                actor.OnActorMoved(Caster, takeDamage);
+
+                actor.TriggerBuffs(BuffTriggerType.PUSH);
+
                 if (takeDamage)
                     actor.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
             }

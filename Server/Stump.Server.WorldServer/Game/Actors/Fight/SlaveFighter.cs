@@ -49,25 +49,37 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return;
 
             sbyte slotIndex = 0;
-            ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
             ShortcutHandler.SendShortcutBarContentMessage(characterFighter.Character.Client,
                 Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id)), ShortcutBarEnum.SPELL_SHORTCUT_BAR);
         }
 
         private void OnTurnStopped(IFight fight, FightActor player)
         {
-            if (player != this)
+            if (player == this && IsAlive())
+                    Die();
+
+            if (player != Summoner)
                 return;
 
-            Die();
+            var characterFighter = Summoner as CharacterFighter;
+            if (characterFighter == null)
+                return;
+
+            ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
         }
 
-        protected override void OnDead(FightActor killedBy)
+        protected override void OnTurnPassed()
+        {
+            if (IsAlive())
+                Die();
+        }
+
+        protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
             Fight.TurnStarted -= OnTurnStarted;
             Fight.TurnStopped -= OnTurnStopped;
 
-            base.OnDead(killedBy);
+            base.OnDead(killedBy, false);
 
             Summoner.RemoveSlave(this);
         }

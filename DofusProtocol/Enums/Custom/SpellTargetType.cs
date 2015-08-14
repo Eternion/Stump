@@ -13,7 +13,7 @@ namespace Stump.DofusProtocol.Enums
         ALLY_STATIC_SUMMONS = 0x10,
         ALLY_BOMBS = 0x20, // not sure about that
         ALLY_SUMMONER = 0x40,
-        ALLY_5 = 0x80,
+        ALLY_TURRETS = 0x80,
         ALLY_ALL = 0x2 | 0x4 | 0x8 | 0x10 | 0x20 | 0x40 | 0x80,
         ENEMY_1 = 0x100,
         ENEMY_2 = 0x200,
@@ -21,7 +21,7 @@ namespace Stump.DofusProtocol.Enums
         ENEMY_STATIC_SUMMONS = 0x800,
         ENEMY_BOMBS = 0x1000,
         ENEMY_SUMMONER = 0x2000,
-        ENEMY_5 = 0x4000,
+        ENEMY_TURRETS = 0x4000,
         ENEMY_ALL = 0x100 | 0x200 | 0x400 | 0x800 | 0x1000 | 0x2000 | 0x4000,
         ALL = 0x7FFF,
         ALL_SUMMONS = 0x8 | 0x10 | 0x400 | 0x800,

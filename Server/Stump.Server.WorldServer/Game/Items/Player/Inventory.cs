@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Attributes;
+using Stump.Core.Collections;
 using Stump.Core.Extensions;
-using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.WorldServer.Core.IPC;
+using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Items;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -30,12 +31,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         [Variable(true)]
         private const int MaxInventoryKamas = 150000000;
 
+        [Variable(true)]
+        private const int MaxPresets = 8;
+
         [Variable]
         public static readonly bool ActiveTokens = true;
 
         [Variable]
         public static readonly int TokenTemplateId = (int)ItemIdEnum.GameMasterToken;
         public static ItemTemplate TokenTemplate;
+
+        [Variable(true, DefinableRunning = true)]
+        public static bool WeightEnabled = true;
 
         [Initialization(typeof(ItemManager), Silent=true)]
         private static void InitializeTokenTemplate()
@@ -180,7 +187,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public uint WeightTotal
         {
-            get { return 1000; } // todo : manage weight properly
+            get { return 1000 + (uint)(5 * Owner.Stats.Strength.Total) + (uint)Owner.Stats[PlayerFields.Weight].Total; } //todo: add jobs
         }
 
         public uint WeaponCriticalHit
@@ -191,7 +198,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 if ((weapon = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)) != null)
                 {
                     return weapon.Template is WeaponTemplate
-                               ? (uint) (weapon.Template as WeaponTemplate).CriticalHitBonus
+                               ? (uint) ((WeaponTemplate) weapon.Template).CriticalHitBonus
                                : 0;
                 }
 
@@ -202,7 +209,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public BasePlayerItem Tokens
         {
             get;
+            set;
+        }
+
+        public List<PlayerPresetRecord> Presets
+        {
+            get;
             private set;
+        }
+
+        private Queue<PlayerPresetRecord> PresetsToDelete
+        {
+            get;
+            set;
         }
 
         internal void LoadInventory()
@@ -228,20 +247,39 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (TokenTemplate == null || !ActiveTokens || Owner.Account.Tokens <= 0)
                 return;
 
-            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (int)Owner.Account.Tokens);
-            Items.Add(Tokens.Guid, Tokens); // cannot stack
+            CreateTokenItem(Owner.Account.Tokens);
+        }
+
+        internal void LoadPresets()
+        {
+            PresetsToDelete = new Queue<PlayerPresetRecord>();
+            Presets = ItemManager.Instance.FindPlayerPresets(Owner.Id);
+
+            foreach (var preset in Presets)
+            {
+                foreach (var item in preset.Objects.Where(item => !HasItem(item.objUid)).ToArray())
+                {
+                    preset.RemoveObject(item);
+                }
+            }
         }
 
         private void UnLoadInventory()
         {
-            Items.Clear();
+            // we must keep then in case it's a fight disconnection
+            /*Items.Clear();
             foreach (var item in m_itemsByPosition)
             {
                 m_itemsByPosition[item.Key].Clear();
-            }
+            }*/
         }
 
         public override void Save()
+        {
+            Save(true);
+        }
+
+        public void Save(bool updateAccount)
         {
             lock (Locker)
             {
@@ -259,6 +297,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     }
                 }
 
+                foreach (var preset in Presets)
+                {
+                    if (preset.IsNew)
+                    {
+                        database.Insert(preset);
+                        preset.IsNew = false;
+                    }
+                    else if (preset.IsDirty)
+                    {
+                        database.Update(preset);
+                    }
+                }
+
                 while (ItemsToDelete.Count > 0)
                 {
                     var item = ItemsToDelete.Dequeue();
@@ -266,13 +317,31 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     database.Delete(item.Record);
                 }
 
-                // update tokens amount
-                if ((Tokens != null || Owner.Account.Tokens <= 0) &&
-                    (Tokens == null || Owner.Account.Tokens == Tokens.Stack))
-                    return;
+                while (PresetsToDelete.Count > 0)
+                {
+                    var preset = PresetsToDelete.Dequeue();
 
-                Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
-                IPCAccessor.Instance.Send(new UpdateAccountMessage(Owner.Account));
+                    database.Delete(preset);
+                }
+
+                // update tokens amount
+                if ((Tokens != null || Owner.Account.Tokens <= 0) && (Tokens == null || Owner.Account.Tokens == Tokens.Stack))
+                {
+                    Owner.IsAuthSynced = true;
+                }
+                else
+                {
+                    Owner.IsAuthSynced = false;
+                    Owner.Account.Tokens = Tokens == null ? 0 : Tokens.Stack;
+                    if (updateAccount)
+                    {
+                        IPCAccessor.Instance.SendRequest<CommonOKMessage>(new UpdateAccountMessage(Owner.Account),
+                            msg =>
+                            {
+                                Owner.OnSaved();
+                            });
+                    }
+                }
             }
         }
 
@@ -298,7 +367,33 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.SetKamas(amount);
         }
 
-        public BasePlayerItem AddItem(ItemTemplate template, int amount = 1)
+        public BasePlayerItem AddItem(ItemTemplate template, List<EffectBase> effects, int amount = 1, bool addItemMsg = true)
+        {
+            if (amount < 0)
+                throw new ArgumentException("amount < 0", "amount");
+
+            var item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount, effects);
+
+            var itemStack = TryGetItem(template);
+
+            if (itemStack != null && !itemStack.IsEquiped() && IsStackable(item, out itemStack))
+            {
+                if (!itemStack.OnAddItem())
+                    return null;
+
+                StackItem(itemStack, amount);
+            }
+            else
+            {
+                item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount, effects);
+
+                return !item.OnAddItem() ? null : AddItem(item, addItemMsg);
+            }
+
+            return item;
+        }
+
+        public BasePlayerItem AddItem(ItemTemplate template, int amount = 1, bool addItemMsg = true)
         {
             if (amount < 0)
                 throw new ArgumentException("amount < 0", "amount");
@@ -316,15 +411,190 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 item = ItemManager.Instance.CreatePlayerItem(Owner, template, amount);
 
-                return !item.OnAddItem() ? null : AddItem(item);
+                return !item.OnAddItem() ? null : AddItem(item, addItemMsg);
             }
 
             return item;
         }
 
-        public override  bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true)
+        public override bool RemoveItem(BasePlayerItem item, bool delete = true, bool removeItemMsg = true)
         {
             return item.OnRemoveItem() && base.RemoveItem(item, delete, removeItemMsg);
+        }
+
+        public void CreateTokenItem(uint amount)
+        {
+            Tokens = ItemManager.Instance.CreatePlayerItem(Owner, TokenTemplate, (int)amount);
+            Items.Add(Tokens.Guid, Tokens); // cannot stack
+        }
+
+        public PlayerPresetRecord GetPreset(int presetId)
+        {
+            return Presets.FirstOrDefault(x => x.PresetId == presetId);
+        }
+
+        public bool IsPresetExist(int presetId)
+        {
+            return Presets.Any(x => x.PresetId == presetId);
+        }
+
+        public void DeleteItemFromPresets(BasePlayerItem item)
+        {
+            var presets = GetPresetsByItemGuid(item.Guid);
+
+            foreach (var preset in presets)
+            {
+                preset.RemoveObject(item.Guid);
+
+                InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
+                Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 255, item.Template.Id, (preset.PresetId + 1));
+            }
+        }
+
+        public PresetSaveResultEnum AddPreset(int presetId, int symbolId, bool saveEquipement)
+        {
+            if (presetId < 0 || presetId > 8)
+                return PresetSaveResultEnum.PRESET_SAVE_ERR_UNKNOWN;
+
+            if (Presets.Count > MaxPresets)
+                return PresetSaveResultEnum.PRESET_SAVE_ERR_TOO_MANY;
+
+            var preset = new PlayerPresetRecord
+            {
+                OwnerId = Owner.Id,
+                PresetId = presetId,
+                SymbolId = symbolId,
+                Objects = new List<PresetItem>(),
+                IsNew = true
+            };
+
+            if (IsPresetExist(presetId) && !saveEquipement)
+            {
+                var oldPreset = GetPreset(presetId);
+                preset.Objects = oldPreset.Objects;
+            }
+            else
+            {
+                foreach (var item in GetEquipedItems())
+                    preset.AddObject(new PresetItem((byte)item.Position, (short)item.Template.Id, item.Guid));       
+            }
+
+            RemovePreset(presetId);
+            Presets.Add(preset);
+
+            InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
+
+            return PresetSaveResultEnum.PRESET_SAVE_OK;
+        }
+
+        public PresetDeleteResultEnum RemovePreset(int presetId)
+        {
+            if (presetId < 0 || presetId > 8)
+                return PresetDeleteResultEnum.PRESET_DEL_ERR_UNKNOWN;
+
+            var preset = GetPreset(presetId);
+
+            if (preset == null)
+                return PresetDeleteResultEnum.PRESET_DEL_ERR_BAD_PRESET_ID;
+
+            Presets.Remove(preset);
+            PresetsToDelete.Enqueue(preset);
+
+            var shortcut = Owner.Shortcuts.PresetShortcuts.FirstOrDefault(x => x.Value.PresetId == presetId);
+            if (shortcut.Value != null)
+                Owner.Shortcuts.RemoveShortcut(ShortcutBarEnum.GENERAL_SHORTCUT_BAR, shortcut.Key);
+
+            return PresetDeleteResultEnum.PRESET_DEL_OK;
+        }
+
+        public PresetSaveUpdateErrorEnum RemovePresetItem(int presetId, int position)
+        {
+            var preset = GetPreset(presetId);
+
+            if (preset == null)
+                return PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_BAD_PRESET_ID;
+
+            var item = preset.Objects.FirstOrDefault(x => x.position == position);
+
+            if (item == null)
+                return PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_BAD_POSITION;
+
+            preset.RemoveObject(item);
+
+            InventoryHandler.SendInventoryPresetUpdateMessage(Owner.Client, preset.GetNetworkPreset());
+
+            return PresetSaveUpdateErrorEnum.PRESET_UPDATE_ERR_UNKNOWN;
+        }
+
+        public void EquipPreset(int presetId)
+        {
+            var unlinkedPosition = new List<byte>();
+
+            var preset = GetPreset(presetId);
+
+            if (preset == null)
+            {
+                InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID, unlinkedPosition);
+                return;
+            }
+                
+
+            var itemsToMove = new List<Pair<BasePlayerItem, CharacterInventoryPositionEnum>>();
+
+            var partial = false;
+
+            foreach (var item in GetEquipedItems())
+            {
+                if (item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_MOUNT ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_BOOST_FOOD ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_FIRST_BONUS ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_FIRST_MALUS ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_FOLLOWER ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_MUTATION ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_ROLEPLAY_BUFFER ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_BONUS ||
+                    item.Position == CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_MALUS)
+                    continue;
+
+                if (preset.Objects.Exists(x => x.objUid == item.Guid))
+                    continue;
+
+                unlinkedPosition.Add((byte)item.Position);
+
+                MoveItem(item, CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED);
+            }
+
+            foreach (var presetItem in preset.Objects.OrderByDescending(x => x.position))
+            {
+                var item = TryGetItem(presetItem.objUid);
+
+                if (item == null)
+                {
+                    Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 228, presetItem.objGid, (presetId + 1));
+                    partial = true;
+                    continue;
+                }
+
+                if (!CanEquip(item, (CharacterInventoryPositionEnum)presetItem.position))
+                {
+                    InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), PresetUseResultEnum.PRESET_USE_ERR_CRITERION, unlinkedPosition);
+                    return;
+                }
+
+                itemsToMove.Add(new Pair<BasePlayerItem, CharacterInventoryPositionEnum>(item, (CharacterInventoryPositionEnum)presetItem.position));
+            }
+
+            InventoryHandler.SendInventoryPresetUseResultMessage(Owner.Client, (sbyte)(presetId + 1), partial ? PresetUseResultEnum.PRESET_USE_OK_PARTIAL : PresetUseResultEnum.PRESET_USE_OK, unlinkedPosition);
+
+            foreach (var item in itemsToMove)
+            {
+                MoveItem(item.First, item.Second);
+            }
+        }
+
+        public PlayerPresetRecord[] GetPresetsByItemGuid(int itemGuid)
+        {
+            return Presets.Where(x => x.Objects.Exists(y => y.objUid == itemGuid)).ToArray();
         }
 
         public BasePlayerItem RefreshItemInstance(BasePlayerItem item)
@@ -406,7 +676,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     if (!equipedItem.Feed(item))
                         return;
 
-                    RemoveItem(item);
+                    UnStackItem(item, 1);
                     return;
                 }
 
@@ -415,7 +685,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     if (!item.Drop(equipedItem))
                         return;
 
-                    RemoveItem(item);
+                    UnStackItem(item, 1);
                     return;
                 }
 
@@ -436,9 +706,25 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (item.Stack > 1) // if the item to move is stack we cut it
             {
-                CutItem(item, (int)item.Stack - 1);
+                var newItem = CutItem(item);
                 // now we have 2 stack : itemToMove, stack = 1
                 //						 newitem, stack = itemToMove.Stack - 1
+
+                //Update PresetItem
+                var presets = GetPresetsByItemGuid(item.Guid);
+
+                foreach (var preset in presets)
+                {
+                    var presetItem = preset.GetPresetItem(item.Guid);
+
+                    if (presetItem == null)
+                        continue;
+
+                    presetItem.objUid = newItem.Guid;
+                    preset.IsDirty = true;
+                }
+
+                item = newItem;
             }
 
             item.Position = position;
@@ -448,10 +734,23 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 IsStackable(item, out stacktoitem) && stacktoitem != null)
                 // check if we must stack the moved item
             {
+                //Update PresetItem
+                var presets = GetPresetsByItemGuid(item.Guid);
+
+                foreach (var preset in presets)
+                {
+                    var presetItem = preset.GetPresetItem(item.Guid);
+
+                    if (presetItem == null)
+                        continue;
+
+                    presetItem.objUid = stacktoitem.Guid;
+                    preset.IsDirty = true;
+                }
 
                 NotifyItemMoved(item, oldPosition);
-                StackItem(stacktoitem, (int)item.Stack); // in all cases Stack = 1 else there is an error
-                RemoveItem(item);
+                StackItem(stacktoitem, (int)item.Stack, false); // in all cases Stack = 1 else there is an error
+                RemoveItem(item, true, false);
             }
             else // else we just move the item
             {
@@ -507,6 +806,8 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 UnStackItem(item, amount);
             }
 
+            DeleteItemFromPresets(item);
+
             var copy = ItemManager.Instance.CreatePlayerItem(newOwner, item, amount);
             newOwner.Inventory.AddItem(copy, false);
         }
@@ -524,7 +825,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (!HasItem(item.Guid) || !item.IsUsable())
                 return false;
 
-            if (Owner.IsInFight() && Owner.Fight.State != FightState.Placement)
+            if (Owner.IsInExchange() || (Owner.IsInFight() && Owner.Fight.State != FightState.Placement))
                 return false;
 
             if (!item.AreConditionFilled(Owner))
@@ -580,21 +881,18 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public BasePlayerItem CutItem(BasePlayerItem item, int amount)
+        public BasePlayerItem CutItem(BasePlayerItem item)
         {
-            if (amount < 0)
-                throw new ArgumentException("amount < 0", "amount");
-
-            if (amount >= item.Stack)
+            if (item.Stack <= 1)
                 return item;
 
-            UnStackItem(item, amount);
+            UnStackItem(item, 1, false);
 
-            var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, amount);
+            var newitem = ItemManager.Instance.CreatePlayerItem(Owner, item, 1);
 
             Items.Add(newitem.Guid, newitem);
 
-            NotifyItemAdded(newitem, true);
+            NotifyItemAdded(newitem, false);
 
             return newitem;
         }
@@ -682,7 +980,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             //Vous avez perdu %1 '$item%2'.
             if (removeItemMsg)
+            {
+                DeleteItemFromPresets(item);
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, item.Stack, item.Template.Id);
+            }
 
             if (wasEquiped)
                 CheckItemsCriterias();
@@ -739,14 +1040,14 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             Owner.RefreshStats();
         }
 
-        protected override void OnItemStackChanged(BasePlayerItem item, int difference)
+        protected override void OnItemStackChanged(BasePlayerItem item, int difference, bool removeMsg = true)
         {
             InventoryHandler.SendObjectQuantityMessage(Owner.Client, item);
             InventoryHandler.SendInventoryWeightMessage(Owner.Client);
 
             //Vous avez perdu %1 '$item%2'.
             //Vous avez obtenu %1 '$item%2'.
-            if (difference != 0)
+            if (removeMsg && difference != 0)
                 Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, difference > 0 ? (short)21 : (short)22, Math.Abs(difference), item.Template.Id);
 
             base.OnItemStackChanged(item, difference);

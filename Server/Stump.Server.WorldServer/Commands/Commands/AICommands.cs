@@ -122,8 +122,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     foreach (var impact in cast.Impacts)
                     {
                         trigger.Reply(dumper.DumpElement(impact));
-                        if (impact.Target != null)
-                            trigger.Reply("\t\tTarget = " + impact.Target is NamedFighter ? ( (NamedFighter)impact.Target ).Name : impact.Target.Id.ToString());
                     }
             }
         }
@@ -217,7 +215,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var spell in aiFighter.Spells.Values)
             {
-                var cell = aiFighter.Brain.Environment.GetCellToCastSpell(enemy.Cell, spell);
+                var cell = aiFighter.Brain.Environment.GetCellToCastSpell(new TargetCell(enemy.Cell), spell, spell.CurrentSpellLevel.CastTestLos);
                 if (cell != null)
                     trigger.Reply(trigger.Color("Cast " + spell, trigger.Character.HighlightCell(cell)));
             }

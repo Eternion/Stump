@@ -41,5 +41,9 @@ namespace Stump.Server.WorldServer.Commands.Trigger
         {
             get { return WorldServer.Instance.ConsoleInterface as WorldConsole; }
         }
+
+        public override void Log()
+        {
+        }
     }
 }

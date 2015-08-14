@@ -2,6 +2,7 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
@@ -29,8 +30,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 }
                 else
                 {
-                    actor.LostMP(integerEffect.Value);
+                    actor.LostMP(integerEffect.Value, Caster);
                 }
+
+                actor.TriggerBuffs(BuffTriggerType.LOST_MP);
             }
 
             return true;

@@ -9,9 +9,9 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
-    [SpellCastHandler(2822)]
-    [SpellCastHandler(2830)]
-    [SpellCastHandler(2845)]
+    [SpellCastHandler(SpellIdEnum.EXPLOSION_ROUBLARDE)]
+    [SpellCastHandler(SpellIdEnum.AVERSE_ROUBLARDE)]
+    [SpellCastHandler(SpellIdEnum.TORNADE_ROUBLARDE)]
     public class BombExplodSpellCastHandler : DefaultSpellCastHandler
     {
         public BombExplodSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical) : base(caster, spell, targetedCell, critical)
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
             set;
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             /*var len = Spell.CurrentSpellLevel.Effects.Count;
             Handlers = Spell.CurrentSpellLevel.Effects.GetRange(0, ActiveBonus ? len : len - 1)
@@ -69,6 +69,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 
                 handler.SetAffectedActors(affectedActors);
             }
+
+            return true;
         }
     }
 }

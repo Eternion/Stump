@@ -11,6 +11,11 @@ namespace Stump.Server.BaseServer.Handler
             MessageId = messageId;
         }
 
+        protected HandlerAttribute()
+        {
+            throw new NotImplementedException();
+        }
+
         public uint MessageId
         {
             get; 

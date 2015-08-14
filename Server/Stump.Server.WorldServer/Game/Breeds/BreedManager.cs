@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Stump.Core.Attributes;
-using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Breeds;
 
 namespace Stump.Server.WorldServer.Game.Breeds
@@ -86,6 +83,11 @@ namespace Stump.Server.WorldServer.Game.Breeds
             return head;
         }
 
+        public Head GetHead(Predicate<Head> predicate)
+        {
+            return m_heads.Values.FirstOrDefault(x => predicate(x));
+        }
+
         public bool IsBreedAvailable(int id)
         {
             return AvailableBreeds.Contains((PlayableBreedEnum)id);
@@ -100,7 +102,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
         {
             if(defineId)
             {
-                int id = m_breeds.Keys.Max() + 1;
+                var id = m_breeds.Keys.Max() + 1;
                 breed.Id = id;
             }
 

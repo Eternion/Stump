@@ -9,14 +9,14 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set
         private static readonly Dictionary<DirectionsEnum, MapPoint> m_vectors = new Dictionary
             <DirectionsEnum, MapPoint>
         {
-            {DirectionsEnum.DIRECTION_EAST, new MapPoint(1, 0)},
-            {DirectionsEnum.DIRECTION_SOUTH_EAST, new MapPoint(1, -1)},
-            {DirectionsEnum.DIRECTION_SOUTH, new MapPoint(0, -1)},
-            {DirectionsEnum.DIRECTION_SOUTH_WEST, new MapPoint(-1, -1)},
-            {DirectionsEnum.DIRECTION_WEST, new MapPoint(-1, 0)},
-            {DirectionsEnum.DIRECTION_NORTH_WEST, new MapPoint(-1, 1)},
-            {DirectionsEnum.DIRECTION_NORTH, new MapPoint(0, 1)},
-            {DirectionsEnum.DIRECTION_NORTH_EAST, new MapPoint(1, 1)}
+            {DirectionsEnum.DIRECTION_EAST, new MapPoint(1, 1)},
+            {DirectionsEnum.DIRECTION_SOUTH_EAST, new MapPoint(1, 0)},
+            {DirectionsEnum.DIRECTION_SOUTH, new MapPoint(1, -1)},
+            {DirectionsEnum.DIRECTION_SOUTH_WEST, new MapPoint(0, -1)},
+            {DirectionsEnum.DIRECTION_WEST, new MapPoint(-1,-1)},
+            {DirectionsEnum.DIRECTION_NORTH_WEST, new MapPoint(-1, 0)},
+            {DirectionsEnum.DIRECTION_NORTH, new MapPoint(-1, 1)},
+            {DirectionsEnum.DIRECTION_NORTH_EAST, new MapPoint(0, 1)}
         };
 
         public LineSet(MapPoint A, MapPoint B)

@@ -88,6 +88,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                 {PlayerFields.MagicDamage, AddMagicDamage},
                 {PlayerFields.PhysicalDamageReduction, AddPhysicalDamageReduction},
                 {PlayerFields.MagicDamageReduction, AddMagicDamageReduction},
+                {PlayerFields.Weight, AddWeight},
             };
 
         private static readonly Dictionary<PlayerFields, EffectComputeHandler> m_subMethods = new Dictionary
@@ -157,6 +158,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                 {PlayerFields.MagicDamage, SubMagicDamage},
                 {PlayerFields.PhysicalDamageReduction, SubPhysicalDamageReduction},
                 {PlayerFields.MagicDamageReduction, SubMagicDamageReduction},
+                {PlayerFields.Weight, SubWeight},
             };
 
 
@@ -178,7 +180,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                     {EffectsEnum.Effect_AddIntelligence, PlayerFields.Intelligence},
                     {EffectsEnum.Effect_AddRange, PlayerFields.Range},
                     {EffectsEnum.Effect_AddSummonLimit, PlayerFields.SummonLimit},
-                    {EffectsEnum.Effect_AddDamageReflection, PlayerFields.DamageReflection},
+                    {EffectsEnum.Effect_AddDamageReflection_220, PlayerFields.DamageReflection},
                     {EffectsEnum.Effect_AddCriticalHit, PlayerFields.CriticalHit},
                     {EffectsEnum.Effect_AddCriticalMiss, PlayerFields.CriticalMiss},
                     {EffectsEnum.Effect_AddHealBonus, PlayerFields.HealBonus},
@@ -230,6 +232,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                     //{EffectsEnum.Effect_AddMagicDamage,PlayerFields.MagicDamage},
                     {EffectsEnum.Effect_AddPhysicalDamageReduction, PlayerFields.PhysicalDamageReduction},
                     {EffectsEnum.Effect_AddMagicDamageReduction, PlayerFields.MagicDamageReduction},
+                    {EffectsEnum.Effect_IncreaseWeight, PlayerFields.Weight}
                 };
 
         private static readonly Dictionary<EffectsEnum, PlayerFields> m_subEffectsBinds =
@@ -298,6 +301,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
                     //{EffectsEnum.Effect_SubMagicDamage, PlayerFields.MagicDamage},
                     {EffectsEnum.Effect_SubPhysicalDamageReduction, PlayerFields.PhysicalDamageReduction},
                     {EffectsEnum.Effect_SubMagicDamageReduction, PlayerFields.MagicDamageReduction},
+                    {EffectsEnum.Effect_DecreaseWeight, PlayerFields.Weight}
                 };
 
         #endregion
@@ -346,7 +350,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             }
 
             if (handler != null)
-                handler(Target, Effect as EffectInteger, Boost);
+                handler(Target, (EffectInteger) Effect, Boost);
 
             return true;
         }
@@ -673,6 +677,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             if (isBoost) target.Stats[PlayerFields.MagicDamageReduction].Given += effect.Value; else target.Stats[PlayerFields.MagicDamageReduction].Equiped += effect.Value;
         }
 
+        private static void AddWeight(Character target, EffectInteger effect, bool isBoost)
+        {
+            if (isBoost) target.Stats[PlayerFields.Weight].Given += effect.Value; else target.Stats[PlayerFields.Weight].Equiped += effect.Value;
+        }
+
         #endregion
 
         #region Sub Methods
@@ -995,6 +1004,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
         private static void SubMagicDamageReduction(Character target, EffectInteger effect, bool isBoost)
         {
             if (isBoost) target.Stats[PlayerFields.MagicDamageReduction].Given -= effect.Value; else target.Stats[PlayerFields.MagicDamageReduction].Equiped -= effect.Value;
+        }
+
+        private static void SubWeight(Character target, EffectInteger effect, bool isBoost)
+        {
+            if (isBoost) target.Stats[PlayerFields.Weight].Given -= effect.Value; else target.Stats[PlayerFields.Weight].Equiped -= effect.Value;
         }
 
         #endregion

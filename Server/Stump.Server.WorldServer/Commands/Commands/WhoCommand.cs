@@ -109,7 +109,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             foreach (var player in list)
             {
-                trigger.ReplyBold(" - {0}", player.Name);
+                trigger.ReplyBold(" - {0} ({1})", player.Name, player.UserGroup.Name);
             }
         }
     }

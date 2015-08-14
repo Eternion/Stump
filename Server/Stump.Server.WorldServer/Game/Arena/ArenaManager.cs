@@ -72,6 +72,11 @@ namespace Stump.Server.WorldServer.Game.Arena
             get { return m_arenaTaskPool; }
         }
 
+        public Dictionary<int, ArenaRecord> Arenas
+        {
+            get { return m_arenas; }
+        }
+
         public bool CanJoinQueue(Character character)
         {
             if (m_arenas.Count == 0)
