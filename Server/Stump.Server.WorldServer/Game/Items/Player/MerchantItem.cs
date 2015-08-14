@@ -19,6 +19,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             set { Record.Price = value; }
         }
 
+        public uint StackSold
+        {
+            get { return Record.StackSold; }
+            set { Record.StackSold = value; }
+        }
+
         #endregion
 
         #region Constructors
@@ -64,6 +70,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                                  Effects.Select(x => x.GetObjectEffect()),
                                  Guid, (int)Stack, (int)Price);
         }
+
         public override ObjectItem GetObjectItem()
         {
             return new ObjectItem(63, (short) Template.Id, 
@@ -79,6 +86,5 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         #endregion
-
     }
 }

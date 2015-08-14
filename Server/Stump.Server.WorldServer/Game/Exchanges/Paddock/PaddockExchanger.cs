@@ -69,6 +69,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool EquipToPaddock(int mountId)
         {
+            if (!Character.HasEquipedMount())
+                return false;
+
             if (!HasMountRight(Character.Mount))
                 return false;
 
@@ -77,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                if (Character.Mount == null)
+                if (!Character.HasEquipedMount())
                     return;
 
                 Paddock.AddMountToPaddock(Character.Mount);
@@ -91,6 +94,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool EquipToStable(int mountId)
         {
+            if (!Character.HasEquipedMount())
+                return false;
+
             if (!HasMountRight(Character.Mount))
                 return false;
 
@@ -99,7 +105,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
-                if (Character.Mount == null)
+                if (!Character.HasEquipedMount())
                     return;
 
                 Paddock.AddMountToStable(Character.Mount);
@@ -237,6 +243,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
 
         public bool EquipToInventory(int mountId)
         {
+            if (!Character.HasEquipedMount())
+                return false;
+
             if (!HasMountRight(Character.Mount))
                 return false;
 
@@ -255,6 +264,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
         public bool InventoryToStable(int itemId)
         {
             var item = Character.Inventory.TryGetItem(itemId);
+            if (item == null)
+                return false;
+
             var mountId = GetMountByItem(item);
             if (mountId == -1)
                 return false;
@@ -310,6 +322,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             var mountId = GetMountByItem(item);
             if (mountId == -1)
                 return false;
+
+            if (Character.Level < item.Template.Level)
+            {
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
+                return false;
+            }
 
             Character.Inventory.RemoveItem(item);
 

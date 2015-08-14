@@ -4,6 +4,7 @@ using NLog;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
@@ -17,6 +18,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         [Initialization(typeof(SpellManager), Silent = true)]
         public static void ApplyFix()
         {
+            logger.Debug("Apply Spells Targets fix");
+
+            FixSpellsTargets();
+
             logger.Debug("Apply spells fix");
 
             #region FECA
@@ -202,6 +207,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(421, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
             FixEffectOnAllLevels(421, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
+            // Coopération (445)
+            FixEffectOnAllLevels(445, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            //FixEffectOnAllLevels(445, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+
             #endregion
 
             #region PANDAWA
@@ -212,7 +221,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Epouvante (689)
             // Move push effect to first exec debuff
-            FixEffectOnAllLevels(689, 0, (level, effect, critical) => level.Effects.Move(effect, 1));
+            FixEffectOnAllLevels(689, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+            FixEffectOnAllLevels(689, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+            FixEffectOnAllLevels(689, 0, (level, effect, critical) => level.Effects.Move(effect, 1), false);
+            FixCriticalEffectOnAllLevels(689, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 1));
+
 
             #endregion
 
@@ -291,6 +304,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2805, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
             RemoveEffectOnAllLevels(2805, 2);
 
+            // Resquille (2807)
+            FixEffectOnAllLevels(2807, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(2807, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+
             // Rémission (2809)
             FixEffectOnAllLevels(2809, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_BOMBS ^ SpellTargetType.ENEMY_BOMBS);
             FixEffectOnAllLevels(2809, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_BOMBS);
@@ -325,19 +342,35 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region ZOBAL
 
+            // Masque de classe (2872)
+            // NONE -> ALLY_ALL
+            FixEffectOnAllLevels(2872, EffectsEnum.Effect_AddLock, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
             // Masque du pleutre (2879)
             // new skin 103 => 1576 (todo find relation)
             // new skin 106 => 1576 (todo find relation)
             FixEffectOnAllLevels(2879, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 1576);
+            FixEffectOnAllLevels(2879, EffectsEnum.Effect_AddDodge, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
 
-            // Masque du pleutre (2880)
+            // Masque du Psychopathe (2880)
             // new skin 102 => 1575 (todo find relation)
             // new skin 105 => 1575 (todo find relation)
             FixEffectOnAllLevels(2880, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 1575);
+            FixEffectOnAllLevels(2880, EffectsEnum.Effect_IncreaseDamage_138, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            // Appeau (2883)
+            // NONE -> ENEMY_ALL
+            FixEffectOnAllLevels(2883, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            // Distance (2885)
+            // NONE -> ENEMY_ALL
+            FixEffectOnAllLevels(2885, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
             // Furia (2887)
             // NONE -> ONLY_SELF
+            // NONE -> ENEMY_ALL
             FixEffectOnAllLevels(2887, EffectsEnum.Effect_AddDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(2887, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
 
             // Cabriole (2888)
             // NONE -> ENEMY_ALL
@@ -347,9 +380,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             // Boliche (2889)
             // NONE -> ONLY_SELF
+            // NONE -> ENEMY_ALL
             // Swap Effects index
             FixEffectOnAllLevels(2889, EffectsEnum.Effect_AddPushDamageBonus, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
-            FixEffectOnAllLevels(2889, 0, (level, effect, critical) => level.Effects.Move(effect, 2));
+            FixEffectOnAllLevels(2889, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2889, 3, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+            FixCriticalEffectOnAllLevels(2889, 3, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
 
             // Plastron (2890)
             // NONE -> ALLY_ALL && SELF
@@ -367,9 +403,238 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(2892, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
             FixEffectOnAllLevels(2892, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
+            // Appui (2896)
+            // NONE -> ENEMY_ALL
+            FixEffectOnAllLevels(2896, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2896, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2896, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
             #endregion
 
-            #region Monsters
+            #region STEAMER
+
+            // Marée (3203)
+            FixEffectOnAllLevels(3203, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3203, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(3203, 0, (level, effect, critical) => effect.Targets = SpellTargetType.NONE, false);
+            FixEffectOnAllLevels(3203, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(3203, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
+            // Ressac (3204)
+            //FixEffectOnAllLevels(3204, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            //FixEffectOnAllLevels(3204, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            //FixEffectOnAllLevels(3204, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            //FixEffectOnAllLevels(3204, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Courant (3205)
+            //FixEffectOnAllLevels(3205, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            //FixEffectOnAllLevels(3205, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            //FixEffectOnAllLevels(3205, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            //FixEffectOnAllLevels(3205, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Flibuste (3206)
+            FixEffectOnAllLevels(3206, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3206, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3206, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Selpâtre (3207)
+            FixEffectOnAllLevels(3207, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3207, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3207, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Ecume (3208)
+            FixEffectOnAllLevels(3208, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3208, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3208, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Vapor (3209)
+            FixEffectOnAllLevels(3209, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3209, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3209, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Ancrage (3210)
+            FixEffectOnAllLevels(3210, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3210, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3210, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Foène (3211)
+            FixEffectOnAllLevels(3211, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3211, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3211, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Harponneuse (3212)
+            //Remove Kill Effect
+            RemoveEffectOnAllLevels(3212, 1, false);
+
+            // Gardienne (3213)
+            //Remove Kill Effect
+            RemoveEffectOnAllLevels(3213, 1, false);
+
+            // Tactirelle (3214)
+            //Remove Kill Effect
+            RemoveEffectOnAllLevels(3214, 1, false);
+
+            // Evolution (3215)
+            RemoveEffectOnAllLevels(3215, 0, false);
+            FixEffectOnAllLevels(3215, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
+            FixEffectOnAllLevels(3215, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
+            FixEffectOnAllLevels(3215, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS, false);
+
+            // Cuirasse (3216)
+            FixEffectOnAllLevels(3216, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL ^ SpellTargetType.ENEMY_TURRETS, false);
+            FixEffectOnAllLevels(3216, 1, (level, effect, critical) => effect.Targets = (SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS) | SpellTargetType.SELF, false);
+
+            // Armure de Sel (3217)
+            RemoveEffectOnAllLevels(3217, 0);
+            RemoveEffectOnAllLevels(3217, 0);
+            FixEffectOnAllLevels(3217, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3217, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Embuscade (3218)
+            FixEffectOnAllLevels(3218, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3218, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3218, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3218, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            // Longue Vue (3220)
+            FixEffectOnAllLevels(3220, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3220, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3220, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3220, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+            FixEffectOnAllLevels(3220, 6, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS);
+
+            // Aspiration (3221)
+            RemoveEffectOnAllLevels(3221, 0, false);
+            RemoveEffectOnAllLevels(3221, 0, false);
+            FixEffectOnAllLevels(3221, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
+
+            // Boumf I (3222)
+            FixEffectOnAllLevels(3222, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3222, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boume I (3223)
+            FixEffectOnAllLevels(3223, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3223, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumt I (3224)
+            FixEffectOnAllLevels(3224, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3224, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumf II (3225)
+            FixEffectOnAllLevels(3225, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3225, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boume II (3226)
+            FixEffectOnAllLevels(3226, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3226, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumt II (3227)
+            FixEffectOnAllLevels(3227, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3227, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumf III (3228)
+            FixEffectOnAllLevels(3228, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3228, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boume III (3229)
+            FixEffectOnAllLevels(3229, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3229, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Boumt III (3230)
+            FixEffectOnAllLevels(3230, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3230, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+
+            // Cinétik I (3233)
+            RemoveEffectOnAllLevels(3233, 0, false);
+            RemoveEffectOnAllLevels(3233, 0, false);
+            FixEffectOnAllLevels(3233, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3233, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Cinétik II (3234)
+            RemoveEffectOnAllLevels(3234, 0, false);
+            RemoveEffectOnAllLevels(3234, 0, false);
+            FixEffectOnAllLevels(3234, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3234, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Cinétik III (3235)
+            RemoveEffectOnAllLevels(3235, 0, false);
+            RemoveEffectOnAllLevels(3235, 0, false);
+            FixEffectOnAllLevels(3235, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3235, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Magnétor I (3236)
+            RemoveEffectOnAllLevels(3236, 0, false);
+            RemoveEffectOnAllLevels(3236, 0, false);
+            FixEffectOnAllLevels(3236, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3236, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Magnétor II (3237)
+            RemoveEffectOnAllLevels(3237, 0, false);
+            RemoveEffectOnAllLevels(3237, 0, false);
+            FixEffectOnAllLevels(3237, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3237, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Magnétor III (3238)
+            RemoveEffectOnAllLevels(3238, 0, false);
+            RemoveEffectOnAllLevels(3238, 0, false);
+            FixEffectOnAllLevels(3238, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3238, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
+
+            // Transko (3240)
+            RemoveEffectOnAllLevels(3240, 0, false);
+            RemoveEffectOnAllLevels(3240, 0, false);
+            RemoveEffectOnAllLevels(3240, 0, false);
+            FixEffectOnAllLevels(3240, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TURRETS ^ SpellTargetType.SELF, false);
+            //FixEffectOnAllLevels(3240, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(3240, 0, (level, effect, critical) => level.MaxCastPerTarget = 1, false);
+
+            //Maintenance I (3241)
+            FixEffectOnAllLevels(3241, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3241, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3241, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3241, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            //Maintenance II (3242)
+            FixEffectOnAllLevels(3242, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3242, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3242, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3242, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            //Maintenance III (3243)
+            FixEffectOnAllLevels(3243, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3243, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(3243, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
+            FixEffectOnAllLevels(3243, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            // Brise l'âme (3277)
+            FixEffectOnAllLevels(3277, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TURRETS, false);
+
+            // Convergence (3280)
+            FixEffectOnAllLevels(3280, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS, false);
+
+            // Evolution II (3281)
+            FixEffectOnAllLevels(3281, 0, (level, effect, critical) => effect.Value = 3282, false);
+
+            // Evolution III (3282)
+            FixEffectOnAllLevels(3282, 0, (level, effect, critical) => effect.Value = 3281, false);
+            FixEffectOnAllLevels(3282, 1, (level, effect, critical) => effect.Value = 3282, false);
+
+            #endregion
+
+            #region Elementary
+
+            // Boomerang Perfide (364)
+            // ENEMY_ALL -> ALL
+            FixEffectOnAllLevels(364, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(364, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(364, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(364, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+
+            #endregion
+
+            #region Monsters    
+
+            #region Boss
 
             #region Korriandre
 
@@ -387,15 +652,49 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
-            #region TOFU
+            #region Mansot Royal
 
-            // béco du tofu (1999)
-            // steal agility
-            // target only self -> all
-            FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
-                (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+            // Mansomure (2607)
+            // remove effect
+            FixEffectOnAllLevels(2607, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            RemoveEffectOnAllLevels(2607, 1, false);
 
             #endregion
+
+            #region Glourséleste
+
+            // Rattrapage (2261)
+            // ENEMY_ALL -> ALLY_ALL
+            FixEffectOnAllLevels(2261, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(2261, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+            FixEffectOnAllLevels(2261, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+
+            #endregion
+
+            #region Père Fwetar
+
+            // Parade des vieux jouets (913)
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(913, EffectsEnum.Effect_AddAP_111, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+            RemoveEffectOnAllLevels(913, 4, false);
+
+            // Invocation de jouet cassé (914)
+            // Duration => -1
+            FixEffectOnAllLevels(914, EffectsEnum.Effect_AddMP, (level, effect, critical) => effect.Duration = -1);
+
+            // Vilain Garnement (2557)
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(2557, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            // Infantophagie (2792)
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(2792, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            #endregion
+
+            #endregion
+
+            #region Summon
 
             #region Chaton
 
@@ -414,7 +713,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #region Tonneau
 
             // Beuverie (1674)
-            FixEffectOnAllLevels(1674, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_SUMMONER);
+            FixEffectOnAllLevels(1674, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_SUMMONER, false);
 
             #endregion
 
@@ -425,8 +724,248 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion
 
+            #region LivingChest
+
+            // Prospection (495)
+            FixEffectOnAllLevels(495, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(495, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(495, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
             #endregion
 
+            #endregion
+
+            #region Monsters
+
+            #region TOFU
+
+            // béco du tofu (1999)
+            // steal agility
+            // target only self -> all
+            FixEffectOnAllLevels(1999, EffectsEnum.Effect_StealAgility,
+                (level, effect, critical) => effect.Targets = SpellTargetType.ALL);
+
+            #endregion
+
+            #region Boulglours
+
+            // Saccharose (2255)
+            // ENEMY_ALL => ONLY_SELF
+            FixEffectOnAllLevels(2255, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            // Invertase (2485)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2485, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            #endregion
+
+            #region Glouragan
+
+            // Gloursonde (2487)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2487, 0, (level, effect, critical) => effect.Targets = SpellTargetType.NONE);
+            FixEffectOnAllLevels(2487, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            // Glourdavu (2488)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2488, 0, (level, effect, critical) => effect.Targets = SpellTargetType.NONE);
+            FixEffectOnAllLevels(2488, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            // Glours poursuite (2489)
+            // ENEMY_ALL => ONLY_SELF
+            FixEffectOnAllLevels(2489, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+
+            // Gloursculade (2490)
+            // ENEMY_ALL => ALL
+            FixEffectOnAllLevels(2490, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL, false);
+
+            #endregion
+
+            #region Glourmand
+
+            // Gloursbi-boulga (2510)
+            // ENEMY_ALL => ONLY_SELF
+            FixEffectOnAllLevels(2510, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+            FixEffectOnAllLevels(2510, 0, (level, effect, critical) => effect.Duration = 2, false);
+
+            #endregion
+
+            #region Gloursaya
+
+            // Propolis (2258)
+            // ENEMY_ALL => ONLY_SELF
+            FixEffectOnAllLevels(2258, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(2258, 0, (level, effect, critical) => effect.Duration = 2);
+
+            #endregion
+
+            #region Meliglours
+
+            // Gloursombilical (2492)
+            // ENEMY_ALL => ALLY_ALL
+            FixEffectOnAllLevels(2492, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+            FixEffectOnAllLevels(2492, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            // Higlours (2494)
+            // ALLY_ALL => ENEMY_ALL
+            FixEffectOnAllLevels(2494, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+
+            #endregion
+
+            #region Fistulor
+
+            // Ami Célium (2688)
+            // NONE => ENEMY_ALL
+            FixEffectOnAllLevels(2688, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            // Spore Héole (2689)
+            // NONE => ALLY_ALL
+            FixEffectOnAllLevels(2689, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
+
+            #endregion
+
+            #region Fongeur
+
+            // Volve Hérine (2690)
+            // NONE => ALLY_ALL
+            FixEffectOnAllLevels(2690, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            #endregion
+
+            #region Fu Mansot
+
+            // Mansoron (2241)
+            FixEffectOnAllLevels(2241, 2, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+            FixCriticalEffectOnAllLevels(2241, 2, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
+
+            #endregion
+
+            #region Mansobèse
+
+            // Mansoldat (2237)
+            FixEffectOnAllLevels(2237, 1, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+            FixCriticalEffectOnAllLevels(2237, 1, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
+
+            #endregion
+
+            #region Shamansot
+
+            // Mansote-mouton (2232)
+            FixEffectOnAllLevels(2232, 2, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+            FixCriticalEffectOnAllLevels(2232, 2, (level, effect, critical) => level.CriticalEffects.Move(effect, 0));
+
+            #endregion
+
+            #region Mérulette
+
+            // Baqueraule (2698)
+            // NONE => ALLY_ALL | SELF
+            FixEffectOnAllLevels(2698, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF, false);
+
+            #endregion
+
+            #region Boufmouth de Guerre
+
+            // Koudblouze (2220)
+            // NONE => ENEMY_ALL
+            FixEffectOnAllLevels(2220, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2220, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2220, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2220, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2220, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+            FixEffectOnAllLevels(2220, 5, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+
+            #endregion
+
+            #region Bouboule de Neige
+
+            // Bouboule de Neige (864)
+            // NONE => ENEMY_ALL
+            FixEffectOnAllLevels(2220, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL);
+
+            #endregion
+
+            #region Peluche Wabbit
+
+            // Rembourrage (2771)
+            // NONE => ALLY_ALL
+            FixEffectOnAllLevels(2771, EffectsEnum.Effect_HealHP_108, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF);
+
+            // Malédiction de la Cawotte (2773)
+            // NONE => ONLY_SELF
+            FixEffectOnAllLevels(2773, EffectsEnum.Effect_AddVitality, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(2773, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
+            FixCriticalEffectOnAllLevels(2773, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
+
+            #endregion
+
+            #region Cadob'Omb
+
+            // Jalousie maladive (893)
+            FixEffectOnAllLevels(893, 5, (level, effect, critical) => level.Effects.Move(effect, 0), false);
+
+            #endregion
+
+            #region Tronkoblop
+
+            // Blopzone (1167)
+            FixEffectOnAllLevels(1167, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
+            #endregion
+
+            #region Gloutoblop
+
+            // Gloutage (1164)
+            FixEffectOnAllLevels(1164, 0, (level, effect, critical) => level.Effects.Move(effect, 2), false);
+            FixCriticalEffectOnAllLevels(1164, 0, (level, effect, critical) => level.CriticalEffects.Move(effect, 2));
+
+            #endregion
+
+            #region Poutch Ingball
+
+            // Tuerie (411)
+            FixEffectOnAllLevels(411, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(411, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(411, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(411, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+            FixEffectOnAllLevels(411, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_ALL, false);
+
+            #endregion
+
+            #endregion
+
+            #endregion
+
+        }
+
+        public static void FixSpellsTargets()
+        {
+            var spells = SpellManager.Instance.GetSpellLevels();
+
+            foreach (var spell in spells.Where(x => x.Spell.TypeId == 0))
+            {
+                foreach (var effect in spell.Effects)
+                {
+                    var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+
+                    if (effect.Targets != (SpellTargetType.ENEMY_1 | SpellTargetType.ENEMY_2 | SpellTargetType.ENEMY_SUMMONS | SpellTargetType.ENEMY_STATIC_SUMMONS))
+                        continue;
+
+                    if (((category & SpellCategory.Healing) != 0 || (category & SpellCategory.Buff) != 0) && (category & SpellCategory.Damages) == 0 && (category & SpellCategory.Curse) == 0)
+                        effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF;
+                }
+
+                foreach (var effect in spell.CriticalEffects)
+                {
+                    var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+
+                    if (effect.Targets != (SpellTargetType.ENEMY_1 | SpellTargetType.ENEMY_2 | SpellTargetType.ENEMY_SUMMONS | SpellTargetType.ENEMY_STATIC_SUMMONS))
+                        continue;
+
+                    if (((category & SpellCategory.Healing) != 0 || (category & SpellCategory.Buff) != 0) && (category & SpellCategory.Damages) == 0 && (category & SpellCategory.Curse) == 0)
+                        effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.SELF;
+                }
+            }
         }
 
         public static void FixEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer, bool critical = true)
@@ -439,7 +978,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             foreach (var level in spellLevels)
             {
                 fixer(level, level.Effects[effectIndex], false);
-                if (critical)
+                if (critical && level.CriticalEffects.Count > effectIndex)
                     fixer(level, level.CriticalEffects[effectIndex], true);
             }
         }
@@ -468,6 +1007,19 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                 {
                     fixer(level, spellEffect, true);
                 }
+            }
+        }
+
+        public static void FixCriticalEffectOnAllLevels(int spellId, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+                throw new Exception(string.Format("Cannot apply fix on spell {0} : spell do not exists", spellId));
+
+            foreach (var level in spellLevels)
+            {
+                fixer(level, level.CriticalEffects[effectIndex], true);
             }
         }
 

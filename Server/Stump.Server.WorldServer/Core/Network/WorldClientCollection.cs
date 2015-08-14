@@ -9,7 +9,7 @@ using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.WorldServer.Core.Network
 {
-    public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>
+    public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>, IDisposable
     {
         private WorldClient m_singleClient; // avoid new object allocation
         private readonly List<WorldClient> m_underlyingList = new List<WorldClient>();
@@ -129,6 +129,12 @@ namespace Stump.Server.WorldServer.Core.Network
         public static implicit operator WorldClientCollection(WorldClient client)
         {
             return new WorldClientCollection(client);
+        }
+
+        public void Dispose()
+        {
+            m_singleClient = null;
+            m_underlyingList.Clear();
         }
     }
 }

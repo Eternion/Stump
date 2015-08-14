@@ -2,6 +2,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
@@ -57,11 +58,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 {
                     AddStatBuff(actor, (short)(-value), PlayerFields.MP, true);
                     ActionsHandler.SendGameActionFightPointsVariationMessage(Fight.Clients, ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, Caster, actor, (short)(-value));
+                    actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, Caster, actor, (short)(-value));
                 }
                 else
                 {
-                    actor.LostMP(value);
+                    actor.LostMP(value, Caster);
                 }
+
+                actor.TriggerBuffs(BuffTriggerType.LOST_MP);
             }
 
             return true;

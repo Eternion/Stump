@@ -3,6 +3,7 @@ using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
@@ -25,6 +26,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                     return false;
 
                 AddStatBuff(actor, (short)( -( integerEffect.Value ) ), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
+                actor.TriggerBuffs(BuffTriggerType.LOST_AP);
+
                 if (Effect.Duration > 0)
                 {
                     AddStatBuff(Caster, integerEffect.Value, PlayerFields.AP, true, (short)EffectsEnum.Effect_AddAP_111);

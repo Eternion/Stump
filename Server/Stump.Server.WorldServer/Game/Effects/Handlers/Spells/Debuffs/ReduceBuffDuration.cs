@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                foreach (var buff in actor.GetBuffs().ToArray().Where(buff => buff.Dispellable))
+                foreach (var buff in actor.GetBuffs().ToArray().Where(buff => buff.Dispellable).Where(buff => buff.Duration > 0))
                 {
                     buff.Duration -= integerEffect.Value;
 

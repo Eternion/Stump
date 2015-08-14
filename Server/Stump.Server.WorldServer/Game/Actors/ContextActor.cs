@@ -26,6 +26,12 @@ namespace Stump.Server.WorldServer.Game.Actors
             set;
         }
 
+        public virtual bool IsInMovement
+        {
+            get;
+            set;
+        }
+
         public virtual ICharacterContainer CharacterContainer
         {
             get { return Position.Map; }

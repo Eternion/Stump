@@ -33,21 +33,23 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
 
             foreach (var grade in MonsterManager.Instance.GetMonsterGrades())
             {
-                var extraHp = grade.LifePoints / (double)grade.Level > 10;
-
-                grade.TackleEvade = (short) ((int) (grade.Level / 10d)  * (extraHp ? 2 : 1));
-                grade.TackleBlock = grade.TackleEvade;
-
-                UpdateMonsterMainStats(grade);
+                if (UpdateMonsterMainStats(grade))
+                    MonsterManager.Instance.Database.Update(grade);
             }
         }
 
-        private static void UpdateMonsterMainStats(MonsterGrade monster)
+        private static bool UpdateMonsterMainStats(MonsterGrade monster)
         {
+            if (monster.Strength != 0 || monster.Agility != 0 || 
+                monster.Chance != 0 || monster.Intelligence != 0 ||
+                monster.Stats.Count != 0)
+                return false;
+
+            var extraHp = monster.LifePoints / (double)monster.Level > 10;
             var factor = monster.Template.IsBoss ? BossBonusFactor : 1;
             var points = monster.Level * StatsFactor * factor;
-
             var stats = GetMonsterMainStats(monster);
+
 
             if (stats.Length == 0)
             {
@@ -68,6 +70,11 @@ namespace Stump.Plugins.DefaultPlugin.Monsters
                 monster.Chance += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Chance) / total )));
             if (monster.Intelligence == 0)
                 monster.Intelligence += (short)GetPointsByInvest((int)Math.Floor(points * ( stats.Count(x => x == PlayerFields.Intelligence) / total )));
+        
+            monster.TackleEvade = (short) ((int) (monster.Level / 10d)  * (extraHp ? 2 : 1));
+            monster.TackleBlock = monster.TackleEvade;
+
+            return true;
         }
 
         private static PlayerFields[] GetMonsterMainStats(MonsterGrade monster)

@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Logging;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -111,16 +116,22 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 if (character.Relook == 2)
                     character.Sex = character.Sex == SexTypeEnum.SEX_MALE ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
 
-                /* Set Look */
+                /* Get Head */
                 var head = BreedManager.Instance.GetHead(remodel.cosmeticId);
+                /* Get character Breed */
+                var breed = BreedManager.Instance.GetBreed((int)character.Breed);
 
-                if (head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
+                if (breed == null || head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
                 {
                     client.Send(new CharacterSelectedErrorMessage());
                     return;
                 }
 
                 character.Head = head.Id;
+
+                foreach (var scale in character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Scales : breed.FemaleLook.Scales)
+                    character.EntityLook.SetScales(scale);
+
                 character.Relook = 0;
             }
 
@@ -146,17 +157,19 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
-            InventoryHandler.SendInventoryContentMessage(client);
+            if (client.Character.Inventory.Presets.Any())
+                InventoryHandler.SendInventoryContentAndPresetMessage(client);
+            else
+                InventoryHandler.SendInventoryContentMessage(client);
 
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR);
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
             //ContextHandler.SendSpellForgottenMessage(client);
 
-            ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 21).Select(entry => (byte)entry).ToList());
+            ContextRoleplayHandler.SendEmoteListMessage(client, client.Character.AvailableEmotes.Select(x => (byte)x));
+            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
 
             PvPHandler.SendAlignmentRankUpdateMessage(client);
-
-            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
 
             InventoryHandler.SendSpellListMessage(client, true);
             
@@ -202,6 +215,17 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             character.LastUsage = DateTime.Now;
             WorldServer.Instance.DBAccessor.Database.Update(character);
+
+            var document = new BsonDocument
+            {
+                { "AcctId", client.WorldAccount.Id },
+                { "CharacterId", character.Id },
+                { "IPAddress", client.IP },
+                { "Action", "Login" },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("characters_connections", document);
         }
 
 
@@ -212,6 +236,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             {
                 SendCharactersListMessage(client);
                 //SendCharactersListWithRemodelingMessage(client);
+
+                var characterInFight = FindCharacterFightReconnection(client);
+                if (characterInFight != null)
+                {
+                    client.ForceCharacterSelection = characterInFight;
+                    SendCharacterSelectedForceMessage(client, characterInFight.Id);
+                }
 
                 if (client.WorldAccount != null && client.StartupActions.Count > 0)
                 {
@@ -224,6 +255,26 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 client.DisconnectLater(1000);
             }
         }
+
+        [WorldHandler(CharacterSelectedForceReadyMessage.Id, IsGamePacket = false, ShouldBeLogged = false)]
+        public static void HandleCharacterSelectedForceReadyMessage(WorldClient client, CharacterSelectedForceReadyMessage message)
+        {
+            if (client.ForceCharacterSelection == null)
+                client.Disconnect();
+            else
+                CommonCharacterSelection(client, client.ForceCharacterSelection);
+        }
+
+        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
+        {
+            return (from characterInFight in client.Characters.Where(x => x.LeftFightId != null)
+                    let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value)
+                    where fight != null
+                    let fighter = fight.GetLeaver(characterInFight.Id)
+                    where fighter != null
+                    select characterInFight).FirstOrDefault();
+        }
+
 
         public static void SendCharactersListMessage(WorldClient client)
         {
@@ -298,6 +349,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)
         {
             client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations(), true));
+        }
+
+        public static void SendCharacterSelectedForceMessage(IPacketReceiver client, int id)
+        {
+            client.Send(new CharacterSelectedForceMessage(id));
         }
 
         public static void SendCharacterCapabilitiesMessage(WorldClient client)

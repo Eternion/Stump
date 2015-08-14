@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -35,6 +36,18 @@ namespace Stump.Core.Pool
             {
                 m_manager.CheckIn(segment);
             }
+        }
+    }
+
+    public class TemporaryBufferSegment : BufferSegment
+    {
+        public TemporaryBufferSegment(int length)
+            : base(new ArrayBuffer(new byte[length]), 0, length, 0)
+        {
+        }
+
+        protected override void CheckIn()
+        {
         }
     }
 
@@ -87,6 +100,12 @@ namespace Stump.Core.Pool
             get;
             set;
         }
+
+        public object Token
+        {
+            get;
+            set;
+        }
 #endif
 
         /// <summary>
@@ -132,8 +151,13 @@ namespace Stump.Core.Pool
         {
             if (Interlocked.Decrement(ref m_uses) == 0)
             {
-                m_buffer.CheckIn(this);
+                CheckIn();
             }
+        }
+
+        protected virtual void CheckIn()
+        {
+            m_buffer.CheckIn(this);
         }
 
         public static BufferSegment CreateSegment(byte[] bytes)
@@ -205,7 +229,7 @@ namespace Stump.Core.Pool
 
         private static volatile int m_segmentId;
         private readonly LockFreeQueue<BufferSegment> m_availableSegments;
-        private readonly ConcurrentList<BufferSegment> m_segmentsInUse;
+        private readonly ConcurrentDictionary<int, BufferSegment> m_segmentsInUse;
         private readonly List<ArrayBuffer> m_buffers;
 
         /// <summary>
@@ -276,7 +300,7 @@ namespace Stump.Core.Pool
 #if DEBUG
         public BufferSegment[] GetSegmentsInUse()
         {
-            return m_segmentsInUse.ToArray();
+            return m_segmentsInUse.Values.ToArray();
         }
 
 #endif
@@ -294,7 +318,7 @@ namespace Stump.Core.Pool
             m_segmentSize = segmentSize;
             m_buffers = new List<ArrayBuffer>();
             m_availableSegments = new LockFreeQueue<BufferSegment>();
-            m_segmentsInUse = new ConcurrentList<BufferSegment>();
+            m_segmentsInUse = new ConcurrentDictionary<int, BufferSegment>();
             Managers.Add(this);
         }
 
@@ -340,7 +364,7 @@ namespace Stump.Core.Pool
             //Debug.WriteLineIf(UsedSegmentCount != lastValue, string.Format("Used:{0} Last:{1} Stack:{2}", UsedSegmentCount, lastValue, new StackTrace()));
             lastValue = UsedSegmentCount;
 #if DEBUG
-            m_segmentsInUse.Add(segment);
+            m_segmentsInUse.TryAdd(segment.Number, segment);
             segment.LastUserTrace = new StackTrace().ToString();
             segment.LastUsage = DateTime.Now;
 #endif
@@ -378,7 +402,8 @@ namespace Stump.Core.Pool
 
             m_availableSegments.Enqueue(segment);
 
-            m_segmentsInUse.Remove(segment);
+            BufferSegment dummy;
+            m_segmentsInUse.TryRemove(segment.Number, out dummy);
         }
 
         /// <summary>
@@ -411,7 +436,7 @@ namespace Stump.Core.Pool
         /// <param name="payloadSize"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">In case that the payload exceeds the SegmentSize of the largest buffer available.</exception>
-        public static BufferSegment GetSegment(int payloadSize)
+        public static BufferSegment GetSegment(int payloadSize, bool allowExceed = false)
         {
             if (payloadSize <= Tiny.SegmentSize)
             {
@@ -433,6 +458,9 @@ namespace Stump.Core.Pool
             {
                 return ExtraLarge.CheckOut();
             }
+
+            if (allowExceed)
+                return new TemporaryBufferSegment(payloadSize);
 
             throw new ArgumentOutOfRangeException("Required buffer is way too big: " + payloadSize);
         }

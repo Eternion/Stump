@@ -28,7 +28,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
                 if (Effect.Duration > 0)
                 {
-                    AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, HealBuffTrigger);
+                    var triggerType = BuffTriggerType.TURN_BEGIN;
+
+                    switch (Spell.Id)
+                    {
+                        case (int)SpellIdEnum.SPORE_TEILLE:
+                            triggerType = BuffTriggerType.TACKLE;
+                            break;
+                    }
+
+                    AddTriggerBuff(actor, true, triggerType, HealBuffTrigger);
                 }
                 else
                 {

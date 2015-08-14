@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections;
+using System.Text;
 using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Benchmark
 {
     public class BenchmarkEntry
     {
+        public int Id
+        {
+            get;
+            set;
+        }
+
         public string MessageType
         {
             get;
@@ -66,6 +73,19 @@ namespace Stump.Server.BaseServer.Benchmark
                 MessageType = type,
                 AdditionalProperties = hashTable
             };
+        }
+
+        public override string ToString()
+        {
+            if (AdditionalProperties.Count == 0)
+                return String.Format("{0} -{1:F}ms", MessageType, Timestamp.TotalMilliseconds);
+
+            var sb = new StringBuilder();
+
+            foreach (var key in AdditionalProperties.Keys)
+                sb.AppendFormat("{0}:{1}", key, AdditionalProperties[key]);
+
+            return String.Format("{0} -{1:F}ms - {2}", MessageType, Timestamp.TotalMilliseconds, sb);
         }
     }
 }

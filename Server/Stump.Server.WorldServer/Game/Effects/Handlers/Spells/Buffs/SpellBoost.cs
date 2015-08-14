@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             {
                 var integerEffect = GenerateEffect();
 
-                if (integerEffect == null)
+                if (integerEffect == null || !actor.HasSpell(Dice.DiceNum))
                     return false;
 
                 var boostedSpell = actor.GetSpell(Dice.DiceNum);

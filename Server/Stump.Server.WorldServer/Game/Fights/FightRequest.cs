@@ -1,5 +1,3 @@
-using System.Diagnostics.Contracts;
-using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
@@ -23,8 +21,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void OnAccept()
         {
-            ContextRoleplayHandler.
-                SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Target, Source, Target, true);
+            if (Source.Map != Target.Map)
+            {
+                ContextRoleplayHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Target, Source, Target, false);
+                return;
+            }
+
+            ContextRoleplayHandler.SendGameRolePlayPlayerFightFriendlyAnsweredMessage(Source.Client, Target, Source, Target, true);
 
             var fight = FightManager.Instance.CreateDuel(Source.Map);
 

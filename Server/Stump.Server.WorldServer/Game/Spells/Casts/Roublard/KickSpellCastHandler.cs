@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
         {
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             base.Initialize();
 
@@ -24,6 +24,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
                 if (fighter != null && fighter.IsFriendlyWith(Caster))
                     handler.SubRangeForActor = fighter;
             }
+
+            return true;
         }
 
         public override void Execute()

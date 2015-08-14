@@ -317,6 +317,11 @@ namespace Stump.Server.WorldServer.Game
                 spawn.Map.AddMonsterDungeonSpawn(spawn);
             }
 
+            foreach (var spawn in MonsterManager.Instance.GetMonsterStaticSpawns().Where(spawn => spawn.Map != null))
+            {
+                spawn.Map.AddMonsterStaticSpawn(spawn);
+            }
+
             foreach (var map in m_maps.Where(map => map.Value.MonsterSpawnsCount > 0))
             {
                 map.Value.EnableClassicalMonsterSpawns();

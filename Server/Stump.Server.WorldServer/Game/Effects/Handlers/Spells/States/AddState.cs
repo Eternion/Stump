@@ -13,8 +13,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public bool BypassDispel;
-
         public AddState(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
@@ -32,7 +30,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return false;
                 }
 
-                AddStateBuff(affectedActor, !BypassDispel && state.Id == (int)SpellStatesEnum.Invulnerable, (state.Id == (int)SpellStatesEnum.Unload || state.Id == (int)SpellStatesEnum.Overload || state.Id == (int)SpellStatesEnum.Weakened), state);
+                var dispel = false;
+
+                if (state.Id == (int)SpellStatesEnum.Invulnerable || state.Id == (int)SpellStatesEnum.Drunk)
+                {
+                    dispel = true;
+
+                    if (Spell.Id == (int)SpellIdEnum.INIMOUTH || Spell.Id == (int)SpellIdEnum.GLOURSOMPTUEUX || Spell.Id == (int)SpellIdEnum.MANSOMURE)
+                        dispel = false;
+                }
+
+                AddStateBuff(affectedActor, dispel, (state.Id == (int)SpellStatesEnum.Unload || state.Id == (int)SpellStatesEnum.Overload || state.Id == (int)SpellStatesEnum.Weakened), state);
             }
 
             return true;

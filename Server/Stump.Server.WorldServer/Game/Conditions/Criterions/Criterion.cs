@@ -106,6 +106,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new AlignementLevelCriterion();
                 case AlignmentCriterion.Identifier:
                     return new AlignmentCriterion();
+                case AreaCriterion.Identifier:
+                    return new AreaCriterion();
                 case BonesCriterion.Identifier:
                     return new BonesCriterion();
                 case BreedCriterion.Identifier:
@@ -176,6 +178,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new SubscribeCriterion();
                 case UnusableCriterion.Identifier:
                     return new UnusableCriterion();
+                case UnknownCriterion.Identifier:
+                    return new UnknownCriterion();
                 case WeightCriterion.Identifier:
                     return new WeightCriterion();
                 default:

@@ -279,7 +279,7 @@ namespace Stump.Core.IO
         /// <returns></returns>
         public void WriteFloat(float @float)
         {
-            m_writer.Write(@float);
+            WriteBigEndianBytes(BitConverter.GetBytes(@float));
         }
 
         /// <summary>

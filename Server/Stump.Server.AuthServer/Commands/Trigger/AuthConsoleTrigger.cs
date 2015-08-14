@@ -42,5 +42,9 @@ namespace Stump.Server.AuthServer.Commands.Trigger
         {
             get { return AuthServer.Instance.ConsoleInterface as AuthConsole; }
         }
+
+        public override void Log()
+        {
+        }
     }
 }

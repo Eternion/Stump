@@ -26,6 +26,7 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             get { return false; } // don't know why
         }
+
         public override bool IsMultiAccountRestricted
         {
             get { return true; }
@@ -78,6 +79,8 @@ namespace Stump.Server.WorldServer.Game.Arena
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
+            base.GenerateResults();
+
             var challengersRank =
                 (int) ChallengersTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             var defendersRank =
@@ -121,6 +124,9 @@ namespace Stump.Server.WorldServer.Game.Arena
             if (characterFighter == null)
                 return;
 
+            if (characterFighter.IsDisconnected)
+                return;
+
             characterFighter.Character.ToggleArenaPenality();
 
             if (characterFighter.Character.ArenaParty != null)
@@ -147,6 +153,14 @@ namespace Stump.Server.WorldServer.Game.Arena
         {
             var opposedTeamRank = (int)character.OpposedTeam.GetAllFightersWithLeavers().OfType<CharacterFighter>().Average(x => x.Character.ArenaRank);
             return ArenaRankFormulas.AdjustRank(character.Character.ArenaRank, opposedTeamRank, false);
+        }
+
+        protected override void OnDisposed()
+        {
+            if (m_placementTimer != null)
+                m_placementTimer.Dispose();
+
+            base.OnDisposed();
         }
     }
 }

@@ -17,7 +17,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Caster = caster;
             Look = caster.Look.Clone();
-            m_stats = caster.Stats.CloneAndChangeOwner(this);
+            m_stats = new StatsFields(this);
+            m_stats.InitializeFromStats(caster.Stats);
         }
 
         public FightActor Caster

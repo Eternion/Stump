@@ -27,7 +27,6 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightVanishMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id));
         }
          
-
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
             var fighterInfos = summon.GetGameFightFighterInformations();

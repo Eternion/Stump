@@ -227,12 +227,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddMP, GetBonusByLevel(1, mount.Level)));
                     break;
                 case 88:
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddAirResistPercent, GetBonusByLevel(5, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddWaterResistPercent, GetBonusByLevel(5, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddFireResistPercent, GetBonusByLevel(5, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddNeutralResistPercent, GetBonusByLevel(5, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddEarthResistPercent, GetBonusByLevel(5, mount.Level)));
-                    effects.Add(new EffectInteger(EffectsEnum.Effect_IncreaseDamage_138, GetBonusByLevel(50, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_SubVitality, GetBonusByLevel(150, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddAP_111, GetBonusByLevel(1, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddStrength, GetBonusByLevel(50, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddIntelligence, GetBonusByLevel(50, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddChance, GetBonusByLevel(50, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddAgility, GetBonusByLevel(50, mount.Level)));
+                    effects.Add(new EffectInteger(EffectsEnum.Effect_AddWisdom, GetBonusByLevel(50, mount.Level)));
                     break;
                 case 17:
                     effects.Add(new EffectInteger(EffectsEnum.Effect_AddChance, GetBonusByLevel(80, mount.Level)));

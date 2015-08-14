@@ -12,19 +12,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
     [EffectHandler(EffectsEnum.Effect_DamageIntercept)]
     public class Sacrifice : SpellEffectHandler
     {
-        private List<FightActor> m_targets;
-
         public Sacrifice(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
+        }
+
+        public override bool CanApply()
+        {
+            return !GetAffectedActors().Any(x => x.GetBuffs(y => y.Effect.EffectId == EffectsEnum.Effect_DamageIntercept).Any());
         }
 
         public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())
             {
-                //m_targets.Add(actor);
-
                 AddTriggerBuff(actor, false, BuffTriggerType.BEFORE_ATTACKED, TriggerBuffApply);
                 AddTriggerBuff(actor, false, BuffTriggerType.AFTER_ATTACKED, PostTriggerBuffApply);
             }
@@ -42,17 +43,31 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target.IsSacrificeProtected)
                 return;
 
-            target.IsSacrificeProtected = true;
-
             var damage = token as Fights.Damage;
             if (damage == null)
                 return;
 
-            Caster.ExchangePositions(target);
+            target.IsSacrificeProtected = true;
+
+            if (buff.Spell.Template.Id == (int)SpellIdEnum.SACRIFICE_440)
+                Caster.ExchangePositions(target);
+            else if (Caster is SummonedTurret)
+            {
+                target.IsSacrificeProtected = false;
+
+                var source = damage.Source;
+
+                if (!source.Position.Point.IsAdjacentTo(target.Position.Point))
+                    return;
+
+                if (!Caster.Position.Point.IsAdjacentTo(target.Position.Point))
+                    return;
+            }
 
             // first, apply damage to sacrifier
             Caster.InflictDamage(damage);
-            // then, negate damage done to target
+
+            // then, negate damage given to target
             damage.IgnoreDamageBoost = true;
             damage.IgnoreDamageReduction = true;
             damage.Generated = true;

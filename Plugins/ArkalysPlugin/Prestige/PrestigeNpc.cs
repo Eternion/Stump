@@ -14,6 +14,7 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -81,18 +82,18 @@ namespace ArkalysPlugin.Prestige
             if (m_scriptDisabled)
                 template.NpcSpawned -= OnNpcSpawned;
 
-            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_TALK);
+            npc.Actions.RemoveAll(x => x.ActionType.Contains(NpcActionTypeEnum.ACTION_TALK));
             npc.Actions.Add(new PrestigeNpcScript());
         }
     }
 
     public class PrestigeNpcScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
             get
             {
-                return NpcActionTypeEnum.ACTION_TALK;
+                return new [] { NpcActionTypeEnum.ACTION_TALK };
             }
         }
 

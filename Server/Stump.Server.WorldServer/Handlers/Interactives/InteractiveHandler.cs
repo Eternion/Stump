@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;

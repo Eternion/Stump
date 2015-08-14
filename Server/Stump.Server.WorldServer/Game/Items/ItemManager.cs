@@ -13,7 +13,6 @@ using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
-using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -223,8 +222,7 @@ namespace Stump.Server.WorldServer.Game.Items
             }
             m_itemsSets = Database.Query<ItemSetTemplate>(ItemSetTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
             m_npcShopItems = Database.Query<NpcItem>(NpcItemRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_livingObjects =
-                Database.Query<LivingObjectRecord>(LivingObjectRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_livingObjects = Database.Query<LivingObjectRecord>(LivingObjectRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
             InitializeItemCtors();
         }
@@ -360,6 +358,11 @@ namespace Stump.Server.WorldServer.Game.Items
             return Database.Fetch<PlayerItemRecord>(string.Format(PlayerItemRelator.FetchByOwner, ownerId));
         }
 
+        public List<PlayerPresetRecord> FindPlayerPresets(int ownerId)
+        {
+            return Database.Fetch<PlayerPresetRecord>(string.Format(PlayerPresetRelator.FetchByOwner, ownerId));
+        }
+
         public List<PlayerMerchantItemRecord> FindPlayerMerchantItems(int ownerId)
         {
             return Database.Fetch<PlayerMerchantItemRecord>(string.Format(PlayerMerchantItemRelator.FetchByOwner, ownerId));
@@ -479,7 +482,6 @@ namespace Stump.Server.WorldServer.Game.Items
             m_itemTemplates.Add(template.Id, template);
             Database.Insert(template);
         }
-
 
         public LivingObjectRecord TryGetLivingObjectRecord(int id)
         {

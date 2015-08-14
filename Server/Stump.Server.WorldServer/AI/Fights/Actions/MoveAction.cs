@@ -43,6 +43,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             }
         }
 
+        public bool AttemptOnly
+        {
+            get;
+            set;
+        }
+
         protected override RunStatus Run(object context)
         {
             if (!Fighter.CanMove())
@@ -57,7 +63,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
             if (path == null || path.IsEmpty())
                 return RunStatus.Failure;
 
-            if (path.MPCost > Fighter.MP)
+            if (path.MPCost > Fighter.MP && !AttemptOnly)
                 return RunStatus.Failure;
 
             Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
@@ -94,7 +100,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
                 lastPos = Fighter.Cell.Id;
                 tries++; // avoid infinite loops
             }
-
+            
             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
             return success ? RunStatus.Success : RunStatus.Failure;

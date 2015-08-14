@@ -1,20 +1,4 @@
-﻿#region License GNU GPL
-// OrbsManager.cs
-// 
-// Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
-// under the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
-// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
-
-using System;
+﻿using System;
 using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
@@ -23,7 +7,6 @@ using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Items;
 
 namespace ArkalysPlugin
@@ -46,6 +29,9 @@ namespace ArkalysPlugin
         [Variable]
         public static double FormulasExponent = 2.18;
 
+        [Variable]
+        public static double BossFactor = 8;
+
 
 
         [Initialization(typeof(ItemManager))]
@@ -63,21 +49,24 @@ namespace ArkalysPlugin
         {
             if (fight is FightPvM)
             {
-                fight.WinnersDetermined += OnWinnersDetermined;
+                fight.ResultGenerated += OnResultGenerated;
             }
         }
 
-        private static void OnWinnersDetermined(IFight fight, FightTeam winners, FightTeam losers, bool draw)
+        private static void OnResultGenerated(IFight fight)
         {
             var monsters = fight.GetAllFighters<MonsterFighter>(entry => entry.IsDead()).ToList();
             var players = fight.GetAllFighters<CharacterFighter>().ToList();
 
-            var totalOrbs = (uint) monsters.Sum(x => GetMonsterDroppedOrbs(x));
+            var challengeBonus = fight.GetChallengeBonus();
+
+            var totalOrbs = (uint)monsters.Sum(x => GetMonsterDroppedOrbs(x));
+            totalOrbs += (uint)Math.Truncate(totalOrbs * (challengeBonus / 100d));
 
             foreach (var player in players)
-            {                
-                var teamPP = player.Team.GetAllFighters().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
-                var orbs = (uint) (((double)player.Stats[PlayerFields.Prospecting].Total/teamPP)*totalOrbs);
+            {
+                var teamPP = player.Team.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+                var orbs = (uint)(((double)player.Stats[PlayerFields.Prospecting].Total / teamPP) * totalOrbs);
 
                 if (orbs > 0)
                     player.Loot.AddItem(new DroppedItem(OrbItemTemplateId, orbs));
@@ -94,8 +83,8 @@ namespace ArkalysPlugin
                 limit -= (int)item.Stack;
             }
 
-            var collectorOrbs = (uint) (((double)fight.Map.TaxCollector.Guild.TaxCollectorProspecting/
-                                players.Sum(entry => entry.Stats[PlayerFields.Prospecting].Total))*totalOrbs*0.05);
+            var collectorOrbs = (uint)(((double)fight.Map.TaxCollector.Guild.TaxCollectorProspecting /
+                                players.Sum(entry => entry.Stats[PlayerFields.Prospecting].Total)) * totalOrbs * 0.05);
 
             if (collectorOrbs > limit)
                 collectorOrbs = (uint)limit;
@@ -105,8 +94,15 @@ namespace ArkalysPlugin
 
         private static uint GetMonsterDroppedOrbs(MonsterFighter monster)
         {
-            return (uint)Math.Floor(FormulasCoefficient * (monster.Monster.Template.IsBoss ? 8 : 1) * Math.Pow(monster.Level, FormulasExponent)) +
+            if (monster.Monster.Grade.GradeXp == 0)
+                return 0;
+
+
+             return (uint)Math.Floor(FormulasCoefficient * (monster.Monster.Template.IsBoss ? BossFactor : 1) * Math.Pow(monster.Level, FormulasExponent)) +
                 (uint)Math.Floor(Math.Pow(Math.Log(2 * monster.Level), 0.6));
+
+            // formulas based on xp
+            //return (uint) Math.Floor(FormulasCoefficient*(monster.Monster.Template.IsBoss ? BossFactor : 1)*Math.Pow(monster.Monster.Grade.GradeXp, FormulasExponent));
         }
     }
 }

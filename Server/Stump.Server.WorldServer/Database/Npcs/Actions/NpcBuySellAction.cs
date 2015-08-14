@@ -59,7 +59,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
         [DefaultValue(1)]
         public bool CanSell
         {
-            get { return Record.GetParameter<bool>(1, true); }
+            get { return Record.GetParameter<int>(1, true) == 1; }
             set { Record.SetParameter(1, value); }
         }
 
@@ -68,13 +68,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Actions
         /// </summary>
         public bool MaxStats
         {
-            get { return Record.GetParameter<bool>(2, true); }
+            get { return Record.GetParameter<int>(2, true) == 1; }
             set { Record.SetParameter(2, value); }
         }
 
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_BUY_SELL; }
+            get { return new[] { NpcActionTypeEnum.ACTION_BUY_SELL, NpcActionTypeEnum.ACTION_SELL, NpcActionTypeEnum.ACTION_BUY }; }
         }
 
         public override void Execute(Npc npc, Character character)

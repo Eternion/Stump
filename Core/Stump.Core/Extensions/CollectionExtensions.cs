@@ -204,5 +204,32 @@ namespace Stump.Core.Extensions
             TValue val;
             return dict.TryGetValue(key, out val) ? val : default(TValue);
         }
+
+        public static void AddRange<T, S>(this Dictionary<T, S> source, Dictionary<T, S> collection)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException("Collection is null");
+            }
+
+            foreach (var item in collection.Where(item => !source.ContainsKey(item.Key)))
+            {
+                source.Add(item.Key, item.Value);
+            }
+        }
+
+        public static T[] Concat<T>(this T[] x, T[] y)
+        {
+            if (x == null)
+                throw new ArgumentNullException("x");
+            if (y == null)
+                throw new ArgumentNullException("y");
+
+            var oldLen = x.Length;
+            Array.Resize(ref x, x.Length + y.Length);
+            Array.Copy(y, 0, x, oldLen, y.Length);
+
+            return x;
+        }
     }
 }

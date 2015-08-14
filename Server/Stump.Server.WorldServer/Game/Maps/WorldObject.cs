@@ -145,7 +145,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         protected virtual void OnDisposed()
         {
-            Position = null;
+            //Position = null;
         }
 
         #endregion
@@ -155,7 +155,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             Dispose();
         }
 
-        public bool IsGonnaChangeZone()
+        public virtual bool IsGonnaChangeZone()
         {
             return NextMap == null || NextMap.Area.Id != Area.Id;
         }

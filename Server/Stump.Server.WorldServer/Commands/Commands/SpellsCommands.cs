@@ -14,12 +14,15 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using System;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
+using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.Spells;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -177,6 +180,55 @@ namespace Stump.Server.WorldServer.Commands.Commands
             spell.CurrentLevel = (byte)level;
             trigger.ReplyBold("{0}'s spell {1} is now level {2}", target, spell.Template.Name, level);
             ContextRoleplayHandler.SendSpellUpgradeSuccessMessage(target.Client, spell);
+        }
+    }
+
+    public class SpellInfoCommand : SubCommand
+    {
+        public SpellInfoCommand()
+        {
+            Aliases = new[] { "info" };
+            RequiredRole = RoleEnum.Administrator;
+            ParentCommandType = typeof(SpellsCommands);
+            Description = "Get informations about a spell";
+            AddParameter("spell", "spell", "Given spell to forget", converter: ParametersConverter.SpellTemplateConverter);
+            AddParameter<int>("level", "l");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var template = trigger.Get<SpellTemplate>("spell");
+            var level = trigger.Get<int>("level");
+
+            ExploreSpell(template, level, false, trigger);
+        }
+
+        public static void ExploreSpell(SpellTemplate spell, int level, bool critical, TriggerBase trigger)
+        {
+            var levelTemplate = SpellManager.Instance.GetSpellLevel((int)spell.SpellLevelsIds[level - 1]);
+            var type = SpellManager.Instance.GetSpellType(spell.TypeId);
+
+            trigger.ReplyBold("Spell '{0}'  : {1} - Level {2}", spell.Id, spell.Name, level);
+            trigger.ReplyBold("Type : {0} - {1}", type.ShortName, type.LongName);
+            trigger.ReplyBold("Level.SpellBreed = {0}, Level.HideEffects = {1}", levelTemplate.SpellBreed, levelTemplate.HideEffects);
+            trigger.ReplyBold("");
+
+            foreach (var effect in critical ? levelTemplate.CriticalEffects : levelTemplate.Effects)
+            {
+                trigger.ReplyBold("Effect \"{0}\" ({1}, {2})", TextManager.Instance.GetText(effect.Template.DescriptionId), effect.EffectId, (int)effect.EffectId);
+                trigger.ReplyBold("DiceFace = {0}, DiceNum = {1}, Value = {2}", effect.DiceFace, effect.DiceNum, effect.Value);
+                trigger.ReplyBold("Hidden = {0}, Modificator = {1}, Random = {2}, Trigger = {3}, Delay = {4}", effect.Hidden, effect.Modificator, effect.Random, effect.Trigger, effect.Delay);
+                trigger.ReplyBold("ZoneShape = {0}, ZoneSize = {1}-{2}, Duration = {3}, Target = {4}, Group = {5}", effect.ZoneShape, effect.ZoneMinSize, effect.ZoneSize, effect.Duration, effect.Targets, effect.Group);
+                trigger.ReplyBold("Template.Active = {0}, Template.BonusType = {1}, Template.Boost = {2}", effect.Template.Active, effect.Template.BonusType, effect.Template.Boost);
+                trigger.ReplyBold("Template.Category = {0}, Template.Characteristic = {1}, Template.ForceMinMax = {2}", effect.Template.Category, effect.Template.Characteristic, effect.Template.ForceMinMax);
+                trigger.ReplyBold("Template.Operator = {0}, Template.Id = {1}, Template.ShowInSet = {2}", effect.Template.Operator, effect.Template.Id, effect.Template.ShowInSet);
+                trigger.ReplyBold("Template.ShowInTooltip = {0}, Template.UseDice = {1}", effect.Template.ShowInTooltip, effect.Template.UseDice);
+                trigger.ReplyBold("");
+            }
+
+            trigger.ReplyBold("");
+            trigger.ReplyBold("---------------------------------------------");
+            trigger.ReplyBold("");
         }
     }
 }

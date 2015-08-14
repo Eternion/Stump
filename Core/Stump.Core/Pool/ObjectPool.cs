@@ -189,6 +189,10 @@ namespace Stump.Core.Pool
             {
                 ((IPooledObject)obj).Cleanup();
             }
+            else if (obj is IDisposable)
+            {
+                ((IDisposable) obj).Dispose();
+            }
 
             if (m_hardReferences >= m_minSize)
             {

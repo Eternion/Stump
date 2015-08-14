@@ -512,8 +512,20 @@ namespace Stump.ORM
 		// Override this to log commands, or modify command before execution
 		public virtual IDbConnection OnConnectionOpened(IDbConnection conn) { return conn; }
 		public virtual void OnConnectionClosing(IDbConnection conn) { }
-		public virtual void OnExecutingCommand(IDbCommand cmd) { }
-		public virtual void OnExecutedCommand(IDbCommand cmd) { }
+		public virtual void OnExecutingCommand(IDbCommand cmd) {		    
+            var evnt = ExecutingCommand;
+            if (evnt != null)
+                evnt(this, cmd); 
+        }
+		public virtual void OnExecutedCommand(IDbCommand cmd)
+		{
+		    var evnt = CommandExecuted;
+            if (evnt != null)
+                evnt(this, cmd);
+		}
+        
+	    public event Action<Database, IDbCommand> ExecutingCommand;
+	    public event Action<Database, IDbCommand> CommandExecuted;
 
 		// Execute a non-query command
 		public int Execute(string sql, params object[] args)

@@ -61,7 +61,7 @@ namespace ArkalysPlugin.Npcs
             if (m_scriptDisabled)
                 template.NpcSpawned -= OnNpcSpawned;
 
-            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_EXCHANGE || x.ActionType == NpcActionTypeEnum.ACTION_TALK);
+            npc.Actions.RemoveAll(x => x.ActionType.Contains(NpcActionTypeEnum.ACTION_EXCHANGE) || x.ActionType.Contains(NpcActionTypeEnum.ACTION_TALK));
             npc.Actions.Add(new NpcDofusActionScript());
             npc.Actions.Add(new NpcDofusTalkScript());
         }
@@ -69,11 +69,11 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcDofusTalkScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
             get
             {
-                return NpcActionTypeEnum.ACTION_TALK;
+                return new [] { NpcActionTypeEnum.ACTION_TALK };
             }
         }
 
@@ -107,9 +107,9 @@ namespace ArkalysPlugin.Npcs
 
     public class NpcDofusActionScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_EXCHANGE; }
+            get { return new [] { NpcActionTypeEnum.ACTION_EXCHANGE }; }
         }
 
         public override void Execute(Npc npc, Character character)
@@ -123,14 +123,14 @@ namespace ArkalysPlugin.Npcs
     {
         private readonly List<RequiredItem> REQUIRED_ITEMS = new List<RequiredItem>
             {
-                new RequiredItem(972, 100),
-                new RequiredItem(20015, 50),
-                new RequiredItem(694, 45),
-                new RequiredItem(7113, 40),
-                new RequiredItem(739, 35),
-                new RequiredItem(7754, 30),
-                new RequiredItem(6980, 25),
-                new RequiredItem(20140, 20)
+                new RequiredItem(972, 50),
+                new RequiredItem(20015, 30),
+                new RequiredItem(694, 35),
+                new RequiredItem(7113, 30),
+                new RequiredItem(739, 25),
+                new RequiredItem(6980, 15),
+                new RequiredItem(20140, 20),
+                new RequiredItem(7754, 30)
             };
 
         public NpcDofusExchangeDialog(Character character, Npc npc)

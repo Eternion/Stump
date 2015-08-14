@@ -35,32 +35,20 @@ namespace Stump.Server.WorldServer.Game.Maps
             get;
         }
 
-        public bool CanBeSeen(Cell from, Cell to, bool throughEntities = false)
-        {
-            return CanBeSeen(MapPoint.GetPoint(from), MapPoint.GetPoint(to), throughEntities);
-        }
 
-        public bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false)
+        public bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false, WorldObject except = null)
         {
             if (from == null || to == null) return false;
-            if (from == to) return true;
+            if (from == to)
+                return true;
             
             var occupiedCells = new short[0];
             if (!throughEntities)
-                occupiedCells = Objects.Where(x => x.BlockSight).Select(x => x.Cell.Id).ToArray();
+                occupiedCells = Objects.Where(x => x.BlockSight && x != except).Select(x => x.Cell.Id).ToArray();
 
             var line = new LineSet(from, to);
-            foreach (var point in line.EnumerateSet().Skip(1)) // skip first cell
-            {
-                if (to.CellId == point.CellId)
-                    continue;
-
-                var cell = Cells[point.CellId];
-
-                if (!cell.LineOfSight || !throughEntities && Array.IndexOf(occupiedCells, point.CellId) != -1)
-                    return false;
-            }
-
-            return true;        }
+            return !(from point in line.EnumerateValidPoints().Skip(1) where to.CellId != point.CellId let cell = Cells[point.CellId]
+                     where !cell.LineOfSight || !throughEntities && Array.IndexOf(occupiedCells, point.CellId) != -1 select point).Any();
+        }
     }
 }

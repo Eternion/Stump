@@ -33,14 +33,29 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             if (!Caster.CanSummon())
                 return false;
 
-            var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
+            if (monster.Template.Id == 3287 || monster.Template.Id == 3288 || monster.Template.Id == 3289)
+            {
+                var summon = new SummonedTurret(Fight.GetNextContextualId(), Caster, monster, Spell, TargetedCell);
 
-            ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
+                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
 
-            Caster.AddSummon(summon);
-            Caster.Team.AddFighter(summon);
+                Caster.AddSummon(summon);
+                Caster.Team.AddFighter(summon);
 
-            Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
+                Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
+            }
+            else
+            {
+                var summon = new SummonedMonster(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
+
+                ActionsHandler.SendGameActionFightSummonMessage(Fight.Clients, summon);
+
+                Caster.AddSummon(summon);
+                Caster.Team.AddFighter(summon);
+
+                Fight.TriggerMarks(summon.Cell, summon, TriggerType.MOVE);
+            }
+
 
             return true;
         }

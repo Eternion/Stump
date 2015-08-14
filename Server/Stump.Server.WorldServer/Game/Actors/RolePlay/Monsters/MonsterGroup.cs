@@ -89,6 +89,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
 
                 return (short) bonus;
             }
+            set { CreationDate = DateTime.Now - TimeSpan.FromSeconds(value*StarsBonusInterval/(double) StarsBonusIncrementation); }
         }
         
         public DateTime NextMoveDate

@@ -1,26 +1,11 @@
-﻿#region License GNU GPL
-// FightCommand.cs
-// 
-// Copyright (C) 2013 - BehaviorIsManaged
-// 
-// This program is free software; you can redistribute it and/or modify it 
-// under the terms of the GNU General Public License as published by the Free Software Foundation;
-// either version 2 of the License, or (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-// See the GNU General Public License for more details. 
-// You should have received a copy of the GNU General Public License along with this program; 
-// if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-#endregion
-
-using System;
+﻿using System;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Fights.Challenges;
 using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Commands.Commands
@@ -90,7 +75,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     return;
                 }
 
-                map = (trigger as GameTrigger).Character.Map;
+                map = ((GameTrigger) trigger).Character.Map;
             }
             else
                 map = trigger.Get<Map>("map");
@@ -198,8 +183,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             IFight fight;
             if (trigger.IsArgumentDefined("fight"))
                 fight = trigger.Get<IFight>("fight");
-            else if ((trigger is GameTrigger) && (trigger as GameTrigger).Character.IsInFight())
-                fight = (trigger as GameTrigger).Character.Fight;
+            else if ((trigger is GameTrigger) && ((GameTrigger) trigger).Character.IsInFight())
+                fight = ((GameTrigger) trigger).Character.Fight;
             else
             {
                 trigger.ReplyError("Define a fight");
@@ -258,8 +243,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
             IFight fight;
             if (trigger.IsArgumentDefined("fight"))
                 fight = trigger.Get<IFight>("fight");
-            else if (( trigger is GameTrigger ) && ( trigger as GameTrigger ).Character.IsInFight())
-                fight = ( trigger as GameTrigger ).Character.Fight;
+            else if (( trigger is GameTrigger ) && ( (GameTrigger) trigger ).Character.IsInFight())
+                fight = ( (GameTrigger) trigger ).Character.Fight;
             else
             {
                 trigger.ReplyError("Define a fight");
@@ -268,6 +253,37 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             fight.Freezed = !fight.Freezed;
             trigger.Reply("Fight " + (fight.Freezed ? "freezed" : "unfreezed"));
+        }
+    }
+
+    public class ChallengeFightCommand : SubCommand
+    {
+        public ChallengeFightCommand()
+        {
+            Aliases = new[] { "challenge" };
+            Description = "Set challenge for current fight";
+            ParentCommandType = typeof(FightCommands);
+            RequiredRole = RoleEnum.GameMaster;
+            AddParameter<int>("challenge", "c", "Challenge Id");
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            if ((trigger is GameTrigger) && !((GameTrigger)trigger).Character.IsInFight())
+            {
+                trigger.ReplyError("Must be in fight");
+                return;
+            }
+            
+            var challengeId = trigger.Get<int>("challenge");
+            var fight = ((GameTrigger)trigger).Character.Fight;
+
+            var challenge = ChallengeManager.Instance.GetChallenge(challengeId, fight);
+            challenge.Initialize();
+
+            fight.SetChallenge(challenge);
+
+            trigger.Reply("Force challengeId {0} for current Fight", challenge.Id);
         }
     }
 }

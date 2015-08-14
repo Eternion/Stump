@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
             Caster.Position.Cell = TargetedCell;
 
-            Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, Caster, Caster, TargetedCell));
+            Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, Caster, Caster, TargetedCell), true);
 
             foreach (var dir in (DirectionsEnum[])Enum.GetValues(typeof(DirectionsEnum)))
             {

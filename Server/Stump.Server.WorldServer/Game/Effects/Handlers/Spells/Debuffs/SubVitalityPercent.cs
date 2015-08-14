@@ -30,7 +30,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 AddStatBuff(actor, (short)-bonus, PlayerFields.Health, true,
                     Effect.Id);
 
-                ActionsHandler.SendGameActionFightLifePointsLostMessage(Fight.Clients, actor, actor, (short)bonus, 0);
+                if (Effect.EffectId == EffectsEnum.Effect_SubVitalityPercent)
+                    ActionsHandler.SendGameActionFightLifePointsLostMessage(Fight.Clients, actor, actor, (short)bonus, 0);
             }
 
             return true;

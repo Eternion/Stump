@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -137,6 +138,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             ((BoundLivingObjectItem) item).Dissociate();
         }
 
+        [WorldHandler(ObjectDropMessage.Id)]
+        public static void HandleObjectDropMessage(WorldClient client, ObjectDropMessage message)
+        {
+            if (client.Character.IsInFight() || client.Character.IsInExchange())
+                return;
+
+            client.Character.DropItem(message.objectUID, message.quantity);
+        }
+
         public static void SendGameRolePlayPlayerLifeStatusMessage(IPacketReceiver client)
         {
             client.Send(new GameRolePlayPlayerLifeStatusMessage());
@@ -144,10 +154,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendInventoryContentMessage(WorldClient client)
         {
-            client.Send(
-                new InventoryContentMessage(
-                    client.Character.Inventory.Select(entry => entry.GetObjectItem()),
-                    client.Character.Inventory.Kamas));
+            client.Send(new InventoryContentMessage(client.Character.Inventory.Select(entry => entry.GetObjectItem()),
+                client.Character.Inventory.Kamas));
+        }
+
+        public static void SendInventoryContentAndPresetMessage(WorldClient client)
+        {
+            client.Send(new InventoryContentAndPresetMessage(client.Character.Inventory.Select(entry => entry.GetObjectItem()),
+                client.Character.Inventory.Kamas, client.Character.Inventory.Presets.Select(entry => entry.GetNetworkPreset())));
         }
 
         public static void SendInventoryWeightMessage(WorldClient client)

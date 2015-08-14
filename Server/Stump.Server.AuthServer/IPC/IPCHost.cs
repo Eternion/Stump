@@ -22,6 +22,8 @@ using System.Net.Sockets;
 using System.Threading;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Pool;
+using Stump.Server.BaseServer.Network;
 
 namespace Stump.Server.AuthServer.IPC
 {
@@ -34,7 +36,7 @@ namespace Stump.Server.AuthServer.IPC
         public static readonly int ServersMaxCount = 10;
 
         [Variable]
-        public static int BufferSize = 8196;
+        public static int BufferSize = 8192;
 
         #region Events
         public event Action<IPCHost, IPCClient> ClientConnected;
@@ -64,7 +66,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private SocketAsyncEventArgs m_acceptArgs = new SocketAsyncEventArgs(); // async arg used on client connection
         private readonly SemaphoreSlim m_semaphore; // limit the number of threads accessing to a ressource
-        private readonly List<IPCClient> m_clients = new List<IPCClient>(); 
+        private readonly List<IPCClient> m_clients = new List<IPCClient>();
 
         private bool m_paused;
 
@@ -157,6 +159,7 @@ namespace Stump.Server.AuthServer.IPC
 
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
+            IPCClient client = null;
             try
             {
 
@@ -169,118 +172,33 @@ namespace Stump.Server.AuthServer.IPC
                     return;
                 }
 
-                // use a async arg from the pool avoid to re-allocate memory on each connection
-                var readAsyncEventArgs = new SocketAsyncEventArgs();
-                readAsyncEventArgs.SetBuffer(new byte[BufferSize], 0, BufferSize);
-                readAsyncEventArgs.Completed += OnReceiveCompleted;
-
-
-                var client = new IPCClient(e.AcceptSocket);
-                readAsyncEventArgs.UserToken = client;
+                client = new IPCClient(e.AcceptSocket);
+                client.Disconnected += OnClientDisconnected;
 
                 m_clients.Add(client);
 
                 NotifyClientConnected(client);
+                client.BeginReceive();
 
-                // if the event is not raised we first check new connections before parsing message that can blocks the connection queue
-                if (!e.AcceptSocket.ReceiveAsync(readAsyncEventArgs))
-                {
-                    StartAccept();
-                    ProcessReceive(readAsyncEventArgs);
-                }
-                else
-                {
-                    StartAccept();
-                }
+                StartAccept();
             }
             catch (Exception ex)
             {
                 logger.Error("Cannot accept a connection from {0}. Exception : {1}", e.RemoteEndPoint, ex);
 
-                if (e.AcceptSocket != null)
-                    e.AcceptSocket.Disconnect(false);
-
-                m_semaphore.Release();
+                if (client != null)
+                    client.Disconnect();
+                else
+                    m_semaphore.Release();
 
                 StartAccept();
             }
         }
 
-        private void ProcessReceive(SocketAsyncEventArgs e)
+        private void OnClientDisconnected(IPCClient obj)
         {
-            if (e.BytesTransferred <= 0 || e.SocketError != SocketError.Success)
-            {
-                CloseClientSocket(e);
-            }
-            else
-            {
-                var client = e.UserToken as IPCClient;
-
-                if (client == null)
-                {
-                    CloseClientSocket(e);
-                }
-                else
-                {
-                    client.ProcessReceive(e.Buffer, e.Offset, e.BytesTransferred);
-
-                    if (client.Socket == null)
-                    {
-                        CloseClientSocket(e);
-                    }
-                    else
-                    {
-                        // just continue to receive
-                        var willRaiseEvent = client.Socket.ReceiveAsync(e);
-
-                        if (!willRaiseEvent)
-                        {
-                            ProcessReceive(e);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void CloseClientSocket(SocketAsyncEventArgs e)
-        {
-            var client = e.UserToken as IPCClient;
-
-            if (client != null)
-            {
-                try
-                {
-                    client.Disconnect();
-
-                    NotifyClientDisconnected(client);
-                }
-                finally
-                {
-                    m_clients.Remove(client);
-                    m_semaphore.Release();
-                }
-            }
-        }
-
-        private void OnReceiveCompleted(object sender, SocketAsyncEventArgs e)
-        {
-            try
-            {
-                switch (e.LastOperation)
-                {
-                    case SocketAsyncOperation.Receive:
-                        ProcessReceive(e);
-                        break;
-                    case SocketAsyncOperation.Disconnect:
-                        CloseClientSocket(e);
-                        break;
-                }
-            }
-            catch (Exception exception)
-            {
-                // theoretically it shouldn't go up to there.
-                logger.Error("Last chance exception on receiving ! : " + exception);
-            }
+            m_clients.Remove(obj);
+            m_semaphore.Release();
         }
     }
 }

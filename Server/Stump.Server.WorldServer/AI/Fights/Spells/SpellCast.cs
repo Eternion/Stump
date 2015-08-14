@@ -22,10 +22,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
     public class SpellCast
     {
-        public SpellCast(Spell spell, Cell targetCell)
+        public const int MAX_CONSECUTIVE_CAST = 20;
+
+        public SpellCast(Spell spell, SpellTarget target)
         {
+            Target = target;
             Spell = spell;
-            TargetCell = targetCell;
+            MaxConsecutiveCast = MAX_CONSECUTIVE_CAST;
         }
 
         public Spell Spell
@@ -33,11 +36,16 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             get;
             set;
         }
-
-        public Cell TargetCell
+        
+        public SpellTarget Target
         {
             get;
-            set;
+            private set;
+        }
+
+        public TargetCell TargetCell
+        {
+            get { return Target.Target; }
         }
 
         public Path MoveBefore
@@ -46,7 +54,18 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             set;
         }
 
+        public int MPCost
+        {
+            get { return MoveBefore != null ? MoveBefore.MPCost : 0; }
+        }
+
         public Path MoveAfter
+        {
+            get;
+            set;
+        }
+
+        public int MaxConsecutiveCast
         {
             get;
             set;

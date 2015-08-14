@@ -20,6 +20,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         BEFORE_HEAL = 0x00001000,
         AFTER_HEAL = 0x00002000,
         DAMAGES_PUSHBACK = 0x00004000,
+        LOST_MP = 0x00008000,
+        LOST_AP = 0x00010000,
+        TACKLED = 0x00020000,
+        TACKLE = 0x00040000,
+        PUSH = 0x00080000,
         UNKNOWN = 0x7FFFFFFF,
     }
 }

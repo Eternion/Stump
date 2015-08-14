@@ -46,6 +46,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
                 return;
 
             Target.Stats[Caracteristic].Context -= Value;
+
+            Target.CheckDead(Target);
         }
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
