@@ -560,7 +560,7 @@ namespace DBSynchroniser
                 }
             }
 
-            foreach (var table in worldTables.Where(table => tables.Any(x => !x.StartsWith("!") && table.TableName.Contains(x)) && tables.All(x => x.StartsWith("!") && !table.TableName.Contains(x.Remove(0, 1)))))
+            foreach (var table in worldTables.Where(table => tables.Any(x => !x.StartsWith("!") && table.TableName.Contains(x)) || tables.All(x => x.StartsWith("!") && !table.TableName.Contains(x.Remove(0, 1)))))
             {
                 // reset the table
                 worldDatabase.Database.Execute("DELETE FROM " + table.TableName);
