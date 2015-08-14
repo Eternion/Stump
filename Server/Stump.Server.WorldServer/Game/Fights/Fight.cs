@@ -9,6 +9,7 @@ using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -206,8 +207,20 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
-        event Action FightStarted;
-        event Action FightEnded;
+        bool AIDebugMode
+        {
+            get;
+            set;
+        }
+
+        bool Freezed
+        {
+            get;
+            set;
+        }
+
+        event Action<IFight> FightStarted;
+        event Action<IFight>  FightEnded;
 
         void Initialize();
         void StartFighting();
@@ -241,6 +254,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         void StartTurn();
         event Action<IFight, FightActor> TurnStarted;
         void StopTurn();
+        event Action<IFight, FightActor> TurnStopped;
         void SwitchFighters(FightActor fighter1, FightActor fighter2);
         IEnumerable<Buff> GetBuffs();
         void UpdateBuff(Buff buff);
@@ -293,6 +307,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         FightCommonInformations GetFightCommonInformations();
         FightExternalInformations GetFightExternalInformations();
         bool CanBeSeen(Cell from, Cell to, bool throughEntities = false);
+        bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false);
         int GetPlacementTimeLeft();
     }
 
@@ -557,6 +572,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return true; }
         }
 
+        public bool AIDebugMode
+        {
+            get;
+            set;
+        }
+
+
         #endregion
 
         #region Phases
@@ -671,7 +693,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
         }
 
-        public event Action FightStarted;
+        public event Action<IFight> FightStarted;
 
         protected virtual void OnFightStarted()
         {
@@ -682,10 +704,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var handler = FightStarted;
             if (handler != null)
-                handler();
+                handler(this);
         }
 
-        public event Action FightEnded;
+        public event Action<IFight> FightEnded;
         protected virtual void OnFightEnded()
         {
             ReadyChecker = null;
@@ -707,7 +729,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var handler = FightEnded;
             if (handler != null)
-                handler();
+                handler(this);
         }
 
         public event FightWinnersDelegate WinnersDetermined;
@@ -753,7 +775,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             leaverResult = null;
             var list = new List<IFightResult>();
-            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb)))
+            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)))
             {
                 var result =
                     fighter.GetFightResult(fighter.Team == leaver.Team
@@ -993,12 +1015,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 if (closerCell == null)
                     closerCell = Tuple.Create(opposant.Cell,
-                                              fighter.Position.Point.DistanceToCell(point));
+                                              fighter.Position.Point.ManhattanDistanceTo(point));
                 else
                 {
-                    if (fighter.Position.Point.DistanceToCell(point) < closerCell.Item2)
+                    if (fighter.Position.Point.ManhattanDistanceTo(point) < closerCell.Item2)
                         closerCell = Tuple.Create(opposant.Cell,
-                                                  fighter.Position.Point.DistanceToCell(point));
+                                                  fighter.Position.Point.ManhattanDistanceTo(point));
                 }
             }
 
@@ -1109,6 +1131,12 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
+            if (actor is SlaveFighter)
+            {
+                OnSlaveAdded(actor as SlaveFighter);
+                return;
+            }
+
             TimeLine.Fighters.Add(actor);
             BindFighterEvents(actor);
 
@@ -1138,6 +1166,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
+
+        protected virtual void OnSlaveAdded(SlaveFighter slave)
+        {
+            TimeLine.InsertFighter(slave, TimeLine.Fighters.IndexOf(slave.Summoner) + 1);
+            BindFighterEvents(slave);
+
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
+        }
+
         protected virtual void OnBombAdded(SummonedBomb bomb)
         {
             TimeLine.InsertFighter(bomb, TimeLine.Fighters.IndexOf(bomb.Summoner) + 1);
@@ -1376,7 +1413,11 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
-            ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
+            var slaveFighter = FighterPlaying as SlaveFighter;
+            if (slaveFighter != null)
+                ContextHandler.SendGameFightTurnStartSlaveMessage(Clients, slaveFighter.Id, FightConfiguration.TurnTime, slaveFighter.Summoner.Id);
+            else
+                ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
                                                          FightConfiguration.TurnTime);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
@@ -1385,7 +1426,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();
 
             TurnStartTime = DateTime.Now;
-            m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+
+            if (!Freezed)
+                m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
 
             var evnt = TurnStarted;
             if (evnt != null)
@@ -1415,6 +1458,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = ReadyChecker.RequestCheck(this, PassTurn, LagAndPassTurn);
         }
 
+        public event Action<IFight, FightActor> TurnStopped;
+
         protected virtual void OnTurnStopped()
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
@@ -1435,6 +1480,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 AcknowledgeAction();
 
             ContextHandler.SendGameFightTurnEndMessage(Clients, FighterPlaying);
+
+            var evnt = TurnStopped;
+            if (evnt != null)
+                evnt(this, FighterPlaying);
         }
 
         protected void LagAndPassTurn(NamedFighter[] laggers)
@@ -1725,13 +1774,22 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Health & Actions points
 
-        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int shieldDamages, int permanentDamages, FightActor from)
         {
             var loss = (short) (-delta);
-            if (delta == 0 && permanentDamages == 0)
+
+            if (delta == 0 && shieldDamages == 0 && permanentDamages == 0)
                 return;
 
-            ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            if (shieldDamages == 0)
+                ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            else
+            {
+                ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss,
+                    (short)permanentDamages, (short)shieldDamages);
+
+                ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
+            } 
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
@@ -2048,8 +2106,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
         {
-            var triggers = m_triggers.ToArray();
-
+            var otherTriggers = m_triggers.Where(x => x.CastedSpell.Template.Id == (int)SpellIdEnum.PIÈGE_RÉPULSIF).ToArray();
+            var triggers = m_triggers.Where(x => !otherTriggers.Contains(x)).ToArray();
+            
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
             foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
             {
@@ -2059,6 +2118,19 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (markTrigger is Trap)
                     RemoveTrigger(markTrigger); 
                     
+                markTrigger.Trigger(trigger);
+
+                EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+            }
+
+            foreach (var markTrigger in otherTriggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
+            {
+                StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+
+                // avoid the trigger to trigger twice
+                if (markTrigger is Trap)
+                    RemoveTrigger(markTrigger);
+
                 markTrigger.Trigger(trigger);
 
                 EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
@@ -2114,6 +2186,29 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #endregion
 
+        #region Freeze
+
+        public bool Freezed
+        {
+            get { return m_freezed; }
+            set { m_freezed = value;
+                OnFreezed();
+            }
+        }
+
+        private void OnFreezed()
+        {
+            if (State == FightState.Fighting)
+            {
+                if (Freezed)
+                    m_turnTimer.Stop();
+                else
+                    m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+            }
+        }
+
+        #endregion
+
         #region Send Methods
 
         protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
@@ -2134,6 +2229,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly WorldClientCollection m_spectatorClients = new WorldClientCollection();
         private readonly List<FightActor> m_leavers;
         private readonly List<FightSpectator> m_spectators;
+        private bool m_freezed;
 
         /// <summary>
         /// Do not modify, just read

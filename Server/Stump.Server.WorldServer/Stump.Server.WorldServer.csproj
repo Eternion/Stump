@@ -142,6 +142,7 @@
     <Compile Include="AI\Fights\Brain\Brain.cs" />
     <Compile Include="AI\Fights\Threat\ThreatCalculator.cs" />
     <Compile Include="AI\Fights\Threat\VisibleSpellInformation.cs" />
+    <Compile Include="Commands\Commands\AICommands.cs" />
     <Compile Include="Commands\Commands\AlignmentCommands.cs" />
     <Compile Include="Commands\Commands\AnnounceCommand.cs" />
     <Compile Include="Commands\Commands\BanCommand.cs" />
@@ -253,6 +254,7 @@
     <Compile Include="Database\World\WorldMapTaxCollector.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
+    <Compile Include="Game\Actors\Fight\SlaveFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedBomb.cs" />
     <Compile Include="Game\Actors\Fight\SummonedClone.cs" />
     <Compile Include="Game\Actors\Fight\SummonedImage.cs" />
@@ -326,6 +328,14 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpPercentWhenAttack.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Advance.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Attract.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Move\Retreat.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Frikt.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
@@ -364,7 +374,7 @@
     <Compile Include="Game\Exchanges\Paddock\PaddockExchange.cs" />
     <Compile Include="Game\Exchanges\TaxCollector\TaxCollectorExchange.cs" />
     <Compile Include="Game\Dialogs\TaxCollector\TaxCollectorInfoDialog.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Buffs\ReduceBuffDuration.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Debuffs\ReduceBuffDuration.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\VitalityPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerMPUsed.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerAPUsed.cs" />
@@ -463,7 +473,6 @@
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
     <Compile Include="Game\Items\Player\Custom\ShieldItem.cs" />
-    <Compile Include="Game\Items\Player\Custom\SpawnTaxCollectorItem.cs" />
     <Compile Include="Game\Items\Player\Custom\TokenScroll.cs" />
     <Compile Include="Game\Items\Player\DefaultItem.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\BoundLivingObjectItem.cs" />
@@ -478,9 +487,18 @@
     <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Complement.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Difference.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Intersection.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Set.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\LineSet.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\LozengeSet.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\SingleSet.cs" />
+    <Compile Include="Game\Maps\Cells\Shapes\Set\Union.cs" />
     <Compile Include="Game\Maps\Cells\Triggers\AnimateTrigger.cs" />
     <Compile Include="Game\Maps\Paddocks\Paddock.cs" />
     <Compile Include="Game\Maps\Paddocks\PaddockManager.cs" />
+    <Compile Include="Game\Maps\Spawns\GroupSize.cs" />
     <Compile Include="Game\Maps\WorldObjectsContext.cs" />
     <Compile Include="Game\Maps\Spawns\DungeonSpawningPool.cs" />
     <Compile Include="Game\Actors\RolePlay\Mounts\Mount.cs" />
@@ -490,7 +508,11 @@
     <Compile Include="Game\Social\Friend.cs" />
     <Compile Include="Game\Social\FriendsBook.cs" />
     <Compile Include="Game\Social\Ignored.cs" />
+    <Compile Include="Game\Spells\Casts\Ecaflip\ClawOfCeangal.cs" />
+    <Compile Include="Game\Spells\Casts\Ecaflip\FateOfEcaflipCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RouletteCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Enutrof\LivingBagCastHandler.cs" />
+    <Compile Include="Game\Spells\Casts\Monsters\GloursomptueuxSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\KarchamCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Pandawa\VertigoCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\BombExplodSpellCastHandler.cs" />
@@ -508,6 +530,7 @@
     <Compile Include="Game\Jobs\JobsCollection.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Single.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandlerAttribute.cs" />
+    <Compile Include="Game\Spells\Casts\Sadida\LifeTreeCastHandler.cs" />
     <Compile Include="Game\Spells\SpellCastResult.cs" />
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
@@ -519,6 +542,7 @@
     <Compile Include="Handlers\Interactives\InteractiveHandler.cs" />
     <Compile Include="Handlers\Moderation\ModerationHandler.cs" />
     <Compile Include="Handlers\Mounts\MountHandler.cs" />
+    <Compile Include="Handlers\Prism\PrismHandler.cs" />
     <Compile Include="Handlers\PvP\PvPHandler.cs" />
     <Compile Include="Handlers\Security\SecurityHandler.cs" />
     <Compile Include="Handlers\Startup\StartupHandler.cs" />
@@ -806,7 +830,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Matching\Items\" />
-    <Folder Include="Game\Spells\Casts\Sacrieur\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

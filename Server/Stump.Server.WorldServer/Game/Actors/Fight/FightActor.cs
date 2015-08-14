@@ -59,14 +59,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 CellShown(this, cell, team);
         }
 
-        public event Action<FightActor, int, int, FightActor> LifePointsChanged;
+        public event Action<FightActor, int, int, int, FightActor> LifePointsChanged;
 
-        protected virtual void OnLifePointsChanged(int delta, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from)
         {
             var handler = LifePointsChanged;
 
             if (handler != null)
-                handler(this, delta, permanentDamages, from);
+                handler(this, delta, shieldDamages, permanentDamages, from);
         }
 
         public event Action<FightActor, Damage> BeforeDamageInflicted;
@@ -224,6 +224,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnDead(FightActor killedBy)
         {
+            PassTurn();
+
             KillAllSummons();
             RemoveAndDispellAllBuffs();
 
@@ -465,7 +467,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void PassTurn()
         {
-            if (!IsFighterTurn())
+            if (!IsFighterTurn() || Fight.Freezed)
                 return;
 
             Fight.StopTurn();
@@ -698,9 +700,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
         }
 
-        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false)
+        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool ApFree = false)
         {
-            if (!IsFighterTurn() || IsDead())
+            if (!force && (!IsFighterTurn() || IsDead()))
                 return false;
 
             var spellLevel = spell.CurrentSpellLevel;
@@ -718,7 +720,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
                 OnSpellCasting(spell, cell, critical, false);
-                UseAP((short) spellLevel.ApCost);
+
+                if (!ApFree)
+                    UseAP((short) spellLevel.ApCost);
+
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
                 if (spellLevel.CriticalFailureEndsTurn)
@@ -732,11 +737,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler.Initialize();
 
             OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
-            UseAP((short)spellLevel.ApCost);
+            if (!ApFree)
+                UseAP((short)spellLevel.ApCost);
+
+            var fighter = Fight.GetOneFighter(handler.TargetedCell);
 
             handler.Execute();
 
-            OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast);
+            if (fighter == null)
+                OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast);
+            else
+                OnSpellCasted(spell, fighter, critical, handler.SilentCast);
 
             return true;
         }
@@ -790,7 +801,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             var permanentDamages = CalculateErosionDamage(damage.Amount);
-
+            
             //Fraction
             var fractionBuff = GetBuffs(x => x is FractionBuff).FirstOrDefault() as FractionBuff;
             if (fractionBuff != null && !(damage is FractionDamage))
@@ -824,6 +835,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 permanentDamages = CalculateErosionDamage(damageWithoutArmor);
             }
 
+            var shieldDamages = 0;
+            if (Stats.Shield.TotalSafe > 0)
+            {
+                if (Stats.Shield.TotalSafe > damage.Amount)
+                {
+                    shieldDamages += damage.Amount;
+                    damage.Amount = 0;
+                }
+                else
+                {
+                    shieldDamages += Stats.Shield.TotalSafe;
+                    damage.Amount -= Stats.Shield.TotalSafe;
+                }
+            }
+
             //Heal Or Multiply
             var healOrMultiplyBuff = GetBuffs(x => x is HealOrMultiplyBuff).FirstOrDefault() as HealOrMultiplyBuff;
             if (healOrMultiplyBuff != null)
@@ -844,6 +870,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (damage.Amount <= 0)
                 damage.Amount = 0;
 
+            if (shieldDamages <= 0)
+                shieldDamages = 0;
+
             if (damage.Amount > LifePoints)
             {
                 damage.Amount = LifePoints;
@@ -852,14 +881,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Stats.Health.DamageTaken += damage.Amount;
             Stats.Health.PermanentDamages += permanentDamages;
+            Stats.Shield.Context -= shieldDamages;
 
-            OnLifePointsChanged(-damage.Amount, permanentDamages, damage.Source);
+            OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source);
 
             if (IsDead())
                 OnDead(damage.Source);
 
             OnDamageInflicted(damage);
-            damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
+
+            if (damage.Source != null)
+                damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
+
             TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
 
             return damage.Amount;
@@ -867,9 +900,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int HealDirect(int healPoints, FightActor from)
         {
+            TriggerBuffs(BuffTriggerType.BEFORE_HEALED);
+            from.TriggerBuffs(BuffTriggerType.BEFORE_HEAL);
+
             if (HasState((int)SpellStatesEnum.Unhealable))
             {
-                OnLifePointsChanged(0, 0, from);
+                OnLifePointsChanged(0, 0, 0, from);
                 return 0;
             }
 
@@ -878,7 +914,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             DamageTaken -= healPoints;
 
-            OnLifePointsChanged(healPoints, 0, from);
+            OnLifePointsChanged(healPoints, 0, 0, from);
+
+            TriggerBuffs(BuffTriggerType.AFTER_HEALED);
+            from.TriggerBuffs(BuffTriggerType.AFTER_HEAL);
 
             return healPoints;
         }
@@ -1150,6 +1189,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
 
+            if (HasState((int)SpellStatesEnum.Unlockable))
+                return 0;
+
             var tacklers = GetTacklers();
 
             // no tacklers, then no tackle possible
@@ -1182,6 +1224,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual int GetTackledAP()
         {
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
+                return 0;
+
+            if (HasState((int)SpellStatesEnum.Unlockable))
                 return 0;
 
             var tacklers = GetTacklers();
@@ -1425,6 +1470,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         #region Summons
 
         private readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
+        private readonly List<SlaveFighter> m_slaves = new List<SlaveFighter>();
         private readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
         public int SummonedCount
@@ -1443,6 +1489,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get { return m_summons.AsReadOnly(); }
         }
+
+        public ReadOnlyCollection<SlaveFighter> Slaves
+        {
+            get { return m_slaves.AsReadOnly(); }
+        }
+
         public ReadOnlyCollection<SummonedBomb> Bombs
         {
             get { return m_bombs.AsReadOnly(); }
@@ -1476,6 +1528,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_summons.Remove(summon);
         }
 
+        public void AddSlave(SlaveFighter slave)
+        {
+            if (slave.Monster.Template.UseSummonSlot)
+                SummonedCount++;
+
+            m_slaves.Add(slave);
+        }
+
+        public void RemoveSlave(SlaveFighter slave)
+        {
+            if (slave.Monster.Template.UseSummonSlot)
+                SummonedCount--;
+
+            m_slaves.Remove(slave);
+        }
+
         public void AddBomb(SummonedBomb bomb)
         {
             if (bomb.MonsterBombTemplate.Template.UseBombSlot)
@@ -1496,6 +1564,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             m_summons.Clear();
             m_bombs.Clear();
+            m_slaves.Clear();
         }
 
         public void KillAllSummons()
@@ -1504,9 +1573,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             {
                 summon.Die();
             }
+
             foreach (var bomb in m_bombs.ToArray())
             {
                 bomb.Die();
+            }
+
+            foreach (var slave in m_slaves.ToArray())
+            {
+                slave.Die();
             }
         }
 
@@ -1884,7 +1959,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return Fight.TimeLine.Current == this;
         }
 
-
         public bool IsFriendlyWith(FightActor actor)
         {
             return actor.Team == Team;
@@ -1959,7 +2033,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.TotalMax,
                 Stats.Health.Base,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
-                0, // shieldsPoints = ?
+                Stats.Shield.TotalSafe,
                 (short)Stats.AP.Total,
                 (short)Stats.AP.TotalMax,
                 (short)Stats.MP.Total,

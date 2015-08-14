@@ -113,7 +113,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.TotalMax,
                 Stats.Health.Base,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
-                0, // shieldsPoints = ?
+                Stats.Shield.TotalSafe,
                 (short) Stats.AP.Total,
                 (short) Stats.AP.TotalMax,
                 (short) Stats.MP.Total,

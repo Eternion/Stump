@@ -27,12 +27,18 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.IsFighting())
                 return;
 
-            var spell = client.Character.Spells.GetSpell(message.spellId);
+            var fighter = client.Character.Fighter;
+
+            var spell = fighter.IsSlaveTurn() ?
+                fighter.GetSlave().GetSpell(message.spellId) : fighter.GetSpell(message.spellId);
 
             if (spell == null)
                 return;
 
-            client.Character.Fighter.CastSpell(spell, client.Character.Fight.Map.Cells[message.cellId]);
+            if (fighter.IsSlaveTurn())
+                fighter.GetSlave().CastSpell(spell, client.Character.Fight.Map.Cells[message.cellId]);
+            else
+                fighter.CastSpell(spell, client.Character.Fight.Map.Cells[message.cellId]);
         }
 
         [WorldHandler(GameActionFightCastOnTargetRequestMessage.Id)]
@@ -41,23 +47,30 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.IsFighting())
                 return;
 
-            var spell = client.Character.Spells.GetSpell(message.spellId);
+            var fighter = client.Character.Fighter;
+
+            var spell = fighter.IsSlaveTurn() ?
+                fighter.GetSlave().GetSpell(message.spellId) : fighter.GetSpell(message.spellId);
 
             if (spell == null)
                 return;
 
-            var fighter = client.Character.Fight.GetOneFighter(message.targetId);
+            var target = client.Character.Fight.GetOneFighter(message.targetId);
 
-            if (fighter == null)
+            if (target == null)
                 return;
 
-            if (fighter.GetVisibleStateFor(client.Character.Fighter) == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            if (target.GetVisibleStateFor(fighter) == GameActionFightInvisibilityStateEnum.INVISIBLE)
             {
                 //Impossible de lancer ce sort : la cellule visée n'est pas valide !
                 client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 193);
                 return;
             }
-            client.Character.Fighter.CastSpell(spell, fighter.Cell);
+
+            if (fighter.IsSlaveTurn())
+                fighter.GetSlave().CastSpell(spell, target.Cell);
+            else
+                fighter.CastSpell(spell, target.Cell);
         }
 
 
@@ -66,6 +79,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             if (!client.Character.IsFighting())
                 return;
+
+            if (client.Character.Fighter.IsSlaveTurn())
+            {
+                client.Character.Fighter.GetSlave().PassTurn();
+                return;
+            }
 
             client.Character.Fighter.PassTurn();
         }
@@ -337,7 +356,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             client.Send(new GameFightSynchronizeMessage(
                     fight.GetAllFighters().Select(entry => entry is SummonedClone ?
-                        (entry as SummonedClone).GetGameFightFighterNamedInformations() :
+                        ((SummonedClone) entry).GetGameFightFighterNamedInformations() :
                         entry.GetGameFightFighterInformations(client))));
         }
 
@@ -354,6 +373,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameFightTurnStartMessage(IPacketReceiver client, int id, int waitTime)
         {
             client.Send(new GameFightTurnStartMessage(id, waitTime));
+        }
+
+        public static void SendGameFightTurnStartSlaveMessage(IPacketReceiver client, int id, int waitTime, int idSummoner)
+        {
+            client.Send(new GameFightTurnStartSlaveMessage(id, waitTime, idSummoner));
         }
 
         public static void SendGameFightTurnFinishMessage(IPacketReceiver client)
@@ -467,6 +491,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameFightTurnReadyRequestMessage(IPacketReceiver client, FightActor current)
         {
             client.Send(new GameFightTurnReadyRequestMessage(current.Id));
+        }
+
+        public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SlaveFighter actor)
+        {
+            client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
         }
     }
 }

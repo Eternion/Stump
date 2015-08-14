@@ -261,11 +261,37 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private static void SpawnCellTriggers()
+        public void UnSpawnInteractives()
+        {
+            foreach (var map in m_maps.Values)
+            {
+                var interactives = map.GetInteractiveObjects().ToArray();
+
+                foreach (var interactive in interactives)
+                {
+                    map.UnSpawnInteractive(interactive);
+                }
+            }
+        }
+
+        public void SpawnCellTriggers()
         {
             foreach (var trigger in CellTriggerManager.Instance.GetCellTriggers().Select(cellTrigger => cellTrigger.GenerateTrigger()))
             {
                 trigger.Position.Map.AddTrigger(trigger);
+            }
+        }
+
+        public void UnSpawnCellTriggers()
+        {
+            foreach (var map in m_maps.Values)
+            {
+                var triggers = map.GetTriggers().ToArray();
+
+                foreach (var trigger in triggers)
+                {
+                    map.RemoveTrigger(trigger);
+                }
             }
         }
 

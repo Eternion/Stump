@@ -9,12 +9,17 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
     [EffectHandler(EffectsEnum.Effect_PullForward)]
-    [EffectHandler(EffectsEnum.Effect_Advance)]
     public class Pull : SpellEffectHandler
     {
         public Pull(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
+        }
+
+        public uint Distance
+        {
+            get;
+            set;
         }
 
         public override bool Apply()
@@ -24,7 +29,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (integerEffect == null)
                 return false;
 
-            foreach (var actor in GetAffectedActors().OrderBy(entry => entry.Position.Point.DistanceToCell(TargetedPoint)))
+            if (Distance == 0)
+                Distance = (uint)integerEffect.Value;
+
+            foreach (var actor in GetAffectedActors().OrderBy(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)))
             {
                 if (actor.HasState((int)SpellStatesEnum.Unmovable) || actor.HasState((int)SpellStatesEnum.Rooted))
                     continue;
@@ -38,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
 
-                for (var i = 0; i < integerEffect.Value; i++)
+                for (var i = 0; i < Distance; i++)
                 {
                     var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 

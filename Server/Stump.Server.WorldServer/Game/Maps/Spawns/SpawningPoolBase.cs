@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Stump.Core.Timers;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
@@ -56,12 +57,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             get { return Spawns.Count; }
         }
 
-        protected MonsterGroup NextGroup
-        {
-            get;
-            set;
-        }
-
         protected TimedTimerEntry SpawnTimer
         {
             get;
@@ -108,7 +103,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             {
                 if (!AutoSpawnEnabled)
                     return;
-
 
                 if (SpawnTimer != null)
                     SpawnTimer.Dispose();
@@ -175,8 +169,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
         public bool SpawnNextGroup()
         {
-            MonsterGroup group = DequeueNextGroupToSpawn();
+            var group = DequeueNextGroupToSpawn();
 
+            return SpawnGroup(group);
+        }
+
+        public bool SpawnGroup(MonsterGroup group)
+        {            
             if (group == null)
                 return false;
 
@@ -200,31 +199,18 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         protected abstract bool IsLimitReached();
         protected abstract int GetNextSpawnInterval();
 
-        protected virtual MonsterGroup DequeueNextGroupToSpawn()
-        {
-            if (NextGroup != null)
-            {
-                return NextGroup;
-            }
-
-            return null;
-        }
-
-        public virtual void SetNextGroupToSpawn(IEnumerable<Monster> monsters)
-        {
-            NextGroup = new MonsterGroup(Map.GetNextContextualId(), Map.GetRandomFreePosition());
-
-            foreach (Monster monster in monsters)
-            {
-                NextGroup.AddMonster(monster);
-            }
-        }
-
+        protected abstract MonsterGroup DequeueNextGroupToSpawn();
 
         private void OnMapActorLeave(Map map, RolePlayActor actor)
         {
-            if (actor is MonsterGroup && (Spawns.Contains(actor as MonsterGroup)))
-                OnGroupUnSpawned(actor as MonsterGroup);
+            var group = actor as MonsterGroup;
+            if (group != null && (Spawns.Contains(group)))
+                OnGroupUnSpawned(group);
+        }
+
+        public void UnSpawnGroup(MonsterGroup group)
+        {
+            OnGroupUnSpawned(group);
         }
 
         public event Action<SpawningPoolBase, MonsterGroup> Spawned;
@@ -234,17 +220,17 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             lock (Spawns)
                 Spawns.Add(group);
 
-            NextGroup = null;
-
-            Action<SpawningPoolBase, MonsterGroup> handler = Spawned;
+            var handler = Spawned;
             if (handler != null)
                 handler(this, group);
         }
 
         protected virtual void OnGroupUnSpawned(MonsterGroup monster)
         {
+            var monsterToDelete = Spawns.FirstOrDefault(x => x.Id == monster.Id);
+
             lock (Spawns)
-                Spawns.Remove(monster);
+                Spawns.Remove(monsterToDelete);
 
             if (!IsLimitReached() && State == SpawningPoolState.Paused)
                 ResumeAutoSpawn();

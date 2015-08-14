@@ -15,6 +15,7 @@ using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Accounts;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
@@ -60,9 +61,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
     public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
-        private const int AURA_1_SKIN = 170;
-        private const int AURA_2_SKIN = 171;
-
         [Variable]
         private const ushort HonorLimit = 16000;
 
@@ -1323,6 +1321,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void TogglePvPMode(bool state)
         {
+            if (IsInFight())
+                return;
+
             PvPEnabled = state;
         }
 
@@ -1827,7 +1828,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             if (m_earnKamasInMerchant > 0)
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 45, m_earnKamasInMerchant);
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, m_earnKamasInMerchant, 1);
         }
 
         public void SendServerMessage(string message)
@@ -1909,7 +1910,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public override bool StartMove(Path movementPath)
         {
             if (IsFighting() || MustBeJailed() || !IsInJail())
-                return IsFighting() ? Fighter.StartMove(movementPath) : base.StartMove(movementPath);
+                return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
 
             Teleport(Breed.GetStartPosition());
             return false;
@@ -2529,47 +2530,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void PlayEmote(EmotesEnum emote)
         {
-            var auraSkin = GetAuraSkin(emote);
-
-            if (auraSkin != -1)
-            {
-                if (RealLook.AuraLook != null && RealLook.AuraLook.BonesID == auraSkin)
-                    RealLook.RemoveAuras();
-                else
-                    RealLook.SetAuraSkin(auraSkin);
-                RefreshActor();
-            }
-
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
 
-        public short GetAuraSkin(EmotesEnum auraEmote)
+        public void SetAura(EmotesEnum emote)
         {
-            switch (auraEmote)
-            {
-                case EmotesEnum.EMOTE_AURA_VAMPYRIQUE:
-                    return AURA_1_SKIN;
-                case EmotesEnum.EMOTE_AURA_DE_PUISSANCE:
-                    return AURA_2_SKIN;
-                default:
-                    return -1;
-            }
-        }
+            Look.RemoveAuras();
 
-        public void ToggleAura(EmotesEnum emote, bool toggle)
-        {
-            var auraSkin = GetAuraSkin(emote);
+            var auraSkin = Look.GetAuraSkin(Level);
 
             if (auraSkin == -1)
                 return;
 
-            var hasAura = (RealLook.AuraLook == null || RealLook.AuraLook.BonesID != GetAuraSkin(emote));
+            Look.SetAuraSkin(auraSkin);
 
-            if (!hasAura && toggle)
-                PlayEmote(emote);
+            RefreshActor();
+            PlayEmote(emote);
+        }
 
-            else if (hasAura && !toggle)
-                PlayEmote(emote);
+        public void UnsetAuras()
+        {
+            Look.RemoveAuras();
+            RefreshActor();
         }
 
         #endregion
@@ -2693,6 +2675,42 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             });
 
             return false;
+        }
+
+        #endregion
+
+        #region Debug
+
+        public void ClearHighlight()
+        {
+            Client.Send(new DebugClearHighlightCellsMessage());
+        }
+
+        public Color HighlightCell(Cell cell)
+        {
+            var rand = new Random();
+            var color = Color.FromArgb(0xFF << 24 | rand.Next(0xFFFFFF));
+            HighlightCell(cell, color);
+
+            return color;
+        }
+
+        public void HighlightCell(Cell cell, Color color)
+        {
+            Client.Send(new DebugHighlightCellsMessage(color.ToArgb() & 16777215, new[] { cell.Id }));
+        }
+        public Color HighlightCells(IEnumerable<Cell> cells)
+        {
+            var rand = new Random();
+            var color = Color.FromArgb(0xFF << 24 | rand.Next(0xFFFFFF));
+
+            HighlightCells(cells, color);
+            return color;
+        }
+
+        public void HighlightCells(IEnumerable<Cell> cells, Color color)
+        {
+            Client.Send(new DebugHighlightCellsMessage(color.ToArgb() & 16777215, cells.Select(x => x.Id)));
         }
 
         #endregion

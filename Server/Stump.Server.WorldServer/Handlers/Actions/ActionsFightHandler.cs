@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Handlers.Actions
 {
@@ -26,6 +27,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightVanishMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id));
         }
          
+
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
             var fighterInfos = summon.GetGameFightFighterInformations();
@@ -34,11 +36,21 @@ namespace Stump.Server.WorldServer.Handlers.Actions
                 fighterInfos = (summon as SummonedClone).GetGameFightFighterNamedInformations();
 
             client.Send(new GameActionFightSummonMessage(summon is SummonedClone ? (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE : (short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, fighterInfos));
-        }        
-        
+        }
+
+        public static void SendGameActionFightReviveMessage(IPacketReceiver client, FightActor caster, FightActor actor)
+        {
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_CHARACTER_SUMMON_DEAD_ALLY_IN_FIGHT, caster.Id, actor.GetGameFightFighterInformations()));
+        }
+
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedBomb summon)
         {
             client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
+        }
+
+        public static void SendGameActionFightSummonMessage(IPacketReceiver client, SlaveFighter slave)
+        {
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, slave.Summoner.Id, slave.GetGameFightFighterInformations()));
         }
 
         public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)
@@ -77,12 +89,15 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightTackledMessage((short)ActionsEnum.ACTION_CHARACTER_ACTION_TACKLED, source.Id, tacklers.Select(entry => entry.Id)));
         }
 
-        public static void SendGameActionFightLifePointsLostMessage(IPacketReceiver client, FightActor source,
-                                                                         FightActor target, short loss, short permanentDamages)
+        public static void SendGameActionFightLifePointsLostMessage(IPacketReceiver client, FightActor source, FightActor target, short loss, short permanentDamages)
         {
             client.Send(new GameActionFightLifePointsLostMessage((short)ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, source.Id, target.Id, loss, permanentDamages));
         }
 
+        public static void SendGameActionFightLifeAndShieldPointsLostMessage(IPacketReceiver client, FightActor source, FightActor target, short loss, short permanentDamages, short shieldLoss)
+        {
+            client.Send(new GameActionFightLifeAndShieldPointsLostMessage((short)ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, source.Id, target.Id, loss, permanentDamages, shieldLoss));
+        }
 
         public static void SendGameActionFightDodgePointLossMessage(IPacketReceiver client, ActionsEnum action, FightActor source, FightActor target, short amount)
         {
@@ -129,6 +144,11 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightChangeLookMessage(IPacketReceiver client, FightActor source, FightActor target, ActorLook look)
         {
             client.Send(new GameActionFightChangeLookMessage((short)ActionsEnum.ACTION_CHARACTER_CHANGE_LOOK, source.Id, target.Id, look.GetEntityLook()));
+        }
+
+        public static void SendGameActionFightSpellCooldownVariationMessage(IPacketReceiver client, FightActor source, FightActor target, Spell spell, short duration)
+        {
+            client.Send(new GameActionFightSpellCooldownVariationMessage(duration > 0 ? (short)ActionsEnum.ACTION_CHARACTER_ADD_SPELL_COOLDOWN : (short)ActionsEnum.ACTION_CHARACTER_REMOVE_SPELL_COOLDOWN, source.Id, target.Id, spell.Id, duration));
         }
 
         public static void SendGameActionFightExchangePositionsMessage(IPacketReceiver client, FightActor caster, FightActor target)

@@ -121,6 +121,10 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_Teleport:
                     return SpellCategory.Teleport;
                 case EffectsEnum.Effect_PushBack:
+                case EffectsEnum.Effect_PullForward:
+                case EffectsEnum.Effect_Advance:
+                case EffectsEnum.Effect_Retreat:
+                case EffectsEnum.Effect_SwitchPosition:
                 case EffectsEnum.Effect_RemoveAP:
                 case EffectsEnum.Effect_LostMP:
                 case EffectsEnum.Effect_StealKamas:
@@ -187,6 +191,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                 case EffectsEnum.Effect_StealAP_440:
                 case EffectsEnum.Effect_StealMP_441:
                 case EffectsEnum.Effect_StealMP_77:
+                case EffectsEnum.Effect_RevealsInvisible:
+                case EffectsEnum.Effect_ReduceEffectsDuration:
+                case EffectsEnum.Effect_GiveHpPercentWhenAttack:
                     return SpellCategory.Curse;
             }
             return SpellCategory.None;

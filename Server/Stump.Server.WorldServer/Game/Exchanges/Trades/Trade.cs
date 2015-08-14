@@ -48,7 +48,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
 
         #region ITrade Members
 
-
         public virtual void Open()
         {
             FirstTrader.ItemMoved += OnTraderItemMoved;

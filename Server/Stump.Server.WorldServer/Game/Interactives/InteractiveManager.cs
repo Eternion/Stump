@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
     public class InteractiveManager : DataManager<InteractiveManager>
     {
         private UniqueIdProvider m_idProviderSpawn = new UniqueIdProvider();
-        private readonly UniqueIdProvider m_idProviderSkill = new UniqueIdProvider();
+        private UniqueIdProvider m_idProviderSkill = new UniqueIdProvider();
         private Dictionary<int, InteractiveSpawn> m_interactivesSpawns;
         private Dictionary<int, InteractiveTemplate> m_interactivesTemplates;
         private Dictionary<int, InteractiveSkillTemplate> m_skillsTemplates;
@@ -30,6 +30,9 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
             m_idProviderSpawn = m_interactivesSpawns.Any()
                 ? new UniqueIdProvider(m_interactivesSpawns.Select(x => x.Value.Id).Max())
+                : new UniqueIdProvider(0);
+            m_idProviderSkill = m_interactivesSkills.Any()
+                ? new UniqueIdProvider(m_interactivesSkills.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(0);
         }
 
@@ -83,8 +86,18 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         public void RemoveInteractiveSpawn(InteractiveSpawn spawn)
         {
+            var skills = spawn.GetSkills();
+
+            foreach (var skill in skills)
+            {
+                Database.Delete(skill);
+                Database.Delete("interactives_spawns_skills", "SkillId", skill.Id);
+            }
+
+            spawn.GetMap().UnSpawnInteractive(new InteractiveObject(spawn));
+
             Database.Delete(spawn);
-            m_interactivesSpawns.Remove(spawn.Id);
+            m_interactivesSpawns.Remove(spawn.Id);     
         }
     }
 }

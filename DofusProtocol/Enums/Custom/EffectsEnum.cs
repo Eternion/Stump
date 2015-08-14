@@ -889,7 +889,7 @@
         /// <summary>
         /// Teleport to save point
         /// </summary>
-        Effect_600 = 600,
+        Effect_TeleportToSavePoint = 600,
         Effect_601 = 601,
         /*  */
         /// <summary>
@@ -1039,7 +1039,7 @@
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's HP (Neutral-type)
         /// </summary>
-        Effect_671 = 671,
+        Effect_DamagePercentNeutral_671 = 671,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's life (neutral)
         /// </summary>
@@ -1207,7 +1207,7 @@
         /// <summary>
         /// Heals upon attack
         /// </summary>
-        Effect_786 = 786,
+        Effect_GiveHpPercentWhenAttack = 786,
         /// <summary>
         /// #1
         /// </summary>
@@ -1482,7 +1482,7 @@
         /// <summary>
         /// Summons #1
         /// </summary>
-        Effect_1011 = 1011,
+        Effect_SummonSlave = 1011,
         /// <summary>
         /// #1{~1~2 to }#2 (Neutral damage)
         /// </summary>
@@ -1590,15 +1590,15 @@
         /// <summary>
         /// #1{~1~2 to }#2% of HP to shield
         /// </summary>
-        Effect_1039 = 1039,
+        Effect_AddShieldPercent = 1039,
         /// <summary>
         /// #1{~1~2 to }#2 Shield
         /// </summary>
-        Effect_1040 = 1040,
+        Effect_AddShield = 1040,
         /// <summary>
         /// Retreats #1 cell(s)
         /// </summary>
-        Effect_1041 = 1041,
+        Effect_Retreat = 1041,
         /// <summary>
         /// Advances #1 cell(s)
         /// </summary>
@@ -1606,7 +1606,7 @@
         /// <summary>
         /// Attract to the selected cell
         /// </summary>
-        Effect_1043 = 1043,
+        Effect_Attract = 1043,
         /// <summary>
         /// Immunity: #1
         /// </summary>
@@ -1614,7 +1614,7 @@
         /// <summary>
         /// #1: #3 turns until recast
         /// </summary>
-        Effect_1045 = 1045,
+        Effect_CooldownSet = 1045,
         /// <summary>
         /// Using #1 MP will cause a loss of #2 HP
         /// </summary>
@@ -1626,7 +1626,7 @@
         /// <summary>
         /// -#1{~1~2 to }#2% HP
         /// </summary>
-        Effect_1048 = 1048,
+        Effect_SubVitalityPercent_1048 = 1048,
         /// <summary>
         /// +#1{~1~2 to}level #2
         /// </summary>

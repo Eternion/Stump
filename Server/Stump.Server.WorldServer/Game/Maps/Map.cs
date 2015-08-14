@@ -923,6 +923,18 @@ namespace Stump.Server.WorldServer.Game.Maps
             return @group.Count() <= 0 ? null : @group;
         }
 
+        public MonsterGroup GenerateRandomMonsterGroup(MonsterGroup monsterGroup)
+        {
+            var group = new MonsterGroup(GetNextContextualId(), new ObjectPosition(this, GetRandomFreeCell(), GetRandomDirection()));
+
+            foreach (var monster in monsterGroup.GetMonsters())
+            {
+                group.AddMonster(new Monster(monster.Grade, group));
+            }
+
+            return @group.Count() <= 0 ? null : @group;
+        }
+
         /// <summary>
         /// Check the AI manage monster spells
         /// </summary>
@@ -1225,7 +1237,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                     Leave(actor);
                     return;
                 }
-                TaxCollector = actor as TaxCollectorNpc;
+                TaxCollector = (TaxCollectorNpc) actor;
             }
             if (actor is IAutoMovedEntity)
             {
@@ -1290,12 +1302,17 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
             BasicHandler.SendBasicNoOperationMessage(Clients);
+
+            var character = actor as Character;
+            if (character == null)
+                return;
+
+            character.UnsetAuras();
         }
 
         private void OnActorStopMoving(ContextActor actor, Path path, bool canceled)
         {
             var character = actor as Character;
-
             if (character == null)
                 return;
 
@@ -1309,11 +1326,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 200)
             {
-                character.ToggleAura(EmotesEnum.EMOTE_AURA_VAMPYRIQUE, true);
+                character.SetAura(EmotesEnum.EMOTE_AURA_VAMPYRIQUE);
             }
             else if (character.Direction == DirectionsEnum.DIRECTION_SOUTH && character.Level >= 100)
             {
-                character.ToggleAura(EmotesEnum.EMOTE_AURA_DE_PUISSANCE, true);
+                character.SetAura(EmotesEnum.EMOTE_AURA_DE_PUISSANCE);
             }
         }
 
@@ -1423,7 +1440,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public InteractiveObject GetInteractiveObject(int id)
         {
-            return m_interactives[id];
+            return !m_interactives.ContainsKey(id) ? null : m_interactives[id];
         }
 
         public IEnumerable<InteractiveObject> GetInteractiveObjects()

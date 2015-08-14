@@ -53,6 +53,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             // first, apply damage to sacrifier
             Caster.InflictDamage(damage);
             // then, negate damage done to target
+            damage.IgnoreDamageBoost = true;
+            damage.IgnoreDamageReduction = true;
+            damage.Generated = true;
             damage.Amount = 0;
         }
 

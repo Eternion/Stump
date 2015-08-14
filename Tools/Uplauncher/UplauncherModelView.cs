@@ -233,9 +233,9 @@ namespace Uplauncher
             get { return m_repairGameCommand ?? (m_repairGameCommand = new DelegateCommand(OnRepairGame, CanRepairGame)); }
         }
 
-        private static bool CanRepairGame(object parameter)
+        private bool CanRepairGame(object parameter)
         {
-            return false;
+            return !IsUpdating;
         }
 
         private void OnRepairGame(object parameter)
@@ -246,7 +246,7 @@ namespace Uplauncher
             if (IsUpdating)
                 return;
 
-            var dialogResult = MessageBox.Show(@"Êtes-vous sur de vouloir réparer le jeu? Tous les fichiers seront supprimés puis téléchargés à nouveau !", "Réparer le jeu", MessageBoxButtons.YesNo);
+            var dialogResult = MessageBox.Show(@"Êtes-vous sur de vouloir réparer le jeu? Tous les fichiers seront vérifiés puis re-téléchargés si besoin !", "Réparer le jeu", MessageBoxButtons.YesNo);
 
             if (dialogResult != DialogResult.Yes)
                 return;
@@ -256,13 +256,7 @@ namespace Uplauncher
                 process.Kill();
             }
 
-            var appFolder = Environment.CurrentDirectory + @"\app";
-            if (Directory.Exists(appFolder))
-            {
-                Directory.Delete(appFolder, true);
-            }
-
-            Directory.CreateDirectory("app");
+            File.Delete(Constants.LocalChecksumFile);
 
             CheckUpdates();
         }
@@ -483,6 +477,12 @@ namespace Uplauncher
                     SetState(string.Format("Le jeu est à jour"), Colors.Green);
                     IsUpdating = false;
                     IsUpToDate = true;
+
+                    View.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        m_playCommand.RaiseCanExecuteChanged();
+                        m_repairGameCommand.RaiseCanExecuteChanged();
+                    }));
                 }
             }
             catch (Exception ex)
@@ -531,7 +531,11 @@ namespace Uplauncher
             GlobalDownloadProgress = false;
             ProgressDownloadSpeedInfo = string.Empty;
 
-            View.Dispatcher.BeginInvoke(new Action(() => m_playCommand.RaiseCanExecuteChanged()));
+            View.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                m_playCommand.RaiseCanExecuteChanged();
+                m_repairGameCommand.RaiseCanExecuteChanged();
+            }));
         }
 
         private void HandleDownloadError(bool cancelled, Exception ex, string url)
@@ -544,7 +548,7 @@ namespace Uplauncher
 
                 MessageBox.Show(string.Format(Resources.Download_File_Error, remoteURL, ex), Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Clipboard.SetText(ex.ToString());
-                SetState(string.Format("Erreur lors de la mise à jour : {0}", ex.Message), Colors.Red);
+                SetState(string.Format("Erreur lors de la mise à jour : {0}", ex.InnerException.Message), Colors.Red);
             }
 
             OnUpdateEnded(false);

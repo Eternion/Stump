@@ -86,7 +86,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
                 }
             }
 
+            var cost = GetCostTo(map);
+
+            if (Character.Kamas < cost)
+                return;
+
+            Character.Inventory.SubKamas(cost);
             Character.Teleport(map, cell);
+
             Close();
         }
 

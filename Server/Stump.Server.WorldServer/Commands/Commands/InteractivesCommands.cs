@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
@@ -9,7 +11,8 @@ using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
-using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -17,9 +20,45 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public InteractivesCommands()
         {
-            Aliases = new[] {"interactives"};
+            Aliases = new[] { "interactives" };
             Description = "Manage interactives objects";
             RequiredRole = RoleEnum.Administrator;
+        }
+    }
+
+    public class InteractiveShowCommand : SubCommand
+    {
+        public InteractiveShowCommand()
+        {
+            Aliases = new[] { "show" };
+            Description = "Show interactives objects";
+            RequiredRole = RoleEnum.Administrator;
+            ParentCommandType = typeof(InteractivesCommands);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var character = trigger is GameTrigger ? (trigger as GameTrigger).Character : null;
+
+            if (character == null)
+                return;
+
+            var ios = character.Map.Record.Elements.ToList();
+
+            foreach (var io in ios)
+            {
+                var randomColor = GetRandomColor();
+                character.Client.Send(new DebugHighlightCellsMessage(randomColor.ToArgb() & 16777215, new[] { io.CellId }));
+                character.SendServerMessage(string.Format("Element Id: {0} - CellId: {1}", io.ElementId, io.CellId), randomColor);
+            }
+        }
+
+        private static Color GetRandomColor()
+        {
+            var randomGen = new Random();
+            var names = (KnownColor[])Enum.GetValues(typeof(KnownColor));
+            var randomColorName = names[randomGen.Next(names.Length)];
+            return Color.FromKnownColor(randomColorName);
         }
     }
 
@@ -27,15 +66,40 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public InteractiveRefreshCommand()
         {
-            Aliases = new[] {"refresh"};
+            Aliases = new[] { "refresh" };
             Description = "Refresh interactives objects";
             RequiredRole = RoleEnum.Administrator;
-            ParentCommandType = typeof (InteractivesCommands);
+            ParentCommandType = typeof(InteractivesCommands);
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            World.Instance.SpawnInteractives();
+            var methodInteractives = InteractiveManager.Instance.GetType().GetMethod("Initialize", new Type[0]);
+            var methodTrigger = CellTriggerManager.Instance.GetType().GetMethod("Initialize", new Type[0]);
+
+            World.Instance.SendAnnounce("[RELOAD] Reloading Interactives ... WORLD PAUSED", Color.DodgerBlue);
+            Task.Factory.StartNew(() =>
+            {
+                World.Instance.UnSpawnInteractives();
+                World.Instance.UnSpawnCellTriggers();
+
+                World.Instance.Pause();
+                try
+                {
+                    methodInteractives.Invoke(InteractiveManager.Instance, new object[0]);
+                    methodTrigger.Invoke(CellTriggerManager.Instance, new object[0]);
+                }
+                finally
+                {
+                    World.Instance.Resume();
+                }
+               
+                World.Instance.SpawnInteractives();
+                World.Instance.SpawnCellTriggers();
+
+                World.Instance.SendAnnounce("[RELOAD] Interactives reloaded ... WORLD RESUMED", Color.DodgerBlue);
+            });
+
             trigger.Reply("Successfully refresh interactives objects !");
         }
     }
@@ -48,11 +112,12 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Add a teleport interactive object to the current map";
             RequiredRole = RoleEnum.Administrator;
             ParentCommandType = typeof(InteractivesCommands);
-            AddParameter("templateId",  "Interactive templateId", isOptional:true, converter: ParametersConverter.InteractiveTemplateConverter);
+            AddParameter("templateId", "Interactive templateId", converter: ParametersConverter.InteractiveTemplateConverter);
             AddParameter<int>("elementId", "ElementId");
             AddParameter("skillId", "SkillId", converter: ParametersConverter.InteractiveSkillTemplateConverter);
             AddParameter("mapDst", "map", "Map destination", converter: ParametersConverter.MapConverter);
             AddParameter<short>("cellidDst", "cellDst", "Cell destination");
+            AddParameter("orientationId", "orientation", converter: ParametersConverter.DirectionConverter);
         }
 
         public override void ExecuteAdd(TriggerBase trigger)
@@ -74,24 +139,33 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var cellIdDst = map.Cells[trigger.Get<short>("cellidDst")];
                 var elementId = trigger.Get<int>("elementId");
                 var skillTemplate = trigger.Get<InteractiveSkillTemplate>("skillId");
-                var templateId = trigger.IsArgumentDefined("templateId") ? trigger.Get<InteractiveTemplate>("templateId").Id : -1;
+                var template = trigger.Get<InteractiveTemplate>("templateId");
+                var templateId = template == null ? 0 : template.Id;
+                var direction = trigger.Get<DirectionsEnum>("orientationId");
 
-                var Id = InteractiveManager.Instance.PopSpawnId();
+                if (mapSrc.GetInteractiveObject(elementId) != null)
+                {
+                    trigger.ReplyError("Interactive object {0} already exists on map {1}", elementId, mapSrc.Id);
+                    return;
+                }
+
+                var spawnId = InteractiveManager.Instance.PopSpawnId();
+                var skillId = InteractiveManager.Instance.PopSkillId();
 
                 var skill = new InteractiveSkillRecord
                 {
-                    Id = Id,
+                    Id = skillId,
                     Type = "Teleport",
                     Duration = 0,
                     CustomTemplateId = skillTemplate.Id,
                     Parameter0 = map.Id.ToString(),
                     Parameter1 = cellIdDst.Id.ToString(),
-                    Parameter2 = "7"
+                    Parameter2 = direction.ToString("D")
                 };
 
                 var spawn = new InteractiveSpawn
                 {
-                    Id = Id,
+                    Id = spawnId,
                     ElementId = elementId,
                     MapId = mapSrc.Id,
                     Skills = { skill },
@@ -100,31 +174,37 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 var spawnSkill = new InteractiveSpawnSkills
                 {
-                    InteractiveSpawnId = spawn.Id,
-                    SkillId = skill.Id
+                    InteractiveSpawnId = spawnId,
+                    SkillId = skillId
                 };
 
-                WorldServer.Instance.IOTaskPool.ExecuteInContext(() => InteractiveManager.Instance.AddInteractiveSpawn(spawn, skill, spawnSkill));
+                WorldServer.Instance.IOTaskPool.AddMessage(() =>
+                {
+                    InteractiveManager.Instance.AddInteractiveSpawn(spawn, skill, spawnSkill);
+                    ContextRoleplayHandler.SendMapComplementaryInformationsDataMessage(character.Client);
+                });
                 trigger.ReplyBold("Add Interactive {0} on map {1}", spawn.Template.Name, spawn.MapId);
             }
         }
 
         public override void ExecuteRemove(TriggerBase trigger)
         {
-            var character = trigger is GameTrigger ? (trigger as GameTrigger).Character : null;
+            var gameTrigger = trigger as GameTrigger;
+            var character = gameTrigger != null ? gameTrigger.Character : null;
 
             if (character == null)
                 return;
 
             var elementId = trigger.Get<int>("elementId");
             var mapSrc = character.Map;
-            var interactive = InteractiveManager.Instance.GetOneSpawn(x => x.ElementId == elementId);
+            var interactive = InteractiveManager.Instance.GetOneSpawn(x => x.MapId == mapSrc.Id && x.ElementId == elementId);
 
-            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {
                 InteractiveManager.Instance.RemoveInteractiveSpawn(interactive);
-                trigger.ReplyBold("Delete Interactive {0} on map {1}", elementId, mapSrc.Id);
+                ContextRoleplayHandler.SendMapComplementaryInformationsDataMessage(character.Client);
             });
+            trigger.ReplyBold("Delete Interactive {0} on map {1}", elementId, mapSrc.Id);
         }
     }
 }
