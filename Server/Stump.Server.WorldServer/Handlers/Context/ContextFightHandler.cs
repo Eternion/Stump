@@ -311,12 +311,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight)
         {
-            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, new FightResultListEntry[0], new NamedPartyTeamWithOutcome[0]));
+            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds / 100, fight.AgeBonus, 0, new FightResultListEntry[0], new NamedPartyTeamWithOutcome[0]));
         }
 
         public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight, IEnumerable<FightResultListEntry> results)
         {
-            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, results, new NamedPartyTeamWithOutcome[0]));
+            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds / 100, fight.AgeBonus, 0, results, new NamedPartyTeamWithOutcome[0]));
         }
 
         public static void SendGameFightJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
@@ -360,6 +360,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
                         entry.GetGameFightFighterInformations(client))));
         }
 
+        public static void SendFighterStatsListMessage(IPacketReceiver client, Character character)
+        {
+            client.Send(new FighterStatsListMessage(character.GetCharacterCharacteristicsInformations()));
+        }
+
         public static void SendGameFightNewRoundMessage(IPacketReceiver client, int roundNumber)
         {
             client.Send(new GameFightNewRoundMessage(roundNumber));
@@ -377,7 +382,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightTurnStartSlaveMessage(IPacketReceiver client, int id, int waitTime, int idSummoner)
         {
-            client.Send(new GameFightTurnStartSlaveMessage(id, waitTime, idSummoner));
+            //client.Send(new GameFightTurnStartSlaveMessage(id, waitTime, idSummoner));
+        }
+
+        public static void SendGameFightTurnStartPlayingMessage(IPacketReceiver client)
+        {
+            client.Send(new GameFightTurnStartPlayingMessage());
         }
 
         public static void SendGameFightTurnFinishMessage(IPacketReceiver client)
@@ -402,7 +412,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             var fighterInfos = fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
-                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
 
             client.Send(new GameFightShowFighterMessage(fighterInfos));
         }
@@ -495,7 +505,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SlaveFighter actor)
         {
-            client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
+            //client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
         }
     }
 }

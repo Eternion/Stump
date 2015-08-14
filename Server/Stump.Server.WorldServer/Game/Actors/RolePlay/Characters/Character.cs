@@ -3063,6 +3063,95 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look.GetEntityLook());
         }
 
+        public CharacterCharacteristicsInformations GetCharacterCharacteristicsInformations()
+        {
+            return new CharacterCharacteristicsInformations(
+                        Experience, // EXPERIENCE
+                        LowerBoundExperience, // EXPERIENCE level floor 
+                        UpperBoundExperience, // EXPERIENCE nextlevel floor 
+
+                        Kamas, // Amount of kamas.
+
+                        (short)StatsPoints, // Stats points
+                        0, // Additionnal points
+                        (short)SpellsPoints, // Spell points
+
+                        // Alignment
+                        GetActorAlignmentExtendInformations(),
+                        Stats.Health.Total, // Life points
+                        Stats.Health.TotalMax, // Max Life points
+
+                        Energy, // Energy points
+                        EnergyMax, // maxEnergyPoints
+
+                        (short)Stats[PlayerFields.AP]
+                                    .Total, // actionPointsCurrent
+                        (short)Stats[PlayerFields.MP]
+                                    .Total, // movementPointsCurrent
+
+                        Stats[PlayerFields.Initiative],
+                        Stats[PlayerFields.Prospecting],
+                        Stats[PlayerFields.AP],
+                        Stats[PlayerFields.MP],
+                        Stats[PlayerFields.Strength],
+                        Stats[PlayerFields.Vitality],
+                        Stats[PlayerFields.Wisdom],
+                        Stats[PlayerFields.Chance],
+                        Stats[PlayerFields.Agility],
+                        Stats[PlayerFields.Intelligence],
+                        Stats[PlayerFields.Range],
+                        Stats[PlayerFields.SummonLimit],
+                        Stats[PlayerFields.DamageReflection],
+                        Stats[PlayerFields.CriticalHit],
+                        (short)Inventory.WeaponCriticalHit,
+                        Stats[PlayerFields.CriticalMiss],
+                        Stats[PlayerFields.HealBonus],
+                        Stats[PlayerFields.DamageBonus],
+                        Stats[PlayerFields.WeaponDamageBonus],
+                        Stats[PlayerFields.DamageBonusPercent],
+                        Stats[PlayerFields.TrapBonus],
+                        Stats[PlayerFields.TrapBonusPercent],
+                        Stats[PlayerFields.GlyphBonusPercent],
+                        Stats[PlayerFields.PermanentDamagePercent],
+                        Stats[PlayerFields.TackleBlock],
+                        Stats[PlayerFields.TackleEvade],
+                        Stats[PlayerFields.APAttack],
+                        Stats[PlayerFields.MPAttack],
+                        Stats[PlayerFields.PushDamageBonus],
+                        Stats[PlayerFields.CriticalDamageBonus],
+                        Stats[PlayerFields.NeutralDamageBonus],
+                        Stats[PlayerFields.EarthDamageBonus],
+                        Stats[PlayerFields.WaterDamageBonus],
+                        Stats[PlayerFields.AirDamageBonus],
+                        Stats[PlayerFields.FireDamageBonus],
+                        Stats[PlayerFields.DodgeAPProbability],
+                        Stats[PlayerFields.DodgeMPProbability],
+                        Stats[PlayerFields.NeutralResistPercent],
+                        Stats[PlayerFields.EarthResistPercent],
+                        Stats[PlayerFields.WaterResistPercent],
+                        Stats[PlayerFields.AirResistPercent],
+                        Stats[PlayerFields.FireResistPercent],
+                        Stats[PlayerFields.NeutralElementReduction],
+                        Stats[PlayerFields.EarthElementReduction],
+                        Stats[PlayerFields.WaterElementReduction],
+                        Stats[PlayerFields.AirElementReduction],
+                        Stats[PlayerFields.FireElementReduction],
+                        Stats[PlayerFields.PushDamageReduction],
+                        Stats[PlayerFields.CriticalDamageReduction],
+                        Stats[PlayerFields.PvpNeutralResistPercent],
+                        Stats[PlayerFields.PvpEarthResistPercent],
+                        Stats[PlayerFields.PvpWaterResistPercent],
+                        Stats[PlayerFields.PvpAirResistPercent],
+                        Stats[PlayerFields.PvpFireResistPercent],
+                        Stats[PlayerFields.PvpNeutralElementReduction],
+                        Stats[PlayerFields.PvpEarthElementReduction],
+                        Stats[PlayerFields.PvpWaterElementReduction],
+                        Stats[PlayerFields.PvpAirElementReduction],
+                        Stats[PlayerFields.PvpFireElementReduction],
+                        new List<CharacterSpellModification>(),
+                        0
+                        );
+        }
         #endregion
 
         #region PartyMemberInformations
