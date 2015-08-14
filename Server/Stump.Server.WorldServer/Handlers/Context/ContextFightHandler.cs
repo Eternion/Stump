@@ -272,7 +272,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightStartMessage(IPacketReceiver client)
         {
-            client.Send(new GameFightStartMessage());
+            client.Send(new GameFightStartMessage(new Idol[0]));
         }
 
         public static void SendGameFightStartingMessage(IPacketReceiver client, FightTypeEnum fightTypeEnum, int attackerId, int defenderId)
