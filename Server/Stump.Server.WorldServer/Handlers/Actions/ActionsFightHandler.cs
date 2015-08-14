@@ -148,7 +148,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
         public static void SendGameActionFightSpellCooldownVariationMessage(IPacketReceiver client, FightActor source, FightActor target, Spell spell, short duration)
         {
-            client.Send(new GameActionFightSpellCooldownVariationMessage(duration > 0 ? (short)ActionsEnum.ACTION_CHARACTER_ADD_SPELL_COOLDOWN : (short)ActionsEnum.ACTION_CHARACTER_REMOVE_SPELL_COOLDOWN, source.Id, target.Id, spell.Id, duration));
+            client.Send(new GameActionFightSpellCooldownVariationMessage(duration > 0 ? (short)ActionsEnum.ACTION_CHARACTER_ADD_SPELL_COOLDOWN : (short)ActionsEnum.ACTION_CHARACTER_REMOVE_SPELL_COOLDOWN, source.Id, target.Id, (short)spell.Id, duration));
         }
 
         public static void SendGameActionFightExchangePositionsMessage(IPacketReceiver client, FightActor caster, FightActor target)

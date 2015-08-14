@@ -278,8 +278,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         void ForEach(Action<Character> action, bool withSpectators = false);
         void ForEach(Action<Character> action, Character except, bool withSpectators = false);
         bool IsCellFree(Cell cell);
-        int GetFightDuration();
-        int GetTurnTimeLeft();
+        TimeSpan GetFightDuration();
+        TimeSpan GetTurnTimeLeft();
+        TimeSpan GetPlacementTimeLeft();
         sbyte GetNextContextualId();
         void FreeContextualId(sbyte id);
         FightActor GetOneFighter(int id);
@@ -308,7 +309,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         FightExternalInformations GetFightExternalInformations();
         bool CanBeSeen(Cell from, Cell to, bool throughEntities = false);
         bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false);
-        int GetPlacementTimeLeft();
     }
 
     // this is necessary since we can't read static field dynamically in a generic class
@@ -928,9 +928,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #endregion
         
-        public virtual int GetPlacementTimeLeft()
+        public virtual TimeSpan GetPlacementTimeLeft()
         {
-            return 0;
+            return TimeSpan.Zero;
         }
 
         #region Placement methods
@@ -1330,7 +1330,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (TimeLine.Current != null)
             {
-                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying, GetTurnTimeLeft());
+                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying, (int)GetPlacementTimeLeft().TotalMilliseconds/100);
             }
         }
 
@@ -1418,10 +1418,17 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameFightTurnStartSlaveMessage(Clients, slaveFighter.Id, FightConfiguration.TurnTime, slaveFighter.Summoner.Id);
             else
                 ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
-                                                         FightConfiguration.TurnTime);
+                                                         FightConfiguration.TurnTime/100);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
+
+            var characterFighter = FighterPlaying as CharacterFighter;
+            if (FighterPlaying is CharacterFighter)
+            {
+                ContextHandler.SendGameFightTurnStartPlayingMessage(characterFighter.Character.Client);
+                ContextHandler.SendFighterStatsListMessage(characterFighter.Character.Client, characterFighter.Character);
+            }
 
             FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();
 
@@ -2213,12 +2220,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds/100, FightType);
         }
 
         protected virtual void SendGameFightJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, false, IsStarted, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
         }
 
         #endregion
@@ -2291,19 +2298,19 @@ namespace Stump.Server.WorldServer.Game.Fights
             return cell.Walkable && !cell.NonWalkableDuringFight && GetOneFighter(cell) == null;
         }
 
-        public int GetFightDuration()
+        public TimeSpan GetFightDuration()
         {
-            return !IsStarted ? 0 : (int) (DateTime.Now - StartTime).TotalMilliseconds;
+            return TimeSpan.FromMilliseconds(!IsStarted ? 0 : (int) (DateTime.Now - StartTime).TotalMilliseconds);
         }
 
-        public int GetTurnTimeLeft()
+        public TimeSpan GetTurnTimeLeft()
         {
             if (TimeLine.Current == null)
-                return 0;
+                return TimeSpan.Zero;
 
             var time = ( DateTime.Now - TurnStartTime ).TotalMilliseconds;
 
-            return time > 0 ? (FightConfiguration.TurnTime - (int)time) : 0;
+            return TimeSpan.FromMilliseconds(time > 0 ? (FightConfiguration.TurnTime - (int)time) : 0);
         }
 
         public sbyte GetNextContextualId()

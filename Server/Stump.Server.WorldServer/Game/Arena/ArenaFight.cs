@@ -66,14 +66,14 @@ namespace Stump.Server.WorldServer.Game.Arena
             base.OnFightEnded();
         }
 
-        public override int GetPlacementTimeLeft()
+        public override TimeSpan GetPlacementTimeLeft()
         {
             var timeleft = FightConfiguration.PlacementPhaseTime - ( DateTime.Now - CreationTime ).TotalMilliseconds;
 
             if (timeleft < 0)
                 timeleft = 0;
 
-            return (int)timeleft;
+            return TimeSpan.FromMilliseconds(timeleft);
         }
 
         protected override IEnumerable<IFightResult> GenerateResults()

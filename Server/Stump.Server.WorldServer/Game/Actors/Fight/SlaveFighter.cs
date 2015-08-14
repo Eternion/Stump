@@ -48,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (characterFighter == null)
                 return;
 
-            var slotIndex = 0;
+            sbyte slotIndex = 0;
             ContextHandler.SendSlaveSwitchContextMessage(characterFighter.Character.Client, this);
             ShortcutHandler.SendShortcutBarContentMessage(characterFighter.Character.Client,
                 Spells.Select(x => new ShortcutSpell(slotIndex++, (short)x.Template.Id)), ShortcutBarEnum.SPELL_SHORTCUT_BAR);
@@ -152,8 +152,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations(client),
                 (sbyte)Team.Id,
+                0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
+                new short[0],
                 (short)Monster.Template.Id,
                 (sbyte)Monster.GradeId);
         }
@@ -164,7 +166,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (characterFighter == null)
                 return new CharacterCharacteristicsInformations();
 
-            return new CharacterCharacteristicsInformations(
+            return new CharacterCharacteristicsInformations();
+            /*return new CharacterCharacteristicsInformations(
                         characterFighter.Character.Experience, // EXPERIENCE
                         characterFighter.Character.LowerBoundExperience, // EXPERIENCE level floor 
                         characterFighter.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor 
@@ -246,7 +249,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         Stats[PlayerFields.PvpAirElementReduction],
                         Stats[PlayerFields.PvpFireElementReduction],
                         new List<CharacterSpellModification>()
-                );
+                );*/
         }
 
         public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)

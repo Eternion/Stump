@@ -16,8 +16,10 @@ namespace Stump.Plugins.DefaultPlugin.Security
         [Initialization(InitializationPass.First)]
         public static void Initialize()
         {
-            WorldServer.Instance.IOTaskPool.CallPeriodically(5000, SecurityChecker.TimeoutCheck);
-            WorldServer.Instance.HandlerManager.Register(typeof (SecurityChecker));
+            //if (SecurityChecker.KickTimeout > 0)
+                //WorldServer.Instance.IOTaskPool.CallPeriodically(SecurityChecker.KickTimeout * 1000, SecurityChecker.TimeoutCheck);
+
+            //WorldServer.Instance.HandlerManager.Register(typeof (SecurityChecker));
         }
     }
 
@@ -28,7 +30,7 @@ namespace Stump.Plugins.DefaultPlugin.Security
         /// <summary>
         /// In seconds
         /// </summary>
-        [Variable]
+        [Variable(true)]
         public static int KickTimeout = 15;
 
         private static readonly List<Tuple<string, string, int>> filesToCheck = new List<Tuple<string, string, int>>
@@ -60,6 +62,9 @@ namespace Stump.Plugins.DefaultPlugin.Security
 
         public static void PerformCheck(WorldClient client)
         {
+            if (KickTimeout < 0)
+                return;
+
             if (m_pendingClients.ContainsKey(client))
                 return;
 

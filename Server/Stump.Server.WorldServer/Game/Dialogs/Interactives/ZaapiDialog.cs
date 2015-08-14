@@ -102,7 +102,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
                 (sbyte)TeleporterTypeEnum.TELEPORTER_SUBWAY,
                 m_destinations.Select(entry => entry.Id),
                 m_destinations.Select(entry => (short)entry.SubArea.Id),
-                m_destinations.Select(GetCostTo)));
+                m_destinations.Select(GetCostTo),
+                m_destinations.Select(x => (sbyte)TeleporterTypeEnum.TELEPORTER_SUBWAY)));
         }
 
         public short GetCostTo(Map map)
