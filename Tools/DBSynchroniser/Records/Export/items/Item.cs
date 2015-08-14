@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:46
+// Generated on 08/13/2015 17:50:44
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +23,7 @@ namespace DBSynchroniser.Records
         public const uint RESSOURCES_CATEGORY = 2;
         public const uint QUEST_CATEGORY = 3;
         public const uint OTHER_CATEGORY = 4;
+        public const int MAX_JOB_LEVEL_GAP = 100;
         public int id;
         [I18NField]
         public uint nameId;
@@ -55,6 +56,8 @@ namespace DBSynchroniser.Records
         public List<EffectInstance> possibleEffects;
         public List<uint> favoriteSubAreas;
         public uint favoriteSubAreasBonus;
+        public int craftXpRatio;
+        public Boolean needUseConfirm;
         public uint weight;
 
         int ID2ORecord.Id
@@ -355,6 +358,20 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public int CraftXpRatio
+        {
+            get { return craftXpRatio; }
+            set { craftXpRatio = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean NeedUseConfirm
+        {
+            get { return needUseConfirm; }
+            set { needUseConfirm = value; }
+        }
+
+        [D2OIgnore]
         public uint Weight
         {
             get { return weight; }
@@ -395,6 +412,8 @@ namespace DBSynchroniser.Records
             PossibleEffects = castedObj.possibleEffects;
             FavoriteSubAreas = castedObj.favoriteSubAreas;
             FavoriteSubAreasBonus = castedObj.favoriteSubAreasBonus;
+            CraftXpRatio = castedObj.craftXpRatio;
+            NeedUseConfirm = castedObj.needUseConfirm;
             Weight = castedObj.weight;
         }
         
@@ -431,6 +450,8 @@ namespace DBSynchroniser.Records
             obj.possibleEffects = PossibleEffects;
             obj.favoriteSubAreas = FavoriteSubAreas;
             obj.favoriteSubAreasBonus = FavoriteSubAreasBonus;
+            obj.craftXpRatio = CraftXpRatio;
+            obj.needUseConfirm = NeedUseConfirm;
             obj.weight = Weight;
             return obj;
         }

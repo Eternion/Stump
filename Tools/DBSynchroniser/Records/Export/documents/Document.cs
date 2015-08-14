@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:45
+// Generated on 08/13/2015 17:50:43
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +20,8 @@ namespace DBSynchroniser.Records
         private const String MODULE = "Documents";
         public int id;
         public uint typeId;
+        public Boolean showTitle;
+        public Boolean showBackgroundImage;
         [I18NField]
         public uint titleId;
         [I18NField]
@@ -29,6 +31,7 @@ namespace DBSynchroniser.Records
         [I18NField]
         public uint contentId;
         public String contentCSS;
+        public String clientProperties;
 
         int ID2ORecord.Id
         {
@@ -49,6 +52,20 @@ namespace DBSynchroniser.Records
         {
             get { return typeId; }
             set { typeId = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean ShowTitle
+        {
+            get { return showTitle; }
+            set { showTitle = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean ShowBackgroundImage
+        {
+            get { return showBackgroundImage; }
+            set { showBackgroundImage = value; }
         }
 
         [D2OIgnore]
@@ -91,17 +108,28 @@ namespace DBSynchroniser.Records
             set { contentCSS = value; }
         }
 
+        [D2OIgnore]
+        [NullString]
+        public String ClientProperties
+        {
+            get { return clientProperties; }
+            set { clientProperties = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Document)obj;
             
             Id = castedObj.id;
             TypeId = castedObj.typeId;
+            ShowTitle = castedObj.showTitle;
+            ShowBackgroundImage = castedObj.showBackgroundImage;
             TitleId = castedObj.titleId;
             AuthorId = castedObj.authorId;
             SubTitleId = castedObj.subTitleId;
             ContentId = castedObj.contentId;
             ContentCSS = castedObj.contentCSS;
+            ClientProperties = castedObj.clientProperties;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -109,11 +137,14 @@ namespace DBSynchroniser.Records
             var obj = parent != null ? (Document)parent : new Document();
             obj.id = Id;
             obj.typeId = TypeId;
+            obj.showTitle = ShowTitle;
+            obj.showBackgroundImage = ShowBackgroundImage;
             obj.titleId = TitleId;
             obj.authorId = AuthorId;
             obj.subTitleId = SubTitleId;
             obj.contentId = ContentId;
             obj.contentCSS = ContentCSS;
+            obj.clientProperties = ClientProperties;
             return obj;
         }
         

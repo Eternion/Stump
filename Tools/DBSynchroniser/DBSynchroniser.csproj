@@ -145,6 +145,7 @@
     <Compile Include="Records\Export\alignments\AlignmentTitle.cs" />
     <Compile Include="Records\Export\almanax\AlmanaxCalendar.cs" />
     <Compile Include="Records\Export\ambientSounds\AmbientSound.cs" />
+    <Compile Include="Records\Export\ambientSounds\PlaylistSound.cs" />
     <Compile Include="Records\Export\appearance\Appearance.cs" />
     <Compile Include="Records\Export\appearance\CreatureBoneOverride.cs" />
     <Compile Include="Records\Export\appearance\CreatureBoneType.cs" />
@@ -154,8 +155,12 @@
     <Compile Include="Records\Export\appearance\Title.cs" />
     <Compile Include="Records\Export\appearance\TitleCategory.cs" />
     <Compile Include="Records\Export\breeds\Breed.cs" />
+    <Compile Include="Records\Export\breeds\BreedRole.cs" />
+    <Compile Include="Records\Export\breeds\BreedRoleByBreed.cs" />
     <Compile Include="Records\Export\breeds\Head.cs" />
     <Compile Include="Records\Export\challenges\Challenge.cs" />
+    <Compile Include="Records\Export\characteristics\Characteristic.cs" />
+    <Compile Include="Records\Export\characteristics\CharacteristicCategory.cs" />
     <Compile Include="Records\Export\communication\CensoredWord.cs" />
     <Compile Include="Records\Export\communication\ChatChannel.cs" />
     <Compile Include="Records\Export\communication\Emoticon.cs" />
@@ -170,6 +175,7 @@
     <Compile Include="Records\Export\guild\EmblemSymbolCategory.cs" />
     <Compile Include="Records\Export\guild\RankName.cs" />
     <Compile Include="Records\Export\houses\House.cs" />
+    <Compile Include="Records\Export\idols\Idol.cs" />
     <Compile Include="Records\Export\interactives\Interactive.cs" />
     <Compile Include="Records\Export\interactives\SkillName.cs" />
     <Compile Include="Records\Export\interactives\StealthBones.cs" />
@@ -213,6 +219,7 @@
     <Compile Include="Records\Export\npcs\NpcMessage.cs" />
     <Compile Include="Records\Export\npcs\TaxCollectorFirstname.cs" />
     <Compile Include="Records\Export\npcs\TaxCollectorName.cs" />
+    <Compile Include="Records\Export\playlists\Playlist.cs" />
     <Compile Include="Records\Export\quest\Achievement.cs" />
     <Compile Include="Records\Export\quest\AchievementCategory.cs" />
     <Compile Include="Records\Export\quest\AchievementObjective.cs" />

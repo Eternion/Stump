@@ -91,7 +91,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_random = effect.random;
             m_modificator = effect.modificator;
             m_trigger = effect.trigger;
-            m_hidden = effect.hidden;
             ParseRawZone(effect.rawZone);
         }
 
@@ -345,7 +344,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                     random = Random,
                     modificator = Modificator,
                     trigger = Trigger,
-                    hidden = Hidden,
                     zoneMinSize = ZoneMinSize,
                     zoneSize = ZoneSize,
                     zoneShape = (uint) ZoneShape

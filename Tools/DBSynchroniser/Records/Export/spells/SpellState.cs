@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:49
+// Generated on 08/13/2015 17:50:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +24,7 @@ namespace DBSynchroniser.Records
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
         public Boolean isSilent;
+        public List<int> effectsIds;
 
         int ID2ORecord.Id
         {
@@ -68,6 +69,32 @@ namespace DBSynchroniser.Records
             set { isSilent = value; }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<int> EffectsIds
+        {
+            get { return effectsIds; }
+            set
+            {
+                effectsIds = value;
+                m_effectsIdsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_effectsIdsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] EffectsIdsBin
+        {
+            get { return m_effectsIdsBin; }
+            set
+            {
+                m_effectsIdsBin = value;
+                effectsIds = value == null ? null : value.ToObject<List<int>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SpellState)obj;
@@ -77,6 +104,7 @@ namespace DBSynchroniser.Records
             PreventsSpellCast = castedObj.preventsSpellCast;
             PreventsFight = castedObj.preventsFight;
             IsSilent = castedObj.isSilent;
+            EffectsIds = castedObj.effectsIds;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -87,11 +115,13 @@ namespace DBSynchroniser.Records
             obj.preventsSpellCast = PreventsSpellCast;
             obj.preventsFight = PreventsFight;
             obj.isSilent = IsSilent;
+            obj.effectsIds = EffectsIds;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
+            m_effectsIdsBin = effectsIds == null ? null : effectsIds.ToBinary();
         
         }
     }
