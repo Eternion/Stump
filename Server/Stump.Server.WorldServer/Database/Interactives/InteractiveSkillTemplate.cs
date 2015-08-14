@@ -19,6 +19,8 @@ namespace Stump.Server.WorldServer.Database.Interactives
     {
         private int[] m_craftableItemIds;
         private string m_craftableItemIdsCSV;
+        private int[] m_modifiableItemTypes;
+        private string m_modifiableItemTypesCSV;
         private InteractiveTemplate m_interactive;
 
         [PrimaryKey("Id", false)]
@@ -46,10 +48,25 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set;
         }
 
-        public int ModifiableItemType
+        [Ignore]
+        public int[] ModifiableItemTypes
         {
-            get;
-            set;
+            get { return m_modifiableItemTypes ?? (m_modifiableItemTypes = ModifiableItemTypesCSV.FromCSV<int>(",")); }
+            set
+            {
+                m_modifiableItemTypes = value;
+                m_modifiableItemTypesCSV = value.ToCSV(",");
+            }
+        }
+
+        public string ModifiableItemTypesCSV
+        {
+            get { return m_modifiableItemTypesCSV; }
+            set
+            {
+                m_modifiableItemTypesCSV = value;
+                m_modifiableItemTypes = ModifiableItemTypesCSV.FromCSV<int>(",");
+            }
         }
 
         public int GatheredRessourceItem
@@ -65,6 +82,17 @@ namespace Stump.Server.WorldServer.Database.Interactives
             {
                 m_craftableItemIdsCSV = value;
                 m_craftableItemIds = CraftableItemIdsCSV.FromCSV<int>(",");
+            }
+        }
+
+        [Ignore]
+        public int[] CraftableItemIds
+        {
+            get { return m_craftableItemIds ?? (m_craftableItemIds = CraftableItemIdsCSV.FromCSV<int>(",")); }
+            set
+            {
+                m_craftableItemIds = value;
+                CraftableItemIdsCSV = value.ToCSV(",");
             }
         }
 
@@ -92,6 +120,12 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set;
         }
 
+        public int ElementActionId
+        {
+            get;
+            set;
+        }
+
         public Boolean AvailableInHouse
         {
             get;
@@ -104,15 +138,10 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set;
         }
 
-        [Ignore]
-        public int[] CraftableItemIds
+        public bool ClientDisplay
         {
-            get { return m_craftableItemIds ?? (m_craftableItemIds = CraftableItemIdsCSV.FromCSV<int>(",")); }
-            set
-            {
-                m_craftableItemIds = value;
-                CraftableItemIdsCSV = value.ToCSV(",");
-            }
+            get;
+            set;
         }
 
 
@@ -131,15 +160,17 @@ namespace Stump.Server.WorldServer.Database.Interactives
             NameId = skill.nameId;
             ParentJobId = skill.parentJobId;
             IsForgemagus = skill.isForgemagus;
-            ModifiableItemType = skill.modifiableItemType;
+            ModifiableItemTypes = skill.modifiableItemTypeIds.ToArray();
             GatheredRessourceItem = skill.gatheredRessourceItem;
             CraftableItemIds = skill.craftableItemIds.ToArray();
             InteractiveId = skill.interactiveId;
             UseAnimation = skill.useAnimation;
             IsRepair = skill.isRepair;
             Cursor = skill.cursor;
+            ElementActionId = skill.elementActionId;
             AvailableInHouse = skill.availableInHouse;
             LevelMin = skill.levelMin;
+            ClientDisplay = skill.ClientDisplay;
         }
 
         #endregion

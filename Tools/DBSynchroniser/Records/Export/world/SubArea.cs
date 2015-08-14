@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:49
+// Generated on 08/13/2015 17:50:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +23,7 @@ namespace DBSynchroniser.Records
         public uint nameId;
         public int areaId;
         public List<AmbientSound> ambientSounds;
+        public List<List<int>> playlists;
         public List<uint> mapIds;
         public Rectangle bounds;
         public List<int> shape;
@@ -89,6 +90,32 @@ namespace DBSynchroniser.Records
             {
                 m_ambientSoundsBin = value;
                 ambientSounds = value == null ? null : value.ToObject<List<AmbientSound>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<List<int>> Playlists
+        {
+            get { return playlists; }
+            set
+            {
+                playlists = value;
+                m_playlistsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_playlistsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] PlaylistsBin
+        {
+            get { return m_playlistsBin; }
+            set
+            {
+                m_playlistsBin = value;
+                playlists = value == null ? null : value.ToObject<List<List<int>>>();
             }
         }
 
@@ -324,6 +351,7 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
             AreaId = castedObj.areaId;
             AmbientSounds = castedObj.ambientSounds;
+            Playlists = castedObj.playlists;
             MapIds = castedObj.mapIds;
             Bounds = castedObj.bounds;
             Shape = castedObj.shape;
@@ -346,6 +374,7 @@ namespace DBSynchroniser.Records
             obj.nameId = NameId;
             obj.areaId = AreaId;
             obj.ambientSounds = AmbientSounds;
+            obj.playlists = Playlists;
             obj.mapIds = MapIds;
             obj.bounds = Bounds;
             obj.shape = Shape;
@@ -365,6 +394,7 @@ namespace DBSynchroniser.Records
         public virtual void BeforeSave(bool insert)
         {
             m_ambientSoundsBin = ambientSounds == null ? null : ambientSounds.ToBinary();
+            m_playlistsBin = playlists == null ? null : playlists.ToBinary();
             m_mapIdsBin = mapIds == null ? null : mapIds.ToBinary();
             m_boundsBin = bounds == null ? null : bounds.ToBinary();
             m_shapeBin = shape == null ? null : shape.ToBinary();

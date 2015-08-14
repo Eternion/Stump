@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:47
+// Generated on 08/13/2015 17:50:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,6 +43,7 @@ namespace DBSynchroniser.Records
         public Boolean canBePushed;
         public Boolean fastAnimsFun;
         public Boolean canSwitchPos;
+        public List<uint> incompatibleIdols;
 
         int ID2ORecord.Id
         {
@@ -316,6 +317,32 @@ namespace DBSynchroniser.Records
             set { canSwitchPos = value; }
         }
 
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> IncompatibleIdols
+        {
+            get { return incompatibleIdols; }
+            set
+            {
+                incompatibleIdols = value;
+                m_incompatibleIdolsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_incompatibleIdolsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] IncompatibleIdolsBin
+        {
+            get { return m_incompatibleIdolsBin; }
+            set
+            {
+                m_incompatibleIdolsBin = value;
+                incompatibleIdols = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Monster)obj;
@@ -344,6 +371,7 @@ namespace DBSynchroniser.Records
             CanBePushed = castedObj.canBePushed;
             FastAnimsFun = castedObj.fastAnimsFun;
             CanSwitchPos = castedObj.canSwitchPos;
+            IncompatibleIdols = castedObj.incompatibleIdols;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -373,6 +401,7 @@ namespace DBSynchroniser.Records
             obj.canBePushed = CanBePushed;
             obj.fastAnimsFun = FastAnimsFun;
             obj.canSwitchPos = CanSwitchPos;
+            obj.incompatibleIdols = IncompatibleIdols;
             return obj;
         }
         
@@ -383,6 +412,7 @@ namespace DBSynchroniser.Records
             m_dropsBin = drops == null ? null : drops.ToBinary();
             m_subareasBin = subareas == null ? null : subareas.ToBinary();
             m_spellsBin = spells == null ? null : spells.ToBinary();
+            m_incompatibleIdolsBin = incompatibleIdols == null ? null : incompatibleIdols.ToBinary();
         
         }
     }

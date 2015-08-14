@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:45
+// Generated on 08/13/2015 17:50:43
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,6 +30,7 @@ namespace DBSynchroniser.Records
         public Boolean forceMinMax;
         public Boolean boost;
         public Boolean active;
+        public int oppositeId;
         [I18NField]
         public uint theoreticalDescriptionId;
         public uint theoreticalPattern;
@@ -126,6 +127,13 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public int OppositeId
+        {
+            get { return oppositeId; }
+            set { oppositeId = value; }
+        }
+
+        [D2OIgnore]
         [I18NField]
         public uint TheoreticalDescriptionId
         {
@@ -190,6 +198,7 @@ namespace DBSynchroniser.Records
             ForceMinMax = castedObj.forceMinMax;
             Boost = castedObj.boost;
             Active = castedObj.active;
+            OppositeId = castedObj.oppositeId;
             TheoreticalDescriptionId = castedObj.theoreticalDescriptionId;
             TheoreticalPattern = castedObj.theoreticalPattern;
             ShowInSet = castedObj.showInSet;
@@ -213,6 +222,7 @@ namespace DBSynchroniser.Records
             obj.forceMinMax = ForceMinMax;
             obj.boost = Boost;
             obj.active = Active;
+            obj.oppositeId = OppositeId;
             obj.theoreticalDescriptionId = TheoreticalDescriptionId;
             obj.theoreticalPattern = TheoreticalPattern;
             obj.showInSet = ShowInSet;

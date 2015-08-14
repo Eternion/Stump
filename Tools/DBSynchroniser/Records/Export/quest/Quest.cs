@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:48
+// Generated on 08/13/2015 17:50:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +29,7 @@ namespace DBSynchroniser.Records
         public Boolean isDungeonQuest;
         public uint levelMin;
         public uint levelMax;
+        public Boolean isPartyQuest;
 
         int ID2ORecord.Id
         {
@@ -127,6 +128,13 @@ namespace DBSynchroniser.Records
             set { levelMax = value; }
         }
 
+        [D2OIgnore]
+        public Boolean IsPartyQuest
+        {
+            get { return isPartyQuest; }
+            set { isPartyQuest = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Quest)obj;
@@ -141,6 +149,7 @@ namespace DBSynchroniser.Records
             IsDungeonQuest = castedObj.isDungeonQuest;
             LevelMin = castedObj.levelMin;
             LevelMax = castedObj.levelMax;
+            IsPartyQuest = castedObj.isPartyQuest;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -156,6 +165,7 @@ namespace DBSynchroniser.Records
             obj.isDungeonQuest = IsDungeonQuest;
             obj.levelMin = LevelMin;
             obj.levelMax = LevelMax;
+            obj.isPartyQuest = IsPartyQuest;
             return obj;
         }
         

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:47
+// Generated on 08/13/2015 17:50:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -85,7 +85,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (CompanionCharacteristic)obj;
-
+            
             Id = castedObj.id;
             CaracId = castedObj.caracId;
             CompanionId = castedObj.companionId;

@@ -112,7 +112,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 random = Random,
                 modificator = Modificator,
                 trigger = Trigger,
-                hidden = Hidden,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
                 zoneShape = (uint) ZoneShape,

@@ -33,37 +33,10 @@ namespace Stump.Server.WorldServer.Database.Jobs
             get { return m_name ?? (m_name = TextManager.Instance.GetText(NameId)); }
         }
 
-        public int SpecializationOfId
-        {
-            get;
-            set;
-        }
-
         public int IconId
         {
             get;
             set;
-        }
-
-        public string ToolIdsCSV
-        {
-            get { return m_toolIdsCSV; }
-            set
-            {
-                m_toolIdsCSV = value;
-                m_toolIds = value.FromCSV<int>(",");
-            }
-        }
-
-        [Ignore]
-        public int[] ToolIds
-        {
-            get { return m_toolIds; }
-            set
-            {
-                m_toolIds = value;
-                m_toolIdsCSV = value.ToCSV(",");
-            }
         }
 
         #region IAssignedByD2O Members
@@ -73,9 +46,7 @@ namespace Stump.Server.WorldServer.Database.Jobs
             var job = (Job) d2oObject;
             Id = job.id;
             NameId = job.nameId;
-            SpecializationOfId = job.specializationOfId;
             IconId = job.iconId;
-            ToolIds = job.toolIds.ToArray();
         }
 
         #endregion

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:48
+// Generated on 08/13/2015 17:50:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +20,7 @@ namespace DBSynchroniser.Records
         public const String MODULE = "AchievementObjectives";
         public uint id;
         public uint achievementId;
+        public uint order;
         [I18NField]
         public uint nameId;
         public String criterion;
@@ -46,6 +47,13 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public uint Order
+        {
+            get { return order; }
+            set { order = value; }
+        }
+
+        [D2OIgnore]
         [I18NField]
         public uint NameId
         {
@@ -67,6 +75,7 @@ namespace DBSynchroniser.Records
             
             Id = castedObj.id;
             AchievementId = castedObj.achievementId;
+            Order = castedObj.order;
             NameId = castedObj.nameId;
             Criterion = castedObj.criterion;
         }
@@ -76,6 +85,7 @@ namespace DBSynchroniser.Records
             var obj = parent != null ? (AchievementObjective)parent : new AchievementObjective();
             obj.id = Id;
             obj.achievementId = AchievementId;
+            obj.order = Order;
             obj.nameId = NameId;
             obj.criterion = Criterion;
             return obj;
