@@ -60,6 +60,9 @@ namespace Stump.Plugins.DefaultPlugin.Security
 
         public static void PerformCheck(WorldClient client)
         {
+            if (client.UserGroup.IsGameMaster)
+                return;
+
             if (m_pendingClients.ContainsKey(client))
                 return;
 

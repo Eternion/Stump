@@ -53,6 +53,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
         public override void Initialize()
         {
             base.Initialize();
+            m_breeds.Clear();
             foreach (var breed in Database.Query<Breed, BreedItem, BreedSpell, Breed>(new BreedRelator().Map, BreedRelator.FetchQuery))
             {
                 m_breeds.Add(breed.Id, breed);
