@@ -507,7 +507,7 @@ namespace DBSynchroniser
         }
 
         public static void SyncDatabases()
-        { 
+        {
             Console.WriteLine("Enter the tables to build (separated by comma, empty = all)");
             var tables = Console.ReadLine().Split(',');
 
@@ -516,7 +516,7 @@ namespace DBSynchroniser
             Console.WriteLine("Connecting to {0}@{1}", WorldDatabaseConfiguration.DbName,
                 WorldDatabaseConfiguration.Host);
 
-            worldDatabase.RegisterMappingAssembly(typeof (WorldServer).Assembly);
+            worldDatabase.RegisterMappingAssembly(typeof(WorldServer).Assembly);
             worldDatabase.Initialize();
             try
             {
@@ -554,7 +554,7 @@ namespace DBSynchroniser
                         continue;
 
                     var table = line.Remove(0, "--EXECUTEON:".Length).ToLower();
-                    if (!patchs.ContainsKey(table)) 
+                    if (!patchs.ContainsKey(table))
                         patchs.Add(table, new List<string>());
                     patchs[table].Add(filePath);
                 }
@@ -622,9 +622,10 @@ namespace DBSynchroniser
                     ExecutePatch(filePath, worldDatabase.Database);
                 }
             }
-            
+
             var count = 0;
-            if (tables.Length == 0 || tables.Any(x => "langs".Contains(x)))
+            if (tables.Length == 0 ||
+                tables.Any(x => !x.StartsWith("!") && "langs".Contains(x)) || tables.All(x => x.StartsWith("!") && !"langs".Contains(x.Remove(0, 1))))
             {
                 Console.WriteLine("Synchronise langs ...");
 
@@ -658,7 +659,32 @@ namespace DBSynchroniser
                 }
                 EndCounter();
             }
+
+            count = 0;
+            if (tables.Length == 0 ||
+                tables.Any(x => !x.StartsWith("!") && "world_maps".Contains(x)) || tables.All(x => x.StartsWith("!") && !"world_maps".Contains(x.Remove(0, 1))))
+            {
+                Console.WriteLine("Synchronise maps ...");
+
+                var maps = Database.Database.Fetch<MapRecord>("SELECT * FROM maps");
+
+                worldDatabase.Database.Execute("DELETE FROM world_maps");
+                worldDatabase.Database.Execute("ALTER TABLE world_maps AUTO_INCREMENT=1");
+
+                Console.WriteLine("Build table 'world_maps' ...");
+
+                InitializeCounter();
+                foreach (var map in maps)
+                {
+                    worldDatabase.Database.Insert(map.GetWorldRecord());
+                    count++;
+                    UpdateCounter(count, maps.Count);
+                }
+                EndCounter();
+            }
         }
+        
+
         private static void LoadMapsWithWarning()
         {
             Console.WriteLine("WARNING IT WILL ERASE TABLES 'maps'. ARE YOU SURE ? (y/n)");
