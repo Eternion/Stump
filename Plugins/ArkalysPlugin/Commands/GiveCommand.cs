@@ -71,7 +71,7 @@ namespace ArkalysPlugin.Commands
 
         public override void Execute(TriggerBase trigger)
         {
-            var character = (trigger as GameTrigger)?.Character;
+            var character = (trigger as GameTrigger).Character;
             var target = GetTargets(trigger).FirstOrDefault(x => x != character);
 
             var itemToken = ItemManager.Instance.TryGetTemplate(20837);
