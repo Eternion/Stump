@@ -71,16 +71,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
 
             World.Instance.SendAnnounce("[RELOAD] Reloading " + name + " ... WORLD PAUSED", Color.DodgerBlue);
-            Task.Factory.StartNew(() =>
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(() =>
                 {
-                    World.Instance.Pause();
                     try
                     {
                         method.Invoke(entry, new object[0]);
                     }
                     finally
                     {
-                        World.Instance.Resume();
                     }
 
                     World.Instance.SendAnnounce("[RELOAD] " + name + " reloaded ... WORLD RESUMED", Color.DodgerBlue);
