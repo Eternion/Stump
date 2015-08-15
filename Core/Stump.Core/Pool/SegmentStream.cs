@@ -36,16 +36,16 @@ namespace Stump.Core.Pool
             switch (origin)
             {
                 case SeekOrigin.Begin:
-                    Position = m_segment.Offset + (int)offset;
+                    Position = (int)offset;
                     break;
                 case SeekOrigin.Current:
                     Position += (int)offset;
                     break;
                 case SeekOrigin.End:
-                    Position = (int)(m_segment.Offset + Length - offset);
+                    Position = (int)(Length - offset);
                     break;
             }
-            return m_position;
+            return Position;
         }
 
         public override void SetLength(long value)
@@ -149,7 +149,7 @@ namespace Stump.Core.Pool
             get { return m_position - m_segment.Offset; }
             set
             {
-                if (value > Length)
+                if (value > m_segment.Offset + Length)
                     throw new ArgumentOutOfRangeException("value > Length");
 
                 if (value < 0)
