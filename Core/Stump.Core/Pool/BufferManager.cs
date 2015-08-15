@@ -68,7 +68,12 @@ namespace Stump.Core.Pool
 
         public byte this[int i]
         {
-            get { return m_buffer.Array[m_offset + i]; }
+            get {
+                if (i >= m_length)
+                    throw new IndexOutOfRangeException(string.Format("i({0}) >= m_length({1})", i, m_length));
+
+                return m_buffer.Array[m_offset + i];
+            }
         }
 
         public byte[] SegmentData
@@ -139,6 +144,9 @@ namespace Stump.Core.Pool
 
         public void CopyTo(BufferSegment segment, int length)
         {
+            if (length > m_length)
+                throw new IndexOutOfRangeException("length > m_length");
+
             System.Buffer.BlockCopy(m_buffer.Array, m_offset, segment.Buffer.Array, segment.Offset, length);
         }
 
@@ -167,6 +175,12 @@ namespace Stump.Core.Pool
 
         public static BufferSegment CreateSegment(byte[] bytes, int offset, int length)
         {
+            if (offset > length)
+                throw new ArgumentException("offset > length");
+
+            if (length > bytes.Length)
+                throw new ArgumentException("length > bytes.Length");
+
             return new BufferSegment(new ArrayBuffer(bytes), offset, length, -1);
         }
     }
@@ -349,12 +363,12 @@ namespace Stump.Core.Pool
             {
 #if DEBUG
                 log.Error(
-                    "Checked out segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last usage : {4}",
-                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace);
+                    "Checked out segment (Size: {0}, Number: {1}, Uses: {6}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last usage : {4} StackTrace : {5}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace, new StackTrace().ToString(), segment.Uses);
 #else
                 log.Error(
-                    "Checked out segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3}",
-                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count);
+                    "Checked out segment (Size: {0}, Number: {1}, Uses: {5}) that is already in use! Queue contains: {2}, Buffer amount: {3}, Stack Trace : {4}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, new StackTrace().ToString(), segment.Uses);
 #endif
             }
 
@@ -390,12 +404,12 @@ namespace Stump.Core.Pool
             {
 #if DEBUG
                 log.Error(
-                    "Checked in segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last Usage:{4}",
-                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace);
+                    "Checked in segment (Size: {0}, Number: {1}, Uses:{5}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last Usage:{4}, StackTrace:{6}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace, segment.Uses, new StackTrace().ToString());
 #else
                 log.Error(
-                    "Checked in segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3}",
-                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count);
+                    "Checked in segment (Size: {0}, Number: {1}, Uses:{4}) that is already in use! Queue contains: {2}, Buffer amount: {3}, StackTrace:{5}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.Uses, new StackTrace().ToString());
 #endif
 
             }

@@ -19,6 +19,7 @@ namespace Stump.Core.Pool
         {
             m_segment = segment;
             m_position = m_segment.Offset;
+            m_length = 0;
         }
 
         public BufferSegment Segment
@@ -35,29 +36,21 @@ namespace Stump.Core.Pool
             switch (origin)
             {
                 case SeekOrigin.Begin:
-                    m_position = m_segment.Offset + (int)offset;
+                    Position = (int)offset;
                     break;
                 case SeekOrigin.Current:
-                    m_position += (int)offset;
+                    Position += (int)offset;
                     break;
                 case SeekOrigin.End:
-                    m_position = m_segment.Offset + m_segment.Length - (int)offset;
+                    Position = (int)(Length - offset);
                     break;
             }
-            if (Position > m_segment.Length)
-            {
-                Position = m_segment.Length;
-            }
-            return m_position;
+            return Position;
         }
 
         public override void SetLength(long value)
         {
             m_length = (int)value;
-            if (m_position > m_length)
-            {
-                m_position = m_length + m_segment.Offset;
-            }
             if (m_length > m_segment.Length)
             {
                 EnsureCapacity(m_length);
@@ -70,7 +63,9 @@ namespace Stump.Core.Pool
             Segment.LastUsage = DateTime.Now;
 #endif
 
-            count = Math.Min(count, m_segment.Offset + m_segment.Length - m_position);
+            if (count + Position > m_segment.Offset + Length)
+                throw new ArgumentOutOfRangeException("Exceed buffer size");
+
             Buffer.BlockCopy(m_segment.Buffer.Array, m_position, buffer, offset, count);
             m_position += count;
             return count;
@@ -82,10 +77,11 @@ namespace Stump.Core.Pool
             Segment.LastUsage = DateTime.Now;
 #endif
 
-            if (m_position + count >= m_segment.Offset + m_segment.Length)
+            if (m_position + count > m_segment.Offset + Length)
             {
                 EnsureCapacity(m_position - m_segment.Offset + count);
             }
+
             Buffer.BlockCopy(buffer, offset, m_segment.Buffer.Array, m_position, count);
             m_position += count;
             m_length = Math.Max(m_length, m_position - m_segment.Offset);
@@ -96,6 +92,10 @@ namespace Stump.Core.Pool
 #if DEBUG
             Segment.LastUsage = DateTime.Now;
 #endif
+            if (m_position == Length + m_segment.Offset)
+                throw new ArgumentOutOfRangeException("Exceed buffer size");
+
+
             return m_segment.Buffer.Array[m_position++];
         }
 
@@ -104,10 +104,11 @@ namespace Stump.Core.Pool
 #if DEBUG
             Segment.LastUsage = DateTime.Now;
 #endif
-            if (m_position + 1 >= m_segment.Offset + m_segment.Length)
+            if (m_position + 1 > m_segment.Offset + m_segment.Length)
             {
                 EnsureCapacity(m_position - m_segment.Offset + 1);
             }
+
             m_segment.Buffer.Array[m_position++] = value;
             m_length = Math.Max(m_length, m_position - m_segment.Offset);
         }
@@ -146,7 +147,16 @@ namespace Stump.Core.Pool
         public override long Position
         {
             get { return m_position - m_segment.Offset; }
-            set { m_position = (int)value + m_segment.Offset; }
+            set
+            {
+                if (value > m_segment.Offset + Length)
+                    throw new ArgumentOutOfRangeException("value > Length");
+
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value < 0");
+
+                m_position = (int)value + m_segment.Offset;
+            }
         }
 
         protected override void Dispose(bool disposing)
