@@ -240,6 +240,7 @@ namespace Stump.Server.BaseServer.Network
         /// <param name="e"></param>
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
+            BaseClient client = null;
             try
             {
                 // do not accept connections while pausing
@@ -280,7 +281,7 @@ namespace Stump.Server.BaseServer.Network
                 // use a async arg from the pool avoid to re-allocate memory on each connection
 
                 // create the client instance
-                var client = m_createClientDelegate(e.AcceptSocket);
+                client = m_createClientDelegate(e.AcceptSocket);
 
                 lock (m_clients)
                     m_clients.Add(client);
@@ -294,12 +295,17 @@ namespace Stump.Server.BaseServer.Network
                 // if an error occurs we do our possible to reset all possible allocated ressources
                 logger.Error("Cannot accept a connection from {0}. Exception : {1}", e.RemoteEndPoint, ex);
 
-                m_semaphore.Release();
-
-                if (e.AcceptSocket != null)
+                if (client != null)
+                    OnClientDisconnected(client);
+                else
                 {
-                    if (e.AcceptSocket.Connected)
-                        e.AcceptSocket.Disconnect(false);
+                    m_semaphore.Release();
+
+                    if (e.AcceptSocket != null)
+                    {
+                        if (e.AcceptSocket.Connected)
+                            e.AcceptSocket.Disconnect(false);
+                    }
                 }
             }
             finally

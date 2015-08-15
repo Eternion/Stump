@@ -23,7 +23,9 @@ namespace Stump.Server.BaseServer.Network
 		private bool m_disconnecting;
 
 		private bool m_onDisconnectCalled;
+        // sub offset until where we can write in the segment
 		private int m_writeOffset;
+        // sub offset until where we can read in the segment
 		private int m_readOffset;
 		private int m_remainingLength;
 		private BufferSegment m_bufferSegment;
@@ -103,6 +105,7 @@ namespace Stump.Server.BaseServer.Network
 			}
 							
 			var args = ObjectPoolMgr.ObtainObject<PoolableSocketArgs>();
+
 			try
 			{
 				args.Completed += OnSendCompleted;
@@ -119,8 +122,9 @@ namespace Stump.Server.BaseServer.Network
 			}
 			catch
 			{
+                args.Dispose();
 				stream.Dispose();
-				ObjectPoolMgr.ReleaseObject(args);
+                // args could be disposed if an error occured
 				throw;
 			}
 		}
@@ -182,12 +186,13 @@ namespace Stump.Server.BaseServer.Network
 		}
 
 		private void ProcessReceive(object sender, SocketAsyncEventArgs args)
-		{
-			try
-			{
-				var bytesReceived = args.BytesTransferred;
+        {
+            try
+            {
+                args.Completed -= ProcessReceive;
+                var bytesReceived = args.BytesTransferred;
 
-				if (bytesReceived == 0)
+				if (args.LastOperation != SocketAsyncOperation.Receive || bytesReceived == 0)
 				{
 					Disconnect();
 				}
@@ -217,7 +222,6 @@ namespace Stump.Server.BaseServer.Network
 			}
 			finally
 			{
-				args.Completed -= ProcessReceive;
 				ClientManager.Instance.PushSocketArg((PoolableSocketArgs)args);
 			}
 		}
@@ -270,11 +274,13 @@ namespace Stump.Server.BaseServer.Network
 				return m_remainingLength <= 0 || BuildMessage(buffer);
 			}
 
+            logger.Debug("Message truncated, ensure buffer is big enough ...");
+
 			m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
 			m_readOffset = (int)reader.Position - buffer.Offset;
 			m_writeOffset = m_readOffset + m_remainingLength;
 
-			EnsureBuffer(m_currentMessage.Length.HasValue ? m_currentMessage.Length.Value : 3);
+			EnsureBuffer(m_currentMessage.Length.HasValue ? m_currentMessage.Length.Value : 5); // 5 is the max header size
 
 			return false;
 		}
@@ -286,9 +292,10 @@ namespace Stump.Server.BaseServer.Network
 		{
 			if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
 			{
-				var newSegment = BufferManager.GetSegment(length + m_remainingLength);
+				var newSegment = BufferManager.GetSegment(Math.Max(length + m_remainingLength, ClientManager.BufferSize));
 
-				Array.Copy(m_bufferSegment.Buffer.Array,
+                // the data before m_readOffset are deprecated, we don't need them anymore
+                Array.Copy(m_bufferSegment.Buffer.Array,
 						   m_bufferSegment.Offset + m_readOffset,
 						   newSegment.Buffer.Array,
 						   newSegment.Offset,
@@ -299,7 +306,7 @@ namespace Stump.Server.BaseServer.Network
 				m_writeOffset = m_remainingLength;
 				m_readOffset = 0;
 
-				return true;
+                return true;
 			}
 
 			return false;

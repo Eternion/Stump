@@ -235,8 +235,7 @@ namespace NLog
         {
             globalFactory.ReconfigExistingLoggers();
         }
-
-#if !SILVERLIGHT
+        
 /// <summary>
 /// Flush any pending log messages (in case of asynchronous targets).
 /// </summary>
