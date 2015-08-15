@@ -32,6 +32,7 @@ using Stump.Server.AuthServer.Managers;
 using Stump.Server.BaseServer.IPC;
 using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
+using Stump.Core.Threading;
 
 namespace Stump.Server.AuthServer.IPC
 {
@@ -40,6 +41,12 @@ namespace Stump.Server.AuthServer.IPC
         [Variable(DefinableRunning = true)]
         public static int DefaultRequestTimeout = -1;
         //public static int DefaultRequestTimeout = 60;
+
+        /// <summary>
+        ///     In milliseconds
+        /// </summary>
+        [Variable(DefinableRunning = true)]
+        public static int TaskPoolInterval = 150;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private BufferSegment m_bufferSegment;
@@ -51,6 +58,7 @@ namespace Stump.Server.AuthServer.IPC
         public IPCClient(Socket socket)
         {
             Socket = socket;
+            TaskPool = new SelfRunningTaskPool(TaskPoolInterval, "IPCClient Task Pool");
             m_readArgs = new SocketAsyncEventArgs(); 
             m_readArgs.UserToken = this;
             m_bufferSegment = BufferManager.GetSegment(IPCHost.BufferSize);
@@ -68,6 +76,12 @@ namespace Stump.Server.AuthServer.IPC
 
         #region Network Stuff
         public Socket Socket
+        {
+            get;
+            private set;
+        }
+
+        public SelfRunningTaskPool TaskPool
         {
             get;
             private set;
@@ -101,7 +115,7 @@ namespace Stump.Server.AuthServer.IPC
 
         protected override TimedTimerEntry RegisterTimer(Action action, int timeout)
         {
-            return AuthServer.Instance.IOTaskPool.CallDelayed(timeout, action);
+            return TaskPool.CallDelayed(timeout, action);
         }
 
         public override void Send(IPCMessage message)
@@ -130,6 +144,8 @@ namespace Stump.Server.AuthServer.IPC
 
         public void BeginReceive()
         {
+            TaskPool.Start();
+
             ResumeReceive();
         }
 
@@ -211,7 +227,7 @@ namespace Stump.Server.AuthServer.IPC
 
                 LastActivity = DateTime.Now;
 
-                ProcessMessage(message);
+                TaskPool.AddMessage(() => ProcessMessage(message));
 
                 m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
                 m_writeOffset = m_readOffset = (int)reader.Position - buffer.Offset;
@@ -308,7 +324,7 @@ namespace Stump.Server.AuthServer.IPC
             if (request.TimeoutTimer != null)
             {
                 request.TimeoutTimer.Stop();
-                AuthServer.Instance.IOTaskPool.RemoveTimer(request.TimeoutTimer);
+                TaskPool.RemoveTimer(request.TimeoutTimer);
             }
 
             request.ProcessMessage(answer);
@@ -328,7 +344,6 @@ namespace Stump.Server.AuthServer.IPC
 
         public void SendError(Exception exception, IPCMessage request)
         {
-            
             logger.Error("IPC error : {0}", exception);
             ReplyRequest(new IPCErrorMessage(exception.Message, exception.StackTrace), request);
         }
@@ -341,6 +356,9 @@ namespace Stump.Server.AuthServer.IPC
 
         public void Disconnect()
         {
+            if (Socket != null && Socket.Connected)
+                Socket.Close();
+
             if (Server != null)
                WorldServerManager.Instance.RemoveWorld(Server);
 
@@ -349,15 +367,18 @@ namespace Stump.Server.AuthServer.IPC
 
             Server = null;
             m_operations = null;
-            OnDisconnected();
+
+            TaskPool.ExecuteInContext(() => OnDisconnected());
         }
 
         protected void OnDisconnected()
         {
             foreach (var request in Requests.Values)
             {
-                request.Cancel();
+                request.Cancel("auth server - disconnected");
             }
+
+            TaskPool.Stop();
 
             var evnt = Disconnected;
             if (evnt != null)
