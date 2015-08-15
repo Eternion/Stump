@@ -16,6 +16,7 @@ namespace Stump.Server.WorldServer.Core.Network
 
         private WorldClient m_singleClient; // avoid new object allocation
         private readonly List<WorldClient> m_underlyingList = new List<WorldClient>();
+        private readonly List<SegmentStream> m_usedStream = new List<SegmentStream>();
 
         public WorldClientCollection()
         {
@@ -56,12 +57,8 @@ namespace Stump.Server.WorldServer.Core.Network
                     {
                         var writer = new BigEndianWriter(stream);
                         message.Pack(writer);
-                        stream.Segment.Uses = m_underlyingList.Count;
-
-                        // already checked in ?
-                        /*if (stream.Segment.Uses == 0)
-                            BufferManager.Default.CheckIn(stream.Segment);*/
-
+                        stream.Segment.Uses = m_underlyingList.Count(x => x != null && x.Connected);
+                        
                         foreach (WorldClient worldClient in m_underlyingList)
                         {
                             if (worldClient != null)
@@ -71,21 +68,14 @@ namespace Stump.Server.WorldServer.Core.Network
                             }
 
                             if (worldClient == null || !worldClient.Connected)
+                            {
                                 disconnectedClients.Add(worldClient);
+                            }
                         }
                     }
                     finally
                     {
-                        if (stream.Segment.Uses > 0)
-                        {
-                            if (stream.Segment.Uses != disconnectedClients.Count)
-                            {
-                                logger.Error("StreamSegment not disposed correctly");
-                            }
-
-                            stream.Segment.Uses = 0;
-                            BufferManager.Default.CheckIn(stream.Segment);
-                        }
+                        
                     }
 
                     foreach (var client in disconnectedClients)
