@@ -1,7 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0MinimumVisualStudioVersion = 10.0.40219.1
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{B4F98D0C-2EB6-40DB-9B3C-C721B53B7E17}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{017F54F2-C79A-41F4-8F32-992EC67BBFA0}"
@@ -889,6 +890,10 @@ Global
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Debug|x64.Build.0 = Debug|Any CPU
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Debug|x86.Build.0 = Debug|Any CPU
+		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Debug-uptodate|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Debug-uptodate|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Debug-uptodate|x64.ActiveCfg = Debug|Any CPU
+		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Debug-uptodate|x86.ActiveCfg = Debug|Any CPU
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU

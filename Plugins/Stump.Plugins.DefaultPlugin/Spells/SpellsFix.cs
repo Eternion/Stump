@@ -581,12 +581,11 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(3238, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ALLY_TURRETS ^ SpellTargetType.SELF, false);
 
             // Transko (3240)
-            RemoveEffectOnAllLevels(3240, 0, false);
-            RemoveEffectOnAllLevels(3240, 0, false);
-            RemoveEffectOnAllLevels(3240, 0, false);
-            FixEffectOnAllLevels(3240, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TURRETS ^ SpellTargetType.SELF, false);
-            //FixEffectOnAllLevels(3240, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
-            FixEffectOnAllLevels(3240, 0, (level, effect, critical) => level.MaxCastPerTarget = 1, false);
+            //RemoveEffectOnAllLevels(3240, 0, false);
+            //RemoveEffectOnAllLevels(3240, 0, false);
+            //RemoveEffectOnAllLevels(3240, 0, false);
+            //FixEffectOnAllLevels(3240, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TURRETS ^ SpellTargetType.SELF, false);
+            //FixEffectOnAllLevels(3240, 0, (level, effect, critical) => level.MaxCastPerTarget = 1, false);
 
             //Maintenance I (3241)
             FixEffectOnAllLevels(3241, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL ^ SpellTargetType.ALLY_TURRETS);
@@ -618,7 +617,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // Evolution III (3282)
             FixEffectOnAllLevels(3282, 0, (level, effect, critical) => effect.Value = 3281, false);
             FixEffectOnAllLevels(3282, 1, (level, effect, critical) => effect.Value = 3282, false);
-
             #endregion
 
             #region Elementary
