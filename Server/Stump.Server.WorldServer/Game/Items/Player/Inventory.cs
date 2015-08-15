@@ -676,7 +676,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     if (!equipedItem.Feed(item))
                         return;
 
-                    RemoveItem(item);
+                    UnStackItem(item, 1);
                     return;
                 }
 
@@ -685,7 +685,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                     if (!item.Drop(equipedItem))
                         return;
 
-                    RemoveItem(item);
+                    UnStackItem(item, 1);
                     return;
                 }
 
