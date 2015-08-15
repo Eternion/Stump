@@ -13,20 +13,45 @@
 // You should have received a copy of the GNU General Public License along with this program; 
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
+using ProtoBuf;
+
 namespace Stump.Server.BaseServer.IPC
 {
-    public class IPCErrorTimeoutMessage : IPCErrorMessage
+    public class IPCErrorTimeoutMessage : IPCMessage, IIPCErrorMessage
     {
         public IPCErrorTimeoutMessage()
         {
         }
 
-        public IPCErrorTimeoutMessage(string message) : base(message)
+        public IPCErrorTimeoutMessage(string message)
         {
+            Message = message;
         }
 
-        public IPCErrorTimeoutMessage(string message, string stackTrace) : base(message, stackTrace)
+        public IPCErrorTimeoutMessage(string message, string stackTrace)
         {
+            Message = message;
+            StackTrace = stackTrace;
         }
+
+        [ProtoMember(2)]
+        public string Message
+        {
+            get;
+            set;
+        }
+
+        [ProtoMember(3)]
+        public string StackTrace
+        {
+            get;
+            set;
+        }
+
+        public override string ToString()
+        {
+            return Message + " " + StackTrace;
+        }
+
     }
 }
