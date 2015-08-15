@@ -341,4 +341,3 @@ public static void Flush(AsyncContinuation asyncContinuation, int timeoutMillise
 #endif
     }
 }
-#endif
