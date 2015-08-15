@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Accounts
 
             var ev = new ManualResetEvent(false);
             IList<UserGroupData> groups = null;
-            IPCErrorMessage errorMsg = null;
+            IIPCErrorMessage errorMsg = null;
             IPCAccessor.Instance.SendRequest<GroupsListMessage>(new GroupsRequestMessage(), reply =>
             {
                 groups = reply.Groups;
