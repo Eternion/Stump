@@ -5,6 +5,13 @@ using CSScriptLibrary;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Benchmark;
+using Stump.Server.BaseServer.Network;
+using System.Net.Sockets;
+using Stump.DofusProtocol.Messages.Custom;
+using Stump.Core.IO;
+using System.Threading;
+using NLog;
+using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.BaseServer.Commands.Commands
 {
@@ -153,6 +160,110 @@ namespace Stump.Server.BaseServer.Commands.Commands
                     dates.Add(DateTime.Now);
                     PingIO(trigger, i + 1, count, dates);
                 });
+            }
+        }
+    }
+
+    public class BenchmarkStressNetworkCommand : SubCommand
+    {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static ClientManager server;
+
+        public BenchmarkStressNetworkCommand()
+        {
+            Aliases = new[] { "stressnet" };
+            RequiredRole = RoleEnum.Administrator;
+            ParentCommandType = typeof(BenchmarkCommands);
+            AddParameter<int>("clients", "c", "Clients count", 1000);
+            AddParameter<int>("sends", "s", "Sends count", 100);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            if (server == null)
+            {
+                server = new ClientManager();
+                server.Initialize(CreateClient);
+                server.Start("127.0.0.1", 555);
+            }
+
+            try
+            {
+                int count = trigger.Get<int>("clients");
+                var clients = new List<FakeClientTest>();
+                for (int i = 0; i < count; i++)
+                {
+                    var client = new FakeClientTest();
+                    client.Connect();
+                    clients.Add(client);
+                }
+
+                int count2 = trigger.Get<int>("sends");
+                for (int i = 0; i < count2; i++)
+                {
+                    foreach (var client in clients)
+                    {
+                        client.SendRandomData();
+                    }
+                }
+            }
+            finally
+            {
+                //server.Close();
+            }
+        }
+
+        private BaseClient CreateClient(Socket socket)
+        {
+            return new ServerClientTest(socket);
+        }
+
+        public class ServerClientTest : BaseClient
+        {
+            public ServerClientTest(Socket socket)
+                : base(socket)
+            {
+                CanReceive = true;
+            }
+
+            protected override void OnMessageReceived(Message message)
+            {
+                var msg = message as RawDataMessageFixed;
+                Console.WriteLine("RECV {0} (x{1})", msg.content[0], msg.content.Length);
+            }
+        }
+
+        public class FakeClientTest
+        {
+            public static Random random = new Random();
+
+            private Socket m_socket;
+
+            public FakeClientTest()
+            {
+                m_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            }
+
+            public void Connect()
+            {
+                m_socket.Connect("127.0.0.1", 555);
+            }
+
+            public void SendRandomData()
+            {
+                int size = random.Next(100, 10000);
+                var value = (byte)random.Next(0, 256);
+                var bytes = Enumerable.Repeat(value, size).ToArray();
+
+                var msg = new RawDataMessageFixed(bytes);
+                var writer = new BigEndianWriter();
+                msg.Pack(writer);
+                var e = new SocketAsyncEventArgs();
+                var buffer = writer.Data;
+                e.SetBuffer(buffer, 0, buffer.Length);
+                m_socket.SendAsync(e);
+
+                Console.WriteLine("SEND {0} (x{1})", value, size);
             }
         }
     }

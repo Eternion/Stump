@@ -6,11 +6,14 @@ using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
+using NLog;
 
 namespace Stump.Server.WorldServer.Core.Network
 {
     public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>, IDisposable
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private WorldClient m_singleClient; // avoid new object allocation
         private readonly List<WorldClient> m_underlyingList = new List<WorldClient>();
 
@@ -55,8 +58,9 @@ namespace Stump.Server.WorldServer.Core.Network
                         message.Pack(writer);
                         stream.Segment.Uses = m_underlyingList.Count;
 
-                        if (stream.Segment.Uses == 0)
-                            BufferManager.Default.CheckIn(stream.Segment);
+                        // already checked in ?
+                        /*if (stream.Segment.Uses == 0)
+                            BufferManager.Default.CheckIn(stream.Segment);*/
 
                         foreach (WorldClient worldClient in m_underlyingList)
                         {
@@ -74,6 +78,11 @@ namespace Stump.Server.WorldServer.Core.Network
                     {
                         if (stream.Segment.Uses > 0)
                         {
+                            if (stream.Segment.Uses != disconnectedClients.Count)
+                            {
+                                logger.Error("StreamSegment not disposed correctly");
+                            }
+
                             stream.Segment.Uses = 0;
                             BufferManager.Default.CheckIn(stream.Segment);
                         }
