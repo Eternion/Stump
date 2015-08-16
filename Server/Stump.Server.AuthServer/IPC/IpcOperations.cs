@@ -113,7 +113,6 @@ namespace Stump.Server.AuthServer.IPC
 
         private void Handle(AccountRequestMessage message)
         {
-            Client.Disconnect();
             if (!string.IsNullOrEmpty(message.Ticket))
             {
                 // no DB action here
