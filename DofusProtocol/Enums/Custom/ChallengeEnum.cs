@@ -1,6 +1,5 @@
-﻿namespace Stump.DofusProtocol.Enums
+﻿namespace Stump.DofusProtocol.Enums.Custom
 {
-
     public enum ChallengeEnum
     {
         ZOMBIE = 1,
@@ -21,9 +20,10 @@
         INCURABLE = 18,
         MAINS_PROPRES = 19,
         ELÉMENTAIRE = 20,
-        CIRCULEZ_! = 21,
+        CIRCULEZ = 21,
         LE_TEMPS_QUI_COURT = 22,
         PERDU_DE_VUE = 23,
+        BORNÉ = 24,
         ORDONNÉ = 25,
         NI_PIOUTES_NI_SOUMISES = 28,
         NI_PIOUS_NI_SOUMIS = 29,
@@ -341,6 +341,6 @@
         KANKREBLATH__CHALLENGE_2_ = 343,
         REINE_NYÉE__CHALLENGE_DUO_ = 344,
         REINE_NYÉE__CHALLENGE_1_ = 345,
-        REINE_NYÉE__CHALLENGE_2_ = 346,
+        REINE_NYÉE__CHALLENGE_2_ = 346
     }
 }
