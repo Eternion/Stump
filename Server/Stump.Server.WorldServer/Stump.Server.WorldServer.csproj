@@ -353,6 +353,7 @@
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\BuffTrigger.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\DamageSustained.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />
@@ -450,6 +451,7 @@
     <Compile Include="Game\Exchanges\Trades\Trade.cs" />
     <Compile Include="Game\Exchanges\Trades\TradeItem.cs" />
     <Compile Include="Game\Exchanges\Trades\Trader.cs" />
+    <Compile Include="Game\Fights\Buffs\Customs\DamageSustainedBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\DodgeBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\FractionBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\HealOrMultiplyBuff.cs" />
