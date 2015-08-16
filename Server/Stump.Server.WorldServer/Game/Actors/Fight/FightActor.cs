@@ -899,6 +899,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 permanentDamages = 0;
             }
 
+            var damageSustainedBuff = GetBuffs(x => x is DamageSustainedBuff).FirstOrDefault() as DamageSustainedBuff;
+            if (damageSustainedBuff != null)
+            {
+                damage.Amount *= (damageSustainedBuff.Value / 100);
+            }
+
             if (damage.Amount <= 0)
                 damage.Amount = 0;
 
