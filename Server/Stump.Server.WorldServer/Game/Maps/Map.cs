@@ -754,9 +754,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (skill.IsEnabled(character))
             {
-                skill.Execute(character);
-
                 OnInteractiveUsed(character, interactiveObject, skill);
+
+                skill.Execute(character);
 
                 return true;
             }
