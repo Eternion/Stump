@@ -2193,7 +2193,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_1175 = 1175,
+        Effect_CastSpell = 1175,
         /// <summary>
         /// Apparence : #1
         /// </summary>

@@ -346,11 +346,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
 
-            if (weapon.CriticalHitProbability != 0 && random.Next(weapon.CriticalFailureProbability) == 0)
+            if (weapon.CriticalHitProbability != 0 && random.NextDouble()*100 < weapon.CriticalFailureProbability + Stats[PlayerFields.CriticalMiss])
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
 
             else if (weapon.CriticalHitProbability != 0 &&
-                     random.Next((int) CalculateCriticRate(weapon.CriticalHitProbability)) == 0)
+                     random.NextDouble() * 100 < weapon.CriticalHitProbability + Stats[PlayerFields.CriticalHit])
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;
