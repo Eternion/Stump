@@ -1,11 +1,23 @@
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {
     public partial class ContextRoleplayHandler
     {
+        [WorldHandler(GameRolePlayAttackMonsterRequestMessage.Id)]
+        public static void HandleGameRolePlayAttackMonsterRequestMessage(WorldClient client, GameRolePlayAttackMonsterRequestMessage message)
+        {
+            var map = client.Character.Map;
+            var monster = map.GetActor<MonsterGroup>(entry => entry.Id == message.monsterGroupId);
+
+            if (monster != null)
+                monster.FightWith(client.Character);
+        }
+
         public static void SendGameRolePlayPlayerFightFriendlyAnsweredMessage(IPacketReceiver client, Character replier,
                                                                               Character source, Character target,
                                                                               bool accepted)
