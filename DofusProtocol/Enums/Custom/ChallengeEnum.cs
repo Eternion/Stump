@@ -23,7 +23,6 @@
         CIRCULEZ = 21,
         LE_TEMPS_QUI_COURT = 22,
         PERDU_DE_VUE = 23,
-        BORNÉ = 24,
         ORDONNÉ = 25,
         NI_PIOUTES_NI_SOUMISES = 28,
         NI_PIOUS_NI_SOUMIS = 29,
