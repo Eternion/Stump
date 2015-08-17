@@ -7,6 +7,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
+using Stump.DofusProtocol.D2oClasses.Tools.Ele;
 
 namespace DBSynchroniser.Records.Maps
 {    
@@ -51,6 +52,7 @@ namespace DBSynchroniser.Records.Maps
                         x.Cells.SelectMany(
                             y =>
                                 y.Elements.OfType<DlmGraphicalElement>()
+                                 .Where(z => z.Identifier != 0)
                                  .Select(z => new MapElement(z.ElementId, z.Cell.Id)))).ToArray();
             Cells =
                 map.Cells.Select(

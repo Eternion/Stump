@@ -23,6 +23,7 @@ using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
+using Stump.DofusProtocol.D2oClasses.Tools.Ele;
 
 namespace DBSynchroniser
 {
