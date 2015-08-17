@@ -1482,11 +1482,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character))
                 return;
 
-            var monster = GetActor<MonsterGroup>(entry => entry.Cell.Id == character.Cell.Id);
-
-            if (monster != null)
-                monster.FightWith(character);
-
             Refresh(character);
         }
 
