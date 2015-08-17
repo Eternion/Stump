@@ -7,7 +7,8 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
-    [ChallengeIdentifier((int)ChallengeEnum.BORNÉ)]
+    //Challenge deleted in 2.11
+    //[ChallengeIdentifier((int)ChallengeEnum.BORNÉ)]
     public class PigHeadChallenge : DefaultChallenge
     {
         public PigHeadChallenge(int id, IFight fight)
