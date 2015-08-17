@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             {
                 var actualBuff = actor.GetBuffs(x => x is DamageSustainedBuff).FirstOrDefault();
                 if (actualBuff != null)
-                    actualBuff.Dispell();
+                    actor.RemoveAndDispellBuff(actualBuff);
 
                 var buff = new DamageSustainedBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, Critical, true, Dice.DiceNum);
                 actor.AddAndApplyBuff(buff);

@@ -155,6 +155,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     m_shape = new HalfLozenge(0, Radius);
                     break;
                 case SpellShapeEnum.A:
+                case SpellShapeEnum.a:
                     m_shape = new Lozenge(0, 63);
                     break;
                 case SpellShapeEnum.P:
