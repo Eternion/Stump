@@ -7,6 +7,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Actors;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
@@ -56,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override TriggerType TriggerType
         {
-            get { return OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura ? TriggerType.MOVE : (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.TURN_END : TriggerType.TURN_BEGIN); }
+            get { return OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura ? (TriggerType.MOVE | TriggerType.CREATION) : (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.TURN_END : TriggerType.TURN_BEGIN); }
         }
 
         public override bool DecrementDuration()
@@ -75,12 +77,29 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             handler.MarkTrigger = this;
             handler.Initialize();
             handler.Execute();
+
+            if (OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura)
+                trigger.PositionChanged += OnPositionChanged;
+        }
+
+        private void OnPositionChanged(ContextActor actor, ObjectPosition position)
+        {
+            if (actor is FightActor)
+            {
+                if (Shapes.Any(x => x.GetCells().Any(c => c == position.Cell)))
+                    return;
+
+                ((FightActor)actor).RemoveSpellBuffs(GlyphSpell.Id);
+            }
+                
+
+            actor.PositionChanged -= OnPositionChanged;
         }
 
         public override GameActionMark GetGameActionMark()
         {
-            return new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, (short)CastedSpell.Id, (sbyte)Type, CenterCell.Id,
-                                      Shapes.Select(entry => entry.GetGameActionMarkedCell()), true);
+            return new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id, (sbyte)Type, CenterCell.Id,
+                                      Shapes[0].GetGameActionMarkedCells(), true);
         }
 
         public override GameActionMark GetHiddenGameActionMark()
