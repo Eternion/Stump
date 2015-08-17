@@ -1677,7 +1677,7 @@
         /// <summary>
         /// Trigger glyphs
         /// </summary>
-        Effect_1026 = 1026,
+        Effect_TriggerGlyphs = 1026,
         /// <summary>
         /// #1{~1~2 to }#2% Combo Damage
         /// </summary>
