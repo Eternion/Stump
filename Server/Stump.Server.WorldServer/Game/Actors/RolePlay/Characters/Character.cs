@@ -1993,7 +1993,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 var moveKeys = actor.MovementPath.GetServerPathKeys();
                 var actorMoving = actor;
 
-                ContextHandler.SendGameMapMovementMessage(Client, moveKeys, actorMoving);
+
+                if (actor.MovementPath.Walk)
+                    ContextHandler.SendGameCautiousMapMovementMessage(Client, moveKeys, actorMoving);
+                else
+                    ContextHandler.SendGameMapMovementMessage(Client, moveKeys, actorMoving);
+
                 BasicHandler.SendBasicNoOperationMessage(Client);
             }
 

@@ -8,7 +8,7 @@ namespace Stump.Server.BaseServer.IPC
 {
     public delegate void RequestCallbackDelegate<in T>(T callbackMessage) where T : IPCMessage;
 
-    public delegate void RequestCallbackErrorDelegate(IPCErrorMessage errorMessage);
+    public delegate void RequestCallbackErrorDelegate(IIPCErrorMessage errorMessage);
 
     public delegate void RequestCallbackDefaultDelegate(IPCMessage unattemptMessage);
 
@@ -147,7 +147,7 @@ namespace Stump.Server.BaseServer.IPC
             request.ProcessMessage(new IPCErrorTimeoutMessage(string.Format("Request {0} timed out", request.RequestMessage.GetType())));
         }
 
-        private void DefaultRequestErrorCallback(IPCErrorMessage errorMessage)
+        private void DefaultRequestErrorCallback(IIPCErrorMessage errorMessage)
         {
             var request = TryGetRequest(errorMessage.RequestGuid);
             logger.Error("Error received of type {0}. Request {1} Message : {2} StackTrace : {3}",

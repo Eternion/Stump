@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         public delegate void RequestCallbackDelegate<in T>(T callbackMessage) where T : IPCMessage;
 
-        public delegate void RequestCallbackErrorDelegate(IPCErrorMessage errorMessage);
+        public delegate void RequestCallbackErrorDelegate(IIPCErrorMessage errorMessage);
 
         /// <summary>
         ///     In seconds
@@ -174,7 +174,7 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             foreach (var request in Requests.Values)
             {
-                request.Cancel();
+                request.Cancel("world server - disconnected");
             }
 
             var handler = Disconnected;
@@ -202,10 +202,11 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             Running = false;
             TaskPool.RemoveTimer(m_updateTimer);
-            TaskPool.Stop();
 
             if (IsReacheable)
                 Disconnect();
+
+            TaskPool.Stop();
         }
 
         private void Connect()
@@ -229,7 +230,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 handler(this);
         }
 
-        private void OnAccessDenied(IPCErrorMessage error)
+        private void OnAccessDenied(IIPCErrorMessage error)
         {
             m_requestingAccess = false;
 
@@ -246,7 +247,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
             finally
             {
-                OnClientDisconnected();
+                TaskPool.ExecuteInContext(() => OnClientDisconnected());
             }
         }
 
@@ -384,7 +385,6 @@ namespace Stump.Server.WorldServer.Core.IPC
             try
             {
                 built = m_messagePart.Build(reader);
-
             }
             catch
             {
@@ -404,11 +404,13 @@ namespace Stump.Server.WorldServer.Core.IPC
                 {
                     message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     reader.Seek(dataPos, SeekOrigin.Begin);
                     logger.Debug("Message = {0}", m_messagePart.Data.ToString(" "));
-                    throw;
+                    logger.Error("Error while deserializing IPC Message : " + ex);
+
+                   return m_remainingLength <= 0 || BuildMessage(buffer);
                 }
 
                 TaskPool.AddMessage(() => ProcessMessage(message));
@@ -424,7 +426,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             m_readOffset = (int)reader.Position - buffer.Offset;
             m_writeOffset = m_readOffset + m_remainingLength;
 
-            EnsureBuffer(m_messagePart.Length.HasValue ? m_messagePart.Length.Value : 3);
+            EnsureBuffer(m_messagePart.Length.HasValue ? m_messagePart.Length.Value : 5);
 
             return false;
         }
@@ -436,7 +438,10 @@ namespace Stump.Server.WorldServer.Core.IPC
         {
             if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
             {
-                var newSegment = BufferManager.GetSegment(length + m_remainingLength, true);
+                var newSegment = BufferManager.GetSegment(Math.Max(length + m_remainingLength, BufferSize), true);
+
+                if (newSegment is TemporaryBufferSegment)
+                    logger.Warn("Extra big segment required ({0})", length + m_remainingLength);
 
                 Array.Copy(m_bufferSegment.Buffer.Array,
                            m_bufferSegment.Offset + m_readOffset,
@@ -469,14 +474,14 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         protected override void ProcessRequest(IPCMessage request)
         {
-            if (request is IPCErrorMessage)
-                HandleError(request as IPCErrorMessage);
+            if (request is IIPCErrorMessage)
+                HandleError(request as IIPCErrorMessage);
             if (request is DisconnectClientMessage)
                 HandleMessage(request as DisconnectClientMessage);
 
             if (m_additionalsHandlers.ContainsKey(request.GetType()))
                 m_additionalsHandlers[request.GetType()](request);
-            else if (!(request is IPCErrorMessage) && !(request is DisconnectClientMessage) &&
+            else if (!(request is IIPCErrorMessage) && !(request is DisconnectClientMessage) &&
                 !(request is CommonOKMessage))
             {
                 logger.Warn("IPC Message {0} not handled", request);
@@ -536,7 +541,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             ReplyRequest(new DisconnectedClientMessage(true), request);
         }
 
-        private static void HandleError(IPCErrorMessage error)
+        private static void HandleError(IIPCErrorMessage error)
         {
             logger.Error("Error received of type {0}. Message : {1} StackTrace : {2}",
                 error.GetType(), error.Message, error.StackTrace);

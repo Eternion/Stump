@@ -754,9 +754,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
             if (skill.IsEnabled(character))
             {
-                skill.Execute(character);
-
                 OnInteractiveUsed(character, interactiveObject, skill);
+
+                skill.Execute(character);
 
                 return true;
             }
@@ -1450,7 +1450,11 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             var movementsKey = path.GetServerPathKeys();
 
-            ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
+            if (path.Walk)
+                ContextHandler.SendGameCautiousMapMovementMessage(Clients, movementsKey, actor);
+            else
+                ContextHandler.SendGameMapMovementMessage(Clients, movementsKey, actor);
+
             BasicHandler.SendBasicNoOperationMessage(Clients);
 
             actor.IsInMovement = true;
