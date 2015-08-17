@@ -1921,7 +1921,7 @@
         /// <summary>
         /// Places a grade #2 Glyph
         /// </summary>
-        Effect_1091 = 1091,
+        Effect_GlyphAura = 1091,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Neutral damage
         /// </summary>

@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override TriggerType TriggerType
         {
-            get { return SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.TURN_END : TriggerType.TURN_BEGIN; }
+            get { return OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura ? TriggerType.MOVE : (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.TURN_END : TriggerType.TURN_BEGIN); }
         }
 
         public override bool DecrementDuration()
