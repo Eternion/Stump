@@ -4,6 +4,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using System.Collections.Generic;
 
 namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
@@ -20,8 +21,19 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             Size = size;
             Color = color;
 
-            m_zone = Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ?
-                new Zone(SpellShapeEnum.Q, (byte)size) : new Zone(SpellShapeEnum.C, size);
+            switch(Shape)
+            {
+                case GameActionMarkCellsTypeEnum.CELLS_CROSS:
+                    m_zone = new Zone(SpellShapeEnum.Q, size);
+                    break;
+                case GameActionMarkCellsTypeEnum.CELLS_SQUARE:
+                    m_zone = new Zone(SpellShapeEnum.G, size);
+                    break;
+                default:
+                    m_zone = new Zone(SpellShapeEnum.C, size);
+                    break;
+            }
+
             m_cells = m_zone.GetCells(Cell, fight.Map);
         }
 
@@ -58,6 +70,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public Cell[] GetCells()
         {
             return m_cells;
+        }
+
+        public GameActionMarkedCell[] GetGameActionMarkedCells()
+        {
+            var markedCells = new List<GameActionMarkedCell>();
+
+            foreach (var cell in m_cells)
+                markedCells.Add(new GameActionMarkedCell(cell.Id, 0, Color.ToArgb() & 0xFFFFFF, (sbyte)Shape));
+
+            return markedCells.ToArray();
         }
 
         public GameActionMarkedCell GetGameActionMarkedCell()
