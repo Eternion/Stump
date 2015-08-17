@@ -46,7 +46,7 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
-        void Cancel();
+        void Cancel(string from = "");
         bool ProcessMessage(IPCMessage message);
     }
 
@@ -107,9 +107,12 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
-        public void Cancel()
+        public void Cancel(string from = "")
         {
-            ErrorCallback(new IPCErrorMessage("Cancelled"));
+            if (TimeoutTimer != null)
+                TimeoutTimer.Dispose();
+
+            ErrorCallback(new IPCErrorMessage("Cancelled" + (!string.IsNullOrEmpty(from) ? " from " + from : "")));
         }
 
         public bool ProcessMessage(IPCMessage message)
@@ -119,10 +122,10 @@ namespace Stump.Server.BaseServer.IPC
 
             if (message is T)
                 Callback(message as T);
-            else if (message is IPCErrorMessage)
+            else if (message is IIPCErrorMessage)
             {
                 logger.Warn("IPC Error on message recv {0}", message);
-                ErrorCallback(message as IPCErrorMessage);
+                ErrorCallback(message as IIPCErrorMessage);
             }
             else
                 DefaultCallback(message);

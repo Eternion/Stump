@@ -29,6 +29,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             m_path = m_cellsPath.Select(entry => new MapPoint(entry)).ToArray();
         }
 
+        public bool Walk
+        {
+            get;
+            private set;
+        }
+
         public Map Map
         {
             get;
@@ -175,6 +181,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
         public static Path GetEmptyPath(Map map, Cell startCell)
         {
             return new Path(map, new [] { startCell });
+        }
+
+        public void SetWalk()
+        {
+            Walk = true;
         }
     }
 }

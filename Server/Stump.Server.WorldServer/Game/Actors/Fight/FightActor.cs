@@ -838,6 +838,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                 var reduction = CalculateArmorReduction(damage.School);
 
+                var damageSustainedBuff = GetBuffs(x => x is DamageSustainedBuff).FirstOrDefault() as DamageSustainedBuff;
+                if (damageSustainedBuff != null && !isPoisonSpell)
+                {
+                    var value = (int)Math.Round(damage.Amount * (damageSustainedBuff.Value / 100d)) - damage.Amount;
+
+                    reduction += value;
+                    damage.Amount += value;
+                }
+
                 if (isPoisonSpell)
                     reduction = 0;
 
