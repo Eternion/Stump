@@ -1158,25 +1158,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return specificArmor + Stats[PlayerFields.GlobalDamageReduction].Total;
         }
 
-        public virtual double CalculateCriticRate(double baseRate)
-        {
-            const double multipleOfE = Math.E*1.1;
-
-            var prob = Math.Floor((baseRate - Stats[PlayerFields.CriticalHit].Total) * multipleOfE / Math.Log(Stats[PlayerFields.Agility].TotalSafe + 12, Math.E));
-
-            return prob > 2 ? prob : 2;
-        }
-
         public virtual FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
         {
             var random = new AsyncRandom();
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
 
-            if (spell.CriticalFailureProbability != 0 && random.Next((int)spell.CriticalFailureProbability) == 0)
+            if (spell.CriticalFailureProbability != 0 && random.NextDouble()*100 < spell.CriticalFailureProbability + Stats[PlayerFields.CriticalMiss].Total)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
 
-            else if (spell.CriticalHitProbability != 0 && random.Next((int) CalculateCriticRate(spell.CriticalHitProbability)) == 0)
+            else if (spell.CriticalHitProbability != 0 && random.NextDouble() * 100 < spell.CriticalHitProbability + Stats[PlayerFields.CriticalHit].Total)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
             return critical;

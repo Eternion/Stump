@@ -1,6 +1,6 @@
 
 
-// Generated on 04/24/2015 03:38:32
+// Generated on 08/15/2015 14:32:26
 using System;
 using System.Collections.Generic;
 
@@ -13,5 +13,6 @@ namespace Stump.DofusProtocol.Enums
         PRESET_USE_ERR_UNKNOWN = 3,
         PRESET_USE_ERR_CRITERION = 4,
         PRESET_USE_ERR_BAD_PRESET_ID = 5,
+        PRESET_USE_ERR_COOLDOWN = 6,
     }
 }
