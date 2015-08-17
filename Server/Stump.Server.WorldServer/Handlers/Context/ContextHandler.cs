@@ -49,6 +49,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             var movementPath = Path.BuildFromCompressedPath(client.Character.Map, message.keyMovements);
 
+            if (message is GameCautiousMapMovementRequestMessage)
+                movementPath.SetWalk();
+
             client.Character.StartMove(movementPath);
         }
 
@@ -118,6 +121,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameMapMovementMessage(IPacketReceiver client, IEnumerable<short> movementsKey, ContextActor actor)
         {
             client.Send(new GameMapMovementMessage(movementsKey, actor.Id));
+        }
+
+        public static void SendGameCautiousMapMovementMessage(IPacketReceiver client, IEnumerable<short> movementsKey, ContextActor actor)
+        {
+            client.Send(new GameCautiousMapMovementMessage(movementsKey, actor.Id));
         }
 
         public static void SendGameEntitiesDispositionMessage(IPacketReceiver client, IEnumerable<ContextActor> actors)
