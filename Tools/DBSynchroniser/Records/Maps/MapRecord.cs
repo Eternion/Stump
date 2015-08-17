@@ -53,7 +53,7 @@ namespace DBSynchroniser.Records.Maps
                             y =>
                                 y.Elements.OfType<DlmGraphicalElement>()
                                  .Where(z => z.Identifier != 0)
-                                 .Select(z => new MapElement(z.ElementId, z.Cell.Id)))).ToArray();
+                                 .Select(z => new MapElement(z.Identifier, z.Cell.Id)))).ToArray();
             Cells =
                 map.Cells.Select(
                     x =>
