@@ -69,16 +69,30 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return (--Duration) <= 0;
         }
 
+        private bool IsGlyphAura()
+        {
+            return OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura;
+        }
+
         public override void Trigger(FightActor trigger)
         {
             NotifyTriggered(trigger, GlyphSpell);
+
+            if (trigger == Caster && !IsGlyphAura())
+                return;
+
+            if (IsGlyphAura() && trigger.GetBuffs(b => b.Spell.Id == GlyphSpell.Id).Any())
+            {
+                trigger.PositionChanged += OnPositionChanged;
+                return;
+            }
 
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, trigger.Cell, false);
             handler.MarkTrigger = this;
             handler.Initialize();
             handler.Execute();
 
-            if (OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura)
+            if (IsGlyphAura())
                 trigger.PositionChanged += OnPositionChanged;
         }
 

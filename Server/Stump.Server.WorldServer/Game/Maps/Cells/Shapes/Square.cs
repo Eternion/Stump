@@ -86,6 +86,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             if (!MapPoint.IsInMap(x, y))
                 return;
 
+            var cell = map.Cells[MapPoint.CoordToCellId(x, y)];
+            if (!cell.Walkable)
+                return;
+
             container.Add(map.Cells[MapPoint.CoordToCellId(x, y)]);
         }
         #endregion

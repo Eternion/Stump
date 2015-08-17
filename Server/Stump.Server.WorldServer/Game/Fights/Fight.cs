@@ -275,6 +275,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         IEnumerable<MarkTrigger> GetTriggers();
         bool ShouldTriggerOnMove(Cell cell);
         bool ShouldTriggerOnMove(Cell cell, FightActor actor);
+        MarkTrigger[] GetTriggersByCell(Cell cell);
         MarkTrigger[] GetTriggers(Cell cell);
         void AddTriger(MarkTrigger trigger);
         void RemoveTrigger(MarkTrigger trigger);
@@ -2274,6 +2275,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         public bool ShouldTriggerOnMove(Cell cell, FightActor actor)
         {
             return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.ContainsCell(cell) && entry.IsAffected(actor));
+        }
+
+        public MarkTrigger[] GetTriggersByCell(Cell cell)
+        {
+            return m_triggers.Where(entry => entry.ContainsCell(cell)).ToArray();
         }
 
         public MarkTrigger[] GetTriggers(Cell cell)

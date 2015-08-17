@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var actor in GetAffectedActors())
             {
-                var triggers = actor.Fight.GetTriggers(actor.Cell);
+                var triggers = actor.Fight.GetTriggersByCell(actor.Cell);
 
                 foreach (var trigger in triggers)
                 {
