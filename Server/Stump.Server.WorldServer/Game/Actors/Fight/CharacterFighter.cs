@@ -34,6 +34,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private int m_earnedExp;
         private int m_guildEarnedExp;
         private short m_earnedHonor;
+        private int m_weaponUses;
         private bool m_isUsingWeapon;
 
 
@@ -156,6 +157,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #endregion
 
+        public override void ResetUsedPoints()
+        {
+            base.ResetUsedPoints();
+            m_weaponUses = 0;
+        }
+
         public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
         {
             if (!IsFighterTurn() && !force)
@@ -165,6 +172,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (spell.Id != 0 ||
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
                 return base.CastSpell(spell, cell, force, apFree);
+
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate =  weapon.Template as WeaponTemplate;
 
@@ -243,6 +251,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
+        protected override void OnWeaponUsed(WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
+        {
+            m_weaponUses++;
+            base.OnWeaponUsed(weapon, cell, critical, silentCast);
+        }
+
         public override SpellCastResult CanCastSpell(Spell spell, Cell cell)
         {
              var result = base.CanCastSpell(spell, cell);
@@ -305,6 +319,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange ||
                 point.ManhattanDistanceTo(Position.Point) < weapon.MinRange)
+                return false;
+
+            if (m_weaponUses >= weapon.MaxCastPerTurn)
                 return false;
 
             return AP >= weapon.ApCost && Fight.CanBeSeen(cell, Position.Cell);
