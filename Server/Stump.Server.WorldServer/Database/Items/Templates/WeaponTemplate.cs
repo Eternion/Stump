@@ -86,6 +86,12 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        public uint MaxCastPerTurn
+        {
+            get;
+            set;
+        }
+
         public override void AssignFields(object d2oObject)
         {
             base.AssignFields(d2oObject);
@@ -99,6 +105,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             CriticalHitProbability = weapon.criticalHitProbability;
             CriticalHitBonus = weapon.criticalHitBonus;
             CriticalFailureProbability = weapon.criticalFailureProbability;
+            MaxCastPerTurn = weapon.MaxCastPerTurn;
         }
     }
 }
