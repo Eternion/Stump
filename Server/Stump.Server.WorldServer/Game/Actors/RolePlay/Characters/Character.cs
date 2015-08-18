@@ -65,6 +65,8 @@ using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.Titles;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
+using Stump.Server.WorldServer.Handlers.PvP;
+using Stump.Server.WorldServer.Handlers.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -2703,7 +2705,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_spawnPoint = null;
 
             BasicHandler.SendTextInformationMessage(Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 6);
-                // pos saved
+            // pos saved
+
+            InteractiveHandler.SendZaapRespawnUpdatedMessage(Client);
         }
 
         public ObjectPosition GetSpawnPoint()
