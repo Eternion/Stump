@@ -26,10 +26,40 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region FECA
 
+            //Sort Enflammé (351)
+            FixEffectOnAllLevels(351, 0, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
+            FixEffectOnAllLevels(351, 0, (level, effect, critical) => effect.ZoneSize = 0, false);
+
             // Reinforced Protection (422)
             FixEffectOnAllLevels(422, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL, false);
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Targets = SpellTargetType.SELF, false);
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Delay = 1, false);
+
+            //Immobilisation (glyphe feca) (907)
+            FixEffectOnAllLevels(907, 0, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
+            FixEffectOnAllLevels(907, 0, (level, effect, critical) => effect.ZoneSize = 0, false);
+
+            //Glyphe ralentissant (1505)
+            FixEffectOnAllLevels(1505, 0, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
+            FixEffectOnAllLevels(1505, 0, (level, effect, critical) => effect.ZoneSize = 0, false);
+
+            //Glyphe-Aura d'Aveuglement (5159)
+            FixEffectOnAllLevels(5159, 0, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
+            FixEffectOnAllLevels(5159, 0, (level, effect, critical) => effect.ZoneSize = 0, false);
+
+            //Glyphe-Aura d'immobilisation (5160)
+            FixEffectOnAllLevels(5160, 0, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
+            FixEffectOnAllLevels(5160, 0, (level, effect, critical) => effect.ZoneSize = 0, false);
+
+            //Glyphe-Aura gravitationnel (5161)
+            FixEffectOnAllLevels(5161, 0, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
+            FixEffectOnAllLevels(5161, 0, (level, effect, critical) => effect.ZoneSize = 0, false);
+            FixEffectOnAllLevels(5161, 1, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
+            FixEffectOnAllLevels(5161, 1, (level, effect, critical) => effect.ZoneSize = 0, false);
+
+            //Glyphe-Aura enflammée (5162)
+            FixEffectOnAllLevels(5162, 0, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
+            FixEffectOnAllLevels(5162, 0, (level, effect, critical) => effect.ZoneSize = 0, false);
 
             #endregion
 
