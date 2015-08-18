@@ -47,6 +47,17 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
             }
         }
 
+        [WorldHandler(ZaapRespawnSaveRequestMessage.Id)]
+        public static void HandleZaapRespawnSaveRequestMessage(WorldClient client, ZaapRespawnSaveRequestMessage message)
+        {
+            client.Character.SetSpawnPoint(client.Character.Map);
+        }
+
+        public static void SendZaapRespawnUpdatedMessage(WorldClient client)
+        {
+            client.Send(new ZaapRespawnUpdatedMessage(client.Character.Record.SpawnMapId ?? 0));
+        }
+
         public static void SendInteractiveUsedMessage(IPacketReceiver client, Character user, InteractiveObject interactiveObject, Skill skill)
         {
             client.Send(new InteractiveUsedMessage(user.Id, interactiveObject.Id, (short) skill.Id, (short) skill.GetDuration(user)));
