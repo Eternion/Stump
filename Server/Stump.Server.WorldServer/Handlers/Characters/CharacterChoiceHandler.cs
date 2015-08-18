@@ -169,7 +169,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             ContextRoleplayHandler.SendEmoteListMessage(client, client.Character.AvailableEmotes.Select(x => (byte)x));
             ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
 
-            PvPHandler.SendAlignmentRankUpdateMessage(client);
+            PvPHandler.SendAlignmentRankUpdateMessage(client, client.Character);
 
             InventoryHandler.SendSpellListMessage(client, true);
             

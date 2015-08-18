@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
                 m_destinations.Select(entry => (short)entry.SubArea.Id),
                 m_destinations.Select(GetCostTo),
                 m_destinations.Select(entry => (sbyte)TeleporterTypeEnum.TELEPORTER_ZAAP),
-                Zaap.Map.Id));
+                Character.Record.SpawnMapId ?? 0));
         }
 
         public short GetCostTo(Map map)
