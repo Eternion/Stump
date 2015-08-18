@@ -201,8 +201,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnWeaponUsed(WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            m_weaponUses++;
-
             if (VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
             {
                 ShowCell(Cell, false);
