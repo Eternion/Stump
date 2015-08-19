@@ -353,6 +353,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             internal set;
         }
 
+        public int TurnTime
+        {
+            get
+            {
+                var duration = FightConfiguration.TurnTime + ((Stats.AP.Base + Stats.AP.Equiped + Stats.MP.Base + Stats.MP.Equiped + TurnTimeReport) * 1000);
+                return duration > FightConfiguration.MaxTurnTime ? FightConfiguration.MaxTurnTime : duration;
+            }
+        }
+
+        public int TurnTimeReport
+        {
+            get;
+            internal set;
+        }
+
         public ObjectPosition FightStartPosition
         {
             get;
