@@ -23,10 +23,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 return false;
 
             if ((!(target is SummonedMonster) || ((SummonedMonster)target).Monster.Template.Id != 556)
-                && (target.HasState((int)SpellStatesEnum.Unmovable) || target.HasState((int)SpellStatesEnum.Rooted)))
+                && (target.HasState((int)SpellStatesEnum.INDÉPLAÇABLE) || target.HasState((int)SpellStatesEnum.ENRACINÉ)))
                 return false;
 
-            if (Caster.HasState((int) SpellStatesEnum.Displaced))
+            if (Caster.HasState((int) SpellStatesEnum.DÉPLACÉ))
                 return false;
 
             if (target.IsCarrying())

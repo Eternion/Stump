@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Elementary
             if (cawotte == null)
                 return;
 
-            var stateUnmovable = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
+            var stateUnmovable = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.INDÉPLAÇABLE);
 
             var stateBuff = new StateBuff(cawotte.PopNextBuffId(), cawotte, cawotte, summonEffect.Effect, Spell, false, stateUnmovable)
             {

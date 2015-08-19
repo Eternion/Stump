@@ -33,8 +33,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
             if (!Caster.CanSummon())
                 return false;
 
-            var stateRooted = SpellManager.Instance.GetSpellState((int) SpellStatesEnum.Rooted);
-            var stateUnlockable = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.Unlockable);
+            var stateRooted = SpellManager.Instance.GetSpellState((int) SpellStatesEnum.ENRACINÉ);
+            var stateUnlockable = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.INTACLABLE);
 
             var slave = new SlaveFighter(Fight.GetNextContextualId(), Caster.Team, Caster, monster, TargetedCell);
 

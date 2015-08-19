@@ -1548,7 +1548,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             FighterPlaying.ResetUsedPoints();
 
             var time = (int)Math.Floor(GetTurnTimeLeft().TotalSeconds / 2);
-            if (TimeLine.RoundNumber > 0)
+            if (TimeLine.RoundNumber > 1)
                 FighterPlaying.TurnTimeReport = time > 0 ? time : 0;
 
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);

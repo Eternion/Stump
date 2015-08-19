@@ -98,7 +98,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 if (bomb.MonsterBombTemplate == triggerBomb.MonsterBombTemplate)
                     return false;
             }
-            else if (actor.HasState((int)SpellStatesEnum.Kaboom))
+            else if (actor.HasState((int)SpellStatesEnum.KABOOM))
             {
                 if (bomb.IsFriendlyWith(actor))
                     return false;

@@ -37,10 +37,10 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
 
             return !Handlers.Any(handler =>
                 handler.GetAffectedActors().Any(actor =>
-                    (actor.HasState((int) SpellStatesEnum.Corselet) && Caster.IsFriendlyWith(actor) &&
+                    (actor.HasState((int) SpellStatesEnum.CORSELET) && Caster.IsFriendlyWith(actor) &&
                      handler.Category != SpellCategory.Healing)
                     ||
-                    (actor.HasState((int) SpellStatesEnum.Dreadnaut) && !Caster.IsFriendlyWith(actor) &&
+                    (actor.HasState((int) SpellStatesEnum.CUIRASSE) && !Caster.IsFriendlyWith(actor) &&
                      handler.Category == SpellCategory.Healing)));
         }
     }

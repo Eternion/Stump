@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
         private void OnTurnStarted(IFight fight, FightActor player)
         {
-            if (player == Fighter && player.HasState((int)SpellStatesEnum.Beark_to_Life))
+            if (player == Fighter && player.HasState((int)SpellStatesEnum.RÉSUGLOURS))
             {
                 var spellGlours = new Spell((int)SpellIdEnum.PETIT_GLOURS_BRUN, 1);
 
@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
                     player.CastSpell(spellGlours, deadFighter.Cell, true);
                 }
 
-                var stateBuff = player.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == (int)SpellStatesEnum.Beark_to_Life).FirstOrDefault();
+                var stateBuff = player.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == (int)SpellStatesEnum.RÉSUGLOURS).FirstOrDefault();
                 if (stateBuff == null)
                     return;
 
@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             if (!(player is CharacterFighter) || player.Team.Id == Fighter.Team.Id)
                 return;
 
-            if (Fighter.HasState((int) SpellStatesEnum.Invulnerable))
+            if (Fighter.HasState((int) SpellStatesEnum.INVULNÉRABLE_56))
                 return;
 
             var spell = new Spell((int) SpellIdEnum.GLOURSOMPTUEUX, 1);
@@ -101,7 +101,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             if (!Fighter.Position.Point.IsAdjacentTo(damage.Source.Position.Point))
                 return;
 
-            if (Fighter.HasState((int)SpellStatesEnum.Invulnerable))
+            if (Fighter.HasState((int)SpellStatesEnum.INVULNÉRABLE_56))
             {
                 damage.IgnoreDamageBoost = true;
                 damage.IgnoreDamageReduction = true;
