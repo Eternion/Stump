@@ -53,6 +53,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
                     return Color.Orange;
                 case (int)SpellIdEnum.GLYPHE_GRAVITATIONNEL:
                     return Color.Green;
+                case (int)SpellIdEnum.GLYPHE_DE_RÉPULSION:
+                    return ColorTranslator.FromHtml("#505167");
                 default:
                     return Color.Red;
             }
