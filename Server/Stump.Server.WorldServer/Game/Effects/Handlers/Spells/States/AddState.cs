@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         dispel = false;
                 }
 
-                AddStateBuff(affectedActor, dispel, (state.Id == (int)SpellStatesEnum.DÉCHARGE || state.Id == (int)SpellStatesEnum.SURCHARGE || state.Id == (int)SpellStatesEnum.AFFAIBLI), state);
+                AddStateBuff(affectedActor, dispel, (state.Id == (int)SpellStatesEnum.DÉCHARGE || state.Id == (int)SpellStatesEnum.SURCHARGE || state.Id == (int)SpellStatesEnum.AFFAIBLI || state.Id == (int)SpellStatesEnum.INÉBRANLABLE), state);
             }
 
             return true;
