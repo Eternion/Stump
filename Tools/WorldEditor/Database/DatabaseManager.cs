@@ -45,7 +45,7 @@ namespace WorldEditor.Database
 
         public void Connect()
         {
-            m_dbAccessor.Configuration = Settings.DatabaseConfiguration;
+            m_dbAccessor.Configuration = Settings.RealDatabaseConfiguration;
             m_dbAccessor.OpenConnection();
 
             Connected = true;
