@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                 var dispel = false;
 
-                if (state.Id == (int)SpellStatesEnum.Invulnerable || state.Id == (int)SpellStatesEnum.Drunk)
+                if (state.Id == (int)SpellStatesEnum.INVULNÉRABLE_56 || state.Id == (int)SpellStatesEnum.SAOUL)
                 {
                     dispel = true;
 
@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         dispel = false;
                 }
 
-                AddStateBuff(affectedActor, dispel, (state.Id == (int)SpellStatesEnum.Unload || state.Id == (int)SpellStatesEnum.Overload || state.Id == (int)SpellStatesEnum.Weakened), state);
+                AddStateBuff(affectedActor, dispel, (state.Id == (int)SpellStatesEnum.DÉCHARGE || state.Id == (int)SpellStatesEnum.SURCHARGE || state.Id == (int)SpellStatesEnum.AFFAIBLI), state);
             }
 
             return true;

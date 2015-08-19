@@ -97,9 +97,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         private static void EvolutionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            if (!buff.Target.HasState((int)SpellStatesEnum.Evolution_II) && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
+            if (!buff.Target.HasState((int)SpellStatesEnum.EVOLUTION_II) && !buff.Target.HasState((int)SpellStatesEnum.EVOLUTION_III))
                 buff.Target.CastSpell(new Spell((int)SpellIdEnum.ÉVOLUTION_II, buff.Spell.CurrentLevel), buff.Target.Cell, true, true);
-            else if (buff.Target.HasState((int)SpellStatesEnum.Evolution_II) && !buff.Target.HasState((int)SpellStatesEnum.Evolution_III))
+            else if (buff.Target.HasState((int)SpellStatesEnum.EVOLUTION_II) && !buff.Target.HasState((int)SpellStatesEnum.EVOLUTION_III))
                 buff.Target.CastSpell(new Spell((int)SpellIdEnum.ÉVOLUTION_III, buff.Spell.CurrentLevel), buff.Target.Cell, true, true);
         }
 

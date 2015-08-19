@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
                 return;
             }
 
-            if (!barrel.Summoner.HasState((int) SpellStatesEnum.Drunk) ||
+            if (!barrel.Summoner.HasState((int) SpellStatesEnum.SAOUL) ||
                 !barrel.Summoner.Position.Point.IsOnSameLine(barrel.Position.Point))
                 return;
 

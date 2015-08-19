@@ -405,9 +405,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            if (HasState((int) SpellStatesEnum.Unmovable))
+            if (HasState((int) SpellStatesEnum.INDÉPLAÇABLE))
             {
-                var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
+                var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.INDÉPLAÇABLE);
                 RemoveState(state);
 
                 Explode();

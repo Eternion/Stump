@@ -1,574 +1,263 @@
 namespace Stump.DofusProtocol.Enums
 {
-	public enum SpellStatesEnum
-	{
-		/// <summary>
-		/// Neutral
-		/// </summary>
-		Neutral = 0,
-		/// <summary>
-		/// Drunk
-		/// </summary>
-		Drunk = 1,
-		/// <summary>
-		/// Soul Seeker
-		/// </summary>
-		Soul_Seeker = 2,
-		/// <summary>
-		/// Carrying
-		/// </summary>
-		Carrying = 3,
-		/// <summary>
-		/// Coward
-		/// </summary>
-		Coward = 4,
-		/// <summary>
-		/// Disorientated
-		/// </summary>
-		Disorientated = 5,
-		/// <summary>
-		/// Rooted
-		/// </summary>
-		Rooted = 6,
-		/// <summary>
-		/// Gravity
-		/// </summary>
-		Gravity = 7,
-		/// <summary>
-		/// Carried
-		/// </summary>
-		Carried = 8,
-		/// <summary>
-		/// Sylvan Motivation
-		/// </summary>
-		Sylvan_Motivation = 9,
-		/// <summary>
-		/// Taming
-		/// </summary>
-		Taming = 10,
-		/// <summary>
-		/// Riding
-		/// </summary>
-		Riding = 11,
-		/// <summary>
-		/// Unruly
-		/// </summary>
-		Unruly = 12,
-		/// <summary>
-		/// Extremely disobedient
-		/// </summary>
-		Extremely_disobedient = 13,
-		/// <summary>
-		/// Snowbound
-		/// </summary>
-		Snowbound = 14,
-		/// <summary>
-		/// Awake
-		/// </summary>
-		Awake = 15,
-		/// <summary>
-		/// Vulnerable
-		/// </summary>
-		Vulnerable = 16,
-		/// <summary>
-		/// Parted
-		/// </summary>
-		Parted = 17,
-		/// <summary>
-		/// Frozen
-		/// </summary>
-		Frozen = 18,
-		/// <summary>
-		/// Cracked
-		/// </summary>
-		Cracked = 19,
-		/// <summary>
-		/// Asleep
-		/// </summary>
-		Asleep = 26,
-		/// <summary>
-		/// Leopardo
-		/// </summary>
-		Leopardo = 27,
-		/// <summary>
-		/// Free
-		/// </summary>
-		Free = 28,
-		/// <summary>
-		/// Odd Glyph
-		/// </summary>
-		Odd_Glyph = 29,
-		/// <summary>
-		/// Even Glyph
-		/// </summary>
-		Even_Glyph = 30,
-		/// <summary>
-		/// First Ink
-		/// </summary>
-		First_Ink = 31,
-		/// <summary>
-		/// Second Ink
-		/// </summary>
-		Second_Ink = 32,
-		/// <summary>
-		/// Third Ink
-		/// </summary>
-		Third_Ink = 33,
-		/// <summary>
-		/// Fourth Ink
-		/// </summary>
-		Fourth_Ink = 34,
-		/// <summary>
-		/// Desire to Kill
-		/// </summary>
-		Desire_to_Kill = 35,
-		/// <summary>
-		/// Desire to Paralyze
-		/// </summary>
-		Desire_to_Paralyze = 36,
-		/// <summary>
-		/// Desire to Curse
-		/// </summary>
-		Desire_to_Curse = 37,
-		/// <summary>
-		/// Desire to Poison
-		/// </summary>
-		Desire_to_Poison = 38,
-		/// <summary>
-		/// Blurry
-		/// </summary>
-		Blurry = 39,
-		/// <summary>
-		/// Corrupted
-		/// </summary>
-		Corrupted = 40,
-		/// <summary>
-		/// Silent
-		/// </summary>
-		Silent = 41,
-		/// <summary>
-		/// Weakened
-		/// </summary>
-		Weakened = 42,
-		/// <summary>
-		/// (not found)
-		/// </summary>
-		State_43 = 43,
-		/// <summary>
-		/// (not found)
-		/// </summary>
-		State_44 = 44,
-		/// <summary>
-		/// (not found)
-		/// </summary>
-		State_46 = 46,
-		/// <summary>
-		/// (not found)
-		/// </summary>
-		State_47 = 47,
-		/// <summary>
-		/// Confused
-		/// </summary>
-		Confused = 48,
-		/// <summary>
-		/// Ghoulified
-		/// </summary>
-		Ghoulified = 49,
-		/// <summary>
-		/// Altruistic
-		/// </summary>
-		Altruistic = 50,
-		/// <summary>
-		/// (not found)
-		/// </summary>
-		State_51 = 51,
-		/// <summary>
-		/// (not found)
-		/// </summary>
-		State_52 = 52,
-		/// <summary>
-		/// (not found)
-		/// </summary>
-		State_53 = 53,
-		/// <summary>
-		/// (not found)
-		/// </summary>
-		State_54 = 54,
-		/// <summary>
-		/// Retired
-		/// </summary>
-		Retired = 55,
-		/// <summary>
-		/// Invulnerable
-		/// </summary>
-		Invulnerable = 56,
-		/// <summary>
-		/// Countdown - 2
-		/// </summary>
-		Countdown__2 = 57,
-		/// <summary>
-		/// Countdown - 1
-		/// </summary>
-		Countdown__1 = 58,
-		/// <summary>
-		/// Devoted
-		/// </summary>
-		Devoted = 60,
-		/// <summary>
-		/// Aggressive
-		/// </summary>
-		Aggressive = 61,
-		/// <summary>
-		/// Heavy
-		/// </summary>
-		Heavy = 63,
-		/// <summary>
-		/// Glyphanger
-		/// </summary>
-		Glyphanger = 64,
-		/// <summary>
-		/// Omega
-		/// </summary>
-		Omega = 65,
-		/// <summary>
-		/// Alpha
-		/// </summary>
-		Alpha = 66,
-		/// <summary>
-		/// Beta
-		/// </summary>
-		Beta = 67,
-		/// <summary>
-		/// Gamma
-		/// </summary>
-		Gamma = 68,
-		/// <summary>
-		/// Delta
-		/// </summary>
-		Delta = 69,
-		/// <summary>
-		/// Kordis Alpha
-		/// </summary>
-		Kordis_Alpha = 70,
-		/// <summary>
-		/// Kordis Beta
-		/// </summary>
-		Kordis_Beta = 71,
-		/// <summary>
-		/// Kordis Gamma
-		/// </summary>
-		Kordis_Gamma = 72,
-		/// <summary>
-		/// Enraged
-		/// </summary>
-		Enraged = 73,
-		/// <summary>
-		/// Zombie
-		/// </summary>
-		Zombie = 74,
-		/// <summary>
-		/// Unhealable
-		/// </summary>
-		Unhealable = 76,
-		/// <summary>
-		/// Weakness
-		/// </summary>
-		Weakness = 77,
-		/// <summary>
-		/// Sprout
-		/// </summary>
-		Sprout = 78,
-		/// <summary>
-		/// Major Second
-		/// </summary>
-		Major_Second = 79,
-		/// <summary>
-		/// Major Third
-		/// </summary>
-		Major_Third = 80,
-		/// <summary>
-		/// Perfect Fourth
-		/// </summary>
-		Perfect_Fourth = 81,
-		/// <summary>
-		/// Perfect Fifth
-		/// </summary>
-		Perfect_Fifth = 82,
-		/// <summary>
-		/// Major Sixth
-		/// </summary>
-		Major_Sixth = 83,
-		/// <summary>
-		/// Major Seventh
-		/// </summary>
-		Major_Seventh = 84,
-		/// <summary>
-		/// Perfect Octave
-		/// </summary>
-		Perfect_Octave = 85,
-		/// <summary>
-		/// Fulguration
-		/// </summary>
-		Fulguration = 86,
-		/// <summary>
-		/// Blurring
-		/// </summary>
-		Blurring = 87,
-		/// <summary>
-		/// Beark to Life
-		/// </summary>
-		Beark_to_Life = 88,
-		/// <summary>
-		/// Flamboyant
-		/// </summary>
-		Flamboyant = 89,
-		/// <summary>
-		/// Ectoplasmic
-		/// </summary>
-		Ectoplasmic = 90,
-		/// <summary>
-		/// Ardent
-		/// </summary>
-		Ardent = 91,
-		/// <summary>
-		/// Kaboom
-		/// </summary>
-		Kaboom = 92,
-		/// <summary>
-		/// Klaus Kombatnoob
-		/// </summary>
-		Klaus_Kombatnoob = 93,
-		/// <summary>
-		/// Notdis Thymnoob
-		/// </summary>
-		Notdis_Thymnoob = 94,
-		/// <summary>
-		/// Unable to lock
-		/// </summary>
-		Unable_to_lock = 95,
-		/// <summary>
-		/// Unlockable
-		/// </summary>
-		Unlockable = 96,
-		/// <summary>
-		/// Unmovable
-		/// </summary>
-		Unmovable = 97,
-		/// <summary>
-		/// Classic
-		/// </summary>
-		Classic = 98,
-		/// <summary>
-		/// Psychopathic
-		/// </summary>
-		Psychopathic = 99,
-		/// <summary>
-		/// Cowardly
-		/// </summary>
-		Cowardly = 100,
-		/// <summary>
-		/// Archer
-		/// </summary>
-		Archer = 101,
-		/// <summary>
-		/// Gorgoylie
-		/// </summary>
-		Gorgoylie = 102,
-		/// <summary>
-		/// Fortified
-		/// </summary>
-		Fortified = 103,
-		/// <summary>
-		/// Broken
-		/// </summary>
-		Broken = 104,
-		/// <summary>
-		/// Tyrannised
-		/// </summary>
-		Tyrannised = 105,
-		/// <summary>
-		/// Meteoroid
-		/// </summary>
-		Meteoroid = 106,
-		/// <summary>
-		/// Critical Mass
-		/// </summary>
-		Critical_Mass = 107,
-		/// <summary>
-		/// Apocalypse
-		/// </summary>
-		Apocalypse = 108,
-		/// <summary>
-		/// Rubilax
-		/// </summary>
-		Rubilax = 109,
-		/// <summary>
-		/// "The Sword"
-		/// </summary>
-		The_Sword = 110,
-		/// <summary>
-		/// Daggero's First Mark
-		/// </summary>
-		Daggeros_First_Mark = 111,
-		/// <summary>
-		/// Daggero's Second Mark
-		/// </summary>
-		Daggeros_Second_Mark = 112,
-		/// <summary>
-		/// Daggero's Third Mark
-		/// </summary>
-		Daggeros_Third_Mark = 113,
-		/// <summary>
-		/// Daggero's Fourth Mark
-		/// </summary>
-		Daggeros_Fourth_Mark = 114,
-		/// <summary>
-		/// Daggero's Fifth Mark
-		/// </summary>
-		Daggeros_Fifth_Mark = 115,
-		/// <summary>
-		/// Earthy Green
-		/// </summary>
-		Earthy_Green = 116,
-		/// <summary>
-		/// Flame-Tickled Pink
-		/// </summary>
-		FlameTickled_Pink = 117,
-		/// <summary>
-		/// Blue Lagoon
-		/// </summary>
-		Blue_Lagoon = 118,
-		/// <summary>
-		/// Yellow Zephyr
-		/// </summary>
-		Yellow_Zephyr = 119,
-		/// <summary>
-		/// Displaced
-		/// </summary>
-		Displaced = 120,
-		/// <summary>
-		/// Load
-		/// </summary>
-		Load = 121,
-		/// <summary>
-		/// Unload
-		/// </summary>
-		Unload = 122,
-		/// <summary>
-		/// Overload
-		/// </summary>
-		Overload = 123,
-		/// <summary>
-		/// Big Brother
-		/// </summary>
-		Big_Brother = 124,
-		/// <summary>
-		/// Little Sister
-		/// </summary>
-		Little_Sister = 125,
-		/// <summary>
-		/// Magnatron
-		/// </summary>
-		Magnatron = 126,
-		/// <summary>
-		/// Earth
-		/// </summary>
-		Earth = 127,
-		/// <summary>
-		/// Water
-		/// </summary>
-		Water = 128,
-		/// <summary>
-		/// Fire
-		/// </summary>
-		Fire = 129,
-		/// <summary>
-		/// Ambush
-		/// </summary>
-		Ambush = 130,
-		/// <summary>
-		/// First Aid
-		/// </summary>
-		First_Aid = 131,
-		/// <summary>
-		/// Periscope
-		/// </summary>
-		Periscope = 132,
-		/// <summary>
-		/// Dreadnaut
-		/// </summary>
-		Dreadnaut = 133,
-		/// <summary>
-		/// Evolution II
-		/// </summary>
-		Evolution_II = 134,
-		/// <summary>
-		/// Evolution III
-		/// </summary>
-		Evolution_III = 135,
-		/// <summary>
-		/// Woebegone
-		/// </summary>
-		Woebegone = 136,
-		/// <summary>
-		/// Kwaburn
-		/// </summary>
-		Kwaburn = 137,
-		/// <summary>
-		/// Kwafreeze
-		/// </summary>
-		Kwafreeze = 138,
-		/// <summary>
-		/// Kwakearth
-		/// </summary>
-		Kwakearth = 139,
-		/// <summary>
-		/// Kwablow
-		/// </summary>
-		Kwablow = 140,
-		/// <summary>
-		/// Kwaneutral
-		/// </summary>
-		Kwaneutral = 141,
-		/// <summary>
-		/// Pandawushai
-		/// </summary>
-		Pandawushai = 142,
-		/// <summary>
-		/// Pandawushwa
-		/// </summary>
-		Pandawushwa = 143,
-		/// <summary>
-		/// Pandawushfi
-		/// </summary>
-		Pandawushfi = 144,
-		/// <summary>
-		/// Pandawushea
-		/// </summary>
-		Pandawushea = 145,
-		/// <summary>
-		/// Pandawushne
-		/// </summary>
-		Pandawushne = 146,
-		/// <summary>
-		/// Spyglass
-		/// </summary>
-		Spyglass = 147,
-		/// <summary>
-		/// Corselet
-		/// </summary>
-		Corselet = 148,
-		/// <summary>
-		/// Barmy
-		/// </summary>
-		Barmy = 149,
-		/// <summary>
-		/// Entangled
-		/// </summary>
-		Entangled = 150,
-		/// <summary>
-		/// Hasty
-		/// </summary>
-		Hasty = 151,
-	}
+
+    public enum SpellStatesEnum
+    {
+        NEUTRE = 0,
+        SAOUL = 1,
+        CHERCHEUR_D_ÂMES = 2,
+        PORTEUR = 3,
+        PEUREUX = 4,
+        DÉSORIENTÉ = 5,
+        ENRACINÉ = 6,
+        PESANTEUR = 7,
+        PORTÉ = 8,
+        MOTIVATION_SYLVESTRE = 9,
+        APPRIVOISEMENT = 10,
+        CHEVAUCHANT = 11,
+        PAS_SAGE = 12,
+        VRAIMENT_PAS_SAGE = 13,
+        ENNEIGÉ = 14,
+        EVEILLÉ = 15,
+        FRAGILISÉ = 16,
+        SÉPARÉ = 17,
+        GELÉ = 18,
+        FISSURÉ = 19,
+        ENDORMI = 26,
+        LÉOPARDO = 27,
+        LIBRE = 28,
+        GLYPHE_IMPAIRE = 29,
+        GLYPHE_PAIRE = 30,
+        ENCRE_PRIMAIRE = 31,
+        ENCRE_SECONDAIRE = 32,
+        ENCRE_TERTIAIRE = 33,
+        ENCRE_QUATERNAIRE = 34,
+        ENVIE_DE_TUER = 35,
+        ENVIE_DE_PARALYSER = 36,
+        ENVIE_DE_MAUDIRE = 37,
+        ENVIE_D_EMPOISONNER = 38,
+        FLOU = 39,
+        CORROMPU = 40,
+        SILENCIEUX = 41,
+        AFFAIBLI = 42,
+        CONFUS = 48,
+        GOULIFIÉ = 49,
+        ALTRUISTE = 50,
+        RETRAITÉ = 55,
+        INVULNÉRABLE_56 = 56,
+        COMPTE_À_REBOURS___2 = 57,
+        COMPTE_À_REBOURS___1 = 58,
+        DÉVOUÉ_60 = 60,
+        BAGARREUR = 61,
+        LOURD = 63,
+        GLYPHANGUEUR = 64,
+        OMÉGA = 65,
+        ALPHA = 66,
+        BÊTA = 67,
+        GAMMA = 68,
+        DELTA = 69,
+        ALPHA_DE_KORDIS = 70,
+        BÊTA_DE_KORDIS = 71,
+        GAMMA_DE_KORDIS = 72,
+        ENRAGÉ = 73,
+        ZOMBI = 74,
+        INSOIGNABLE = 76,
+        FAIBLESSE = 77,
+        GERME = 78,
+        SECONDE = 79,
+        TIERCE = 80,
+        QUARTE = 81,
+        QUINTE = 82,
+        SIXTE = 83,
+        SEPTIÈME = 84,
+        OCTAVE = 85,
+        FULGURATION = 86,
+        FLOUTAGE = 87,
+        RÉSUGLOURS = 88,
+        FLAMBOYANT = 89,
+        ECTOPLASMIQUE = 90,
+        ARDENT = 91,
+        KABOOM = 92,
+        FONSO_CACNOOB = 93,
+        PACETTE_FOINOUBE = 94,
+        INTACLEUR = 95,
+        INTACLABLE = 96,
+        INDÉPLAÇABLE = 97,
+        CLASSE = 98,
+        PSYCHOPATHE = 99,
+        PLEUTRE = 100,
+        ARCHER = 101,
+        GORGOUILLIS = 102,
+        FORTIFIÉ = 103,
+        RUPTURE = 104,
+        TYRANNISÉ = 105,
+        MÉTÉOROÏDE = 106,
+        MASSE_CRITIQUE = 107,
+        APOCALYPSE = 108,
+        RUBILAX = 109,
+		L_ÉPÉE = 110,
+        PREMIÈRE_MARQUE_DE_DAÏGORO = 111,
+        DEUXIÈME_MARQUE_DE_DAÏGORO = 112,
+        TROISIÈME_MARQUE_DE_DAÏGORO = 113,
+        QUATRIÈME_MARQUE_DE_DAÏGORO = 114,
+        CINQUIÈME_MARQUE_DE_DAÏGORO = 115,
+        VERT_DE_TERRE = 116,
+        ROSE_AUX_FLAMMES = 117,
+        AZUR_BAIN = 118,
+        EX_JAUNE_AIR = 119,
+        DÉPLACÉ = 120,
+        CHARGE = 121,
+        DÉCHARGE = 122,
+        SURCHARGE = 123,
+        GRAND_FRÈRE = 124,
+        PETITE_SŒUR = 125,
+        MAGNÉTOR = 126,
+        TERRE = 127,
+        EAU = 128,
+        FEU = 129,
+        EMBUSCADE = 130,
+        SECOURISME = 131,
+        LONGUE_VUE = 132,
+        CUIRASSE = 133,
+        EVOLUTION_II = 134,
+        EVOLUTION_III = 135,
+        ENDEUILLÉ = 136,
+        KWAFLAMME = 137,
+        KWAGLACE = 138,
+        KWATERRE = 139,
+        KWAVENT = 140,
+        KWANEUTRE = 141,
+        PANDAWUSHAE = 142,
+        PANDAWUSHAK = 143,
+        PANDAWUSHFE = 144,
+        PANDAWUSHTE = 145,
+        PANDAWUSHNE = 146,
+        COURTE_VUE = 147,
+        CORSELET = 148,
+        DINGUE = 149,
+        EMBERLIFICOTÉ = 150,
+        PRÉCIPITÉ = 151,
+        PEAU_LISSE = 152,
+        SURGELÉ = 153,
+        RENAISSANCE = 154,
+        ZOMBIDULE = 155,
+        THERMOLACTÉ = 156,
+        INÉBRANLABLE = 157,
+        MARIONNETTE = 158,
+        ACTE_1 = 159,
+        ACTE_2 = 160,
+        ACTE_3 = 161,
+        ACTE_4 = 162,
+        ACTE_5 = 163,
+        ACTE_6 = 170,
+        FOUDROYÉ_171 = 171,
+        EMPATHIQUE = 172,
+        PARASITE_GRANULEUX = 173,
+        PARASITE_ÉCLOS = 174,
+        PARASITE_FLEURI = 175,
+        FRITURE = 176,
+        POULPÉ = 177,
+        ARAKNOPHOBE = 178,
+        ANDROPHOBE = 179,
+        ARANEAE = 180,
+        MISANDRIE = 181,
+        CHARGÉ = 182,
+        SCORIFIÉ = 183,
+        PROTÉGÉ = 184,
+        TROP_SAOUL = 185,
+        COURAGEUX = 186,
+        VEINARD = 187,
+        REDIRECTION = 188,
+        MAL_DES_TRANSPORTS = 189,
+        TUMVOIPU = 190,
+        MARQUE_DES_MANGELORS = 191,
+        COFFRAGE = 192,
+        GLYPHOR = 193,
+        SEUL = 194,
+        MÈCHE_COURTE = 195,
+        MÈCHE_LONGUE = 196,
+        MORT_EN_SURSIS = 197,
+        DÉSAMORCÉE = 198,
+        MARQUEUR_CHIMIQUE = 199,
+        SANG = 200,
+        SEL = 201,
+        OR = 202,
+        JOUVENCE = 203,
+        INDULGENT_I = 204,
+        INDULGENT_II = 205,
+        INDULGENT_III = 206,
+        INDULGENT_IV = 207,
+        INDULGENT_V = 208,
+        INDULGENT_VI = 209,
+        INDULGENT_VII = 210,
+        INDULGENT_VIII = 211,
+        INDULGENT_IX = 212,
+        INDULGENT_X = 213,
+        DISLOQUÉ = 214,
+        INFECTION = 215,
+        PASSEUR = 216,
+        TEMPORISATEUR = 217,
+        PACIFISTE = 218,
+        VOYAGEUR = 219,
+        INSTABLE = 220,
+        PREMIÈRE_HEURE = 221,
+        DEUXIÈME_HEURE = 222,
+        TROISIÈME_HEURE = 223,
+        QUATRIÈME_HEURE = 224,
+        CINQUIÈME_HEURE = 225,
+        SIXIÈME_HEURE = 226,
+        SEPTIÈME_HEURE = 227,
+        HUITIÈME_HEURE = 228,
+        NEUVIÈME_HEURE = 229,
+        DIXIÈME_HEURE = 230,
+        ONZIÈME_HEURE = 231,
+        DOUZIÈME_HEURE = 232,
+        MORT_LATENTE = 233,
+        MÊME_HEURE = 234,
+        TUEUR = 235,
+        MARGINAL = 236,
+        DÉRÈGLEMENT = 237,
+        HYPOGLYPHE = 238,
+        BIEN_ENTOURÉ = 239,
+        RÉSURRECTION = 240,
+        SÉRUM = 241,
+        PASSTONTOUR = 242,
+        COFFRE_INVOQUÉ = 243,
+        TÉLÉFRAG_244 = 244,
+        MOMIE = 245,
+        PARADOXE_TEMPOREL = 246,
+        REMBOBINAGE = 247,
+        PORTAIL = 248,
+        IMMUNITÉ_TEMPORELLE = 249,
+        INVISIBLE = 250,
+        TÉLÉFRAG_251 = 251,
+        EMPRISONNÉ = 252,
+        COCON = 253,
+        MATURITÉ = 254,
+        DÉVOUÉ_255 = 255,
+        ARBRE_FEUILLU = 256,
+        AMOUR_INFINI = 257,
+        MARQUE_NINJA = 258,
+        BLOQUEUSE = 259,
+        ÉCOLOGISTE_260 = 260,
+        ÉCOLOGISTE_261 = 261,
+        CIBLE_DU_SUPER_PLACEMENT = 262,
+        INFECTÉ = 263,
+        EMPOISONNÉ = 264,
+        PROIE = 265,
+        BRETTEUR_CÉLESTE = 266,
+        FOUDROYÉ_267 = 267,
+        DUEL = 268,
+        INVULNÉRABLE_269 = 269,
+        SUPER_SINGE = 270,
+        RAYONNEMENT_LUNAIRE = 271,
+        FEU_DE_BOLGROT = 272,
+        ETAT_GÉNÉRIQUE_4 = 276,
+        ETAT_GÉNÉRIQUE_3 = 277,
+        ETAT_GÉNÉRIQUE_2 = 278,
+        ETAT_GÉNÉRIQUE_1 = 279,
+        MUTA = 297,
+        DJIM = 298,
+        ULTRAM = 299,
+    }
 }
