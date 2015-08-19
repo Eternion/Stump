@@ -338,7 +338,13 @@ namespace Stump.Server.WorldServer.Game.Fights
         ///   Delay for player's turn
         /// </summary>
         [Variable]
-        public static int TurnTime = 35000;
+        public static int TurnTime = 15000;
+
+        /// <summary>
+        ///   Max Delay for player's turn
+        /// </summary>
+        [Variable]
+        public static int MaxTurnTime = 60000;
 
         /// <summary>
         ///   Delay before force turn to end
@@ -550,7 +556,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public TimeSpan TurnTimeLeft
         {
-            get { return TurnStartTime + TimeSpan.FromMilliseconds(FightConfiguration.TurnTime) - DateTime.Now; }
+            get { return TurnStartTime + TimeSpan.FromMilliseconds(FighterPlaying.TurnTime) - DateTime.Now; }
         }
 
         public ReadyChecker ReadyChecker
@@ -1472,10 +1478,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var slaveFighter = FighterPlaying as SlaveFighter;
             if (slaveFighter != null)
-                ContextHandler.SendGameFightTurnStartSlaveMessage(Clients, slaveFighter.Id, FightConfiguration.TurnTime, slaveFighter.Summoner.Id);
+                ContextHandler.SendGameFightTurnStartSlaveMessage(Clients, slaveFighter.Id, FighterPlaying.TurnTime/100, slaveFighter.Summoner.Id);
             else
-                ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
-                                                         FightConfiguration.TurnTime/100);
+                ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime/100);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
@@ -1492,7 +1497,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             TurnStartTime = DateTime.Now;
 
             if (!Freezed)
-                m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+                m_turnTimer = Map.Area.CallDelayed(FighterPlaying.TurnTime, StopTurn);
 
             var evnt = TurnStarted;
             if (evnt != null)
@@ -1541,6 +1546,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             FighterPlaying.ResetUsedPoints();
+
+            FighterPlaying.TurnTimeReport = (int)Math.Floor(GetTurnTimeLeft().TotalSeconds / 2);
 
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
@@ -2513,7 +2520,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             var time = ( DateTime.Now - TurnStartTime ).TotalMilliseconds;
 
-            return TimeSpan.FromMilliseconds(time > 0 ? (FightConfiguration.TurnTime - (int)time) : 0);
+            return TimeSpan.FromMilliseconds(time > 0 ? (FighterPlaying.TurnTime - (int)time) : 0);
         }
 
         public sbyte GetNextContextualId()
