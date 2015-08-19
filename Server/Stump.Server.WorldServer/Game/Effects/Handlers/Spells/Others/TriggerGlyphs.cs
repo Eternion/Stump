@@ -2,7 +2,9 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
@@ -20,11 +22,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 var fight = actor.Fight;
                 var triggers = fight.GetTriggersByCell(actor.Cell);
 
-                foreach (var trigger in triggers)
+                foreach (var trigger in triggers.Where(x => x is Glyph))
                 {
+                    if ((trigger as Glyph).IsGlyphAura())
+                        continue;
+
                     foreach (var fighter in fight.GetAllFighters(x => trigger.ContainsCell(x.Cell)))
                     {
-                        fight.TriggerMarks(fighter.Cell, fighter, Fights.Triggers.TriggerType.TURN_BEGIN);
+                        fight.TriggerMarks(fighter.Cell, fighter, TriggerType.TURN_BEGIN);
                     }
                 }
             }
