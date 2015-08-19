@@ -29,10 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
                 return false;
             }
 
-            // todo : find usage of Dice.Value
-            var trap = EffectZone.ShapeType == SpellShapeEnum.Q ?
-                new Trap((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, trapSpell, TargetedCell, GameActionMarkCellsTypeEnum.CELLS_CROSS, (byte) Effect.ZoneSize) :
-                new Trap((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, trapSpell, TargetedCell, (byte) Effect.ZoneSize);
+            var trap = new Trap((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, trapSpell, TargetedCell, EffectZone.ShapeType, (byte) Effect.ZoneSize);
 
             Fight.AddTriger(trap);
             return true;
