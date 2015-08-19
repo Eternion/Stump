@@ -3359,7 +3359,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short)Honor,
                 (short)LowerBoundHonor,
                 (short)UpperBoundHonor,
-                PvPEnabled ? (sbyte)1 : (sbyte)0);
+                (PvPEnabled ? (sbyte)AggressableStatusEnum.PvP_ENABLED_AGGRESSABLE : (sbyte)AggressableStatusEnum.NON_AGGRESSABLE));
         }
 
         #endregion
