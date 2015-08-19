@@ -56,8 +56,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(5161, 0, (level, effect, critical) => effect.ZoneSize = 0, false);
             FixEffectOnAllLevels(5161, 1, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);
             FixEffectOnAllLevels(5161, 1, (level, effect, critical) => effect.ZoneSize = 0, false);
-            FixEffectOnAllLevels(5161, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
-            FixEffectOnAllLevels(5161, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
 
             //Glyphe-Aura enflammée (5162)
             FixEffectOnAllLevels(5162, 0, (level, effect, critical) => effect.ZoneShape = SpellShapeEnum.P, false);

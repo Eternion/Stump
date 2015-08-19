@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public bool CanCastSpell(SpellLevelTemplate spell)
         {
-            var mostRecentEntry = m_underlyingStack.LastOrDefault(entry => entry.Spell.Id == spell.Id && entry.Caster.Team == Owner.Team);
+            var mostRecentEntry = m_underlyingStack.LastOrDefault(entry => entry.Spell.Id == spell.Id);
 
             //check initial cooldown
             if (mostRecentEntry == null && CurrentRound < spell.InitialCooldown)
@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             {
                 return false;
             }
-            var castsThisRound = m_underlyingStack.Where(entry => entry.Spell.Id == spell.Id && entry.Caster.Team == Owner.Team && entry.CastRound == CurrentRound).ToArray();
+            var castsThisRound = m_underlyingStack.Where(entry => entry.Spell.Id == spell.Id && entry.CastRound == CurrentRound).ToArray();
 
             if (castsThisRound.Length == 0)
                 return true;
