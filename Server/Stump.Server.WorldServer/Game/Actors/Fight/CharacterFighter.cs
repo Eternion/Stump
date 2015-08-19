@@ -312,7 +312,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!IsFighterTurn())
                 return false;
 
-            if (HasState((int)SpellStatesEnum.Weakened))
+            if (HasState((int)SpellStatesEnum.AFFAIBLI))
                 return false;
 
             var point = new MapPoint(cell);

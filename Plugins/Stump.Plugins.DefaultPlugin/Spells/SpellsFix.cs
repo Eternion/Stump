@@ -31,6 +31,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Targets = SpellTargetType.SELF, false);
             FixEffectOnAllLevels(422, 2, (level, effect, critical) => effect.Delay = 1, false);
 
+            //Glyphe Aura Gravitationnel (5161)
+            FixEffectOnAllLevels(5161, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF, false);
+            FixEffectOnAllLevels(5161, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF, false);
+
             #endregion
 
             #region IOP

@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             foreach (var actor in GetAffectedActors().OrderByDescending(entry => entry.Position.Point.ManhattanDistanceTo(TargetedPoint)))
             {
-                if (actor.HasState((int)SpellStatesEnum.Unmovable) || actor.HasState((int)SpellStatesEnum.Rooted))
+                if (actor.HasState((int)SpellStatesEnum.INDÉPLAÇABLE) || actor.HasState((int)SpellStatesEnum.ENRACINÉ) || actor.HasState((int)SpellStatesEnum.INÉBRANLABLE))
                     continue;
 
                 var referenceCell = TargetedCell.Id == actor.Cell.Id ? CastPoint : TargetedPoint;
