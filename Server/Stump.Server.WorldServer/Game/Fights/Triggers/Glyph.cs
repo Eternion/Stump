@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return (--Duration) <= 0;
         }
 
-        private bool IsGlyphAura()
+        public bool IsGlyphAura()
         {
             return OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura;
         }
