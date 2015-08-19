@@ -49,10 +49,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
             (short) SpellIdEnum.DÉSTABILISATION,
             (short) SpellIdEnum.DÉSENVOUTEMENT,
             (short) SpellIdEnum.MOT_SOIGNANT_459,
-            (short) SpellIdEnum.ARMURE_AQUEUSE_451,
-            (short) SpellIdEnum.ARMURE_TERRESTRE_453,
-            (short) SpellIdEnum.ARMURE_VENTEUSE_454,
-            (short) SpellIdEnum.ARMURE_INCANDESCENTE_452,
+            (short) SpellIdEnum.ARMURE_AQUEUSE,
+            (short) SpellIdEnum.ARMURE_TERRESTRE,
+            (short) SpellIdEnum.ARMURE_VENTEUSE,
+            (short) SpellIdEnum.ARMURE_INCANDESCENTE,
             (short) SpellIdEnum.COMPULSION_DE_MASSE,
         };
 

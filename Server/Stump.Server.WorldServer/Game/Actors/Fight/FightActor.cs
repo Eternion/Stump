@@ -1699,8 +1699,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    || spell.Template.Id == (int) SpellIdEnum.SORT_ENFLAMMÉ
                    || spell.Template.Id == (int) SpellIdEnum.GLYPHE_AGRESSIF_1503
                    || spell.Template.Id == (int) SpellIdEnum.PULSE
-                   || spell.Template.Id == (int) SpellIdEnum.CONTRE
-                   || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE
+                   || spell.Template.Id == (int) SpellIdEnum.CONTRE_94
+                   || spell.Template.Id == (int) SpellIdEnum.MOT_D_ÉPINE
                    || spell.Template.Id == (int) SpellIdEnum.MOT_D_EPINE_DU_DOPEUL
                    || spell.Template.Id == (int) SpellIdEnum.MUR_DE_FEU
                    || spell.Template.Id == (int) SpellIdEnum.MUR_D_AIR
@@ -1726,8 +1726,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                    spell.Template.Id == (int)SpellIdEnum.PIÈGE_EMPOISONNÉ_DU_DOPEUL ||
                    spell.Template.Id == (int)SpellIdEnum.VENT_EMPOISONNÉ ||
                    spell.Template.Id == (int)SpellIdEnum.VENT_EMPOISONNÉ_DU_DOPEUL ||
-                   spell.Template.Id == (int)SpellIdEnum.TREMBLEMENT ||
-                   spell.Template.Id == (int)SpellIdEnum.RONCE_INSOLENTE ||
+                   spell.Template.Id == (int)SpellIdEnum.TREMBLEMENT_181 ||
+                   spell.Template.Id == (int)SpellIdEnum.RONCE_INSOLENTE_188 ||
                    spell.Template.Id == (int)SpellIdEnum.VERTIGE ||
                    spell.Template.Id == (int)SpellIdEnum.SILENCE_DU_SRAM;
         }
