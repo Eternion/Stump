@@ -13,6 +13,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         private readonly Zone m_zone;
         private readonly Cell[] m_cells;
 
+        public MarkShape(IFight fight, Cell cell, SpellShapeEnum spellShape, GameActionMarkCellsTypeEnum shape, byte size, Color color)
+        {
+            Fight = fight;
+            Cell = cell;
+            Shape = shape;
+            Size = size;
+            Color = color;
+
+            m_zone = new Zone(spellShape, size);
+            m_cells = CheckCells(m_zone.GetCells(Cell, fight.Map));
+        }
+
         public MarkShape(IFight fight, Cell cell, GameActionMarkCellsTypeEnum shape, byte size, Color color)
         {
             Fight = fight;
@@ -21,20 +33,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             Size = size;
             Color = color;
 
-            switch(Shape)
-            {
-                case GameActionMarkCellsTypeEnum.CELLS_CROSS:
-                    m_zone = new Zone(SpellShapeEnum.Q, size);
-                    break;
-                case GameActionMarkCellsTypeEnum.CELLS_SQUARE:
-                    m_zone = new Zone(SpellShapeEnum.G, size);
-                    break;
-                default:
-                    m_zone = new Zone(SpellShapeEnum.C, size);
-                    break;
-            }
-
-            m_cells = m_zone.GetCells(Cell, fight.Map);
+            m_zone = new Zone(SpellShapeEnum.C, size);
+            m_cells = CheckCells(m_zone.GetCells(Cell, fight.Map));
         }
 
         public IFight Fight
@@ -85,6 +85,18 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public GameActionMarkedCell GetGameActionMarkedCell()
         {
             return new GameActionMarkedCell(Cell.Id, (sbyte) Size, Color.ToArgb() & 0xFFFFFF, (sbyte)Shape);
+        }
+
+        public Cell[] CheckCells(Cell[] cells)
+        {
+            var validCells = new List<Cell>();
+            foreach (var cell in cells)
+            {
+                if (cell.Walkable)
+                    validCells.Add(cell);
+            }
+
+            return validCells.ToArray();
         }
     }
 }
