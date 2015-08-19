@@ -17,17 +17,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var actor in GetAffectedActors())
             {
-                var triggers = actor.Fight.GetTriggersByCell(actor.Cell);
+                var fight = actor.Fight;
+                var triggers = fight.GetTriggersByCell(actor.Cell);
 
                 foreach (var trigger in triggers)
                 {
-                    foreach (var shape in trigger.Shapes)
+                    foreach (var fighter in fight.GetAllFighters(x => trigger.ContainsCell(x.Cell)))
                     {
-                        foreach (var cell in shape.GetCells())
-                        {
-                            foreach (var fighter in actor.Fight.GetAllFighters(x => x.Cell == cell))
-                                actor.Fight.TriggerMarks(cell, fighter, Fights.Triggers.TriggerType.MOVE);
-                        }
+                        fight.TriggerMarks(fighter.Cell, fighter, Fights.Triggers.TriggerType.TURN_BEGIN);
                     }
                 }
             }

@@ -61,6 +61,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             {
                 case (int)SpellIdEnum.DAIPIPAY:
                     return Color.White;
+                case (int)SpellIdEnum.GLYPHE_OPTIQUE:
+                    return Color.Cyan;
+                case (int)SpellIdEnum.GLYPHE_D_AVEUGLEMENT:
+                    return Color.Orange;
+                case (int)SpellIdEnum.GLYPHE_GRAVITATIONNEL:
+                    return Color.Green;
                 default:
                     return Color.Red;
             }
