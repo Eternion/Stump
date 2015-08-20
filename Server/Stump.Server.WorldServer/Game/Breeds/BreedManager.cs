@@ -6,6 +6,10 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Breeds;
+using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Database.Spells;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Breeds
 {
@@ -138,5 +142,91 @@ namespace Stump.Server.WorldServer.Game.Breeds
 
             Database.Delete(breed);
         }
+
+        public void ChangeBreed(Character character, PlayableBreedEnum breed)
+        {
+            character.Spells.ForgetAllSpells(false);
+            character.ResetStats(false);
+
+            var specialSpell = GetSpecialSpell(character.BreedId);
+
+            foreach (var breedSpell in character.Breed.Spells)
+            {
+                character.Spells.UnLearnSpell(breedSpell.Spell, false);
+            }
+
+            character.SetBreed(breed);
+
+            foreach (var breedSpell in character.Breed.Spells.Where(breedSpell => breedSpell.ObtainLevel <= character.Level))
+            {
+                character.Spells.LearnSpell(breedSpell.Spell);
+            }
+
+            if (character.Spells.HasSpell((int)specialSpell.SpellId))
+            {
+                character.Spells.UnLearnSpell((int)specialSpell.SpellId, false);
+
+                specialSpell = GetSpecialSpell(character.BreedId);
+
+                character.Spells.LearnSpell((int)specialSpell.SpellId);
+            }
+        }
+
+        private static SpellLevelTemplate GetSpecialSpell(PlayableBreedEnum breedId)
+        {
+            var spellId = -1;
+
+            switch (breedId)
+            {
+                case PlayableBreedEnum.Feca:
+                    spellId = 2108;
+                    break;
+                case PlayableBreedEnum.Osamodas:
+                    spellId = 2098;
+                    break;
+                case PlayableBreedEnum.Enutrof:
+                    spellId = 2123;
+                    break;
+                case PlayableBreedEnum.Sram:
+                    spellId = 2078;
+                    break;
+                case PlayableBreedEnum.Xelor:
+                    spellId = 2118;
+                    break;
+                case PlayableBreedEnum.Ecaflip:
+                    spellId = 2058;
+                    break;
+                case PlayableBreedEnum.Eniripsa:
+                    spellId = 2133;
+                    break;
+                case PlayableBreedEnum.Iop:
+                    spellId = 2048;
+                    break;
+                case PlayableBreedEnum.Cra:
+                    spellId = 2088;
+                    break;
+                case PlayableBreedEnum.Sadida:
+                    spellId = 2128;
+                    break;
+                case PlayableBreedEnum.Sacrieur:
+                    spellId = 2103;
+                    break;
+                case PlayableBreedEnum.Pandawa:
+                    spellId = 2113;
+                    break;
+                case PlayableBreedEnum.Roublard:
+                    spellId = 2148;
+                    break;
+                case PlayableBreedEnum.Zobal:
+                    spellId = 18596;
+                    break;
+                case PlayableBreedEnum.Steamer:
+                    spellId = 20109;
+                    break;
+            }
+
+            return SpellManager.Instance.GetSpellLevel(spellId);
+        }
+
     }
 }

@@ -302,7 +302,7 @@ namespace ArkalysPlugin.Npcs
                 Character.Spells.LearnSpell((int)specialSpell.SpellId);
             }
 
-            Character.Record.Relook = 1;
+            //Character.Record.Relook = 1;
 
             Character.RealLook = Character.Breed.GetLook(Character.Sex, true);
             Character.Head = BreedManager.Instance.GetHead(x => x.Breed == Character.Breed.Id && x.Gender == (int)Character.Sex);

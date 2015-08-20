@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             return spell;
         }
 
-        public bool UnLearnSpell(int id)
+        public bool UnLearnSpell(int id, bool send = true)
         {
             var spell = GetSpell(id);
 
@@ -87,6 +87,9 @@ namespace Stump.Server.WorldServer.Game.Spells
             m_spellsToDelete.Enqueue(spell.Record);
 
             Owner.SpellsPoints += (ushort)CalculateSpellPoints(spell.CurrentLevel);
+
+            if (!send)
+                return true;
 
             InventoryHandler.SendSpellListMessage(Owner.Client, true);
             return true;
@@ -195,7 +198,7 @@ namespace Stump.Server.WorldServer.Game.Spells
             return true;
         }
 
-        public void ForgetAllSpells()
+        public void ForgetAllSpells(bool send = true)
         {
             foreach (var spell in m_spells)
             {
@@ -205,6 +208,9 @@ namespace Stump.Server.WorldServer.Game.Spells
                     DowngradeSpell(spell.Value, false);
                 }
             }
+
+            if (!send)
+                return;
 
             InventoryHandler.SendSpellListMessage(Owner.Client, true);
             Owner.RefreshStats();

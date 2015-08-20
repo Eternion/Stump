@@ -196,18 +196,6 @@ namespace Stump.Server.WorldServer.Database.Characters
             }
         }
 
-        public bool HasRecolor
-        {
-            get;
-            set;
-        }
-
-        public bool HasRename
-        {
-            get;
-            set;
-        }
-
         public bool CantBeAggressed
         {
             get;
@@ -561,19 +549,13 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
-        public bool Rename
+        public sbyte MandatoryChanges
         {
             get;
             set;
         }
 
-        public bool Recolor
-        {
-            get;
-            set;
-        }
-
-        public uint Relook
+        public sbyte PossibleChanges
         {
             get;
             set;
