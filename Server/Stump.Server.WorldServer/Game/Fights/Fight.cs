@@ -736,6 +736,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (var fighter in Fighters)
             {
                 fighter.FightStartPosition = fighter.Position.Clone();
+                fighter.LastPositions.Add(fighter.FightStartPosition.Cell);
             }
 
             var handler = FightStarted;
@@ -1909,7 +1910,8 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             //Save Last Pos for special effects(Rollback etc...)
-            fighter.LastPosition = fighter.Position;
+            foreach (var cell in path.GetPath())
+                fighter.LastPositions.Add(cell);
 
             fighter.UseMP((short) path.MPCost);
             fighter.TriggerBuffs(BuffTriggerType.MOVE, path);
@@ -1919,8 +1921,14 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var fighter = actor as FightActor;
 
-            if (fighter != null)
-                TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
+            if (fighter == null)
+                return;
+
+            //Save Last Pos for special effects(Rollback etc...)
+            if (fighter.LastPositions.Last() != objectPosition.Cell)
+                fighter.LastPositions.Add(objectPosition.Cell);
+
+            TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
         }
 
         public void SwitchFighters(FightActor fighter1, FightActor fighter2)

@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
@@ -22,8 +23,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             var fighters = Fight.GetAllFighters(x => x.IsAlive() && !(x is SummonedFighter) && !(x is SummonedBomb));
             foreach (var fighter in fighters)
             {
-                var newCell = Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos ?
-                    fighter.LastPosition.Cell : fighter.FightStartPosition.Cell;
+                var lastCell = Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos ?
+                    fighter.LastPositions.Reverse<Cell>().ElementAtOrDefault(1) : fighter.FightStartPosition.Cell;
+                var newCell = lastCell == null ? fighter.FightStartPosition.Cell : lastCell;
 
                 var oldFighter = Fight.GetOneFighter(newCell);
                 if (oldFighter != null)
