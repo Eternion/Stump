@@ -1289,7 +1289,7 @@
         /// <summary>
         /// Return to original position
         /// </summary>
-        Effect_Rollback = 784,
+        Effect_ReturnToOriginalPos = 784,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1957,7 +1957,7 @@
         /// <summary>
         /// 
         /// </summary>
-        Effect_1100 = 1100,
+        Effect_ReturnToLastPos = 1100,
         /// <summary>
         /// (not found)
         /// </summary>
