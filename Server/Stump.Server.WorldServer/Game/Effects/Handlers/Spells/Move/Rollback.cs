@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             var fighters = Fight.GetAllFighters(x => x.IsAlive() && !(x is SummonedFighter) && !(x is SummonedBomb));
             foreach (var fighter in fighters)
             {
-                var newCell = fighter.FightStartPosition.Cell;
+                var newCell = fighter.LastPosition.Cell;
 
                 var oldFighter = Fight.GetOneFighter(newCell);
                 if (oldFighter != null)

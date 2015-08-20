@@ -1551,6 +1551,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (TimeLine.RoundNumber > 1)
                 FighterPlaying.TurnTimeReport = time > 0 ? time : 0;
 
+            //Save Last Pos for special effects(Rollback etc...)
+            FighterPlaying.LastPosition = FighterPlaying.Position;
+
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
             // can die with triggers
