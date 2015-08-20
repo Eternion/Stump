@@ -1193,7 +1193,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 handler(this, currentLevel, difference);
         }
 
-        public void ResetStats()
+        public void ResetStats(bool send = true)
         {
             Stats.Agility.Base = PermanentAddedAgility;
             Stats.Strength.Base = PermanentAddedStrength;
@@ -1204,6 +1204,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             var newPoints = (Level-1)*5;
             StatsPoints = (ushort)newPoints;
+
+            if (!send)
+                return;
 
             RefreshStats();
             SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 15, newPoints);

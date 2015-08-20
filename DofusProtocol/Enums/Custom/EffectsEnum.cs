@@ -1529,7 +1529,7 @@
         /// <summary>
         /// Can be exchanged from: #1
         /// </summary>
-        Effect_983 = 983,
+        Effect_Exchangeable = 983,
         /// <summary>
         /// (not found)
         /// </summary>
