@@ -303,7 +303,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             VisibleState = VisibleStateEnum.VISIBLE;
             Loot = new FightLoot();
             SpellHistory = new SpellHistory(this);
-            LastPositions = new List<Cell>();
+            LastPositions = new LimitedStack<Cell>(10);
         }
 
         #endregion
@@ -375,7 +375,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             internal set;
         }
 
-        public List<Cell> LastPositions
+        public LimitedStack<Cell> LastPositions
         {
             get;
             internal set;
