@@ -362,6 +362,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Move\Attract.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Retreat.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\SymetricTeleport.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Others\CastSpell.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerGlyphs.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />

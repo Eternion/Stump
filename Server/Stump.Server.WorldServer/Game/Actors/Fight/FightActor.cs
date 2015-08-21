@@ -1903,9 +1903,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
             m_carriedActor.RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
 
-            m_carriedActor.Position.Cell = cell;
-
-            Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, m_carriedActor));
+            if (m_carriedActor.IsAlive())
+            {
+                m_carriedActor.Position.Cell = cell;
+                Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, m_carriedActor));
+            }
 
             Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
@@ -1948,6 +1950,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private void OnCarryingActorDead(FightActor actor, FightActor killer)
         {
             ThrowActor(Cell, true);
+        }
+
+        #endregion
+
+        #region Telefrag
+
+        public bool Telefrag(FightActor target)
+        {
+            if ((!(target is SummonedMonster) || ((SummonedMonster)target).Monster.Template.Id != 556)
+                && (target.HasState((int)SpellStatesEnum.INDÉPLAÇABLE) || target.HasState((int)SpellStatesEnum.ENRACINÉ)))
+                return false;
+
+            if (HasState((int)SpellStatesEnum.DÉPLACÉ))
+                return false;
+
+            if (target.IsCarrying())
+                return false;
+
+            if ((target is SummonedTurret) && !(this is SummonedTurret))
+                return false;
+
+            ExchangePositions(target);
+
+            target.OnActorMoved(this, false);
+            OnActorMoved(this, false);
+
+            return true;
         }
 
         #endregion
