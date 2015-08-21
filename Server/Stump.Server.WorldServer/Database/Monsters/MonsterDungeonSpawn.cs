@@ -98,6 +98,12 @@ namespace Stump.Server.WorldServer.Database.Monsters
             }
         }
 
+        public int? CellId
+        {
+            get;
+            set;
+        }
+
         [Ignore]
         public List<MonsterGrade> GroupMonsters
         {

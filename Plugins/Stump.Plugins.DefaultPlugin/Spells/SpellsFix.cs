@@ -134,6 +134,15 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // new skin 729 => 113 (todo find relation)
             FixEffectOnAllLevels(99, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 113);
 
+            //Téléfrag
+            FixEffectOnAllLevels(5429, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+
+            FixEffectOnAllLevels(5486, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            RemoveEffectOnAllLevels(5486, EffectsEnum.Effect_CastSpell_1160);
+
+            FixEffectOnAllLevels(5492, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            RemoveEffectOnAllLevels(5492, EffectsEnum.Effect_CastSpell_1160);
+
             #endregion
 
             #region ENIRIPSA

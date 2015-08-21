@@ -85,7 +85,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 
                 var spawn = m_spawnsQueue.Dequeue();
 
-                var group = new MonsterGroup(Map.GetNextContextualId(), new ObjectPosition(Map, Map.GetRandomFreeCell(), Map.GetRandomDirection()), this);
+                var cell = spawn.CellId == null ? Map.GetRandomFreeCell() : Map.Cells[(int)spawn.CellId];
+
+                var group = new MonsterGroup(Map.GetNextContextualId(), new ObjectPosition(Map, cell, Map.GetRandomDirection()), this);
                 foreach (var monsterGrade in spawn.GroupMonsters)
                 {
                     group.AddMonster(new Monster(monsterGrade, group));

@@ -1973,11 +1973,11 @@
         /// <summary>
         /// 
         /// </summary>
-        Effect_SymetricTeleport = 1104,
+        Effect_SymetricTargetTeleport = 1104,
         /// <summary>
         /// 
         /// </summary>
-        Effect_1105 = 1105,
+        Effect_SymetricCasterTeleport = 1105,
         /// <summary>
         /// 
         /// </summary>
@@ -2137,7 +2137,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_1160 = 1160,
+        Effect_CastSpell_1160 = 1160,
         /// <summary>
         /// #1
         /// </summary>
@@ -2193,7 +2193,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_CastSpell = 1175,
+        Effect_CastSpell_1175 = 1175,
         /// <summary>
         /// Apparence : #1
         /// </summary>

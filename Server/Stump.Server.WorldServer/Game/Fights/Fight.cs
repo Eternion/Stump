@@ -1925,7 +1925,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             //Save Last Pos for special effects(Rollback etc...)
-            if (fighter.LastPositions.Last() != objectPosition.Cell)
+            if (fighter.LastPositions.Count > 0 && fighter.LastPositions.Last() != objectPosition.Cell)
                 fighter.LastPositions.Push(objectPosition.Cell);
 
             TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
