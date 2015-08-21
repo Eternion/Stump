@@ -1973,7 +1973,7 @@
         /// <summary>
         /// 
         /// </summary>
-        Effect_1104 = 1104,
+        Effect_SymetricTeleport = 1104,
         /// <summary>
         /// 
         /// </summary>
