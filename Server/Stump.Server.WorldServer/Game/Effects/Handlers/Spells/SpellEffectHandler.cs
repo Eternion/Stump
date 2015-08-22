@@ -213,6 +213,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
+            if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
+                return new FightActor[0];
+
             return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
 
@@ -220,6 +223,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         {
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
+
+            if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
+                return new FightActor[0];
 
             if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
                 return new[] {Caster};

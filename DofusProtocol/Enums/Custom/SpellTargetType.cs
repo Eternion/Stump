@@ -28,5 +28,6 @@ namespace Stump.DofusProtocol.Enums
         ALL = 0x7FFF,
         ALL_SUMMONS = 0x8 | 0x10 | 0x800 | 0x1000,
         ONLY_SELF = 0x20000,
+        DISABLED = 0x40000
     }
 }
