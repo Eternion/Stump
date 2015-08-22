@@ -114,7 +114,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             m_y = point.Y;
         }
 
-
         public uint EuclideanDistanceTo(MapPoint point)
         {
             return (uint)Math.Sqrt(( point.X - m_x ) * ( point.X - m_x ) + ( point.Y - m_y ) * ( point.Y - m_y ));
