@@ -130,17 +130,47 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region XELOR
 
-            // mummification (99)
+            //mummification (99)
             // new skin 729 => 113 (todo find relation)
             FixEffectOnAllLevels(99, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 113);
 
-            // Ralentissement (81)
+            //Ralentissement (81)
             FixEffectOnAllLevels(81, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
             FixEffectOnAllLevels(81, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
 
-            // Téléportation (88)
+            //Aiguille (83)
+            FixEffectOnAllLevels(83, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(83, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(83, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(83, 4, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
+            //Gelure (84)
+            FixEffectOnAllLevels(84, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(84, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
+            //Téléportation (88)
             FixEffectOnAllLevels(88, 1, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
             FixEffectOnAllLevels(88, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
+            //Frappe de Xélor (91)
+            FixEffectOnAllLevels(91, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(91, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
+            //Rayon Obscur (92)
+            FixEffectOnAllLevels(92, 0, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(92, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(92, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(92, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(92, 4, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
+            //Flétrissement (93)
+            FixEffectOnAllLevels(93, 0, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(93, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(93, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+
+            //Sablier de Xélor (100)
+            FixEffectOnAllLevels(100, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(100, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
 
             //Téléfrag
             FixEffectOnAllLevels(5429, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);

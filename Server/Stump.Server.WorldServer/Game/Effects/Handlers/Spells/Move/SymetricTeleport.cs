@@ -2,6 +2,7 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using System.Linq;
@@ -33,10 +34,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 targetPoint = Caster.Position.Point;
             }
 
-            var distance = casterPoint.EuclideanDistanceTo(targetPoint);
-            var direction = casterPoint.OrientationTo(targetPoint, true);
-
-            var cell = targetPoint.GetCellInDirection(direction, (short)distance);
+            var cell = new MapPoint((2 * targetPoint.X - casterPoint.X), (2 * targetPoint.Y - casterPoint.Y));
 
             if (cell == null)
                 return false;
@@ -46,52 +44,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (dstCell == null)
                 return false;
 
-            if (!dstCell.Walkable)
+            if (!dstCell.Walkable && !dstCell.NonWalkableDuringFight)
                 return false;
 
-            if (!Fight.IsCellFree(dstCell))
+            var fighter = Fight.GetOneFighter(dstCell);
+            if (fighter != null)
             {
-                var fighter = Fight.GetOneFighter(dstCell);
-                if (fighter != null)
-                {
-                    var caster = Caster;
+                var caster = Caster;
 
-                    if (Effect.EffectId == EffectsEnum.Effect_SymetricCasterTeleport)
-                        caster = target;
+                if (Effect.EffectId == EffectsEnum.Effect_SymetricCasterTeleport)
+                    caster = target;
 
-                    if (!caster.Telefrag(fighter))
-                        return false;
-
-                    EffectDice effectAddAP = null;
-                    EffectDice effectAddState = null;
-
-                    switch (Spell.Id)
-                    {
-                        case (int)SpellIdEnum.TÉLÉPORTATION_88:
-                            effectAddAP = Spell.CurrentSpellLevel.Effects[1];
-                            effectAddState = Spell.CurrentSpellLevel.Effects[2];
-                            break;
-                        case (int)SpellIdEnum.FRAPPE_DE_XÉLOR:
-                            effectAddAP = Spell.CurrentSpellLevel.Effects[2];
-                            effectAddState = Spell.CurrentSpellLevel.Effects[3];
-                            break;
-                    }
-
-                    if (effectAddAP == null || effectAddState == null)
-                        return false;
-
-                    if (!ApplyEffect(effectAddAP, Caster))
-                        return false;
-
-                    if (!ApplyEffect(effectAddState, fighter))
-                        return false;
-
-                    if (caster != Caster)
-                    {
-                        if (!ApplyEffect(effectAddState, caster))
-                            return false;
-                    }
-                }
+                if (!caster.Telefrag(Caster, fighter, Spell))
+                    return false;
             }
             else
             {
@@ -103,19 +68,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 caster.Position.Cell = dstCell;
                 Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, caster, caster, dstCell), true);
             }
-
-            return true;
-        }
-
-        private bool ApplyEffect(EffectDice effect, FightActor target)
-        {
-            var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, target.Position.Cell, Critical);
-            handler.AddAffectedActor(target);
-
-            if (!handler.CanApply())
-                return false;
-
-            handler.Apply();
 
             return true;
         }

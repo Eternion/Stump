@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -29,7 +28,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public void TriggerBuffApply(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            buff.Target.Position.Cell = buff.Target.TurnStartPosition.Cell;
+            var dstCell = buff.Target.TurnStartPosition.Cell;
+            var fighter = Fight.GetOneFighter(dstCell);
+
+            if (fighter != null)
+                buff.Target.Telefrag(Caster, fighter, Spell);
+
+            buff.Target.Position.Cell = dstCell;
             ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(buff.Target.Fight.Clients, Caster, buff.Target, buff.Target.Position.Cell);
         }
     }
