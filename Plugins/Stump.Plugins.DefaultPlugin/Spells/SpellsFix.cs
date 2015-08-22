@@ -145,12 +145,19 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             //Aiguille (83)
             FixEffectOnAllLevels(83, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
             FixEffectOnAllLevels(83, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
-            RemoveEffectOnAllLevels(83, 2);
-            RemoveEffectOnAllLevels(83, 2);
+            FixEffectOnAllLevels(83, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            RemoveEffectOnAllLevels(83, 4);
 
             //Gelure (84)
             FixEffectOnAllLevels(84, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
             FixEffectOnAllLevels(84, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
+            //Démotivation (87)
+            FixEffectOnAllLevels(87, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            RemoveEffectOnAllLevels(87, 2);
+            RemoveEffectOnAllLevels(87, 2);
+            RemoveEffectOnAllLevels(87, 2);
+            FixEffectOnAllLevels(87, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
 
             //Téléportation (88)
             FixEffectOnAllLevels(88, 1, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
@@ -164,16 +171,34 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(91, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
 
             //Rayon Obscur (92)
-            FixEffectOnAllLevels(92, 0, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
-            FixEffectOnAllLevels(92, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
+            RemoveEffectOnAllLevels(92, 0);
+            FixEffectOnAllLevels(92, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(92, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
             FixEffectOnAllLevels(92, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
-            FixEffectOnAllLevels(92, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
-            FixEffectOnAllLevels(92, 4, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            RemoveEffectOnAllLevels(92, 3);
 
             //Flétrissement (93)
             FixEffectOnAllLevels(93, 0, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
             FixEffectOnAllLevels(93, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
             FixEffectOnAllLevels(93, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+
+            //Horloge (95)
+            FixEffectOnAllLevels(95, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(95, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(95, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            RemoveEffectOnAllLevels(95, 4);
+
+            //Poussière Temporelle (96)
+            RemoveEffectOnAllLevels(96, 2);
+            RemoveEffectOnAllLevels(96, 2);
+            RemoveEffectOnAllLevels(96, 2);
+            RemoveEffectOnAllLevels(96, 2);
+            FixEffectOnAllLevels(96, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+
+
+            //Vol du temps (98)
+            FixEffectOnAllLevels(98, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            FixEffectOnAllLevels(98, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
 
             //Sablier de Xélor (100)
             FixEffectOnAllLevels(100, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
@@ -184,6 +209,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(424, 1, false);
 
             //Téléfrag
+            RemoveEffectOnAllLevels(5427, 0, false);
+            RemoveEffectOnAllLevels(5427, 0, false);
+
             FixEffectOnAllLevels(5429, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
             FixEffectOnAllLevels(5486, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
