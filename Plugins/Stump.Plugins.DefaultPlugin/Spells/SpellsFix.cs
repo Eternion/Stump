@@ -138,11 +138,15 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(81, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
             FixEffectOnAllLevels(81, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
 
+            //Rembobinage (82)
+            RemoveEffectOnAllLevels(82, 1, false);
+            RemoveEffectOnAllLevels(82, 2, false);
+
             //Aiguille (83)
             FixEffectOnAllLevels(83, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
             FixEffectOnAllLevels(83, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
-            FixEffectOnAllLevels(83, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
-            FixEffectOnAllLevels(83, 4, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            RemoveEffectOnAllLevels(83, 2);
+            RemoveEffectOnAllLevels(83, 2);
 
             //Gelure (84)
             FixEffectOnAllLevels(84, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
@@ -151,6 +155,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             //Téléportation (88)
             FixEffectOnAllLevels(88, 1, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
             FixEffectOnAllLevels(88, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
+            //Fuite (90)
+            FixEffectOnAllLevels(90, 0, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
 
             //Frappe de Xélor (91)
             FixEffectOnAllLevels(91, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
@@ -171,6 +178,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             //Sablier de Xélor (100)
             FixEffectOnAllLevels(100, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
             FixEffectOnAllLevels(100, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+
+            //Raulebaque (424)
+            RemoveEffectOnAllLevels(424, 1, false);
+            RemoveEffectOnAllLevels(424, 1, false);
 
             //Téléfrag
             FixEffectOnAllLevels(5429, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
