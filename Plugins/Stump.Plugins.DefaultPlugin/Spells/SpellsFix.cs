@@ -134,6 +134,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // new skin 729 => 113 (todo find relation)
             FixEffectOnAllLevels(99, EffectsEnum.Effect_ChangeAppearance_335, (level, effect, critical) => effect.Value = 113);
 
+            // Téléportation (88)
+            FixEffectOnAllLevels(88, 1, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(88, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
             //Téléfrag
             FixEffectOnAllLevels(5429, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 

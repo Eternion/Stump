@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     if (!ApplyEffect(effectAddAP, Caster))
                         return false;
 
-                    if (!ApplyEffect(effectAddState, Caster))
+                    if (!ApplyEffect(effectAddState, fighter))
                         return false;
 
                     if (caster != Caster)
