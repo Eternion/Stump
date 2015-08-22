@@ -172,7 +172,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 if (Targets.HasFlag(SpellTargetType.ALLY_TURRETS) && actor is SummonedTurret)
                     return true;
 
-                if (Targets.HasFlag(SpellTargetType.ALLY_TELEFRAG))
+                if (Targets.HasFlag(SpellTargetType.ALLY_TELEFRAG) && (actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251)
+                    || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                     return true;
             }
 
@@ -197,7 +198,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (Targets.HasFlag(SpellTargetType.ENEMY_TURRETS) && actor is SummonedTurret)
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ENEMY_TELEFRAG))
+            if (Targets.HasFlag(SpellTargetType.ENEMY_TELEFRAG) && (actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251)
+                || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;
 
             return false;

@@ -95,8 +95,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             }
             else
             {
-                Caster.Position.Cell = dstCell;
-                Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, Caster, Caster, dstCell), true);
+                var caster = Caster;
+
+                if (Effect.EffectId == EffectsEnum.Effect_SymetricCasterTeleport)
+                    caster = target;
+
+                caster.Position.Cell = dstCell;
+                Fight.ForEach(entry => ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(entry.Client, caster, caster, dstCell), true);
             }
 
             return true;
