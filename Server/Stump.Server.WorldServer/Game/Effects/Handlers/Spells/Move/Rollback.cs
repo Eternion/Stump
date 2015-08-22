@@ -5,7 +5,6 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
@@ -24,32 +23,21 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             foreach (var fighter in fighters)
             {
                 var lastCell = Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos ?
-                    fighter.LastPositions.Reverse<Cell>().ElementAtOrDefault(1) : fighter.FightStartPosition.Cell;
+                    fighter.LastPositions.Reverse().ElementAtOrDefault(1) : fighter.FightStartPosition.Cell;
                 var newCell = lastCell == null ? fighter.FightStartPosition.Cell : lastCell;
 
                 var oldFighter = Fight.GetOneFighter(newCell);
                 if (oldFighter != null)
-                    fighter.ExchangePositions(oldFighter);
+                    fighter.Telefrag(Caster, oldFighter, Spell);
                 else
                 {
                     fighter.Position.Cell = newCell;
 
-                    ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, fighter, newCell);               
+                    ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, fighter, newCell);
                 }
             }
 
             return true;
-        }
-
-        private void MoveOldFighter(FightActor oldFighter)
-        {
-            var adjacentCell = oldFighter.Position.Point
-                .GetAdjacentCells(c => Fight.IsCellFree(Map.Cells[c]))
-                .FirstOrDefault();
-            if (adjacentCell != null)
-                oldFighter.Position.Cell = Map.Cells[adjacentCell.CellId];
-            else
-                oldFighter.Die();
         }
     }
 }

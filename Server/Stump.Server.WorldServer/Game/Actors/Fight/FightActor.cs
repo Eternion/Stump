@@ -1956,7 +1956,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Telefrag
 
-        public bool Telefrag(FightActor target)
+        public bool Telefrag(FightActor caster, FightActor target, Spell spell)
         {
             if ((!(target is SummonedMonster) || ((SummonedMonster)target).Monster.Template.Id != 556)
                 && (target.HasState((int)SpellStatesEnum.INDÉPLAÇABLE) || target.HasState((int)SpellStatesEnum.ENRACINÉ)))
@@ -1975,6 +1975,49 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             target.OnActorMoved(this, false);
             OnActorMoved(this, false);
+
+            EffectDice effectAddAP = null;
+            EffectDice effectAddState = null;
+
+            switch (spell.Id)
+            {
+                case (int)SpellIdEnum.TÉLÉPORTATION_88:
+                    effectAddAP = spell.CurrentSpellLevel.Effects[1];
+                    effectAddState = spell.CurrentSpellLevel.Effects[2];
+                    break;
+                case (int)SpellIdEnum.FRAPPE_DE_XÉLOR:
+                    effectAddAP = spell.CurrentSpellLevel.Effects[2];
+                    effectAddState = spell.CurrentSpellLevel.Effects[3];
+                    break;
+            }
+
+            if (effectAddAP == null || effectAddState == null)
+                return false;
+
+            if (!ApplyEffect(spell, effectAddAP, caster, caster))
+                return false;
+
+            if (!ApplyEffect(spell, effectAddState, caster, target))
+                return false;
+
+            if (this != caster)
+            {
+                if (!ApplyEffect(spell, effectAddState, caster, this))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool ApplyEffect(Spell spell, EffectDice effect, FightActor caster, FightActor target)
+        {
+            var handler = EffectManager.Instance.GetSpellEffectHandler(effect, caster, spell, target.Position.Cell, false);
+            handler.AddAffectedActor(target);
+
+            if (!handler.CanApply())
+                return false;
+
+            handler.Apply();
 
             return true;
         }
