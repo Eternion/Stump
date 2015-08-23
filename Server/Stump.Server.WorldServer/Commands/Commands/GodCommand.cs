@@ -182,4 +182,23 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
     }
+
+    public class HealCommand : TargetCommand
+    {
+        public HealCommand()
+        {
+            Aliases = new[] { "heal", "hp" };
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Restore Heal";
+            AddTargetParameter(true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            foreach (var target in GetTargets(trigger))
+            {
+                target.Stats.Health.DamageTaken = 0;
+            }
+        }
+    }
 }

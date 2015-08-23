@@ -27,7 +27,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (spell == null)
                     continue;
 
-                actor.SpellHistory.RegisterCastedSpell(new SpellHistoryEntry(actor.SpellHistory, spell.CurrentSpellLevel, Caster, actor, Fight.TimeLine.RoundNumber, cooldown));
+                actor.SpellHistory.RegisterCastedSpell(new SpellHistoryEntry(actor.SpellHistory, spell.CurrentSpellLevel,
+                    Caster, actor, Fight.TimeLine.RoundNumber, cooldown));
                 ActionsHandler.SendGameActionFightSpellCooldownVariationMessage(actor.Fight.Clients, Caster, actor, spell, cooldown);
             }
 

@@ -151,7 +151,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public event SpellCastingHandler SpellCasted;
 
-        protected virtual void OnSpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast, bool history = true)
         {
             if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
                 VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
@@ -163,14 +163,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         SetInvisibilityState(VisibleStateEnum.VISIBLE);
             }
 
-            SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
+            if (history)
+                SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
 
             var handler = SpellCasted;
             if (handler != null)
                 handler(this, spell, target, critical, silentCast);
         }
 
-        protected virtual void OnSpellCasted(Spell spell, FightActor target, FightSpellCastCriticalEnum critical, bool silentCast)
+        protected virtual void OnSpellCasted(Spell spell, FightActor target, FightSpellCastCriticalEnum critical, bool silentCast, bool history = true)
         {
             if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
                 VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
@@ -182,7 +183,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         SetInvisibilityState(VisibleStateEnum.VISIBLE);
             }
 
-            SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
+            if (history)
+                SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, target);
 
             var handler = SpellCasted;
             if (handler != null)
@@ -790,9 +792,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler.Execute();
 
             if (fighter == null)
-                OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast);
+                OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast, !force);
             else
-                OnSpellCasted(spell, fighter, critical, handler.SilentCast);
+                OnSpellCasted(spell, fighter, critical, handler.SilentCast, !force);
 
             return true;
         }

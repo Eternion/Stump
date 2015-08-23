@@ -141,16 +141,19 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             //Rembobinage (82)
             RemoveEffectOnAllLevels(82, 1, false);
             RemoveEffectOnAllLevels(82, 2, false);
+            FixEffectOnAllLevels(82, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
+
 
             //Aiguille (83)
             FixEffectOnAllLevels(83, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
             FixEffectOnAllLevels(83, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
-            FixEffectOnAllLevels(83, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(83, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
             RemoveEffectOnAllLevels(83, 4);
 
             //Gelure (84)
-            FixEffectOnAllLevels(84, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
-            FixEffectOnAllLevels(84, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(84, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.ENEMY_ALL);
+            RemoveEffectOnAllLevels(84, 2);
+            RemoveEffectOnAllLevels(84, 2);
 
             //Démotivation (87)
             FixEffectOnAllLevels(87, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
@@ -178,9 +181,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(92, 3);
 
             //Flétrissement (93)
-            FixEffectOnAllLevels(93, 0, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
-            FixEffectOnAllLevels(93, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
-            FixEffectOnAllLevels(93, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            RemoveEffectOnAllLevels(93, 0);
+            FixEffectOnAllLevels(93, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(93, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
 
             //Horloge (95)
             FixEffectOnAllLevels(95, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
