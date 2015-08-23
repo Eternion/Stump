@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Enums
         ENEMY_TURRETS = 0x8000,
         ENEMY_TELEFRAG = 0x10000,
         ENEMY_ALL = 0x200 | 0x400 | 0x800 | 0x1000 | 0x2000 | 0x4000 | 0x8000 | 0x10000,
-        ALL = 0x7FFF,
+        ALL = ALLY_ALL | ENEMY_ALL | SELF,
         ALL_SUMMONS = 0x8 | 0x10 | 0x800 | 0x1000,
         ONLY_SELF = 0x20000,
         DISABLED = 0x40000
