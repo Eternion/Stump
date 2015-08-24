@@ -27,6 +27,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 switch ((SpellIdEnum)Spell.Id)
                 {
+                    case SpellIdEnum.REMBOBINAGE:
+                        triggerType = BuffTriggerType.TURN_END;
+                        break;
                     case SpellIdEnum.FRICTION:
                         triggerHandler = FrictionBuffTrigger;
                         break;

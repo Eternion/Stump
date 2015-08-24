@@ -1991,6 +1991,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     effectAddAP = spell.CurrentSpellLevel.Effects[2];
                     effectAddState = spell.CurrentSpellLevel.Effects[3];
                     break;
+                case (int)SpellIdEnum.GELURE:
+                    effectAddAP = spell.CurrentSpellLevel.Effects[2];
+                    effectAddState = spell.CurrentSpellLevel.Effects[3];
+                    break;
+                case (int)SpellIdEnum.RAULEBAQUE:
+                    effectAddAP = spell.CurrentSpellLevel.Effects[1];
+                    effectAddState = spell.CurrentSpellLevel.Effects[2];
+                    break;
+                case (int)SpellIdEnum.BOBINE:
+                    effectAddAP = spell.CurrentSpellLevel.Effects[1];
+                    effectAddState = spell.CurrentSpellLevel.Effects[2];
+                    break;
             }
 
             if (effectAddAP == null || effectAddState == null)

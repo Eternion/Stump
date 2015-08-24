@@ -198,6 +198,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             foreach (var target in GetTargets(trigger))
             {
                 target.Stats.Health.DamageTaken = 0;
+                target.RefreshStats();
             }
         }
     }
