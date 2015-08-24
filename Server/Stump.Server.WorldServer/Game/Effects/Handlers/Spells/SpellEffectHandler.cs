@@ -154,8 +154,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
             if (Caster.IsFriendlyWith(actor) && Caster != actor)
             {
-                if ((Targets.HasFlag(SpellTargetType.ALLY_1) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_2)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
+                if ((Targets.HasFlag(SpellTargetType.ALLY_1) || Targets.HasFlag(SpellTargetType.ALLY_2))
+                    && !(actor is SummonedFighter)
+                    && !(actor is SummonedBomb)
+                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                     return true;
 
                 if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER) && Caster is SummonedFighter &&
@@ -180,8 +182,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (!Caster.IsEnnemyWith(actor))
                 return false;
 
-            if ((Targets.HasFlag(SpellTargetType.ENEMY_1) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_2)) && !(actor is SummonedFighter) && !(actor is SummonedBomb))
+            if ((Targets.HasFlag(SpellTargetType.ENEMY_1) || Targets.HasFlag(SpellTargetType.ENEMY_2))
+                && !(actor is SummonedFighter)
+                && !(actor is SummonedBomb)
+                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;
 
             if (Targets.HasFlag(SpellTargetType.ENEMY_SUMMONER) && Caster is SummonedFighter &&

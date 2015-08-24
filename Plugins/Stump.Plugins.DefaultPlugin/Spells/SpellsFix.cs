@@ -139,10 +139,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(81, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
 
             //Rembobinage (82)
-            RemoveEffectOnAllLevels(82, 1, false);
-            RemoveEffectOnAllLevels(82, 2, false);
-            FixEffectOnAllLevels(82, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
-
+            RemoveEffectOnAllLevels(82, 0, false);
+            RemoveEffectOnAllLevels(82, 0, false);
+            FixEffectOnAllLevels(82, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL);
 
             //Aiguille (83)
             FixEffectOnAllLevels(83, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.ENEMY_TELEFRAG);
@@ -151,9 +150,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(83, 4);
 
             //Gelure (84)
-            FixEffectOnAllLevels(84, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_ALL | SpellTargetType.ENEMY_ALL);
-            RemoveEffectOnAllLevels(84, 2);
-            RemoveEffectOnAllLevels(84, 2);
+            FixEffectOnAllLevels(84, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALL ^ SpellTargetType.SELF);
+            FixEffectOnAllLevels(84, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(84, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
 
             //Démotivation (87)
             FixEffectOnAllLevels(87, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
@@ -208,8 +207,12 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(100, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
 
             //Raulebaque (424)
-            RemoveEffectOnAllLevels(424, 1, false);
-            RemoveEffectOnAllLevels(424, 1, false);
+            FixEffectOnAllLevels(424, 1, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(424, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+
+            //Bobine (3181)
+            FixEffectOnLevel(3181, 1, 1, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED, false);
+            FixEffectOnLevel(3181, 1, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED, false);
 
             //Téléfrag
             RemoveEffectOnAllLevels(5427, 0, false);
@@ -220,8 +223,17 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(5486, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             RemoveEffectOnAllLevels(5486, EffectsEnum.Effect_CastSpell_1160);
 
+            FixEffectOnAllLevels(5487, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            RemoveEffectOnAllLevels(5487, EffectsEnum.Effect_CastSpell_1160);
+
+            FixEffectOnAllLevels(5488, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            RemoveEffectOnAllLevels(5488, EffectsEnum.Effect_CastSpell_1160);
+
             FixEffectOnAllLevels(5492, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             RemoveEffectOnAllLevels(5492, EffectsEnum.Effect_CastSpell_1160);
+
+            FixEffectOnAllLevels(5494, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            RemoveEffectOnAllLevels(5494, EffectsEnum.Effect_CastSpell_1160);
 
             #endregion
 
@@ -1165,6 +1177,20 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                     fixer(level, spellEffect, true);
                 }
             }
+        }
+
+        public static void FixEffectOnLevel(int spellId, int level, int effectIndex, Action<SpellLevelTemplate, EffectDice, bool> fixer, bool critical = true)
+        {
+            var spellLevels = SpellManager.Instance.GetSpellLevels(spellId).ToArray();
+
+            if (spellLevels.Length == 0)
+                throw new Exception(string.Format("Cannot apply fix on spell {0} : spell do not exists", spellId));
+
+            var spell = spellLevels[level - 1];
+
+            fixer(spell, spell.Effects[effectIndex], false);
+            if (critical && spell.CriticalEffects.Count > effectIndex)
+                fixer(spell, spell.CriticalEffects[effectIndex], true);
         }
 
         public static void RemoveEffectOnAllLevels(int spellId, int effectIndex, bool critical = true)

@@ -19,21 +19,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
-            var fighters = Fight.GetAllFighters(x => x.IsAlive() && !(x is SummonedFighter) && !(x is SummonedBomb));
-            foreach (var fighter in fighters)
+            foreach (var actor in GetAffectedActors(x => !(x is SummonedFighter) && !(x is SummonedBomb)))
             {
                 var lastCell = Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos ?
-                    fighter.LastPositions.Reverse().ElementAtOrDefault(1) : fighter.FightStartPosition.Cell;
-                var newCell = lastCell == null ? fighter.FightStartPosition.Cell : lastCell;
+                    actor.LastPositions.Reverse().ElementAtOrDefault(1) : actor.FightStartPosition.Cell;
+                var newCell = lastCell == null ? actor.FightStartPosition.Cell : lastCell;
 
-                var oldFighter = Fight.GetOneFighter(newCell);
-                if (oldFighter != null)
-                    fighter.Telefrag(Caster, oldFighter, Spell);
+                var fighter = Fight.GetOneFighter(newCell);
+                if (fighter != null)
+                    actor.Telefrag(Caster, fighter, Spell);
                 else
                 {
-                    fighter.Position.Cell = newCell;
+                    actor.Position.Cell = newCell;
 
-                    ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, fighter, newCell);
+                    ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, actor, newCell);
                 }
             }
 
