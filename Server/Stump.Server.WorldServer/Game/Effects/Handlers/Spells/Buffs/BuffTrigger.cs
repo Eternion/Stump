@@ -24,11 +24,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             {
                 var triggerType = BuffTriggerType.AFTER_ATTACKED;
                 TriggerBuffApplyHandler triggerHandler = DefaultBuffTrigger;
+                var spellLevel = Spell.CurrentLevel;
 
                 switch ((SpellIdEnum)Spell.Id)
                 {
                     case SpellIdEnum.REMBOBINAGE:
-                        triggerType = BuffTriggerType.TURN_END;
+                        triggerType = BuffTriggerType.BUFF_ADDED;
+                        spellLevel = 1;
                         break;
                     case SpellIdEnum.FRICTION:
                         triggerHandler = FrictionBuffTrigger;
@@ -78,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 var buffId = actor.PopNextBuffId();
 
-                var spell = new Spell(Dice.DiceNum, Spell.CurrentLevel);
+                var spell = new Spell(Dice.DiceNum, spellLevel);
                 var effect = Effect as EffectDice;
 
                 var buff = new TriggerBuff(buffId, actor, Caster, effect, spell, Spell, false, false,
