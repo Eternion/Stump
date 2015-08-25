@@ -160,22 +160,30 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                     && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                     return true;
 
-                if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER) && Caster is SummonedFighter &&
-                    ((SummonedFighter) Caster).Summoner == actor)
+                if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER)
+                    && Caster is SummonedFighter
+                    && ((SummonedFighter) Caster).Summoner == actor
+                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                     return true;
 
-                if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) ||
-                    Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS)) && actor is SummonedFighter && !(actor is SummonedTurret))
+                if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) || Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS))
+                    && actor is SummonedFighter
+                    && !(actor is SummonedTurret)
+                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                     return true;
 
-                if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS) && actor is SummonedBomb)
+                if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS)
+                    && actor is SummonedBomb
+                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                     return true;
 
-                if (Targets.HasFlag(SpellTargetType.ALLY_TURRETS) && actor is SummonedTurret)
+                if (Targets.HasFlag(SpellTargetType.ALLY_TURRETS)
+                    && actor is SummonedTurret
+                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                     return true;
 
-                if (Targets.HasFlag(SpellTargetType.ALLY_TELEFRAG) && (actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251)
-                    || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
+                if (Targets.HasFlag(SpellTargetType.ALLY_TELEFRAG)
+                    && (actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                     return true;
             }
 
@@ -188,22 +196,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ENEMY_SUMMONER) && Caster is SummonedFighter &&
-                ((SummonedFighter)Caster).Summoner == actor)
+            if (Targets.HasFlag(SpellTargetType.ENEMY_SUMMONER)
+                && Caster is SummonedFighter && ((SummonedFighter)Caster).Summoner == actor
+                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;
 
-            if ((Targets.HasFlag(SpellTargetType.ENEMY_SUMMONS) ||
-                 Targets.HasFlag(SpellTargetType.ENEMY_STATIC_SUMMONS)) && actor is SummonedFighter)
+            if ((Targets.HasFlag(SpellTargetType.ENEMY_SUMMONS) || Targets.HasFlag(SpellTargetType.ENEMY_STATIC_SUMMONS))
+                && actor is SummonedFighter
+                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ENEMY_BOMBS) && actor is SummonedBomb)
+            if (Targets.HasFlag(SpellTargetType.ENEMY_BOMBS)
+                && actor is SummonedBomb
+                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ENEMY_TURRETS) && actor is SummonedTurret)
+            if (Targets.HasFlag(SpellTargetType.ENEMY_TURRETS)
+                && actor is SummonedTurret
+                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;
 
-            if (Targets.HasFlag(SpellTargetType.ENEMY_TELEFRAG) && (actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251)
-                || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
+            if (Targets.HasFlag(SpellTargetType.ENEMY_TELEFRAG)
+                && (actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;
 
             return false;
