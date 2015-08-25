@@ -125,7 +125,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         /// <returns></returns>
         public bool DecrementDuration()
         {
-            return --Duration == 0;
+            return Duration == 0 ||--Duration == 0;
         }
 
         public abstract void Apply();

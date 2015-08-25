@@ -34,6 +34,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                     ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, actor, newCell);
                 }
+
+                actor.LastPositions.RemoveLast();
+                actor.LastPositions.Remove(lastCell);
             }
 
             return true;

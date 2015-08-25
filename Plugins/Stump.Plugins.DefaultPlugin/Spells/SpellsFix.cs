@@ -195,7 +195,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(96, 2);
             RemoveEffectOnAllLevels(96, 2);
             RemoveEffectOnAllLevels(96, 2);
-            FixEffectOnAllLevels(96, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(96, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TELEFRAG | SpellTargetType.ENEMY_TELEFRAG);
+            FixEffectOnAllLevels(96, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TELEFRAG | SpellTargetType.ENEMY_TELEFRAG);
 
 
             //Vol du temps (98)
