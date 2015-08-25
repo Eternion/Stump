@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var newCell = lastCell == null ? actor.FightStartPosition.Cell : lastCell;
 
                 var fighter = Fight.GetOneFighter(newCell);
-                if (fighter != null)
+                if (fighter != null && fighter != actor)
                     actor.Telefrag(Caster, fighter, Spell);
                 else
                 {
