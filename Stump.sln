@@ -90,8 +90,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArkalysScriptPlugin", "Plug
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeClients", "Plugins\FakeClients\FakeClients.csproj", "{A715BA09-854E-4DAC-B20D-9B34420AB64B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AEAEB4A5-2630-436F-B981-D80BB1E6D593}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3529038F-7ABD-4570-9958-5A8F2EF0DD39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "Tests\UnitTest\UnitTest.csproj", "{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}"

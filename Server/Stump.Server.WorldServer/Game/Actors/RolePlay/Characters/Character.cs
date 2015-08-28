@@ -3162,8 +3162,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     using (var transaction = WorldServer.Instance.DBAccessor.Database.GetTransaction())
                     {
                         Inventory.Save(false);
-                        if (Bank.IsLoaded)
-                            Bank.Save();
                         MerchantBag.Save();
                         Spells.Save();
                         Shortcuts.Save();

@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemType(ItemTypeEnum.BOOST_FOOD)]
+    [ItemType(ItemTypeEnum.NOURRITURE_BOOST)]
     public class FoodBoostItem : BasePlayerItem
     {
         public FoodBoostItem(Character owner, PlayerItemRecord record)

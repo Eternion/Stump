@@ -4,8 +4,8 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemType(ItemTypeEnum.PETSMOUNT)]
-    [ItemType(ItemTypeEnum.PET)]
+    [ItemType(ItemTypeEnum.MONTILIER)]
+    [ItemType(ItemTypeEnum.FAMILIER)]
     public class PetItem : BasePlayerItem
     {
         public PetItem(Character owner, PlayerItemRecord record)

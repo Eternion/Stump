@@ -281,6 +281,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public void Save(bool updateAccount)
         {
+            if (Owner.Bank.IsLoaded)
+                Owner.Bank.Save();
+
             lock (Locker)
             {
                 var database = WorldServer.Instance.DBAccessor.Database;
@@ -632,7 +635,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             }
 
             var weapon = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
-            if (item.Template.Type.ItemType == ItemTypeEnum.SHIELD && weapon != null && weapon.Template.TwoHanded)
+            if (item.Template.Type.ItemType == ItemTypeEnum.BOUCLIER && weapon != null && weapon.Template.TwoHanded)
             {
                 if (send)
                     BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 78);
@@ -760,7 +763,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         private void UnEquipedDouble(IItem itemToEquip)
         {
-            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHY || itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS_SHOP)
+            if (itemToEquip.Template.Type.ItemType == ItemTypeEnum.DOFUS || itemToEquip.Template.Type.ItemType == ItemTypeEnum.TROPHÉE)
             {
                 var item = GetEquipedItems().FirstOrDefault(entry => entry.Guid != itemToEquip.Guid && entry.Template.Id == itemToEquip.Template.Id);
 
@@ -772,7 +775,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 }
             }
 
-            if (itemToEquip.Template.Type.ItemType != ItemTypeEnum.RING)
+            if (itemToEquip.Template.Type.ItemType != ItemTypeEnum.ANNEAU)
                 return;
 
             // we can equip the same ring if it doesn't own to an item set
@@ -1143,7 +1146,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (pet == null || pet.AppearanceId == 0)
                 return null;
 
-            return Tuple.Create((short?)pet.AppearanceId, pet.Template.TypeId == (int)ItemTypeEnum.PET);
+            return Tuple.Create((short?)pet.AppearanceId, pet.Template.TypeId == (int)ItemTypeEnum.FAMILIER);
         }
 
         #region Events

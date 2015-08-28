@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Conditions.Criterions;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemType(ItemTypeEnum.CANDY)]
+    [ItemType(ItemTypeEnum.FRIANDISE)]
     public class CandyItem : BasePlayerItem
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

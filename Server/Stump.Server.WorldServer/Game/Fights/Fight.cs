@@ -32,6 +32,7 @@ using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
+using Stump.Core.Collections;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -736,7 +737,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (var fighter in Fighters)
             {
                 fighter.FightStartPosition = fighter.Position.Clone();
-                fighter.LastPositions.Push(fighter.FightStartPosition.Cell);
+                fighter.LastPositions.Push(new Pair<Cell, int>(fighter.FightStartPosition.Cell, TimeLine.RoundNumber));
             }
 
             var handler = FightStarted;
@@ -1853,6 +1854,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
+            //Save Last Positions
+            foreach (var cell in path.GetPath().Where(x => x.Id != fighter.Cell.Id))
+                fighter.LastPositions.Push(new Pair<Cell, int>(cell, TimeLine.RoundNumber));
+
             var movementsKeys = path.GetServerPathKeys();
 
             ForEach(entry =>
@@ -1909,10 +1914,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter == null)
                 return;
 
-            //Save Last Pos for special effects(Rollback etc...)
-            foreach (var cell in path.GetPath())
-                fighter.LastPositions.Push(cell);
-
             fighter.UseMP((short) path.MPCost);
             fighter.TriggerBuffs(BuffTriggerType.MOVE, path);
         }
@@ -1924,16 +1925,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter == null)
                 return;
 
-            //Save Last Pos for special effects(Rollback etc...)
-            if (fighter.LastPositions.Count > 0 && fighter.LastPositions.Last() != objectPosition.Cell)
-                fighter.LastPositions.Push(objectPosition.Cell);
+            //Save Last Positions
+            if (fighter.LastPositions.Count > 0 && fighter.LastPositions.Last().First != objectPosition.Cell)
+                fighter.LastPositions.Push(new Pair<Cell, int>(objectPosition.Cell, TimeLine.RoundNumber));
 
             TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
-        }
-
-        public void SwitchFighters(FightActor fighter1, FightActor fighter2)
-        {
-            // todo
         }
 
         #endregion
@@ -2684,6 +2680,11 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             return new FightExternalInformations(Id, (sbyte)FightType, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting,
                 m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+        }
+
+        public void SwitchFighters(FightActor fighter1, FightActor fighter2)
+        {
+            throw new NotImplementedException();
         }
 
 

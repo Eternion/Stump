@@ -166,7 +166,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels(88, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
 
             //Fuite (90)
-            FixEffectOnAllLevels(90, 0, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            RemoveEffectOnAllLevels(90, 1, false);
 
             //Frappe de Xélor (91)
             FixEffectOnAllLevels(91, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
@@ -191,13 +191,14 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             RemoveEffectOnAllLevels(95, 4);
 
             //Poussière Temporelle (96)
-            RemoveEffectOnAllLevels(96, 2);
-            RemoveEffectOnAllLevels(96, 2);
-            RemoveEffectOnAllLevels(96, 2);
-            RemoveEffectOnAllLevels(96, 2);
             FixEffectOnAllLevels(96, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TELEFRAG | SpellTargetType.ENEMY_TELEFRAG);
-            FixEffectOnAllLevels(96, 2, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TELEFRAG | SpellTargetType.ENEMY_TELEFRAG);
-
+            RemoveEffectOnAllLevels(96, 2);
+            FixEffectOnAllLevels(96, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            FixEffectOnAllLevels(96, 3, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED, false);
+            FixEffectOnAllLevels(96, 4, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TELEFRAG | SpellTargetType.ENEMY_TELEFRAG, false);
+            FixCriticalEffectOnAllLevels(96, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ALLY_TELEFRAG | SpellTargetType.ENEMY_TELEFRAG);
+            FixCriticalEffectOnAllLevels(96, 4, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED);
+            RemoveEffectOnAllLevels(96, 5);
 
             //Vol du temps (98)
             FixEffectOnAllLevels(98, 1, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
@@ -215,6 +216,10 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnLevel(3181, 1, 1, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED, false);
             FixEffectOnLevel(3181, 1, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED, false);
 
+            //Fuite (5432)
+            FixEffectOnLevel(5432, 1, 1, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED, false);
+            FixEffectOnLevel(5432, 1, 2, (level, effect, critical) => effect.Targets = SpellTargetType.DISABLED, false);
+
             //Téléfrag
             RemoveEffectOnAllLevels(5427, 0, false);
             RemoveEffectOnAllLevels(5427, 0, false);
@@ -229,6 +234,9 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             FixEffectOnAllLevels(5488, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             RemoveEffectOnAllLevels(5488, EffectsEnum.Effect_CastSpell_1160);
+
+            FixEffectOnAllLevels(5489, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
+            RemoveEffectOnAllLevels(5489, EffectsEnum.Effect_CastSpell_1160);
 
             FixEffectOnAllLevels(5492, 0, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
             RemoveEffectOnAllLevels(5492, EffectsEnum.Effect_CastSpell_1160);
@@ -263,10 +271,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             #endregion
 
             #region ENUTROF
-
-            // corruption (59)
-            // effect #4 = only self (state exhausted)
-            FixEffectOnAllLevels(59, 3, (level, effect, critical) => effect.Targets = SpellTargetType.ONLY_SELF);
 
             // Chance (42)
             FixEffectOnAllLevels(42, 1, (level, effect, critical) => effect.Delay = 1, false);
@@ -330,6 +334,8 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             // duration steal = 0
             FixEffectOnAllLevels(62, EffectsEnum.Effect_StealHPFire, (level, effect, critical) => effect.Duration = 0);
 
+            // Répulsion (1688)
+            FixEffectOnAllLevels(1688, 1, (level, effect, critical) => level.Effects.Move(effect, 0), false);
             #endregion
 
             #region SACRIEUR

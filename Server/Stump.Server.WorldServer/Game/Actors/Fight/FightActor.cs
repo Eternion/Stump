@@ -305,7 +305,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             VisibleState = VisibleStateEnum.VISIBLE;
             Loot = new FightLoot();
             SpellHistory = new SpellHistory(this);
-            LastPositions = new LimitedStack<Cell>(10);
+            LastPositions = new LimitedStack<Pair<Cell, int>>(10);
         }
 
         #endregion
@@ -377,7 +377,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             internal set;
         }
 
-        public LimitedStack<Cell> LastPositions
+        public LimitedStack<Pair<Cell, int>> LastPositions
         {
             get;
             internal set;
@@ -2000,6 +2000,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     effectAddState = spell.CurrentSpellLevel.Effects[2];
                     break;
                 case (int)SpellIdEnum.BOBINE:
+                    effectAddAP = spell.CurrentSpellLevel.Effects[1];
+                    effectAddState = spell.CurrentSpellLevel.Effects[2];
+                    break;
+                case (int)SpellIdEnum.POUSSIÈRE_TEMPORELLE:
+                    effectAddAP = spell.CurrentSpellLevel.Effects[2];
+                    effectAddState = spell.CurrentSpellLevel.Effects[3];
+                    break;
+                case (int)SpellIdEnum.FUITE:
                     effectAddAP = spell.CurrentSpellLevel.Effects[1];
                     effectAddState = spell.CurrentSpellLevel.Effects[2];
                     break;
