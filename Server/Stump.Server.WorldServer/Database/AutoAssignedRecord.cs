@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Database
         }
 
         [PrimaryKey("Id", false)]
-        public int Id
+        public virtual int Id
         {
             get;
             set;
