@@ -1981,7 +1981,7 @@
         /// <summary>
         /// 
         /// </summary>
-        Effect_1106 = 1106,
+        Effect_SymetricPointTeleport = 1106,
         /// <summary>
         /// Rename the guild
         /// </summary>
@@ -2117,7 +2117,7 @@
         /// <summary>
         /// Apparence : #1
         /// </summary>
-        Effect_1151 = 1151,
+        Effect_Appearance = 1151,
         /// <summary>
         /// 
         /// </summary>

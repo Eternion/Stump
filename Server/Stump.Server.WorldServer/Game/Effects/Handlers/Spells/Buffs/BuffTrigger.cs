@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
@@ -29,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 switch ((SpellIdEnum)Spell.Id)
                 {
                     case SpellIdEnum.REMBOBINAGE:
-                        triggerType = BuffTriggerType.BUFF_ADDED;
+                        triggerType = BuffTriggerType.TURN_END;
                         spellLevel = 1;
                         break;
                     case SpellIdEnum.FRICTION:
@@ -97,7 +96,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         private static void DefaultBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+            buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }
 
         private static void EvolutionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)

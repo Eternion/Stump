@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 {
-    [ItemType(ItemTypeEnum.LIVING_OBJECTS)]
+    [ItemType(ItemTypeEnum.OBJET_VIVANT)]
     public sealed class LivingObjectItem : CommonLivingObject
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

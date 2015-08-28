@@ -350,11 +350,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool RemoveStateBuff(FightActor target, SpellStatesEnum stateId)
         {
-            var state = target.GetBuffs(x => x is StateBuff && ((StateBuff) x).State.Id == (int)stateId).FirstOrDefault();
-            if (state == null)
-                return false;
-
-            target.RemoveAndDispellBuff(state);
+            foreach (var state in target.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == (int)stateId).ToArray())
+            {
+                target.RemoveAndDispellBuff(state);
+            }
 
             return true;
         }

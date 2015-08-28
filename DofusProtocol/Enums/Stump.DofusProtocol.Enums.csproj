@@ -176,6 +176,7 @@
     <Compile Include="Custom\GuildInvitationStateEnum.cs" />
     <Compile Include="Custom\InteractiveTypeEnum.cs" />
     <Compile Include="Custom\ItemSuperTypeEnum.cs" />
+    <Compile Include="Custom\MimicryErrorEnum.cs" />
     <Compile Include="Custom\MountStateEnum.cs" />
     <Compile Include="Custom\NotificationEnum.cs" />
     <Compile Include="Custom\OptionalFeaturesEnum.cs" />

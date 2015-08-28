@@ -21,9 +21,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
             foreach (var actor in GetAffectedActors(x => !(x is SummonedFighter) && !(x is SummonedBomb)))
             {
-                var lastCell = Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos ?
-                    actor.LastPositions.Reverse().ElementAtOrDefault(1) : actor.FightStartPosition.Cell;
-                var newCell = lastCell == null ? actor.FightStartPosition.Cell : lastCell;
+                var lastPos = actor.LastPositions.Reverse().Where(x => x.First != actor.Cell
+                                && x.Second >= (Fight.TimeLine.RoundNumber - 2)).FirstOrDefault();
+
+                var newCell = actor.FightStartPosition.Cell;
+
+                if (Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos && lastPos == null)
+                    continue;
+                else  if (Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos)
+                    newCell = lastPos.First;
 
                 var fighter = Fight.GetOneFighter(newCell);
                 if (fighter != null && fighter != actor)
@@ -35,8 +41,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, actor, newCell);
                 }
 
-                actor.LastPositions.RemoveLast();
-                actor.LastPositions.Remove(lastCell);
+                if (Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos)
+                {
+                    actor.LastPositions.RemoveLast();
+                    actor.LastPositions.RemoveLast();
+                }
+                    
             }
 
             return true;
