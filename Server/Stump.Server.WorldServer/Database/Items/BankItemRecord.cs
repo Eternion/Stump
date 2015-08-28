@@ -35,6 +35,13 @@ namespace Stump.Server.WorldServer.Database.Items
             }
         }
 
+        [PrimaryKey("Id")]
+        public override int Id
+        {
+            get;
+            set;
+        }
+
         public override void BeforeSave(bool insert)
         {
             base.BeforeSave(insert);
