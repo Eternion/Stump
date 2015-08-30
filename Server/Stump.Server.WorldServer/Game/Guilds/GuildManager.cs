@@ -112,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public SocialGroupCreationResultEnum CreateGuild(Character character, string name, NetworkGuildEmblem emblem)
         {
-            var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.Guildalogem));
+            var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GUILDALOGEM));
             if (guildalogemme == null && !character.IsGameMaster())
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 

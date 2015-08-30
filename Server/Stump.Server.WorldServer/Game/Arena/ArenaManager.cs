@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             get
             {
                 return m_tokenTemplate ??
-                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int) ItemIdEnum.Kolizeton));
+                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int) ItemIdEnum.KOLOSSOKEN));
             }
         }
 
