@@ -531,7 +531,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public SocialGroupCreationResultEnum SetGuildName(Character character, string name)
         {
-            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GuildNameChangePotion));
+            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GUILD_RENAMING_POTION));
             if (potion == null)
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 
@@ -566,7 +566,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public SocialGroupCreationResultEnum SetGuildEmblem(Character character, NetworkGuildEmblem emblem)
         {
-            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GuildEmblemChangePotion));
+            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GUILD_EMBLEM_CHANGE_POTION));
             if (potion == null)
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 

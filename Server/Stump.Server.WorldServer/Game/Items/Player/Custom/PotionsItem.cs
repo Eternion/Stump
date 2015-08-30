@@ -8,7 +8,7 @@ using Stump.Server.WorldServer.Handlers.Mounts;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemId(ItemIdEnum.BontarianIntercityExpressPotion)]
+    [ItemId(ItemIdEnum.BONTARIAN_INTERCITY_EXPRESS_POTION)]
     public class BontarianPotion : BasePlayerItem
     {
         [Variable]
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.BrakmarianIntercityExpressPotion)]
+    [ItemId(ItemIdEnum.BRAKMARIAN_INTERCITY_EXPRESS_POTION)]
     public class BrakmarianPotion : BasePlayerItem
     {
         [Variable]
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.NamechangePotion)]
+    [ItemId(ItemIdEnum.NAME_CHANGE_POTION)]
     public class NameChangePotion : BasePlayerItem
     {
         public NameChangePotion(Character owner, PlayerItemRecord record)
@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.ColourchangePotion)]
+    [ItemId(ItemIdEnum.COLOUR_CHANGE_POTION)]
     public class ColourChangePotion : BasePlayerItem
     {
         public ColourChangePotion(Character owner, PlayerItemRecord record)
@@ -110,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.LookChangePotion)]
+    [ItemId(ItemIdEnum.FACE_CHANGE_POTION)]
     public class LookChangePotion : BasePlayerItem
     {
         public LookChangePotion(Character owner, PlayerItemRecord record)
@@ -136,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.SexchangePotion)]
+    [ItemId(ItemIdEnum.SEX_CHANGE_POTION)]
     public class SexChangePotion : BasePlayerItem
     {
         public SexChangePotion(Character owner, PlayerItemRecord record)
@@ -194,7 +194,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.GuildNameChangePotion)]
+    [ItemId(ItemIdEnum.GUILD_RENAMING_POTION)]
     public class GuildNameChangePotion : BasePlayerItem
     {
         public GuildNameChangePotion(Character owner, PlayerItemRecord record)
@@ -217,7 +217,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.GuildEmblemChangePotion)]
+    [ItemId(ItemIdEnum.GUILD_EMBLEM_CHANGE_POTION)]
     public class GuildEmblemChangePotion : BasePlayerItem
     {
         public GuildEmblemChangePotion(Character owner, PlayerItemRecord record)

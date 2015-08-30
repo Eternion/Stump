@@ -157,10 +157,17 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             var host = character.Inventory.TryGetItem(message.hostUID);
             var food = character.Inventory.TryGetItem(message.foodUID);
+            var mimisymbic = character.Inventory.TryGetItem(ItemIdEnum.MIMISYMBIC);
 
             if (host == null || food == null)
             {
                 SendMimicryObjectErrorMessage(client, host == null ? MimicryErrorEnum.NO_VALID_HOST : MimicryErrorEnum.NO_VALID_FOOD);
+                return;
+            }
+
+            if (mimisymbic == null)
+            {
+                SendMimicryObjectErrorMessage(client, MimicryErrorEnum.NO_VALID_MIMICRY);
                 return;
             }
 
@@ -191,15 +198,16 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             }
             else
             {
-                if (!character.Inventory.RemoveItem(food))
+                if (!character.Inventory.RemoveItem(food) || !character.Inventory.RemoveItem(mimisymbic))
                 {
                     SendMimicryObjectErrorMessage(client, MimicryErrorEnum.IMPOSSIBLE_ACTION);
                     return;
                 }
 
                 host.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
-                character.Inventory.RefreshItem(host);
+                host.Invalidate();
 
+                character.Inventory.RefreshItem(host);
                 SendMimicryObjectAssociatedMessage(client, host);
             }
         }
@@ -213,6 +221,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
 
             host.Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_Appearance);
+            host.Invalidate();
+
             client.Character.Inventory.RefreshItem(host);
         }
 

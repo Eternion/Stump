@@ -20,24 +20,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using WorldEditor.Helpers;
 using WorldEditor.Helpers.Converters;
-using Binding = System.Windows.Data.Binding;
 using CheckBox = System.Windows.Controls.CheckBox;
-using DataGrid = System.Windows.Controls.DataGrid;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using TextBox = System.Windows.Controls.TextBox;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace WorldEditor.Editors.Files.D2O
 {

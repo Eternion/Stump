@@ -6,6 +6,7 @@ using Stump.Core.Extensions;
 using Stump.Server.WorldServer.Database.Items;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Items
 {
@@ -304,6 +305,15 @@ namespace Stump.Server.WorldServer.Game.Items
         {
             IEnumerable<T> entries = from entry in Items.Values
                                      where entry.Template.Id == template.Id
+                                     select entry;
+
+            return entries.FirstOrDefault();
+        }
+
+        public T TryGetItem(ItemIdEnum templateId)
+        {
+            IEnumerable<T> entries = from entry in Items.Values
+                                     where entry.Template.Id == (int)templateId
                                      select entry;
 
             return entries.FirstOrDefault();

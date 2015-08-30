@@ -20,10 +20,5 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
             return 0;
         }
-
-        public bool CanTransform(int foodPos, int foodUID, int hostPos, int hostUID)
-        {
-            return true;
-        }
     }
 }

@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         public static readonly bool ActiveTokens = true;
 
         [Variable]
-        public static readonly int TokenTemplateId = (int)ItemIdEnum.GameMasterToken;
+        public static readonly int TokenTemplateId = (int)ItemIdEnum.GAME_MASTER_TOKEN;
         public static ItemTemplate TokenTemplate;
 
         [Variable(true, DefinableRunning = true)]

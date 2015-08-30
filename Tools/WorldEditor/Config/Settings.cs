@@ -33,10 +33,10 @@ namespace WorldEditor.Config
 
         public static DatabaseConfiguration RealDatabaseConfiguration = new DatabaseConfiguration
         {
-            Host = "31.220.0.44",
-            DbName = "stump_data_update",
-            User = "Natan",
-            Password = "8Wr43HDF",
+            Host = "localhost",
+            DbName = "stump_data",
+            User = "root",
+            Password = "",
             ProviderName = "MySql.Data.MySqlClient"
         };
 

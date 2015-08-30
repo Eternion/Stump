@@ -53,7 +53,7 @@ namespace WorldEditor
             InitializeLoader(() => IconsManager.Instance.Initialize(Settings.LoaderSettings.ItemIconsFile),
                              "Loading item icons ...");
             // todo
-            I18NDataManager.Instance.DefaultLanguage = Languages.French;
+            I18NDataManager.Instance.DefaultLanguage = Languages.English;
 
             InitializeLoader(() => ObjectDataManager.Instance.Initialize(),
                              "Loading tables informations ...");
