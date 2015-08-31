@@ -90,6 +90,21 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
+        /// <summary>
+        /// Parameter 4
+        /// </summary>
+        public int KamasParameter
+        {
+            get
+            {
+                return Record.GetParameter<int>(4);
+            }
+            set
+            {
+                Record.SetParameter(4, value);
+            }
+        }
+
         private void RefreshPosition()
         {
             var map = Game.World.Instance.GetMap(MapId);
@@ -112,6 +127,11 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             return m_position;
         }
 
+        public override bool CanExecute(Npc npc, Character character)
+        {
+            return base.CanExecute(npc, character) && m_position.Map != character.Map;
+        }
+
         public override bool Execute(Npc npc, Character character)
         {
             if (!base.Execute(npc, character))
@@ -119,6 +139,13 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
 
             if (string.IsNullOrEmpty(ItemsParameter))
                 return character.Teleport(GetPosition());
+
+            if (character.Kamas < KamasParameter)
+            {
+                //Vous n'avez pas assez de kamas pour effectuer cette action.
+                character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 82);
+                return false;
+            }
 
             var parameter = ItemsParameter.Split(',');
             var itemsToDelete = new Dictionary<BasePlayerItem, int>();
@@ -142,12 +169,14 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
 
                 if (item == null)
                 {
+                    //Vous ne possédez pas l'objet nécessaire.
                     character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
                     return false;
                 }
 
                 if (item.Stack < amount)
                 {
+                    //Vous ne possédez pas l'objet en quantité suffisante.
                     character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
                     return false;
                 }
@@ -159,6 +188,8 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             {
                 character.Inventory.RemoveItem(itemToDelete.Key, itemToDelete.Value);
             }
+
+            character.Inventory.SubKamas(KamasParameter);
 
             return character.Teleport(GetPosition());
         }
