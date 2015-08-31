@@ -127,10 +127,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             return m_position;
         }
 
-        public override bool CanExecute(Npc npc, Character character)
-        {
-            return base.CanExecute(npc, character) && m_position.Map != character.Map;
-        }
+        public override bool CanShow(Npc npc, Character character) => base.CanShow(npc, character) && MapId != character.Map.Id;
 
         public override bool Execute(Npc npc, Character character)
         {
