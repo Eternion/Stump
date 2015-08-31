@@ -224,6 +224,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             host.Invalidate();
 
             client.Character.Inventory.RefreshItem(host);
+            SendInventoryWeightMessage(client);
         }
 
         public static void SendMimicryObjectAssociatedMessage(IPacketReceiver client, BasePlayerItem host)
