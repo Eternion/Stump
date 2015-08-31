@@ -13,15 +13,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Trap : MarkTrigger
     {
-        public Trap(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Spell glyphSpell, Cell centerCell, byte size)
-            : base(id, caster, castedSpell, originEffect, centerCell, new MarkShape(caster.Fight, centerCell, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, Color.Brown))
-        {
-            TrapSpell = glyphSpell;
-            VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;
-        }
-
-        public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, Cell centerCell, GameActionMarkCellsTypeEnum shape, byte size)
-            : base(id, caster, spell, originEffect, centerCell, new MarkShape(caster.Fight, centerCell, shape, size, Color.Brown))
+        public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, Cell centerCell, SpellShapeEnum shape, byte size)
+            : base(id, caster, spell, originEffect, centerCell, new MarkShape(caster.Fight, centerCell, shape, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, GetTrapColorBySpell(spell)))
         {
             TrapSpell = trapSpell;
             VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;
@@ -93,6 +86,25 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public override bool IsAffected(FightActor actor)
         {
             return true;
+        }
+
+        private static Color GetTrapColorBySpell(Spell spell)
+        {
+            switch (spell.Id)
+            {
+                case (int)SpellIdEnum.PIÈGE_MORTEL:
+                    return Color.Black;
+                case (int)SpellIdEnum.PIÈGE_RÉPULSIF:
+                    return Color.LightBlue;
+                case (int)SpellIdEnum.PIÈGE_EMPOISONNÉ:
+                    return Color.Violet;
+                case (int)SpellIdEnum.PIÈGE_DE_SILENCE:
+                    return Color.Blue;
+                case (int)SpellIdEnum.PIÈGE_D_IMMOBILISATION:
+                    return Color.Green;
+                default:
+                    return Color.Brown;
+            }
         }
     }
 }

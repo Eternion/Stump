@@ -140,13 +140,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void OrderLine()
         {
-            var redFighters = Fight.ChallengersTeam.GetAllFighters().
-                OrderByDescending(entry => entry.Stats[PlayerFields.Initiative].Total);
-            var blueFighters = Fight.DefendersTeam.GetAllFighters().
-                OrderByDescending(entry => entry.Stats[PlayerFields.Initiative].Total);
+            var redAvgInit = Fight.ChallengersTeam.Fighters.Average(x => x.Stats.Initiative.TotalWithLife);
+            var blueAvgInit = Fight.DefendersTeam.Fighters.Average(x => x.Stats.Initiative.TotalWithLife);
 
-            var redFighterFirst = redFighters.First().Stats[PlayerFields.Initiative].Total >
-                                   blueFighters.First().Stats[PlayerFields.Initiative].Total;
+            var redFighters = Fight.ChallengersTeam.GetAllFighters().
+                OrderByDescending(entry => entry.Stats.Initiative.TotalWithLife);
+            var blueFighters = Fight.DefendersTeam.GetAllFighters().
+                OrderByDescending(entry => entry.Stats.Initiative.TotalWithLife);
+
+            var redFighterFirst = redAvgInit >= blueAvgInit;
 
             var redEnumerator = redFighters.GetEnumerator();
             var blueEnumerator = blueFighters.GetEnumerator();

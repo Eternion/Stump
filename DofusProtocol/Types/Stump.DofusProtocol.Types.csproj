@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stump.DofusProtocol.Classes</RootNamespace>
     <AssemblyName>Stump.DofusProtocol.Classes</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
     <TargetFrameworkProfile />
@@ -186,6 +186,12 @@
     <Compile Include="Custom\ExtendedLook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolTypeManager.cs" />
+    <Compile Include="Types\common\basic\StatisticData.cs" />
+    <Compile Include="Types\common\basic\StatisticDataBoolean.cs" />
+    <Compile Include="Types\common\basic\StatisticDataByte.cs" />
+    <Compile Include="Types\common\basic\StatisticDataInt.cs" />
+    <Compile Include="Types\common\basic\StatisticDataShort.cs" />
+    <Compile Include="Types\common\basic\StatisticDataString.cs" />
     <Compile Include="Types\connection\GameServerInformations.cs" />
     <Compile Include="Types\game\achievement\Achievement.cs" />
     <Compile Include="Types\game\achievement\AchievementObjective.cs" />
@@ -310,6 +316,7 @@
     <Compile Include="Types\game\context\roleplay\HumanOptionObjectUse.cs" />
     <Compile Include="Types\game\context\roleplay\HumanOptionOrnament.cs" />
     <Compile Include="Types\game\context\roleplay\HumanOptionTitle.cs" />
+    <Compile Include="Types\game\context\roleplay\job\DecraftedItemStackInfo.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryEntryJobInfo.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryEntryPlayerInfo.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryListEntry.cs" />
@@ -358,6 +365,7 @@
     <Compile Include="Types\game\data\items\GoldItem.cs" />
     <Compile Include="Types\game\data\items\Item.cs" />
     <Compile Include="Types\game\data\items\ObjectItem.cs" />
+    <Compile Include="Types\game\data\items\ObjectItemGenericQuantity.cs" />
     <Compile Include="Types\game\data\items\ObjectItemInformationWithQuantity.cs" />
     <Compile Include="Types\game\data\items\ObjectItemMinimalInformation.cs" />
     <Compile Include="Types\game\data\items\ObjectItemNotInContainer.cs" />
@@ -392,6 +400,8 @@
     <Compile Include="Types\game\house\HouseInformationsForGuild.cs" />
     <Compile Include="Types\game\house\HouseInformationsForSell.cs" />
     <Compile Include="Types\game\house\HouseInformationsInside.cs" />
+    <Compile Include="Types\game\idol\Idol.cs" />
+    <Compile Include="Types\game\idol\PartyIdol.cs" />
     <Compile Include="Types\game\interactive\InteractiveElement.cs" />
     <Compile Include="Types\game\interactive\InteractiveElementNamedSkill.cs" />
     <Compile Include="Types\game\interactive\InteractiveElementSkill.cs" />

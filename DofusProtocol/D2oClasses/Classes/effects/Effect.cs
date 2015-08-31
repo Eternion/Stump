@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 16:35:08
+// Generated on 08/13/2015 17:13:44
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -25,6 +25,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean forceMinMax;
         public Boolean boost;
         public Boolean active;
+        public int oppositeId;
         [I18NField]
         public uint theoreticalDescriptionId;
         public uint theoreticalPattern;
@@ -102,6 +103,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.active; }
             set { this.active = value; }
+        }
+        [D2OIgnore]
+        public int OppositeId
+        {
+            get { return this.oppositeId; }
+            set { this.oppositeId = value; }
         }
         [D2OIgnore]
         public uint TheoreticalDescriptionId

@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                     return false;
 
                 // these spells cannot stacks
-                if (actor.GetBuffs(x => x.Spell.Id == Spell.Id).Any())
+                if (actor.GetBuffs(x => x.Effect.EffectId == Effect.EffectId && x.Spell.Template.Id == Spell.Template.Id).Any())
                     continue;
 
                 AddTriggerBuff(actor, true, BuffTriggerType.BUFF_ADDED, ApplyArmorBuff, RemoveArmorBuff);
@@ -47,9 +47,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
             if (integerEffect == null)
                 return;
 
+            var target = buff.Target;
+            if (target is SummonedBomb)
+            {
+                target = ((SummonedBomb) target).Summoner;
+            }
+
             foreach (var caracteristic in GetAssociatedCaracteristics(buff.Spell.Id))
             {
-                buff.Target.Stats[caracteristic].Context += buff.Target.CalculateArmorValue(integerEffect.Value);
+                buff.Target.Stats[caracteristic].Context += target.CalculateArmorValue(integerEffect.Value);
             }
         }
 
@@ -70,21 +76,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
         {
             switch ((SpellIdEnum)spellId)
             {
-                case SpellIdEnum.ARMURE_AQUEUSE_18:
-                case SpellIdEnum.ARMURE_AQUEUSE_451:
+                case SpellIdEnum.ARMURE_AQUEUSE:
                     yield return PlayerFields.WaterDamageArmor;
                     break;
-                case SpellIdEnum.ARMURE_TERRESTRE_453:
-                case SpellIdEnum.ARMURE_TERRESTRE_6:
+                case SpellIdEnum.ARMURE_TERRESTRE:
                     yield return PlayerFields.EarthDamageArmor;
                     yield return PlayerFields.NeutralDamageArmor;
                     break;
-                case SpellIdEnum.ARMURE_VENTEUSE_14:
-                case SpellIdEnum.ARMURE_VENTEUSE_454:
+                case SpellIdEnum.ARMURE_VENTEUSE:
                     yield return PlayerFields.AirDamageArmor;
                     break;
-                case SpellIdEnum.ARMURE_INCANDESCENTE_452:
-                case SpellIdEnum.ARMURE_INCANDESCENTE_1:
+                case SpellIdEnum.ARMURE_INCANDESCENTE:
                     yield return PlayerFields.FireDamageArmor;
                     break;
                 default:

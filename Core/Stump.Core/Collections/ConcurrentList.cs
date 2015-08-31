@@ -22,6 +22,7 @@ namespace Stump.Core.Collections
         public ConcurrentList(IEnumerable<T> items)
         {
             m_underlyingQueue = new ConcurrentQueue<T>(items);
+            m_isDirty = true;
         }
 
         private void UpdateLists()

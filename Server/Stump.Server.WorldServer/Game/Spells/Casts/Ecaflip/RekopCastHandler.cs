@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
-namespace Stump.Server.WorldServer.Game.Spells.Casts
+namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 {
     [SpellCastHandler(SpellIdEnum.REKOP)]
     [SpellCastHandler(SpellIdEnum.REKOP_DU_DOPEUL)]
@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             set;
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             base.Initialize();
 
@@ -34,6 +34,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             {
                 damageHandler.BuffTriggerType = BuffTriggerType.BUFF_ENDED;
             }
+
+            return true;
         }
     }
 }

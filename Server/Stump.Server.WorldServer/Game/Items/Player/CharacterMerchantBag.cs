@@ -43,16 +43,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             IsLoaded = true;
         }
 
-        private void UnLoadMerchantBag()
-        {
-            Items.Clear();
-        }
-
         public int GetMerchantTax()
         {
             var resultTax = Items.Aggregate<KeyValuePair<int, MerchantItem>, double>(0, (current, item) => current + (item.Value.Price*item.Value.Stack));
 
-            resultTax = (resultTax * 0.1);
+            resultTax = (resultTax * 0.01);
 
             return (int)resultTax;
         }
@@ -102,7 +97,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             if (quantity > item.Stack)
             {
-                var playerItem = Owner.Inventory.TryGetItem(item.Template);
+                var playerItem = Owner.Inventory.TryGetItem(item.Template, item.Effects);
                 if (playerItem != null)
                     StoreItem(playerItem, (int) (quantity - item.Stack), price);
             }
@@ -115,21 +110,21 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return true;
         }
 
-        protected override void OnItemAdded(MerchantItem item)
+        protected override void OnItemAdded(MerchantItem item, bool addItemMsg)
         {
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
 
-            base.OnItemAdded(item);
+            base.OnItemAdded(item, false);
         }
 
-        protected override void OnItemRemoved(MerchantItem item)
+        protected override void OnItemRemoved(MerchantItem item, bool removeItemMsg)
         {
             InventoryHandler.SendExchangeShopStockMovementRemovedMessage(Owner.Client, item);
 
-            base.OnItemRemoved(item);
+            base.OnItemRemoved(item, removeItemMsg);
         }
 
-        protected override void OnItemStackChanged(MerchantItem item, int difference)
+        protected override void OnItemStackChanged(MerchantItem item, int difference, bool removeMsg = true)
         {
             InventoryHandler.SendExchangeShopStockMovementUpdatedMessage(Owner.Client, item);
 

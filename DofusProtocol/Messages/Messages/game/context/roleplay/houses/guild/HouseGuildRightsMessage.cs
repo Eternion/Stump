@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:17
+// Generated on 08/04/2015 13:25:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public short houseId;
+        public int houseId;
         public Types.GuildInformations guildInfo;
         public int rights;
         
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public HouseGuildRightsMessage(short houseId, Types.GuildInformations guildInfo, int rights)
+        public HouseGuildRightsMessage(int houseId, Types.GuildInformations guildInfo, int rights)
         {
             this.houseId = houseId;
             this.guildInfo = guildInfo;
@@ -35,14 +35,14 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarShort(houseId);
+            writer.WriteVarInt(houseId);
             guildInfo.Serialize(writer);
             writer.WriteVarInt(rights);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            houseId = reader.ReadVarShort();
+            houseId = reader.ReadVarInt();
             if (houseId < 0)
                 throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
             guildInfo = new Types.GuildInformations();

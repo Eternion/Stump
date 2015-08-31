@@ -14,7 +14,9 @@
 // if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
@@ -26,6 +28,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                  MinAir, MaxAir,
                  MinNeutral, MaxNeutral,
                  MinHeal, MaxHeal;
+
+        private MapPoint m_point;
 
         public double Fire
         {
@@ -113,7 +117,24 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         /// <summary>
         /// Can be null
         /// </summary>
-        public FightActor Target
+        public TargetCell Target
+        {
+            get;
+            set;
+        }
+
+        public Cell[] AffectedCells
+        {
+            get;
+            set;
+        }
+
+        public MapPoint TargetPoint
+        {
+            get { return Target.Point; }
+        }
+
+        public Cell CastCell
         {
             get;
             set;

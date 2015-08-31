@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:52
+// Generated on 08/04/2015 00:35:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte jobId;
-        public sbyte jobLevel;
+        public byte jobLevel;
         public long jobXP;
         public long jobXpLevelFloor;
         public long jobXpNextLevelFloor;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public JobExperience(sbyte jobId, sbyte jobLevel, long jobXP, long jobXpLevelFloor, long jobXpNextLevelFloor)
+        public JobExperience(sbyte jobId, byte jobLevel, long jobXP, long jobXpLevelFloor, long jobXpNextLevelFloor)
         {
             this.jobId = jobId;
             this.jobLevel = jobLevel;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
-            writer.WriteSByte(jobLevel);
+            writer.WriteByte(jobLevel);
             writer.WriteVarLong(jobXP);
             writer.WriteVarLong(jobXpLevelFloor);
             writer.WriteVarLong(jobXpNextLevelFloor);
@@ -50,9 +50,9 @@ namespace Stump.DofusProtocol.Types
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            jobLevel = reader.ReadSByte();
-            if (jobLevel < 0)
-                throw new Exception("Forbidden value on jobLevel = " + jobLevel + ", it doesn't respect the following condition : jobLevel < 0");
+            jobLevel = reader.ReadByte();
+            if (jobLevel < 0 || jobLevel > 255)
+                throw new Exception("Forbidden value on jobLevel = " + jobLevel + ", it doesn't respect the following condition : jobLevel < 0 || jobLevel > 255");
             jobXP = reader.ReadVarLong();
             if (jobXP < 0 || jobXP > 9.007199254740992E15)
                 throw new Exception("Forbidden value on jobXP = " + jobXP + ", it doesn't respect the following condition : jobXP < 0 || jobXP > 9.007199254740992E15");

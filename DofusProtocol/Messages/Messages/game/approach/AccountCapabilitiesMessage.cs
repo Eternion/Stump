@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:07
+// Generated on 08/04/2015 13:24:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +18,9 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int accountId;
         public bool tutorialAvailable;
+        public bool canCreateNewCharacter;
+        public int accountId;
         public ushort breedsVisible;
         public ushort breedsAvailable;
         public sbyte status;
@@ -28,10 +29,11 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public AccountCapabilitiesMessage(int accountId, bool tutorialAvailable, ushort breedsVisible, ushort breedsAvailable, sbyte status)
+        public AccountCapabilitiesMessage(bool tutorialAvailable, bool canCreateNewCharacter, int accountId, ushort breedsVisible, ushort breedsAvailable, sbyte status)
         {
-            this.accountId = accountId;
             this.tutorialAvailable = tutorialAvailable;
+            this.canCreateNewCharacter = canCreateNewCharacter;
+            this.accountId = accountId;
             this.breedsVisible = breedsVisible;
             this.breedsAvailable = breedsAvailable;
             this.status = status;
@@ -39,8 +41,11 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
+            byte flag1 = 0;
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, tutorialAvailable);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, canCreateNewCharacter);
+            writer.WriteByte(flag1);
             writer.WriteInt(accountId);
-            writer.WriteBoolean(tutorialAvailable);
             writer.WriteUShort(breedsVisible);
             writer.WriteUShort(breedsAvailable);
             writer.WriteSByte(status);
@@ -48,10 +53,12 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
+            byte flag1 = reader.ReadByte();
+            tutorialAvailable = BooleanByteWrapper.GetFlag(flag1, 0);
+            canCreateNewCharacter = BooleanByteWrapper.GetFlag(flag1, 1);
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            tutorialAvailable = reader.ReadBoolean();
             breedsVisible = reader.ReadUShort();
             if (breedsVisible < 0 || breedsVisible > 65535)
                 throw new Exception("Forbidden value on breedsVisible = " + breedsVisible + ", it doesn't respect the following condition : breedsVisible < 0 || breedsVisible > 65535");

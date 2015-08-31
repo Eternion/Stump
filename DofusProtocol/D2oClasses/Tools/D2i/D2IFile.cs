@@ -16,14 +16,9 @@
 
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using Ionic.Zip;
-using Ionic.Zlib;
 using Stump.Core.Extensions;
 using Stump.Core.IO;
 

@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 
-namespace Stump.Server.WorldServer.Game.Spells.Casts
+namespace Stump.Server.WorldServer.Game.Spells.Casts.Sram
 {
     [SpellCastHandler(SpellIdEnum.CONCENTRATION_DE_CHAKRA)]
     public class ChakraConcentrationCastHandler : DefaultSpellCastHandler
@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             foreach (var target in m_affectedActors)
             {
                 var id = target.PopNextBuffId();
-                var buff = new TriggerBuff(id, target, Caster, Handlers[0].Dice, Spell, false, false, BuffTriggerType.BEFORE_ATTACKED, ChakraConcentrationBuffTrigger)
+                var buff = new TriggerBuff(id, target, Caster, Handlers[0].Dice, Spell, Spell, false, false, BuffTriggerType.BEFORE_ATTACKED, ChakraConcentrationBuffTrigger)
                 {
                     Duration = 1
                 };

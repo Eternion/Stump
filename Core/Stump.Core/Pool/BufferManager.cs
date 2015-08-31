@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -38,6 +39,18 @@ namespace Stump.Core.Pool
         }
     }
 
+    public class TemporaryBufferSegment : BufferSegment
+    {
+        public TemporaryBufferSegment(int length)
+            : base(new ArrayBuffer(new byte[length]), 0, length, 0)
+        {
+        }
+
+        protected override void CheckIn()
+        {
+        }
+    }
+
     public class BufferSegment
     {
         private readonly ArrayBuffer m_buffer;
@@ -55,7 +68,12 @@ namespace Stump.Core.Pool
 
         public byte this[int i]
         {
-            get { return m_buffer.Array[m_offset + i]; }
+            get {
+                if (i >= m_length)
+                    throw new IndexOutOfRangeException(string.Format("i({0}) >= m_length({1})", i, m_length));
+
+                return m_buffer.Array[m_offset + i];
+            }
         }
 
         public byte[] SegmentData
@@ -83,6 +101,12 @@ namespace Stump.Core.Pool
         }
 
         public DateTime LastUsage
+        {
+            get;
+            set;
+        }
+
+        public object Token
         {
             get;
             set;
@@ -120,6 +144,9 @@ namespace Stump.Core.Pool
 
         public void CopyTo(BufferSegment segment, int length)
         {
+            if (length > m_length)
+                throw new IndexOutOfRangeException("length > m_length");
+
             System.Buffer.BlockCopy(m_buffer.Array, m_offset, segment.Buffer.Array, segment.Offset, length);
         }
 
@@ -132,8 +159,13 @@ namespace Stump.Core.Pool
         {
             if (Interlocked.Decrement(ref m_uses) == 0)
             {
-                m_buffer.CheckIn(this);
+                CheckIn();
             }
+        }
+
+        protected virtual void CheckIn()
+        {
+            m_buffer.CheckIn(this);
         }
 
         public static BufferSegment CreateSegment(byte[] bytes)
@@ -143,6 +175,12 @@ namespace Stump.Core.Pool
 
         public static BufferSegment CreateSegment(byte[] bytes, int offset, int length)
         {
+            if (offset > length)
+                throw new ArgumentException("offset > length");
+
+            if (length > bytes.Length)
+                throw new ArgumentException("length > bytes.Length");
+
             return new BufferSegment(new ArrayBuffer(bytes), offset, length, -1);
         }
     }
@@ -205,7 +243,7 @@ namespace Stump.Core.Pool
 
         private static volatile int m_segmentId;
         private readonly LockFreeQueue<BufferSegment> m_availableSegments;
-        private readonly ConcurrentList<BufferSegment> m_segmentsInUse;
+        private readonly ConcurrentDictionary<int, BufferSegment> m_segmentsInUse;
         private readonly List<ArrayBuffer> m_buffers;
 
         /// <summary>
@@ -276,7 +314,7 @@ namespace Stump.Core.Pool
 #if DEBUG
         public BufferSegment[] GetSegmentsInUse()
         {
-            return m_segmentsInUse.ToArray();
+            return m_segmentsInUse.Values.ToArray();
         }
 
 #endif
@@ -294,7 +332,7 @@ namespace Stump.Core.Pool
             m_segmentSize = segmentSize;
             m_buffers = new List<ArrayBuffer>();
             m_availableSegments = new LockFreeQueue<BufferSegment>();
-            m_segmentsInUse = new ConcurrentList<BufferSegment>();
+            m_segmentsInUse = new ConcurrentDictionary<int, BufferSegment>();
             Managers.Add(this);
         }
 
@@ -325,12 +363,12 @@ namespace Stump.Core.Pool
             {
 #if DEBUG
                 log.Error(
-                    "Checked out segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last usage : {4}",
-                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace);
+                    "Checked out segment (Size: {0}, Number: {1}, Uses: {6}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last usage : {4} StackTrace : {5}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace, new StackTrace().ToString(), segment.Uses);
 #else
                 log.Error(
-                    "Checked out segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3}",
-                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count);
+                    "Checked out segment (Size: {0}, Number: {1}, Uses: {5}) that is already in use! Queue contains: {2}, Buffer amount: {3}, Stack Trace : {4}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, new StackTrace().ToString(), segment.Uses);
 #endif
             }
 
@@ -340,7 +378,7 @@ namespace Stump.Core.Pool
             //Debug.WriteLineIf(UsedSegmentCount != lastValue, string.Format("Used:{0} Last:{1} Stack:{2}", UsedSegmentCount, lastValue, new StackTrace()));
             lastValue = UsedSegmentCount;
 #if DEBUG
-            m_segmentsInUse.Add(segment);
+            m_segmentsInUse.TryAdd(segment.Number, segment);
             segment.LastUserTrace = new StackTrace().ToString();
             segment.LastUsage = DateTime.Now;
 #endif
@@ -366,19 +404,20 @@ namespace Stump.Core.Pool
             {
 #if DEBUG
                 log.Error(
-                    "Checked in segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last Usage:{4}",
-                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace);
+                    "Checked in segment (Size: {0}, Number: {1}, Uses:{5}) that is already in use! Queue contains: {2}, Buffer amount: {3} Last Usage:{4}, StackTrace:{6}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.LastUserTrace, segment.Uses, new StackTrace().ToString());
 #else
                 log.Error(
-                    "Checked in segment (Size: {0}, Number: {1}) that is already in use! Queue contains: {2}, Buffer amount: {3}",
-                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count);
+                    "Checked in segment (Size: {0}, Number: {1}, Uses:{4}) that is already in use! Queue contains: {2}, Buffer amount: {3}, StackTrace:{5}",
+                    segment.Length, segment.Number, m_availableSegments.Count, m_buffers.Count, segment.Uses, new StackTrace().ToString());
 #endif
 
             }
 
             m_availableSegments.Enqueue(segment);
 
-            m_segmentsInUse.Remove(segment);
+            BufferSegment dummy;
+            m_segmentsInUse.TryRemove(segment.Number, out dummy);
         }
 
         /// <summary>
@@ -411,7 +450,7 @@ namespace Stump.Core.Pool
         /// <param name="payloadSize"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">In case that the payload exceeds the SegmentSize of the largest buffer available.</exception>
-        public static BufferSegment GetSegment(int payloadSize)
+        public static BufferSegment GetSegment(int payloadSize, bool allowExceed = false)
         {
             if (payloadSize <= Tiny.SegmentSize)
             {
@@ -433,6 +472,9 @@ namespace Stump.Core.Pool
             {
                 return ExtraLarge.CheckOut();
             }
+
+            if (allowExceed)
+                return new TemporaryBufferSegment(payloadSize);
 
             throw new ArgumentOutOfRangeException("Required buffer is way too big: " + payloadSize);
         }

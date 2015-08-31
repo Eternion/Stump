@@ -6,8 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
     [ItemType(ItemTypeEnum.DOFUS)]
-    [ItemType(ItemTypeEnum.DOFUS_SHOP)]
-    [ItemType(ItemTypeEnum.TROPHY)]
+    [ItemType(ItemTypeEnum.TROPHÉE)]
     public class DofusItem : BasePlayerItem
     {
         public DofusItem(Character owner, PlayerItemRecord record)

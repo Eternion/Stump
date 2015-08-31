@@ -1,17 +1,11 @@
-﻿using System;
-using System.Linq;
-using Stump.Core.Extensions;
+﻿using System.Linq;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
-using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Server.WorldServer.Handlers.Mounts;
-using Item = Stump.Server.WorldServer.Game.Items.Item;
 using MapPaddock = Stump.Server.WorldServer.Game.Maps.Paddocks.Paddock;
 using Mount = Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts.Mount;
 
@@ -38,31 +32,14 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             private set;
         }
 
-        public void StoreMount(Mount mount)
-        {
-            var item = ItemManager.Instance.CreatePlayerItem(Character, 7806, 1);
-
-            var date = DateTime.Now;
-
-            var nameEffect = new EffectString((short)EffectsEnum.Effect_Name, mount.Name, new EffectBase());
-            var belongEffect = new EffectString((short)EffectsEnum.Effect_BelongsTo, Character.Name, new EffectBase());
-            var validityEffect = new EffectDuration((short)EffectsEnum.Effect_Validity, 39, 23, 59, new EffectBase());
-            var mountEffect = new EffectMount((short)EffectsEnum.Effect_ViewMountCharacteristics, mount.Id, date.GetUnixTimeStampDouble(), mount.ModelId, new EffectBase());
-
-            item.Effects.Add(nameEffect);
-            item.Effects.Add(belongEffect);
-            item.Effects.Add(mountEffect);
-            item.Effects.Add(validityEffect);
-
-            Character.Inventory.AddItem(item);
-            mount.SetOwner(Character);
-        }
-
         public void EquipMount(Mount mount)
         {
+            mount.Owner = Character;
             Character.Mount = mount;
 
+            MountManager.Instance.LinkMountToCharacter(Character, mount);
             MountHandler.SendMountSetMessage(Character.Client, mount.GetMountClientData());
+            MountHandler.SendMountXpRatioMessage(Character.Client, mount.GivenExperience);
         }
 
         public bool HasMountRight(Mount mount, bool equip = false)
@@ -70,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (equip && Character.HasEquipedMount())
                 return false;
 
-            if (Character.Id != mount.OwnerId)
+            if (mount.Owner != null && Character.Id != mount.OwnerId)
                 return false;
 
             if (!equip || Character.Level >= Mount.RequiredLevel)
@@ -80,46 +57,62 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             return false;
         }
 
-        public Mount GetMountByItem(BasePlayerItem item)
+        public int GetMountByItem(BasePlayerItem item)
         {
             var effect = item.Effects.FirstOrDefault(x => x.GetEffectInstance() is EffectInstanceMount);
             if (effect == null)
-                return null;
+                return -1;
 
             var effectInstance = effect.GetEffectInstance() as EffectInstanceMount;
-            return MountManager.Instance.GetMountById((int)effectInstance.mountId);
+            return (int)effectInstance.mountId;
         }
 
         public bool EquipToPaddock(int mountId)
         {
+            if (!Character.HasEquipedMount())
+                return false;
+
             if (!HasMountRight(Character.Mount))
                 return false;
 
             if (Character.Mount.Id != mountId)
                 return false;
 
-            Paddock.AddMountToPaddock(Character.Mount);
-            InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, Character.Mount);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                if (!Character.HasEquipedMount())
+                    return;
 
-            Character.Mount.State = MountStateEnum.PADDOCKED;
-            Character.Mount.Release(Character, false);
+                Paddock.AddMountToPaddock(Character.Mount);
+                InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, Character.Mount);
+
+                Character.Mount.Release(Character);          
+            });
 
             return true;
         }
 
         public bool EquipToStable(int mountId)
         {
+            if (!Character.HasEquipedMount())
+                return false;
+
             if (!HasMountRight(Character.Mount))
                 return false;
 
             if (Character.Mount.Id != mountId)
                 return false;
 
-            Paddock.AddMountToStable(Character.Mount);
-            InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, Character.Mount);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                if (!Character.HasEquipedMount())
+                    return;
 
-            Character.Mount.State = MountStateEnum.STABLED;
-            Character.Mount.Release(Character, false);
+                Paddock.AddMountToStable(Character.Mount);
+                InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, Character.Mount);
+
+                Character.Mount.Release(Character);       
+            });
 
             return true;
         }
@@ -133,11 +126,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (!HasMountRight(mount, true))
                 return false;
 
-            Paddock.RemoveMountFromPaddock(mount);
-            InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                Paddock.RemoveMountFromPaddock(mount);
+                EquipMount(mount);
+            });
 
-            mount.State = MountStateEnum.EQUIPED;
-            EquipMount(mount);
+            InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
 
             return true;
         }
@@ -151,13 +146,15 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (!HasMountRight(mount))
                 return false;
 
-            Paddock.RemoveMountFromPaddock(mount);
-            Paddock.AddMountToStable(mount);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                Paddock.RemoveMountFromPaddock(mount);
+                Paddock.AddMountToStable(mount);
 
-            mount.State = MountStateEnum.STABLED;
+                InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, mount);
+            });
 
             InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
-            InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, mount);
 
             return true;
         }
@@ -171,13 +168,15 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (!HasMountRight(mount))
                 return false;
 
-            Paddock.RemoveMountFromStable(mount);
-            Paddock.AddMountToPaddock(mount);
-
-            mount.State = MountStateEnum.PADDOCKED;
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                Paddock.RemoveMountFromStable(mount);
+                Paddock.AddMountToPaddock(mount);
+                InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, mount);
+            });
 
             InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
-            InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, mount);
+            
 
             return true;
         }
@@ -191,11 +190,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (!HasMountRight(mount, true))
                 return false;
 
-            Paddock.RemoveMountFromStable(mount);
-            InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                Paddock.RemoveMountFromStable(mount);
+                EquipMount(mount);
+            });
 
-            mount.State = MountStateEnum.EQUIPED;
-            EquipMount(mount);
+            InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
 
             return true;
         }
@@ -209,11 +210,13 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (!HasMountRight(mount))
                 return false;
 
-            Paddock.RemoveMountFromStable(mount);
-            InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                Paddock.RemoveMountFromStable(mount);
+                MountManager.Instance.StoreMount(Character, mount);
+            });
 
-            mount.State = MountStateEnum.STOCKED;
-            StoreMount(mount);
+            InventoryHandler.SendExchangeMountStableRemoveMessage(Character.Client, mount);
 
             return true;
         }
@@ -227,27 +230,33 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
             if (!HasMountRight(mount))
                 return false;
 
-            Paddock.RemoveMountFromPaddock(mount);
-            InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                Paddock.RemoveMountFromPaddock(mount);
+                MountManager.Instance.StoreMount(Character, mount);
+            });
 
-            mount.State = MountStateEnum.STOCKED;
-            StoreMount(mount);
+            InventoryHandler.SendExchangeMountPaddockRemoveMessage(Character.Client, mount);
 
             return true;
         }
 
         public bool EquipToInventory(int mountId)
         {
+            if (!Character.HasEquipedMount())
+                return false;
+
             if (!HasMountRight(Character.Mount))
                 return false;
 
             if (Character.Mount.Id != mountId)
                 return false;
 
-            StoreMount(Character.Mount);
-
-            Character.Mount.State = MountStateEnum.STOCKED;
-            Character.Mount.Release(Character, false);
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                MountManager.Instance.StoreMount(Character, Character.Mount);
+                Character.Mount.Release(Character);
+            });
 
             return true;
         }
@@ -255,34 +264,51 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
         public bool InventoryToStable(int itemId)
         {
             var item = Character.Inventory.TryGetItem(itemId);
-            var mount = GetMountByItem(item);
-            if (mount == null)
+            if (item == null)
                 return false;
 
-            Paddock.AddMountToStable(mount);
+            var mountId = GetMountByItem(item);
+            if (mountId == -1)
+                return false;
+
             Character.Inventory.RemoveItem(item);
 
-            mount.SetOwner(Character);
-            mount.State = MountStateEnum.STABLED;
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                var mount = MountManager.Instance.GetMountById(mountId);
+                if (mount == null)
+                    return;
 
-            InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, mount);
+                mount.Owner = Character;
+
+                Paddock.AddMountToStable(mount);
+
+                InventoryHandler.SendExchangeMountStableAddMessage(Character.Client, mount);
+            });
 
             return true;
         }
+
         public bool InventoryToPaddock(int itemId)
         {
             var item = Character.Inventory.TryGetItem(itemId);
-            var mount = GetMountByItem(item);
-            if (mount == null)
+            var mountId = GetMountByItem(item);
+            if (mountId == -1)
                 return false;
 
-            Paddock.AddMountToPaddock(mount);
             Character.Inventory.RemoveItem(item);
 
-            mount.SetOwner(Character);
-            mount.State = MountStateEnum.PADDOCKED;
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                var mount = MountManager.Instance.GetMountById(mountId);
+                if (mount == null)
+                    return;
 
-            InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, mount);
+                mount.Owner = Character;
+                Paddock.AddMountToPaddock(mount);
+
+                InventoryHandler.SendExchangeMountPaddockAddMessage(Character.Client, mount);
+            });
 
             return true;
         }
@@ -293,20 +319,31 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Paddock
                 return false;
 
             var item = Character.Inventory.TryGetItem(itemId);
-            var mount = GetMountByItem(item);
-            if (mount == null)
+            var mountId = GetMountByItem(item);
+            if (mountId == -1)
                 return false;
+
+            if (Character.Level < item.Template.Level)
+            {
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 227, Mount.RequiredLevel);
+                return false;
+            }
 
             Character.Inventory.RemoveItem(item);
 
-            mount.SetOwner(Character);
-            mount.State = MountStateEnum.EQUIPED;
+            WorldServer.Instance.IOTaskPool.AddMessage(() =>
+            {
+                var mount = MountManager.Instance.GetMountById(mountId);
+                if (mount == null)
+                    return;
 
-           EquipMount(mount);
+                mount.Owner = Character;
+                
+                EquipMount(mount);
+            });
 
             return true;
         }
-
         public override bool MoveItem(int id, int quantity)
         {
             return false;

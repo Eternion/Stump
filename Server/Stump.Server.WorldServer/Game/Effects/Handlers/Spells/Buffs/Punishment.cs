@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
@@ -12,6 +13,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_Punishment)]
     public class Punishment : SpellEffectHandler
     {
+        private readonly List<Tuple<int, StatBuff>> m_buffs = new List<Tuple<int, StatBuff>>();
+ 
         public Punishment(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
@@ -29,26 +32,26 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         private void OnActorAttacked(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var buffs = buff.Target.GetBuffs(entry => entry.Spell.Id == Spell.Id).OfType<StatBuff>();
-
-            var currentBonus = buffs.Where(entry => entry.Duration == Effect.Duration).Sum(entry => entry.Value);
+            var currentBonus = m_buffs.Where(entry => entry.Item2.Target == buff.Target && entry.Item1 == Fight.TimeLine.RoundNumber).Sum(entry => entry.Item2.Value);
             var limit = Dice.DiceFace;
+
             // limit reached
             if (currentBonus >= limit)
                 return;
 
             var damages = (Fights.Damage)token;
             var bonus = damages.Amount;
-
+            
             if (bonus + currentBonus > limit)
                 bonus = (short) (limit - currentBonus);
 
             var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
-                Spell, (short)bonus, caracteristic, false, true, (short)GetBuffEffectId(caracteristic)) 
+                Spell, (short)bonus, caracteristic, false, true, Dice.DiceNum) 
                 {Duration = Dice.Value};
 
             buff.Target.AddAndApplyBuff(statBuff, true, true);
+            m_buffs.Add(new Tuple<int, StatBuff>(Fight.TimeLine.RoundNumber, statBuff));
         }
 
         private static PlayerFields GetPunishmentBoostType(short punishementAction)
@@ -69,33 +72,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.DamageBonusPercent;
                 case ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY:
                 case (ActionsEnum)407: // **** magic numbers
-                    return PlayerFields.Vitality;
+                    return PlayerFields.Health;
 
                 default:
                     throw new Exception(string.Format("PunishmentBoostType not found for action {0}", punishementAction));
-            }
-        }
-
-        private static EffectsEnum GetBuffEffectId(PlayerFields caracteristic)
-        {
-            switch (caracteristic)
-            {
-                case PlayerFields.Agility:
-                    return EffectsEnum.Effect_AddAgility;
-                case PlayerFields.Chance:
-                    return EffectsEnum.Effect_AddChance;
-                case PlayerFields.Strength:
-                    return EffectsEnum.Effect_AddStrength;
-                case PlayerFields.Intelligence:
-                    return EffectsEnum.Effect_AddIntelligence;
-                case PlayerFields.Vitality:
-                    return EffectsEnum.Effect_AddVitality;
-                case PlayerFields.Wisdom:
-                    return EffectsEnum.Effect_AddWisdom;
-                case PlayerFields.DamageBonusPercent:
-                    return EffectsEnum.Effect_AddDamageBonusPercent;
-                default:
-                    throw new Exception(string.Format("Buff Effect not found for caracteristic {0}", caracteristic));
             }
         }
     }

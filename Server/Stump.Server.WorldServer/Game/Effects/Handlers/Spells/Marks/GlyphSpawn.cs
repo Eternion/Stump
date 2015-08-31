@@ -11,6 +11,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 {
     [EffectHandler(EffectsEnum.Effect_Glyph)]
     [EffectHandler(EffectsEnum.Effect_Glyph_402)]
+    [EffectHandler(EffectsEnum.Effect_GlyphAura)]
     public class GlyphSpawn : SpellEffectHandler
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -29,13 +30,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
                 logger.Error("Cannot find glyph spell id = {0}, level = {1}. Casted Spell = {2}", Dice.DiceNum, Dice.DiceFace, Spell.Id);
                 return false;
             }
-            
-            // todo : find usage of Dice.Value
-            var glyph = EffectZone.ShapeType == SpellShapeEnum.Q ?
-                new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, GameActionMarkCellsTypeEnum.CELLS_CROSS, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell)) :
-                new Glyph((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, glyphSpell, TargetedCell, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell));
 
-            Fight.AddTriger(glyph);
+            var spell = Spell;
+
+            if (spell.Id == (int) SpellIdEnum.DAIPIPAY)
+                spell = glyphSpell;
+
+            Fight.AddTriger(new Glyph((short)Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell, EffectZone.ShapeType, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell)));
 
             return true;
         }
@@ -44,6 +45,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
         {
             switch (spell.Id)
             {
+                case (int)SpellIdEnum.DAIPIPAY:
+                    return Color.White;
+                case (int)SpellIdEnum.GLYPHE_OPTIQUE:
+                    return Color.Cyan;
+                case (int)SpellIdEnum.GLYPHE_D_AVEUGLEMENT:
+                    return Color.Orange;
+                case (int)SpellIdEnum.GLYPHE_GRAVITATIONNEL:
+                    return Color.Green;
+                case (int)SpellIdEnum.GLYPHE_DE_RÉPULSION:
+                    return ColorTranslator.FromHtml("#505167");
                 default:
                     return Color.Red;
             }

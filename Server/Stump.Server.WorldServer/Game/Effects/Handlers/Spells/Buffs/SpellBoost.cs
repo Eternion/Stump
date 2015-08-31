@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             {
                 var integerEffect = GenerateEffect();
 
-                if (integerEffect == null)
+                if (integerEffect == null || !actor.HasSpell(Dice.DiceNum))
                     return false;
 
                 var boostedSpell = actor.GetSpell(Dice.DiceNum);
@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (boostedSpell == null)
                     return false;
 
-                var buff = new SpellBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, boostedSpell, Dice.Value, false, true);
+                var buff = new SpellBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, boostedSpell, Dice.Value, false, false);
 
                 actor.AddAndApplyBuff(buff);
             }

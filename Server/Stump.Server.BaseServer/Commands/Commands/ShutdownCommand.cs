@@ -19,6 +19,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             AddParameter<int>("time", "t", "Stop after [time] seconds");
             AddParameter<string>("reason", "r", "Display a reason for the shutdown", isOptional: true);
             AddParameter<bool>("cancel", "c", "Cancel a shutting down procedure", isOptional:true);
+            AddParameter<bool>("info", "i", "Informations about the current shutdown", isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -27,6 +28,14 @@ namespace Stump.Server.BaseServer.Commands.Commands
             {
                 ServerBase.InstanceAsBase.CancelScheduledShutdown();
                 trigger.Reply("Shutting down procedure is canceled.");
+                return;
+            }
+
+            if (trigger.Get<bool>("info"))
+            {
+                trigger.Reply("Shutdown Date: {0} - Reason: {1}", ServerBase.InstanceAsBase.ScheduledShutdownDate,
+                    ServerBase.InstanceAsBase.ScheduledShutdownReason);
+
                 return;
             }
 

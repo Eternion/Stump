@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
@@ -76,16 +77,16 @@ namespace ArkalysPlugin.Npcs
             if (m_scriptDisabled)
                 template.NpcSpawned -= OnNpcSpawned;
 
-            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_TALK);
+            npc.Actions.RemoveAll(x => x.ActionType.Contains(NpcActionTypeEnum.ACTION_TALK));
             npc.Actions.Add(new NpcRestatActionScript());
         }
     }
 
     public class NpcRestatActionScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_TALK; }
+            get { return new [] { NpcActionTypeEnum.ACTION_TALK }; }
         }
 
         public override void Execute(Npc npc, Character character)
@@ -128,7 +129,6 @@ namespace ArkalysPlugin.Npcs
                 else
                 {
                     Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
-                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
 
                     Character.ResetStats();
                 }
@@ -140,7 +140,6 @@ namespace ArkalysPlugin.Npcs
                 else
                 {
                     Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
-                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
 
                     var points = (Character.Spells.CountSpentBoostPoint() + Character.SpellsPoints);
 
@@ -158,7 +157,6 @@ namespace ArkalysPlugin.Npcs
                 else
                 {
                     Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
-                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
 
                     var panel = new SpellForgetPanel(Character);
                     panel.Open();

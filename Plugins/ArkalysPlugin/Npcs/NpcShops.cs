@@ -20,22 +20,22 @@ namespace ArkalysPlugin.Npcs
         [Variable] public static readonly SerializableDictionary<int, ItemTypeEnum[]> Sellers =
             new SerializableDictionary<int, ItemTypeEnum[]>
                 {
-                    {812, new[] {ItemTypeEnum.HAT}},
-                    {1158, new[] {ItemTypeEnum.CLOAK}},
-                    {790, new[] {ItemTypeEnum.RING}},
-                    {952, new[] {ItemTypeEnum.AMULET}},
-                    {794, new[] {ItemTypeEnum.BOOTS}},
-                    {787, new[] {ItemTypeEnum.BELT}},
+                    {812, new[] {ItemTypeEnum.CHAPEAU}},
+                    {1158, new[] {ItemTypeEnum.CAPE}},
+                    {790, new[] {ItemTypeEnum.ANNEAU}},
+                    {952, new[] {ItemTypeEnum.AMULETTE}},
+                    {794, new[] {ItemTypeEnum.BOTTES}},
+                    {787, new[] {ItemTypeEnum.CEINTURE}},
                     {1053, new[] {ItemTypeEnum.DOFUS}},
                     {
                         61,
                         new[]
                             {
-                                ItemTypeEnum.HAMMER, ItemTypeEnum.SWORD, ItemTypeEnum.WAND, ItemTypeEnum.STAFF,
-                                ItemTypeEnum.BOW, ItemTypeEnum.DAGGER, ItemTypeEnum.AXE, ItemTypeEnum.PICKAXE
+                                ItemTypeEnum.MARTEAU, ItemTypeEnum.ÉPÉE, ItemTypeEnum.BAGUETTE, ItemTypeEnum.BÂTON,
+                                ItemTypeEnum.ARC, ItemTypeEnum.DAGUE, ItemTypeEnum.HACHE, ItemTypeEnum.PIOCHE
                             }
                     },
-                    {240, new[] {ItemTypeEnum.BREAD}},
+                    {240, new[] {ItemTypeEnum.PAIN}},
                 };
 
         [Variable] public static readonly int OrbSeller = 551;
@@ -228,7 +228,7 @@ namespace ArkalysPlugin.Npcs
 
                     var price = Prices.First(entry => template.Level <= entry.Key).Value;
 
-                    if (template.TypeId == (int) ItemTypeEnum.BREAD)
+                    if (template.TypeId == (int) ItemTypeEnum.PAIN)
                     {
                         var restoreEffect =
                             template.Effects.SingleOrDefault(entry => entry.EffectId == EffectsEnum.Effect_AddHealth) as

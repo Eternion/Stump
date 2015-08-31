@@ -88,8 +88,8 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
 
         public static void SendTaxCollectorListMessage(IPacketReceiver client, Guild guild)
         {
-            client.Send(new TaxCollectorListMessage((sbyte)guild.MaxTaxCollectors,
-                guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()), 
+            client.Send(new TaxCollectorListMessage(guild.TaxCollectors.Select(x => x.GetNetworkTaxCollector()),
+                (sbyte)guild.MaxTaxCollectors,
                 guild.TaxCollectors.Where(x => x.IsFighting).Select(x => x.Fighter.GetTaxCollectorFightersInformation())));
         }
 

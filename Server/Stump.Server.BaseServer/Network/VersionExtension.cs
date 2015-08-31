@@ -77,8 +77,14 @@ namespace Stump.Server.BaseServer.Network
                            ExpectedVersion.revision == versionToCompare.revision &&
                            ExpectedVersion.patch == versionToCompare.patch;
             }
-
+            
             return false;
+        }
+
+        public static VersionExtended ToVersionExtended(this Version version, sbyte install, sbyte technology)
+        {
+            return new VersionExtended(version.major, version.minor, version.release, version.revision, version.patch,
+                version.buildType, install, technology);
         }
     }
 }

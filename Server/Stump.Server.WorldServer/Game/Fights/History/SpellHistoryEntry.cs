@@ -1,20 +1,20 @@
-﻿using Stump.DofusProtocol.D2oClasses;
-using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Database.World;
+﻿using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Fights.History
 {
     public class SpellHistoryEntry
     {
-        public SpellHistoryEntry(SpellHistory history, SpellLevelTemplate spell, FightActor caster, FightActor target, int castRound)
+        private readonly int? m_cooldownDuration;
+
+        public SpellHistoryEntry(SpellHistory history, SpellLevelTemplate spell, FightActor caster, FightActor target, int castRound, int cooldownDuration)
         {
             History = history;
             Spell = spell;
             Caster = caster;
             Target = target;
             CastRound = castRound;
+            m_cooldownDuration = cooldownDuration;
         }
 
         public SpellHistory History
@@ -47,6 +47,11 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             private set;
         }
 
+        public int CooldownDuration
+        {
+            get { return m_cooldownDuration != null ? (int)m_cooldownDuration : (int)Spell.MinCastInterval; }
+        }
+
         public int GetElapsedRounds(int currentRound)
         {
             return currentRound - CastRound;
@@ -54,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public bool IsGlobalCooldownActive(int currentRound)
         {
-            return GetElapsedRounds(currentRound) < Spell.MinCastInterval;
+            return GetElapsedRounds(currentRound) < CooldownDuration;
         }
     }
 }

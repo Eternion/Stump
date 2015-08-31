@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using NLog;
 using Stump.Core.Timers;
 
 namespace Stump.Server.BaseServer.IPC
@@ -27,7 +28,7 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
-        TimerEntry TimeoutTimer
+        TimedTimerEntry TimeoutTimer
         {
             get;
             set;
@@ -39,13 +40,22 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
+        bool TimedOut
+        {
+            get;
+            set;
+        }
+
+        void Cancel(string from = "");
         bool ProcessMessage(IPCMessage message);
     }
 
     public class IPCRequest<T> : IIPCRequest where T : IPCMessage
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public IPCRequest(IPCMessage requestMessage, Guid guid, RequestCallbackDelegate<T> callback, RequestCallbackErrorDelegate errorCallback,
-            RequestCallbackDefaultDelegate defaultCallback, TimerEntry timeoutTimer)
+            RequestCallbackDefaultDelegate defaultCallback, TimedTimerEntry timeoutTimer)
         {
             RequestMessage = requestMessage;
             Guid = guid;
@@ -61,13 +71,19 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
+        public bool TimedOut
+        {
+            get;
+            set;
+        }
+
         public Guid Guid
         {
             get;
             set;
         }
 
-        public TimerEntry TimeoutTimer
+        public TimedTimerEntry TimeoutTimer
         {
             get;
             set;
@@ -91,14 +107,26 @@ namespace Stump.Server.BaseServer.IPC
             set;
         }
 
+        public void Cancel(string from = "")
+        {
+            if (TimeoutTimer != null)
+                TimeoutTimer.Dispose();
+
+            ErrorCallback(new IPCErrorMessage("Cancelled" + (!string.IsNullOrEmpty(from) ? " from " + from : "")));
+        }
+
         public bool ProcessMessage(IPCMessage message)
         {
-            TimeoutTimer.Stop();
+            if (TimeoutTimer != null)
+                TimeoutTimer.Dispose();
 
             if (message is T)
                 Callback(message as T);
-            else if (message is IPCErrorMessage)
-                ErrorCallback(message as IPCErrorMessage);
+            else if (message is IIPCErrorMessage)
+            {
+                logger.Warn("IPC Error on message recv {0}", message);
+                ErrorCallback(message as IIPCErrorMessage);
+            }
             else
                 DefaultCallback(message);
 

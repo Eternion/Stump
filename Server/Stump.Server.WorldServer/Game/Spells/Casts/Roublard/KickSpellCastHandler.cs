@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
 
-namespace Stump.Server.WorldServer.Game.Spells.Casts
+namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
     [SpellCastHandler(SpellIdEnum.BOTTE)]
     public class KickSpellCastHandler : DefaultSpellCastHandler
@@ -13,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         {
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             base.Initialize();
 
@@ -24,6 +24,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                 if (fighter != null && fighter.IsFriendlyWith(Caster))
                     handler.SubRangeForActor = fighter;
             }
+
+            return true;
         }
 
         public override void Execute()

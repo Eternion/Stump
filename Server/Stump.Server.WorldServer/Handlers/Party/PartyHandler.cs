@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
@@ -173,6 +175,54 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             client.Character.GetParty(message.partyId).Kick(member);
         }
 
+        [WorldHandler(PartyFollowMemberRequestMessage.Id)]
+        public static void HandlePartyFollowMemberRequestMessage(WorldClient client, PartyFollowMemberRequestMessage message)
+        {
+            if (!client.Character.IsInParty(message.partyId))
+                return;
+
+            var target = client.Character.Party.GetMember(message.playerId);
+
+            if (target == null)
+                return;
+
+            client.Character.FollowMember(target);
+        }
+
+        [WorldHandler(PartyFollowThisMemberRequestMessage.Id)]
+        public static void HandlePartyFollowThisMemberRequestMessage(WorldClient client, PartyFollowThisMemberRequestMessage message)
+        {
+            if (!client.Character.IsPartyLeader(message.partyId))
+                return;
+
+            var target = client.Character.Party.GetMember(message.playerId);
+
+            if (target == null)
+                return;
+
+            foreach(var member in target.Party.Members)
+            {
+                if (message.enabled)
+                    member.FollowMember(target);
+                else
+                    member.UnfollowMember();
+            } 
+        }
+
+        [WorldHandler(PartyStopFollowRequestMessage.Id)]
+        public static void HandlePartyStopFollowRequestMessage(WorldClient client, PartyStopFollowRequestMessage message)
+        {
+            if (!client.Character.IsInParty(message.partyId))
+                return;
+
+            client.Character.UnfollowMember();
+        }
+
+        public static void SendPartyFollowStatusUpdateMessage(WorldClient client, Game.Parties.Party party, bool success, int followedId)
+        {
+            client.Send(new PartyFollowStatusUpdateMessage(party.Id, success, followedId));
+        }
+
         public static void SendPartyKickedByMessage(IPacketReceiver client, Game.Parties.Party party, Character kicker)
         {
             client.Send(new PartyKickedByMessage(party.Id, kicker.Id));
@@ -196,7 +246,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
         public static void SendPartyMemberInFightMessage(IPacketReceiver client, Game.Parties.Party party, Character member, PartyFightReasonEnum reason, IFight fight)
         {
             client.Send(new PartyMemberInFightMessage(party.Id, (sbyte)reason, member.Id, member.Account.Id, member.Name, fight.Id, 
-                new MapCoordinatesExtended((short)fight.Map.Position.X, (short)fight.Map.Position.Y, fight.Map.Id, (short)fight.Map.SubArea.Id), (short)fight.GetPlacementTimeLeft()));
+                new MapCoordinatesExtended((short)fight.Map.Position.X, (short)fight.Map.Position.Y, fight.Map.Id, (short)fight.Map.SubArea.Id), (short)(fight.GetPlacementTimeLeft().TotalMilliseconds/100)));
         }
 
         public static void SendPartyNewMemberMessage(IPacketReceiver client, Game.Parties.Party party, Character member)

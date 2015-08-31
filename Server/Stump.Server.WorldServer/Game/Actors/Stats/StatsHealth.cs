@@ -61,7 +61,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             set
             {
                 ValueContext = value;
-                AdjustTakenDamage();
                 OnModified();
             }
         }
@@ -147,15 +146,40 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         private void AdjustTakenDamage()
         {
-            if (m_damageTaken > TotalMax)
+            if (m_damageTaken > TotalMaxWithoutPermanentDamages)
             {
                 m_realDamageTaken = m_damageTaken;
-                m_damageTaken = (short) TotalMax; // hp cannot be lesser than 0
+                m_damageTaken = (short)TotalMaxWithoutPermanentDamages; // hp cannot be lesser than 0
             }
             else if (m_realDamageTaken > m_damageTaken)
             {
                 m_damageTaken = m_realDamageTaken;
             }
+        }
+
+        public override StatsData CloneAndChangeOwner(IStatsOwner owner)
+        {
+            var clone = new StatsHealth(owner, Base, 0)
+            {
+                Equiped = Equiped,
+                Given = Given
+            };
+
+            return clone;
+        }
+
+
+        public override void CopyContext(StatsData target)
+        {
+            base.CopyContext(target);
+
+            var health = target as StatsHealth;
+
+            if (health == null)
+                return;
+
+            health.DamageTaken = DamageTaken;
+            health.PermanentDamages = PermanentDamages;
         }
     }
 }

@@ -16,6 +16,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Summoner = summoner;
         }
 
+        protected SummonedFighter(int id, FightTeam team, IEnumerable<Spell> spells, FightActor summoner, Cell cell, int identifier)
+            : base(team, spells, identifier)
+        {
+            Id = id;
+            Position = summoner.Position.Clone();
+            Cell = cell;
+            Summoner = summoner;
+        }
+
         public override sealed int Id
         {
             get;
@@ -39,9 +48,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return 0;
         }
 
-        protected override void OnDead(FightActor killedBy)
+        protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            base.OnDead(killedBy);
+            base.OnDead(killedBy, passTurn);
 
             //Fight.TimeLine.RemoveFighter(this);
             Summoner.RemoveSummon(this);

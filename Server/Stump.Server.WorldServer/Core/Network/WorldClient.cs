@@ -76,6 +76,12 @@ namespace Stump.Server.WorldServer.Core.Network
             internal set;
         }
 
+        public CharacterRecord ForceCharacterSelection
+        {
+            get;
+            set;
+        }
+
         public Character Character
         {
             get;

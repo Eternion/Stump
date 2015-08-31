@@ -12,6 +12,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         protected int ValueContext;
         protected int ValueEquiped;
         protected int ValueGiven;
+        protected int ValueAdditionnal;
         private int? m_limit;
         private readonly bool m_limitEquippedOnly;
 
@@ -22,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             Name = name;
             Owner = owner;
         }
-        public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, int limit, bool limitEquippedOnly = false)
+        public StatsData(IStatsOwner owner, PlayerFields name, int valueBase, int? limit, bool limitEquippedOnly = false)
         {
             ValueBase = valueBase;
             m_limit = limit;
@@ -86,11 +87,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             }
         }
 
+        public virtual int Additional
+        {
+            get { return ValueAdditionnal; }
+            set
+            {
+                ValueAdditionnal = value;
+                OnModified();
+            }
+        }
+
         public virtual int Total
         {
             get
             {
-                var totalNoBoost = Base + Equiped;
+                var totalNoBoost = Base + Additional + Equiped;
 
                 if (m_limitEquippedOnly && Limit != null && totalNoBoost > Limit.Value)
                     totalNoBoost = Limit.Value;
@@ -179,8 +190,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
             return new CharacterBaseCharacteristic(
                 (short)( s1.Base > short.MaxValue ? short.MaxValue : s1.Base ),
-                0,
-                (short)( s1.Equiped > short.MaxValue ? short.MaxValue : s1.Equiped ),
+                (short)( s1.Additional > short.MaxValue ? short.MaxValue : s1.Additional ),
+                (short)( s1.m_limitEquippedOnly && s1.Limit != null && s1.Equiped > s1.Limit.Value ? s1.Limit.Value : s1.Equiped ),
                 (short)( s1.Given > short.MaxValue ? short.MaxValue : s1.Given ),
                 (short)( s1.Context > short.MaxValue ? short.MaxValue : s1.Context ));
         }
@@ -189,20 +200,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
 
         public override string ToString()
         {
-            return string.Format("{0}({1}+{2}+{3})", Total, Base, Equiped, Context);
+            return string.Format("{0}({1}+{2}+{3}+{4})", Total, Base, Additional, Equiped, Context);
         }
 
-        public virtual StatsData Clone()
+        public virtual StatsData CloneAndChangeOwner(IStatsOwner owner)
         {
-            return (StatsData) MemberwiseClone();
+            var clone = new StatsData(owner, Name, ValueBase, Limit, m_limitEquippedOnly)
+            {
+                Base = Base,
+                Additional = Additional,
+                Context = 0,
+                Equiped = Equiped,
+                Given = Given
+            };
+
+            return clone;
         }
 
-        public StatsData CloneAndChangeOwner(IStatsOwner owner)
+        public virtual void CopyContext(StatsData target)
         {
-            var data = (StatsData)MemberwiseClone();
-            data.Owner = owner;
-
-            return data;
+            target.Context = Context;
         }
     }
 }

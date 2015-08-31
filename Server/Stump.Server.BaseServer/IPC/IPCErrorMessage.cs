@@ -19,7 +19,7 @@ using ProtoBuf;
 namespace Stump.Server.BaseServer.IPC
 {
     [ProtoContract]
-    public class IPCErrorMessage : IPCMessage
+    public class IPCErrorMessage : IPCMessage, IIPCErrorMessage
     {
         public IPCErrorMessage()
         {
@@ -48,6 +48,11 @@ namespace Stump.Server.BaseServer.IPC
         {
             get;
             set;
+        }
+
+        public override string ToString()
+        {
+            return Message + " " + StackTrace;
         }
     }
 }

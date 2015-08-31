@@ -181,6 +181,13 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
+        private void Handle(AccountsRequestMessage message)
+        {
+            var accounts = Database.Fetch<Account>("SELECT * FROM accounts WHERE Login LIKE '" + message.LoginLike + "'");
+
+            Client.ReplyRequest(new AccountsAnswerMessage(accounts.Select(x => x.Serialize()).ToList()), message);
+        }
+
         private void Handle(ChangeStateMessage message)
         {
             WorldServerManager.Instance.ChangeWorldState(WorldServer, message.State);
@@ -253,6 +260,7 @@ namespace Stump.Server.AuthServer.IPC
             account.SecretAnswer = message.Account.SecretAnswer;
             account.UserGroupId = message.Account.UserGroupId;
             account.Tokens = message.Account.Tokens;
+            account.LastClientKey = message.Account.LastClientKey;
 
             Database.Update(account);
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -483,6 +491,14 @@ namespace Stump.Server.AuthServer.IPC
                 new GroupsListMessage(
                     Database.Query<UserGroupRecord>(UserGroupRelator.FetchQuery).Select(x => x.GetGroupData()).ToList()),
                 message);
+        }
+
+        private void Handle(GroupAddMessage message)
+        {
+            var id = (int)(ulong)Database.Insert(new UserGroupRecord(message.UserGroup));
+
+            message.UserGroup.Id = id;
+            Client.ReplyRequest(new GroupAddResultMessage(message.UserGroup), message);
         }
 
         public void Dispose()

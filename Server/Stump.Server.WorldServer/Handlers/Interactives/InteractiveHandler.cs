@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
@@ -28,15 +27,35 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
         [WorldHandler(TeleportRequestMessage.Id)]
         public static void HandleTeleportRequestMessage(WorldClient client, TeleportRequestMessage message)
         {
-            if (!client.Character.IsInZaapDialog())
-                return;
+            if (client.Character.IsInZaapDialog())
+            {
+                var map = World.Instance.GetMap(message.mapId);
 
-            var map = World.Instance.GetMap(message.mapId);
+                if (map == null)
+                    return;
 
-            if (map == null)
-                return;
+                client.Character.ZaapDialog.Teleport(map);
+            }
+            else if (client.Character.IsInZaapiDialog())
+            {
+                var map = World.Instance.GetMap(message.mapId);
 
-            client.Character.ZaapDialog.Teleport(map);
+                if (map == null)
+                    return;
+
+                client.Character.ZaapiDialog.Teleport(map);
+            }
+        }
+
+        [WorldHandler(ZaapRespawnSaveRequestMessage.Id)]
+        public static void HandleZaapRespawnSaveRequestMessage(WorldClient client, ZaapRespawnSaveRequestMessage message)
+        {
+            client.Character.SetSpawnPoint(client.Character.Map);
+        }
+
+        public static void SendZaapRespawnUpdatedMessage(WorldClient client)
+        {
+            client.Send(new ZaapRespawnUpdatedMessage(client.Character.Record.SpawnMapId ?? 0));
         }
 
         public static void SendInteractiveUsedMessage(IPacketReceiver client, Character user, InteractiveObject interactiveObject, Skill skill)

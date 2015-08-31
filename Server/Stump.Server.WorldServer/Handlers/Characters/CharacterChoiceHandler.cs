@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MongoDB.Bson;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
+using Stump.Server.BaseServer.Logging;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
+using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Chat;
 using Stump.Server.WorldServer.Handlers.Context;
@@ -65,7 +70,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             var remodel = message.remodel;
 
-            if (character.Rename)
+            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME)
+                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME))
             {
                 /* Check if name is valid */
                 if (!Regex.IsMatch(remodel.name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
@@ -83,10 +91,25 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 /* Set new name */
                 character.Name = remodel.name;
-                character.Rename = false;
+                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME;
+                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME;
             }
 
-            if (character.Recolor)
+            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER)
+                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER))
+            {
+                character.Sex = remodel.sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
+
+                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER;
+                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER;
+            }
+
+            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
+                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS))
             {
                 /* Get character Breed */
                 var breed = BreedManager.Instance.GetBreed((int)character.Breed);
@@ -103,25 +126,49 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 character.EntityLook.SetColors(
                     remodel.colors.Select((x, i) => x == -1 ? Color.FromArgb((int)breedColors[i]) : Color.FromArgb(x)).ToArray());
 
-                character.Recolor = false;
+                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
+                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
             }
 
-            if (character.Relook > 0)
+            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
+                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED))
             {
-                if (character.Relook == 2)
-                    character.Sex = character.Sex == SexTypeEnum.SEX_MALE ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
+                /*var player = new Character(character, client);
 
-                /* Set Look */
+                BreedManager.Instance.ChangeBreed(player, (PlayableBreedEnum)remodel.breed);
+
+                //Apply changements
+                character = player.Record;*/
+
+                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED;
+                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED;
+            }
+
+            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
+                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC))
+            {
+                /* Get Head */
                 var head = BreedManager.Instance.GetHead(remodel.cosmeticId);
+                /* Get character Breed */
+                var breed = BreedManager.Instance.GetBreed((int)character.Breed);
 
-                if (head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
+                if (breed == null || head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
                 {
                     client.Send(new CharacterSelectedErrorMessage());
                     return;
                 }
 
                 character.Head = head.Id;
-                character.Relook = 0;
+
+                foreach (var scale in character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Scales : breed.FemaleLook.Scales)
+                    character.EntityLook.SetScales(scale);
+
+                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
+                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
             }
 
             WorldServer.Instance.DBAccessor.Database.Update(character);
@@ -146,21 +193,23 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
 
-            InventoryHandler.SendInventoryContentMessage(client);
+            if (client.Character.Inventory.Presets.Any())
+                InventoryHandler.SendInventoryContentAndPresetMessage(client);
+            else
+                InventoryHandler.SendInventoryContentMessage(client);
 
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR);
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
             //ContextHandler.SendSpellForgottenMessage(client);
 
-            ContextRoleplayHandler.SendEmoteListMessage(client, Enumerable.Range(0, 21).Select(entry => (byte)entry).ToList());
+            ContextRoleplayHandler.SendEmoteListMessage(client, client.Character.AvailableEmotes.Select(x => (byte)x));
+            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] { });
 
             PvPHandler.SendAlignmentRankUpdateMessage(client);
 
-            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] {});
-
             InventoryHandler.SendSpellListMessage(client, true);
-            
-            InitializationHandler.SendSetCharacterRestrictionsMessage(client);
+
+            InitializationHandler.SendSetCharacterRestrictionsMessage(client, client.Character);
 
             InventoryHandler.SendInventoryWeightMessage(client);
 
@@ -170,18 +219,21 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             //Guild
             if (client.Character.GuildMember != null)
-                GuildHandler.SendGuildMembershipMessage(client,client.Character.GuildMember);
+                GuildHandler.SendGuildMembershipMessage(client, client.Character.GuildMember);
 
             //Mount
             if (client.Character.Mount != null)
+            {
                 MountHandler.SendMountSetMessage(client, client.Character.Mount.GetMountClientData());
+                MountHandler.SendMountXpRatioMessage(client, client.Character.Mount.GivenExperience);
+            }
 
             client.Character.SendConnectionMessages();
 
             //InitializationHandler.SendOnConnectionEventMessage(client, 3);
 
             //Start Cinematic(Doesn't work for now)
-            if ((DateTime.Now - client.Character.Record.LastUsage).Value.TotalSeconds <= 30)
+            if ((DateTime.Now - client.Character.Record.CreationDate).TotalSeconds <= 30)
                 BasicHandler.SendCinematicMessage(client, 10);
 
             ContextRoleplayHandler.SendGameRolePlayArenaUpdatePlayerInfosMessage(client, client.Character);
@@ -199,6 +251,17 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             character.LastUsage = DateTime.Now;
             WorldServer.Instance.DBAccessor.Database.Update(character);
+
+            var document = new BsonDocument
+            {
+                { "AcctId", client.WorldAccount.Id },
+                { "CharacterId", character.Id },
+                { "IPAddress", client.IP },
+                { "Action", "Login" },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("characters_connections", document);
         }
 
 
@@ -207,8 +270,15 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         {
             if (client.Account != null && client.Account.Login != "")
             {
-                SendCharactersListMessage(client);
-                //SendCharactersListWithRemodelingMessage(client);
+                //SendCharactersListMessage(client);
+                SendCharactersListWithRemodelingMessage(client);
+
+                var characterInFight = FindCharacterFightReconnection(client);
+                if (characterInFight != null)
+                {
+                    client.ForceCharacterSelection = characterInFight;
+                    SendCharacterSelectedForceMessage(client, characterInFight.Id);
+                }
 
                 if (client.WorldAccount != null && client.StartupActions.Count > 0)
                 {
@@ -217,21 +287,41 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
             else
             {
-                client.Send(new IdentificationFailedMessage((int) IdentificationFailureReasonEnum.KICKED));
+                client.Send(new IdentificationFailedMessage((int)IdentificationFailureReasonEnum.KICKED));
                 client.DisconnectLater(1000);
             }
         }
 
+        [WorldHandler(CharacterSelectedForceReadyMessage.Id, IsGamePacket = false, ShouldBeLogged = false)]
+        public static void HandleCharacterSelectedForceReadyMessage(WorldClient client, CharacterSelectedForceReadyMessage message)
+        {
+            if (client.ForceCharacterSelection == null)
+                client.Disconnect();
+            else
+                CommonCharacterSelection(client, client.ForceCharacterSelection);
+        }
+
+        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
+        {
+            return (from characterInFight in client.Characters.Where(x => x.LeftFightId != null)
+                    let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value)
+                    where fight != null
+                    let fighter = fight.GetLeaver(characterInFight.Id)
+                    where fighter != null
+                    select characterInFight).FirstOrDefault();
+        }
+
+
         public static void SendCharactersListMessage(WorldClient client)
         {
-            var characters = client.Characters.Select(
+            var characters = client.Characters.OrderByDescending(x => x.LastUsage).Select(
                 characterRecord =>
                 new CharacterBaseInformations(
                     characterRecord.Id,
                     ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                     characterRecord.Name,
                     characterRecord.EntityLook.GetEntityLook(),
-                    (sbyte) characterRecord.Breed,
+                    (sbyte)characterRecord.Breed,
                     characterRecord.Sex != SexTypeEnum.SEX_MALE)).ToList();
 
             client.Send(new CharactersListMessage(
@@ -245,47 +335,30 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             var characterBaseInformations = new List<CharacterBaseInformations>();
             var charactersToRemodel = new List<CharacterToRemodelInformations>();
 
-            foreach (var characterRecord in client.Characters)
+            foreach (var characterRecord in client.Characters.OrderByDescending(x => x.LastUsage))
             {
                 characterBaseInformations.Add(new CharacterBaseInformations((short)characterRecord.Id,
                                                                             ExperienceManager.Instance.GetCharacterLevel(characterRecord.Experience, characterRecord.PrestigeRank),
                                                                             characterRecord.Name, characterRecord.EntityLook.GetEntityLook(),
-                                                                            (sbyte) characterRecord.Breed,
-                                                                            characterRecord.Relook == 2 ? characterRecord.Sex == SexTypeEnum.SEX_MALE : characterRecord.Sex != SexTypeEnum.SEX_MALE));
+                                                                            (sbyte)characterRecord.Breed,
+                                                                            characterRecord.Sex == SexTypeEnum.SEX_MALE));
 
-                if (!characterRecord.Rename && !characterRecord.Recolor && characterRecord.Relook == 0)
+                if (((characterRecord.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
+                != (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
+                && ((characterRecord.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
+                != (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
+                && ((characterRecord.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
+                != (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
+                && ((characterRecord.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER)
+                != (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER)
+                && ((characterRecord.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME)
+                != (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME))
                     continue;
 
-                var possibleChanges = (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NOT_APPLICABLE;
-                var mandatoryChanges = (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NOT_APPLICABLE;
-
-                if (characterRecord.Rename)
-                {
-                    possibleChanges = (sbyte) CharacterRemodelingEnum.CHARACTER_REMODELING_NAME;
-                    mandatoryChanges = (sbyte) CharacterRemodelingEnum.CHARACTER_REMODELING_NAME;
-                }
-
-                if (characterRecord.Recolor)
-                {
-                    possibleChanges &= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
-                    mandatoryChanges &= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
-                }
-
-                if (characterRecord.Relook == 1)
-                {
-                    possibleChanges &= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
-                    mandatoryChanges &= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
-                }
-
-                if (characterRecord.Relook == 2)
-                {
-                    possibleChanges &= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER;
-                    mandatoryChanges &= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER;
-                }
-
                 charactersToRemodel.Add(new CharacterToRemodelInformations(characterRecord.Id, characterRecord.Name,
-                                                                                            (sbyte)characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE,
-                                                                                            (short)characterRecord.Head, characterRecord.EntityLook.Colors.Values.Select(x => x.ToArgb()), possibleChanges, mandatoryChanges));
+                                                                                        (sbyte)characterRecord.Breed, characterRecord.Sex != SexTypeEnum.SEX_MALE,
+                                                                                        (short)characterRecord.Head, characterRecord.EntityLook.Colors.Values.Select(x => x.ToArgb()),
+                                                                                        characterRecord.PossibleChanges, characterRecord.MandatoryChanges));
             }
             client.Send(new CharactersListWithRemodelingMessage(characterBaseInformations,
                                                                    false,
@@ -295,6 +368,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)
         {
             client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations(), true));
+        }
+
+        public static void SendCharacterSelectedForceMessage(IPacketReceiver client, int id)
+        {
+            client.Send(new CharacterSelectedForceMessage(id));
         }
 
         public static void SendCharacterCapabilitiesMessage(WorldClient client)

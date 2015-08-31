@@ -29,11 +29,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
     [EffectHandler(EffectsEnum.Effect_AddMagicDamageReduction)]
     [EffectHandler(EffectsEnum.Effect_AddLock)]
     [EffectHandler(EffectsEnum.Effect_AddDodge)]
+    [EffectHandler(EffectsEnum.Effect_AddDodgeAPProbability)]
+    [EffectHandler(EffectsEnum.Effect_AddDodgeMPProbability)]
     [EffectHandler(EffectsEnum.Effect_AddCriticalHit)]
     [EffectHandler(EffectsEnum.Effect_AddCriticalMiss)]
     [EffectHandler(EffectsEnum.Effect_AddMPAttack)]
     [EffectHandler(EffectsEnum.Effect_AddAPAttack)]
     [EffectHandler(EffectsEnum.Effect_AddPushDamageBonus)]
+    [EffectHandler(EffectsEnum.Effect_AddShield)]
+    [EffectHandler(EffectsEnum.Effect_AddAirResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddFireResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddEarthResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddWaterResistPercent)]
+    [EffectHandler(EffectsEnum.Effect_AddNeutralResistPercent)]
     public class StatsBuff : SpellEffectHandler
     {
         public StatsBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -99,6 +107,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.TackleBlock;
                 case EffectsEnum.Effect_AddDodge:
                     return PlayerFields.TackleEvade;
+                case EffectsEnum.Effect_AddDodgeAPProbability:
+                    return PlayerFields.DodgeAPProbability;
+                case EffectsEnum.Effect_AddDodgeMPProbability:
+                    return PlayerFields.DodgeMPProbability;
                 case EffectsEnum.Effect_AddCriticalHit:
                     return PlayerFields.CriticalHit;
                 case EffectsEnum.Effect_AddCriticalMiss:
@@ -109,6 +121,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     return PlayerFields.APAttack;
                 case EffectsEnum.Effect_AddPushDamageBonus:
                     return PlayerFields.PushDamageBonus;
+                case EffectsEnum.Effect_AddShield:
+                    return PlayerFields.Shield;
+                case EffectsEnum.Effect_AddAirResistPercent:
+                    return PlayerFields.AirResistPercent;
+                case EffectsEnum.Effect_AddFireResistPercent:
+                    return PlayerFields.FireResistPercent;
+                case EffectsEnum.Effect_AddEarthResistPercent:
+                    return PlayerFields.EarthResistPercent;
+                case EffectsEnum.Effect_AddWaterResistPercent:
+                    return PlayerFields.WaterResistPercent;
+                case EffectsEnum.Effect_AddNeutralResistPercent:
+                    return PlayerFields.NeutralResistPercent;
                 default:
                     throw new Exception(string.Format("'{0}' has no binded caracteristic", effect));
             }

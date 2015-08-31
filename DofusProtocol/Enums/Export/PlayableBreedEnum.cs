@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:58
+// Generated on 08/15/2015 14:32:26
 using System;
 using System.Collections.Generic;
 
@@ -24,6 +24,6 @@ namespace Stump.DofusProtocol.Enums
         Roublard = 13,
         Zobal = 14,
         Steamer = 15,
-        Eliatrope = 16,
+        Eliotrope = 16,
     }
 }

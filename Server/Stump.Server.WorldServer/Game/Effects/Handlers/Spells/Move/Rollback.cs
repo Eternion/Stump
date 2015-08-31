@@ -8,7 +8,8 @@ using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
-    [EffectHandler(EffectsEnum.Effect_Rollback)]
+    [EffectHandler(EffectsEnum.Effect_ReturnToOriginalPos)]
+    [EffectHandler(EffectsEnum.Effect_ReturnToLastPos)]
     public class Rollback : SpellEffectHandler
     {
         public Rollback(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -18,34 +19,37 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
-            var fighters = Fight.GetAllFighters(x => x.IsAlive() && !(x is SummonedFighter) && !(x is SummonedBomb));
-            foreach (var fighter in fighters)
+            foreach (var actor in GetAffectedActors(x => !(x is SummonedFighter) && !(x is SummonedBomb)))
             {
-                var newCell = fighter.FightStartPosition.Cell;
+                var lastPos = actor.LastPositions.Reverse().Where(x => x.First != actor.Cell
+                                && x.Second >= (Fight.TimeLine.RoundNumber - 2)).FirstOrDefault();
 
-                var oldFighter = Fight.GetOneFighter(newCell);
-                if (oldFighter != null)
-                    fighter.ExchangePositions(oldFighter);
+                var newCell = actor.FightStartPosition.Cell;
+
+                if (Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos && lastPos == null)
+                    continue;
+                else  if (Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos)
+                    newCell = lastPos.First;
+
+                var fighter = Fight.GetOneFighter(newCell);
+                if (fighter != null && fighter != actor)
+                    actor.Telefrag(Caster, fighter, Spell);
                 else
                 {
-                    fighter.Position.Cell = newCell;
+                    actor.Position.Cell = newCell;
 
-                    ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, fighter, newCell);               
+                    ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, actor, newCell);
                 }
+
+                if (Effect.EffectId == EffectsEnum.Effect_ReturnToLastPos)
+                {
+                    actor.LastPositions.RemoveLast();
+                    actor.LastPositions.RemoveLast();
+                }
+                    
             }
 
             return true;
-        }
-
-        private void MoveOldFighter(FightActor oldFighter)
-        {
-            var adjacentCell = oldFighter.Position.Point
-                .GetAdjacentCells(c => Fight.IsCellFree(Map.Cells[c]))
-                .FirstOrDefault();
-            if (adjacentCell != null)
-                oldFighter.Position.Cell = Map.Cells[adjacentCell.CellId];
-            else
-                oldFighter.Die();
         }
     }
 }

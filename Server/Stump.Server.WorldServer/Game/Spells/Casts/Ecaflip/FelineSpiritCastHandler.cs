@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 
-namespace Stump.Server.WorldServer.Game.Spells.Casts
+namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 {
     [SpellCastHandler(SpellIdEnum.ESPRIT_FÉLIN)]
     public class FelineSpiritCastHandler : DefaultSpellCastHandler
@@ -14,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         {
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             base.Initialize();
 
@@ -22,6 +22,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
             if (damageHandler != null)
                 damageHandler.BuffTriggerType = BuffTriggerType.BUFF_ENDED_TURNEND;
+
+            return true;
         }
 
         public override void Execute()

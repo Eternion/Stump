@@ -78,6 +78,8 @@ namespace Stump.Server.BaseServer.Commands
             return command.RequiredRole <= UserRole;
         }
 
+        public abstract void Log();
+
         /// <summary>
         ///   Replies accordingly with the given text.
         /// </summary>

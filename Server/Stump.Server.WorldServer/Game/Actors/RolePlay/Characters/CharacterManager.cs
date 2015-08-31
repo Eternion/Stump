@@ -41,20 +41,23 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         [Variable(true)] public static uint MaxCharacterSlot = 5;
 
         private static readonly Regex m_nameCheckerRegex = new Regex(
-            "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
+            "^[A-Z][a-z]{2,9}(?:-[A-Za-z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled);
 
         public CharacterRecord GetCharacterById(int id)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             return Database.Query<CharacterRecord>(string.Format(CharacterRelator.FetchById, id)).FirstOrDefault();
         }
 
         public CharacterRecord GetCharacterByName(string name)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             return Database.Query<CharacterRecord>(CharacterRelator.FetchByName, name).FirstOrDefault();
         }
 
         public List<CharacterRecord> GetCharactersByAccount(WorldClient client)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             if (client.Account.Characters == null ||
                 client.Account.Characters.Count == 0)
                 return new List<CharacterRecord>();
@@ -89,12 +92,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public bool DoesNameExist(string name)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             return Database.ExecuteScalar<object>("SELECT 1 FROM characters WHERE Name=@0", name) != null;
         }
 
         public void CreateCharacter(WorldClient client, string name, sbyte breedId, bool sex,
                                                            IEnumerable<int> colors, int headId, Action successCallback, Action<CharacterCreationResultEnum> failCallback)
         {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             if (client.Characters.Count >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
             {
                 failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
@@ -107,7 +112,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return;
             }
 
-            if (!m_nameCheckerRegex.IsMatch(name))
+            if (!client.UserGroup.IsGameMaster && !m_nameCheckerRegex.IsMatch(name))
             {
                 failCallback(CharacterCreationResultEnum.ERR_INVALID_NAME);
                 return;
@@ -151,7 +156,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             {
                 record = new CharacterRecord(breed)
                     {
-                        Experience = ExperienceManager.Instance.GetCharacterLevelExperience(breed.StartLevel),
+                        Experience = ExperienceManager.Instance.GetCharacterLevelExperience((byte)breed.StartLevel),
                         Name = name,
                         Sex = sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE,
                         Head = headId,
@@ -214,7 +219,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public void DeleteCharacterOnAccount(CharacterRecord character, WorldClient client)
-        {   
+        {
+            WorldServer.Instance.IOTaskPool.EnsureContext();
             // todo cascade
             var guildMember = GuildManager.Instance.TryGetGuildMember(character.Id);
 
@@ -235,9 +241,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public string GenerateName()
         {
-            string name;
+            var rand = new Random();
+            var namelen = rand.Next(5, 10);
+            var name = string.Empty;
 
-            do
+            var vowel = rand.Next(0, 2) == 0;
+            name += GetChar(vowel, rand).ToString(CultureInfo.InvariantCulture).ToUpper();
+            vowel = !vowel;
+
+            for (var i = 0; i < namelen - 1; i++)
+            {
+                name += GetChar(vowel, rand);
+                vowel = !vowel;
+            }
+
+            /*do
             {
                 var rand = new Random();
                 var namelen = rand.Next(5, 10);
@@ -252,7 +270,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     name += GetChar(vowel, rand);
                     vowel = !vowel;
                 }
-            } while (DoesNameExist(name));
+            } while (DoesNameExist(name));*/
 
             return name;
         }

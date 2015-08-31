@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:12
+// Generated on 08/04/2015 13:24:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public long mountUid;
+        public int mountUid;
         public sbyte mountLocation;
         public int mountFoodUid;
         public int quantity;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public MountFeedRequestMessage(long mountUid, sbyte mountLocation, int mountFoodUid, int quantity)
+        public MountFeedRequestMessage(int mountUid, sbyte mountLocation, int mountFoodUid, int quantity)
         {
             this.mountUid = mountUid;
             this.mountLocation = mountLocation;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarLong(mountUid);
+            writer.WriteVarInt(mountUid);
             writer.WriteSByte(mountLocation);
             writer.WriteVarInt(mountFoodUid);
             writer.WriteVarInt(quantity);
@@ -45,9 +45,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            mountUid = reader.ReadVarLong();
-            if (mountUid < 0 || mountUid > 9.007199254740992E15)
-                throw new Exception("Forbidden value on mountUid = " + mountUid + ", it doesn't respect the following condition : mountUid < 0 || mountUid > 9.007199254740992E15");
+            mountUid = reader.ReadVarInt();
+            if (mountUid < 0)
+                throw new Exception("Forbidden value on mountUid = " + mountUid + ", it doesn't respect the following condition : mountUid < 0");
             mountLocation = reader.ReadSByte();
             mountFoodUid = reader.ReadVarInt();
             if (mountFoodUid < 0)

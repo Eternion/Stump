@@ -19,7 +19,7 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells.Casts.Roublard;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         [Variable] public static int WallMaxSize = 6;
         [Variable] public static int ExplosionZone = 2;
 
-        private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>()
+        private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>
         {
             {2, SpellIdEnum.MUR_DE_FEU},
             {3, SpellIdEnum.MUR_D_AIR},
@@ -90,7 +90,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (player == Summoner)
                 IncreaseDamageBonus();
 
-            if (player == this)
+            if (IsFighterTurn())
                 PassTurn();
         }
 
@@ -224,7 +224,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsBoundWith(SummonedBomb bomb)
         {
-            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+            var dist = Position.Point.ManhattanDistanceTo(bomb.Position.Point);
 
             return dist > WallMinSize && dist <= (WallMaxSize + 1) && // check the distance
                 MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
@@ -235,7 +235,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsInExplosionZone(SummonedBomb bomb)
         {
-            var dist = Position.Point.DistanceToCell(bomb.Position.Point);
+            var dist = Position.Point.ManhattanDistanceTo(bomb.Position.Point);
 
             return dist <= ExplosionZone;
         }
@@ -403,17 +403,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return 0;
         }
 
-        protected override void OnDead(FightActor killedBy)
+        protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            if (HasState((int) SpellStatesEnum.Unmovable))
+            if (HasState((int) SpellStatesEnum.INDÉPLAÇABLE))
             {
-                var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.Unmovable);
+                var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.INDÉPLAÇABLE);
                 RemoveState(state);
 
                 Explode();
             }      
 
-            base.OnDead(killedBy);
+            base.OnDead(killedBy, passTurn);
 
             Summoner.RemoveBomb(this);
 
@@ -445,7 +445,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.TotalMax,
                 Stats.Health.Base,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
-                0, // shieldsPoints = ?
+                Stats.Shield.TotalSafe,
                 (short) Stats.AP.Total,
                 (short) Stats.AP.TotalMax,
                 (short) Stats.MP.Total,

@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects;
+using Stump.DofusProtocol.Enums.Custom;
+using Stump.Server.WorldServer.Game.Items;
+using Stump.Server.WorldServer.Game.Effects.Instances;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -137,6 +141,106 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             ((BoundLivingObjectItem) item).Dissociate();
         }
 
+        [WorldHandler(ObjectDropMessage.Id)]
+        public static void HandleObjectDropMessage(WorldClient client, ObjectDropMessage message)
+        {
+            if (client.Character.IsInFight() || client.Character.IsInExchange())
+                return;
+
+            client.Character.DropItem(message.objectUID, message.quantity);
+        }
+
+        [WorldHandler(MimicryObjectFeedAndAssociateRequestMessage.Id)]
+        public static void HandleMimicryObjectFeedAndAssociateRequestMessage(WorldClient client, MimicryObjectFeedAndAssociateRequestMessage message)
+        {
+            var character = client.Character;
+
+            var host = character.Inventory.TryGetItem(message.hostUID);
+            var food = character.Inventory.TryGetItem(message.foodUID);
+            var mimisymbic = character.Inventory.TryGetItem(ItemIdEnum.MIMISYMBIC);
+
+            if (host == null || food == null)
+            {
+                SendMimicryObjectErrorMessage(client, host == null ? MimicryErrorEnum.NO_VALID_HOST : MimicryErrorEnum.NO_VALID_FOOD);
+                return;
+            }
+
+            if (mimisymbic == null)
+            {
+                SendMimicryObjectErrorMessage(client, MimicryErrorEnum.NO_VALID_MIMICRY);
+                return;
+            }
+
+            if (food.AppearanceId == host.AppearanceId)
+            {
+                SendMimicryObjectErrorMessage(client, MimicryErrorEnum.SAME_SKIN);
+                return;
+            }
+
+            if (food.Template.Level > host.Template.Level)
+            {
+                SendMimicryObjectErrorMessage(client, MimicryErrorEnum.FOOD_LEVEL);
+                return;
+            }
+
+            if (food.Template.TypeId != host.Template.TypeId)
+            {
+                SendMimicryObjectErrorMessage(client, MimicryErrorEnum.FOOD_TYPE);
+                return;
+            }
+
+            if (message.preview)
+            {
+                var modifiedItem = ItemManager.Instance.CreatePlayerItem(character, host);
+                modifiedItem.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
+
+                SendMimicryObjectPreviewMessage(client, modifiedItem);
+            }
+            else
+            {
+                if (!character.Inventory.RemoveItem(food) || !character.Inventory.RemoveItem(mimisymbic))
+                {
+                    SendMimicryObjectErrorMessage(client, MimicryErrorEnum.IMPOSSIBLE_ACTION);
+                    return;
+                }
+
+                host.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
+                host.Invalidate();
+
+                character.Inventory.RefreshItem(host);
+                SendMimicryObjectAssociatedMessage(client, host);
+            }
+        }
+
+        [WorldHandler(MimicryObjectEraseRequestMessage.Id)]
+        public static void HandleMimicryObjectEraseRequestMessage(WorldClient client, MimicryObjectEraseRequestMessage message)
+        {
+            var host = client.Character.Inventory.TryGetItem(message.hostUID);
+
+            if (host == null)
+                return;
+
+            host.Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_Appearance);
+            host.Invalidate();
+
+            client.Character.Inventory.RefreshItem(host);
+        }
+
+        public static void SendMimicryObjectAssociatedMessage(IPacketReceiver client, BasePlayerItem host)
+        {
+            client.Send(new MimicryObjectAssociatedMessage(host.Guid));
+        }
+
+        public static void SendMimicryObjectPreviewMessage(IPacketReceiver client, BasePlayerItem host)
+        {
+            client.Send(new MimicryObjectPreviewMessage(host.GetObjectItem()));
+        }
+
+        public static void SendMimicryObjectErrorMessage(IPacketReceiver client, MimicryErrorEnum error)
+        {
+            client.Send(new MimicryObjectErrorMessage((sbyte)ObjectErrorEnum.SYMBIOTIC_OBJECT_ERROR, (sbyte)error, true));
+        }
+
         public static void SendGameRolePlayPlayerLifeStatusMessage(IPacketReceiver client)
         {
             client.Send(new GameRolePlayPlayerLifeStatusMessage());
@@ -144,10 +248,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendInventoryContentMessage(WorldClient client)
         {
-            client.Send(
-                new InventoryContentMessage(
-                    client.Character.Inventory.Select(entry => entry.GetObjectItem()),
-                    client.Character.Inventory.Kamas));
+            client.Send(new InventoryContentMessage(client.Character.Inventory.Select(entry => entry.GetObjectItem()),
+                client.Character.Inventory.Kamas));
+        }
+
+        public static void SendInventoryContentAndPresetMessage(WorldClient client)
+        {
+            client.Send(new InventoryContentAndPresetMessage(client.Character.Inventory.Select(entry => entry.GetObjectItem()),
+                client.Character.Inventory.Kamas, client.Character.Inventory.Presets.Select(entry => entry.GetNetworkPreset())));
         }
 
         public static void SendInventoryWeightMessage(WorldClient client)

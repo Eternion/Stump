@@ -2,6 +2,7 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
@@ -23,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             if (target == null)
                 return false;
 
-            if (target.HasState((int)SpellStatesEnum.Unmovable) || target.HasState((int)SpellStatesEnum.Rooted))
+            if (target.HasState((int)SpellStatesEnum.INDÉPLAÇABLE) || target.HasState((int)SpellStatesEnum.ENRACINÉ) || target.HasState((int)SpellStatesEnum.INÉBRANLABLE))
                 return false;
 
             var startCell = target.Cell;
@@ -36,6 +37,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (!Fight.IsCellFree(Fight.Map.Cells[cell.CellId]))
                 {
                     endCell = index > 0 ? Fight.Map.Cells[cells[index - 1].CellId] : startCell;
+                    break;
                 }
 
                 if (!Fight.ShouldTriggerOnMove(Fight.Map.Cells[cell.CellId]))
@@ -46,11 +48,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             }
 
             target.Cell = endCell;
+            target.OnActorMoved(Caster, false);
+            target.TriggerBuffs(BuffTriggerType.PUSH);
 
             if (target.IsCarrying())
                 target.ThrowActor(Map.Cells[startCell.Id], true);
 
-            Fight.ForEach(entry => ActionsHandler.SendGameActionFightSlideMessage(entry.Client, Caster, target, startCell.Id, target.Cell.Id));
+            Fight.ForEach(entry => ActionsHandler.SendGameActionFightSlideMessage(entry.Client, Caster, target, startCell.Id, target.Cell.Id), true);
 
             return true;
         }

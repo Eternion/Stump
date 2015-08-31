@@ -21,6 +21,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         }
 
         private MapPoint m_castPoint;
+        private Cell m_customCastCell;
 
         public FightActor Caster
         {
@@ -40,6 +41,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         }
 
         public Cell TargetedCell
+        {
+            get;
+            protected set;
+        }
+
+        public FightActor TargetedActor
         {
             get;
             protected set;
@@ -70,7 +77,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
         public Cell CastCell
         {
-            get { return MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell; }
+            get { return m_customCastCell ?? (MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell); }
+            set { m_customCastCell = value; }
+
         }
 
         public MapPoint CastPoint
@@ -89,7 +98,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             get { return Fight.Map; }
         }
 
-        public abstract void Initialize();
+        public abstract bool Initialize();
         public abstract void Execute();
 
         public virtual IEnumerable<SpellEffectHandler> GetEffectHandlers()

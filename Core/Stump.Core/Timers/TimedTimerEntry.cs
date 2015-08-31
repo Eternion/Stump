@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 namespace Stump.Core.Timers
 {
-    public class TimedTimerEntry
+    public class TimedTimerEntry : IDisposable
     {
         private int m_interval;
         private bool m_firstCalled;
@@ -38,7 +38,7 @@ namespace Stump.Core.Timers
 
         public TimedTimerEntry(int delay, int interval, Action action)
         {
-            m_delay = m_delay;
+            m_delay = delay;
             Interval = interval;
             Action = action;
         }
@@ -62,6 +62,12 @@ namespace Stump.Core.Timers
         }
 
         public DateTime NextTick
+        {
+            get;
+            private set;
+        }
+
+        public DateTime? LastExecute
         {
             get;
             private set;
@@ -114,10 +120,10 @@ namespace Stump.Core.Timers
 
         public bool ShouldTrigger()
         {
-            return Enabled && DateTime.Now >= NextTick;
+            return Enabled && !IsDisposed && DateTime.Now >= NextTick;
         }
 
-        public void Trigger()
+        public bool Trigger()
         {
             Action();
 
@@ -127,6 +133,14 @@ namespace Stump.Core.Timers
                 NextTick = DateTime.Now + TimeSpan.FromMilliseconds(Interval);
 
             m_firstCalled = true;
+            LastExecute = DateTime.Now;
+
+            return Enabled || IsDisposed;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} (Callback = {1}, Delay = {2})", GetType(), Action, Delay);
         }
     }
 

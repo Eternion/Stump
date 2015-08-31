@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 16:35:25
+// Generated on 08/13/2015 17:13:56
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint nameId;
         public int areaId;
         public List<AmbientSound> ambientSounds;
+        public List<List<int>> playlists;
         public List<uint> mapIds;
         public Rectangle bounds;
         public List<int> shape;
@@ -58,6 +59,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.ambientSounds; }
             set { this.ambientSounds = value; }
+        }
+        [D2OIgnore]
+        public List<List<int>> Playlists
+        {
+            get { return this.playlists; }
+            set { this.playlists = value; }
         }
         [D2OIgnore]
         public List<uint> MapIds

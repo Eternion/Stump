@@ -5,10 +5,13 @@ using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
 using Stump.Core.Extensions;
+using Stump.Core.Mathematics;
 using Stump.Core.Pool;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Types;
+using Stump.ORM.SubSonic.Extensions;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -16,19 +19,20 @@ using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Fights.Challenges;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
+using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Basic;
 using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using TriggerType = Stump.Server.WorldServer.Game.Fights.Triggers.TriggerType;
+using Stump.Core.Collections;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -140,6 +144,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        DefaultChallenge Challenge
+        {
+            get;
+        }
+
         DateTime TurnStartTime
         {
             get;
@@ -206,12 +215,28 @@ namespace Stump.Server.WorldServer.Game.Fights
             get;
         }
 
+        bool AIDebugMode
+        {
+            get;
+            set;
+        }
+
+        bool Freezed
+        {
+            get;
+            set;
+        }
+
+        event Action<IFight> FightStarted;
+        event Action<IFight> FightEnded;
+        
         void Initialize();
         void StartFighting();
         bool CheckFightEnd();
         void CancelFight();
         void EndFight();
         event FightWinnersDelegate WinnersDetermined;
+        event Action<IFight> ResultGenerated;
         void StartPlacement();
         void ShowBlades();
         void HideBlades();
@@ -238,6 +263,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         void StartTurn();
         event Action<IFight, FightActor> TurnStarted;
         void StopTurn();
+        event Action<IFight, FightActor> BeforeTurnStopped;
+        event Action<IFight, FightActor> TurnStopped;
+        event Action<FightActor, int, int> Tackled;
         void SwitchFighters(FightActor fighter1, FightActor fighter2);
         IEnumerable<Buff> GetBuffs();
         void UpdateBuff(Buff buff);
@@ -248,6 +276,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         IEnumerable<MarkTrigger> GetTriggers();
         bool ShouldTriggerOnMove(Cell cell);
         bool ShouldTriggerOnMove(Cell cell, FightActor actor);
+        MarkTrigger[] GetTriggersByCell(Cell cell);
         MarkTrigger[] GetTriggers(Cell cell);
         void AddTriger(MarkTrigger trigger);
         void RemoveTrigger(MarkTrigger trigger);
@@ -255,19 +284,23 @@ namespace Stump.Server.WorldServer.Game.Fights
         void DecrementGlyphDuration(FightActor caster);
         int PopNextTriggerId();
         void FreeTriggerId(int id);
+        void SetChallenge(DefaultChallenge challenge);
+        int GetChallengeBonus();
         IEnumerable<Character> GetAllCharacters();
         IEnumerable<Character> GetAllCharacters(bool withSpectators = false);
         void ForEach(Action<Character> action);
         void ForEach(Action<Character> action, bool withSpectators = false);
         void ForEach(Action<Character> action, Character except, bool withSpectators = false);
         bool IsCellFree(Cell cell);
-        int GetFightDuration();
-        int GetTurnTimeLeft();
+        TimeSpan GetFightDuration();
+        TimeSpan GetTurnTimeLeft();
+        TimeSpan GetPlacementTimeLeft();
         sbyte GetNextContextualId();
         void FreeContextualId(sbyte id);
         FightActor GetOneFighter(int id);
         FightActor GetOneFighter(Cell cell);
         FightActor GetOneFighter(Predicate<FightActor> predicate);
+        T GetRandomFighter<T>() where T : FightActor;
         T GetOneFighter<T>(int id) where T : FightActor;
         T GetOneFighter<T>(Cell cell) where T : FightActor;
         T GetOneFighter<T>(Predicate<T> predicate) where T : FightActor;
@@ -289,8 +322,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         IEnumerable<int> GetAliveFightersIds();
         FightCommonInformations GetFightCommonInformations();
         FightExternalInformations GetFightExternalInformations();
-        bool CanBeSeen(Cell from, Cell to, bool throughEntities = false);
-        int GetPlacementTimeLeft();
+        bool CanBeSeen(MapPoint from, MapPoint to, bool throughEntities = false, WorldObject except = null);
+
+        void RejoinFightFromDisconnection(CharacterFighter character);
+        void RefreshActor(FightActor actor);
     }
 
     // this is necessary since we can't read static field dynamically in a generic class
@@ -304,7 +339,13 @@ namespace Stump.Server.WorldServer.Game.Fights
         ///   Delay for player's turn
         /// </summary>
         [Variable]
-        public static int TurnTime = 35000;
+        public static int TurnTime = 15000;
+
+        /// <summary>
+        ///   Max Delay for player's turn
+        /// </summary>
+        [Variable]
+        public static int MaxTurnTime = 60000;
 
         /// <summary>
         ///   Delay before force turn to end
@@ -317,6 +358,9 @@ namespace Stump.Server.WorldServer.Game.Fights
         /// </summary>
         [Variable]
         public static int EndFightTimeOut = 10000;
+
+        [Variable]
+        public static int TurnsBeforeDisconnection = 20;
     }
 
     public abstract class Fight<TBlueTeam,TRedTeam> : WorldObjectsContext, IFight
@@ -499,10 +543,21 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return TimeLine.Current; }
         }
 
+        public DefaultChallenge Challenge
+        {
+            get;
+            private set;
+        }
+
         public DateTime TurnStartTime
         {
             get;
             protected set;
+        }
+
+        public TimeSpan TurnTimeLeft
+        {
+            get { return TurnStartTime + TimeSpan.FromMilliseconds(FighterPlaying.TurnTime) - DateTime.Now; }
         }
 
         public ReadyChecker ReadyChecker
@@ -554,15 +609,21 @@ namespace Stump.Server.WorldServer.Game.Fights
             get { return true; }
         }
 
+        public bool AIDebugMode
+        {
+            get;
+            set;
+        }
+
+
         #endregion
 
         #region Phases
 
         protected void SetFightState(FightState state)
         {
-            State = state;
-
             UnBindFightersEvents();
+            State = state;
             BindFightersEvents();
 
             OnStateChanged();
@@ -610,12 +671,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             StartTurn();
         }
+        
 
         #region EndFight
 
         public bool CheckFightEnd()
         {
-            if (!ChallengersTeam.AreAllDead() && !DefendersTeam.AreAllDead() && Clients.Count > 0)
+            if (!ChallengersTeam.AreAllDead() && !DefendersTeam.AreAllDead())
                 return false;
 
             EndFight();
@@ -668,14 +730,22 @@ namespace Stump.Server.WorldServer.Game.Fights
             ReadyChecker = ReadyChecker.RequestCheck(this, OnFightEnded, actors => OnFightEnded());
         }
 
+        public event Action<IFight> FightStarted;
+
         protected virtual void OnFightStarted()
         {
             foreach (var fighter in Fighters)
             {
                 fighter.FightStartPosition = fighter.Position.Clone();
+                fighter.LastPositions.Push(new Pair<Cell, int>(fighter.FightStartPosition.Cell, TimeLine.RoundNumber));
             }
+
+            var handler = FightStarted;
+            if (handler != null)
+                handler(this);
         }
 
+        public event Action<IFight> FightEnded;
         protected virtual void OnFightEnded()
         {
             ReadyChecker = null;
@@ -694,6 +764,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             Dispose();
+
+            var handler = FightEnded;
+            if (handler != null)
+                handler(this);
         }
 
         public event FightWinnersDelegate WinnersDetermined;
@@ -732,14 +806,23 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        protected abstract IEnumerable<IFightResult> GenerateResults();
+        public event Action<IFight> ResultGenerated;
+
+        protected virtual IEnumerable<IFightResult> GenerateResults()
+        {
+            var handler = ResultGenerated;
+            if (handler != null)
+                handler(this);
+
+            return new IFightResult[0];
+        }
 
         protected virtual IEnumerable<IFightResult> GenerateLeaverResults(CharacterFighter leaver,
             out IFightResult leaverResult)
         {
             leaverResult = null;
             var list = new List<IFightResult>();
-            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb)))
+            foreach (var fighter in GetFightersAndLeavers().Where(entry => !(entry is SummonedFighter) && !(entry is SummonedBomb) && !(entry is SlaveFighter)))
             {
                 var result =
                     fighter.GetFightResult(fighter.Team == leaver.Team
@@ -755,9 +838,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             return list;
         }
 
-        protected void ApplyResults(IEnumerable<IFightResult> results)
+        protected virtual void ApplyResults(IEnumerable<IFightResult> results)
         {
-            foreach (var fightResult in results.Where(fightResult => !fightResult.HasLeft))
+            foreach (var fightResult in results.Where(fightResult => !fightResult.HasLeft ||
+                !(fightResult is FightPlayerResult) ||
+                ((FightPlayerResult) fightResult).Fighter.IsDisconnected))
             {
                 fightResult.Apply();
             }
@@ -786,6 +871,8 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnDisposed()
         {
+            Clients.Dispose();
+
             if (ReadyChecker != null)
                 ReadyChecker.Cancel();
 
@@ -810,12 +897,19 @@ namespace Stump.Server.WorldServer.Game.Fights
             RandomnizePositions(ChallengersTeam);
             RandomnizePositions(DefendersTeam);
 
-            TimeLine.OrderLine();
-            ContextHandler.SendGameFightTurnListMessage(Clients, this);
-
             ShowBlades();
             Map.AddFight(this);
         }
+        public void RefreshActor(FightActor actor)
+        {
+            ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, actor), true);
+        }
+        
+        private void OnStatsRefreshed(Character character)
+        {
+            ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, character.Fighter), true);
+        }
+
 
         #region Blades
 
@@ -892,14 +986,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #endregion
         
-        public virtual int GetPlacementTimeLeft()
+        public virtual TimeSpan GetPlacementTimeLeft()
         {
-            return 0;
+            return TimeSpan.Zero;
         }
 
         #region Placement methods
-
-        
 
         public bool FindRandomFreeCell(FightActor fighter, out Cell cell, bool placement = true)
         {
@@ -941,7 +1033,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             Cell cell;
             if (!FindRandomFreeCell(fighter, out cell))
             {
-                fighter.LeaveFight(); // no place more than we kick the actor to avoid bugs
+                if (fighter is CharacterFighter)
+                    ((CharacterFighter)fighter).LeaveFight(); // no place more than we kick the actor to avoid bugs
+                else
+                    fighter.Team.RemoveFighter(fighter);
                 return false;
             }
 
@@ -958,9 +1053,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             var enumerator = shuffledCells.GetEnumerator();
             foreach (var fighter in team.GetAllFighters())
             {
-                enumerator.MoveNext();
-
-                fighter.ChangePrePlacement(enumerator.Current);
+                if (enumerator.MoveNext())
+                    fighter.ChangePrePlacement(enumerator.Current);
             }
             enumerator.Dispose();
         }
@@ -979,12 +1073,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 if (closerCell == null)
                     closerCell = Tuple.Create(opposant.Cell,
-                                              fighter.Position.Point.DistanceToCell(point));
+                                              fighter.Position.Point.ManhattanDistanceTo(point));
                 else
                 {
-                    if (fighter.Position.Point.DistanceToCell(point) < closerCell.Item2)
+                    if (fighter.Position.Point.ManhattanDistanceTo(point) < closerCell.Item2)
                         closerCell = Tuple.Create(opposant.Cell,
-                                                  fighter.Position.Point.DistanceToCell(point));
+                                                  fighter.Position.Point.ManhattanDistanceTo(point));
                 }
             }
 
@@ -1080,7 +1174,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             if (State == FightState.Ended)
             {
-                throw new Exception("Fight ended");
+                return;
             }
 
             if (actor is SummonedFighter)
@@ -1095,12 +1189,18 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
             }
 
+            if (actor is SlaveFighter)
+            {
+                OnSlaveAdded(actor as SlaveFighter);
+                return;
+            }
+
             TimeLine.Fighters.Add(actor);
+
             BindFighterEvents(actor);
 
             if (State == FightState.Placement)
             {
-                TimeLine.OrderLine();
                 if (!RandomnizePosition(actor))
                     return;
             }
@@ -1124,6 +1224,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
+
+        protected virtual void OnSlaveAdded(SlaveFighter slave)
+        {
+            TimeLine.InsertFighter(slave, TimeLine.Fighters.IndexOf(slave.Summoner) + 1);
+            BindFighterEvents(slave);
+
+            ContextHandler.SendGameFightTurnListMessage(Clients, this);
+        }
+
         protected virtual void OnBombAdded(SummonedBomb bomb)
         {
             TimeLine.InsertFighter(bomb, TimeLine.Fighters.IndexOf(bomb.Summoner) + 1);
@@ -1136,7 +1245,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var character = fighter.Character;
 
-            character.RealLook.RemoveAuras();
             character.RefreshActor();
 
             if (character.ArenaPopup != null)
@@ -1274,12 +1382,15 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             CharacterHandler.SendCharacterStatsListMessage(spectator.Client);
 
+            if (Challenge != null)
+                ContextHandler.SendChallengeInfoMessage(spectator.Client, Challenge);
+
             // Spectator 'X' joined
             BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 36, spectator.Character.Name);
 
             if (TimeLine.Current != null)
             {
-                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying, GetTurnTimeLeft());
+                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying, (int)GetPlacementTimeLeft().TotalMilliseconds/100);
             }
         }
 
@@ -1311,6 +1422,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnSpectatorRemoved(FightSpectator spectator)
         {
+            ContextHandler.SendGameFightLeaveMessage(spectator.Client, spectator);
             spectator.Character.RejoinMap();
         }
 
@@ -1341,37 +1453,53 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnTurnStarted()
         {
-            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
+            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
+
             FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_BEGIN);
             FighterPlaying.DecrementAllCastedBuffsDuration();
             DecrementGlyphDuration(FighterPlaying);
             TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_BEGIN);
-            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
+
+            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
             // can die with triggers
             if (CheckFightEnd())
                 return;
-            
-            if (TimeLine.NewRound)
-                ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
 
-            if (FighterPlaying.IsDead() || FighterPlaying.MustSkipTurn())
+            if (TimeLine.NewRound)
+            {
+                ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
+            }
+
+            if (FighterPlaying.MustSkipTurn())
             {
                 FighterPlaying.ResetUsedPoints();
                 PassTurn();
                 return;
             }
 
-            ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id,
-                                                         FightConfiguration.TurnTime);
+            var slaveFighter = FighterPlaying as SlaveFighter;
+            if (slaveFighter != null)
+                ContextHandler.SendGameFightTurnStartSlaveMessage(Clients, slaveFighter.Id, FighterPlaying.TurnTime/100, slaveFighter.Summoner.Id);
+            else
+                ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime/100);
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
 
+            var characterFighter = FighterPlaying as CharacterFighter;
+            if (FighterPlaying is CharacterFighter)
+            {
+                ContextHandler.SendGameFightTurnStartPlayingMessage(characterFighter.Character.Client);
+                ContextHandler.SendFighterStatsListMessage(characterFighter.Character.Client, characterFighter.Character);
+            }
+
             FighterPlaying.TurnStartPosition = FighterPlaying.Position.Clone();
 
             TurnStartTime = DateTime.Now;
-            m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+
+            if (!Freezed)
+                m_turnTimer = Map.Area.CallDelayed(FighterPlaying.TurnTime, StopTurn);
 
             var evnt = TurnStarted;
             if (evnt != null)
@@ -1398,16 +1526,33 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             OnTurnStopped();
 
-            ReadyChecker = ReadyChecker.RequestCheck(this, PassTurn, LagAndPassTurn);
+            ReadyChecker = ReadyChecker.RequestCheck(this, PassTurnAndCheck, LagAndPassTurn);
         }
+
+        public event Action<IFight, FightActor> BeforeTurnStopped;
+        public event Action<IFight, FightActor> TurnStopped;
 
         protected virtual void OnTurnStopped()
         {
+            var evnt = BeforeTurnStopped;
+            if (evnt != null)
+                evnt(this, FighterPlaying);
+
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
-            FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_END);
-            FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
-            TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_END);
+
+            if (FighterPlaying.IsAlive())
+            {
+                FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_END);
+                FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
+                TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_END);
+            }
+
             FighterPlaying.ResetUsedPoints();
+
+            var time = (int)Math.Floor(GetTurnTimeLeft().TotalSeconds / 2);
+            if (TimeLine.RoundNumber > 1)
+                FighterPlaying.TurnTimeReport = time > 0 ? time : 0;
+
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
             // can die with triggers
@@ -1420,13 +1565,30 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (WaitAcknowledgment)
                 AcknowledgeAction();
 
+            evnt = TurnStopped;
+            if (evnt != null)
+                evnt(this, FighterPlaying);
+
             ContextHandler.SendGameFightTurnEndMessage(Clients, FighterPlaying);
         }
 
         protected void LagAndPassTurn(NamedFighter[] laggers)
         {
+            if (ReadyChecker == null)
+                return;
+
             // some guys are lagging !
             OnLaggersSpotted(laggers);
+
+            PassTurnAndCheck();
+        }
+
+        protected void PassTurnAndCheck()
+        {
+            if (ReadyChecker == null)
+                return;
+
+            ReadyChecker = null;
 
             PassTurn();
         }
@@ -1436,11 +1598,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State != FightState.Fighting)
                 return;
 
-            ReadyChecker = null;
-
             if (CheckFightEnd())
                 return;
 
+            redo:
             if (!TimeLine.SelectNextFighter())
             {
                 if (!CheckFightEnd())
@@ -1450,6 +1611,47 @@ namespace Stump.Server.WorldServer.Game.Fights
 
                 return;
             }
+
+            // player left but is disconnected
+            // pass turn is there are others players
+            if (FighterPlaying.HasLeft() && FighterPlaying is CharacterFighter)
+            {
+
+                var leaver = (CharacterFighter) FighterPlaying;
+                if (leaver.IsDisconnected &&
+                    leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection <= TimeLine.RoundNumber)
+                {
+                    leaver.Die();
+
+                    if (CheckFightEnd())
+                        return;
+
+                    IFightResult leaverResult;
+                    var results = GenerateLeaverResults(leaver, out leaverResult);
+
+                    leaverResult.Apply();
+
+                    ContextHandler.SendGameFightLeaveMessage(Clients, leaver);
+
+                    leaver.ResetFightProperties();
+
+                    leaver.Team.AddLeaver(leaver);
+                    m_leavers.Add(leaver);
+                    leaver.Team.RemoveFighter(leaver);
+
+                    leaver.LeaveDisconnectedState(false);
+
+                    leaver.Character.RejoinMap();
+                    leaver.Character.SaveLater();
+ 
+                    goto redo;
+                }
+
+                // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
+                BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182,
+                    FighterPlaying.GetMapRunningFighterName(), leaver.LeftRound + FightConfiguration.TurnsBeforeDisconnection - TimeLine.RoundNumber);
+            }
+
 
             OnTurnPassed();
 
@@ -1502,6 +1704,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null)
             {
                 fighter.Character.LoggedOut -= OnPlayerLoggout;
+                fighter.Character.StatsResfreshed -= OnStatsRefreshed;
             }
         }
 
@@ -1518,6 +1721,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State == FightState.Placement)
             {
                 actor.FighterLeft += OnPlayerLeft;
+
                 actor.ReadyStateChanged += OnSetReady;
                 actor.PrePlacementChanged += OnChangePreplacementPosition;
             }
@@ -1525,6 +1729,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (State == FightState.Fighting)
             {
                 actor.FighterLeft += OnPlayerLeft;
+
                 actor.StartMoving += OnStartMoving;
                 actor.StopMoving += OnStopMoving;
                 actor.PositionChanged += OnPositionChanged;
@@ -1548,9 +1753,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null)
             {
                 fighter.Character.LoggedOut += OnPlayerLoggout;
+
+                if (State == FightState.Placement)
+                {
+                    fighter.Character.StatsResfreshed += OnStatsRefreshed;
+                }
             }
         }
-
 
         #endregion
 
@@ -1588,7 +1797,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter != null && !fighter.IsFighterTurn())
                 return;
 
-            if (path.IsEmpty() || path.MPCost == 0)
+            if (path.IsEmpty() || path.MPCost <= 0)
                 return;
 
             StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
@@ -1645,6 +1854,10 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
+            //Save Last Positions
+            foreach (var cell in path.GetPath().Where(x => x.Id != fighter.Cell.Id))
+                fighter.LastPositions.Push(new Pair<Cell, int>(cell, TimeLine.RoundNumber));
+
             var movementsKeys = path.GetServerPathKeys();
 
             ForEach(entry =>
@@ -1656,6 +1869,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             actor.StopMove();
             EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
         }
+
+        public event Action<FightActor, int, int> Tackled;
 
         protected virtual void OnTackled(FightActor actor, Path path)
         {
@@ -1670,11 +1885,20 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
 
             ActionsHandler.SendGameActionFightTackledMessage(Clients, actor, tacklers);
-            actor.LostAP((short)apTackled);
-            actor.LostMP((short)mpTackled);
+            actor.LostAP((short)apTackled, actor);
+            actor.LostMP((short)mpTackled, actor);
 
             if (path.MPCost > actor.MP)
                 path.CutPath(actor.MP + 1);
+
+            actor.TriggerBuffs(BuffTriggerType.TACKLED);
+
+            foreach (var tackler in tacklers)
+                tackler.TriggerBuffs(BuffTriggerType.TACKLE);
+
+            var handler = Tackled;
+            if (handler != null)
+                handler(actor, apTackled, mpTackled);
         }
 
         protected virtual void OnStopMoving(ContextActor actor, Path path, bool canceled)
@@ -1698,26 +1922,36 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             var fighter = actor as FightActor;
 
-            if (fighter != null)
-                TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
-        }
+            if (fighter == null)
+                return;
 
-        public void SwitchFighters(FightActor fighter1, FightActor fighter2)
-        {
-            // todo
+            //Save Last Positions
+            if (fighter.LastPositions.Count > 0 && fighter.LastPositions.Last().First != objectPosition.Cell)
+                fighter.LastPositions.Push(new Pair<Cell, int>(objectPosition.Cell, TimeLine.RoundNumber));
+
+            TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
         }
 
         #endregion
 
         #region Health & Actions points
 
-        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int shieldDamages, int permanentDamages, FightActor from)
         {
             var loss = (short) (-delta);
-            if (delta == 0 && permanentDamages == 0)
+
+            if (delta == 0 && shieldDamages == 0 && permanentDamages == 0)
                 return;
 
-            ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            if (shieldDamages == 0)
+                ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            else
+            {
+                ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss,
+                    (short)permanentDamages, (short)shieldDamages);
+
+                ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
+            } 
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
@@ -1894,58 +2128,63 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnPlayerLeft(FightActor fighter)
         {
+            if (!(fighter is CharacterFighter))
+            {
+                logger.Error("Only characters can leave a fight");
+                return;
+            }
+
+            var characterFighter = ((CharacterFighter)fighter);
+
             if (State == FightState.Placement)
             {
-                var characterFighter = ((CharacterFighter)fighter);
-
-                if (characterFighter != null)
-                    characterFighter.ResetFightProperties();
+                characterFighter.ResetFightProperties();
 
                 if (CheckFightEnd())
                     return;
 
                 fighter.Team.RemoveFighter(fighter);
-
-                if (characterFighter == null)
-                    return;
-
                 characterFighter.Character.RejoinMap();
             }
             else
             {
-                fighter.Die();
-
-                if (fighter is CharacterFighter && (fighter as CharacterFighter).Character.IsLoggedIn)
+                if (characterFighter.Character.IsLoggedIn)
                 {
-                    // wait the character to be ready
-                    var readyChecker = new ReadyChecker(this, new[] { ( (CharacterFighter)fighter ) });
-                    readyChecker.Success += obj => OnPlayerReadyToLeave(fighter as CharacterFighter);
-                    readyChecker.Timeout += (obj, laggers) => OnPlayerReadyToLeave(fighter as CharacterFighter);
+                    fighter.Die();
 
-                    ((CharacterFighter)fighter).PersonalReadyChecker = readyChecker;
-                    // Clients.Remove(character.Client); // can be instant so we remove him before to start the checker .. why ???
+                    // wait the character to be ready
+                    var readyChecker = new ReadyChecker(this, new[] { characterFighter });
+                    readyChecker.Success += obj => OnPlayerReadyToLeave(characterFighter);
+                    readyChecker.Timeout += (obj, laggers) => OnPlayerReadyToLeave(characterFighter);
+
+                    characterFighter.PersonalReadyChecker = readyChecker;
                     readyChecker.Start();
                 }
                 else
                 {
                     var isfighterTurn = fighter.IsFighterTurn();
-
-                    ContextHandler.SendGameFightLeaveMessage(Clients, fighter);
+                    characterFighter.EnterDisconnectedState();
 
                     if (!CheckFightEnd() && isfighterTurn)
                         StopTurn();
 
-                    fighter.ResetFightProperties();
-
-                    fighter.Team.RemoveFighter(fighter);
                     fighter.Team.AddLeaver(fighter);
                     m_leavers.Add(fighter);
+
+                    // <b>%1</b> vient d'être déconnecté, il quittera la partie dans <b>%2</b> tour(s) s'il ne se reconnecte pas avant.
+                    BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 182, 
+                        fighter.GetMapRunningFighterName(), FightConfiguration.TurnsBeforeDisconnection);
+
                 } 
             }
         }
 
         protected virtual void OnPlayerReadyToLeave(CharacterFighter fighter)
         {
+            if (fighter.Fight != fighter.Character.Fight)
+                return;
+
+
             fighter.PersonalReadyChecker = null;
             var isfighterTurn = fighter.IsFighterTurn();
 
@@ -1961,22 +2200,76 @@ namespace Stump.Server.WorldServer.Game.Fights
             var fightend = CheckFightEnd();
 
             if (!fightend && isfighterTurn)
-                StopTurn();   
+                StopTurn();
 
             fighter.ResetFightProperties();
-            fighter.Character.RejoinMap();
 
-            fighter.Team.RemoveFighter(fighter);
             fighter.Team.AddLeaver(fighter);
             m_leavers.Add(fighter);
+
+            fighter.Team.RemoveFighter(fighter);
+            fighter.Character.RejoinMap();
         }
 
         protected virtual void OnPlayerLoggout(Character character)
         {
+            character.LoggedOut -= OnPlayerLoggout;
             if (!character.IsFighting() || character.Fight != this)
                 return;
 
             character.Fighter.LeaveFight();
+        }
+
+
+        public void RejoinFightFromDisconnection(CharacterFighter fighter)
+        {
+            fighter.Character.LoggedOut += OnPlayerLoggout;
+            fighter.Team.RemoveLeaver(fighter);
+            m_leavers.Remove(fighter);
+            fighter.LeaveDisconnectedState();
+
+            Clients.Add(fighter.Character.Client);
+
+            SendGameFightJoinMessage(fighter);
+            
+            foreach (var fightMember in GetAllFighters())
+                ContextHandler.SendGameFightShowFighterMessage(fighter.Character.Client, fightMember);
+
+            fighter.Character.RefreshStats();
+
+            ContextHandler.SendGameEntitiesDispositionMessage(fighter.Character.Client, GetAllFighters());
+            ContextHandler.SendGameFightResumeMessage(fighter.Character.Client, fighter);
+            ContextHandler.SendGameFightTurnListMessage(fighter.Character.Client, this);
+            ContextHandler.SendGameFightSynchronizeMessage(fighter.Character.Client, this);
+            ContextHandler.SendGameFightNewRoundMessage(fighter.Character.Client, TimeLine.RoundNumber);
+            ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, ChallengersTeam);
+            ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, DefendersTeam);
+
+            ContextHandler.SendGameFightTurnStartMessage(fighter.Character.Client, FighterPlaying.Id, (int)TurnTimeLeft.TotalMilliseconds);
+
+            // <b>%1</b> vient de se reconnecter en combat.
+            BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 184, fighter.GetMapRunningFighterName());
+        }
+
+        #endregion
+
+        #region Challenges
+
+        public void SetChallenge(DefaultChallenge challenge)
+        {
+            if (Challenge != null)
+                return;
+            
+            Challenge = challenge;
+            ContextHandler.SendChallengeInfoMessage(Clients, challenge);
+        }
+
+        public int GetChallengeBonus()
+        {
+            if (Challenge == null)
+                return 0;
+
+            return Challenge.Status == ChallengeStatusEnum.SUCCESS ? Challenge.Bonus : 1;
         }
 
         #endregion
@@ -2000,6 +2293,11 @@ namespace Stump.Server.WorldServer.Game.Fights
             return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.ContainsCell(cell) && entry.IsAffected(actor));
         }
 
+        public MarkTrigger[] GetTriggersByCell(Cell cell)
+        {
+            return m_triggers.Where(entry => entry.ContainsCell(cell)).ToArray();
+        }
+
         public MarkTrigger[] GetTriggers(Cell cell)
         {
             return m_triggers.Where(entry => entry.CenterCell.Id == cell.Id).ToArray();
@@ -2010,9 +2308,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             trigger.Triggered += OnMarkTriggered;
             m_triggers.Add(trigger);
 
-            foreach (var fighter in GetAllFighters<CharacterFighter>())
+            foreach (var character in GetCharactersAndSpectators())
             {
-                ContextHandler.SendGameActionFightMarkCellsMessage(fighter.Character.Client, trigger, trigger.DoesSeeTrigger(fighter));
+                ContextHandler.SendGameActionFightMarkCellsMessage(character.Client, trigger, character.Fighter != null && trigger.DoesSeeTrigger(character.Fighter));
             }
 
             if (!trigger.TriggerType.HasFlag(TriggerType.CREATION))
@@ -2034,8 +2332,9 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
         {
-            var triggers = m_triggers.ToArray();
-
+            var otherTriggers = m_triggers.Where(x => x.CastedSpell.Template.Id == (int)SpellIdEnum.PIÈGE_RÉPULSIF).ToArray();
+            var triggers = m_triggers.Where(x => !otherTriggers.Contains(x)).ToArray();
+            
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
             foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
             {
@@ -2045,6 +2344,19 @@ namespace Stump.Server.WorldServer.Game.Fights
                 if (markTrigger is Trap)
                     RemoveTrigger(markTrigger); 
                     
+                markTrigger.Trigger(trigger);
+
+                EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+            }
+
+            foreach (var markTrigger in otherTriggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
+            {
+                StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+
+                // avoid the trigger to trigger twice
+                if (markTrigger is Trap)
+                    RemoveTrigger(markTrigger);
+
                 markTrigger.Trigger(trigger);
 
                 EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
@@ -2060,7 +2372,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-            foreach (MarkTrigger trigger in triggersToRemove)
+            foreach (var trigger in triggersToRemove)
             {
                 RemoveTrigger(trigger);
             }
@@ -2100,16 +2412,39 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #endregion
 
+        #region Freeze
+
+        public bool Freezed
+        {
+            get { return m_freezed; }
+            set { m_freezed = value;
+                OnFreezed();
+            }
+        }
+
+        private void OnFreezed()
+        {
+            if (State == FightState.Fighting)
+            {
+                if (Freezed)
+                    m_turnTimer.Stop();
+                else
+                    m_turnTimer = Map.Area.CallDelayed(FightConfiguration.TurnTime, StopTurn);
+            }
+        }
+
+        #endregion
+
         #region Send Methods
 
         protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds/100, FightType);
         }
 
         protected virtual void SendGameFightJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, false, IsStarted, GetPlacementTimeLeft(), FightType);
+            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
         }
 
         #endregion
@@ -2120,6 +2455,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         private readonly WorldClientCollection m_spectatorClients = new WorldClientCollection();
         private readonly List<FightActor> m_leavers;
         private readonly List<FightSpectator> m_spectators;
+        private bool m_freezed;
 
         /// <summary>
         /// Do not modify, just read
@@ -2181,19 +2517,19 @@ namespace Stump.Server.WorldServer.Game.Fights
             return cell.Walkable && !cell.NonWalkableDuringFight && GetOneFighter(cell) == null;
         }
 
-        public int GetFightDuration()
+        public TimeSpan GetFightDuration()
         {
-            return !IsStarted ? 0 : (int) (DateTime.Now - StartTime).TotalMilliseconds;
+            return TimeSpan.FromMilliseconds(!IsStarted ? 0 : (int) (DateTime.Now - StartTime).TotalMilliseconds);
         }
 
-        public int GetTurnTimeLeft()
+        public TimeSpan GetTurnTimeLeft()
         {
             if (TimeLine.Current == null)
-                return 0;
+                return TimeSpan.Zero;
 
             var time = ( DateTime.Now - TurnStartTime ).TotalMilliseconds;
 
-            return time > 0 ? (FightConfiguration.TurnTime - (int)time) : 0;
+            return TimeSpan.FromMilliseconds(time > 0 ? (FighterPlaying.TurnTime - (int)time) : 0);
         }
 
         public sbyte GetNextContextualId()
@@ -2204,6 +2540,18 @@ namespace Stump.Server.WorldServer.Game.Fights
         public void FreeContextualId(sbyte id)
         {
             m_contextualIdProvider.Push(id);
+        }
+
+        public T GetRandomFighter<T>() where T : FightActor
+        {
+            var fighters = Fighters.Where(x => x is T && x.IsAlive()).ToArray();
+
+            if (!fighters.Any())
+                return null;
+
+            var random = new CryptoRandom().Next(0, fighters.Count());
+
+            return fighters[random] as T;
         }
 
         public FightActor GetOneFighter(int id)
@@ -2281,7 +2629,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public IEnumerable<FightActor> GetFightersAndLeavers()
         {
-            return Fighters.Concat(Leavers);
+            return Fighters.Concat(Leavers.Where(x => !(x is CharacterFighter) || !((CharacterFighter)x).IsDisconnected));
         }
 
         public IEnumerable<FightActor> GetAllFighters(Cell[] cells)
@@ -2330,7 +2678,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public FightExternalInformations GetFightExternalInformations()
         {
-            return new FightExternalInformations(Id, (sbyte)FightType, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting, m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+            return new FightExternalInformations(Id, (sbyte)FightType, StartTime.GetUnixTimeStamp(), SpectatorClosed || State != FightState.Fighting,
+                m_teams.Select(entry => entry.GetFightTeamLightInformations()), m_teams.Select(entry => entry.GetFightOptionsInformations()));
+        }
+
+        public void SwitchFighters(FightActor fighter1, FightActor fighter2)
+        {
+            throw new NotImplementedException();
         }
 
 

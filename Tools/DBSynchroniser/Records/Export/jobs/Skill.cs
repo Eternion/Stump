@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:47
+// Generated on 08/13/2015 17:50:45
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,15 +23,17 @@ namespace DBSynchroniser.Records
         public uint nameId;
         public int parentJobId;
         public Boolean isForgemagus;
-        public int modifiableItemType;
+        public List<int> modifiableItemTypeIds;
         public int gatheredRessourceItem;
         public List<int> craftableItemIds;
         public int interactiveId;
         public String useAnimation;
         public Boolean isRepair;
         public int cursor;
+        public int elementActionId;
         public Boolean availableInHouse;
         public uint levelMin;
+        public Boolean clientDisplay;
 
         int ID2ORecord.Id
         {
@@ -70,10 +72,29 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public int ModifiableItemType
+        [Ignore]
+        public List<int> ModifiableItemTypeIds
         {
-            get { return modifiableItemType; }
-            set { modifiableItemType = value; }
+            get { return modifiableItemTypeIds; }
+            set
+            {
+                modifiableItemTypeIds = value;
+                m_modifiableItemTypeIdsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_modifiableItemTypeIdsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] ModifiableItemTypeIdsBin
+        {
+            get { return m_modifiableItemTypeIdsBin; }
+            set
+            {
+                m_modifiableItemTypeIdsBin = value;
+                modifiableItemTypeIds = value == null ? null : value.ToObject<List<int>>();
+            }
         }
 
         [D2OIgnore]
@@ -139,6 +160,13 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public int ElementActionId
+        {
+            get { return elementActionId; }
+            set { elementActionId = value; }
+        }
+
+        [D2OIgnore]
         public Boolean AvailableInHouse
         {
             get { return availableInHouse; }
@@ -152,6 +180,13 @@ namespace DBSynchroniser.Records
             set { levelMin = value; }
         }
 
+        [D2OIgnore]
+        public Boolean ClientDisplay
+        {
+            get { return clientDisplay; }
+            set { clientDisplay = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Skill)obj;
@@ -160,15 +195,17 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
             ParentJobId = castedObj.parentJobId;
             IsForgemagus = castedObj.isForgemagus;
-            ModifiableItemType = castedObj.modifiableItemType;
+            ModifiableItemTypeIds = castedObj.modifiableItemTypeIds;
             GatheredRessourceItem = castedObj.gatheredRessourceItem;
             CraftableItemIds = castedObj.craftableItemIds;
             InteractiveId = castedObj.interactiveId;
             UseAnimation = castedObj.useAnimation;
             IsRepair = castedObj.isRepair;
             Cursor = castedObj.cursor;
+            ElementActionId = castedObj.elementActionId;
             AvailableInHouse = castedObj.availableInHouse;
             LevelMin = castedObj.levelMin;
+            ClientDisplay = castedObj.clientDisplay;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -178,20 +215,23 @@ namespace DBSynchroniser.Records
             obj.nameId = NameId;
             obj.parentJobId = ParentJobId;
             obj.isForgemagus = IsForgemagus;
-            obj.modifiableItemType = ModifiableItemType;
+            obj.modifiableItemTypeIds = ModifiableItemTypeIds;
             obj.gatheredRessourceItem = GatheredRessourceItem;
             obj.craftableItemIds = CraftableItemIds;
             obj.interactiveId = InteractiveId;
             obj.useAnimation = UseAnimation;
             obj.isRepair = IsRepair;
             obj.cursor = Cursor;
+            obj.elementActionId = ElementActionId;
             obj.availableInHouse = AvailableInHouse;
             obj.levelMin = LevelMin;
+            obj.clientDisplay = ClientDisplay;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
+            m_modifiableItemTypeIdsBin = modifiableItemTypeIds == null ? null : modifiableItemTypeIds.ToBinary();
             m_craftableItemIdsBin = craftableItemIds == null ? null : craftableItemIds.ToBinary();
         
         }

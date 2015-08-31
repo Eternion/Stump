@@ -21,12 +21,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using Ionic.Zip;
-using Ionic.Zlib;
 using Stump.Core.IO;
-using Stump.Core.Reflection;
 
 namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
 {

@@ -115,7 +115,15 @@ namespace Stump.Server.BaseServer.Initialization
                     OnProcessInitialization(text);
                 }
 
-               method.Method.Invoke(method.Caller, new object[0]);
+                try
+                {
+                    method.Method.Invoke(method.Caller, new object[0]);
+                }
+                catch (Exception ex)
+                {
+                    logger.ErrorException(ex.InnerException.Message, ex);
+                    throw;
+                } 
 
                 method.Initialized = true;
 

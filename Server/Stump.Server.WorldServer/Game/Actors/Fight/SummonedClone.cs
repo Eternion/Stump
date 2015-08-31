@@ -17,9 +17,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Caster = caster;
             Look = caster.Look.Clone();
-            m_stats = caster.Stats.CloneAndChangeOwner(this);
-
-            m_stats.Health.DamageTaken = 0;
+            m_stats = new StatsFields(this);
+            m_stats.InitializeFromStats(caster.Stats);
         }
 
         public FightActor Caster
@@ -56,13 +55,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public GameFightFighterNamedInformations GetGameFightFighterNamedInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, casterInfos.alive, casterInfos.stats, new short[0], Name, new PlayerStatus());
+            return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, IsAlive(), GetGameFightMinimalStats(),
+                new short[0], Name, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE));
         }
 
         public override GameFightFighterInformations GetGameFightFighterInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, casterInfos.alive, casterInfos.stats, new short[0]);
+            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, IsAlive(), GetGameFightMinimalStats(), new short[0]);
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()

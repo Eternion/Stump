@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Stump.Core.Attributes;
-using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Breeds;
+using Stump.Server.WorldServer.Database.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Database.Spells;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Breeds
 {
@@ -35,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 PlayableBreedEnum.Roublard,
                 PlayableBreedEnum.Zobal,
                 PlayableBreedEnum.Steamer,
-                PlayableBreedEnum.Eliatrope
+                PlayableBreedEnum.Eliotrope
             };
 
         public uint AvailableBreedsFlags
@@ -53,6 +54,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
         public override void Initialize()
         {
             base.Initialize();
+            m_breeds.Clear();
             foreach (var breed in Database.Query<Breed, BreedItem, BreedSpell, Breed>(new BreedRelator().Map, BreedRelator.FetchQuery))
             {
                 m_breeds.Add(breed.Id, breed);
@@ -85,6 +87,11 @@ namespace Stump.Server.WorldServer.Game.Breeds
             return head;
         }
 
+        public Head GetHead(Predicate<Head> predicate)
+        {
+            return m_heads.Values.FirstOrDefault(x => predicate(x));
+        }
+
         public bool IsBreedAvailable(int id)
         {
             return AvailableBreeds.Contains((PlayableBreedEnum)id);
@@ -99,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
         {
             if(defineId)
             {
-                int id = m_breeds.Keys.Max() + 1;
+                var id = m_breeds.Keys.Max() + 1;
                 breed.Id = id;
             }
 
@@ -135,5 +142,91 @@ namespace Stump.Server.WorldServer.Game.Breeds
 
             Database.Delete(breed);
         }
+
+        public void ChangeBreed(Character character, PlayableBreedEnum breed)
+        {
+            character.Spells.ForgetAllSpells(false);
+            character.ResetStats(false);
+
+            var specialSpell = GetSpecialSpell(character.BreedId);
+
+            foreach (var breedSpell in character.Breed.Spells)
+            {
+                character.Spells.UnLearnSpell(breedSpell.Spell, false);
+            }
+
+            character.SetBreed(breed);
+
+            foreach (var breedSpell in character.Breed.Spells.Where(breedSpell => breedSpell.ObtainLevel <= character.Level))
+            {
+                character.Spells.LearnSpell(breedSpell.Spell);
+            }
+
+            if (character.Spells.HasSpell((int)specialSpell.SpellId))
+            {
+                character.Spells.UnLearnSpell((int)specialSpell.SpellId, false);
+
+                specialSpell = GetSpecialSpell(character.BreedId);
+
+                character.Spells.LearnSpell((int)specialSpell.SpellId);
+            }
+        }
+
+        private static SpellLevelTemplate GetSpecialSpell(PlayableBreedEnum breedId)
+        {
+            var spellId = -1;
+
+            switch (breedId)
+            {
+                case PlayableBreedEnum.Feca:
+                    spellId = 2108;
+                    break;
+                case PlayableBreedEnum.Osamodas:
+                    spellId = 2098;
+                    break;
+                case PlayableBreedEnum.Enutrof:
+                    spellId = 2123;
+                    break;
+                case PlayableBreedEnum.Sram:
+                    spellId = 2078;
+                    break;
+                case PlayableBreedEnum.Xelor:
+                    spellId = 2118;
+                    break;
+                case PlayableBreedEnum.Ecaflip:
+                    spellId = 2058;
+                    break;
+                case PlayableBreedEnum.Eniripsa:
+                    spellId = 2133;
+                    break;
+                case PlayableBreedEnum.Iop:
+                    spellId = 2048;
+                    break;
+                case PlayableBreedEnum.Cra:
+                    spellId = 2088;
+                    break;
+                case PlayableBreedEnum.Sadida:
+                    spellId = 2128;
+                    break;
+                case PlayableBreedEnum.Sacrieur:
+                    spellId = 2103;
+                    break;
+                case PlayableBreedEnum.Pandawa:
+                    spellId = 2113;
+                    break;
+                case PlayableBreedEnum.Roublard:
+                    spellId = 2148;
+                    break;
+                case PlayableBreedEnum.Zobal:
+                    spellId = 18596;
+                    break;
+                case PlayableBreedEnum.Steamer:
+                    spellId = 20109;
+                    break;
+            }
+
+            return SpellManager.Instance.GetSpellLevel(spellId);
+        }
+
     }
 }

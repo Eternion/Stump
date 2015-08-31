@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 16:35:15
+// Generated on 08/13/2015 17:13:51
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -18,15 +18,17 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint nameId;
         public int parentJobId;
         public Boolean isForgemagus;
-        public int modifiableItemType;
+        public List<int> modifiableItemTypeIds;
         public int gatheredRessourceItem;
         public List<int> craftableItemIds;
         public int interactiveId;
         public String useAnimation;
         public Boolean isRepair;
         public int cursor;
+        public int elementActionId;
         public Boolean availableInHouse;
         public uint levelMin;
+        public Boolean clientDisplay;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -56,10 +58,10 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.isForgemagus = value; }
         }
         [D2OIgnore]
-        public int ModifiableItemType
+        public List<int> ModifiableItemTypeIds
         {
-            get { return this.modifiableItemType; }
-            set { this.modifiableItemType = value; }
+            get { return this.modifiableItemTypeIds; }
+            set { this.modifiableItemTypeIds = value; }
         }
         [D2OIgnore]
         public int GatheredRessourceItem
@@ -98,6 +100,12 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.cursor = value; }
         }
         [D2OIgnore]
+        public int ElementActionId
+        {
+            get { return this.elementActionId; }
+            set { this.elementActionId = value; }
+        }
+        [D2OIgnore]
         public Boolean AvailableInHouse
         {
             get { return this.availableInHouse; }
@@ -108,6 +116,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.levelMin; }
             set { this.levelMin = value; }
+        }
+        [D2OIgnore]
+        public Boolean ClientDisplay
+        {
+            get { return this.clientDisplay; }
+            set { this.clientDisplay = value; }
         }
     }
 }

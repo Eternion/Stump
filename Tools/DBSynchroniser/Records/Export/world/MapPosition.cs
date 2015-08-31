@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:49
+// Generated on 08/13/2015 17:50:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +27,7 @@ namespace DBSynchroniser.Records
         public int nameId;
         public Boolean showNameOnFingerpost;
         public List<AmbientSound> sounds;
+        public List<List<int>> playlists;
         public int subAreaId;
         public int worldMap;
         public Boolean hasPriorityOnWorldmap;
@@ -115,6 +116,32 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [Ignore]
+        public List<List<int>> Playlists
+        {
+            get { return playlists; }
+            set
+            {
+                playlists = value;
+                m_playlistsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_playlistsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] PlaylistsBin
+        {
+            get { return m_playlistsBin; }
+            set
+            {
+                m_playlistsBin = value;
+                playlists = value == null ? null : value.ToObject<List<List<int>>>();
+            }
+        }
+
+        [D2OIgnore]
         public int SubAreaId
         {
             get { return subAreaId; }
@@ -147,6 +174,7 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
             ShowNameOnFingerpost = castedObj.showNameOnFingerpost;
             Sounds = castedObj.sounds;
+            Playlists = castedObj.playlists;
             SubAreaId = castedObj.subAreaId;
             WorldMap = castedObj.worldMap;
             HasPriorityOnWorldmap = castedObj.hasPriorityOnWorldmap;
@@ -163,6 +191,7 @@ namespace DBSynchroniser.Records
             obj.nameId = NameId;
             obj.showNameOnFingerpost = ShowNameOnFingerpost;
             obj.sounds = Sounds;
+            obj.playlists = Playlists;
             obj.subAreaId = SubAreaId;
             obj.worldMap = WorldMap;
             obj.hasPriorityOnWorldmap = HasPriorityOnWorldmap;
@@ -172,6 +201,7 @@ namespace DBSynchroniser.Records
         public virtual void BeforeSave(bool insert)
         {
             m_soundsBin = sounds == null ? null : sounds.ToBinary();
+            m_playlistsBin = playlists == null ? null : playlists.ToBinary();
         
         }
     }

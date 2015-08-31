@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.AI.Fights.Brain;
+using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
 {
@@ -21,13 +25,13 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             m_environment = environment;
             Fighter = fighter;
             Possibilities = new List<SpellCastInformations>();
-            Priorities = new Dictionary<SpellCategory, int>()
+            Priorities = new Dictionary<SpellCategory, int>
             {
                 {SpellCategory.Summoning, 5},
                 {SpellCategory.Buff, 4},
                 {SpellCategory.Damages, 3},
                 {SpellCategory.Healing, 2},
-                {SpellCategory.Curse, 1},
+                {SpellCategory.Curse, 1}
             };
         }
 
@@ -49,33 +53,96 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             set;
         }
 
-        public bool CanReach(FightActor fighter, Spell spell, out int mpToUse)
+        public bool CanReach(TargetCell target, Spell spell, out Cell castCell)
         {
-            if (!spell.CurrentSpellLevel.CastTestLos || fighter.Fight.CanBeSeen(fighter.Cell, Fighter.Cell))
+            bool nearFirst = true;
+            var targetPoint = new MapPoint(target.Cell);
+            var spellRange = Fighter.GetSpellRange(spell.CurrentSpellLevel);
+            var minSpellRange = spell.CurrentSpellLevel.MinRange;
+            var dist = targetPoint.ManhattanDistanceTo(Fighter.Position.Point);
+            var diff = spellRange - dist;
+
+            if (diff >= 0 && dist >= minSpellRange &&
+                (target.Direction == DirectionFlagEnum.ALL_DIRECTIONS || target.Direction == DirectionFlagEnum.NONE ||
+                (Fighter.Position.Point.OrientationTo(targetPoint).GetFlag() & target.Direction) != 0) &&
+                Fighter.IsInCastZone(spell.CurrentSpellLevel, Fighter.Position.Point, target.Cell))
             {
-                // direct access
-
-                var diff = Fighter.GetSpellRange(spell.CurrentSpellLevel) - fighter.Position.Point.DistanceToCell(Fighter.Position.Point);
-                if (diff > 0)
-                {
-                    mpToUse = 0;
-                    return true;
-                }
-
-                if (diff <= Fighter.MP)
-                {
-                    mpToUse = (int) diff;
-                    return true;
-                }
-
-                mpToUse = (int) diff;
-                return false;
+                castCell = Fighter.Cell;
+                return true;
             }
-            
-            // todo
-            mpToUse = 0;
+
+            // reachable
+            if (-diff <= Fighter.MP)
+            {
+                castCell = m_environment.GetCellToCastSpell(target, spell, spell.CurrentSpellLevel.CastTestLos, nearFirst);
+                return castCell != null;
+            }
+
+
+            castCell = null;
             return false;
         }
+
+        public TargetCell[] ExpandCellsZone(Cell[] cells, Spell spell)
+        {
+            return cells.SelectMany(x => spell.CurrentSpellLevel.Effects.SelectMany(y => ExpandZone(x, y.ZoneShape, (int)y.ZoneMinSize, (int)y.ZoneSize))).Distinct().ToArray();
+        }
+
+        private IEnumerable<TargetCell> ExpandZone(Cell center, SpellShapeEnum shape, int minRange, int maxRange)
+        {
+            Set set;
+            switch (shape)
+            {
+                case SpellShapeEnum.X:
+                    return new CrossSet(new MapPoint(center), maxRange, minRange).
+                        EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
+                case SpellShapeEnum.C:
+                    return new LozengeSet(new MapPoint(center), maxRange, minRange).
+                        EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
+                case SpellShapeEnum.L:
+                    return new LineSet(new MapPoint(center).GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_EAST, minRange), maxRange, DirectionsEnum.DIRECTION_NORTH_EAST).
+                        EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId], DirectionFlagEnum.DIRECTION_SOUTH_WEST)).
+                        Union(new LineSet(new MapPoint(center).GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_EAST, minRange),
+                            maxRange, DirectionsEnum.DIRECTION_SOUTH_EAST).EnumerateValidPoints().
+                        Select(x => new TargetCell(Fighter.Map.Cells[x.CellId], DirectionFlagEnum.DIRECTION_NORTH_WEST))).
+                        Union(new LineSet(new MapPoint(center).GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, minRange),
+                            maxRange, DirectionsEnum.DIRECTION_SOUTH_WEST).EnumerateValidPoints().
+                        Select(x => new TargetCell(Fighter.Map.Cells[x.CellId], DirectionFlagEnum.DIRECTION_NORTH_EAST))).
+                        Union(new LineSet(new MapPoint(center).GetCellInDirection(DirectionsEnum.DIRECTION_NORTH_WEST, minRange),
+                            maxRange, DirectionsEnum.DIRECTION_NORTH_WEST).EnumerateValidPoints().
+                        Select(x => new TargetCell(Fighter.Map.Cells[x.CellId], DirectionFlagEnum.DIRECTION_SOUTH_EAST)));
+                case SpellShapeEnum.I:
+                    return new Complement(new LozengeSet(center, maxRange, minRange), new AllPoints())
+                        .EnumerateValidPoints().Select(x => new TargetCell(Fighter.Map.Cells[x.CellId]));
+                default:
+                    return new[] {new TargetCell(center)};
+            }
+        }
+
+        public bool GetRangeAttack(out int min, out int max)
+        {
+            bool hasRangeAttack = false;
+            min = 0;
+            max = 0;
+            foreach (var spell in Fighter.Spells.Values)
+            {
+                var category = SpellIdentifier.GetSpellCategories(spell);
+                if ((category & SpellCategory.Damages) != 0)
+                {
+                    if (min < spell.CurrentSpellLevel.MinRange)
+                        min = (int)spell.CurrentSpellLevel.MinRange;
+
+                    if (spell.CurrentSpellLevel.Range > max)
+                        max = (int)spell.CurrentSpellLevel.Range;
+
+                    hasRangeAttack = true;
+                }
+            }
+
+            return hasRangeAttack;
+        }
+
+        public event Action<AIFighter> AnalysePossibilitiesFinished;
 
         public void AnalysePossibilities()
         {
@@ -99,35 +166,40 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     continue;
 
                 // summoning is the priority
-                if (( category & SpellCategory.Summoning ) != 0 && Fighter.CanSummon())
+                if ((category & SpellCategory.Summoning) != 0 && (Fighter.CanSummon() || (category & SpellCategory.Healing) != 0))
                 {
-                    var adjacentCell = m_environment.GetFreeAdjacentCell();
+                    var adjacentCell = Fighter.GetCastZoneSet(spell.CurrentSpellLevel, Fighter.Position.Point).EnumerateValidPoints().
+                        OrderBy(x => x.ManhattanDistanceTo(Fighter.Position.Point)).
+                        FirstOrDefault(x => m_environment.CellInformationProvider.IsCellWalkable(x.CellId));
 
                     if (adjacentCell == null)
                         continue;
 
                     cast.IsSummoningSpell = true;
-                    cast.SummonCell = adjacentCell;
+                    cast.SummonCell = Fighter.Map.Cells[adjacentCell.CellId];
                 }
                 else
                 {
-                    foreach (var fighter in Fighter.Fight.Fighters.Where(fighter => fighter.IsAlive() && fighter.IsVisibleFor(Fighter)))
+                    var cells =
+                        ExpandCellsZone(Fighter.Fight.Fighters.Where(fighter => fighter.IsAlive() && fighter.IsVisibleFor(Fighter))
+                               .Select(x => x.Cell).ToArray(), spell);
+
+                    foreach (var target in cells)
                     {
-                        int mpToUse;
-                        if (!CanReach(fighter, spell, out mpToUse))
+                        Cell cell;
+                        if (!CanReach(target, spell, out cell))
+                            continue;
+                        
+                        if (Fighter.CanCastSpell(spell, target.Cell, cell) != SpellCastResult.OK)
                             continue;
 
-                        if (!Fighter.SpellHistory.CanCastSpell(spell.CurrentSpellLevel, fighter.Cell))
-                            continue;
-
-                        cast.MPToUse = mpToUse;
-
-                        var impact = ComputeSpellImpact(spell, fighter);
+                        var impact = ComputeSpellImpact(spell, target.Cell, cell);
 
                         if (impact == null)
                             continue;
 
-                        impact.Target = fighter;
+                        impact.CastCell = cell;
+                        impact.Target = target;
 
                         if (impact.Damage < 0)
                             continue; // hurts more allies than boost them
@@ -136,126 +208,166 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
                     }
                 }
 
-                Possibilities.Add(cast);
+                if (cast.Impacts.Count > 0 || cast.IsSummoningSpell)
+                    Possibilities.Add(cast);
             }
 
-            if (!Brain.Brain.DebugMode)
-                return;
-            Debug.WriteLine(Fighter.Name);
-            foreach (var spell in Fighter.Spells.Values)
-            {
-                Debug.WriteLine("Spell {0} ({1}) :: {2}", spell.Template.Name, spell.Id, SpellIdentifier.GetSpellCategories(spell));
-
-                var possibility = Possibilities.FirstOrDefault(x => x.Spell == spell);
-
-                if (possibility == null)
-                    continue;
-
-                if (possibility.IsSummoningSpell)
-                {
-                    Debug.WriteLine("\tSummon Spell");
-                }
-                else
-                {
-                    var dumper = new ObjectDumper(8)
-                    {
-                        MemberPredicate = (member) => !member.Name.Contains("Target")
-                    };
-
-                    Debug.WriteLine("\t{0} Targets", possibility.Impacts.Count);
-                    foreach (var impact in possibility.Impacts)
-                    {
-                        Debug.Write(dumper.DumpElement(impact));
-                        if (impact.Target != null)
-                            Debug.WriteLine("\t\tTarget = " + impact.Target is NamedFighter ? ( (NamedFighter)impact.Target ).Name : impact.Target.Id.ToString());
-                    }
-                }
-            }
-            Debug.WriteLine("");
+            var evnt = AnalysePossibilitiesFinished;
+            if (evnt != null)
+                evnt(Fighter);
         }
 
-        public IEnumerable<SpellCast> EnumerateSpellsCast()
+        public SpellCast FindFirstSpellCast()
         {
+            var casts = new List<SpellCast>();
+            var minUsedAP = 0;
+            var minUsedPM = 0;
             foreach (var priority in Priorities.OrderByDescending(x => x.Value))
             {
+                // find best spell
                 var impactComparer = new SpellImpactComparer(this, priority.Key);
-                foreach (var possibleCast in Possibilities.OrderBy(x => x, new SpellCastComparer(this, priority.Key)))
+                foreach (var possibleCast in Possibilities.OrderByDescending(x => x, new SpellCastComparer(this, priority.Key)))
                 {
                     var category = SpellIdentifier.GetSpellCategories(possibleCast.Spell);
 
-                    if (( category & priority.Key ) == 0)
+                    var dummy = possibleCast;
+                    if (( category & priority.Key ) == 0 || casts.Any(x => x.Spell == dummy.Spell)) // spell already used
                         continue;
 
-                    if (Fighter.AP == 0)
-                        yield break;
-
-                    if (Fighter.MP != -1 && possibleCast.MPToUse > Fighter.MP)
+                    if (Fighter.AP - minUsedAP < possibleCast.Spell.CurrentSpellLevel.ApCost)
                         continue;
 
                     if (possibleCast.IsSummoningSpell)
                     {
-                        yield return new SpellCast(possibleCast.Spell, possibleCast.SummonCell);
+                        var target = new SpellTarget() {Target = new TargetCell(possibleCast.SummonCell), CastCell = Fighter.Cell, AffectedCells = new []{possibleCast.SummonCell}};
+                        casts.Add(new SpellCast(possibleCast.Spell, target));
+                        minUsedAP += (int)possibleCast.Spell.CurrentSpellLevel.ApCost;
+                        continue;
+
                     }
-                    else
+
+                    // find best target
+                    foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
                     {
-                        foreach(var impact in possibleCast.Impacts.OrderByDescending(x => x, impactComparer))
+                        if (impactComparer.GetScore(impact) <= 0)
+                            continue;
+
+                        Cell castSpell = impact.CastCell;
+
+                        var cast = new SpellCast(possibleCast.Spell, impact);
+                        if (castSpell == Fighter.Cell)
                         {
-                            int mpToUse;
-                            if (!CanReach(impact.Target, possibleCast.Spell, out mpToUse))
-                                continue;
-                            
-                            var cast = new SpellCast(possibleCast.Spell, impact.Target.Cell);;
-                            if (mpToUse == 0)
-                            {
-                                yield return cast;
-                            }
-                            else
-                            {
-                                if (mpToUse > Fighter.MP)
-                                    continue;
-
-                                var cell = impact.Target.Position.Point.GetAdjacentCells(m_environment.CellInformationProvider.IsCellWalkable).
-                                    OrderBy(entry => entry.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();
-
-                                if (cell == null)
-                                    cell = impact.Target.Position.Point;
-
-                                var pathfinder = new Pathfinder(m_environment.CellInformationProvider);
-                                var path = pathfinder.FindPath(Fighter.Position.Cell.Id, cell.CellId, false, Fighter.MP);
-
-                                if (path.IsEmpty() || path.MPCost > Fighter.MP)
-                                    continue;
-
-                                cast.MoveBefore = path;
-
-                                yield return cast;
-                            }
+                            casts.Add(cast);
+                            minUsedAP += (int)possibleCast.Spell.CurrentSpellLevel.ApCost;
+                            continue;
                         }
+
+                        var pathfinder = new Pathfinder(m_environment.CellInformationProvider);
+                        var path = pathfinder.FindPath(Fighter.Position.Cell.Id, castSpell.Id, false);
+
+                        if (path.IsEmpty() || path.MPCost > Fighter.MP)
+                            continue;
+
+                        cast.MoveBefore = path;
+
+                        casts.Add(cast);
+                        minUsedAP += (int)possibleCast.Spell.CurrentSpellLevel.ApCost;
+                        minUsedPM += path.MPCost;
+                        break;
                     }
                 }
             }
+
+            if (casts.Count > 1)
+            {
+                // check if the second spell can be casted before
+                var max = MaxConsecutiveSpellCast(casts[0].Spell, Fighter.AP);
+                if (casts[1].Spell.CurrentSpellLevel.ApCost <= Fighter.AP - max*casts[0].Spell.CurrentSpellLevel.ApCost &&
+                    casts[0].MoveBefore != null)
+                {
+                    if (casts[1].MoveBefore == null)
+                        return casts[1];
+
+                    var pathfinder = new Pathfinder(m_environment.CellInformationProvider);
+                    var path = pathfinder.FindPath(casts[1].MoveBefore.EndCell.Id, casts[0].MoveBefore != null ? casts[0].MoveBefore.EndCell.Id : Fighter.Cell.Id, false);
+
+                    if (!path.IsEmpty() && path.MPCost + casts[1].MPCost <= Fighter.MP)
+                        return casts[1];
+                }
+            }
+
+            return casts.FirstOrDefault();
         }
 
-        public SpellTarget ComputeSpellImpact(Spell spell, FightActor target)
+        public int MaxConsecutiveSpellCast(Spell spell, int ap)
+        {
+            if (spell.CurrentSpellLevel.GlobalCooldown > 0)
+                return 1;
+
+            var max = (int)(ap/spell.CurrentSpellLevel.ApCost);
+            var category = SpellIdentifier.GetSpellCategories(spell);
+
+            if ((category & SpellCategory.Summoning) != 0)
+            {
+                return 1;
+            }
+
+            if (spell.CurrentSpellLevel.MaxCastPerTarget > 0 &&
+                max > spell.CurrentSpellLevel.MaxCastPerTarget)
+                max = (int)spell.CurrentSpellLevel.MaxCastPerTarget;
+
+            if (spell.CurrentSpellLevel.MaxCastPerTurn > 0 &&
+                max > spell.CurrentSpellLevel.MaxCastPerTurn)
+                max = (int)spell.CurrentSpellLevel.MaxCastPerTurn;
+
+            return max;
+        }
+
+        public SpellTarget ComputeSpellImpact(Spell spell, Cell targetCell, Cell castCell)
         {
             SpellTarget damages = null;
-            foreach (var effect in spell.CurrentSpellLevel.Effects)
-                CumulEffects(effect, ref damages, target, spell);
+            var cast = SpellManager.Instance.GetSpellCastHandler(Fighter, spell, targetCell, false);
+            cast.CastCell = castCell;
+            if (!cast.Initialize())
+                return null;
+            
+            foreach (var handler in cast.GetEffectHandlers())
+            {
+                if (!handler.CanApply())
+                    return null;
+                       
+                handler.CastCell = castCell;
+                foreach (var target in handler.GetAffectedActors())
+                {
+                    if (target != Fighter || handler.AffectedCells.Contains(castCell)) // we take in account the movement of the caster before the spell cast
+                        CumulEffects(handler, ref damages, target, spell);
+                }
+            }
+
+            if (damages != null)
+                damages.AffectedCells = cast.GetEffectHandlers().SelectMany(x => x.AffectedCells).Distinct().ToArray();
+
             return damages;
         }
 
-        private void CumulEffects(EffectDice effect, ref SpellTarget spellImpact, FightActor target, Spell spell)
+        // todo : do something more general (ghost actors)
+        private void CumulEffects(SpellEffectHandler handler, ref SpellTarget spellImpact, FightActor target, Spell spell)
         {
+            var effect = handler.Dice;
             var isFriend = Fighter.Team.Id == target.Team.Id;
             var result = new SpellTarget();
-            var targetType = effect.Targets;
 
-            var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
+             var category = SpellIdentifier.GetEffectCategories(effect.EffectId);
 
             if (category == 0)
                 return;
 
-            double chanceToHappen = 1.0; // 
+            if (Fighter is SummonedTurret)
+            {
+                isFriend = category == SpellCategory.Healing;
+            }
+
+            var chanceToHappen = 1.0; // 
 
             // When chances to happen is under 100%, then we reduce spellImpact accordingly, for simplicity, but after having apply damage bonus & reduction. 
             // So average damage should remain exact even if Min and Max are not. 
@@ -265,8 +377,22 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             if ((target is SummonedFighter))
                 chanceToHappen /= 2; // It's much better to hit non-summoned foes => effect on summons (except allies summon for Osa) is divided by 2. 
 
-            var min = (uint)Math.Min(effect.DiceNum, effect.DiceFace);
-            var max = (uint)Math.Max(effect.DiceNum, effect.DiceFace);
+            uint min;
+            uint max;
+
+            if (handler is DamagePerHPLost)
+            {
+                min = max = (uint) Math.Round(((Fighter.Stats.Health.DamageTaken*effect.DiceNum)/100d));
+            }
+            else if (handler is Kill)
+            {
+                min = max = (uint)target.LifePoints;
+            }
+            else
+            {
+                min = (uint) Math.Min(effect.DiceNum, effect.DiceFace);
+                max = (uint) Math.Max(effect.DiceNum, effect.DiceFace);
+            }
 
             if (( category & SpellCategory.DamagesNeutral ) > 0)
                 AdjustDamage(result, min, max, SpellCategory.DamagesNeutral, chanceToHappen,
@@ -390,8 +516,8 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
 
             if (negativ) // or IsFriend
             {
-                minDamage *= -1.5; // High penalty for firing on friends
-                maxDamage *= -1.5; // High penalty for firing on friends
+                minDamage *= -0.3; // High penalty for firing on friends
+                maxDamage *= -0.3; // High penalty for firing on friends
             }
 
             switch (category)
@@ -551,7 +677,19 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             if (!m_comparers.ContainsKey(Category))
                 return 0;
 
-            return m_comparers[Category](cast1, cast2);
+            var scoreComparaison = m_comparers[Category](cast1, cast2);
+            if (scoreComparaison != 0)
+                return scoreComparaison;
+            
+            // if scores are the same we choose the nearest reachable cell
+            // note : inverse comparaison (smaller better not bigger better)
+            return new MapPoint(cast2.CastCell).ManhattanDistanceTo(m_spellSelector.Fighter.Position.Point).CompareTo(
+                new MapPoint(cast1.CastCell).ManhattanDistanceTo(m_spellSelector.Fighter.Position.Point));
+        }
+
+        public double GetScore(SpellTarget cast)
+        {
+            return cast.Boost + cast.Damage + cast.Heal + cast.Curse;
         }
 
         public static int CompareBoost(SpellTarget impact1, SpellTarget impact2)

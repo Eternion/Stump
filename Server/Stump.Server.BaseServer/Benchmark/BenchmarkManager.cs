@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Stump.Core.Attributes;
+using Stump.Core.Pool;
 using Stump.Core.Reflection;
 
 namespace Stump.Server.BaseServer.Benchmark
@@ -11,6 +12,7 @@ namespace Stump.Server.BaseServer.Benchmark
     public class BenchmarkManager : Singleton<BenchmarkManager>
     {
         private readonly List<BenchmarkEntry> m_entries = new List<BenchmarkEntry>();
+        private readonly UniqueIdProvider m_idProvider = new UniqueIdProvider();
 
         [Variable(true)]
         public static bool Enable = true;
@@ -19,13 +21,16 @@ namespace Stump.Server.BaseServer.Benchmark
         public static BenchmarkingType BenchmarkingType = BenchmarkingType.Complete;
 
         [Variable(true)]
-        public static int EntriesLimit = 1000;
+        public static int EntriesLimit = 10000;
 
         public ReadOnlyCollection<BenchmarkEntry> Entries
         {
             get
             {
-                return m_entries.AsReadOnly();
+                lock (m_entries)
+                {
+                    return m_entries.AsReadOnly();
+                }
             }
         }
 
@@ -64,56 +69,41 @@ namespace Stump.Server.BaseServer.Benchmark
 
         public void ClearResults()
         {
-            m_entries.Clear();
-        }
-
-        public BenchmarkEntry[] SortEntries()
-        {
-            return m_entries.OrderByDescending(entry => entry.Timestamp).ToArray();
-        }
-
-        public BenchmarkEntry[] SortEntries(int limit)
-        {
-            return m_entries.OrderByDescending(entry => entry.Timestamp).Take(limit).ToArray();
-        }
-
-        public Dictionary<string, Tuple<TimeSpan, int>> GetEntriesSummary()
-        {
-            var sortedEntries = SortEntries();
-            var result = new Dictionary<string, Tuple<TimeSpan, int>>();
-
-            foreach (var entries in sortedEntries.GroupBy(entry => entry.MessageType))
+            lock (m_entries)
             {
-                var average = (long)entries.Average(entry => entry.Timestamp.Ticks);
+                m_entries.Clear();
+            }
+        }
 
-                result.Add(entries.Key, Tuple.Create(new TimeSpan(average), entries.Count()));
+        public string GenerateReport(IEnumerable<BenchmarkEntry> entries)
+        {
+            var sortedEntries = entries.OrderByDescending(x => x.Timestamp);
+
+            var builder = new StringBuilder();
+
+            builder.AppendFormat("Benchmarking report - {0} entries\n", m_entries.Count);  
+
+            foreach (var group in sortedEntries.GroupBy(x => x.MessageType))
+            {
+                var average = (long)group.Average(x => x.Timestamp.TotalMilliseconds);
+
+                builder.AppendFormat("{0} {1}ms ({2} entries)\n", group.Key, average, group.Count());
             }
 
-            return result;
-        }
-
-        public BenchmarkEntry GetHighestEntry(string message)
-        {
-            return m_entries.
-                Where(entry => entry.MessageType == message).
-                OrderByDescending(entry => entry.Timestamp).
-                First();
+            return builder.ToString();
         }
 
         public string GenerateReport()
         {
-            var builder = new StringBuilder();
-
-            builder.AppendFormat("Benchmarking report - {0} entries\n", m_entries.Count);
-
-            var summary = GetEntriesSummary();
-
-            foreach (var entry in summary)
+            lock (m_entries)
             {
-                builder.AppendFormat("{0} {1}ms ({2} entries)\n", entry.Key, entry.Value.Item1.TotalMilliseconds, entry.Value.Item2);
+                return GenerateReport(m_entries);
             }
+        }
 
-            return builder.ToString();
+        public int PopId()
+        {
+            return m_idProvider.Pop();
         }
     }
 }

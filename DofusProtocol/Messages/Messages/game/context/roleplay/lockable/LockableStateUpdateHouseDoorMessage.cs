@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:18
+// Generated on 08/04/2015 13:25:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(houseId);
+            writer.WriteVarInt(houseId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            houseId = reader.ReadInt();
+            houseId = reader.ReadVarInt();
+            if (houseId < 0)
+                throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
         }
         
     }

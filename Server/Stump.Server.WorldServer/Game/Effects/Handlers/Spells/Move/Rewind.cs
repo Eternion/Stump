@@ -18,9 +18,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
+            var trigger = BuffTriggerType.TURN_END;
+            if (Spell.Id == (int)SpellIdEnum.BOBINE)
+                trigger = BuffTriggerType.BUFF_ADDED;
+
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, true, BuffTriggerType.TURN_END, TriggerBuffApply);
+                AddTriggerBuff(actor, true, trigger, TriggerBuffApply);
             }
 
             return true;
@@ -28,8 +32,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public void TriggerBuffApply(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            buff.Target.Position.Cell = buff.Target.TurnStartPosition.Cell;
-            ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(buff.Target.Fight.Clients, Caster, buff.Target, buff.Target.Position.Cell);
+            var dstCell = buff.Target.TurnStartPosition.Cell;
+            var fighter = Fight.GetOneFighter(dstCell);
+
+            if (fighter != null)
+                buff.Target.Telefrag(Caster, fighter, Spell);
+            else
+            {
+                buff.Target.Position.Cell = dstCell;
+                ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(buff.Target.Fight.Clients, Caster, buff.Target, buff.Target.Position.Cell);
+            }
         }
     }
 }

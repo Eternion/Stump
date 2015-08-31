@@ -6,9 +6,11 @@ using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
+using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
+using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 using Stump.Server.WorldServer.Handlers.Basic;
 
@@ -32,9 +34,15 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             SendMapComplementaryInformationsDataMessage(client);
 
             var fightCount = client.Character.Map.GetFightCount();
+            var objectItems = client.Character.Map.GetObjectItems();
 
             if (fightCount > 0)
                 SendMapFightCountMessage(client, fightCount);
+
+            foreach (var objectItem in objectItems.ToArray())
+            {
+                SendObjectGroundAddedMessage(client, objectItem);
+            }
 
             var paddock = PaddockManager.Instance.GetPaddock(message.mapId);
             if (paddock != null)
@@ -66,8 +74,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendMapRunningFightDetailsMessage(IPacketReceiver client, IFight fight)
         {
-            var redFighters = fight.ChallengersTeam.GetAllFighters().ToArray();
-            var blueFighters = fight.DefendersTeam.GetAllFighters().ToArray();
+            var redFighters = fight.ChallengersTeam.GetAllFighters(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)).ToArray();
+            var blueFighters = fight.DefendersTeam.GetAllFighters(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)).ToArray();
 
             client.Send(new MapRunningFightDetailsMessage(
                 fight.Id,
@@ -94,6 +102,16 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         public static void SendGameRolePlayShowActorMessage(IPacketReceiver client, Character character, RolePlayActor actor)
         {
             client.Send(new GameRolePlayShowActorMessage(actor.GetGameContextActorInformations(character) as GameRolePlayActorInformations));
+        }
+
+        public static void SendObjectGroundAddedMessage(IPacketReceiver client, WorldObjectItem objectItem)
+        {
+            client.Send(new ObjectGroundAddedMessage(objectItem.Cell.Id, (short)objectItem.Item.Id));
+        }
+
+        public static void SendObjectGroundRemovedMessage(IPacketReceiver client, WorldObjectItem objectItem)
+        {
+            client.Send(new ObjectGroundRemovedMessage(objectItem.Cell.Id));
         }
     }
 }
