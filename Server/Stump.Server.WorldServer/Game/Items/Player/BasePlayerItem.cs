@@ -264,7 +264,19 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             get
             {
-                return Template.AppearanceId;
+                var appearanceId = Template.AppearanceId;
+
+                var effect = Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Appearance);
+                if (effect != null)
+                {
+                    var itemId = ((EffectInteger)effect).Value;
+                    var item = ItemManager.Instance.TryGetTemplate(itemId);
+
+                    if (item != null)
+                        appearanceId = item.AppearanceId;
+                }
+
+                return appearanceId;
             }
         }
 

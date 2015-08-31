@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:46
+// Generated on 08/13/2015 17:50:44
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,8 +25,8 @@ namespace DBSynchroniser.Records
         public Boolean plural;
         public uint gender;
         public String rawZone;
-        public Boolean needUseConfirm;
         public Boolean mimickable;
+        public int craftXpRatio;
 
         int ID2ORecord.Id
         {
@@ -80,17 +80,17 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public Boolean NeedUseConfirm
-        {
-            get { return needUseConfirm; }
-            set { needUseConfirm = value; }
-        }
-
-        [D2OIgnore]
         public Boolean Mimickable
         {
             get { return mimickable; }
             set { mimickable = value; }
+        }
+
+        [D2OIgnore]
+        public int CraftXpRatio
+        {
+            get { return craftXpRatio; }
+            set { craftXpRatio = value; }
         }
 
         public virtual void AssignFields(object obj)
@@ -103,8 +103,8 @@ namespace DBSynchroniser.Records
             Plural = castedObj.plural;
             Gender = castedObj.gender;
             RawZone = castedObj.rawZone;
-            NeedUseConfirm = castedObj.needUseConfirm;
             Mimickable = castedObj.mimickable;
+            CraftXpRatio = castedObj.craftXpRatio;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -116,8 +116,8 @@ namespace DBSynchroniser.Records
             obj.plural = Plural;
             obj.gender = Gender;
             obj.rawZone = RawZone;
-            obj.needUseConfirm = NeedUseConfirm;
             obj.mimickable = Mimickable;
+            obj.craftXpRatio = CraftXpRatio;
             return obj;
         }
         

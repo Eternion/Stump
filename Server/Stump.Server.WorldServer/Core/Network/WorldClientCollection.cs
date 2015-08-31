@@ -6,13 +6,17 @@ using Stump.Core.IO;
 using Stump.Core.Pool;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
+using NLog;
 
 namespace Stump.Server.WorldServer.Core.Network
 {
-    public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>
+    public class WorldClientCollection : IPacketReceiver, IEnumerable<WorldClient>, IDisposable
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private WorldClient m_singleClient; // avoid new object allocation
         private readonly List<WorldClient> m_underlyingList = new List<WorldClient>();
+        private readonly List<SegmentStream> m_usedStream = new List<SegmentStream>();
 
         public WorldClientCollection()
         {
@@ -53,11 +57,8 @@ namespace Stump.Server.WorldServer.Core.Network
                     {
                         var writer = new BigEndianWriter(stream);
                         message.Pack(writer);
-                        stream.Segment.Uses = m_underlyingList.Count;
-
-                        if (stream.Segment.Uses == 0)
-                            BufferManager.Default.CheckIn(stream.Segment);
-
+                        stream.Segment.Uses = m_underlyingList.Count(x => x != null && x.Connected);
+                        
                         foreach (WorldClient worldClient in m_underlyingList)
                         {
                             if (worldClient != null)
@@ -67,16 +68,14 @@ namespace Stump.Server.WorldServer.Core.Network
                             }
 
                             if (worldClient == null || !worldClient.Connected)
+                            {
                                 disconnectedClients.Add(worldClient);
+                            }
                         }
                     }
                     finally
                     {
-                        if (stream.Segment.Uses > 0)
-                        {
-                            stream.Segment.Uses = 0;
-                            BufferManager.Default.CheckIn(stream.Segment);
-                        }
+                        
                     }
 
                     foreach (var client in disconnectedClients)
@@ -129,6 +128,12 @@ namespace Stump.Server.WorldServer.Core.Network
         public static implicit operator WorldClientCollection(WorldClient client)
         {
             return new WorldClientCollection(client);
+        }
+
+        public void Dispose()
+        {
+            m_singleClient = null;
+            m_underlyingList.Clear();
         }
     }
 }

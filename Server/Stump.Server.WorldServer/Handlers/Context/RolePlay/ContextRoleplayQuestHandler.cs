@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendQuestListMessage(IPacketReceiver client)
         {
-            client.Send(new QuestListMessage(new short[0], new short[0], new QuestActiveInformations[0]));
+            client.Send(new QuestListMessage(new short[0], new short[0], new QuestActiveInformations[0], new short[0]));
         }
     }
 }

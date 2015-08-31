@@ -22,7 +22,7 @@ namespace Uplauncher
     {
         public const string SiteURL = "http://www.arkalys.com/";
         public const string UpdateSiteURL = "http://patch.arkalys.com/";
-        public static readonly Uri RSSNewsURL = new Uri("https://www.facebook.com/feeds/page.php?format=atom10&id=146996812129127");
+        public static readonly Uri RSSNewsURL = new Uri("http://blog.arkalys.com/rss/");
         public const string VoteURL = "http://www.arkalys.com/vote";
 
         public const string DofusExePath = "app\\Dofus.exe";

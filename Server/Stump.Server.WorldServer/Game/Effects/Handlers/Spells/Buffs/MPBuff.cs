@@ -2,7 +2,6 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
@@ -25,13 +24,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration > 0)
+                if (Effect.Duration == 0)
                 {
-                    AddStatBuff(actor, integerEffect.Value, PlayerFields.MP, true);
+                    actor.RegainMP(integerEffect.Value);   
                 }
                 else
                 {
-                    actor.RegainMP(integerEffect.Value);
+                    AddStatBuff(actor, integerEffect.Value, PlayerFields.MP, true);
                 }
             }
 

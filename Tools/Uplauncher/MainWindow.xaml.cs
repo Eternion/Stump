@@ -19,7 +19,6 @@ namespace Uplauncher
             ModelView = new UplauncherModelView(DateTime.Now) { View = this };
 
             InitializeComponent();
-
         }
 
         public UplauncherModelView ModelView

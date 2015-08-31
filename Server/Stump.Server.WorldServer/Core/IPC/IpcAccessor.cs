@@ -18,11 +18,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.Extensions;
+using Stump.Core.IO;
+using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.Core.Timers;
 using Stump.Server.BaseServer.IPC;
@@ -40,12 +44,12 @@ namespace Stump.Server.WorldServer.Core.IPC
 
         public delegate void RequestCallbackDelegate<in T>(T callbackMessage) where T : IPCMessage;
 
-        public delegate void RequestCallbackErrorDelegate(IPCErrorMessage errorMessage);
+        public delegate void RequestCallbackErrorDelegate(IIPCErrorMessage errorMessage);
 
         /// <summary>
         ///     In seconds
         /// </summary>
-        [Variable(DefinableRunning = true)] public static int DefaultRequestTimeout = 5;
+        [Variable(DefinableRunning = true)] public static int DefaultRequestTimeout = 60;
 
         /// <summary>
         ///     In milliseconds
@@ -57,6 +61,8 @@ namespace Stump.Server.WorldServer.Core.IPC
         /// </summary>
         [Variable(DefinableRunning = true)] public static int UpdateInterval = 10000;
 
+        [Variable] public static int BufferSize = 8192;
+
         [Variable] public static string RemoteHost = "localhost";
 
         [Variable] public static int RemotePort = 9100;
@@ -67,16 +73,24 @@ namespace Stump.Server.WorldServer.Core.IPC
         private readonly Dictionary<Type, IPCMessageHandler> m_additionalsHandlers =
             new Dictionary<Type, IPCMessageHandler>();
 
-        private readonly TimerEntry m_updateTimer;
-        private IPCMessagePart m_messagePart;
+        private readonly TimedTimerEntry m_updateTimer;
         private bool m_requestingAccess;
         private Dictionary<Guid, IIPCRequest> m_requests = new Dictionary<Guid, IIPCRequest>();
         private bool m_wasConnected;
 
+        private BufferSegment m_bufferSegment;
+        private IPCMessagePart m_messagePart;
+        private int m_writeOffset;
+        private int m_readOffset;
+        private int m_remainingLength;
+        private SocketAsyncEventArgs m_readArgs;
+
         public IPCAccessor()
         {
             TaskPool = new SelfRunningTaskPool(TaskPoolInterval, "IPCAccessor Task Pool");
-            m_updateTimer = new TimerEntry(0, UpdateInterval, Tick);
+            m_updateTimer = TaskPool.CallPeriodically(UpdateInterval, Tick);
+            m_readArgs = new SocketAsyncEventArgs();
+            m_bufferSegment = BufferManager.GetSegment(BufferSize);
         }
 
         public static IPCAccessor Instance
@@ -158,6 +172,11 @@ namespace Stump.Server.WorldServer.Core.IPC
             m_wasConnected = false;
             logger.Info("IPC connection lost");
 
+            foreach (var request in Requests.Values)
+            {
+                request.Cancel("world server - disconnected");
+            }
+
             var handler = Disconnected;
             if (handler != null)
                 handler(this);
@@ -183,10 +202,11 @@ namespace Stump.Server.WorldServer.Core.IPC
 
             Running = false;
             TaskPool.RemoveTimer(m_updateTimer);
-            TaskPool.Stop();
 
             if (IsReacheable)
                 Disconnect();
+
+            TaskPool.Stop();
         }
 
         private void Connect()
@@ -195,7 +215,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             Socket.Connect(RemoteHost, RemotePort);
             OnClientConnected();
 
-            ReceiveLoop();
+            BeginReceive();
         }
 
         private void OnAccessGranted(CommonOKMessage msg)
@@ -210,12 +230,9 @@ namespace Stump.Server.WorldServer.Core.IPC
                 handler(this);
         }
 
-        private void OnAccessDenied(IPCErrorMessage error)
+        private void OnAccessDenied(IIPCErrorMessage error)
         {
             m_requestingAccess = false;
-
-            if (error is IPCErrorTimeoutMessage)
-                return;
 
             AccessGranted = false;
             logger.Error("Access to auth. server denied ! Reason : {0}", error.Message);
@@ -230,11 +247,11 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
             finally
             {
-                OnClientDisconnected();
+                TaskPool.ExecuteInContext(() => OnClientDisconnected());
             }
         }
 
-        private void Tick(int dt)
+        private void Tick()
         {
             if (!Running)
             {
@@ -268,7 +285,7 @@ namespace Stump.Server.WorldServer.Core.IPC
                 SendRequest<CommonOKMessage>(new HandshakeMessage(WorldServer.ServerInformation), OnAccessGranted,
                     OnAccessDenied);
             }
-            else
+            else if (AccessGranted)
                 // update server
                 Send(new ServerUpdateMessage(WorldServer.Instance.ClientManager.Count));
         }
@@ -295,110 +312,180 @@ namespace Stump.Server.WorldServer.Core.IPC
             e.Dispose();
         }
 
-        protected override TimerEntry RegisterTimer(Action<int> action, int timeout)
+        protected override TimedTimerEntry RegisterTimer(Action action, int timeout)
         {
-            var timer = new TimerEntry {Action = action, InitialDelay = timeout};
-            TaskPool.AddTimer(timer);
-
-            return timer;
+            return TaskPool.CallDelayed(timeout, action);
         }
 
-        private void ReceiveLoop()
+        public void BeginReceive()
         {
-            if (!IsReacheable)
+            ResumeReceive();
+        }
+
+        private void ResumeReceive()
+        {
+            if (Socket == null || !Socket.Connected)
                 return;
 
-            var args = new SocketAsyncEventArgs();
-            args.Completed += OnReceiveCompleted;
-            args.SetBuffer(new byte[8192], 0, 8192);
+            m_readArgs.SetBuffer(m_bufferSegment.Buffer.Array, m_bufferSegment.Offset + m_writeOffset, m_bufferSegment.Length - m_writeOffset);
+            m_readArgs.Completed += ProcessReceive;
 
-            if (!Socket.ReceiveAsync(args))
-                ProcessReceiveCompleted(args);
-        }
-
-        private void OnReceiveCompleted(object sender, SocketAsyncEventArgs args)
-        {
-            switch (args.LastOperation)
+            var willRaiseEvent = Socket.ReceiveAsync(m_readArgs);
+            if (!willRaiseEvent)
             {
-                case SocketAsyncOperation.Receive:
-                    ProcessReceiveCompleted(args);
-                    break;
-                case SocketAsyncOperation.Disconnect:
-                    Disconnect();
-                    break;
+                ProcessReceive(this, m_readArgs);
             }
         }
 
-        private void ProcessReceiveCompleted(SocketAsyncEventArgs args)
+        private void ProcessReceive(object sender, SocketAsyncEventArgs e)
         {
-            if (!IsReacheable)
-                return;
-
-            if (args.BytesTransferred <= 0 ||
-                args.SocketError != SocketError.Success)
+            m_readArgs.Completed -= ProcessReceive;
+            if (e.BytesTransferred <= 0 || e.SocketError != SocketError.Success)
             {
-                args.Dispose();
+                Disconnect();
+                return;
+            }
+
+            m_remainingLength += e.BytesTransferred;
+            try
+            {
+                if (BuildMessage(m_bufferSegment))
+                {
+                    m_writeOffset = m_readOffset = 0;
+					if (m_bufferSegment.Length != BufferSize)
+					{
+						m_bufferSegment.DecrementUsage();
+						m_bufferSegment = BufferManager.GetSegment(BufferSize);
+					}
+                }
+
+                ResumeReceive();
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Forced disconnection during reception : " + ex);
+
                 Disconnect();
             }
-            else
-            {
-                Receive(args.Buffer, args.Offset, args.BytesTransferred);
-
-                args.Dispose();
-                ReceiveLoop();
-            }
         }
 
-        private void Receive(byte[] data, int offset, int count)
+        protected virtual bool BuildMessage(BufferSegment buffer)
         {
-            var reader = new BinaryReader(new MemoryStream(data, offset, count));
+            if (m_messagePart == null)
+                m_messagePart = new IPCMessagePart();
 
-            while (reader.BaseStream.Length - reader.BaseStream.Position > 0)
+            var reader = new FastBigEndianReader(buffer)
             {
-                if (m_messagePart == null)
-                    m_messagePart = new IPCMessagePart();
+                Position = buffer.Offset + m_readOffset,
+                MaxPosition = buffer.Offset + m_readOffset + m_remainingLength,
+            };
 
-                m_messagePart.Build(reader, reader.BaseStream.Length - reader.BaseStream.Position);
+            bool built;
+            try
+            {
+                built = m_messagePart.Build(reader);
+            }
+            catch
+            {
+                logger.Error("Cannot build message. Length={0} LengthSize={3} RemainingLength={1} Data={2}", m_messagePart.Length, m_remainingLength, m_messagePart.Data, m_messagePart.LengthBytesCount);
+                throw;
+            }
 
-                if (!m_messagePart.IsValid)
-                    return;
+            // if message is complete
+            if (built)
+            {
+                var dataPos = reader.Position;
+                // prevent to read above
+                reader.MaxPosition = dataPos + m_messagePart.Length.Value;
 
                 IPCMessage message;
-
                 try
                 {
                     message = IPCMessageSerializer.Instance.Deserialize(m_messagePart.Data);
                 }
                 catch (Exception ex)
                 {
-                    logger.Error("Cannot deserialize received message ! Exception : {0}" + ex);
-                    return;
-                }
-                finally
-                {
-                    m_messagePart = null;
+                    reader.Seek(dataPos, SeekOrigin.Begin);
+                    logger.Debug("Message = {0}", m_messagePart.Data.ToString(" "));
+                    logger.Error("Error while deserializing IPC Message : " + ex);
+
+                   return m_remainingLength <= 0 || BuildMessage(buffer);
                 }
 
                 TaskPool.AddMessage(() => ProcessMessage(message));
+
+                m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+                m_writeOffset = m_readOffset = (int)reader.Position - buffer.Offset;
+                m_messagePart = null;
+
+                return m_remainingLength <= 0 || BuildMessage(buffer);
             }
+
+            m_remainingLength -= (int)(reader.Position - (buffer.Offset + m_readOffset));
+            m_readOffset = (int)reader.Position - buffer.Offset;
+            m_writeOffset = m_readOffset + m_remainingLength;
+
+            EnsureBuffer(m_messagePart.Length.HasValue ? m_messagePart.Length.Value : 5);
+
+            return false;
         }
+
+        /// <summary>
+        ///     Makes sure the underlying buffer is big enough
+        /// </summary>
+        protected bool EnsureBuffer(int length)
+        {
+            if (m_bufferSegment.Length - m_writeOffset < length + m_remainingLength)
+            {
+                var newSegment = BufferManager.GetSegment(Math.Max(length + m_remainingLength, BufferSize), true);
+
+                if (newSegment is TemporaryBufferSegment)
+                    logger.Warn("Extra big segment required ({0})", length + m_remainingLength);
+
+                Array.Copy(m_bufferSegment.Buffer.Array,
+                           m_bufferSegment.Offset + m_readOffset,
+                           newSegment.Buffer.Array,
+                           newSegment.Offset,
+                           m_remainingLength);
+
+                m_bufferSegment.DecrementUsage();
+                m_bufferSegment = newSegment;
+                m_writeOffset = m_remainingLength;
+                m_readOffset = 0;
+
+                return true;
+            }
+
+            return false;
+        }
+
 
         protected override void ProcessAnswer(IIPCRequest request, IPCMessage answer)
         {
-            request.TimeoutTimer.Stop();
-            TaskPool.RemoveTimer(request.TimeoutTimer);
+            if (request.TimedOut)
+            {
+                logger.Warn("Message {0} already timed out, message ignored", request.RequestMessage.GetType());
+                return;
+            }
+
             request.ProcessMessage(answer);
         }
 
         protected override void ProcessRequest(IPCMessage request)
         {
-            if (request is IPCErrorMessage)
-                HandleError(request as IPCErrorMessage);
+            if (request is IIPCErrorMessage)
+                HandleError(request as IIPCErrorMessage);
             if (request is DisconnectClientMessage)
                 HandleMessage(request as DisconnectClientMessage);
 
             if (m_additionalsHandlers.ContainsKey(request.GetType()))
                 m_additionalsHandlers[request.GetType()](request);
+            else if (!(request is IIPCErrorMessage) && !(request is DisconnectClientMessage) &&
+                !(request is CommonOKMessage))
+            {
+                logger.Warn("IPC Message {0} not handled", request);
+            }
         }
 
         public void AddMessageHandler(Type messageType, IPCMessageHandler handler)
@@ -433,8 +520,9 @@ namespace Stump.Server.WorldServer.Core.IPC
             }
 
             Character character;
-            if (AccountManager.Instance.IsAccountBlocked(message.AccountId, out character))
+            if (!isLogged && AccountManager.Instance.IsAccountBlocked(message.AccountId, out character))
             {
+                logger.Warn("Account {0} blocked, waiting release", message.AccountId);
                 Action<Character> ev = null;
                     ev = chr =>
                     {
@@ -453,7 +541,7 @@ namespace Stump.Server.WorldServer.Core.IPC
             ReplyRequest(new DisconnectedClientMessage(true), request);
         }
 
-        private static void HandleError(IPCErrorMessage error)
+        private static void HandleError(IIPCErrorMessage error)
         {
             logger.Error("Error received of type {0}. Message : {1} StackTrace : {2}",
                 error.GetType(), error.Message, error.StackTrace);

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 01/04/2015 01:23:47
+// Generated on 08/13/2015 17:50:45
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,9 +21,7 @@ namespace DBSynchroniser.Records
         public int id;
         [I18NField]
         public uint nameId;
-        public int specializationOfId;
         public int iconId;
-        public List<int> toolIds;
 
         int ID2ORecord.Id
         {
@@ -48,43 +46,10 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public int SpecializationOfId
-        {
-            get { return specializationOfId; }
-            set { specializationOfId = value; }
-        }
-
-        [D2OIgnore]
         public int IconId
         {
             get { return iconId; }
             set { iconId = value; }
-        }
-
-        [D2OIgnore]
-        [Ignore]
-        public List<int> ToolIds
-        {
-            get { return toolIds; }
-            set
-            {
-                toolIds = value;
-                m_toolIdsBin = value == null ? null : value.ToBinary();
-            }
-        }
-
-        private byte[] m_toolIdsBin;
-        [D2OIgnore]
-        [BinaryField]
-        [Browsable(false)]
-        public byte[] ToolIdsBin
-        {
-            get { return m_toolIdsBin; }
-            set
-            {
-                m_toolIdsBin = value;
-                toolIds = value == null ? null : value.ToObject<List<int>>();
-            }
         }
 
         public virtual void AssignFields(object obj)
@@ -93,9 +58,7 @@ namespace DBSynchroniser.Records
             
             Id = castedObj.id;
             NameId = castedObj.nameId;
-            SpecializationOfId = castedObj.specializationOfId;
             IconId = castedObj.iconId;
-            ToolIds = castedObj.toolIds;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -103,15 +66,12 @@ namespace DBSynchroniser.Records
             var obj = parent != null ? (Job)parent : new Job();
             obj.id = Id;
             obj.nameId = NameId;
-            obj.specializationOfId = SpecializationOfId;
             obj.iconId = IconId;
-            obj.toolIds = ToolIds;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
-            m_toolIdsBin = toolIds == null ? null : toolIds.ToBinary();
         
         }
     }

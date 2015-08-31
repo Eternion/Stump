@@ -1,4 +1,4 @@
----------------------------- ACCOUNTS ----------------------------
+-- ########################### ACCOUNTS ###########################
 
 -- Cleanup accounts to remove accounts doesn't have stump_auth.accounts associated
 /*
@@ -18,7 +18,7 @@ SELECT COUNT(*) FROM accounts_relations WHERE TargetId NOT IN (SELECT Id FROM ac
 */
 DELETE FROM accounts_relations WHERE TargetId NOT IN (SELECT Id FROM accounts);
 
---------------------------- CHARACTERS ---------------------------
+-- ########################### CHARACTERS ###########################
 
 -- Cleanup characters_items to remove items doesn't have character associated
 /*
@@ -44,6 +44,12 @@ SELECT COUNT(*) FROM characters_shortcuts_items WHERE OwnerId NOT IN (SELECT Id 
 */
 DELETE FROM characters_shortcuts_items WHERE OwnerId NOT IN (SELECT Id FROM characters);
 
+-- Cleanup characters_shortcuts_items_presets to remove items shortcuts doesn't have character associated
+/*
+SELECT COUNT(*) FROM characters_shortcuts_items_presets WHERE OwnerId NOT IN (SELECT Id FROM characters);
+*/
+DELETE FROM characters_shortcuts_items_presets WHERE OwnerId NOT IN (SELECT Id FROM characters);
+
 -- Cleanup characters_shortcuts_spells to remove spells shortcuts doesn't have character associated
 /*
 SELECT COUNT(*) FROM characters_shortcuts_spells WHERE OwnerId NOT IN (SELECT Id FROM characters);
@@ -57,7 +63,7 @@ SELECT COUNT(*) FROM characters_spells WHERE OwnerId NOT IN (SELECT Id FROM char
 DELETE FROM characters_spells WHERE OwnerId NOT IN (SELECT Id FROM characters);
 
 
------------------------------ GUILDS -----------------------------
+-- ########################### GUILDS ###########################
 
 -- Cleanup guild_members to remove guild members doesn't have character associated
 /*

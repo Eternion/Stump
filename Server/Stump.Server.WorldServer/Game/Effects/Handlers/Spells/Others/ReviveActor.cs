@@ -3,6 +3,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
@@ -21,6 +22,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             private set;
         }
 
+        public override bool CanApply()
+        {
+            return base.CanApply();
+            //return Caster.Team.GetLastDeadFighter() != null;
+        }
+
         public override bool Apply()
         {
             var integerEffect = GenerateEffect();
@@ -34,16 +41,21 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 return false;
 
             ReviveActor(LastDeadFighter, integerEffect.Value);
+
             return true;
         }
 
         private void ReviveActor(FightActor actor, int heal)
         {
-            HealHpPercent(actor, heal);
-            actor.Position.Cell = TargetedCell;
+            var cell = TargetedCell;
+            if (!Fight.IsCellFree(cell))
+                cell = Map.GetRandomAdjacentFreeCell(TargetedPoint, true);
 
+            HealHpPercent(actor, heal);
+            actor.Position.Cell = cell;
+
+            ActionsHandler.SendGameActionFightReviveMessage(Fight.Clients, Caster, actor);
             ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
-            Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, actor));
 
             Caster.Dead += OnCasterDead;
         }
@@ -52,11 +64,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             if (LastDeadFighter != null && LastDeadFighter.IsAlive())
                 LastDeadFighter.Die();
+
+            Caster.Dead -= OnCasterDead;
         }
 
         private void HealHpPercent(FightActor actor, int percent)
         {
             var healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
+
+            if (healAmount <= 0)
+                healAmount = 1;
 
             actor.Heal(healAmount, Caster, false);
         }

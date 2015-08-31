@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.Extensions;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors;
@@ -17,6 +15,9 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         [WorldHandler(EmotePlayRequestMessage.Id)]
         public static void HandleEmotePlayRequestMessage(WorldClient client, EmotePlayRequestMessage message)
         {
+            if (!client.Character.AvailableEmotes.Contains((EmotesEnum) message.emoteId))
+                return;
+
             client.Character.PlayEmote((EmotesEnum) message.emoteId);
         }
 

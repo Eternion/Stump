@@ -66,7 +66,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public short CellId
         {
             get { return m_cellId; }
-            set
+            private set
             {
                 m_cellId = value;
                 SetFromCellId();
@@ -76,7 +76,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public int X
         {
             get { return m_x; }
-            set
+            private set
             {
                 m_x = value;
                 SetFromCoords();
@@ -86,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public int Y
         {
             get { return m_y; }
-            set
+            private set
             {
                 m_y = value;
                 SetFromCoords();
@@ -114,19 +114,19 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             m_y = point.Y;
         }
 
-
-        public uint DistanceTo(MapPoint point)
+        public uint EuclideanDistanceTo(MapPoint point)
         {
             return (uint)Math.Sqrt(( point.X - m_x ) * ( point.X - m_x ) + ( point.Y - m_y ) * ( point.Y - m_y ));
         }
 
-        public uint DistanceToCell(MapPoint point)
+        public uint ManhattanDistanceTo(MapPoint point)
         {
             return (uint) (Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y));
         }
+
         public bool IsAdjacentTo(MapPoint point)
         {
-            return DistanceToCell(point) == 1;
+            return ManhattanDistanceTo(point) == 1;
         }
 
         public DirectionsEnum OrientationToAdjacent(MapPoint point)
@@ -219,6 +219,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return point.X == X || point.Y == Y;
         }
 
+        public bool IsOnSameDiagonal(MapPoint point)
+        {
+            return point.X + point.Y == X + Y ||
+                point.X - point.Y == X - Y;
+        }
+
         /// <summary>
         /// Returns true whenever this point is between points A and B
         /// </summary>
@@ -294,7 +300,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             }
         }
 
-        public MapPoint GetCellInDirection(DirectionsEnum direction, short step)
+        public MapPoint GetCellInDirection(DirectionsEnum direction, int step)
         {
             MapPoint mapPoint = null;
             switch (direction)
@@ -371,6 +377,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
                 yield return northWest;
         }
 
+        public bool IsInMap()
+        {
+            return IsInMap(m_x, m_y);
+        }
+
         public static bool IsInMap(int x, int y)
         {
             return x + y >= 0 && x - y >= 0 && x - y < MapHeight*2 && x + y < MapWidth*2;
@@ -433,6 +444,19 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         public static MapPoint GetPoint(Cell cell)
         {
             return GetPoint(cell.Id);
+        }
+
+        public static MapPoint[] GetAllPoints()
+        {
+            if (!m_initialized)
+                InitializeStaticGrid();
+
+            return OrthogonalGridReference;
+        }
+
+        public static implicit operator MapPoint(Cell cell)
+        {
+            return new MapPoint(cell);
         }
 
         public override string ToString()

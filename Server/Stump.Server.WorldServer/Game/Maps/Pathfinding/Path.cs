@@ -29,6 +29,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
             m_path = m_cellsPath.Select(entry => new MapPoint(entry)).ToArray();
         }
 
+        public bool Walk
+        {
+            get;
+            private set;
+        }
+
         public Map Map
         {
             get;
@@ -93,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
         public void CutPath(int index, bool skip = false)
         {
-            if (index > m_cellsPath.Length - 1)
+            if (index >= m_cellsPath.Length || index < 0)
                 return;
 
             m_cellsPath = skip ? m_cellsPath.Skip(index).ToArray() : m_cellsPath.Take(index).ToArray();
@@ -175,6 +181,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
         public static Path GetEmptyPath(Map map, Cell startCell)
         {
             return new Path(map, new [] { startCell });
+        }
+
+        public void SetWalk()
+        {
+            Walk = true;
         }
     }
 }

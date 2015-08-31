@@ -1,4 +1,3 @@
-using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Interfaces;
 
@@ -11,7 +10,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
         {
         }
 
-        public StatsAP(IStatsOwner owner, int valueBase, int limit)
+        public StatsAP(IStatsOwner owner, int valueBase, int? limit)
             : base(owner, PlayerFields.AP, valueBase, limit, true)
         {
         }
@@ -36,6 +35,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Stats
             {
                 return TotalMax - Used;
             }
+        }
+
+        public override StatsData CloneAndChangeOwner(IStatsOwner owner)
+        {
+            var clone = new StatsAP(owner, ValueBase, Limit)
+            {
+                Equiped = Equiped,
+                Used = 0
+            };
+
+            return clone;
         }
     }
 }

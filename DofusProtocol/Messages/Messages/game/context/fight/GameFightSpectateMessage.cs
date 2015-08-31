@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:11
+// Generated on 08/04/2015 13:24:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,17 +22,19 @@ namespace Stump.DofusProtocol.Messages
         public IEnumerable<Types.GameActionMark> marks;
         public short gameTurn;
         public int fightStart;
+        public IEnumerable<Types.Idol> idols;
         
         public GameFightSpectateMessage()
         {
         }
         
-        public GameFightSpectateMessage(IEnumerable<Types.FightDispellableEffectExtendedInformations> effects, IEnumerable<Types.GameActionMark> marks, short gameTurn, int fightStart)
+        public GameFightSpectateMessage(IEnumerable<Types.FightDispellableEffectExtendedInformations> effects, IEnumerable<Types.GameActionMark> marks, short gameTurn, int fightStart, IEnumerable<Types.Idol> idols)
         {
             this.effects = effects;
             this.marks = marks;
             this.gameTurn = gameTurn;
             this.fightStart = fightStart;
+            this.idols = idols;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -65,6 +67,19 @@ namespace Stump.DofusProtocol.Messages
 
             writer.WriteVarShort(gameTurn);
             writer.WriteInt(fightStart);
+            var idols_before = writer.Position;
+            var idols_count = 0;
+            writer.WriteUShort(0);
+            foreach (var entry in idols)
+            {
+                 entry.Serialize(writer);
+                 idols_count++;
+            }
+            var idols_after = writer.Position;
+            writer.Seek((int)idols_before);
+            writer.WriteUShort((ushort)idols_count);
+            writer.Seek((int)idols_after);
+
         }
         
         public override void Deserialize(IDataReader reader)
@@ -91,6 +106,14 @@ namespace Stump.DofusProtocol.Messages
             fightStart = reader.ReadInt();
             if (fightStart < 0)
                 throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");
+            limit = reader.ReadUShort();
+            var idols_ = new Types.Idol[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 idols_[i] = new Types.Idol();
+                 idols_[i].Deserialize(reader);
+            }
+            idols = idols_;
         }
         
     }

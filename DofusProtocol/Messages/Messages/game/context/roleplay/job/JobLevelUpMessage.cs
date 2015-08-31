@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:17
+// Generated on 08/04/2015 13:25:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public sbyte newLevel;
+        public byte newLevel;
         public Types.JobDescription jobsDescription;
         
         public JobLevelUpMessage()
         {
         }
         
-        public JobLevelUpMessage(sbyte newLevel, Types.JobDescription jobsDescription)
+        public JobLevelUpMessage(byte newLevel, Types.JobDescription jobsDescription)
         {
             this.newLevel = newLevel;
             this.jobsDescription = jobsDescription;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteSByte(newLevel);
+            writer.WriteByte(newLevel);
             jobsDescription.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            newLevel = reader.ReadSByte();
-            if (newLevel < 0)
-                throw new Exception("Forbidden value on newLevel = " + newLevel + ", it doesn't respect the following condition : newLevel < 0");
+            newLevel = reader.ReadByte();
+            if (newLevel < 0 || newLevel > 255)
+                throw new Exception("Forbidden value on newLevel = " + newLevel + ", it doesn't respect the following condition : newLevel < 0 || newLevel > 255");
             jobsDescription = new Types.JobDescription();
             jobsDescription.Deserialize(reader);
         }

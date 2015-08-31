@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stump.DofusProtocol.Enums</RootNamespace>
     <AssemblyName>Stump.DofusProtocol.Enums</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
     <TargetFrameworkProfile />
@@ -170,10 +170,13 @@
   <ItemGroup>
     <Compile Include="Custom\AcquaintanceErrorEnum.cs" />
     <Compile Include="Custom\ActionsEnum.cs" />
+    <Compile Include="Custom\ChallengeEnum.cs" />
+    <Compile Include="Custom\ChallengeStatusEnum.cs" />
     <Compile Include="Custom\GuildCreationResultEnum.cs" />
     <Compile Include="Custom\GuildInvitationStateEnum.cs" />
     <Compile Include="Custom\InteractiveTypeEnum.cs" />
     <Compile Include="Custom\ItemSuperTypeEnum.cs" />
+    <Compile Include="Custom\MimicryErrorEnum.cs" />
     <Compile Include="Custom\MountStateEnum.cs" />
     <Compile Include="Custom\NotificationEnum.cs" />
     <Compile Include="Custom\OptionalFeaturesEnum.cs" />
@@ -222,7 +225,6 @@
     <Compile Include="Export\ClientTechnologyEnum.cs" />
     <Compile Include="Export\CompassTypeEnum.cs" />
     <Compile Include="Export\ConsoleMessageTypeEnum.cs" />
-    <Compile Include="Export\CrafterDirectoryParamBitEnum.cs" />
     <Compile Include="Export\CraftResultEnum.cs" />
     <Compile Include="Export\DebugLevelEnum.cs" />
     <Compile Include="Export\DelayedActionTypeEnum.cs" />
@@ -257,7 +259,6 @@
     <Compile Include="Export\PartyJoinErrorEnum.cs" />
     <Compile Include="Export\PartyNameErrorEnum.cs" />
     <Compile Include="Export\PartyTypeEnum.cs" />
-    <Compile Include="Export\PaymentTypeEnum.cs" />
     <Compile Include="Export\PlayableBreedEnum.cs" />
     <Compile Include="Export\PlayerLifeStatusEnum.cs" />
     <Compile Include="Export\PlayerStateEnum.cs" />

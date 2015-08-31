@@ -16,7 +16,7 @@ namespace Stump.Server.AuthServer.Handlers
             Predicates.Add(messageId, predicate);
         }
 
-        public bool CanHandleMessage(BaseClient client, uint messageId)
+        public bool CanHandleMessage(IClient client, uint messageId)
         {
             if (!Predicates.ContainsKey(messageId))
                 return true;

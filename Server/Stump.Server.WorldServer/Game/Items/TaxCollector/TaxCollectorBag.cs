@@ -36,28 +36,28 @@ namespace Stump.Server.WorldServer.Game.Items.TaxCollector
             private set;
         }
 
-        protected override void OnItemStackChanged(TaxCollectorItem item, int difference)
+        protected override void OnItemStackChanged(TaxCollectorItem item, int difference, bool removeMsg = true)
         {
             IsDirty = true;
 
             base.OnItemStackChanged(item, difference);
         }
 
-        protected override void OnItemAdded(TaxCollectorItem item)
+        protected override void OnItemAdded(TaxCollectorItem item, bool addItemMsg)
         {
             IsDirty = true;
 
-            base.OnItemAdded(item);
+            base.OnItemAdded(item, false);
         }
 
-        protected override void OnItemRemoved(TaxCollectorItem item)
+        protected override void OnItemRemoved(TaxCollectorItem item, bool removeItemMsg)
         {
             IsDirty = true;
 
             if (Count == 0)
                 Owner.Delete();
 
-            base.OnItemRemoved(item);
+            base.OnItemRemoved(item, removeItemMsg);
         }
 
         public bool MoveToInventory(TaxCollectorItem item, Character character)

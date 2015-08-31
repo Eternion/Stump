@@ -1,24 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using NLog;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Commands;
-using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.BaseServer.IPC.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.IPC;
 using Stump.Server.WorldServer.Core.Network;
-using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Accounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Breeds;
-using Stump.Server.WorldServer.Game.Fights;
-using Stump.Server.WorldServer.Handlers.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Approach
 {
@@ -81,6 +79,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                 return;
             }
 
+            message.ticket = Encoding.ASCII.GetString(message.ticket.Split(',').Select(x => (byte)int.Parse(x)).ToArray());
+
             logger.Debug("Client request ticket {0}", message.ticket);
             IPCAccessor.Instance.SendRequest<AccountAnswerMessage>(new AccountRequestMessage { Ticket = message.ticket }, 
                 msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnAccountReceived(msg, client)), error => client.Disconnect());
@@ -88,6 +88,13 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
         private static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
         {
+            Character dummy;
+            if (AccountManager.Instance.IsAccountBlocked(message.Account.Id, out dummy))
+            {
+                logger.Error("Account blocked, connection unallowed");
+                client.Disconnect();
+            }
+
             lock (ConnectionQueue.SyncRoot)
                 ConnectionQueue.Remove(client);
 
@@ -130,23 +137,14 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             SendServerOptionalFeaturesMessage(client, OptionalFeaturesEnum.PvpArena);
             SendAccountCapabilitiesMessage(client);
 
-            client.Send(new TrustStatusMessage(true)); // Restrict actions if account is not trust
+            client.Send(new TrustStatusMessage(true, true)); // Restrict actions if account is not trust
 
             /* Just to get console AutoCompletion */
-            if (client.UserGroup.Role >= RoleEnum.Moderator)
+            if (client.UserGroup.IsGameMaster)
                 SendConsoleCommandsListMessage(client, CommandManager.Instance.AvailableCommands.Where(x => client.UserGroup.IsCommandAvailable(x)));
 
-            var characterInFight = FindCharacterFightReconnection(client);
-            if (characterInFight != null)
-                CharacterHandler.CommonCharacterSelection(client, characterInFight);
 
         }
-        
-        private static CharacterRecord FindCharacterFightReconnection(WorldClient client)
-        {
-            return (from characterInFight in client.Characters.Where(x => x.LeftFightId != null) let fight = FightManager.Instance.GetFight(characterInFight.LeftFightId.Value) where fight != null let fighter = fight.GetLeaver(characterInFight.Id) where fighter != null select characterInFight).FirstOrDefault();
-        }
-
         public static void SendStartupActionsListMessage(IPacketReceiver client)
         {
             client.Send(new StartupActionsListMessage());
@@ -159,10 +157,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
 
         public static void SendAccountCapabilitiesMessage(WorldClient client)
         {
-            client.Send(new AccountCapabilitiesMessage(
+            client.Send(new AccountCapabilitiesMessage(false, true,
                             client.Account.Id,
-                            false,
-                            //(ushort)client.Account.BreedFlags,
                             (ushort)BreedManager.Instance.AvailableBreedsFlags,
                             (ushort)BreedManager.Instance.AvailableBreedsFlags,
                             (sbyte) client.UserGroup.Role));

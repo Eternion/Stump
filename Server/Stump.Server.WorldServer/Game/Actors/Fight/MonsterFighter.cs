@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
@@ -8,6 +9,7 @@ using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
+using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Formulas;
@@ -91,6 +93,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return Monster.Grade.GradeXp;
         }
+        
+        public override bool CanDrop()
+        {
+            return true;
+        }
 
         public override IEnumerable<DroppedItem> RollLoot(IFightResult looter)
         {
@@ -102,9 +109,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var items = new List<DroppedItem>();
 
             var prospectingSum = OpposedTeam.GetAllFighters<CharacterFighter>().Sum(entry => entry.Stats[PlayerFields.Prospecting].Total);
+            var droppedGroups = new List<int>();
 
-            foreach (var droppableItem in Monster.Template.DroppableItems.Where(droppableItem => prospectingSum >= droppableItem.ProspectingLock))
+            foreach (var droppableItem in Monster.Template.DroppableItems.Where(droppableItem => prospectingSum >= droppableItem.ProspectingLock).Shuffle())
             {
+                if (droppedGroups.Contains(droppableItem.DropGroup))
+                    continue;
+
+                if (looter is TaxCollectorProspectingResult && droppableItem.TaxCollectorCannotLoot)
+                    continue;
+
                 for (var i = 0; i < droppableItem.RollsCounter; i++)
                 {
                     if (droppableItem.DropLimit > 0 && m_dropsCount.ContainsKey(droppableItem) && m_dropsCount[droppableItem] >= droppableItem.DropLimit)
@@ -115,6 +129,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                     if (!(dropRate >= chance))
                         continue;
+
+                    if (droppableItem.DropGroup != 0)
+                        droppedGroups.Add(droppableItem.DropGroup);
 
                     items.Add(new DroppedItem(droppableItem.ItemId, 1));
 
@@ -127,6 +144,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
 
             return items;
+        }
+
+        public override int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor, bool poison)
+        {
+            var percentResistance = CalculateTotalResistances(type, true, poison);
+            var fixResistance = CalculateTotalResistances(type, false, poison);
+            var armorResistance = withArmor && !poison ? CalculateArmorReduction(type) : 0;
+
+            var result = (int)((1 - percentResistance / 100d) * (damage - armorResistance - fixResistance)) -
+                         (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
+
+            return result;
         }
 
         public override GameContextActorInformations GetGameContextActorInformations(Character character)

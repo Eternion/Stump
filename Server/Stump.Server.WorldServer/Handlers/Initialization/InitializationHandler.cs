@@ -1,6 +1,7 @@
 using Stump.DofusProtocol.Messages;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Handlers.Initialization
 {
@@ -11,20 +12,20 @@ namespace Stump.Server.WorldServer.Handlers.Initialization
             client.Send(new OnConnectionEventMessage(eventType));
         }
 
-        public static void SendSetCharacterRestrictionsMessage(IPacketReceiver client)
+        public static void SendSetCharacterRestrictionsMessage(IPacketReceiver client, Character character)
         {
             // todo
-            client.Send(new SetCharacterRestrictionsMessage(
+            client.Send(new SetCharacterRestrictionsMessage(character.Id,
                             new ActorRestrictionsInformations(
-                                false, // cantBeAgressed
-                                false, // cantBeChallenged
-                                false, // cantTrade
+                                !character.Map.AllowAggression, // cantBeAgressed
+                                !character.Map.AllowChallenge, // cantBeChallenged
+                                !character.Map.AllowExchangesBetweenPlayers, // cantTrade
                                 false, // cantBeAttackedByMutant
                                 false, // cantRun
                                 false, // cantMinimize
                                 false, // cantMove
 
-                                true, // cantAggress
+                                !character.Map.AllowAggression, // cantAggress
                                 false, // cantChallenge
                                 false, // cantExchange
                                 false, // cantAttack

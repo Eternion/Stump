@@ -10,11 +10,17 @@ using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
+using NLog.Config;
+using NLog.Targets;
+using SharpRaven;
+using SharpRaven.Data;
 using Stump.Core.Attributes;
 using Stump.Core.IO;
 using Stump.Core.Threading;
+using Stump.Core.Timers;
 using Stump.Core.Xml.Config;
 using Stump.ORM;
+using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Exceptions;
 using Stump.Server.BaseServer.Initialization;
@@ -42,10 +48,23 @@ namespace Stump.Server.BaseServer
 
         [Variable] public static string CommandsInfoFilePath = "./commands.xml";
 
+        [Variable(Priority = 10, DefinableRunning = true)]
+        public static bool IsExceptionLoggerEnabled = false;
+
+        [Variable(Priority = 10)]
+        public static string ExceptionLoggerDSN = "";
+
+        public RavenClient ExceptionLogger
+        {
+            get;
+            protected set;
+        }
 
         protected Dictionary<string, Assembly> LoadedAssemblies;
         protected Logger logger;
         private bool m_ignoreReload;
+
+        public event Action ServerStarted;
 
         protected ServerBase(string configFile, string schemaFile)
         {
@@ -166,6 +185,12 @@ namespace Stump.Server.BaseServer
             protected set;
         }
 
+        public TimedTimerEntry ScheduledShutdownTimer
+        {
+            get;
+            protected set;
+        }
+
         public virtual void Initialize()
         {
             InstanceAsBase = this;
@@ -215,7 +240,7 @@ namespace Stump.Server.BaseServer
                 Config.Load();
 
             logger.Info("Initialize Task Pool");
-            IOTaskPool = new SelfRunningTaskPool(IOTaskInterval, "IO Task Pool");
+            IOTaskPool = new BenchmarkedTaskPool(IOTaskInterval, "IO Task Pool");
 
             CommandManager = CommandManager.Instance;
             CommandManager.RegisterAll(Assembly.GetExecutingAssembly());
@@ -241,6 +266,31 @@ namespace Stump.Server.BaseServer
 
             logger.Info("Loading Plugins...");
             PluginManager.Instance.LoadAllPlugins();
+
+            if (IsExceptionLoggerEnabled)
+            {
+                ExceptionLogger = new RavenClient(ExceptionLoggerDSN);
+                /*
+                MethodCallTarget target = new MethodCallTarget();
+                target.ClassName = typeof (ServerBase).AssemblyQualifiedName;
+                target.MethodName = "PushLogWithRaven";
+                target.Parameters.Add(new MethodCallParameter("${level}"));
+                target.Parameters.Add(new MethodCallParameter("${logger} : ${message}"));
+
+                var rule = new LoggingRule("*", LogLevel.Warn, target);
+                LogManager.Configuration.AddTarget("raven", target);
+                LogManager.Configuration.LoggingRules.Add(rule);
+
+                LogManager.ReconfigExistingLoggers();*/
+            }
+
+        }
+
+        public static void PushLogWithRaven(string levelStr, string message)
+        {
+            ErrorLevel level;
+            if (Enum.TryParse(levelStr, out level))
+                InstanceAsBase.ExceptionLogger.CaptureMessage(new SentryMessage(message), level);
         }
 
         public virtual void UpdateConfigFiles()
@@ -319,12 +369,12 @@ namespace Stump.Server.BaseServer
 
         private void OnClientConnected(BaseClient client)
         {
-            logger.Info("Client {0} connected", client);
+            //logger.Info("Client {0} connected", client);
         }
 
         private void OnClientDisconnected(BaseClient client)
         {
-            logger.Info("Client {0} disconnected", client);
+            //logger.Info("Client {0} disconnected", client);
         }
 
         private static void InitializeGarbageCollector()
@@ -391,8 +441,11 @@ namespace Stump.Server.BaseServer
             Running = true;
             Initializing = false;
 
-            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(30).TotalMilliseconds, KeepSQLConnectionAlive);
-            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(5).TotalMilliseconds, CheckScheduledShutdown);
+            IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(10).TotalMilliseconds, KeepSQLConnectionAlive);
+
+            var evnt = ServerStarted;
+            if (evnt != null)
+                evnt();
         }
 
 
@@ -434,7 +487,7 @@ namespace Stump.Server.BaseServer
             var afkClients = ClientManager.FindAll(client =>
                 DateTime.Now.Subtract(client.LastActivity).TotalSeconds >= Settings.InactivityDisconnectionTime);
 
-            foreach (BaseClient client in afkClients)
+            foreach (var client in afkClients)
             {
                 client.Disconnect();
             }
@@ -457,6 +510,11 @@ namespace Stump.Server.BaseServer
         {
             IsShutdownScheduled = true;
             ScheduledShutdownDate = DateTime.Now + timeBeforeShuttingDown;
+
+            if (ScheduledShutdownTimer != null)
+                IOTaskPool.RemoveTimer(ScheduledShutdownTimer);
+
+            ScheduledShutdownTimer = IOTaskPool.CallPeriodically((int)TimeSpan.FromSeconds(1).TotalMilliseconds, CheckScheduledShutdown);
         }
 
         public virtual void CancelScheduledShutdown()
@@ -464,6 +522,9 @@ namespace Stump.Server.BaseServer
             IsShutdownScheduled = false;
             ScheduledShutdownDate = DateTime.MaxValue;
             ScheduledShutdownReason = null;
+
+            IOTaskPool.RemoveTimer(ScheduledShutdownTimer);
+            ScheduledShutdownTimer = null;
         }
 
         protected virtual void CheckScheduledShutdown()

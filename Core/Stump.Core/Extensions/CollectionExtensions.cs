@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Stump.Core.Threading;
@@ -37,6 +36,12 @@ namespace Stump.Core.Extensions
         public static List<T> Clone<T>(this List<T> listToClone) where T : ICloneable
         {
             return listToClone.Select(item => (T)item.Clone()).ToList();
+        }
+
+        public static void Move<T>(this List<T> list, T item, int newIndex) where T : ICloneable
+        {
+            list.Remove(item);
+            list.Insert(newIndex, item);
         }
 
         public static bool CompareEnumerable<T>(this IEnumerable<T> ie1, IEnumerable<T> ie2)
@@ -198,6 +203,33 @@ namespace Stump.Core.Extensions
         {
             TValue val;
             return dict.TryGetValue(key, out val) ? val : default(TValue);
+        }
+
+        public static void AddRange<T, S>(this Dictionary<T, S> source, Dictionary<T, S> collection)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException("Collection is null");
+            }
+
+            foreach (var item in collection.Where(item => !source.ContainsKey(item.Key)))
+            {
+                source.Add(item.Key, item.Value);
+            }
+        }
+
+        public static T[] Concat<T>(this T[] x, T[] y)
+        {
+            if (x == null)
+                throw new ArgumentNullException("x");
+            if (y == null)
+                throw new ArgumentNullException("y");
+
+            var oldLen = x.Length;
+            Array.Resize(ref x, x.Length + y.Length);
+            Array.Copy(y, 0, x, oldLen, y.Length);
+
+            return x;
         }
     }
 }

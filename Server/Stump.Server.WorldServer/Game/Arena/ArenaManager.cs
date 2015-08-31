@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Arena
             get
             {
                 return m_tokenTemplate ??
-                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int) ItemIdEnum.Kolizeton));
+                       (m_tokenTemplate = ItemManager.Instance.TryGetTemplate((int) ItemIdEnum.KOLOSSOKEN));
             }
         }
 
@@ -70,6 +70,11 @@ namespace Stump.Server.WorldServer.Game.Arena
         public SelfRunningTaskPool ArenaTaskPool
         {
             get { return m_arenaTaskPool; }
+        }
+
+        public Dictionary<int, ArenaRecord> Arenas
+        {
+            get { return m_arenas; }
         }
 
         public bool CanJoinQueue(Character character)

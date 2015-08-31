@@ -7,6 +7,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         Water,
         Air,
         Fire,
+        Pushback,
         Unknown,
     }
 }

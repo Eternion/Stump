@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public DungeonCommands()
         {
-            Aliases = new[] {"dungeon"};
+            Aliases = new[] { "dungeon" };
             Description = "Manage and create dungeons";
             RequiredRole = RoleEnum.Administrator;
         }
@@ -26,10 +26,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public DungeonEnableCommand()
         {
-            Aliases = new[] {"enable", "on"};
+            Aliases = new[] { "enable", "on" };
             Description = "Unspawn the sub area and define it as a dungeon";
             RequiredRole = RoleEnum.Administrator;
-            ParentCommandType = typeof (DungeonCommands);
+            ParentCommandType = typeof(DungeonCommands);
             AddParameter("subarea", "s", "Sub area to turn into dungeon", isOptional: true,
                 converter: ParametersConverter.SubAreaConverter);
             AddParameter("map", "m", "Map to turn into dungeon", isOptional: true,
@@ -98,14 +98,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-      public class DungeonDisableCommand : SubCommand
+    public class DungeonDisableCommand : SubCommand
     {
         public DungeonDisableCommand()
         {
-            Aliases = new[] {"disable", "off"};
+            Aliases = new[] { "disable", "off" };
             Description = "Respawn the sub area and remove the dungeon state";
-            RequiredRole = RoleEnum.Administrator;            
-            ParentCommandType = typeof (DungeonCommands);
+            RequiredRole = RoleEnum.Administrator;
+            ParentCommandType = typeof(DungeonCommands);
             AddParameter("subarea", "s", "Sub area to turn into dungeon", isOptional: true,
                 converter: ParametersConverter.SubAreaConverter);
         }
@@ -125,7 +125,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 subarea = trigger.Get<SubArea>("subarea");
 
             var spawns = subarea.Maps.SelectMany(x => x.MonsterSpawns).Distinct().ToArray();
-            
+
             foreach (var spawn in spawns)
             {
                 if (spawn.Map != null)
@@ -160,10 +160,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public DungeonMonster()
         {
-            Aliases = new[] {"monster"};
+            Aliases = new[] { "monster" };
             Description = "Add or remove a monster from the given dungeon map";
             RequiredRole = RoleEnum.Administrator;
-            ParentCommandType = typeof (DungeonCommands);
+            ParentCommandType = typeof(DungeonCommands);
             AddParameter("monster", "m", "Monster template", converter: ParametersConverter.MonsterTemplateConverter);
             AddParameter("grade", "g", "Grade of the monster (usually between 1-5)", 1, true);
             AddParameter("map", "map", "Given map", isOptional: true, converter: ParametersConverter.MapConverter);
@@ -210,7 +210,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     group = new MonsterDungeonSpawn
                     {
                         Map = map,
-                        GroupMonsters = new List<MonsterGrade> {grade},
+                        GroupMonsters = new List<MonsterGrade> { grade },
                     };
                     WorldServer.Instance.DBAccessor.Database.Insert(group);
                 }
@@ -279,7 +279,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     }
                 }
 
-                var spawnsToRemove = pool.Spawns.Where(x => x.GroupMonsters.Count==0).ToArray();
+                var spawnsToRemove = pool.Spawns.Where(x => x.GroupMonsters.Count == 0).ToArray();
 
                 foreach (var spawn in spawnsToRemove)
                 {
@@ -301,9 +301,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
     {
         public DungeonTeleport()
         {
-            Aliases = new[] {"teleport"};
+            Aliases = new[] { "teleport" };
             Description = "Set dungeon teleport event to current location";
-            ParentCommandType = typeof (DungeonCommands);
+            ParentCommandType = typeof(DungeonCommands);
             RequiredRole = RoleEnum.Administrator;
             AddParameter("map", "m", converter: ParametersConverter.MapConverter);
         }

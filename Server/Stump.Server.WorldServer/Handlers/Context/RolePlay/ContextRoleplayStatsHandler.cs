@@ -18,10 +18,16 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 {StatsBoostTypeEnum.Intelligence, PlayerFields.Intelligence},
                 {StatsBoostTypeEnum.Vitality, PlayerFields.Vitality},
             };
-            
+
         [WorldHandler(StatsUpgradeRequestMessage.Id)]
         public static void HandleStatsUpgradeRequestMessage(WorldClient client, StatsUpgradeRequestMessage message)
         {
+            if (client.Character.IsInFight())
+            {
+                SendStatsUpgradeResultMessage(client, StatsUpgradeResultEnum.IN_FIGHT, message.boostPoint);
+                return;
+            }
+
             var statsid = (StatsBoostTypeEnum)message.statId;
 
             if (statsid < StatsBoostTypeEnum.Strength ||
@@ -29,7 +35,10 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 throw new Exception("Wrong statsid");
 
             if (message.boostPoint <= 0)
+            {
+                SendStatsUpgradeResultMessage(client, StatsUpgradeResultEnum.NOT_ENOUGH_POINT, message.boostPoint);
                 return;
+            }
 
             var breed = client.Character.Breed;
             var actualPoints = client.Character.Stats[m_statsEnumRelations[statsid]].Base;
@@ -37,7 +46,10 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var pts = message.boostPoint;
 
             if (pts < 1 || message.boostPoint > client.Character.StatsPoints)
+            {
+                SendStatsUpgradeResultMessage(client, StatsUpgradeResultEnum.NOT_ENOUGH_POINT, message.boostPoint);
                 return;
+            }   
 
             var thresholds = breed.GetThresholds(statsid);
             var index = breed.GetThresholdIndex(actualPoints, thresholds);
@@ -78,13 +90,13 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             client.Character.Stats[m_statsEnumRelations[statsid]].Base = actualPoints;
             client.Character.StatsPoints -= (ushort)(message.boostPoint - pts);
 
-            SendStatsUpgradeResultMessage(client, message.boostPoint);
+            SendStatsUpgradeResultMessage(client, StatsUpgradeResultEnum.SUCCESS, message.boostPoint);
             client.Character.RefreshStats();
         }
 
-        public static void SendStatsUpgradeResultMessage(IPacketReceiver client, short usedpts)
+        public static void SendStatsUpgradeResultMessage(IPacketReceiver client, StatsUpgradeResultEnum result, short usedpts)
         {
-            client.Send(new StatsUpgradeResultMessage(1, usedpts));
+            client.Send(new StatsUpgradeResultMessage((sbyte)result, usedpts));
         }
     }
 }

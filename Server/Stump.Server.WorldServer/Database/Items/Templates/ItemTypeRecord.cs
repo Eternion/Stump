@@ -96,7 +96,13 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
-        public Boolean NeedUseConfirm
+        public Boolean Mimickable
+        {
+            get;
+            set;
+        }
+
+        public int CraftXpRatio
         {
             get;
             set;
@@ -113,7 +119,8 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             Plural = type.plural;
             Gender = type.gender;
             ParseRawZone(type.rawZone);
-            NeedUseConfirm = type.needUseConfirm;
+            Mimickable = type.mimickable;
+            CraftXpRatio = type.craftXpRatio;
         }
 
         #endregion

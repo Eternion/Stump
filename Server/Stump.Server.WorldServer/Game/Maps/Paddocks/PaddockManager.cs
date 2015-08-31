@@ -3,7 +3,9 @@ using System.Linq;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database;
+using Stump.Server.WorldServer.Database.Mounts;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 
 namespace Stump.Server.WorldServer.Game.Maps.Paddocks
 {
@@ -39,6 +41,16 @@ namespace Stump.Server.WorldServer.Game.Maps.Paddocks
         public Paddock GetPaddock(int mapId)
         {
             return m_paddocks.FirstOrDefault(x => x.Map.Id == mapId);
+        }
+
+        public Mount LoadMount(MountRecord record)
+        {
+            var mount = new Mount(record);
+            var mountPaddock = Database.Query<MountPaddock>(string.Format(MountPaddockRelator.FetchByMountId, mount.Id)).FirstOrDefault();
+            if (mountPaddock != null)
+                mount.OwnerId = mountPaddock.CharacterId;
+
+            return mount;
         }
 
         public void Save()

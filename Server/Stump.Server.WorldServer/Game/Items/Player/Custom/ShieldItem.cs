@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemType(ItemTypeEnum.SHIELD)]
+    [ItemType(ItemTypeEnum.BOUCLIER)]
     public class ShieldItem : BasePlayerItem
     {
         public ShieldItem(Character owner, PlayerItemRecord record)

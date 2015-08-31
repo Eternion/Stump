@@ -149,25 +149,19 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public Map[] GetMaps(Point position)
         {
-            if (!m_mapsByPoint.ContainsKey(position))
-                return new Map[0];
-
-            return m_mapsByPoint[position].ToArray();
+            return !m_mapsByPoint.ContainsKey(position) ? new Map[0] : m_mapsByPoint[position].ToArray();
         }
 
         public Map[] GetMaps(Point position, bool outdoor)
         {
-            if (!m_mapsByPoint.ContainsKey(position))
-                return new Map[0];
-
-            return m_mapsByPoint[position].Where(entry => entry.Outdoor == outdoor).ToArray();
+            return !m_mapsByPoint.ContainsKey(position) ? new Map[0] : m_mapsByPoint[position].Where(entry => entry.Outdoor == outdoor).ToArray();
         }
 
         public void AddMonsterSpawn(MonsterSpawn spawn)
         {
             m_monsterSpawns.Add(spawn);
 
-            foreach (var map in Maps)
+            foreach (var map in Maps.Where(map => map.Outdoor))
             {
                 map.AddMonsterSpawn(spawn);
             }
@@ -190,19 +184,19 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public int RollMonsterLengthLimit(int imposedLimit = 8)
         {
-            Difficulty difficulty = Difficulty;
+            var difficulty = Difficulty;
 
             if (!MonsterGroupLengthProb.ContainsKey(difficulty))
                 difficulty = Difficulty.Normal;
 
-            double[] thresholds = MonsterGroupLengthProb[difficulty].Take(imposedLimit).ToArray();
-            double sum = thresholds.Sum();
+            var thresholds = MonsterGroupLengthProb[difficulty].Take(imposedLimit).ToArray();
+            var sum = thresholds.Sum();
 
             var rand = new AsyncRandom();
-            double roll = rand.NextDouble(0, sum);
+            var roll = rand.NextDouble(0, sum);
 
             double l = 0;
-            for (int i = 0; i < thresholds.Length; i++)
+            for (var i = 0; i < thresholds.Length; i++)
             {
                 l += thresholds[i];
 
@@ -215,34 +209,32 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public int RollMonsterGrade(int minGrade, int maxGrade)
         {
-            Difficulty difficulty = Difficulty;
+            var difficulty = Difficulty;
 
             if (!MonsterGroupLengthProb.ContainsKey(difficulty))
                 difficulty = Difficulty.Normal;
 
-            double[] threshold = MonsterGroupLengthProb[difficulty].Skip(minGrade - 1).Take(maxGrade - minGrade + 1).ToArray();
-            double sum = threshold.Sum();
+            var threshold = MonsterGroupLengthProb[difficulty].Skip(minGrade - 1).Take(maxGrade - minGrade + 1).ToArray();
+            var sum = threshold.Sum();
 
             var rand = new AsyncRandom();
-            double roll = rand.NextDouble(0, sum);
+            var roll = rand.NextDouble(0, sum);
 
             double l = 0;
-            for (int i = 0; i < threshold.Length; i++)
+            for (var i = 0; i < threshold.Length; i++)
             {
                 l += threshold[i];
 
-                if (roll <= l)
-                {
-                    // in case of additional grades
-                    if (i >= threshold.Length - 1 && maxGrade > threshold.Length)
-                    {
-                        int secondRoll = rand.Next(0, maxGrade - threshold.Length + 1);
+                if (!(roll <= l))
+                    continue;
 
-                        return i + secondRoll + 1;
-                    }
-
+                // in case of additional grades
+                if (i < threshold.Length - 1 || maxGrade <= threshold.Length)
                     return i + 1;
-                }
+
+                var secondRoll = rand.Next(0, maxGrade - threshold.Length + 1);
+
+                return i + secondRoll + 1;
             }
 
             return 1;
@@ -250,7 +242,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public int GetMonsterSpawnInterval()
         {
-            Difficulty difficulty = Difficulty;
+            var difficulty = Difficulty;
 
             if (!MonsterSpawnInterval.ContainsKey(difficulty))
                 difficulty = Difficulty.Normal;
@@ -263,12 +255,9 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void RefreshMapsSpawnInterval()
         {
-            foreach (Map map in Maps)
+            foreach (var pool in Maps.SelectMany(map => map.SpawningPools))
             {
-                foreach (var pool in map.SpawningPools)
-                {
-                    pool.SetTimer(GetMonsterSpawnInterval());
-                }
+                pool.SetTimer(GetMonsterSpawnInterval());
             }
         }
     }

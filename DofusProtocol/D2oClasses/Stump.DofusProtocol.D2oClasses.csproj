@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,10 +10,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stump.DofusProtocol.D2oClasses</RootNamespace>
     <AssemblyName>Stump.DofusProtocol.D2oClasses</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>c046dc34</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -168,8 +169,9 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
+    <Reference Include="PropertyChanged, Version=1.50.3.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PropertyChanged.Fody.1.50.3\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -195,6 +197,7 @@
     <Compile Include="Classes\alignments\AlignmentTitle.cs" />
     <Compile Include="Classes\almanax\AlmanaxCalendar.cs" />
     <Compile Include="Classes\ambientSounds\AmbientSound.cs" />
+    <Compile Include="Classes\ambientSounds\PlaylistSound.cs" />
     <Compile Include="Classes\appearance\Appearance.cs" />
     <Compile Include="Classes\appearance\CreatureBoneOverride.cs" />
     <Compile Include="Classes\appearance\CreatureBoneType.cs" />
@@ -208,6 +211,8 @@
     <Compile Include="Classes\breeds\BreedRoleByBreed.cs" />
     <Compile Include="Classes\breeds\Head.cs" />
     <Compile Include="Classes\challenges\Challenge.cs" />
+    <Compile Include="Classes\characteristics\Characteristic.cs" />
+    <Compile Include="Classes\characteristics\CharacteristicCategory.cs" />
     <Compile Include="Classes\communication\CensoredWord.cs" />
     <Compile Include="Classes\communication\ChatChannel.cs" />
     <Compile Include="Classes\communication\Emoticon.cs" />
@@ -232,6 +237,7 @@
     <Compile Include="Classes\guild\EmblemSymbolCategory.cs" />
     <Compile Include="Classes\guild\RankName.cs" />
     <Compile Include="Classes\houses\House.cs" />
+    <Compile Include="Classes\idols\Idol.cs" />
     <Compile Include="Classes\interactives\Interactive.cs" />
     <Compile Include="Classes\interactives\SkillName.cs" />
     <Compile Include="Classes\interactives\StealthBones.cs" />
@@ -326,12 +332,14 @@
     <Compile Include="Classes\npcs\NpcMessage.cs" />
     <Compile Include="Classes\npcs\TaxCollectorFirstname.cs" />
     <Compile Include="Classes\npcs\TaxCollectorName.cs" />
+    <Compile Include="Classes\playlists\Playlist.cs" />
     <Compile Include="Classes\quest\Achievement.cs" />
     <Compile Include="Classes\quest\AchievementCategory.cs" />
     <Compile Include="Classes\quest\AchievementObjective.cs" />
     <Compile Include="Classes\quest\AchievementReward.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveBringItemToNpc.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveBringSoulToNpc.cs" />
+    <Compile Include="Classes\quest\objectives\QuestObjectiveCraftItem.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveDiscoverMap.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveDiscoverSubArea.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveDuelSpecificPlayer.cs" />
@@ -434,8 +442,17 @@
       <Name>NLog.netfx40</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -443,6 +460,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="AfterCompile">
-  </Target>
 </Project>

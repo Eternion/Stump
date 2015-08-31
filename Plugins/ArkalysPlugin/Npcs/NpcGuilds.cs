@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System.Linq;
+using NLog;
 using Stump.Core.Attributes;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Initialization;
@@ -33,7 +34,7 @@ namespace ArkalysPlugin.Npcs
 
         //Guildalogemme
         [Variable]
-        public static int RequiredItemId = (int)ItemIdEnum.Guildalogem;
+        public static int RequiredItemId = (int)ItemIdEnum.GUILDALOGEM;
 
         internal static ItemTemplate RequieredItem;
 
@@ -100,16 +101,16 @@ namespace ArkalysPlugin.Npcs
                 return;
             }
 
-            npc.Actions.RemoveAll(x => x.ActionType == NpcActionTypeEnum.ACTION_TALK);
+            npc.Actions.RemoveAll(x => x.ActionType.Contains(NpcActionTypeEnum.ACTION_TALK));
             npc.Actions.Add(new NpcGuildsScript());
         }
     }
 
     public class NpcGuildsScript : NpcAction
     {
-        public override NpcActionTypeEnum ActionType
+        public override NpcActionTypeEnum[] ActionType
         {
-            get { return NpcActionTypeEnum.ACTION_TALK; }
+            get { return new [] { NpcActionTypeEnum.ACTION_TALK }; }
         }
 
         public override void Execute(Npc npc, Character character)
@@ -164,7 +165,6 @@ namespace ArkalysPlugin.Npcs
                 else
                 {
                     Character.Inventory.RemoveItem(orbs, m_requieredOrbs);
-                    Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, m_requieredOrbs, orbs.Template.Id);
 
                     Character.Inventory.AddItem(NpcGuilds.RequieredItem);
                 }

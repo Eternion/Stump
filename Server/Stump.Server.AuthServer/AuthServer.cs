@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -55,12 +56,14 @@ namespace Stump.Server.AuthServer
         {
             ProviderName = "MySql.Data.MySqlClient",
             Host = "localhost",
+            Port = "3306",
             DbName = "stump_auth",
             User = "root",
             Password = "",
         };
 
         private byte[] m_patchBuffer;
+        public bool m_maintenanceMode;
 
         public IPCHost IpcHost
         {
@@ -121,6 +124,9 @@ namespace Stump.Server.AuthServer
 
                 InitializationManager.InitializeAll();
                 IsInitialized = true;
+
+                if (Environment.GetCommandLineArgs().Contains("-maintenance"))
+                    m_maintenanceMode = true;
             }
             catch (Exception ex)
             {
@@ -142,6 +148,8 @@ namespace Stump.Server.AuthServer
             logger.Info("Start listening on port : " + Port + "...");
             m_host = HostAutoDefined ? IPAddress.Loopback.ToString() : CustomHost;
             ClientManager.Start(m_host, Port);
+
+            IOTaskPool.Start();
 
             StartTime = DateTime.Now;
         }

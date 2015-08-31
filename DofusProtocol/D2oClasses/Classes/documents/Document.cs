@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 16:35:08
+// Generated on 08/13/2015 17:13:44
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,6 +15,8 @@ namespace Stump.DofusProtocol.D2oClasses
         private const String MODULE = "Documents";
         public int id;
         public uint typeId;
+        public Boolean showTitle;
+        public Boolean showBackgroundImage;
         [I18NField]
         public uint titleId;
         [I18NField]
@@ -24,6 +26,7 @@ namespace Stump.DofusProtocol.D2oClasses
         [I18NField]
         public uint contentId;
         public String contentCSS;
+        public String clientProperties;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -39,6 +42,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.typeId; }
             set { this.typeId = value; }
+        }
+        [D2OIgnore]
+        public Boolean ShowTitle
+        {
+            get { return this.showTitle; }
+            set { this.showTitle = value; }
+        }
+        [D2OIgnore]
+        public Boolean ShowBackgroundImage
+        {
+            get { return this.showBackgroundImage; }
+            set { this.showBackgroundImage = value; }
         }
         [D2OIgnore]
         public uint TitleId
@@ -69,6 +84,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.contentCSS; }
             set { this.contentCSS = value; }
+        }
+        [D2OIgnore]
+        public String ClientProperties
+        {
+            get { return this.clientProperties; }
+            set { this.clientProperties = value; }
         }
     }
 }

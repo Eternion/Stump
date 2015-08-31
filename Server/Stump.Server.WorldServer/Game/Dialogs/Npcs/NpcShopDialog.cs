@@ -6,6 +6,7 @@ using Stump.DofusProtocol.Messages;
 using Stump.Server.WorldServer.Database.Items.Shops;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Basic;
@@ -116,7 +117,13 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
 
             var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
-            Character.Inventory.AddItem(item);
+            //Todo: Find better way to assign Mount Effects
+            var mount = MountManager.Instance.CreateMount(Character, itemId);
+            if (mount == null)
+                Character.Inventory.AddItem(item);
+            else
+                finalPrice = (int)itemToSell.Price;
+
             if (Token != null)
             {
                 Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
@@ -129,8 +136,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             else
             {
                 Character.Inventory.SubKamas(finalPrice);
-                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                        46, finalPrice);
             }
 
             Character.Client.Send(new ExchangeBuyOkMessage());
@@ -178,30 +183,14 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return false;
             } 
             
-            var saleItem = Items.FirstOrDefault(entry => entry.Item.Id == item.Template.Id);
-
-            int price;
-
-            if (saleItem != null)
-                price = (int) Math.Ceiling(saleItem.Price/10) * amount;
-            else
-                price = (int) Math.Ceiling(item.Template.Price / 10) * amount;
+            var price = (int) Math.Ceiling(item.Template.Price / 10) * amount;
 
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
                                                     22, amount, item.Template.Id);
 
             Character.Inventory.RemoveItem(item, amount);
 
-            if (Token != null)
-            {
-                Character.Inventory.AddItem(Token, price);
-            }
-            else
-            {
-                Character.Inventory.AddKamas(price);
-                BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                        45, price);
-            }
+            Character.Inventory.AddKamas(price);
 
             Character.Client.Send(new ExchangeSellOkMessage());
             return true;

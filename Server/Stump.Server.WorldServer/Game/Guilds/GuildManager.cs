@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             lock (m_lock)
             {
-                return m_guilds.FirstOrDefault(x => String.Equals(x.Value.Name, name, StringComparison.CurrentCultureIgnoreCase)).Value;
+                return m_guilds.FirstOrDefault(x => String.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase)).Value;
             }
         }
 
@@ -112,14 +112,17 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public SocialGroupCreationResultEnum CreateGuild(Character character, string name, NetworkGuildEmblem emblem)
         {
-            var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.Guildalogem));
-            if (guildalogemme == null)
+            var guildalogemme = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GUILDALOGEM));
+            if (guildalogemme == null && !character.IsGameMaster())
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 
-            if (!Regex.IsMatch(name, "^[A-Z][a-z]{2,9}(?:-[A-Z][a-z]{2,9}|[a-z]{1,10})$", RegexOptions.Compiled))
+            if (!Regex.IsMatch(name, "^\\b[A-Z][A-Za-z\\s-']{4,30}\\b$", RegexOptions.Compiled) || Regex.IsMatch(name, "^\\s\\s$"))
             {
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_INVALID;
             }
+
+            if (emblem.symbolShape >= 324)
+                return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_EMBLEM_INVALID;
 
             if (DoesNameExist(name))
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_ALREADY_EXISTS;
@@ -127,8 +130,8 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (DoesEmblemExist(emblem))
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
 
-            character.Inventory.RemoveItem(guildalogemme, 1);
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, guildalogemme.Template.Id);
+            if (!character.IsGameMaster())
+                character.Inventory.RemoveItem(guildalogemme, 1);
 
             var guild = CreateGuild(name);
             if (guild == null)
@@ -176,7 +179,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public bool DeleteGuildMember(GuildMember member)
         {
-            WorldServer.Instance.IOTaskPool.AddMessage(
+            WorldServer.Instance.IOTaskPool.ExecuteInContext(
                 () => Database.Delete(member.Record));
 
             lock (m_lock)

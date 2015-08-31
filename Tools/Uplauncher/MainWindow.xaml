@@ -127,8 +127,8 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Source="pack://application:,,,/Resources/news_icon_1.png"  Height="46" Width="46" Margin="4" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding XPath=title}" FontSize="18" Foreground="White" FontFamily="Arial" FontWeight="Regular" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="28" Text="{Binding XPath=content, Converter={StaticResource SingleLineTextConverter}}"  
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding XPath=title}" FontSize="18" Foreground="White" FontFamily="Arial" FontWeight="Regular" Margin="0,3,129,0" TextTrimming="CharacterEllipsis" Grid.ColumnSpan="2" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="28" Text="{Binding XPath=pubDate, Converter={StaticResource SingleLineTextConverter}}"  
                            FontSize="12" Foreground="#2c1d00" FontFamily="Arial" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis"  />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Helpers:HyperlinkUtility.LaunchDefaultBrowser="True" FontSize="14" HorizontalAlignment="Right" Margin="5" FontFamily="Arial">
                   <Hyperlink NavigateUri="{Binding XPath=link}" TextDecorations="{x:Null}">

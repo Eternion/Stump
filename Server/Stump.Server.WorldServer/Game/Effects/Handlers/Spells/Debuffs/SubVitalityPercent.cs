@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_SubVitalityPercent)]
+    [EffectHandler(EffectsEnum.Effect_SubVitalityPercent_1048)]
     public class SubVitalityPercent : SpellEffectHandler
     {
         public SubVitalityPercent(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
@@ -27,9 +28,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 var bonus = (int)(actor.Stats.Health.TotalSafe * (integerEffect.Value / 100d));
 
                 AddStatBuff(actor, (short)-bonus, PlayerFields.Health, true,
-                    (short)EffectsEnum.Effect_SubVitalityPercent);
+                    Effect.Id);
 
-                ActionsHandler.SendGameActionFightLifePointsLostMessage(Fight.Clients, actor, actor, (short)bonus, 0);
+                if (Effect.EffectId == EffectsEnum.Effect_SubVitalityPercent)
+                    ActionsHandler.SendGameActionFightLifePointsLostMessage(Fight.Clients, actor, actor, (short)bonus, 0);
             }
 
             return true;

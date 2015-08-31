@@ -1,11 +1,18 @@
+using System.Diagnostics;
+using System.Linq;
 using NLog;
 using Stump.Core.Attributes;
+using Stump.Core.IO;
 using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.WorldServer.AI.Fights.Actions;
 using Stump.Server.WorldServer.AI.Fights.Spells;
+using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
+using TreeSharp;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain
 {
@@ -13,7 +20,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
     {
         public const int MaxMovesTries = 20;
         public const int MaxCastLimit = 20;
-
 
         [Variable(true)]
         public static bool DebugMode = false;
@@ -45,10 +51,76 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
             private set;
         }
 
+        public bool IsRange
+        {
+            get;
+            set;
+        }
+
         public virtual void Play()
         {
+            Stopwatch sw = null;
+            if (BenchmarkManager.Enable)
+            {
+                sw = Stopwatch.StartNew();
+            }
+
+            Environment.ResetMoveZone();
+
             SpellSelector.AnalysePossibilities();
-            foreach (var cast in SpellSelector.EnumerateSpellsCast())
+
+            if (!Fighter.Fight.AIDebugMode)
+            {
+                ExecuteSpellCast();
+                ExecutePostMove();
+            }            
+            
+            if (sw != null)
+            {
+                sw.Stop();
+
+                if (sw.ElapsedMilliseconds > 50)
+                {
+                    BenchmarkManager.Instance.Add(BenchmarkEntry.Create("[AI] " + Fighter, sw.Elapsed, "type", "ai",
+                        "spells", SpellSelector.Possibilities.Select(x => x.Spell.ToString()).ToCSV(",")));
+                }
+            }
+        }
+
+        public void ExecutePostMove()
+        {
+            if (!Fighter.CanMove()) 
+                return;
+
+            Action action;
+            int maxRange;
+            int minRange;
+            bool hasRangeAttack = SpellSelector.GetRangeAttack(out minRange, out maxRange);
+
+            /*if ((Fighter.Stats.MP.Base - Fighter.Stats.MP.Used) > 6)
+            {
+                action = new FleeAction(Fighter);
+            }*/
+            if (hasRangeAttack && maxRange > 3 && minRange < maxRange)
+            {
+                action = new StayInRange(Fighter, minRange, maxRange);
+            }
+            else
+            {
+                action = new MoveNearTo(Fighter, Environment.GetNearestEnemy());
+            }
+
+            foreach (var result in action.Execute(this))
+            {
+                if (result == RunStatus.Failure)
+                    break;
+            }
+        }
+
+        public void ExecuteSpellCast()
+        {
+            SpellCast cast;
+            while ((cast = SpellSelector.FindFirstSpellCast()) != null)
             {
                 if (cast.MoveBefore != null)
                 {
@@ -92,23 +164,28 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain
                     Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
                 }
 
+                var targets = Fighter.Fight.GetAllFighters(cast.Target.AffectedCells).ToArray();
+
                 var i = 0;
-                while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell) == SpellCastResult.OK && i <= MaxCastLimit)
+                while (Fighter.CanCastSpell(cast.Spell, cast.TargetCell.Cell) == SpellCastResult.OK && i <= cast.MaxConsecutiveCast)
                 {
-                    if (!Fighter.CastSpell(cast.Spell, cast.TargetCell))
+                    if (!Fighter.CastSpell(cast.Spell, cast.TargetCell.Cell))
                         break;
-
+                    
                     i++;
+
+                    if (Fighter.AP > 0 && targets.All(x => !cast.Target.AffectedCells.Contains(x.Cell)) ||
+                        targets.Any(x => x.IsDead())) // target has moved, we re-analyse the situation
+                    {
+                        SpellSelector.AnalysePossibilities();
+                        break;
+                    }
                 }
-            }
 
-            if (!Fighter.CanMove()) 
-                return;
-
-
-            foreach (var action in new MoveNearTo(Fighter, Environment.GetNearestEnnemy()).Execute(this))
-            {
-
+                if (i > 0 && Fighter.Spells.Values.Any(x => x.CurrentSpellLevel.ApCost <= Fighter.AP))
+                    SpellSelector.AnalysePossibilities();
+                else
+                    break;
             }
         }
 

@@ -34,7 +34,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
     {
         private const short PET_SIZE = 75;
 
-
         private List<short> m_scales = new List<short>();
         private List<short> m_skins = new List<short>();
         private List<SubActorLook> m_subLooks = new List<SubActorLook>();
@@ -90,17 +89,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             }
         }
 
-        public ActorLook AuraLook
-        {
-            get
-            {
-                var subLook = m_subLooks.FirstOrDefault(
-                    x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND);
-
-                return subLook != null ? subLook.Look : null;
-            }
-        }
-
         public ReadOnlyDictionary<int, Color> Colors
         {
             get { return new ReadOnlyDictionary<int, Color>(m_colors); }
@@ -144,6 +132,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         {
             m_colors.Add(index, color);
             m_entityLook.Invalidate();
+        }
+
+        public void RemoveColor(int index)
+        {
+            m_colors.Remove(index);
         }
 
         public void SetColors(params Color[] colors)
@@ -210,7 +203,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
         public void SetRiderLook(ActorLook look)
         {
-            SetSubLooks(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,
+            AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,
                                   look));
         }
 
@@ -220,23 +213,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             m_entityLook.Invalidate();
         }
 
-        public void SetAuraSkin(short skin)
-        {
-            var auraLook = AuraLook;
-
-            if (auraLook == null)
-            {
-                AddSubLook(
-                    new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND,
-                                     auraLook = new ActorLook()));
-            }
-
-            auraLook.BonesID = skin;
-        }
-
         public void RemoveAuras()
         {
-            m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND);
+            m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND
+                && (x.Look.BonesID == 169 || x.Look.BonesID == 170));
+
             m_entityLook.Invalidate();
         }
 

@@ -8,6 +8,7 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
+using Stump.Server.WorldServer.AI.Fights.Spells;
 using Stump.Server.WorldServer.Database.Effects;
 using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Database.World;
@@ -81,7 +82,8 @@ namespace Stump.Server.WorldServer.Game.Effects
                     else if (type.IsSubclassOf(typeof(SpellEffectHandler)))
                     {
                         var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });
-                        m_spellsEffectHandler.Add(effect, ctor.CreateDelegate<SpellEffectConstructor>());
+                        if (!m_spellsEffectHandler.ContainsKey(effect))
+                            m_spellsEffectHandler.Add(effect, ctor.CreateDelegate<SpellEffectConstructor>());
                     }
 
                     if (!m_effectsHandlers.ContainsKey(effect))
@@ -423,7 +425,11 @@ namespace Stump.Server.WorldServer.Game.Effects
                     
                     EffectsEnum.Effect_RemainingFights,
 
-                    EffectsEnum.Effect_HealHP_108
+                    EffectsEnum.Effect_HealHP_108,
+
+                    EffectsEnum.Effect_CastSpell_1175,
+
+                    EffectsEnum.Effect_Exchangeable
                 };
 
         #endregion

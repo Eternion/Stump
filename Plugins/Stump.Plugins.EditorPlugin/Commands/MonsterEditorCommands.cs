@@ -246,6 +246,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
             AddParameter("lock", "lock", "Prospecting lock", 100);
             AddParameter("limit", "limit", defaultValue: 0);
             AddParameter("rolls", "max", defaultValue: 1);
+            AddParameter("group", "group", "Only one item per group can be dropped (except for group 0)", defaultValue:  0);
         }
 
         public override void ExecuteAdd(TriggerBase trigger)
@@ -257,6 +258,7 @@ namespace Stump.Plugins.EditorPlugin.Commands
                 ProspectingLock = trigger.Get<int>("lock"),
                 DropLimit = trigger.Get<int>("limit"),
                 RollsCounter = trigger.Get<int>("rolls"),
+                DropGroup = trigger.Get<int>("group"),
                 MonsterOwner = monster,
             };
 

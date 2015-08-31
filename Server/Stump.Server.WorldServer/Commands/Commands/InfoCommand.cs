@@ -2,13 +2,13 @@
 using System.Globalization;
 using System.Linq;
 using Stump.DofusProtocol.Enums;
-using Stump.DofusProtocol.Messages;
-using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.BaseServer.Commands.Commands;
+using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Commands.Commands.Patterns;
 using Stump.Server.WorldServer.Commands.Trigger;
+using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 trigger.ReplyBold("Account : {0}/{1} ({2}) - {3}", character.Account.Login, character.Account.Nickname,
                     character.Account.Id, character.UserGroup.Name);
                 trigger.ReplyBold("ClientKey : {0}", character.Account.LastClientKey);
-                trigger.ReplyBold("Ip : {0}", character.Client.IP);
+                trigger.ReplyBold("Ip : {0}", character.UserGroup.Role == RoleEnum.Administrator ? "127.0.0.1" : character.Client.IP);
                 trigger.ReplyBold("Level : {0}", character.Level);
                 trigger.ReplyBold("Map : {0}, Cell : {1}, Direction : {2}", character.Map.Id, character.Cell.Id,
                     character.Direction);
@@ -206,6 +206,48 @@ namespace Stump.Server.WorldServer.Commands.Commands
             foreach (var spectator in fight.Spectators)
             {
                 trigger.ReplyBold(" - {0}", spectator.Character);
+            }
+        }
+    }
+
+    public class InfoIPCommand : SubCommand
+    {
+        public InfoIPCommand()
+        {
+            Aliases = new[] { "ip" };
+            RequiredRole = RoleEnum.GameMaster;
+            Description = "Give informations about an ip";
+            ParentCommandType = typeof(InfoCommand);
+            AddParameter<string>("ip", "i", "Gives informations about the given ip");
+        }
+
+
+        public override void Execute(TriggerBase trigger)
+        {
+            var ip = trigger.Get<string>("ip");
+
+            try
+            {
+                IPAddressRange.Parse(ip);
+            }
+            catch
+            {
+                trigger.ReplyError("IP format '{0}' incorrect", ip);
+                return;
+            }
+
+            var characters = World.Instance.GetCharacters(x => x.Client.IP == ip).ToArray();
+
+            if (!characters.Any())
+            {
+                trigger.ReplyError("No results found !", ip);
+                return;
+            }
+
+            trigger.ReplyBold("Connected characters:");
+            foreach (var character in characters)
+            {
+                trigger.Reply(string.Format("Player: {0} - Account: {1}({2})", character.Name, character.Account.Login, character.Account.LastClientKey));
             }
         }
     }

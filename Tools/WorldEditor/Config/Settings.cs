@@ -31,6 +31,15 @@ namespace WorldEditor.Config
         public const string ConfigPath = "config.xml";
         private static XmlConfig m_config;
 
+        public static DatabaseConfiguration RealDatabaseConfiguration = new DatabaseConfiguration
+        {
+            Host = "localhost",
+            DbName = "stump_data",
+            User = "root",
+            Password = "",
+            ProviderName = "MySql.Data.MySqlClient"
+        };
+
         [Variable(Priority = 10)] public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
             {
                 Host = "localhost",

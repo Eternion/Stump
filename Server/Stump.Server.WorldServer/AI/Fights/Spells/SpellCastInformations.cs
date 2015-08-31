@@ -16,7 +16,6 @@
 
 using System.Collections.Generic;
 using Stump.Server.WorldServer.Database.World;
-using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.AI.Fights.Spells
@@ -35,6 +34,12 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
             private set;
         }
 
+        public SpellCategory Category
+        {
+            get;
+            private set;
+        }
+
         public bool IsSummoningSpell
         {
             get;
@@ -45,17 +50,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Spells
         {
             get;
             set;
-        }
-
-        public int MPToUse
-        {
-            get;
-            set;
-        }
-
-        public bool HasToMove
-        {
-            get { return MPToUse > 0; }
         }
 
         public List<SpellTarget> Impacts

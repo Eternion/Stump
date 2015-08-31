@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
-namespace Stump.Server.WorldServer.Game.Spells.Casts
+namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 {
     [SpellCastHandler(SpellIdEnum.ROULETTE)]
     public class RouletteCastHandler : DefaultSpellCastHandler
@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             private set;
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             var effects = Critical ? SpellLevel.CriticalEffects : SpellLevel.Effects;
             Handlers = effects.Select(effect => EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, TargetedCell, Critical)).ToArray();
@@ -31,6 +31,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             Handler = Handlers[random];
 
             m_initialized = true;
+
+            return true;
         }
 
         public override void Execute()

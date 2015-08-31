@@ -12,11 +12,18 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Pandawa
         {
         }
 
-        public override void Initialize()
+        public override bool Initialize()
         {
             base.Initialize();
 
+            var targetActor = Fight.GetOneFighter(TargetedCell);
+
+            if (targetActor != null)
+                TargetedActor = targetActor;
+
             TargetedCell = Caster.Cell;
+
+            return true;
         }
 
         public override void Execute()

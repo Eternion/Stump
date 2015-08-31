@@ -116,12 +116,6 @@ namespace WorldEditor.Editors.Items
             set { WrappedEffect.trigger = value; }
         }
 
-        public Boolean Hidden
-        {
-            get { return WrappedEffect.hidden; }
-            set { WrappedEffect.hidden = value; }
-        }
-
         public uint ZoneSize
         {
             get { return (uint)WrappedEffect.zoneSize; }

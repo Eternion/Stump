@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using NLog.Targets;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -27,12 +26,18 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.IsFighting())
                 return;
 
-            var spell = client.Character.Spells.GetSpell(message.spellId);
+            var fighter = client.Character.Fighter;
+
+            var spell = fighter.IsSlaveTurn() ?
+                fighter.GetSlave().GetSpell(message.spellId) : fighter.GetSpell(message.spellId);
 
             if (spell == null)
                 return;
 
-            client.Character.Fighter.CastSpell(spell, client.Character.Fight.Map.Cells[message.cellId]);
+            if (fighter.IsSlaveTurn())
+                fighter.GetSlave().CastSpell(spell, client.Character.Fight.Map.Cells[message.cellId]);
+            else
+                fighter.CastSpell(spell, client.Character.Fight.Map.Cells[message.cellId]);
         }
 
         [WorldHandler(GameActionFightCastOnTargetRequestMessage.Id)]
@@ -41,23 +46,30 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.IsFighting())
                 return;
 
-            var spell = client.Character.Spells.GetSpell(message.spellId);
+            var fighter = client.Character.Fighter;
+
+            var spell = fighter.IsSlaveTurn() ?
+                fighter.GetSlave().GetSpell(message.spellId) : fighter.GetSpell(message.spellId);
 
             if (spell == null)
                 return;
 
-            var fighter = client.Character.Fight.GetOneFighter(message.targetId);
+            var target = client.Character.Fight.GetOneFighter(message.targetId);
 
-            if (fighter == null)
+            if (target == null)
                 return;
 
-            if (fighter.GetVisibleStateFor(client.Character.Fighter) == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            if (target.GetVisibleStateFor(fighter) == GameActionFightInvisibilityStateEnum.INVISIBLE)
             {
                 //Impossible de lancer ce sort : la cellule visée n'est pas valide !
                 client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 193);
                 return;
             }
-            client.Character.Fighter.CastSpell(spell, fighter.Cell);
+
+            if (fighter.IsSlaveTurn())
+                fighter.GetSlave().CastSpell(spell, target.Cell);
+            else
+                fighter.CastSpell(spell, target.Cell);  
         }
 
 
@@ -66,6 +78,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             if (!client.Character.IsFighting())
                 return;
+
+            if (client.Character.Fighter.IsSlaveTurn())
+            {
+                client.Character.Fighter.GetSlave().PassTurn();
+                return;
+            }
 
             client.Character.Fighter.PassTurn();
         }
@@ -102,10 +120,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         [WorldHandler(GameFightPlacementPositionRequestMessage.Id)]
-        public static void HandleGameFightPlacementPositionRequestMessage(WorldClient client,
-                                                                          GameFightPlacementPositionRequestMessage
-                                                                              message)
+        public static void HandleGameFightPlacementPositionRequestMessage(WorldClient client, GameFightPlacementPositionRequestMessage message)
         {
+            if (!client.Character.IsFighting())
+                return;
+
             if (client.Character.Fighter.Position.Cell.Id != message.cellId)
             {
                 client.Character.Fighter.ChangePrePlacement(client.Character.Fight.Map.Cells[message.cellId]);
@@ -215,7 +234,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
             if (fight.IsStarted)
             {
-                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character))
+                if (message.fighterId == 0 && fight.CanSpectatorJoin(client.Character) && !client.Character.IsInFight())
                 {
                     fight.AddSpectator(client.Character.CreateSpectator(fight));
                 }
@@ -272,7 +291,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightStartMessage(IPacketReceiver client)
         {
-            client.Send(new GameFightStartMessage());
+            client.Send(new GameFightStartMessage(new Idol[0]));
         }
 
         public static void SendGameFightStartingMessage(IPacketReceiver client, FightTypeEnum fightTypeEnum, int attackerId, int defenderId)
@@ -292,12 +311,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight)
         {
-            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, new FightResultListEntry[0], new NamedPartyTeamWithOutcome[0]));
+            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds / 100, fight.AgeBonus, 0, new FightResultListEntry[0], new NamedPartyTeamWithOutcome[0]));
         }
 
         public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight, IEnumerable<FightResultListEntry> results)
         {
-            client.Send(new GameFightEndMessage(fight.GetFightDuration(), fight.AgeBonus, 0, results, new NamedPartyTeamWithOutcome[0]));
+            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds / 100, fight.AgeBonus, 0, results, new NamedPartyTeamWithOutcome[0]));
         }
 
         public static void SendGameFightJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
@@ -305,7 +324,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                     FightTypeEnum fightTypeEnum)
         {
             client.Send(new GameFightJoinMessage(canBeCancelled, canSayReady, isFightStarted,
-                                                 timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
+                                                 (short)timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
         }
 
         public static void SendGameFightSpectateMessage(IPacketReceiver client, IFight fight)
@@ -313,7 +332,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameFightSpectateMessage(
                 fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
                 fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
-                fight.TimeLine.RoundNumber, 0));    
+                fight.TimeLine.RoundNumber, 0, Enumerable.Empty<Idol>()));    
         }
 
         public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor playingTurn, int waitTime)
@@ -337,8 +356,13 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             client.Send(new GameFightSynchronizeMessage(
                     fight.GetAllFighters().Select(entry => entry is SummonedClone ?
-                        (entry as SummonedClone).GetGameFightFighterNamedInformations() :
+                        ((SummonedClone) entry).GetGameFightFighterNamedInformations() :
                         entry.GetGameFightFighterInformations(client))));
+        }
+
+        public static void SendFighterStatsListMessage(IPacketReceiver client, Character character)
+        {
+            client.Send(new FighterStatsListMessage(character.GetCharacterCharacteristicsInformations()));
         }
 
         public static void SendGameFightNewRoundMessage(IPacketReceiver client, int roundNumber)
@@ -354,6 +378,16 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameFightTurnStartMessage(IPacketReceiver client, int id, int waitTime)
         {
             client.Send(new GameFightTurnStartMessage(id, waitTime));
+        }
+
+        public static void SendGameFightTurnStartSlaveMessage(IPacketReceiver client, int id, int waitTime, int idSummoner)
+        {
+            //client.Send(new GameFightTurnStartSlaveMessage(id, waitTime, idSummoner));
+        }
+
+        public static void SendGameFightTurnStartPlayingMessage(IPacketReceiver client)
+        {
+            client.Send(new GameFightTurnStartPlayingMessage());
         }
 
         public static void SendGameFightTurnFinishMessage(IPacketReceiver client)
@@ -375,10 +409,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightShowFighterMessage(WorldClient client, FightActor fighter)
         {
-            var fighterInfos = fighter.GetGameFightFighterInformations(client);
+            var clone = fighter as SummonedClone;
+            var fighterInfos = clone != null ? clone.GetGameFightFighterNamedInformations() : fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
-                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
 
             client.Send(new GameFightShowFighterMessage(fighterInfos));
         }
@@ -388,7 +423,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             var fighterInfos = fighter.GetGameFightFighterInformations(client);
 
             if (fighter is SummonedClone)
-                fighterInfos = (fighter as SummonedClone).GetGameFightFighterNamedInformations();
+                fighterInfos = ((SummonedClone) fighter).GetGameFightFighterNamedInformations();
 
             client.Send(new GameFightRefreshFighterMessage(fighterInfos));
         }
@@ -401,6 +436,11 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameFightLeaveMessage(IPacketReceiver client, FightActor fighter)
         {
             client.Send(new GameFightLeaveMessage(fighter.Id));
+        }
+
+        public static void SendGameFightLeaveMessage(IPacketReceiver client, FightSpectator spectator)
+        {
+            client.Send(new GameFightLeaveMessage(spectator.Character.Id));
         }
 
         public static void SendGameFightPlacementPossiblePositionsMessage(IPacketReceiver client, IFight fight, sbyte team)
@@ -449,7 +489,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameActionFightMarkCellsMessage(IPacketReceiver client, MarkTrigger trigger, bool visible = true)
         {
-            var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL : ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
+            var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? (trigger.TriggerType == TriggerType.TURN_END ? ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL_ENDTURN : ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL) : ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
             client.Send(new GameActionFightMarkCellsMessage((short)action, trigger.Caster.Id, visible ? trigger.GetGameActionMark() : trigger.GetHiddenGameActionMark()));
         }
 
@@ -467,6 +507,25 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void SendGameFightTurnReadyRequestMessage(IPacketReceiver client, FightActor current)
         {
             client.Send(new GameFightTurnReadyRequestMessage(current.Id));
+        }
+
+        public static void SendSlaveSwitchContextMessage(IPacketReceiver client, SlaveFighter actor)
+        {
+            //client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
+        }
+        
+
+        public static void SendGameFightResumeMessage(IPacketReceiver client, CharacterFighter fighter)
+        {
+            client.Send(new GameFightResumeMessage(
+                fighter.Fight.GetBuffs().Select(entry => entry.GetFightDispellableEffectExtendedInformations()),
+                fighter.Fight.GetTriggers().Select(entry => entry.GetHiddenGameActionMark()),
+                fighter.Fight.TimeLine.RoundNumber,
+                0,
+                new Idol[0],
+                fighter.SpellHistory.GetCooldowns(),
+                (sbyte) fighter.SummonedCount,
+                (sbyte) fighter.BombsCount));
         }
     }
 }

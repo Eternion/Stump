@@ -1,6 +1,6 @@
 
 
-// Generated on 12/29/2014 16:35:18
+// Generated on 08/13/2015 17:13:53
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -15,6 +15,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public const String MODULE = "AchievementObjectives";
         public uint id;
         public uint achievementId;
+        public uint order;
         [I18NField]
         public uint nameId;
         public String criterion;
@@ -33,6 +34,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.achievementId; }
             set { this.achievementId = value; }
+        }
+        [D2OIgnore]
+        public uint Order
+        {
+            get { return this.order; }
+            set { this.order = value; }
         }
         [D2OIgnore]
         public uint NameId

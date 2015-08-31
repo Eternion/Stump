@@ -55,6 +55,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         private DateTime m_lastUpdateTime;
         private bool m_running;
         private int m_updateDelay;
+        private TimedTimerEntry m_checkDCtimer;
 
         public Area(AreaRecord record)
         {
@@ -193,7 +194,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         public void AddMessage(IMessage msg)
         {
             // make sure, Map is running
-            Start();
+            // Start();
             m_messageQueue.Enqueue(msg);
         }
 
@@ -224,6 +225,8 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void OnStarted()
         {
+            m_checkDCtimer = CallPeriodically((int)TimeSpan.FromMinutes(5).TotalMilliseconds, CheckDC);
+
             var handler = Started;
             if (handler != null)
                 handler(this);
@@ -262,7 +265,12 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public void Stop(bool wait = false)
+        public void Stop()
+        {
+            Stop(false);
+        }
+
+        public void Stop(bool wait)
         {
             if (!m_running)
                 return;
@@ -283,24 +291,19 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void RegisterTimer(TimedTimerEntry timer)
         {
-            EnsureContext();
-            m_timers.Push(timer);
+            ExecuteInContext(() =>
+            {
+                if (!timer.Enabled)
+                    timer.Start();
+
+                m_timers.Push(timer);
+            });
         }
 
         public void UnregisterTimer(TimedTimerEntry timer)
         {
             EnsureContext();
             m_timers.Remove(timer);
-        }
-
-        public void RegisterTimerLater(TimedTimerEntry timer)
-        {
-            m_messageQueue.Enqueue(new Message(() => RegisterTimer(timer)));
-        }
-
-        public void UnregisterTimerLater(TimedTimerEntry timer)
-        {
-            m_messageQueue.Enqueue(new Message(() => UnregisterTimer(timer)));
         }
 
         public TimedTimerEntry CallDelayed(int delay, Action action)
@@ -313,20 +316,20 @@ namespace Stump.Server.WorldServer.Game.Maps
             };
 
             timer.Start();
-            RegisterTimerLater(timer);
+            RegisterTimer(timer);
             return timer;
         }
 
         public TimedTimerEntry CallPeriodically(int interval, Action action)
         {
-            var timer = new TimedTimerEntry()
+            var timer = new TimedTimerEntry
             {
                 Interval = interval,
                 Action = action
             };
 
             timer.Start();
-            RegisterTimerLater(timer);
+            RegisterTimer(timer);
             return timer;
         }
 
@@ -435,6 +438,11 @@ namespace Stump.Server.WorldServer.Game.Maps
                         callbackTimeout = 0;
                         logger.Debug("Area '{0}' update lagged ({1}ms) (msg:{2}ms, timers:{3}ms, timerProc:{4}/{5})",
                             this, (int) newUpdateDelta.TotalMilliseconds, messageProcessTime, timerProcessingTime, timerProcessed, m_timers.Count);
+                        foreach (var msg in processedMessages.OrderByDescending(x => x.Timestamp).Take(15))
+                        {
+                            logger.Debug(msg);
+                        }
+
                         BenchmarkManager.Instance.AddRange(processedMessages);
                     }
 
@@ -484,6 +492,17 @@ namespace Stump.Server.WorldServer.Game.Maps
                 Stop();
         }
 
+        public void CheckDC()
+        {
+            var count = m_characters.RemoveAll(x => !x.IsLoggedIn);
+            m_objects.RemoveAll(x => x is Character && !((Character) x).IsLoggedIn);
+
+            if (count > 0)
+            {
+                logger.Warn("{0} disconnected characters removed from {1}", count, this);
+            }
+        }
+
         public void SpawnMapsLater()
         {
             AddMessage(SpawnMaps);
@@ -531,21 +550,19 @@ namespace Stump.Server.WorldServer.Game.Maps
             m_subAreas.Remove(subArea);
             m_maps.RemoveAll(delegate(Map entry)
             {
-                if (subArea.Maps.Contains(entry))
-                {
-                    if (m_mapsByPoint.ContainsKey(entry.Position))
-                    {
-                        var list = m_mapsByPoint[entry.Position];
-                        list.Remove(entry);
+                if (!subArea.Maps.Contains(entry))
+                    return false;
 
-                        if (list.Count <= 0)
-                            m_mapsByPoint.Remove(entry.Position);
-                    }
-
+                if (!m_mapsByPoint.ContainsKey(entry.Position))
                     return true;
-                }
 
-                return false;
+                var list = m_mapsByPoint[entry.Position];
+                list.Remove(entry);
+
+                if (list.Count <= 0)
+                    m_mapsByPoint.Remove(entry.Position);
+
+                return true;
             });
 
             subArea.Area = null;

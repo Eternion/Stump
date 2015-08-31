@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using System.Reflection;
+
 namespace NLog
 {
     using System;
@@ -134,13 +136,29 @@ namespace NLog
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static Logger GetCurrentClassLogger()
         {
+            string loggerName;
+            Type declaringType;
+            int framesToSkip = 1;
+            do
+            {
 #if SILVERLIGHT
-            StackFrame frame = new StackTrace().GetFrame(1);
+                StackFrame frame = new StackTrace().GetFrame(framesToSkip);
 #else
-            StackFrame frame = new StackFrame(1, false);
+                StackFrame frame = new StackFrame(framesToSkip, false);
 #endif
+                var method = frame.GetMethod();
+                declaringType = method.DeclaringType;
+                if (declaringType == null)
+                {
+                    loggerName = method.Name;
+                    break;
+                }
 
-            return globalFactory.GetLogger(frame.GetMethod().DeclaringType.FullName);
+                framesToSkip++;
+                loggerName = declaringType.FullName;
+            } while (declaringType.Module.Name.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase));
+
+            return globalFactory.GetLogger(loggerName);
         }
 
         /// <summary>
@@ -153,14 +171,30 @@ namespace NLog
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static Logger GetCurrentClassLogger(Type loggerType)
         {
+            string loggerName;
+            Type declaringType;
+            int framesToSkip = 1;
+            do
+            {
 #if SILVERLIGHT
-            StackFrame frame = new StackTrace().GetFrame(1);
+                StackFrame frame = new StackTrace().GetFrame(framesToSkip);
 #else
-            StackFrame frame = new StackFrame(1, false);
+                StackFrame frame = new StackFrame(framesToSkip, false);
 #endif
-            return globalFactory.GetLogger(frame.GetMethod().DeclaringType.FullName, loggerType);
+                var method = frame.GetMethod();
+                declaringType = method.DeclaringType;
+                if (declaringType == null)
+                {
+                    loggerName = method.Name;
+                    break;
+                }
+
+                framesToSkip++;
+                loggerName = declaringType.FullName;
+            } while (declaringType.Module.Name.Equals("mscorlib.dll", StringComparison.OrdinalIgnoreCase));
+
+            return globalFactory.GetLogger(loggerName, loggerType);
         }
-#endif
 
         /// <summary>
         /// Creates a logger that discards all log messages.
@@ -201,8 +235,7 @@ namespace NLog
         {
             globalFactory.ReconfigExistingLoggers();
         }
-
-#if !SILVERLIGHT
+        
 /// <summary>
 /// Flush any pending log messages (in case of asynchronous targets).
 /// </summary>

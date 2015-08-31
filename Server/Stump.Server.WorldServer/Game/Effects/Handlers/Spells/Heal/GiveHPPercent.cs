@@ -2,7 +2,6 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
@@ -17,51 +16,35 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
         public override bool Apply()
         {
-            foreach (var actor in GetAffectedActors())
-            {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
-
-                if (Effect.Duration > 0)
-                {
-                    AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, OnBuffTriggered);
-                }
-                else
-                {
-                    HealHpPercent(actor, integerEffect.Value);
-                    DealHpPercent(Caster, integerEffect.Value);
-                }
-            }
-
-            return true;
-        }
-
-        private void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
-        {
             var integerEffect = GenerateEffect();
 
             if (integerEffect == null)
-                return;
+                return false;
 
-            HealHpPercent(buff.Target, integerEffect.Value);
-            DealHpPercent(Caster, integerEffect.Value);
+            foreach (var actor in GetAffectedActors())
+            {
+                HealHpPercent(actor, integerEffect.Value);
+            }
+
+            if (Effect.Duration <= 0)
+                DealHpPercent(integerEffect.Value);
+
+            return true;
         }
 
         // Todo: reduce duplication (see RestoreHpPercent)
         private void HealHpPercent(FightActor actor, int percent)
         {
-            var healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
+            var healAmount = (int)(Caster.LifePoints * (percent / 100d));
 
             actor.Heal(healAmount, Caster, false);
         }
 
-        private void DealHpPercent(FightActor actor, int percent)
+        private void DealHpPercent(int percent)
         {
-            var damageAmount = (int)(actor.MaxLifePoints * (percent / 100d));
+            var damageAmount = (int)(Caster.LifePoints * (percent / 100d));
 
-            actor.InflictDirectDamage(damageAmount, Caster);
+            Caster.InflictDirectDamage(damageAmount, Caster);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Messages;
+using Stump.Server.BaseServer.Benchmark;
 using Stump.Server.BaseServer.Handler;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Handlers;
@@ -56,7 +57,12 @@ namespace Stump.Server.WorldServer.Core.Network
 
                     var context = GetContextHandler(handler.Attribute, client, message);
                     if (context != null)
+                    {
+                        if (!context.IsRunning)
+                            context.Start();
+
                         context.AddMessage(new HandledMessage<WorldClient>(handler.Action, client, message));
+                    }
                 }
             }
             else

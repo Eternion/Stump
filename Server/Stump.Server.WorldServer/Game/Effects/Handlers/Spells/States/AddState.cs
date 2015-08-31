@@ -30,7 +30,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return false;
                 }
 
-                AddStateBuff(affectedActor, state.Id == (int)SpellStatesEnum.Invulnerable, (state.Id == (int)SpellStatesEnum.Unload || state.Id == (int)SpellStatesEnum.Overload), state);
+                var dispel = false;
+
+                if (state.Id == (int)SpellStatesEnum.INVULNÉRABLE_56 || state.Id == (int)SpellStatesEnum.SAOUL)
+                {
+                    dispel = true;
+
+                    if (Spell.Id == (int)SpellIdEnum.INIMOUTH || Spell.Id == (int)SpellIdEnum.GLOURSOMPTUEUX || Spell.Id == (int)SpellIdEnum.MANSOMURE)
+                        dispel = false;
+                }
+
+                AddStateBuff(affectedActor, dispel, (state.Id == (int)SpellStatesEnum.DÉCHARGE || state.Id == (int)SpellStatesEnum.SURCHARGE || state.Id == (int)SpellStatesEnum.AFFAIBLI || state.Id == (int)SpellStatesEnum.INÉBRANLABLE), state);
             }
 
             return true;

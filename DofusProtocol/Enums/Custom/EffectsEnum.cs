@@ -3,6 +3,14 @@
     public enum EffectsEnum : short
     {
         /// <summary>
+        /// Téléporte sur la map ciblée
+        /// </summary>
+        Effect_2 = 2,
+        /// <summary>
+        /// Fixe le point de respawn
+        /// </summary>
+        Effect_3 = 3,
+        /// <summary>
         /// Teleports over a maximum range of #1 cells.
         /// </summary>
         Effect_Teleport = 4,
@@ -35,9 +43,25 @@
         /// </summary>
         Effect_13 = 13,
         /// <summary>
-        /// Begins a quest
+        /// (not found)
+        /// </summary>
+        Effect_30 = 30,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_31 = 31,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_32 = 32,
+        /// <summary>
+        /// Débute une quête
         /// </summary>
         Effect_34 = 34,
+        /// <summary>
+        /// Force le démarrage d'une quête
+        /// </summary>
+        Effect_36 = 36,
         /// <summary>
         /// Carry a player
         /// </summary>
@@ -455,6 +479,14 @@
         /// </summary>
         Effect_188 = 188,
         /// <summary>
+        /// 
+        /// </summary>
+        Effect_192 = 192,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        Effect_193 = 193,
+        /// <summary>
         /// Gain #1{~1~2 to }#2 Kamas
         /// </summary>
         Effect_GiveKamas = 194,
@@ -517,7 +549,7 @@
         /// <summary>
         /// Reflects #1 damage
         /// </summary>
-        Effect_220 = 220,
+        Effect_AddDamageReflection_220 = 220,
         /// <summary>
         /// What's in there?
         /// </summary>
@@ -542,8 +574,10 @@
         /// +#1 of lost energy
         /// </summary>
         Effect_230 = 230,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_239 = 239,
-        /*  */
         /// <summary>
         /// +#1{~1~2 to }#2 earth resistance
         /// </summary>
@@ -675,23 +709,23 @@
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (water)
         /// </summary>
-        Effect_275 = 275,
+        Effect_DamageWaterPerHPLost = 275,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (earth)
         /// </summary>
-        Effect_276 = 276,
+        Effect_DamageEarthPerHPLost = 276,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (air)
         /// </summary>
-        Effect_277 = 277,
+        Effect_DamageAirPerHPLost = 277,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (fire)
         /// </summary>
-        Effect_278 = 278,
+        Effect_DamageFirePerHPLost = 278,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (neutral)
         /// </summary>
-        Effect_279 = 279,
+        Effect_DamageNeutralPerHPLost = 279,
         /// <summary>
         /// Increases #1's range by #3
         /// </summary>
@@ -748,8 +782,10 @@
         /// Reduces #1's range by #3
         /// </summary>
         Effect_294 = 294,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_310 = 310,
-        /*  */
         /// <summary>
         /// Steals #1{~1~2 to }#2 range
         /// </summary>
@@ -762,6 +798,14 @@
         /// Change appearance
         /// </summary>
         Effect_ChangeAppearance_335 = 335,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_350 = 350,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_351 = 351,
         /// <summary>
         /// Sets a grade #2 trap
         /// </summary>
@@ -777,7 +821,7 @@
         /// <summary>
         /// Kills and replaces with a summon
         /// </summary>
-        Effect_405 = 405,
+        Effect_KillAndSummon = 405,
         /// <summary>
         /// Removes the effects of %1
         /// </summary>
@@ -883,15 +927,29 @@
         /// </summary>
         Effect_StealMP_441 = 441,
         /// <summary>
+        /// Positionne la boussole
+        /// </summary>
+        Effect_509 = 509,
+        /// <summary>
         /// Place a prism
         /// </summary>
         Effect_513 = 513,
         /// <summary>
+        /// Afficher les percepteurs les plus riches
+        /// </summary>
+        Effect_516 = 516,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_517 = 517,
+        /// <summary>
         /// Teleport to save point
         /// </summary>
-        Effect_600 = 600,
+        Effect_TeleportToSavePoint = 600,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_601 = 601,
-        /*  */
         /// <summary>
         /// Save your position
         /// </summary>
@@ -972,10 +1030,14 @@
         /// Makes you forget one level of the spell #3
         /// </summary>
         Effect_624 = 624,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_625 = 625,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_626 = 626,
-        /*  */
         /// <summary>
         /// Recreates original map
         /// </summary>
@@ -984,8 +1046,18 @@
         /// Summons: #3
         /// </summary>
         Effect_628 = 628,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_630 = 630,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_631 = 631,
-        /*  */
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_632 = 632,
         /// <summary>
         /// Adds #3 Honour points
         /// </summary>
@@ -1022,8 +1094,14 @@
         /// Pretend to be #3
         /// </summary>
         Effect_649 = 649,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_652 = 652,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_654 = 654,
-        /*  */
         /// <summary>
         /// No additional effects
         /// </summary>
@@ -1039,7 +1117,7 @@
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's HP (Neutral-type)
         /// </summary>
-        Effect_671 = 671,
+        Effect_DamagePercentNeutral_671 = 671,
         /// <summary>
         /// Damage: #1{~1~2 to }#2% of the attacker's life (neutral)
         /// </summary>
@@ -1116,12 +1194,18 @@
         /// Resistance to automatic attacks from enemy players: #1{~1~2 to }#2
         /// </summary>
         Effect_732 = 732,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_740 = 740,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_741 = 741,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_742 = 742,
-        /*  */
         /// <summary>
         /// Increases chance of capture by: #1{~1~2 to }#2%
         /// </summary>
@@ -1183,6 +1267,10 @@
         /// </summary>
         Effect_AddErosion = 776,
         /// <summary>
+        /// Fixe le point de respawn
+        /// </summary>
+        Effect_778 = 778,
+        /// <summary>
         /// Summons the last ally who died with #1{~1~2 to }#2 % of their HP
         /// </summary>
         Effect_ReviveAndGiveHPToLastDiedAlly = 780,
@@ -1201,13 +1289,15 @@
         /// <summary>
         /// Return to original position
         /// </summary>
-        Effect_Rollback = 784,
+        Effect_ReturnToOriginalPos = 784,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_785 = 785,
-        /*  */
         /// <summary>
         /// Heals upon attack
         /// </summary>
-        Effect_786 = 786,
+        Effect_GiveHpPercentWhenAttack = 786,
         /// <summary>
         /// #1
         /// </summary>
@@ -1216,10 +1306,14 @@
         /// Punishment of #2 for #3 turn(s)
         /// </summary>
         Effect_Punishment = 788,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_789 = 789,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_790 = 790,
-        /*  */
         /// <summary>
         /// Prepare #1{~1~2 to }#2 mercenary scrolls
         /// </summary>
@@ -1227,15 +1321,19 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_Frikt = 792,
+        Effect_TriggerBuff = 792,
         /// <summary>
         /// #1
         /// </summary>
-        Effect_Putsch = 793,
+        Effect_TriggerBuff_793 = 793,
         /// <summary>
         /// Hunting Weapon
         /// </summary>
         Effect_795 = 795,
+        /// <summary>
+        /// Restaurer le point de respawn
+        /// </summary>
+        Effect_796 = 796,
         /// <summary>
         /// Health points: #3
         /// </summary>
@@ -1268,16 +1366,22 @@
         /// Durability: #2 / #3
         /// </summary>
         Effect_812 = 812,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_813 = 813,
-        /*  */
         /// <summary>
         /// #1
         /// </summary>
         Effect_814 = 814,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_815 = 815,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_816 = 816,
-        /*  */
         /// <summary>
         /// Teleport
         /// </summary>
@@ -1285,9 +1389,29 @@
         /// <summary>
         /// Start a fight against #2
         /// </summary>
+        Effect_826 = 826,
+        /// <summary>
+        /// Oublier un sort
+        /// </summary>
+        Effect_831 = 831,
+        /// <summary>
+        /// Lance un combat contre #2
+        /// </summary>
         Effect_905 = 905,
         /// <summary>
         /// Increases serenity, decreases aggressiveness
+        /// </summary>
+        Effect_911 = 911,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_916 = 916,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_917 = 917,
+        /// <summary>
+        /// Augmente la sérénité, diminue l'agressivité
         /// </summary>
         Effect_930 = 930,
         /// <summary>
@@ -1353,7 +1477,7 @@
         /// <summary>
         /// #3 state deactivated
         /// </summary>
-        Effect_952 = 952,
+        Effect_DisableState = 952,
         /// <summary>
         /// Alignment: #3
         /// </summary>
@@ -1374,16 +1498,26 @@
         /// Name: #4
         /// </summary>
         Effect_964 = 964,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_LivingObjectId = 970,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_LivingObjectMood = 971,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_LivingObjectSkin = 972,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_LivingObjectCategory = 973,
-        /*  */
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_LivingObjectLevel = 974,
-        /*  */
         /// <summary>
         /// Non-exchangeable
         /// </summary>
@@ -1395,9 +1529,11 @@
         /// <summary>
         /// Can be exchanged from: #1
         /// </summary>
-        Effect_983 = 983,
+        Effect_Exchangeable = 983,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_984 = 984,
-        /*  */
         /// <summary>
         /// Modified by: #4
         /// </summary>
@@ -1442,6 +1578,9 @@
         /// Validity: #1d #2h #3m
         /// </summary>
         Effect_Validity = 998,
+        /// <summary>
+        /// (not found)
+        /// </summary>
         Effect_999 = 999,
         /// <summary>
         /// 2
@@ -1482,7 +1621,7 @@
         /// <summary>
         /// Summons #1
         /// </summary>
-        Effect_1011 = 1011,
+        Effect_SummonSlave = 1011,
         /// <summary>
         /// #1{~1~2 to }#2 (Neutral damage)
         /// </summary>
@@ -1526,7 +1665,7 @@
         /// <summary>
         /// Switches positions
         /// </summary>
-        Effect_1023 = 1023,
+        Effect_SwitchPosition_1023 = 1023,
         /// <summary>
         /// Creates illusions
         /// </summary>
@@ -1538,7 +1677,7 @@
         /// <summary>
         /// Trigger glyphs
         /// </summary>
-        Effect_1026 = 1026,
+        Effect_TriggerGlyphs = 1026,
         /// <summary>
         /// #1{~1~2 to }#2% Combo Damage
         /// </summary>
@@ -1590,15 +1729,15 @@
         /// <summary>
         /// #1{~1~2 to }#2% of HP to shield
         /// </summary>
-        Effect_1039 = 1039,
+        Effect_AddShieldPercent = 1039,
         /// <summary>
         /// #1{~1~2 to }#2 Shield
         /// </summary>
-        Effect_1040 = 1040,
+        Effect_AddShield = 1040,
         /// <summary>
         /// Retreats #1 cell(s)
         /// </summary>
-        Effect_1041 = 1041,
+        Effect_Retreat = 1041,
         /// <summary>
         /// Advances #1 cell(s)
         /// </summary>
@@ -1606,7 +1745,7 @@
         /// <summary>
         /// Attract to the selected cell
         /// </summary>
-        Effect_1043 = 1043,
+        Effect_Attract = 1043,
         /// <summary>
         /// Immunity: #1
         /// </summary>
@@ -1614,7 +1753,7 @@
         /// <summary>
         /// #1: #3 turns until recast
         /// </summary>
-        Effect_1045 = 1045,
+        Effect_CooldownSet = 1045,
         /// <summary>
         /// Using #1 MP will cause a loss of #2 HP
         /// </summary>
@@ -1626,7 +1765,7 @@
         /// <summary>
         /// -#1{~1~2 to }#2% HP
         /// </summary>
-        Effect_1048 = 1048,
+        Effect_SubVitalityPercent_1048 = 1048,
         /// <summary>
         /// +#1{~1~2 to}level #2
         /// </summary>
@@ -1745,7 +1884,6 @@
         Effect_AddVitalityPercent = 1078,
         /// <summary>
         /// -#1{~1~2 to -}#2 AP
-        /// See Effect_SubAP
         /// </summary>
         Effect_SubAP_1079 = 1079,
         /// <summary>
@@ -1783,7 +1921,7 @@
         /// <summary>
         /// Places a grade #2 Glyph
         /// </summary>
-        Effect_1091 = 1091,
+        Effect_GlyphAura = 1091,
         /// <summary>
         /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Neutral damage
         /// </summary>
@@ -1819,7 +1957,7 @@
         /// <summary>
         /// 
         /// </summary>
-        Effect_1100 = 1100,
+        Effect_ReturnToLastPos = 1100,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1835,15 +1973,15 @@
         /// <summary>
         /// 
         /// </summary>
-        Effect_1104 = 1104,
+        Effect_SymetricTargetTeleport = 1104,
         /// <summary>
         /// 
         /// </summary>
-        Effect_1105 = 1105,
+        Effect_SymetricCasterTeleport = 1105,
         /// <summary>
         /// 
         /// </summary>
-        Effect_1106 = 1106,
+        Effect_SymetricPointTeleport = 1106,
         /// <summary>
         /// Rename the guild
         /// </summary>
@@ -1883,7 +2021,7 @@
         /// <summary>
         /// [!]
         /// </summary>
-        Effect_1123 = 1123,
+        Effect_Putsch = 1123,
         /// <summary>
         /// (not found)
         /// </summary>
@@ -1956,8 +2094,179 @@
         /// [!]
         /// </summary>
         Effect_1142 = 1142,
-        
-        
+        /// <summary>
+        /// #1{~1~2 à }#2 Puissance (armes)
+        /// </summary>
+        Effect_1144 = 1144,
+        /// <summary>
+        /// Changer le blason de l'alliance
+        /// </summary>
+        Effect_1145 = 1145,
+        /// <summary>
+        /// Renommer l'alliance
+        /// </summary>
+        Effect_1146 = 1146,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1149 = 1149,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1150 = 1150,
+        /// <summary>
+        /// Apparence : #1
+        /// </summary>
+        Effect_Appearance = 1151,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1152 = 1152,
+        /// <summary>
+        /// Invoque un percepteur
+        /// </summary>
+        Effect_1153 = 1153,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1154 = 1154,
+        /// <summary>
+        /// Téléporte
+        /// </summary>
+        Effect_1155 = 1155,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_CastSpell_1160 = 1160,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_1161 = 1161,
+        /// <summary>
+        /// Positionne la boussole
+        /// </summary>
+        Effect_1162 = 1162,
+        /// <summary>
+        /// Dommages subis x#1%
+        /// </summary>
+        Effect_DamageSustained = 1163,
+        /// <summary>
+        /// Les dommages reçus soignent.
+        /// </summary>
+        Effect_1164 = 1164,
+        /// <summary>
+        /// Pose un glyphe de rang #2
+        /// </summary>
+        Effect_1165 = 1165,
+        /// <summary>
+        /// #1{~1~2 à }#2 Puissance (glyphes)
+        /// </summary>
+        Effect_1166 = 1166,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1168 = 1168,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1169 = 1169,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1170 = 1170,
+        /// <summary>
+        /// Augmente les dommages finaux occasionnés de #1%
+        /// </summary>
+        Effect_1171 = 1171,
+        /// <summary>
+        /// Réduit les dommages finaux occasionnés de #1%
+        /// </summary>
+        Effect_1172 = 1172,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1173 = 1173,
+        /// <summary>
+        /// Supprime les gains d'expérience
+        /// </summary>
+        Effect_1174 = 1174,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_CastSpell_1175 = 1175,
+        /// <summary>
+        /// Apparence : #1
+        /// </summary>
+        Effect_1176 = 1176,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1177 = 1177,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_1178 = 1178,
+        /// <summary>
+        /// Compatible avec : #1
+        /// </summary>
+        Effect_1179 = 1179,
+        /// <summary>
+        /// Lire #3
+        /// </summary>
+        Effect_1180 = 1180,
+        /// <summary>
+        /// Pose un portail (+#3% dommages)
+        /// </summary>
+        Effect_1181 = 1181,
+        /// <summary>
+        /// Téléportation portail
+        /// </summary>
+        Effect_1182 = 1182,
+        /// <summary>
+        /// Désactiver un portail
+        /// </summary>
+        Effect_1183 = 1183,
+        /// <summary>
+        /// Expérience du niveau : #3
+        /// </summary>
+        Effect_1184 = 1184,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_2017 = 2017,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_2018 = 2018,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_2019 = 2019,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_2160 = 2160,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_2792 = 2792,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_2793 = 2793,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_2794 = 2794,
+        /// <summary>
+        /// #1
+        /// </summary>
+        Effect_2795 = 2795,
+        /// <summary>
+        /// Tue la cible pour la remplacer par l'invocation : #1
+        /// </summary>
+        Effect_2796 = 2796,
+
         End,
     }
 }

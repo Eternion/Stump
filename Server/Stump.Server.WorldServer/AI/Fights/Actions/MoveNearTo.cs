@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using TreeSharp;
@@ -33,7 +32,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
                 return RunStatus.Success;
 
             // todo : avoid tackle
-            var cell = Target.Position.Point.GetAdjacentCells(cellInfoProvider.IsCellWalkable).OrderBy(entry => entry.DistanceToCell(Fighter.Position.Point)).FirstOrDefault();
+            var cell = Target.Position.Point.GetAdjacentCells(cellInfoProvider.IsCellWalkable).OrderBy(entry => entry.ManhattanDistanceTo(Fighter.Position.Point)).FirstOrDefault();
 
             if (cell == null)
                 return RunStatus.Failure;

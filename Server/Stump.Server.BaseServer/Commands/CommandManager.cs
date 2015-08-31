@@ -307,6 +307,9 @@ namespace Stump.Server.BaseServer.Commands
                 {
                     if (trigger.BindToCommand(cmd))
                         cmd.Execute(trigger);
+
+                    //Log command
+                    trigger.Log();
                 }
                 catch (Exception ex)
                 {

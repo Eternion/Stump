@@ -1,6 +1,6 @@
 
 
-// Generated on 01/04/2015 11:54:16
+// Generated on 08/04/2015 13:24:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in alliesId)
             {
-                 writer.WriteVarInt(entry);
+                 writer.WriteInt(entry);
                  alliesId_count++;
             }
             var alliesId_after = writer.Position;
@@ -61,7 +61,7 @@ namespace Stump.DofusProtocol.Messages
             var alliesId_ = new int[limit];
             for (int i = 0; i < limit; i++)
             {
-                 alliesId_[i] = reader.ReadVarInt();
+                 alliesId_[i] = reader.ReadInt();
             }
             alliesId = alliesId_;
             duration = reader.ReadVarShort();

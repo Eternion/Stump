@@ -28,12 +28,13 @@ namespace Stump.Server.BaseServer.Commands.Commands
                 role : trigger.UserRole;
 
             IEnumerable<CommandBase> availableCommands =
-                CommandManager.Instance.AvailableCommands.Where(entry => !(entry is SubCommand));
+                CommandManager.Instance.AvailableCommands.Where(command => !(command is SubCommand));
+
             if (cmd != string.Empty)
             {
                 var command = CommandManager.Instance.GetCommand(cmd);
 
-                if (command == null)
+                if (command == null || !trigger.CanAccessCommand(command))
                 {
                     trigger.ReplyError("Cannot found '{0}'", command);
                     return;
@@ -46,7 +47,7 @@ namespace Stump.Server.BaseServer.Commands.Commands
             }
 
             var commands = from entry in availableCommands
-                           where entry.RequiredRole <= role
+                           where entry.RequiredRole <= role || (!trigger.IsArgumentDefined("role") && trigger.CanAccessCommand(entry))
                            select entry;
 
             trigger.Reply(string.Join(", ", from entry in commands

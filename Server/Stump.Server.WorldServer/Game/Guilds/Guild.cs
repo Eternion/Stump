@@ -49,10 +49,10 @@ namespace Stump.Server.WorldServer.Game.Guilds
             (short) SpellIdEnum.DÉSTABILISATION,
             (short) SpellIdEnum.DÉSENVOUTEMENT,
             (short) SpellIdEnum.MOT_SOIGNANT_459,
-            (short) SpellIdEnum.ARMURE_AQUEUSE_451,
-            (short) SpellIdEnum.ARMURE_TERRESTRE_453,
-            (short) SpellIdEnum.ARMURE_VENTEUSE_454,
-            (short) SpellIdEnum.ARMURE_INCANDESCENTE_452,
+            (short) SpellIdEnum.ARMURE_AQUEUSE,
+            (short) SpellIdEnum.ARMURE_TERRESTRE,
+            (short) SpellIdEnum.ARMURE_VENTEUSE,
+            (short) SpellIdEnum.ARMURE_INCANDESCENTE,
             (short) SpellIdEnum.COMPULSION_DE_MASSE,
         };
 
@@ -110,16 +110,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
             foreach (var member in m_members)
             {
-                if (member.IsBoss)
-                {
-                    if (Boss != null)
-                    {
-                        logger.Error("There is at least two boss in guild {0} ({1})", Id, Name);
-                    }
-
-                    Boss = member;
-                }
-
                 BindMemberEvents(member);
                 member.BindGuild(this);
             }
@@ -127,6 +117,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
             if (Boss == null)
             {
                 logger.Error("There is at no boss in guild {0} ({1}) -> Promote new Boss", Id, Name);
+                var newBoss = Members.OrderBy(x => x.RankId).FirstOrDefault();
+                if (newBoss != null)
+                    newBoss.RankId = 1;
             }
 
             // load spells
@@ -168,8 +161,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public GuildMember Boss
         {
-            get;
-            private set;
+            get { return Members.FirstOrDefault(x => x.RankId == 1); }
         }
 
         public long Experience
@@ -531,6 +523,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
         {
             return m_spells.Where(x => x != null).ToList().AsReadOnly();
         }
+
         public int[] GetTaxCollectorSpellsLevels() // faster
         {
             return m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
@@ -538,7 +531,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public SocialGroupCreationResultEnum SetGuildName(Character character, string name)
         {
-            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GuildNameChangePotion));
+            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GUILD_RENAMING_POTION));
             if (potion == null)
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 
@@ -551,7 +544,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_NAME_ALREADY_EXISTS;
 
             character.Inventory.RemoveItem(potion, 1);
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, potion.Template.Id);
 
             Name = name;
 
@@ -574,7 +566,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
         public SocialGroupCreationResultEnum SetGuildEmblem(Character character, NetworkGuildEmblem emblem)
         {
-            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GuildEmblemChangePotion));
+            var potion = character.Inventory.TryGetItem(ItemManager.Instance.TryGetTemplate(ItemIdEnum.GUILD_EMBLEM_CHANGE_POTION));
             if (potion == null)
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_REQUIREMENT_UNMET;
 
@@ -582,7 +574,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return SocialGroupCreationResultEnum.SOCIAL_GROUP_CREATE_ERROR_EMBLEM_ALREADY_EXISTS;
 
             character.Inventory.RemoveItem(potion, 1);
-            character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 22, 1, potion.Template.Id);
 
             Emblem.ChangeEmblem(emblem);
 
@@ -613,29 +604,30 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 if (Boss == guildMember)
                     return;
 
-                if (Boss != null)
+                WorldServer.Instance.IOTaskPool.AddMessage(() =>
                 {
-                    Boss.RankId = 0;
-                    Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
-
-                    if (m_members.Count > 1)
+                    if (Boss != null)
                     {
+                        var oldBoss = Boss;
+
+                        oldBoss.RankId = 0;
+                        oldBoss.Rights = GuildRightsBitEnum.GUILD_RIGHT_NONE;
+
                         // <b>%1</b> a remplacé <b>%2</b>  au poste de meneur de la guilde <b>%3</b>
                         BasicHandler.SendTextInformationMessage(m_clients,
                             TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 199,
-                            guildMember.Name, Boss.Name, Name);
+                            guildMember.Name, oldBoss.Name, Name);
+
+                        UpdateMember(oldBoss);
+                        oldBoss.Save(WorldServer.Instance.DBAccessor.Database);
                     }
 
-                    UpdateMember(Boss);
-                    Boss.Save(WorldServer.Instance.DBAccessor.Database);
-                }
+                    guildMember.RankId = 1;
+                    guildMember.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
 
-                Boss = guildMember;
-                Boss.RankId = 1;
-                Boss.Rights = GuildRightsBitEnum.GUILD_RIGHT_BOSS;
-
-                UpdateMember(Boss);
-                Boss.Save(WorldServer.Instance.DBAccessor.Database);
+                    UpdateMember(guildMember);
+                    guildMember.Save(WorldServer.Instance.DBAccessor.Database);
+                });
             }
         }
 
@@ -763,12 +755,12 @@ namespace Stump.Server.WorldServer.Game.Guilds
 
                 IsDirty = false;
                 Record.IsNew = false;
-            });
 
-            foreach (var member in Members.Where(x => !x.IsConnected && x.IsDirty))
-            {
-                member.Save(database);
-            }
+                foreach (var member in Members.Where(x => !x.IsConnected && x.IsDirty))
+                {
+                    member.Save(database);
+                }
+            });
         }
 
         protected void UpdateMember(GuildMember member)

@@ -12,7 +12,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Actions
         {
         }
 
-        protected override TreeSharp.RunStatus Run(object context)
+        protected override RunStatus Run(object context)
         {
             if (!Fighter.CanMove())
                 return RunStatus.Failure;

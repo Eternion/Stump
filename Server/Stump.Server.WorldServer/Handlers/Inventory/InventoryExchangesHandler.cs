@@ -14,12 +14,14 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
+using Stump.Server.WorldServer.Game.Exchanges.BidHouse;
 using Stump.Server.WorldServer.Game.Exchanges.Merchant;
 using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 using Stump.Server.WorldServer.Game.Exchanges.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
+using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
@@ -169,10 +171,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!client.Character.IsInExchange())
                 return;
 
-            var merchantExchanger = client.Character.Exchanger as CharacterMerchant;
-
-            if (merchantExchanger != null)
-                merchantExchanger.MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
+            if(client.Character.Exchanger is CharacterMerchant)
+            {
+                ((CharacterMerchant)client.Character.Exchanger).MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
+            }
+            else if (client.Character.Exchanger is BidHouseExchanger)
+            {
+                ((BidHouseExchanger)client.Character.Exchanger).MovePricedItem(message.objectUID, message.quantity, (uint)message.price);
+            }
         }
 
         [WorldHandler(ExchangeObjectModifyPricedMessage.Id)]
@@ -184,12 +190,14 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (!client.Character.IsInExchange())
                 return;
 
-            var merchantExchanger = client.Character.Exchanger as CharacterMerchant;
-
-            if (merchantExchanger == null)
-                return;
-
-            merchantExchanger.ModifyItem(message.objectUID, message.quantity, (uint)message.price);
+            if (client.Character.Exchanger is CharacterMerchant)
+            {
+                ((CharacterMerchant)client.Character.Exchanger).ModifyItem(message.objectUID, message.quantity, (uint)message.price);
+            }
+            else if (client.Character.Exchanger is BidHouseExchanger)
+            {
+                ((BidHouseExchanger)client.Character.Exchanger).ModifyItem(message.objectUID, (uint)message.price);
+            }
         }
 
         [WorldHandler(ExchangeStartAsVendorMessage.Id)]
@@ -242,8 +250,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             exchange.Open();
         }
 
-        [WorldHandler(ExchangeHandleMountStableMessage.Id)]
-        public static void HandleExchangeHandleMountStableMessage(WorldClient client, ExchangeHandleMountStableMessage message)
+        [WorldHandler(ExchangeHandleMountsStableMessage.Id)]
+        public static void HandleExchangeHandleMountStableMessage(WorldClient client, ExchangeHandleMountsStableMessage message)
         {
             if (!client.Character.IsInExchange())
                 return;
@@ -252,45 +260,143 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (exchanger == null)
                 return;
 
-            switch ((StableExchangeActionsEnum)message.actionType)
+            foreach (var rideId in message.ridesId)
             {
-                case StableExchangeActionsEnum.EQUIP_TO_STABLE:
-                    exchanger.EquipToStable(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.STABLE_TO_EQUIP:
-                    exchanger.StableToEquip(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.STABLE_TO_INVENTORY:
-                    exchanger.StableToInventory(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.INVENTORY_TO_STABLE:
-                     exchanger.InventoryToStable(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.STABLE_TO_PADDOCK:
-                    exchanger.StableToPaddock(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.PADDOCK_TO_STABLE:
-                    exchanger.PaddockToStable(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.EQUIP_TO_PADDOCK:
-                    exchanger.EquipToPaddock(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.PADDOCK_TO_EQUIP:
-                    exchanger.PaddockToEquip(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.EQUIP_TO_INVENTORY:
-                    exchanger.EquipToInventory(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.PADDOCK_TO_INVENTORY:
-                    exchanger.PaddockToInventory(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.INVENTORY_TO_EQUIP:
-                    exchanger.InventoryToEquip(message.rideId);
-                    break;
-                case StableExchangeActionsEnum.INVENTORY_TO_PADDOCK:
-                    exchanger.InventoryToPaddock(message.rideId);
-                    break;
+                switch ((StableExchangeActionsEnum)message.actionType)
+                {
+                    case StableExchangeActionsEnum.EQUIP_TO_STABLE:
+                        exchanger.EquipToStable(rideId);
+                        break;
+                    case StableExchangeActionsEnum.STABLE_TO_EQUIP:
+                        exchanger.StableToEquip(rideId);
+                        break;
+                    case StableExchangeActionsEnum.STABLE_TO_INVENTORY:
+                        exchanger.StableToInventory(rideId);
+                        break;
+                    case StableExchangeActionsEnum.INVENTORY_TO_STABLE:
+                        exchanger.InventoryToStable(rideId);
+                        break;
+                    case StableExchangeActionsEnum.STABLE_TO_PADDOCK:
+                        exchanger.StableToPaddock(rideId);
+                        break;
+                    case StableExchangeActionsEnum.PADDOCK_TO_STABLE:
+                        exchanger.PaddockToStable(rideId);
+                        break;
+                    case StableExchangeActionsEnum.EQUIP_TO_PADDOCK:
+                        exchanger.EquipToPaddock(rideId);
+                        break;
+                    case StableExchangeActionsEnum.PADDOCK_TO_EQUIP:
+                        exchanger.PaddockToEquip(rideId);
+                        break;
+                    case StableExchangeActionsEnum.EQUIP_TO_INVENTORY:
+                        exchanger.EquipToInventory(rideId);
+                        break;
+                    case StableExchangeActionsEnum.PADDOCK_TO_INVENTORY:
+                        exchanger.PaddockToInventory(rideId);
+                        break;
+                    case StableExchangeActionsEnum.INVENTORY_TO_EQUIP:
+                        exchanger.InventoryToEquip(rideId);
+                        break;
+                    case StableExchangeActionsEnum.INVENTORY_TO_PADDOCK:
+                        exchanger.InventoryToPaddock(rideId);
+                        break;
+                }
             }
+        }
+
+        [WorldHandler(ExchangeBidHouseTypeMessage.Id)]
+        public static void HandleExchangeBidHouseTypeMessage(WorldClient client, ExchangeBidHouseTypeMessage message)
+        {
+            var exchange = client.Character.Exchange as BidHouseExchange;
+            if (exchange == null)
+                return;
+
+            var items = BidHouseManager.Instance.GetBidHouseItems((ItemTypeEnum)message.type, exchange.MaxItemLevel).ToArray();
+
+            SendExchangeTypesExchangerDescriptionForUserMessage(client, items.Select(x => x.Template.Id));
+        }
+
+        [WorldHandler(ExchangeBidHouseListMessage.Id)]
+        public static void HandleExchangeBidHouseListMessage(WorldClient client, ExchangeBidHouseListMessage message)
+        {
+            var exchange = client.Character.Exchange as BidHouseExchange;
+            if (exchange == null)
+                return;
+
+            exchange.UpdateCurrentViewedItem(message.id);
+        }
+
+        [WorldHandler(ExchangeBidHousePriceMessage.Id)]
+        public static void HandleExchangeBidHousePriceMessage(WorldClient client, ExchangeBidHousePriceMessage message)
+        {
+            if (!client.Character.IsInExchange())
+                return;
+
+            var averagePrice = BidHouseManager.Instance.GetAveragePriceForItem(message.genId);
+
+            SendExchangeBidPriceMessage(client, message.genId, averagePrice);
+        }
+
+        [WorldHandler(ExchangeBidHouseSearchMessage.Id)]
+        public static void HandleExchangeBidHouseSearchMessage(WorldClient client, ExchangeBidHouseSearchMessage message)
+        {
+            var exchange = client.Character.Exchange as BidHouseExchange;
+            if (exchange == null)
+                return;
+
+            if (!exchange.Types.Contains(message.type))
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.BID_SEARCH_ERROR);
+                return;
+            }
+
+            var categories = BidHouseManager.Instance.GetBidHouseCategories(message.genId, exchange.MaxItemLevel).Select(x => x.GetBidExchangerObjectInfo()).ToArray();
+
+            if (!categories.Any())
+            {
+                SendExchangeErrorMessage(client, ExchangeErrorEnum.BID_SEARCH_ERROR);
+                return;
+            }
+
+            SendExchangeTypesItemsExchangerDescriptionForUserMessage(client, categories);
+        }
+
+        [WorldHandler(ExchangeBidHouseBuyMessage.Id)]
+        public static void HandleExchangeBidHouseBuyMessage(WorldClient client, ExchangeBidHouseBuyMessage message)
+        {
+            if (!client.Character.IsInExchange())
+                return;
+
+            var category = BidHouseManager.Instance.GetBidHouseCategory(message.uid);
+
+            if (category == null)
+                return;
+
+            var item = category.GetItem(message.qty, message.price);
+            if (item == null)
+            {
+                //Cet objet n'est plus disponible à ce prix. Quelqu'un a été plus rapide...
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 64);
+
+                SendExchangeBidHouseBuyResultMessage(client, message.uid, false);
+                return;
+            }
+
+            if (!item.SellItem(client.Character))
+            {
+                SendExchangeBidHouseBuyResultMessage(client, item.Guid, false);
+                return;
+            }
+
+            var result = client.Character.Exchanger.MoveItem(item.Guid, (int)item.Stack);
+
+            if (result)
+                client.Character.Inventory.SubKamas((int)item.Price);
+
+            SendExchangeBidHouseBuyResultMessage(client, item.Guid, result);
+
+            //Lot acheté.
+            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 68);
         }
 
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
@@ -322,12 +428,13 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeStartOkTaxCollectorMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)
         {
-            client.Send(new ExchangeStartOkTaxCollectorMessage(taxCollector.Id, taxCollector.Bag.Select(x => x.GetObjectItem()), taxCollector.GatheredKamas));
+            //Todo: Update
+            //client.Send(new ExchangeStartOkTaxCollectorMessage(taxCollector.Id, taxCollector.Bag.Select(x => x.GetObjectItem()), taxCollector.GatheredKamas));
         }
 
         public static void SendExchangeStartOkHumanVendorMessage(IPacketReceiver client, Merchant merchant)
         {
-            client.Send(new ExchangeStartOkHumanVendorMessage(merchant.Id, merchant.Bag.Select(x => x.GetObjectItemToSellInHumanVendorShop())));
+            client.Send(new ExchangeStartOkHumanVendorMessage(merchant.Id, merchant.Bag.Where(x => x.Stack > 0).Select(x => x.GetObjectItemToSellInHumanVendorShop())));
         }
 
         public static void SendExchangeStartOkNpcTradeMessage(IPacketReceiver client, NpcTrade trade)
@@ -373,7 +480,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeShopStockStartedMessage(IPacketReceiver client, CharacterMerchantBag merchantBag)
         {
             client.Send(new ExchangeShopStockStartedMessage(
-                            merchantBag.Select(x => x.GetObjectItemToSell())));
+                            merchantBag.Where(x => x.Stack > 0).Select(x => x.GetObjectItemToSell())));
         }
 
         public static void SendExchangeStartOkMountMessage(IPacketReceiver client, List<Mount> stabledMounts, List<Mount> paddockedMounts)
@@ -383,22 +490,87 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
         public static void SendExchangeMountPaddockAddMessage(IPacketReceiver client, Mount mount)
         {
-            client.Send(new ExchangeMountPaddockAddMessage(mount.GetMountClientData()));
+            client.Send(new ExchangeMountsPaddockAddMessage(new[] { mount.GetMountClientData() }));
         }
 
         public static void SendExchangeMountStableAddMessage(IPacketReceiver client, Mount mount)
         {
-            client.Send(new ExchangeMountStableAddMessage(mount.GetMountClientData()));
+            client.Send(new ExchangeMountsStableAddMessage(new[] { mount.GetMountClientData() }));
         }
 
         public static void SendExchangeMountPaddockRemoveMessage(IPacketReceiver client, Mount mount)
         {
-            client.Send(new ExchangeMountPaddockRemoveMessage(mount.Id));
+            client.Send(new ExchangeMountsPaddockRemoveMessage(new[] { mount.Id }));
         }
 
         public static void SendExchangeMountStableRemoveMessage(IPacketReceiver client, Mount mount)
         {
-            client.Send(new ExchangeMountStableRemoveMessage(mount.Id));
+            client.Send(new ExchangeMountsStableRemoveMessage(new[] { mount.Id }));
+        }
+
+        public static void SendExchangeStartedBidBuyerMessage(IPacketReceiver client, BidHouseExchange exchange)
+        {
+            client.Send(new ExchangeStartedBidBuyerMessage(exchange.GetBuyerDescriptor()));
+        }
+
+        public static void SendExchangeStartedBidSellerMessage(IPacketReceiver client, BidHouseExchange exchange, IEnumerable<ObjectItemToSellInBid> items)
+        {
+            client.Send(new ExchangeStartedBidSellerMessage(exchange.GetBuyerDescriptor(), items));
+        }
+
+        public static void SendExchangeTypesExchangerDescriptionForUserMessage(IPacketReceiver client, IEnumerable<int> items)
+        {
+            client.Send(new ExchangeTypesExchangerDescriptionForUserMessage(items));
+        }
+
+        public static void SendExchangeTypesItemsExchangerDescriptionForUserMessage(IPacketReceiver client, IEnumerable<BidExchangerObjectInfo> items)
+        {
+            client.Send(new ExchangeTypesItemsExchangerDescriptionForUserMessage(items));
+        }
+
+        public static void SendExchangeBidPriceMessage(IPacketReceiver client, int itemId, int averagePrice)
+        {
+            client.Send(new ExchangeBidPriceMessage((short)itemId, averagePrice));
+        }
+
+        public static void SendExchangeBidHouseItemAddOkMessage(IPacketReceiver client, ObjectItemToSellInBid item)
+        {
+            client.Send(new ExchangeBidHouseItemAddOkMessage(item));
+        }
+
+        public static void SendExchangeBidHouseItemRemoveOkMessage(IPacketReceiver client, int sellerId)
+        {
+            client.Send(new ExchangeBidHouseItemRemoveOkMessage(sellerId));
+        }
+
+        public static void SendExchangeBidHouseBuyResultMessage(IPacketReceiver client, int guid, bool bought)
+        {
+            client.Send(new ExchangeBidHouseBuyResultMessage(guid, bought));
+        }
+
+        public static void SendExchangeBidHouseInListAddedMessage(IPacketReceiver client, BidHouseCategory category)
+        {
+            client.Send(new ExchangeBidHouseInListAddedMessage(category.Id, category.TemplateId, category.Effects.Select(x => x.GetObjectEffect()), category.GetPrices()));
+        }
+
+        public static void SendExchangeBidHouseInListRemovedMessage(IPacketReceiver client, BidHouseCategory category)
+        {
+            client.Send(new ExchangeBidHouseInListRemovedMessage(category.Id));
+        }
+
+        public static void SendExchangeBidHouseInListUpdatedMessage(IPacketReceiver client, BidHouseCategory category)
+        {
+            client.Send(new ExchangeBidHouseInListUpdatedMessage(category.Id, category.TemplateId, category.Effects.Select(x => x.GetObjectEffect()), category.GetPrices()));
+        }
+
+        public static void SendExchangeBidHouseGenericItemAddedMessage(IPacketReceiver client, BidHouseItem item)
+        {
+            client.Send(new ExchangeBidHouseGenericItemAddedMessage((short)item.Template.Id));
+        }
+
+        public static void SendExchangeBidHouseGenericItemRemovedMessage(IPacketReceiver client, BidHouseItem item)
+        {
+            client.Send(new ExchangeBidHouseGenericItemRemovedMessage((short)item.Template.Id));
         }
     }
 }

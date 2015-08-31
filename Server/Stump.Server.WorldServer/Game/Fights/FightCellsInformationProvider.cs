@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             }
         }
 
-        public bool IsCellWalkable(short cell)
+        public virtual bool IsCellWalkable(short cell)
         {
             return Fight.IsCellFree(Fight.Map.Cells[cell]);
         }

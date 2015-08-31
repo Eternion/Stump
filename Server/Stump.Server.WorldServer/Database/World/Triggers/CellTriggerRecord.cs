@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Database;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Conditions;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
@@ -89,6 +90,11 @@ namespace Stump.Server.WorldServer.Database.World.Triggers
                 m_conditionExpression = value;
                 Condition = value.ToString();
             }
+        }
+
+        public bool IsConditionFilled(Character character)
+        {
+            return ConditionExpression == null || ConditionExpression.Eval(character);
         }
 
         private void RefreshPosition()
