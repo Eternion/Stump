@@ -17,24 +17,16 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             Npc = npc;
         }
 
-        public DialogTypeEnum DialogType
-        {
-            get
-            {
-                return DialogTypeEnum.DIALOG_DIALOG;
-            }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_DIALOG;
 
         public Character Character
         {
             get;
-            private set;
         }
 
         public Npc Npc
         {
             get;
-            private set;
         }
 
         public NpcMessage CurrentMessage
@@ -63,6 +55,8 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             if (replies.Any(x => !x.CanExecute(Npc, Character)))
             {
                 Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 34);
+                Close();
+
                 return;
             }
 
@@ -94,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             CurrentMessage = message;
 
             var replies = message.Replies.
-                Where(entry => entry.CriteriaExpression == null || entry.CriteriaExpression.Eval(Character)).
+                Where(entry => entry.CanShow(Npc, Character)).
                 Select(entry => (short)entry.ReplyId).Distinct();
 
             ContextRoleplayHandler.SendNpcDialogQuestionMessage(Character.Client, CurrentMessage, replies);

@@ -8,7 +8,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
     [Discriminator("Dialog", typeof(NpcReply), typeof(NpcReplyRecord))]
     public class ContinueDialogReply : NpcReply
     {
-        private NpcMessage m_message;
+        NpcMessage m_message;
 
         public ContinueDialogReply(NpcReplyRecord record)
             : base(record)
@@ -37,10 +37,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             }
         }
 
-        public override bool CanExecute(Npc npc, Character character)
-        {
-            return base.CanExecute(npc, character) && character.IsTalkingWithNpc();
-        }
+        public override bool CanExecute(Npc npc, Character character) => base.CanExecute(npc, character) && character.IsTalkingWithNpc();
 
         public override bool Execute(Npc npc, Character character)
         {

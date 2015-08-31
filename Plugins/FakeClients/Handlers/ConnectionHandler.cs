@@ -19,8 +19,8 @@ namespace FakeClients.Handlers
             writer.WriteUTF(FakeClientManager.AccountName + client.Id);
             writer.WriteUTF(FakeClientManager.AccountPassword);
 
-            client.Send(new IdentificationMessage(false, false, false, VersionExtension.ExpectedVersion.ToVersionExtended(0,0), "fr",
-                writer.Data.Select(x => (sbyte)x), (short)WorldServer.ServerInformation.Id));
+            /*client.Send(new IdentificationMessage(false, false, false, VersionExtension.ExpectedVersion.ToVersionExtended(0,0), "fr",
+                writer.Data.Select(x => (sbyte)x), (short)WorldServer.ServerInformation.Id));*/
         }
 
         [FakeHandler(IdentificationFailedMessage.Id)]
@@ -33,7 +33,7 @@ namespace FakeClients.Handlers
         public static void HandleSelectedServerDataMessage(FakeClient client, SelectedServerDataMessage message)
         {
             client.Disconnect(true);
-            client.Ticket = message.ticket;
+            //client.Ticket = message.ticket;
             client.Connect(message.address, message.port);
         }
 
@@ -70,8 +70,8 @@ namespace FakeClients.Handlers
             if (!message.characters.Any())
             {
                 var head = BreedManager.Instance.GetHead(x => x.Breed == (int) PlayableBreedEnum.Cra);
-                client.Send(new CharacterCreationRequestMessage("FakeCharacter#" + client.Id, (sbyte)PlayableBreedEnum.Cra,
-                    false, Enumerable.Repeat(-1, 5), head.Id));
+                /*client.Send(new CharacterCreationRequestMessage("FakeCharacter#" + client.Id, (sbyte)PlayableBreedEnum.Cra,
+                    false, Enumerable.Repeat(-1, 5), head.Id));*/
             }
             else
             {
