@@ -6,6 +6,9 @@ using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Effects;
+using System.Collections.Generic;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Instances
 {
@@ -25,6 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
     [Serializable]
     public class EffectBase : ICloneable
     {
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private int m_delay;
         private int m_duration;
@@ -33,13 +37,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         private short m_id;
         private int m_modificator;
         private int m_random;
-        private SpellTargetType m_targets;
+        private TargetCriterion[] m_targets = new TargetCriterion[0];
+        private string m_targetMask;
+        private string m_triggers;
 
         [NonSerialized] protected EffectTemplate m_template;
         private bool m_trigger;
         private uint m_zoneMinSize;
         private SpellShapeEnum m_zoneShape;
         private uint m_zoneSize;
+        private int m_zoneEfficiencyPercent;
+        private int m_zoneMaxEfficiency;
 
         public EffectBase()
         {
@@ -50,33 +58,26 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_id = effect.Id;
             m_template = EffectManager.Instance.GetTemplate(effect.Id);
             m_targets = effect.Targets;
+            m_targetMask = effect.TargetMask;
             m_delay = effect.Delay;
             m_duration = effect.Duration;
             m_group = effect.Group;
             m_random = effect.Random;
             m_modificator = effect.Modificator;
             m_trigger = effect.Trigger;
+            m_triggers = effect.Triggers;
             m_hidden = effect.Hidden;
             m_zoneSize = effect.m_zoneSize;
             m_zoneMinSize = effect.m_zoneMinSize;
             m_zoneShape = effect.ZoneShape;
+            m_zoneMaxEfficiency = effect.ZoneMaxEfficiency;
+            m_zoneEfficiencyPercent = effect.ZoneEfficiencyPercent;
+            ParseTargets();
         }
 
         public EffectBase(short id, EffectBase effect)
+             : this(effect)
         {
-            m_id = id;
-            m_template = EffectManager.Instance.GetTemplate(id);
-            m_targets = effect.Targets;
-            m_delay = effect.Delay;
-            m_duration = effect.Duration;
-            m_group = effect.Group;
-            m_random = effect.Random;
-            m_modificator = effect.Modificator;
-            m_trigger = effect.Trigger;
-            m_hidden = effect.Hidden;
-            m_zoneSize = effect.m_zoneSize;
-            m_zoneMinSize = effect.m_zoneMinSize;
-            m_zoneShape = effect.ZoneShape;
         }
 
         public EffectBase(EffectInstance effect)
@@ -84,14 +85,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_id = (short) effect.effectId;
             m_template = EffectManager.Instance.GetTemplate(Id);
 
-            m_targets = (SpellTargetType) effect.targetId;
+            m_targetMask = effect.targetMask;
             m_delay = effect.delay;
             m_duration = effect.duration;
             m_group = effect.group;
             m_random = effect.random;
             m_modificator = effect.modificator;
             m_trigger = effect.trigger;
+            m_triggers = effect.triggers;
             ParseRawZone(effect.rawZone);
+            ParseTargets();
         }
 
         public virtual int ProtocoleId
@@ -134,10 +137,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
         }
 
-        public SpellTargetType Targets
+        public string TargetMask
+        {
+            get { return m_targetMask; }
+            set { m_targetMask = value; IsDirty = true; }
+        }
+
+        public TargetCriterion[] Targets
         {
             get { return m_targets; }
-            set
+            protected set
             {
                 m_targets = value;
                 IsDirty = true;
@@ -194,6 +203,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
         }
 
+        public string Triggers
+        {
+            get { return m_triggers; }
+            set
+            {
+                m_triggers = value;
+                IsDirty = true;
+            }
+        }
+
         public bool Trigger
         {
             get { return m_trigger; }
@@ -244,6 +263,26 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
         }
 
+        public int ZoneEfficiencyPercent
+        {
+            get { return m_zoneEfficiencyPercent; }
+            set
+            {
+                m_zoneEfficiencyPercent = value;
+                IsDirty = true;
+            }
+        }
+
+        public int ZoneMaxEfficiency
+        {
+            get { return m_zoneMaxEfficiency; }
+            set
+            {
+                m_zoneMaxEfficiency = value;
+                IsDirty = true;
+            }
+        }
+
         public bool IsDirty
         {
             get;
@@ -259,6 +298,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         #endregion
 
+        protected void ParseTargets()
+        {
+            if (m_targetMask == "a,A" || m_targetMask == "A,a")
+            {
+                m_targets = new TargetCriterion[0];
+                return; // default target = ALL
+            }
+
+            var data = m_targetMask.Split(',');
+
+            m_targets = data.Select(x => TargetCriterion.ParseCriterion(x)).ToArray();
+        }
+
         protected void ParseRawZone(string rawZone)
         {
             if (string.IsNullOrEmpty(rawZone))
@@ -272,19 +324,39 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             var shape = (SpellShapeEnum) rawZone[0];
             byte size = 0;
             byte minSize = 0;
+            int zoneEfficiency = 0;
+            int zoneMaxEfficiency = 0;
 
-            var commaIndex = rawZone.IndexOf(',');
+            var data = rawZone.Remove(0, 1).Split(',');
+            var hasMinSize = shape == SpellShapeEnum.C || shape == SpellShapeEnum.X || shape == SpellShapeEnum.Q || shape == SpellShapeEnum.plus || shape == SpellShapeEnum.sharp;
+
+
             try
             {
-                if (commaIndex == -1 && rawZone.Length > 1)
-                {
-                    size = byte.Parse(rawZone.Remove(0, 1));
-                }
-                else if (rawZone.Length > 1)
-                {
-                    size = byte.Parse(rawZone.Substring(1, commaIndex - 1));
-                    minSize = byte.Parse(rawZone.Remove(0, commaIndex + 1));
-                }
+                if (data.Length >= 4)
+            {
+                size = byte.Parse(data[0]);
+                minSize = byte.Parse(data[1]);
+                zoneEfficiency = byte.Parse(data[2]);
+                zoneMaxEfficiency = byte.Parse(data[2]);
+            }
+            else
+            {
+                if (data.Length >= 1)
+                    size = byte.Parse(data[0]);
+
+                if (data.Length >= 2)
+                    if (hasMinSize)
+                        minSize = byte.Parse(data[1]);
+                    else
+                        zoneEfficiency = byte.Parse(data[1]);
+
+                if (data.Length >= 3)
+                    if (hasMinSize)
+                        zoneEfficiency = byte.Parse(data[2]);
+                    else
+                        zoneMaxEfficiency = byte.Parse(data[2]);
+            }
             }
             catch (Exception ex)
             {
@@ -298,6 +370,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             m_zoneShape = shape;
             m_zoneSize = size;
             m_zoneMinSize = minSize;
+            m_zoneEfficiencyPercent = zoneEfficiency;
+            m_zoneMaxEfficiency = zoneMaxEfficiency;
         }
 
         protected string BuildRawZone()
@@ -307,11 +381,43 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             builder.Append((char) (int) ZoneShape);
             builder.Append(ZoneSize);
 
-            if (ZoneMinSize <= 0)
-                return builder.ToString();
+            var hasMinSize = ZoneShape == SpellShapeEnum.C || ZoneShape == SpellShapeEnum.X || 
+                ZoneShape == SpellShapeEnum.Q || ZoneShape == SpellShapeEnum.plus || ZoneShape == SpellShapeEnum.sharp;
 
-            builder.Append(",");
-            builder.Append(ZoneMinSize);
+            if (hasMinSize)
+            {
+                if (ZoneMinSize <= 0)
+                    return builder.ToString();
+
+                builder.Append(",");
+                builder.Append(ZoneMinSize);
+
+                if (ZoneEfficiencyPercent > 0)
+                {
+                    builder.Append(",");
+                    builder.Append(ZoneEfficiencyPercent);
+
+                    if (ZoneMaxEfficiency > 0)
+                    {
+                        builder.Append(",");
+                        builder.Append(ZoneEfficiencyPercent);
+                    }
+                }
+            }
+            else
+            {
+                if (ZoneMinSize <= 0)
+                    return builder.ToString();
+
+                builder.Append(",");
+                builder.Append(ZoneEfficiencyPercent);
+
+                if (ZoneMaxEfficiency > 0)
+                {
+                    builder.Append(",");
+                    builder.Append(ZoneMaxEfficiency);
+                }
+            }
 
             return builder.ToString();
         }
@@ -337,16 +443,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new EffectInstance
                 {
                     effectId = (uint) Id,
-                    targetId = (int) Targets,
+                    targetMask = TargetMask,
                     delay = Delay,
                     duration = Duration,
                     group = Group,
                     random = Random,
                     modificator = Modificator,
                     trigger = Trigger,
+                    triggers = Triggers,
                     zoneMinSize = ZoneMinSize,
                     zoneSize = ZoneSize,
-                    zoneShape = (uint) ZoneShape
+                    zoneShape = (uint) ZoneShape,
+                    zoneEfficiencyPercent= ZoneEfficiencyPercent,
+                    zoneMaxEfficiency = ZoneMaxEfficiency
                 };
         }
 
@@ -363,7 +472,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         protected virtual void InternalSerialize(ref BinaryWriter writer)
         {
-            if ((int) Targets == 0 &&
+            if (string.IsNullOrEmpty(TargetMask) &&
                 Duration == 0 &&
                 Delay == 0 &&
                 Random == 0 &&
@@ -380,7 +489,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
             else
             {
-                writer.Write((int) Targets);
+                writer.Write(TargetMask);
                 writer.Write(Id); // writer id second 'cause targets can't equals to 'C' but id can
                 writer.Write(Duration);
                 writer.Write(Delay);
@@ -388,6 +497,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 writer.Write(Group);
                 writer.Write(Modificator);
                 writer.Write(Trigger);
+                writer.Write(Triggers);
                 writer.Write(Hidden);
 
                 string rawZone = BuildRawZone();
@@ -419,7 +529,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             }
             else
             {
-                m_targets = (SpellTargetType) reader.ReadInt32();
+                TargetMask = reader.ReadString();
                 m_id = reader.ReadInt16();
                 m_duration = reader.ReadInt32();
                 m_delay = reader.ReadInt32();
@@ -427,8 +537,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 m_group = reader.ReadInt32();
                 m_modificator = reader.ReadInt32();
                 m_trigger = reader.ReadBoolean();
+                m_triggers = reader.ReadString();
                 m_hidden = reader.ReadBoolean();
                 ParseRawZone(reader.ReadString());
+                ParseTargets();
             }
         }
 
