@@ -91,8 +91,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 /* Set new name */
                 character.Name = remodel.name;
-                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME;
-                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_NAME;
             }
 
             if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER)
@@ -101,9 +99,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER))
             {
                 character.Sex = remodel.sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
-
-                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER;
-                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER;
             }
 
             if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
@@ -122,12 +117,26 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 /* Set Colors */
                 var breedColors = character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleColors : breed.FemaleColors;
+                var m_colors = new Dictionary<int, Color>();
 
-                character.EntityLook.SetColors(
-                    remodel.colors.Select((x, i) => x == -1 ? Color.FromArgb((int)breedColors[i]) : Color.FromArgb(x)).ToArray());
+                foreach (var color in remodel.colors)
+                {
+                    var index = color >> 24;
+                    var c = Color.FromArgb(color);
 
-                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
-                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS;
+                    m_colors.Add(index, c);
+                }
+
+                var i = 0;
+                foreach (var breedColor in breedColors)
+                {
+                    if (!m_colors.ContainsKey(i))
+                        m_colors.Add(i, Color.FromArgb((int)breedColor));
+
+                    i++;
+                }
+
+                character.EntityLook.SetColors(m_colors.Select(x => x.Value).ToArray());
             }
 
             if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
@@ -135,15 +144,13 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
                 == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED))
             {
-                /*var player = new Character(character, client);
+                client.Character = new Character(character, client);
 
-                BreedManager.Instance.ChangeBreed(player, (PlayableBreedEnum)remodel.breed);
+                BreedManager.Instance.ChangeBreed(client.Character, (PlayableBreedEnum)remodel.breed);
+                client.Character.SaveNow();
 
-                //Apply changements
-                character = player.Record;*/
-
-                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED;
-                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED;
+                character = client.Character.Record;
+                client.Character = null;
             }
 
             if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
@@ -166,10 +173,10 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
                 foreach (var scale in character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Scales : breed.FemaleLook.Scales)
                     character.EntityLook.SetScales(scale);
-
-                character.MandatoryChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
-                character.PossibleChanges ^= (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC;
             }
+
+            character.MandatoryChanges = 0;
+            character.PossibleChanges = 0;
 
             WorldServer.Instance.DBAccessor.Database.Update(character);
 
