@@ -215,7 +215,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             CellsInfoProvider = new MapCellsInformationProvider(this);
 
-            var middle = new MapPoint((int) MapPoint.MapWidth/2, (int) MapPoint.MapHeight/2);
+            var middle = new MapPoint((int)MapPoint.MapWidth / 2, (int)MapPoint.MapHeight / 2);
             m_freeCells = Cells.Where(entry => CellsInfoProvider.IsCellWalkable(entry.Id)).
                 OrderBy(x => middle.ManhattanDistanceTo(x)).ToArray();
         }
@@ -1069,11 +1069,11 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         private void MoveRandomlyActors()
         {
-            foreach(var actor in Actors.Where(x => x is IAutoMovedEntity && ((IAutoMovedEntity) x).NextMoveDate <= DateTime.Now))
+            foreach (var actor in Actors.Where(x => x is IAutoMovedEntity && ((IAutoMovedEntity)x).NextMoveDate <= DateTime.Now))
             {
                 if (actor is MonsterGroup)
                 {
-                    if (((MonsterGroup) actor).SpawningPool is StaticSpawningPool)
+                    if (((MonsterGroup)actor).SpawningPool is StaticSpawningPool)
                         continue;
                 }
 
@@ -1095,7 +1095,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                     DateTime.Now + TimeSpan.FromSeconds(new AsyncRandom().Next(AutoMoveActorMinInverval,
                         AutoMoveActorMaxInverval + 1));
             }
-           
+
         }
         #endregion
 
@@ -1208,12 +1208,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Enter(RolePlayActor actor)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (m_actors.Contains(actor))
             {
@@ -1235,12 +1235,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(RolePlayActor actor)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (!m_actors.Remove(actor))
                 return;
@@ -1258,12 +1258,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(int actorId)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             RolePlayActor removedActor;
             if (m_actorsMap.TryRemove(actorId, out removedActor) && m_actors.Remove(removedActor))
@@ -1274,12 +1274,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Enter(WorldObjectItem objectItem)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (m_objectItems.Contains(objectItem))
             {
@@ -1300,12 +1300,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Leave(WorldObjectItem objectItem)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (m_objectItems.Remove(objectItem))
             {
@@ -1315,12 +1315,12 @@ namespace Stump.Server.WorldServer.Game.Maps
 
         public void Refresh(RolePlayActor actor)
         {
-            #if DEBUG
+#if DEBUG
 
             if (WorldServer.Instance.IsInitialized)
                 Area.EnsureContext();
 
-            #endif
+#endif
 
             if (IsActor(actor))
                 ForEach(x =>
@@ -1344,7 +1344,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             ForEach(x =>
             {
-                ContextRoleplayHandler.SendObjectGroundAddedMessage(x.Client, objectItem);   
+                ContextRoleplayHandler.SendObjectGroundAddedMessage(x.Client, objectItem);
             });
 
             if (DroppedItemsCleaner == null)
@@ -1387,7 +1387,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                     Leave(actor);
                     return;
                 }
-                TaxCollector = (TaxCollectorNpc) actor;
+                TaxCollector = (TaxCollectorNpc)actor;
             }
             if (actor is IAutoMovedEntity)
             {
@@ -1397,7 +1397,7 @@ namespace Stump.Server.WorldServer.Game.Maps
 
                 // if the timer wasn't active (=no actors)
                 if (m_autoMoveTimer == null) // call every (max+min)/2/10 to have an average 5% accuracy
-                    m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval)/20*1000,
+                    m_autoMoveTimer = Area.CallPeriodically((AutoMoveActorMaxInverval + AutoMoveActorMinInverval) / 20 * 1000,
                         MoveRandomlyActors);
             }
 
@@ -1450,6 +1450,25 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             var movementsKey = path.GetServerPathKeys();
 
+            var i = 0;
+            var stop = false;
+
+            foreach (var cell in path.GetPath())
+            {
+                if (stop)
+                    continue;
+
+                i++;
+                foreach (var trigger in GetTriggers(cell))
+                {
+                    if (trigger.TriggerType == CellTriggerType.MOVE_ON)
+                        stop = true;
+                }
+            }
+
+            path.CutPath(i);
+            movementsKey = path.GetServerPathKeys();
+
             if (path.Walk)
                 ContextHandler.SendGameCautiousMapMovementMessage(Clients, movementsKey, actor);
             else
@@ -1479,7 +1498,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (objectItem != null)
                 character.GetDroppedItem(objectItem);
 
-            if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character))
+            if (ExecuteTrigger(CellTriggerType.END_MOVE_ON, actor.Cell, character) || ExecuteTrigger(CellTriggerType.MOVE_ON, actor.Cell, character))
                 return;
 
             Refresh(character);
