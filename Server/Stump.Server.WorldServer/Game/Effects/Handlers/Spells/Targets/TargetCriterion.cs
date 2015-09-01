@@ -69,7 +69,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                         return new LifeCriterion(int.Parse(str.Remove(0, 1)), false);
                 }
 
-                throw new NotSupportedException(str[0] + " invalid token");
+                return new UnknownCriterion(str);
             }
             catch(Exception ex)
             {

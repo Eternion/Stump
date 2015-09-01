@@ -35,25 +35,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
             if (handler.Caster.IsFriendlyWith(actor) && handler.Caster != actor)
             {
-                if (TargetType == SpellTargetType.ALLY_ALL)
+                if (TargetType == SpellTargetType.ALLY_ALL || TargetType.HasFlag(SpellTargetType.ALLY_PLAYER)) // not sure about that
                     return true;
 
-                /*if ((TargetType.HasFlag(SpellTargetType.ALLY_PLAYER) || TargetType.HasFlag(SpellTargetType.ALLY_2))
-                    && !(actor is SummonedFighter)
-                    && !(actor is SummonedBomb))
+                if ((TargetType.HasFlag(SpellTargetType.ALLY_MONSTER)) && (actor is MonsterFighter))
                     return true;
 
-                if (TargetType.HasFlag(SpellTargetType.ALLY_SUMMONER)   
-                    && handler.Caster is SummonedFighter
-                    && ((SummonedFighter)handler.Caster).Summoner == actor
-                    return true;
-
-                if ((TargetType.HasFlag(SpellTargetType.ALLY_SUMMONS) || TargetType.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS))
+                if ((TargetType.HasFlag(SpellTargetType.ALLY_MONSTER_SUMMON) || TargetType.HasFlag(SpellTargetType.ALLY_NON_MONSTER_SUMMON))
                     && actor is SummonedFighter
                     && !(actor is SummonedTurret))
                     return true;
 
-                if (TargetType.HasFlag(SpellTargetType.ALLY_BOMBS)
+                /*if (TargetType.HasFlag(SpellTargetType.ALLY_BOMBS)
                     && actor is SummonedBomb)
                     return true;
 
@@ -67,6 +60,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
 
             if (TargetType == SpellTargetType.ENEMY_ALL)
+                return true;
+
+            if (TargetType == SpellTargetType.ENEMY_ALL || TargetType.HasFlag(SpellTargetType.ENEMY_PLAYER)) // not sure about that
+                return true;
+
+            if ((TargetType.HasFlag(SpellTargetType.ENEMY_MONSTER)) && (actor is MonsterFighter))
+                return true;
+
+            if ((TargetType.HasFlag(SpellTargetType.ENEMY_MONSTER_SUMMON) || TargetType.HasFlag(SpellTargetType.ENEMY_NON_MONSTER_SUMMON))
+                && actor is SummonedFighter
+                && !(actor is SummonedTurret))
                 return true;
 
             /*if ((TargetType.HasFlag(SpellTargetType.ENEMY_1) || TargetType.HasFlag(SpellTargetType.ENEMY_2))
@@ -94,7 +98,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                 && actor is SummonedTurret
                 && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
                 return true;*/
-                return true;
 
             return false;
         }
