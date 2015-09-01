@@ -65,16 +65,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             return new EffectInstanceDuration()
             {
                 effectId = (uint)Id,
-                targetId = (int)Targets,
+                targetMask = TargetMask,
                 delay = Delay,
                 duration = Duration,
                 group = Group,
                 random = Random,
                 modificator = Modificator,
                 trigger = Trigger,
+                triggers = Triggers,
                 zoneMinSize = ZoneMinSize,
                 zoneSize = ZoneSize,
-                zoneShape = (uint) ZoneShape,
+                zoneShape = (uint)ZoneShape,
+                zoneEfficiencyPercent = ZoneEfficiencyPercent,
+                zoneMaxEfficiency = ZoneMaxEfficiency,
                 days = (uint) m_days,
                 hours = (uint) m_hours,
                 minutes = (uint) m_minutes

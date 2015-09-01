@@ -37,6 +37,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         private short m_id;
         private int m_modificator;
         private int m_random;
+
+        [NonSerialized]
         private TargetCriterion[] m_targets = new TargetCriterion[0];
         private string m_targetMask;
         private string m_triggers;
@@ -300,7 +302,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         protected void ParseTargets()
         {
-            if (m_targetMask == "a,A" || m_targetMask == "A,a")
+            if (string.IsNullOrEmpty(m_targetMask) || m_targetMask == "a,A" || m_targetMask == "A,a")
             {
                 m_targets = new TargetCriterion[0];
                 return; // default target = ALL
@@ -327,36 +329,36 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             int zoneEfficiency = 0;
             int zoneMaxEfficiency = 0;
 
-            var data = rawZone.Remove(0, 1).Split(',');
+            var data = rawZone.Remove(0, 1).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             var hasMinSize = shape == SpellShapeEnum.C || shape == SpellShapeEnum.X || shape == SpellShapeEnum.Q || shape == SpellShapeEnum.plus || shape == SpellShapeEnum.sharp;
 
 
             try
             {
                 if (data.Length >= 4)
-            {
-                size = byte.Parse(data[0]);
-                minSize = byte.Parse(data[1]);
-                zoneEfficiency = byte.Parse(data[2]);
-                zoneMaxEfficiency = byte.Parse(data[2]);
-            }
-            else
-            {
-                if (data.Length >= 1)
+                {
                     size = byte.Parse(data[0]);
+                    minSize = byte.Parse(data[1]);
+                    zoneEfficiency = byte.Parse(data[2]);
+                    zoneMaxEfficiency = byte.Parse(data[2]);
+                }
+                else
+                {
+                    if (data.Length >= 1)
+                        size = byte.Parse(data[0]);
 
-                if (data.Length >= 2)
-                    if (hasMinSize)
-                        minSize = byte.Parse(data[1]);
-                    else
-                        zoneEfficiency = byte.Parse(data[1]);
+                    if (data.Length >= 2)
+                        if (hasMinSize)
+                            minSize = byte.Parse(data[1]);
+                        else
+                            zoneEfficiency = byte.Parse(data[1]);
 
-                if (data.Length >= 3)
-                    if (hasMinSize)
-                        zoneEfficiency = byte.Parse(data[2]);
-                    else
-                        zoneMaxEfficiency = byte.Parse(data[2]);
-            }
+                    if (data.Length >= 3)
+                        if (hasMinSize)
+                            zoneEfficiency = byte.Parse(data[2]);
+                        else
+                            zoneMaxEfficiency = byte.Parse(data[2]);
+                }
             }
             catch (Exception ex)
             {

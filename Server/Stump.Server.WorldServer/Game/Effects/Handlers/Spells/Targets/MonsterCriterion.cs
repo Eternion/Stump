@@ -29,7 +29,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
         public override bool IsTargetValid(FightActor actor, SpellEffectHandler handler)
         {
-            throw new NotImplementedException();
+            return Required ? (actor is MonsterFighter) && (actor as MonsterFighter).Monster.Template.Id == MonsterId :
+                !(actor is MonsterFighter) || (actor as MonsterFighter).Monster.Template.Id != MonsterId;
         }
     }
 }

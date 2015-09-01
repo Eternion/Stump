@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
@@ -115,7 +116,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             }
         }
 
-        public SpellTargetType Targets
+        public TargetCriterion[] Targets
         {
             get;
             set;
@@ -152,10 +153,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
-                return new FightActor[0];
+            /*if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
+                return new FightActor[0];*/
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
+            return Effect.Targets.Any(x => x is TargetTypeCriterion && (x as TargetTypeCriterion).TargetType == SpellTargetType.SELF_ONLY) ?
+                new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
@@ -163,13 +165,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
-                return new FightActor[0];
+            /*if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
+                return new FightActor[0];*/
 
-            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
+            if (Effect.Targets.Any(x => x is TargetTypeCriterion && (x as TargetTypeCriterion).TargetType == SpellTargetType.SELF_ONLY) && predicate(Caster))
                 return new[] {Caster};
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry) && !entry.IsCarried()).ToArray();
+            return Effect.Targets.Any(x => x is TargetTypeCriterion && (x as TargetTypeCriterion).TargetType == SpellTargetType.SELF_ONLY) ? 
+                new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry) && !entry.IsCarried()).ToArray();
         }
 
         

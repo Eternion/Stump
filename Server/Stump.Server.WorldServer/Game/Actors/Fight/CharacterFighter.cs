@@ -23,6 +23,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -226,7 +227,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                         .CRITICAL_HIT);
                 handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize,
                     handler.CastPoint.OrientationTo(handler.TargetedPoint));
-                handler.Targets = SpellTargetType.ENEMY_ALL | SpellTargetType.ALLY_ALL;
+                handler.Targets = new TargetCriterion[0]; // means all
                 handlers.Add(handler);
             }
 

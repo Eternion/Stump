@@ -371,6 +371,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Targets\StateCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\TargetCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\TargetTypeCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\UnknownCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
