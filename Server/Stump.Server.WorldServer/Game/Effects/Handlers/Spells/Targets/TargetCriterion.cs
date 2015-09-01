@@ -23,6 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             {'m', SpellTargetType.ALLY_MONSTER},
             {'h', SpellTargetType.ALLY_UNKN_1},
             {'l', SpellTargetType.ALLY_UNKN_2},
+            {'P', SpellTargetType.ALLY_BOMB},
 
             {'a', SpellTargetType.ALLY_ALL},
 
@@ -34,6 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             {'M', SpellTargetType.ENEMY_MONSTER},
             {'H', SpellTargetType.ENEMY_UNKN_1},
             {'L', SpellTargetType.ENEMY_UNKN_2},
+            {'p', SpellTargetType.ENEMY_BOMB},
 
             {'A', SpellTargetType.ENEMY_ALL},
         };

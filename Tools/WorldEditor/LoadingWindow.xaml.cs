@@ -52,8 +52,7 @@ namespace WorldEditor
                              "Loading d2i files ...");
             InitializeLoader(() => IconsManager.Instance.Initialize(Settings.LoaderSettings.ItemIconsFile),
                              "Loading item icons ...");
-            // todo
-            I18NDataManager.Instance.DefaultLanguage = Languages.English;
+            I18NDataManager.Instance.DefaultLanguage = Settings.DefaultLanguage;
 
             InitializeLoader(() => ObjectDataManager.Instance.Initialize(),
                              "Loading tables informations ...");

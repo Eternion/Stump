@@ -310,7 +310,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
             var data = m_targetMask.Split(',');
 
-            m_targets = data.Select(x => TargetCriterion.ParseCriterion(x)).ToArray();
+            m_targets = data.Select(TargetCriterion.ParseCriterion).ToArray();
         }
 
         protected void ParseRawZone(string rawZone)
