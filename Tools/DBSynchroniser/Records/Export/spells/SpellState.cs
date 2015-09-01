@@ -1,7 +1,7 @@
  
 
 
-// Generated on 08/13/2015 17:50:47
+// Generated on 09/01/2015 10:48:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +24,12 @@ namespace DBSynchroniser.Records
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
         public Boolean isSilent;
+        public Boolean cantDealDamage;
+        public Boolean invulnerable;
+        public Boolean incurable;
+        public Boolean cantBeMoved;
+        public Boolean cantBePushed;
+        public Boolean cantSwitchPosition;
         public List<int> effectsIds;
 
         int ID2ORecord.Id
@@ -70,6 +76,48 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public Boolean CantDealDamage
+        {
+            get { return cantDealDamage; }
+            set { cantDealDamage = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean Invulnerable
+        {
+            get { return invulnerable; }
+            set { invulnerable = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean Incurable
+        {
+            get { return incurable; }
+            set { incurable = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean CantBeMoved
+        {
+            get { return cantBeMoved; }
+            set { cantBeMoved = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean CantBePushed
+        {
+            get { return cantBePushed; }
+            set { cantBePushed = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean CantSwitchPosition
+        {
+            get { return cantSwitchPosition; }
+            set { cantSwitchPosition = value; }
+        }
+
+        [D2OIgnore]
         [Ignore]
         public List<int> EffectsIds
         {
@@ -104,6 +152,12 @@ namespace DBSynchroniser.Records
             PreventsSpellCast = castedObj.preventsSpellCast;
             PreventsFight = castedObj.preventsFight;
             IsSilent = castedObj.isSilent;
+            CantDealDamage = castedObj.cantDealDamage;
+            Invulnerable = castedObj.invulnerable;
+            Incurable = castedObj.incurable;
+            CantBeMoved = castedObj.cantBeMoved;
+            CantBePushed = castedObj.cantBePushed;
+            CantSwitchPosition = castedObj.cantSwitchPosition;
             EffectsIds = castedObj.effectsIds;
         }
         
@@ -115,6 +169,12 @@ namespace DBSynchroniser.Records
             obj.preventsSpellCast = PreventsSpellCast;
             obj.preventsFight = PreventsFight;
             obj.isSilent = IsSilent;
+            obj.cantDealDamage = CantDealDamage;
+            obj.invulnerable = Invulnerable;
+            obj.incurable = Incurable;
+            obj.cantBeMoved = CantBeMoved;
+            obj.cantBePushed = CantBePushed;
+            obj.cantSwitchPosition = CantSwitchPosition;
             obj.effectsIds = EffectsIds;
             return obj;
         }

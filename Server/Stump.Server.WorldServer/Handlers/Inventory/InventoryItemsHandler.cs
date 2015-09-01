@@ -256,7 +256,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendInventoryContentAndPresetMessage(WorldClient client)
         {
             client.Send(new InventoryContentAndPresetMessage(client.Character.Inventory.Select(entry => entry.GetObjectItem()),
-                client.Character.Inventory.Kamas, client.Character.Inventory.Presets.Select(entry => entry.GetNetworkPreset())));
+                client.Character.Inventory.Kamas, client.Character.Inventory.Presets.Select(entry => entry.GetNetworkPreset()), new IdolsPreset[0]));
         }
 
         public static void SendInventoryWeightMessage(WorldClient client)

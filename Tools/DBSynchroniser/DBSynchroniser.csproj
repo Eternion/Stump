@@ -166,6 +166,8 @@
     <Compile Include="Records\Export\communication\Emoticon.cs" />
     <Compile Include="Records\Export\communication\InfoMessage.cs" />
     <Compile Include="Records\Export\communication\Smiley.cs" />
+    <Compile Include="Records\Export\communication\SmileyCategory.cs" />
+    <Compile Include="Records\Export\communication\SmileyPack.cs" />
     <Compile Include="Records\Export\documents\Comic.cs" />
     <Compile Include="Records\Export\documents\Document.cs" />
     <Compile Include="Records\Export\effects\Effect.cs" />
@@ -176,6 +178,7 @@
     <Compile Include="Records\Export\guild\RankName.cs" />
     <Compile Include="Records\Export\houses\House.cs" />
     <Compile Include="Records\Export\idols\Idol.cs" />
+    <Compile Include="Records\Export\idols\IdolsPresetIcon.cs" />
     <Compile Include="Records\Export\interactives\Interactive.cs" />
     <Compile Include="Records\Export\interactives\SkillName.cs" />
     <Compile Include="Records\Export\interactives\StealthBones.cs" />

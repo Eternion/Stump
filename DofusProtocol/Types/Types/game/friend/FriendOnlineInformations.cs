@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 00:35:39
+// Generated on 09/01/2015 10:48:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +24,14 @@ namespace Stump.DofusProtocol.Types
         public sbyte breed;
         public bool sex;
         public Types.BasicGuildInformations guildInfo;
-        public sbyte moodSmileyId;
+        public short moodSmileyId;
         public Types.PlayerStatus status;
         
         public FriendOnlineInformations()
         {
         }
         
-        public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, short lastConnection, int achievementPoints, int playerId, string playerName, byte level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, sbyte moodSmileyId, Types.PlayerStatus status)
+        public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, short lastConnection, int achievementPoints, int playerId, string playerName, byte level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, short moodSmileyId, Types.PlayerStatus status)
          : base(accountId, accountName, playerState, lastConnection, achievementPoints)
         {
             this.playerId = playerId;
@@ -55,7 +55,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
             guildInfo.Serialize(writer);
-            writer.WriteSByte(moodSmileyId);
+            writer.WriteVarShort(moodSmileyId);
             writer.WriteShort(status.TypeId);
             status.Serialize(writer);
         }
@@ -77,7 +77,9 @@ namespace Stump.DofusProtocol.Types
             sex = reader.ReadBoolean();
             guildInfo = new Types.BasicGuildInformations();
             guildInfo.Deserialize(reader);
-            moodSmileyId = reader.ReadSByte();
+            moodSmileyId = reader.ReadVarShort();
+            if (moodSmileyId < 0)
+                throw new Exception("Forbidden value on moodSmileyId = " + moodSmileyId + ", it doesn't respect the following condition : moodSmileyId < 0");
             status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
             status.Deserialize(reader);
         }

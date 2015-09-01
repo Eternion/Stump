@@ -1,6 +1,6 @@
 
 
-// Generated on 08/13/2015 17:13:44
+// Generated on 09/01/2015 11:16:31
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -18,6 +18,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public String gfxId;
         public Boolean forPlayers;
         public List<String> triggers;
+        public uint referenceId;
+        public uint categoryId;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -51,6 +53,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.triggers; }
             set { this.triggers = value; }
+        }
+        [D2OIgnore]
+        public uint ReferenceId
+        {
+            get { return this.referenceId; }
+            set { this.referenceId = value; }
+        }
+        [D2OIgnore]
+        public uint CategoryId
+        {
+            get { return this.categoryId; }
+            set { this.categoryId = value; }
         }
     }
 }

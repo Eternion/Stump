@@ -1,7 +1,7 @@
  
 
 
-// Generated on 08/13/2015 17:50:47
+// Generated on 09/01/2015 10:48:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,7 +22,7 @@ namespace DBSynchroniser.Records
         public uint stepId;
         public uint typeId;
         public int dialogId;
-        public List<uint> parameters;
+        public QuestObjectiveParameters parameters;
         public Point coords;
         public int mapId;
 
@@ -63,7 +63,7 @@ namespace DBSynchroniser.Records
 
         [D2OIgnore]
         [Ignore]
-        public List<uint> Parameters
+        public QuestObjectiveParameters Parameters
         {
             get { return parameters; }
             set
@@ -83,7 +83,7 @@ namespace DBSynchroniser.Records
             set
             {
                 m_parametersBin = value;
-                parameters = value == null ? null : value.ToObject<List<uint>>();
+                parameters = value == null ? null : value.ToObject<QuestObjectiveParameters>();
             }
         }
 
