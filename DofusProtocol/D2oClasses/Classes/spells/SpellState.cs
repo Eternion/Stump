@@ -1,6 +1,6 @@
 
 
-// Generated on 08/13/2015 17:13:55
+// Generated on 09/01/2015 11:16:35
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -19,6 +19,12 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean preventsSpellCast;
         public Boolean preventsFight;
         public Boolean isSilent;
+        public Boolean cantDealDamage;
+        public Boolean invulnerable;
+        public Boolean incurable;
+        public Boolean cantBeMoved;
+        public Boolean cantBePushed;
+        public Boolean cantSwitchPosition;
         public List<int> effectsIds;
         int IIndexedData.Id
         {
@@ -53,6 +59,42 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.isSilent; }
             set { this.isSilent = value; }
+        }
+        [D2OIgnore]
+        public Boolean CantDealDamage
+        {
+            get { return this.cantDealDamage; }
+            set { this.cantDealDamage = value; }
+        }
+        [D2OIgnore]
+        public Boolean Invulnerable
+        {
+            get { return this.invulnerable; }
+            set { this.invulnerable = value; }
+        }
+        [D2OIgnore]
+        public Boolean Incurable
+        {
+            get { return this.incurable; }
+            set { this.incurable = value; }
+        }
+        [D2OIgnore]
+        public Boolean CantBeMoved
+        {
+            get { return this.cantBeMoved; }
+            set { this.cantBeMoved = value; }
+        }
+        [D2OIgnore]
+        public Boolean CantBePushed
+        {
+            get { return this.cantBePushed; }
+            set { this.cantBePushed = value; }
+        }
+        [D2OIgnore]
+        public Boolean CantSwitchPosition
+        {
+            get { return this.cantSwitchPosition; }
+            set { this.cantSwitchPosition = value; }
         }
         [D2OIgnore]
         public List<int> EffectsIds

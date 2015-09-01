@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:25:14
+// Generated on 09/01/2015 10:48:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,9 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class ExchangeReplayMessage : Message
+    public class ExchangeCraftCountRequestMessage : Message
     {
-        public const uint Id = 6002;
+        public const uint Id = 6597;
         public override uint MessageId
         {
             get { return Id; }
@@ -20,11 +20,11 @@ namespace Stump.DofusProtocol.Messages
         
         public int count;
         
-        public ExchangeReplayMessage()
+        public ExchangeCraftCountRequestMessage()
         {
         }
         
-        public ExchangeReplayMessage(int count)
+        public ExchangeCraftCountRequestMessage(int count)
         {
             this.count = count;
         }

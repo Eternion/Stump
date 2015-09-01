@@ -25,21 +25,28 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public class SummonedBomb : FightActor, INamedActor
     {
-        [Variable] public static int BonusDamageStart = 40;
-        [Variable] public static int BonusDamageIncrease = 20;
-        [Variable] public static int BonusDamageIncreaseLimit = 3;
-        [Variable] public static int BombLimit = 3;
-        [Variable] public static int WallMinSize = 1;
-        [Variable] public static int WallMaxSize = 6;
-        [Variable] public static int ExplosionZone = 2;
+        [Variable]
+        public static int BonusDamageStart = 40;
+        [Variable]
+        public static int BonusDamageIncrease = 20;
+        [Variable]
+        public static int BonusDamageIncreaseLimit = 3;
+        [Variable]
+        public static int BombLimit = 3;
+        [Variable]
+        public static int WallMinSize = 1;
+        [Variable]
+        public static int WallMaxSize = 6;
+        [Variable]
+        public static int ExplosionZone = 2;
 
         private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>
         {
             {2, SpellIdEnum.MUR_DE_FEU},
             {3, SpellIdEnum.MUR_D_AIR},
             {4, SpellIdEnum.MUR_D_EAU}
-        };        
-        
+        };
+
         private static readonly Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
         {
             {2, Color.Red},
@@ -65,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             SpellBombTemplate = spellBombTemplate;
             m_stats = new StatsFields(this);
             m_stats.Initialize(monsterBombTemplate);
-            WallSpell = new Spell((int) wallsSpells[SpellBombTemplate.WallId], (byte) MonsterBombTemplate.GradeId);
+            WallSpell = new Spell((int)wallsSpells[SpellBombTemplate.WallId], (byte)MonsterBombTemplate.GradeId);
             m_color = wallsColors[SpellBombTemplate.WallId];
             AdjustStats();
 
@@ -96,9 +103,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void AdjustStats()
         {
-            m_stats.Health.Base = (short) (10 + (Summoner.Stats.Health.TotalMax / 3.9d));
+            m_stats.Health.Base = (short)(10 + (Summoner.Stats.Health.TotalMax / 3.9d));
         }
-        
+
         public override sealed int Id
         {
             get;
@@ -216,8 +223,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     break;
             }
 
-            return (int) Math.Floor(damage*
-                                    (100 + Summoner.Stats[stats].Total + Summoner.Stats[PlayerFields.DamageBonusPercent])/
+            return (int)Math.Floor(damage *
+                                    (100 + Summoner.Stats[stats].Total + Summoner.Stats[PlayerFields.DamageBonusPercent]) /
                                     100d + Summoner.Stats[PlayerFields.DamageBonus].Total);
         }
 
@@ -243,7 +250,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void Explode()
         {
             // check reaction
-            var bombs = new List<SummonedBomb> {this};
+            var bombs = new List<SummonedBomb> { this };
             foreach (var bomb in Summoner.Bombs.Where(bomb => !bombs.Contains(bomb)).Where(x => IsBoundWith(x) || IsInExplosionZone(x)))
             {
                 bombs.Add(bomb);
@@ -317,7 +324,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         protected override void OnPositionChanged(ObjectPosition position)
-        {        
+        {
             if (m_initialized && Position != null && Fight.State == FightState.Fighting)
                 CheckAndBuildWalls();
 
@@ -363,16 +370,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             // since there is only 3 bombs, it's 6 iterations so still cheap
             var bombs = Summoner.Bombs.ToArray();
             foreach (var bomb1 in bombs)
-                foreach(var bomb2 in bombs)
-            {
-                if (bomb1 == bomb2 || !bomb1.m_wallsBinding.All(x => x.Bomb1 != bomb2 && x.Bomb2 != bomb2) || !bomb1.IsBoundWith(bomb2))
-                    continue;
+                foreach (var bomb2 in bombs)
+                {
+                    if (bomb1 == bomb2 || !bomb1.m_wallsBinding.All(x => x.Bomb1 != bomb2 && x.Bomb2 != bomb2) || !bomb1.IsBoundWith(bomb2))
+                        continue;
 
-                var binding = new WallsBinding(bomb1, bomb2, m_color);
-                binding.AdjustWalls();
-                bomb1.AddWallsBinding(binding);
-                bomb2.AddWallsBinding(binding);
-            }
+                    var binding = new WallsBinding(bomb1, bomb2, m_color);
+                    binding.AdjustWalls();
+                    bomb1.AddWallsBinding(binding);
+                    bomb2.AddWallsBinding(binding);
+                }
 
             return true;
         }
@@ -387,7 +394,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             m_wallsBinding.Remove(obj);
         }
-        
+
         public override bool CanTackle(FightActor fighter)
         {
             return false;
@@ -405,13 +412,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            if (HasState((int) SpellStatesEnum.INDÉPLAÇABLE))
+            if (HasState((int)SpellStatesEnum.INDÉPLAÇABLE))
             {
                 var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.INDÉPLAÇABLE);
                 RemoveState(state);
 
                 Explode();
-            }      
+            }
 
             base.OnDead(killedBy, passTurn);
 
@@ -431,8 +438,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             return new GameFightMonsterInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
                 (sbyte)Team.Id, 0, IsAlive(), GetGameFightMinimalStats(), new short[0], (short)MonsterBombTemplate.MonsterId, (sbyte)MonsterBombTemplate.GradeId);
-        } 
-        
+        }
+
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
         {
             return new FightTeamMemberMonsterInformations(Id, MonsterBombTemplate.Template.Id, (sbyte)MonsterBombTemplate.GradeId);
@@ -446,29 +453,39 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Stats.Health.Base,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
                 Stats.Shield.TotalSafe,
-                (short) Stats.AP.Total,
-                (short) Stats.AP.TotalMax,
-                (short) Stats.MP.Total,
-                (short) Stats.MP.TotalMax,
+                (short)Stats.AP.Total,
+                (short)Stats.AP.TotalMax,
+                (short)Stats.MP.Total,
+                (short)Stats.MP.TotalMax,
                 Summoner.Id,
                 true,
-                (short) Stats[PlayerFields.NeutralResistPercent].Total,
-                (short) Stats[PlayerFields.EarthResistPercent].Total,
-                (short) Stats[PlayerFields.WaterResistPercent].Total,
-                (short) Stats[PlayerFields.AirResistPercent].Total,
-                (short) Stats[PlayerFields.FireResistPercent].Total,
-                (short) Stats[PlayerFields.NeutralElementReduction].Total,
-                (short) Stats[PlayerFields.EarthElementReduction].Total,
-                (short) Stats[PlayerFields.WaterElementReduction].Total,
-                (short) Stats[PlayerFields.AirElementReduction].Total,
-                (short) Stats[PlayerFields.FireElementReduction].Total,
-                (short) Stats[PlayerFields.PushDamageReduction].Total,
-                (short) Stats[PlayerFields.CriticalDamageReduction].Total,
-                (short) Stats[PlayerFields.DodgeAPProbability].Total,
-                (short) Stats[PlayerFields.DodgeMPProbability].Total,
-                (short) Stats[PlayerFields.TackleBlock].Total,
-                (short) Stats[PlayerFields.TackleEvade].Total,
-                (sbyte) (client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
+                (short)Stats[PlayerFields.NeutralResistPercent].Total,
+                (short)Stats[PlayerFields.EarthResistPercent].Total,
+                (short)Stats[PlayerFields.WaterResistPercent].Total,
+                (short)Stats[PlayerFields.AirResistPercent].Total,
+                (short)Stats[PlayerFields.FireResistPercent].Total,
+                (short)Stats[PlayerFields.NeutralElementReduction].Total,
+                (short)Stats[PlayerFields.EarthElementReduction].Total,
+                (short)Stats[PlayerFields.WaterElementReduction].Total,
+                (short)Stats[PlayerFields.AirElementReduction].Total,
+                (short)Stats[PlayerFields.FireElementReduction].Total,
+                (short)Stats[PlayerFields.CriticalDamageReduction].Total,
+                (short)Stats[PlayerFields.PushDamageReduction].Total,
+                (short)Stats[PlayerFields.PvpNeutralResistPercent].Total,
+                (short)Stats[PlayerFields.PvpEarthResistPercent].Total,
+                (short)Stats[PlayerFields.PvpWaterResistPercent].Total,
+                (short)Stats[PlayerFields.PvpAirResistPercent].Total,
+                (short)Stats[PlayerFields.PvpFireResistPercent].Total,
+                (short)Stats[PlayerFields.PvpNeutralElementReduction].Total,
+                (short)Stats[PlayerFields.PvpEarthElementReduction].Total,
+                (short)Stats[PlayerFields.PvpWaterElementReduction].Total,
+                (short)Stats[PlayerFields.PvpAirElementReduction].Total,
+                (short)Stats[PlayerFields.PvpFireElementReduction].Total,
+                (short)Stats[PlayerFields.DodgeAPProbability].Total,
+                (short)Stats[PlayerFields.DodgeMPProbability].Total,
+                (short)Stats[PlayerFields.TackleBlock].Total,
+                (short)Stats[PlayerFields.TackleEvade].Total,
+                (sbyte)(client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
                 );
         }
     }

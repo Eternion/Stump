@@ -1,7 +1,7 @@
  
 
 
-// Generated on 08/13/2015 17:50:47
+// Generated on 09/01/2015 10:48:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,7 +23,6 @@ namespace DBSynchroniser.Records
         public uint nameId;
         public List<uint> stepIds;
         public uint categoryId;
-        public Boolean isRepeatable;
         public uint repeatType;
         public uint repeatLimit;
         public Boolean isDungeonQuest;
@@ -87,13 +86,6 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public Boolean IsRepeatable
-        {
-            get { return isRepeatable; }
-            set { isRepeatable = value; }
-        }
-
-        [D2OIgnore]
         public uint RepeatType
         {
             get { return repeatType; }
@@ -143,7 +135,6 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
             StepIds = castedObj.stepIds;
             CategoryId = castedObj.categoryId;
-            IsRepeatable = castedObj.isRepeatable;
             RepeatType = castedObj.repeatType;
             RepeatLimit = castedObj.repeatLimit;
             IsDungeonQuest = castedObj.isDungeonQuest;
@@ -159,7 +150,6 @@ namespace DBSynchroniser.Records
             obj.nameId = NameId;
             obj.stepIds = StepIds;
             obj.categoryId = CategoryId;
-            obj.isRepeatable = IsRepeatable;
             obj.repeatType = RepeatType;
             obj.repeatLimit = RepeatLimit;
             obj.isDungeonQuest = IsDungeonQuest;

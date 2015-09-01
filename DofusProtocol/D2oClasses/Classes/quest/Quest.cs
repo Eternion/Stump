@@ -1,6 +1,6 @@
 
 
-// Generated on 08/13/2015 17:13:53
+// Generated on 09/01/2015 11:16:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -18,7 +18,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint nameId;
         public List<uint> stepIds;
         public uint categoryId;
-        public Boolean isRepeatable;
         public uint repeatType;
         public uint repeatLimit;
         public Boolean isDungeonQuest;
@@ -52,12 +51,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.categoryId; }
             set { this.categoryId = value; }
-        }
-        [D2OIgnore]
-        public Boolean IsRepeatable
-        {
-            get { return this.isRepeatable; }
-            set { this.isRepeatable = value; }
         }
         [D2OIgnore]
         public uint RepeatType

@@ -218,6 +218,8 @@
     <Compile Include="Classes\communication\Emoticon.cs" />
     <Compile Include="Classes\communication\InfoMessage.cs" />
     <Compile Include="Classes\communication\Smiley.cs" />
+    <Compile Include="Classes\communication\SmileyCategory.cs" />
+    <Compile Include="Classes\communication\SmileyPack.cs" />
     <Compile Include="Classes\documents\Comic.cs" />
     <Compile Include="Classes\documents\Document.cs" />
     <Compile Include="Classes\effects\Effect.cs" />
@@ -238,6 +240,7 @@
     <Compile Include="Classes\guild\RankName.cs" />
     <Compile Include="Classes\houses\House.cs" />
     <Compile Include="Classes\idols\Idol.cs" />
+    <Compile Include="Classes\idols\IdolsPresetIcon.cs" />
     <Compile Include="Classes\interactives\Interactive.cs" />
     <Compile Include="Classes\interactives\SkillName.cs" />
     <Compile Include="Classes\interactives\StealthBones.cs" />
@@ -281,6 +284,7 @@
     <Compile Include="Classes\items\criterion\ServerItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SexItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SkillItemCriterion.cs" />
+    <Compile Include="Classes\items\criterion\SmileyPackItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SoulStoneItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SpecializationItemCriterion.cs" />
     <Compile Include="Classes\items\criterion\SpellItemCriterion.cs" />
@@ -348,6 +352,7 @@
     <Compile Include="Classes\quest\objectives\QuestObjectiveFreeForm.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveGoToNpc.cs" />
     <Compile Include="Classes\quest\objectives\QuestObjectiveMultiFightMonster.cs" />
+    <Compile Include="Classes\quest\objectives\QuestObjectiveParameters.cs" />
     <Compile Include="Classes\quest\Quest.cs" />
     <Compile Include="Classes\quest\QuestCategory.cs" />
     <Compile Include="Classes\quest\QuestObjective.cs" />
@@ -445,6 +450,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
