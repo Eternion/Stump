@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Stump.Server.WorldServer.Game.Actors.Fight;
+﻿using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
@@ -38,8 +33,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
         {
             if (Caster)
                 return Required ? handler.Caster.HasState(State) : !handler.Caster.HasState(State);
-            else
-                return Required ? actor.HasState(State) : !actor.HasState(State);
+
+            return Required ? actor.HasState(State) : !actor.HasState(State);
         }
     }
 }
