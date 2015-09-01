@@ -10,7 +10,7 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("QuestObjectiveParameters", "com.ankamagames.dofus.datacenter.quest.objectives")]
     [Serializable]
-    public class QuestObjectiveParameters
+    public class QuestObjectiveParameters : QuestObjective
     {
         public uint numParams;
         public int parameter0;

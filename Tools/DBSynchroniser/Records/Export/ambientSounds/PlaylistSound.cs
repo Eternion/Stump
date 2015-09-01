@@ -18,19 +18,18 @@ namespace DBSynchroniser.Records
     public class PlaylistSoundRecord : ID2ORecord, ISaveIntercepter
     {
         public const String MODULE = "PlaylistSounds";
-        public String id;
+        public int id;
         public int volume;
         public int channel = 0;
 
         int ID2ORecord.Id
         {
-            get { return int.Parse(id); }
+            get { return id; }
         }
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
-        [NullString]
-        public String Id
+        public int Id
         {
             get { return id; }
             set { id = value; }
@@ -53,8 +52,8 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (PlaylistSound)obj;
-            
-            Id = castedObj.id;
+
+            Id = int.Parse(castedObj.id);
             Volume = castedObj.volume;
             Channel = castedObj.channel;
         }
@@ -62,7 +61,7 @@ namespace DBSynchroniser.Records
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (PlaylistSound)parent : new PlaylistSound();
-            obj.id = Id;
+            obj.id = Id.ToString();
             obj.volume = Volume;
             obj.channel = Channel;
             return obj;
