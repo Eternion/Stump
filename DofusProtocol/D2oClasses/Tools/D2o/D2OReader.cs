@@ -190,6 +190,9 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                 string classMembername = m_reader.ReadUTF();
                 string classPackagename = m_reader.ReadUTF();
 
+                if (classMembername == "QuestObjectiveParameters")
+                    return;
+
                 Type classType = FindType(classMembername);
 
                 int fieldscount = m_reader.ReadInt();
@@ -315,7 +318,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                     type.HasInterface(typeof (IDataObject))
                 select type;
 
-            return correspondantTypes.Single();
+            return correspondantTypes.FirstOrDefault();
         }
 
         private bool IsTypeDefined(Type type)
