@@ -34,6 +34,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             set;
         }
 
+        public override bool IsDisjonction
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override bool IsTargetValid(FightActor actor, SpellEffectHandler handler)
         {
             if (Caster)
