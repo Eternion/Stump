@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:24:53
+// Generated on 09/01/2015 10:48:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public LocalizedChatSmileyMessage(int entityId, sbyte smileyId, int accountId, short cellId)
+        public LocalizedChatSmileyMessage(int entityId, short smileyId, int accountId, short cellId)
          : base(entityId, smileyId, accountId)
         {
             this.cellId = cellId;

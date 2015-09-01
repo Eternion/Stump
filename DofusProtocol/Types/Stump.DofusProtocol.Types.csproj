@@ -412,6 +412,7 @@
     <Compile Include="Types\game\interactive\skill\SkillActionDescriptionCraft.cs" />
     <Compile Include="Types\game\interactive\skill\SkillActionDescriptionTimed.cs" />
     <Compile Include="Types\game\interactive\StatedElement.cs" />
+    <Compile Include="Types\game\inventory\preset\IdolsPreset.cs" />
     <Compile Include="Types\game\inventory\preset\Preset.cs" />
     <Compile Include="Types\game\inventory\preset\PresetItem.cs" />
     <Compile Include="Types\game\look\EntityLook.cs" />
@@ -438,6 +439,7 @@
     <Compile Include="Types\game\shortcut\Shortcut.cs" />
     <Compile Include="Types\game\shortcut\ShortcutEmote.cs" />
     <Compile Include="Types\game\shortcut\ShortcutObject.cs" />
+    <Compile Include="Types\game\shortcut\ShortcutObjectIdolsPreset.cs" />
     <Compile Include="Types\game\shortcut\ShortcutObjectItem.cs" />
     <Compile Include="Types\game\shortcut\ShortcutObjectPreset.cs" />
     <Compile Include="Types\game\shortcut\ShortcutSmiley.cs" />

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 08/13/2015 17:50:44
+// Generated on 09/01/2015 10:48:48
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,6 +58,8 @@ namespace DBSynchroniser.Records
         public uint favoriteSubAreasBonus;
         public int craftXpRatio;
         public Boolean needUseConfirm;
+        public List<List<double>> nuggetsBySubarea;
+        public List<uint> containerIds;
         public uint weight;
 
         int ID2ORecord.Id
@@ -372,6 +374,58 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [Ignore]
+        public List<List<double>> NuggetsBySubarea
+        {
+            get { return nuggetsBySubarea; }
+            set
+            {
+                nuggetsBySubarea = value;
+                m_nuggetsBySubareaBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_nuggetsBySubareaBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] NuggetsBySubareaBin
+        {
+            get { return m_nuggetsBySubareaBin; }
+            set
+            {
+                m_nuggetsBySubareaBin = value;
+                nuggetsBySubarea = value == null ? null : value.ToObject<List<List<double>>>();
+            }
+        }
+
+        [D2OIgnore]
+        [Ignore]
+        public List<uint> ContainerIds
+        {
+            get { return containerIds; }
+            set
+            {
+                containerIds = value;
+                m_containerIdsBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_containerIdsBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] ContainerIdsBin
+        {
+            get { return m_containerIdsBin; }
+            set
+            {
+                m_containerIdsBin = value;
+                containerIds = value == null ? null : value.ToObject<List<uint>>();
+            }
+        }
+
+        [D2OIgnore]
         public uint Weight
         {
             get { return weight; }
@@ -414,6 +468,8 @@ namespace DBSynchroniser.Records
             FavoriteSubAreasBonus = castedObj.favoriteSubAreasBonus;
             CraftXpRatio = castedObj.craftXpRatio;
             NeedUseConfirm = castedObj.needUseConfirm;
+            NuggetsBySubarea = castedObj.nuggetsBySubarea;
+            ContainerIds = castedObj.containerIds;
             Weight = castedObj.weight;
         }
         
@@ -452,6 +508,8 @@ namespace DBSynchroniser.Records
             obj.favoriteSubAreasBonus = FavoriteSubAreasBonus;
             obj.craftXpRatio = CraftXpRatio;
             obj.needUseConfirm = NeedUseConfirm;
+            obj.nuggetsBySubarea = NuggetsBySubarea;
+            obj.containerIds = ContainerIds;
             obj.weight = Weight;
             return obj;
         }
@@ -462,6 +520,8 @@ namespace DBSynchroniser.Records
             m_recipeIdsBin = recipeIds == null ? null : recipeIds.ToBinary();
             m_possibleEffectsBin = possibleEffects == null ? null : possibleEffects.ToBinary();
             m_favoriteSubAreasBin = favoriteSubAreas == null ? null : favoriteSubAreas.ToBinary();
+            m_nuggetsBySubareaBin = nuggetsBySubarea == null ? null : nuggetsBySubarea.ToBinary();
+            m_containerIdsBin = containerIds == null ? null : containerIds.ToBinary();
         
         }
     }

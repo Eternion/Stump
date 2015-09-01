@@ -315,7 +315,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.D2o
                     type.HasInterface(typeof (IDataObject))
                 select type;
 
-            return correspondantTypes.Single();
+            return correspondantTypes.FirstOrDefault();
         }
 
         private bool IsTypeDefined(Type type)

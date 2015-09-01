@@ -231,10 +231,11 @@ namespace Stump.Server.AuthServer.Managers
 
         public GameServerInformations GetServerInformation(AuthClient client, WorldServer world)
         {
-            return new GameServerInformations((short) world.Id, (sbyte) world.Status,
+            return new GameServerInformations((short) world.Id, 1, (sbyte) world.Status,
                                               (sbyte) world.Completion,
                                               world.ServerSelectable,
                                               client.Account.GetCharactersCountByWorld(world.Id),
+                                              5,
                                               DateTime.Now.GetUnixTimeStampLong());
         }
 

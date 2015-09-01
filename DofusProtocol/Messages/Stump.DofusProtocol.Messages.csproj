@@ -201,6 +201,7 @@
     <Compile Include="Messages\connection\IdentificationMessage.cs" />
     <Compile Include="Messages\connection\IdentificationSuccessMessage.cs" />
     <Compile Include="Messages\connection\IdentificationSuccessWithLoginTokenMessage.cs" />
+    <Compile Include="Messages\connection\register\AccountLinkRequiredMessage.cs" />
     <Compile Include="Messages\connection\register\NicknameAcceptedMessage.cs" />
     <Compile Include="Messages\connection\register\NicknameChoiceRequestMessage.cs" />
     <Compile Include="Messages\connection\register\NicknameRefusedMessage.cs" />
@@ -248,7 +249,6 @@
     <Compile Include="Messages\game\actions\fight\GameActionFightExchangePositionsMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightInvisibilityMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleDetectedMessage.cs" />
-    <Compile Include="Messages\game\actions\fight\GameActionFightInvisibleObstacleMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightKillMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightLifeAndShieldPointsLostMessage.cs" />
     <Compile Include="Messages\game\actions\fight\GameActionFightLifePointsGainMessage.cs" />
@@ -387,6 +387,7 @@
     <Compile Include="Messages\game\chat\ChatServerMessage.cs" />
     <Compile Include="Messages\game\chat\ChatServerWithObjectMessage.cs" />
     <Compile Include="Messages\game\chat\report\ChatMessageReportMessage.cs" />
+    <Compile Include="Messages\game\chat\smiley\ChatSmileyExtraPackListMessage.cs" />
     <Compile Include="Messages\game\chat\smiley\ChatSmileyMessage.cs" />
     <Compile Include="Messages\game\chat\smiley\ChatSmileyRequestMessage.cs" />
     <Compile Include="Messages\game\chat\smiley\LocalizedChatSmileyMessage.cs" />
@@ -569,6 +570,7 @@
     <Compile Include="Messages\game\context\roleplay\job\JobCrafterDirectorySettingsMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobDescriptionMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobExperienceMultiUpdateMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\job\JobExperienceOtherPlayerUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobExperienceUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobLevelUpMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\job\JobMultiCraftAvailableSkillsMessage.cs" />
@@ -857,6 +859,9 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidSearchOkMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBuyMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBuyOkMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftCountModifiedMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftCountRequestMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeCrafterJobLevelupMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftInformationObjectMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftPaymentModificationRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeCraftPaymentModifiedMessage.cs" />
@@ -868,7 +873,6 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeGuildTaxCollectorGetMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeHandleMountsStableMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeIsReadyMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeItemAutoCraftRemainingMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeItemAutoCraftStopedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeLeaveMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeMountFreeFromPaddockMessage.cs" />
@@ -900,8 +904,6 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangePlayerMultiCraftRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangePlayerRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeReadyMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeReplayCountModifiedMessage.cs" />
-    <Compile Include="Messages\game\inventory\exchanges\ExchangeReplayMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeReplayStopMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeReplyTaxVendorMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeRequestedMessage.cs" />
@@ -936,6 +938,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkMulticraftCustomerMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkNpcShopMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkNpcTradeMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkRecycleTradeMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStartOkRunesTradeMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeStoppedMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeTypesExchangerDescriptionForUserMessage.cs" />
@@ -944,6 +947,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeWeightMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ItemNoMoreAvailableMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\JobBookSubscribeRequestMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\RecycleResultMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\UpdateMountBoostMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ExchangeKamaModifiedMessage.cs" />
     <Compile Include="Messages\game\inventory\items\ExchangeMultiCraftCrafterCanUseHisRessourcesMessage.cs" />
@@ -1000,6 +1004,11 @@
     <Compile Include="Messages\game\inventory\ObjectAveragePricesErrorMessage.cs" />
     <Compile Include="Messages\game\inventory\ObjectAveragePricesGetMessage.cs" />
     <Compile Include="Messages\game\inventory\ObjectAveragePricesMessage.cs" />
+    <Compile Include="Messages\game\inventory\preset\IdolsPresetDeleteMessage.cs" />
+    <Compile Include="Messages\game\inventory\preset\IdolsPresetDeleteResultMessage.cs" />
+    <Compile Include="Messages\game\inventory\preset\IdolsPresetSaveMessage.cs" />
+    <Compile Include="Messages\game\inventory\preset\IdolsPresetSaveResultMessage.cs" />
+    <Compile Include="Messages\game\inventory\preset\IdolsPresetUpdateMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetDeleteMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetDeleteResultMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetItemUpdateErrorMessage.cs" />
@@ -1118,6 +1127,7 @@
     <Compile Include="Messages\web\krosmaster\KrosmasterPlayingStatusMessage.cs" />
     <Compile Include="Messages\web\krosmaster\KrosmasterTransferMessage.cs" />
     <Compile Include="Messages\web\krosmaster\KrosmasterTransferRequestMessage.cs" />
+    <Compile Include="Messages\wtf\ClientYouAreDrunkMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
