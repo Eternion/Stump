@@ -198,11 +198,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             }
             else
             {
-                if (!character.Inventory.RemoveItem(food) || !character.Inventory.RemoveItem(mimisymbic))
-                {
-                    SendMimicryObjectErrorMessage(client, MimicryErrorEnum.IMPOSSIBLE_ACTION);
-                    return;
-                }
+                character.Inventory.UnStackItem(food, 1);
+                character.Inventory.UnStackItem(mimisymbic, 1);
 
                 host.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
                 host.Invalidate();
