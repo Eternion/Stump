@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:25:14
+// Generated on 09/01/2015 10:48:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +10,32 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class ExchangeReplayCountModifiedMessage : Message
+    public class ClientYouAreDrunkMessage : DebugInClientMessage
     {
-        public const uint Id = 6023;
+        public const uint Id = 6594;
         public override uint MessageId
         {
             get { return Id; }
         }
         
-        public int count;
         
-        public ExchangeReplayCountModifiedMessage()
+        public ClientYouAreDrunkMessage()
         {
         }
         
-        public ExchangeReplayCountModifiedMessage(int count)
+        public ClientYouAreDrunkMessage(sbyte level, string message)
+         : base(level, message)
         {
-            this.count = count;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(count);
+            base.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            count = reader.ReadVarInt();
+            base.Deserialize(reader);
         }
         
     }

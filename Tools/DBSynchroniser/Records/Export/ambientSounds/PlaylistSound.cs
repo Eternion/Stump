@@ -1,7 +1,7 @@
  
 
 
-// Generated on 08/13/2015 17:50:43
+// Generated on 09/01/2015 10:48:46
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,19 +18,19 @@ namespace DBSynchroniser.Records
     public class PlaylistSoundRecord : ID2ORecord, ISaveIntercepter
     {
         public const String MODULE = "PlaylistSounds";
-        public int id;
+        public String id;
         public int volume;
         public int channel = 0;
 
         int ID2ORecord.Id
         {
-            get { return id; }
+            get { return int.Parse(id); }
         }
-
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
-        public int Id
+        [NullString]
+        public String Id
         {
             get { return id; }
             set { id = value; }
@@ -54,7 +54,7 @@ namespace DBSynchroniser.Records
         {
             var castedObj = (PlaylistSound)obj;
             
-            Id = int.Parse(castedObj.id);
+            Id = castedObj.id;
             Volume = castedObj.volume;
             Channel = castedObj.channel;
         }
@@ -62,7 +62,7 @@ namespace DBSynchroniser.Records
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (PlaylistSound)parent : new PlaylistSound();
-            obj.id = Id.ToString();
+            obj.id = Id;
             obj.volume = Volume;
             obj.channel = Channel;
             return obj;

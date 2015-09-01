@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 00:35:33
+// Generated on 09/01/2015 10:48:32
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,33 +18,39 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short id;
+        public sbyte type;
         public sbyte status;
         public sbyte completion;
         public bool isSelectable;
         public sbyte charactersCount;
+        public sbyte charactersSlots;
         public double date;
         
         public GameServerInformations()
         {
         }
         
-        public GameServerInformations(short id, sbyte status, sbyte completion, bool isSelectable, sbyte charactersCount, double date)
+        public GameServerInformations(short id, sbyte type, sbyte status, sbyte completion, bool isSelectable, sbyte charactersCount, sbyte charactersSlots, double date)
         {
             this.id = id;
+            this.type = type;
             this.status = status;
             this.completion = completion;
             this.isSelectable = isSelectable;
             this.charactersCount = charactersCount;
+            this.charactersSlots = charactersSlots;
             this.date = date;
         }
         
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteVarShort(id);
+            writer.WriteSByte(type);
             writer.WriteSByte(status);
             writer.WriteSByte(completion);
             writer.WriteBoolean(isSelectable);
             writer.WriteSByte(charactersCount);
+            writer.WriteSByte(charactersSlots);
             writer.WriteDouble(date);
         }
         
@@ -53,6 +59,7 @@ namespace Stump.DofusProtocol.Types
             id = reader.ReadVarShort();
             if (id < 0)
                 throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
+            type = reader.ReadSByte();
             status = reader.ReadSByte();
             if (status < 0)
                 throw new Exception("Forbidden value on status = " + status + ", it doesn't respect the following condition : status < 0");
@@ -63,6 +70,9 @@ namespace Stump.DofusProtocol.Types
             charactersCount = reader.ReadSByte();
             if (charactersCount < 0)
                 throw new Exception("Forbidden value on charactersCount = " + charactersCount + ", it doesn't respect the following condition : charactersCount < 0");
+            charactersSlots = reader.ReadSByte();
+            if (charactersSlots < 0)
+                throw new Exception("Forbidden value on charactersSlots = " + charactersSlots + ", it doesn't respect the following condition : charactersSlots < 0");
             date = reader.ReadDouble();
             if (date < -9.007199254740992E15 || date > 9.007199254740992E15)
                 throw new Exception("Forbidden value on date = " + date + ", it doesn't respect the following condition : date < -9.007199254740992E15 || date > 9.007199254740992E15");

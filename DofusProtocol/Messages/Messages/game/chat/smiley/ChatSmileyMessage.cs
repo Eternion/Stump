@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:24:53
+// Generated on 09/01/2015 10:48:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int entityId;
-        public sbyte smileyId;
+        public short smileyId;
         public int accountId;
         
         public ChatSmileyMessage()
         {
         }
         
-        public ChatSmileyMessage(int entityId, sbyte smileyId, int accountId)
+        public ChatSmileyMessage(int entityId, short smileyId, int accountId)
         {
             this.entityId = entityId;
             this.smileyId = smileyId;
@@ -36,14 +36,14 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(entityId);
-            writer.WriteSByte(smileyId);
+            writer.WriteVarShort(smileyId);
             writer.WriteInt(accountId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             entityId = reader.ReadInt();
-            smileyId = reader.ReadSByte();
+            smileyId = reader.ReadVarShort();
             if (smileyId < 0)
                 throw new Exception("Forbidden value on smileyId = " + smileyId + ", it doesn't respect the following condition : smileyId < 0");
             accountId = reader.ReadInt();
