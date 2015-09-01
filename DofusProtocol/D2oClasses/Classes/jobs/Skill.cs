@@ -1,6 +1,6 @@
 
 
-// Generated on 08/13/2015 17:13:51
+// Generated on 09/01/2015 11:16:33
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -23,7 +23,6 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<int> craftableItemIds;
         public int interactiveId;
         public String useAnimation;
-        public Boolean isRepair;
         public int cursor;
         public int elementActionId;
         public Boolean availableInHouse;
@@ -86,12 +85,6 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.useAnimation; }
             set { this.useAnimation = value; }
-        }
-        [D2OIgnore]
-        public Boolean IsRepair
-        {
-            get { return this.isRepair; }
-            set { this.isRepair = value; }
         }
         [D2OIgnore]
         public int Cursor

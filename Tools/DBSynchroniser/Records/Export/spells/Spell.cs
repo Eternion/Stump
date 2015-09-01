@@ -1,7 +1,7 @@
  
 
 
-// Generated on 08/13/2015 17:50:47
+// Generated on 09/01/2015 10:48:50
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,6 +24,7 @@ namespace DBSynchroniser.Records
         [I18NField]
         public uint descriptionId;
         public uint typeId;
+        public uint order;
         public String scriptParams;
         public String scriptParamsCritical;
         public int scriptId;
@@ -68,6 +69,13 @@ namespace DBSynchroniser.Records
         {
             get { return typeId; }
             set { typeId = value; }
+        }
+
+        [D2OIgnore]
+        public uint Order
+        {
+            get { return order; }
+            set { order = value; }
         }
 
         [D2OIgnore]
@@ -155,6 +163,7 @@ namespace DBSynchroniser.Records
             NameId = castedObj.nameId;
             DescriptionId = castedObj.descriptionId;
             TypeId = castedObj.typeId;
+            Order = castedObj.order;
             ScriptParams = castedObj.scriptParams;
             ScriptParamsCritical = castedObj.scriptParamsCritical;
             ScriptId = castedObj.scriptId;
@@ -172,6 +181,7 @@ namespace DBSynchroniser.Records
             obj.nameId = NameId;
             obj.descriptionId = DescriptionId;
             obj.typeId = TypeId;
+            obj.order = Order;
             obj.scriptParams = ScriptParams;
             obj.scriptParamsCritical = ScriptParamsCritical;
             obj.scriptId = ScriptId;
