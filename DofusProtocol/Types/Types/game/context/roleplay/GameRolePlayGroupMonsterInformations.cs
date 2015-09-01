@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 00:35:36
+// Generated on 09/01/2015 10:48:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,8 @@ namespace Stump.DofusProtocol.Types
         public bool hasHardcoreDrop;
         public bool hasAVARewardToken;
         public Types.GroupMonsterStaticInformations staticInfos;
-        public short ageBonus;
+        public double creationTime;
+        public int ageBonusRate;
         public sbyte lootShare;
         public sbyte alignmentSide;
         
@@ -29,14 +30,15 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameRolePlayGroupMonsterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, bool keyRingBonus, bool hasHardcoreDrop, bool hasAVARewardToken, Types.GroupMonsterStaticInformations staticInfos, short ageBonus, sbyte lootShare, sbyte alignmentSide)
+        public GameRolePlayGroupMonsterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, bool keyRingBonus, bool hasHardcoreDrop, bool hasAVARewardToken, Types.GroupMonsterStaticInformations staticInfos, double creationTime, int ageBonusRate, sbyte lootShare, sbyte alignmentSide)
          : base(contextualId, look, disposition)
         {
             this.keyRingBonus = keyRingBonus;
             this.hasHardcoreDrop = hasHardcoreDrop;
             this.hasAVARewardToken = hasAVARewardToken;
             this.staticInfos = staticInfos;
-            this.ageBonus = ageBonus;
+            this.creationTime = creationTime;
+            this.ageBonusRate = ageBonusRate;
             this.lootShare = lootShare;
             this.alignmentSide = alignmentSide;
         }
@@ -51,7 +53,8 @@ namespace Stump.DofusProtocol.Types
             writer.WriteByte(flag1);
             writer.WriteShort(staticInfos.TypeId);
             staticInfos.Serialize(writer);
-            writer.WriteShort(ageBonus);
+            writer.WriteDouble(creationTime);
+            writer.WriteInt(ageBonusRate);
             writer.WriteSByte(lootShare);
             writer.WriteSByte(alignmentSide);
         }
@@ -65,9 +68,12 @@ namespace Stump.DofusProtocol.Types
             hasAVARewardToken = BooleanByteWrapper.GetFlag(flag1, 2);
             staticInfos = Types.ProtocolTypeManager.GetInstance<Types.GroupMonsterStaticInformations>(reader.ReadShort());
             staticInfos.Deserialize(reader);
-            ageBonus = reader.ReadShort();
-            if (ageBonus < -1 || ageBonus > 1000)
-                throw new Exception("Forbidden value on ageBonus = " + ageBonus + ", it doesn't respect the following condition : ageBonus < -1 || ageBonus > 1000");
+            creationTime = reader.ReadDouble();
+            if (creationTime < 0 || creationTime > 9.007199254740992E15)
+                throw new Exception("Forbidden value on creationTime = " + creationTime + ", it doesn't respect the following condition : creationTime < 0 || creationTime > 9.007199254740992E15");
+            ageBonusRate = reader.ReadInt();
+            if (ageBonusRate < 0)
+                throw new Exception("Forbidden value on ageBonusRate = " + ageBonusRate + ", it doesn't respect the following condition : ageBonusRate < 0");
             lootShare = reader.ReadSByte();
             if (lootShare < -1 || lootShare > 8)
                 throw new Exception("Forbidden value on lootShare = " + lootShare + ", it doesn't respect the following condition : lootShare < -1 || lootShare > 8");

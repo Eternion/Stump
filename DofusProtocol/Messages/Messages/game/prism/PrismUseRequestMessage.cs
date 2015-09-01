@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:25:19
+// Generated on 09/01/2015 10:48:28
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,18 +18,27 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public sbyte moduleToUse;
         
         public PrismUseRequestMessage()
         {
         }
         
+        public PrismUseRequestMessage(sbyte moduleToUse)
+        {
+            this.moduleToUse = moduleToUse;
+        }
         
         public override void Serialize(IDataWriter writer)
         {
+            writer.WriteSByte(moduleToUse);
         }
         
         public override void Deserialize(IDataReader reader)
         {
+            moduleToUse = reader.ReadSByte();
+            if (moduleToUse < 0)
+                throw new Exception("Forbidden value on moduleToUse = " + moduleToUse + ", it doesn't respect the following condition : moduleToUse < 0");
         }
         
     }

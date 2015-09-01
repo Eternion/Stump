@@ -1,7 +1,7 @@
  
 
 
-// Generated on 08/13/2015 17:50:45
+// Generated on 09/01/2015 10:48:49
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,7 +28,6 @@ namespace DBSynchroniser.Records
         public List<int> craftableItemIds;
         public int interactiveId;
         public String useAnimation;
-        public Boolean isRepair;
         public int cursor;
         public int elementActionId;
         public Boolean availableInHouse;
@@ -146,13 +145,6 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public Boolean IsRepair
-        {
-            get { return isRepair; }
-            set { isRepair = value; }
-        }
-
-        [D2OIgnore]
         public int Cursor
         {
             get { return cursor; }
@@ -200,7 +192,6 @@ namespace DBSynchroniser.Records
             CraftableItemIds = castedObj.craftableItemIds;
             InteractiveId = castedObj.interactiveId;
             UseAnimation = castedObj.useAnimation;
-            IsRepair = castedObj.isRepair;
             Cursor = castedObj.cursor;
             ElementActionId = castedObj.elementActionId;
             AvailableInHouse = castedObj.availableInHouse;
@@ -220,7 +211,6 @@ namespace DBSynchroniser.Records
             obj.craftableItemIds = CraftableItemIds;
             obj.interactiveId = InteractiveId;
             obj.useAnimation = UseAnimation;
-            obj.isRepair = IsRepair;
             obj.cursor = Cursor;
             obj.elementActionId = ElementActionId;
             obj.availableInHouse = AvailableInHouse;

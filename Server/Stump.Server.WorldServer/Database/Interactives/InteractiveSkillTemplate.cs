@@ -108,12 +108,6 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set;
         }
 
-        public Boolean IsRepair
-        {
-            get;
-            set;
-        }
-
         public int Cursor
         {
             get;
@@ -165,7 +159,6 @@ namespace Stump.Server.WorldServer.Database.Interactives
             CraftableItemIds = skill.craftableItemIds.ToArray();
             InteractiveId = skill.interactiveId;
             UseAnimation = skill.useAnimation;
-            IsRepair = skill.isRepair;
             Cursor = skill.cursor;
             ElementActionId = skill.elementActionId;
             AvailableInHouse = skill.availableInHouse;

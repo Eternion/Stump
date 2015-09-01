@@ -1,6 +1,6 @@
 
 
-// Generated on 08/13/2015 17:13:53
+// Generated on 09/01/2015 11:16:34
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint stepId;
         public uint typeId;
         public int dialogId;
-        public List<uint> parameters;
+        public QuestObjectiveParameters parameters;
         public Point coords;
         public int mapId;
         int IIndexedData.Id
@@ -49,7 +49,7 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.dialogId = value; }
         }
         [D2OIgnore]
-        public List<uint> Parameters
+        public QuestObjectiveParameters Parameters
         {
             get { return this.parameters; }
             set { this.parameters = value; }
