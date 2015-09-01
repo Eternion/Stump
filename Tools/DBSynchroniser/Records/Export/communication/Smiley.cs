@@ -1,7 +1,7 @@
  
 
 
-// Generated on 08/13/2015 17:50:43
+// Generated on 09/01/2015 10:48:47
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +23,8 @@ namespace DBSynchroniser.Records
         public String gfxId;
         public Boolean forPlayers;
         public List<String> triggers;
+        public uint referenceId;
+        public uint categoryId;
 
         int ID2ORecord.Id
         {
@@ -86,6 +88,20 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        public uint ReferenceId
+        {
+            get { return referenceId; }
+            set { referenceId = value; }
+        }
+
+        [D2OIgnore]
+        public uint CategoryId
+        {
+            get { return categoryId; }
+            set { categoryId = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Smiley)obj;
@@ -95,6 +111,8 @@ namespace DBSynchroniser.Records
             GfxId = castedObj.gfxId;
             ForPlayers = castedObj.forPlayers;
             Triggers = castedObj.triggers;
+            ReferenceId = castedObj.referenceId;
+            CategoryId = castedObj.categoryId;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -105,6 +123,8 @@ namespace DBSynchroniser.Records
             obj.gfxId = GfxId;
             obj.forPlayers = ForPlayers;
             obj.triggers = Triggers;
+            obj.referenceId = ReferenceId;
+            obj.categoryId = CategoryId;
             return obj;
         }
         

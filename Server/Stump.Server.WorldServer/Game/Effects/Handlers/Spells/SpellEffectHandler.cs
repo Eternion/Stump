@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
@@ -115,7 +116,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             }
         }
 
-        public SpellTargetType Targets
+        public TargetCriterion[] Targets
         {
             get;
             set;
@@ -139,88 +140,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsValidTarget(FightActor actor)
         {
-            if (Targets == SpellTargetType.NONE)
-                // return false; note : wtf, why is there spells with Targets = NONE ?
-                return true;
-
-            if (Targets == SpellTargetType.ALL)
-                return true;
-
-            if (Caster == actor && Targets.HasFlag(SpellTargetType.SELF))
-                return true;
-
-            if (Targets.HasFlag(SpellTargetType.ONLY_SELF) && actor != Caster)
-                return false;
-
-            if (Caster.IsFriendlyWith(actor) && Caster != actor)
-            {
-                if ((Targets.HasFlag(SpellTargetType.ALLY_1) || Targets.HasFlag(SpellTargetType.ALLY_2))
-                    && !(actor is SummonedFighter)
-                    && !(actor is SummonedBomb)
-                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                    return true;
-
-                if (Targets.HasFlag(SpellTargetType.ALLY_SUMMONER)
-                    && Caster is SummonedFighter
-                    && ((SummonedFighter) Caster).Summoner == actor
-                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                    return true;
-
-                if ((Targets.HasFlag(SpellTargetType.ALLY_SUMMONS) || Targets.HasFlag(SpellTargetType.ALLY_STATIC_SUMMONS))
-                    && actor is SummonedFighter
-                    && !(actor is SummonedTurret)
-                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                    return true;
-
-                if (Targets.HasFlag(SpellTargetType.ALLY_BOMBS)
-                    && actor is SummonedBomb
-                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                    return true;
-
-                if (Targets.HasFlag(SpellTargetType.ALLY_TURRETS)
-                    && actor is SummonedTurret
-                    && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                    return true;
-
-                if (Targets.HasFlag(SpellTargetType.ALLY_TELEFRAG)
-                    && (actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                    return true;
-            }
-
-            if (!Caster.IsEnnemyWith(actor))
-                return false;
-
-            if ((Targets.HasFlag(SpellTargetType.ENEMY_1) || Targets.HasFlag(SpellTargetType.ENEMY_2))
-                && !(actor is SummonedFighter)
-                && !(actor is SummonedBomb)
-                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                return true;
-
-            if (Targets.HasFlag(SpellTargetType.ENEMY_SUMMONER)
-                && Caster is SummonedFighter && ((SummonedFighter)Caster).Summoner == actor
-                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                return true;
-
-            if ((Targets.HasFlag(SpellTargetType.ENEMY_SUMMONS) || Targets.HasFlag(SpellTargetType.ENEMY_STATIC_SUMMONS))
-                && actor is SummonedFighter
-                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                return true;
-
-            if (Targets.HasFlag(SpellTargetType.ENEMY_BOMBS)
-                && actor is SummonedBomb
-                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                return true;
-
-            if (Targets.HasFlag(SpellTargetType.ENEMY_TURRETS)
-                && actor is SummonedTurret
-                && !(actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                return true;
-
-            if (Targets.HasFlag(SpellTargetType.ENEMY_TELEFRAG)
-                && (actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_251) || actor.HasState((int)SpellStatesEnum.TÉLÉFRAG_244)))
-                return true;
-
-            return false;
+            return Effect.Targets.All(x => x.IsTargetValid(actor, this));
         }
 
         public void RefreshZone()
@@ -233,10 +153,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
-                return new FightActor[0];
+            /*if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
+                return new FightActor[0];*/
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
+            return Effect.Targets.Any(x => x is TargetTypeCriterion && (x as TargetTypeCriterion).TargetType == SpellTargetType.SELF_ONLY) ?
+                new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
@@ -244,13 +165,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
-                return new FightActor[0];
+            /*if (Effect.Targets.HasFlag(SpellTargetType.DISABLED))
+                return new FightActor[0];*/
 
-            if (Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) && predicate(Caster))
+            if (Effect.Targets.Any(x => x is TargetTypeCriterion && (x as TargetTypeCriterion).TargetType == SpellTargetType.SELF_ONLY) && predicate(Caster))
                 return new[] {Caster};
 
-            return Effect.Targets.HasFlag(SpellTargetType.ONLY_SELF) ? new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry) && !entry.IsCarried()).ToArray();
+            return Effect.Targets.Any(x => x is TargetTypeCriterion && (x as TargetTypeCriterion).TargetType == SpellTargetType.SELF_ONLY) ? 
+                new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry) && !entry.IsCarried()).ToArray();
         }
 
         

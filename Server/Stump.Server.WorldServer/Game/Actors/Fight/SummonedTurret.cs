@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     break;
             }
 
-            var coef = baseCoef + (0.02*(m_spell.CurrentLevel - 1));
+            var coef = baseCoef + (0.02 * (m_spell.CurrentLevel - 1));
             m_stats.Health.Base += (int)(((Summoner.Level - 1) * 5 + 55) * coef) + (int)((Summoner.MaxLifePoints) * coef);
 
             m_stats.Intelligence.Base = (short)(Summoner.Stats.Intelligence.Base * (1 + (Summoner.Level / 100d)));
@@ -92,11 +92,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var state = ((StateBuff)buff).State;
 
-            if ((state.Id == (int) SpellStatesEnum.FEU || state.Id == (int) SpellStatesEnum.EAU
-                 || state.Id == (int) SpellStatesEnum.TERRE) && Monster.Template.Id != 3287)
+            if ((state.Id == (int)SpellStatesEnum.FEU || state.Id == (int)SpellStatesEnum.EAU
+                 || state.Id == (int)SpellStatesEnum.TERRE) && Monster.Template.Id != 3287)
                 return false;
 
-            if (state.Id == (int) SpellStatesEnum.MAGNÉTOR && Monster.Template.Id != 3289)
+            if (state.Id == (int)SpellStatesEnum.MAGNÉTOR && Monster.Template.Id != 3289)
                 return false;
 
             return true;
@@ -185,8 +185,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.WaterElementReduction].Total,
                 (short)Stats[PlayerFields.AirElementReduction].Total,
                 (short)Stats[PlayerFields.FireElementReduction].Total,
-                (short)Stats[PlayerFields.PushDamageReduction].Total,
                 (short)Stats[PlayerFields.CriticalDamageReduction].Total,
+                (short)Stats[PlayerFields.PushDamageReduction].Total,
+                (short)Stats[PlayerFields.PvpNeutralResistPercent].Total,
+                (short)Stats[PlayerFields.PvpEarthResistPercent].Total,
+                (short)Stats[PlayerFields.PvpWaterResistPercent].Total,
+                (short)Stats[PlayerFields.PvpAirResistPercent].Total,
+                (short)Stats[PlayerFields.PvpFireResistPercent].Total,
+                (short)Stats[PlayerFields.PvpNeutralElementReduction].Total,
+                (short)Stats[PlayerFields.PvpEarthElementReduction].Total,
+                (short)Stats[PlayerFields.PvpWaterElementReduction].Total,
+                (short)Stats[PlayerFields.PvpAirElementReduction].Total,
+                (short)Stats[PlayerFields.PvpFireElementReduction].Total,
                 (short)Stats[PlayerFields.DodgeAPProbability].Total,
                 (short)Stats[PlayerFields.DodgeMPProbability].Total,
                 (short)Stats[PlayerFields.TackleBlock].Total,

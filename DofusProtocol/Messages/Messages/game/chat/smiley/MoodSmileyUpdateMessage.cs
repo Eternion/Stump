@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:24:53
+// Generated on 09/01/2015 10:48:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public int accountId;
         public int playerId;
-        public sbyte smileyId;
+        public short smileyId;
         
         public MoodSmileyUpdateMessage()
         {
         }
         
-        public MoodSmileyUpdateMessage(int accountId, int playerId, sbyte smileyId)
+        public MoodSmileyUpdateMessage(int accountId, int playerId, short smileyId)
         {
             this.accountId = accountId;
             this.playerId = playerId;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteInt(accountId);
             writer.WriteVarInt(playerId);
-            writer.WriteSByte(smileyId);
+            writer.WriteVarShort(smileyId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,7 +48,9 @@ namespace Stump.DofusProtocol.Messages
             playerId = reader.ReadVarInt();
             if (playerId < 0)
                 throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            smileyId = reader.ReadSByte();
+            smileyId = reader.ReadVarShort();
+            if (smileyId < 0)
+                throw new Exception("Forbidden value on smileyId = " + smileyId + ", it doesn't respect the following condition : smileyId < 0");
         }
         
     }

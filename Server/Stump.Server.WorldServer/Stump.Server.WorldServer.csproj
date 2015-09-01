@@ -366,6 +366,12 @@
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerGlyphs.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\LifeCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\MonsterCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\StateCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\TargetCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\TargetTypeCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\UnknownCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />

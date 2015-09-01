@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:24:43
+// Generated on 09/01/2015 10:47:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Messages
             this.salt = salt;
             this.key = key;
         }
-        
+
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteUTF(salt);
@@ -39,12 +39,11 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteVarInt(key.Count());
             foreach (var entry in key)
             {
-                 writer.WriteSByte(entry);
-                 key_count++;
+                writer.WriteSByte(entry);
+                key_count++;
             }
-
         }
-        
+
         public override void Deserialize(IDataReader reader)
         {
             salt = reader.ReadUTF();
