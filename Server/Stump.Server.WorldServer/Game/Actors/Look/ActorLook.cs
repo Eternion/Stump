@@ -362,7 +362,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             }
 
             var subEntities = new List<SubActorLook>();
-            while (cursorPos < str.Length)
+            while (cursorPos < str.Length && (str.Length - cursorPos) >= 3)
             {
                 var atSeparatorIndex = str.IndexOf('@', cursorPos, 3); // max size of a byte = 255, so 3 characters
                 var equalsSeparatorIndex = str.IndexOf('=', atSeparatorIndex + 1, 3); // max size of a byte = 255, so 3 characters
