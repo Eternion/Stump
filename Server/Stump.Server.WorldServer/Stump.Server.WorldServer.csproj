@@ -366,6 +366,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerGlyphs.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\CarriedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\LifeCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\MonsterCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\StateCriterion.cs" />
