@@ -1,6 +1,6 @@
 
 
-// Generated on 08/13/2015 17:13:46
+// Generated on 09/01/2015 11:16:32
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -53,6 +53,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public uint favoriteSubAreasBonus;
         public int craftXpRatio;
         public Boolean needUseConfirm;
+        public List<List<double>> nuggetsBySubarea;
+        public List<uint> containerIds;
         public uint weight;
         int IIndexedData.Id
         {
@@ -249,6 +251,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.needUseConfirm; }
             set { this.needUseConfirm = value; }
+        }
+        [D2OIgnore]
+        public List<List<double>> NuggetsBySubarea
+        {
+            get { return this.nuggetsBySubarea; }
+            set { this.nuggetsBySubarea = value; }
+        }
+        [D2OIgnore]
+        public List<uint> ContainerIds
+        {
+            get { return this.containerIds; }
+            set { this.containerIds = value; }
         }
         [D2OIgnore]
         public uint Weight

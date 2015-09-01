@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 00:35:36
+// Generated on 09/01/2015 10:48:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +40,16 @@ namespace Stump.DofusProtocol.Types
         public short fireElementReduction;
         public short criticalDamageFixedResist;
         public short pushDamageFixedResist;
+        public short pvpNeutralElementResistPercent;
+        public short pvpEarthElementResistPercent;
+        public short pvpWaterElementResistPercent;
+        public short pvpAirElementResistPercent;
+        public short pvpFireElementResistPercent;
+        public short pvpNeutralElementReduction;
+        public short pvpEarthElementReduction;
+        public short pvpWaterElementReduction;
+        public short pvpAirElementReduction;
+        public short pvpFireElementReduction;
         public short dodgePALostProbability;
         public short dodgePMLostProbability;
         public short tackleBlock;
@@ -50,7 +60,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightMinimalStats(int lifePoints, int maxLifePoints, int baseMaxLifePoints, int permanentDamagePercent, int shieldPoints, short actionPoints, short maxActionPoints, short movementPoints, short maxMovementPoints, int summoner, bool summoned, short neutralElementResistPercent, short earthElementResistPercent, short waterElementResistPercent, short airElementResistPercent, short fireElementResistPercent, short neutralElementReduction, short earthElementReduction, short waterElementReduction, short airElementReduction, short fireElementReduction, short criticalDamageFixedResist, short pushDamageFixedResist, short dodgePALostProbability, short dodgePMLostProbability, short tackleBlock, short tackleEvade, sbyte invisibilityState)
+        public GameFightMinimalStats(int lifePoints, int maxLifePoints, int baseMaxLifePoints, int permanentDamagePercent, int shieldPoints, short actionPoints, short maxActionPoints, short movementPoints, short maxMovementPoints, int summoner, bool summoned, short neutralElementResistPercent, short earthElementResistPercent, short waterElementResistPercent, short airElementResistPercent, short fireElementResistPercent, short neutralElementReduction, short earthElementReduction, short waterElementReduction, short airElementReduction, short fireElementReduction, short criticalDamageFixedResist, short pushDamageFixedResist, short pvpNeutralElementResistPercent, short pvpEarthElementResistPercent, short pvpWaterElementResistPercent, short pvpAirElementResistPercent, short pvpFireElementResistPercent, short pvpNeutralElementReduction, short pvpEarthElementReduction, short pvpWaterElementReduction, short pvpAirElementReduction, short pvpFireElementReduction, short dodgePALostProbability, short dodgePMLostProbability, short tackleBlock, short tackleEvade, sbyte invisibilityState)
         {
             this.lifePoints = lifePoints;
             this.maxLifePoints = maxLifePoints;
@@ -75,6 +85,16 @@ namespace Stump.DofusProtocol.Types
             this.fireElementReduction = fireElementReduction;
             this.criticalDamageFixedResist = criticalDamageFixedResist;
             this.pushDamageFixedResist = pushDamageFixedResist;
+            this.pvpNeutralElementResistPercent = pvpNeutralElementResistPercent;
+            this.pvpEarthElementResistPercent = pvpEarthElementResistPercent;
+            this.pvpWaterElementResistPercent = pvpWaterElementResistPercent;
+            this.pvpAirElementResistPercent = pvpAirElementResistPercent;
+            this.pvpFireElementResistPercent = pvpFireElementResistPercent;
+            this.pvpNeutralElementReduction = pvpNeutralElementReduction;
+            this.pvpEarthElementReduction = pvpEarthElementReduction;
+            this.pvpWaterElementReduction = pvpWaterElementReduction;
+            this.pvpAirElementReduction = pvpAirElementReduction;
+            this.pvpFireElementReduction = pvpFireElementReduction;
             this.dodgePALostProbability = dodgePALostProbability;
             this.dodgePMLostProbability = dodgePMLostProbability;
             this.tackleBlock = tackleBlock;
@@ -107,6 +127,16 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(fireElementReduction);
             writer.WriteVarShort(criticalDamageFixedResist);
             writer.WriteVarShort(pushDamageFixedResist);
+            writer.WriteVarShort(pvpNeutralElementResistPercent);
+            writer.WriteVarShort(pvpEarthElementResistPercent);
+            writer.WriteVarShort(pvpWaterElementResistPercent);
+            writer.WriteVarShort(pvpAirElementResistPercent);
+            writer.WriteVarShort(pvpFireElementResistPercent);
+            writer.WriteVarShort(pvpNeutralElementReduction);
+            writer.WriteVarShort(pvpEarthElementReduction);
+            writer.WriteVarShort(pvpWaterElementReduction);
+            writer.WriteVarShort(pvpAirElementReduction);
+            writer.WriteVarShort(pvpFireElementReduction);
             writer.WriteVarShort(dodgePALostProbability);
             writer.WriteVarShort(dodgePMLostProbability);
             writer.WriteVarShort(tackleBlock);
@@ -149,6 +179,16 @@ namespace Stump.DofusProtocol.Types
             fireElementReduction = reader.ReadVarShort();
             criticalDamageFixedResist = reader.ReadVarShort();
             pushDamageFixedResist = reader.ReadVarShort();
+            pvpNeutralElementResistPercent = reader.ReadVarShort();
+            pvpEarthElementResistPercent = reader.ReadVarShort();
+            pvpWaterElementResistPercent = reader.ReadVarShort();
+            pvpAirElementResistPercent = reader.ReadVarShort();
+            pvpFireElementResistPercent = reader.ReadVarShort();
+            pvpNeutralElementReduction = reader.ReadVarShort();
+            pvpEarthElementReduction = reader.ReadVarShort();
+            pvpWaterElementReduction = reader.ReadVarShort();
+            pvpAirElementReduction = reader.ReadVarShort();
+            pvpFireElementReduction = reader.ReadVarShort();
             dodgePALostProbability = reader.ReadVarShort();
             if (dodgePALostProbability < 0)
                 throw new Exception("Forbidden value on dodgePALostProbability = " + dodgePALostProbability + ", it doesn't respect the following condition : dodgePALostProbability < 0");

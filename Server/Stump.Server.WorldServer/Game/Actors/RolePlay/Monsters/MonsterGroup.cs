@@ -261,6 +261,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters
                                                             false,
                                                             false,
                                                             GetGroupMonsterStaticInformations(),
+                                                            0,
                                                             AgeBonus > ClientStarsBonusLimit ? ClientStarsBonusLimit : AgeBonus,
                                                             0,
                                                             -1);

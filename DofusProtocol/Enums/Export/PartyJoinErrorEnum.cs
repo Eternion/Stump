@@ -1,6 +1,6 @@
 
 
-// Generated on 08/15/2015 14:32:26
+// Generated on 09/01/2015 10:48:41
 using System;
 using System.Collections.Generic;
 
@@ -20,5 +20,6 @@ namespace Stump.DofusProtocol.Enums
         PARTY_JOIN_ERROR_UNMET_CRITERION = 10,
         PARTY_JOIN_ERROR_NOT_ENOUGH_ROOM = 11,
         PARTY_JOIN_ERROR_COMPOSITION_CHANGED = 12,
+        PARTY_JOIN_ERROR_PLAYER_IN_TUTORIAL = 13,
     }
 }

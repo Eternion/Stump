@@ -11,7 +11,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Plugins.DefaultPlugin.Spells
 {
-    public static class SpellsFix
+    /*public static class SpellsFix
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -1236,5 +1236,5 @@ namespace Stump.Plugins.DefaultPlugin.Spells
                     level.CriticalEffects.RemoveAll(entry => entry.EffectId == effect);
             }
         }
-    }
+    }*/
 }

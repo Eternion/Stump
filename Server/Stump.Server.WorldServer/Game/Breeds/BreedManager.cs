@@ -145,14 +145,14 @@ namespace Stump.Server.WorldServer.Game.Breeds
 
         public void ChangeBreed(Character character, PlayableBreedEnum breed)
         {
-            character.Spells.ForgetAllSpells(false);
-            character.ResetStats(false);
+            character.Spells.ForgetAllSpells();
+            character.ResetStats();
 
             var specialSpell = GetSpecialSpell(character.BreedId);
 
             foreach (var breedSpell in character.Breed.Spells)
             {
-                character.Spells.UnLearnSpell(breedSpell.Spell, false);
+                character.Spells.UnLearnSpell(breedSpell.Spell);
             }
 
             character.SetBreed(breed);
@@ -164,7 +164,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
 
             if (character.Spells.HasSpell((int)specialSpell.SpellId))
             {
-                character.Spells.UnLearnSpell((int)specialSpell.SpellId, false);
+                character.Spells.UnLearnSpell((int)specialSpell.SpellId);
 
                 specialSpell = GetSpecialSpell(character.BreedId);
 
@@ -174,58 +174,61 @@ namespace Stump.Server.WorldServer.Game.Breeds
 
         private static SpellLevelTemplate GetSpecialSpell(PlayableBreedEnum breedId)
         {
-            var spellId = -1;
+            SpellIdEnum spellId = SpellIdEnum.COUP_DE_POING;
 
             switch (breedId)
             {
                 case PlayableBreedEnum.Feca:
-                    spellId = 2108;
+                    spellId = SpellIdEnum.MISE_EN_GARDE;
                     break;
                 case PlayableBreedEnum.Osamodas:
-                    spellId = 2098;
+                    spellId = SpellIdEnum.LAISSE_SPIRITUELLE_420;
                     break;
                 case PlayableBreedEnum.Enutrof:
-                    spellId = 2123;
+                    spellId = SpellIdEnum.RETRAITE_ANTICIPÉE;
                     break;
                 case PlayableBreedEnum.Sram:
-                    spellId = 2078;
+                    spellId = SpellIdEnum.POISSE;
                     break;
                 case PlayableBreedEnum.Xelor:
-                    spellId = 2118;
+                    spellId = SpellIdEnum.RAULEBAQUE;
                     break;
                 case PlayableBreedEnum.Ecaflip:
-                    spellId = 2058;
+                    spellId = SpellIdEnum.FÉLINTION;
                     break;
                 case PlayableBreedEnum.Eniripsa:
-                    spellId = 2133;
+                    spellId = SpellIdEnum.MOT_CURATIF;
                     break;
                 case PlayableBreedEnum.Iop:
-                    spellId = 2048;
+                    spellId = SpellIdEnum.BROKLE;
                     break;
                 case PlayableBreedEnum.Cra:
-                    spellId = 2088;
+                    spellId = SpellIdEnum.FLÈCHE_DE_DISPERSION;
                     break;
                 case PlayableBreedEnum.Sadida:
-                    spellId = 2128;
+                    spellId = SpellIdEnum.ARBRE_DE_VIE;
                     break;
                 case PlayableBreedEnum.Sacrieur:
-                    spellId = 2103;
+                    spellId = SpellIdEnum.DOULEUR_PARTAGÉE;
                     break;
                 case PlayableBreedEnum.Pandawa:
-                    spellId = 2113;
+                    spellId = SpellIdEnum.IVRESSE;
                     break;
                 case PlayableBreedEnum.Roublard:
-                    spellId = 2148;
+                    spellId = SpellIdEnum.ROUBLABOT;
                     break;
                 case PlayableBreedEnum.Zobal:
-                    spellId = 18596;
+                    spellId = SpellIdEnum.DIFFRACTION;
                     break;
                 case PlayableBreedEnum.Steamer:
-                    spellId = 20109;
+                    spellId = SpellIdEnum.FLIBUSTE;
+                    break;
+                case PlayableBreedEnum.Eliotrope:
+                    spellId = SpellIdEnum.FOCUS;
                     break;
             }
 
-            return SpellManager.Instance.GetSpellLevel(spellId);
+            return SpellManager.Instance.GetSpellLevel((int)spellId);
         }
 
     }
