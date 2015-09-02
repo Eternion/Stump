@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                 // return false; note : wtf, why is there spells with TargetType = NONE ?
                 return true;
 
-            if (handler.Caster == actor && TargetType.HasFlag(SpellTargetType.SELF))
+            if (handler.Caster == actor && (TargetType.HasFlag(SpellTargetType.SELF) || TargetType.HasFlag(SpellTargetType.SELF_ONLY)))
                 return true;
 
             if (TargetType.HasFlag(SpellTargetType.SELF_ONLY) && actor != handler.Caster)

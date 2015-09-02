@@ -156,7 +156,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            return Effect.Targets.Any(x => x is TargetTypeCriterion && ((TargetTypeCriterion) x).TargetType == SpellTargetType.SELF_ONLY) ?
+            return Effect.Targets.Any(x => x is TargetTypeCriterion && ((TargetTypeCriterion)x).TargetType == SpellTargetType.SELF_ONLY) && IsValidTarget(Caster) ? 
                 new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
 

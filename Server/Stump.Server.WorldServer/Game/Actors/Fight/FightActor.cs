@@ -36,6 +36,7 @@ using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -2018,6 +2019,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             caster.NeedTelefragState = true;
             target.NeedTelefragState = true;
+            NeedTelefragState = true;
 
             return true;
         }
