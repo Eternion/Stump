@@ -42,6 +42,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public abstract class FightActor : ContextActor, IStatsOwner
     {
+        public const int UNLIMITED_ZONE_SIZE = 50;
+
         #region Events
 
         public event Action<FightActor, bool> ReadyStateChanged;
@@ -847,6 +849,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School, damage.IsCritical);
             }
 
+            // zone damage
+            if (damage.TargetCell != null && damage.Zone != null)
+            {
+                var efficiency = GetShapeEfficiency(damage.TargetCell, Position.Point, damage.Zone);
+
+                damage.Amount = (int)(damage.Amount*efficiency);
+            }
+
             var permanentDamages = CalculateErosionDamage(damage.Amount);
             
             //Fraction
@@ -1067,6 +1077,47 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return damage + Stats[PlayerFields.CriticalDamageBonus].Total;
 
             return damage;
+        }
+
+        public virtual double GetShapeEfficiency(MapPoint targetCell, MapPoint impactCell, Zone zone)
+        {
+            if (zone.Radius >= UNLIMITED_ZONE_SIZE)
+                return 1.0;
+
+            uint distance = 0;
+            switch (zone.ShapeType)
+            {
+                case SpellShapeEnum.A:
+                    distance = targetCell.EuclideanDistanceTo(impactCell);
+                    break;
+                case SpellShapeEnum.a:
+                case SpellShapeEnum.Z:
+                case SpellShapeEnum.I:
+                case SpellShapeEnum.O:
+                    distance = targetCell.ManhattanDistanceTo(impactCell);
+                    break;
+                case SpellShapeEnum.semicolon:
+                case SpellShapeEnum.empty:
+                case SpellShapeEnum.P:
+                case SpellShapeEnum.B:
+                    distance = targetCell.EuclideanDistanceTo(impactCell) / 2;
+                    break;
+                default:
+                    return 1.0;
+            }
+
+            if (distance > zone.Radius)
+                return 1.0;
+
+            if (zone.MinRadius > 0)
+            {
+                if (distance <= zone.MinRadius)
+                    return 1.0;
+
+                return Math.Max(0d, 1 - 0 * 0.01 * Math.Min(distance - zone.MinRadius, zone.MaxEfficiency) * zone.EfficiencyMalus);
+            }
+
+            return Math.Max(0d, 1 - 0 * 0.01 * Math.Min(distance, zone.MaxEfficiency) * zone.EfficiencyMalus);
         }
 
         public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor, bool poison)

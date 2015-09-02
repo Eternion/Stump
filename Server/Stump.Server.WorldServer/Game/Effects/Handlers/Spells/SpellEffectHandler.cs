@@ -106,7 +106,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             {
                 return m_effectZone ??
                        (m_effectZone =
-                        new Zone(Effect.ZoneShape, (byte) Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint)));
+                        new Zone(Effect.ZoneShape, (byte) Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint), Effect.ZoneEfficiencyPercent, Effect.ZoneMaxEfficiency));
             }
             set
             {
