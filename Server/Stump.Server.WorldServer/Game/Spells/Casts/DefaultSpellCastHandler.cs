@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             var rand = random.NextDouble();
             double randSum = effects.Sum(entry => entry.Random);
             var stopRand = false;
-            foreach (var effect in effects.OrderBy(x => x.Template.EffectPriority))
+            foreach (var effect in effects.OrderBy(x => x.Priority))
             {
                 if (effect.Random > 0)
                 {
