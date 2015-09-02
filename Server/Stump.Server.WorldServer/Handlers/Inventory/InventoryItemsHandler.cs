@@ -135,10 +135,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             var item = client.Character.Inventory.TryGetItem(message.livingUID);
 
-            if (!(item is BoundLivingObjectItem))
-                return;
-
-            ((BoundLivingObjectItem) item).Dissociate();
+            (item as BoundLivingObjectItem)?.Dissociate();
         }
 
         [WorldHandler(ObjectDropMessage.Id)]
@@ -198,11 +195,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             }
             else
             {
-                character.Inventory.UnStackItem(food, 1);
-                character.Inventory.UnStackItem(mimisymbic, 1);
-
                 host.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
                 host.Invalidate();
+
+                character.Inventory.UnStackItem(food, 1);
+                character.Inventory.UnStackItem(mimisymbic, 1);
 
                 character.Inventory.RefreshItem(host);
                 SendMimicryObjectAssociatedMessage(client, host);

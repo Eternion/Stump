@@ -101,6 +101,42 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 character.Sex = remodel.sex ? SexTypeEnum.SEX_FEMALE : SexTypeEnum.SEX_MALE;
             }
 
+            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
+                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED))
+            {
+                client.Character = new Character(character, client);
+
+                BreedManager.Instance.ChangeBreed(client.Character, (PlayableBreedEnum)remodel.breed);
+                client.Character.SaveNow();
+
+                character = client.Character.Record;
+                client.Character = null;
+            }
+
+            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
+                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
+                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC))
+            {
+                /* Get Head */
+                var head = BreedManager.Instance.GetHead(remodel.cosmeticId);
+                /* Get character Breed */
+                var breed = BreedManager.Instance.GetBreed((int)character.Breed);
+
+                if (breed == null || head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
+                {
+                    client.Send(new CharacterSelectedErrorMessage());
+                    return;
+                }
+
+                character.Head = head.Id;
+
+                foreach (var scale in character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Scales : breed.FemaleLook.Scales)
+                    character.EntityLook.SetScales(scale);
+            }
+
             if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
                 == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
                 || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS)
@@ -137,42 +173,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 }
 
                 character.EntityLook.SetColors(m_colors.Select(x => x.Value).ToArray());
-            }
-
-            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
-                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
-                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED)
-                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED))
-            {
-                client.Character = new Character(character, client);
-
-                BreedManager.Instance.ChangeBreed(client.Character, (PlayableBreedEnum)remodel.breed);
-                client.Character.SaveNow();
-
-                character = client.Character.Record;
-                client.Character = null;
-            }
-
-            if (((character.MandatoryChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
-                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
-                || ((character.PossibleChanges & (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC)
-                == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC))
-            {
-                /* Get Head */
-                var head = BreedManager.Instance.GetHead(remodel.cosmeticId);
-                /* Get character Breed */
-                var breed = BreedManager.Instance.GetBreed((int)character.Breed);
-
-                if (breed == null || head.Breed != (int)character.Breed || head.Gender != (int)character.Sex)
-                {
-                    client.Send(new CharacterSelectedErrorMessage());
-                    return;
-                }
-
-                character.Head = head.Id;
-
-                foreach (var scale in character.Sex == SexTypeEnum.SEX_MALE ? breed.MaleLook.Scales : breed.FemaleLook.Scales)
-                    character.EntityLook.SetScales(scale);
             }
 
             character.MandatoryChanges = 0;

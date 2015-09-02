@@ -80,6 +80,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectBase(short id, EffectBase effect)
              : this(effect)
         {
+            Id = id;
         }
 
         public EffectBase(EffectInstance effect)
