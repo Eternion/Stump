@@ -101,6 +101,18 @@ namespace Stump.Server.WorldServer.Database.Effects
             set;
         }
 
+        public int OppositeId
+        {
+            get;
+            set;
+        }
+
+        public int EffectPriority
+        {
+            get;
+            set;
+        }
+
         #region IAssignedByD2O Members
 
         public void AssignFields(object d2oObject)
@@ -121,6 +133,8 @@ namespace Stump.Server.WorldServer.Database.Effects
             ShowInSet = effect.showInSet;
             BonusType = effect.bonusType;
             UseInFight = effect.useInFight;
+            OppositeId = effect.oppositeId;
+            EffectPriority = (int)effect.effectPriority;
         }
 
         #endregion
