@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 }
                 else
                 {
-                    var damages = new Fights.Damage(Dice, EffectSchoolEnum.Neutral, Caster, Spell)
+                    var damages = new Fights.Damage(Dice, EffectSchoolEnum.Neutral, Caster, Spell, TargetedCell, EffectZone)
                     {
                         IsCritical = Critical,
                         IgnoreDamageBoost = true,
@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
         private static void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var damages = new Fights.Damage(buff.Dice, EffectSchoolEnum.Unknown, buff.Caster, buff.Spell)
+            var damages = new Fights.Damage(buff.Dice, EffectSchoolEnum.Unknown, buff.Caster, buff.Spell, buff.Target.Cell)
             {
                 Buff = buff,
                 IsCritical = buff.Critical,

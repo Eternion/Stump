@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 }
                 else
                 {
-                    var damage = new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell) {IsCritical = Critical};
+                    var damage = new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell, TargetedCell, EffectZone) {IsCritical = Critical};
 
                     // spell reflected
                     var buff = actor.GetBestReflectionBuff();
