@@ -140,7 +140,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsValidTarget(FightActor actor)
         {
-            return Effect.Targets.All(x => x.IsTargetValid(actor, this));
+            var lookup = Effect.Targets.ToLookup(x => x.GetType());
+
+            return lookup.All(x => x.First().IsDisjonction ?
+                x.Any(y => y.IsTargetValid(actor, this)) : x.All(y => y.IsTargetValid(actor, this)));
         }
 
         public void RefreshZone()
