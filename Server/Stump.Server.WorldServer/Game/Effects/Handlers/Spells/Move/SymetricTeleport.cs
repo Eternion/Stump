@@ -5,7 +5,6 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
