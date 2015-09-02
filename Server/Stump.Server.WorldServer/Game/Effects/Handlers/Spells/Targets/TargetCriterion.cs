@@ -39,6 +39,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
         public abstract bool IsTargetValid(FightActor actor, SpellEffectHandler handler);
 
+        public virtual bool IsDisjonction
+        {
+            get { return true; }
+        }
+
         public static TargetCriterion ParseCriterion(string str)
         {
             try
