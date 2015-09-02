@@ -5,7 +5,6 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
@@ -26,21 +25,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var casterPoint = Caster.Position.Point;
                 var targetPoint = target.Position.Point;
 
-                if (Effect.EffectId == EffectsEnum.Effect_SymetricCasterTeleport)
+                switch (Effect.EffectId)
                 {
-                    casterPoint = target.Position.Point;
-                    targetPoint = Caster.Position.Point;
-                }
-                else if (Effect.EffectId == EffectsEnum.Effect_SymetricPointTeleport)
-                {
-                    casterPoint = target.Position.Point;
-                    targetPoint = TargetedPoint;
+                    case EffectsEnum.Effect_SymetricCasterTeleport:
+                        casterPoint = target.Position.Point;
+                        targetPoint = Caster.Position.Point;
+                        break;
+                    case EffectsEnum.Effect_SymetricPointTeleport:
+                        casterPoint = target.Position.Point;
+                        targetPoint = TargetedPoint;
+                        break;
                 }
 
                 var cell = new MapPoint((2 * targetPoint.X - casterPoint.X), (2 * targetPoint.Y - casterPoint.Y));
-
-                if (cell == null)
-                    continue;
 
                 var dstCell = Map.GetCell(cell.CellId);
 
@@ -58,8 +55,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     if (Effect.EffectId == EffectsEnum.Effect_SymetricCasterTeleport || Effect.EffectId == EffectsEnum.Effect_SymetricPointTeleport)
                         caster = target;
 
-                    if (!caster.Telefrag(Caster, fighter, Spell))
-                        continue;
+                    caster.Telefrag(Caster, fighter, Spell);
                 }
                 else
                 {

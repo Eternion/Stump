@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var affectedActor in GetAffectedActors())
             {
-                affectedActor.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true);
+                Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true);
             }
 
             return true;
