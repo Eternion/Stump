@@ -27,7 +27,6 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
-using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes.Set;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Game.Spells;
@@ -105,8 +104,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected virtual void OnDamageReducted(FightActor source, int reduction)
         {
             var handler = DamageReducted;
-            if (handler != null)
-                handler(this, source, reduction);
+            handler?.Invoke(this, source, reduction);
         }
 
         public event Action<FightActor, FightActor> DamageReflected;
@@ -115,8 +113,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             ActionsHandler.SendGameActionFightReflectDamagesMessage(Fight.Clients, this, target);
             var handler = DamageReflected;
-            if (handler != null)
-                handler(this, target);
+            handler?.Invoke(this, target);
         }
 
 
@@ -125,8 +122,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected virtual void OnPrePlacementChanged(ObjectPosition position)
         {
             var handler = PrePlacementChanged;
-            if (handler != null)
-                handler(this, position);
+            handler?.Invoke(this, position);
         }
 
         public event Action<FightActor> TurnPassed;
@@ -134,8 +130,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected virtual void OnTurnPassed()
         {
             var handler = TurnPassed;
-            if (handler != null)
-                handler(this);
+            handler?.Invoke(this);
         }
 
         public delegate void SpellCastingHandler(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast);
@@ -312,26 +307,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Properties
 
-        public IFight Fight
-        {
-            get { return Team.Fight; }
-        }
+        public IFight Fight => Team.Fight;
 
         public FightTeam Team
         {
             get;
-            private set;
         }
 
-        public FightTeam OpposedTeam
-        {
-            get { return Team.OpposedTeam; }
-        }
+        public FightTeam OpposedTeam => Team.OpposedTeam;
 
-        public override ICharacterContainer CharacterContainer
-        {
-            get { return Fight; }
-        }
+        public override ICharacterContainer CharacterContainer => Fight;
 
         public abstract ObjectPosition MapPosition
         {
@@ -383,10 +368,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             internal set;
         }
 
-        public override bool BlockSight
+        public bool NeedTelefragState
         {
-            get { return IsAlive() && VisibleState != GameActionFightInvisibilityStateEnum.INVISIBLE; }
+            get;
+            set;
         }
+
+        public override bool BlockSight => IsAlive() && VisibleState != VisibleStateEnum.INVISIBLE;
 
         public bool IsSacrificeProtected
         {
@@ -453,7 +441,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public FightLoot Loot
         {
             get;
-            private set;
         }
 
         public abstract Spell GetSpell(int id);
@@ -1978,55 +1965,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             target.OnActorMoved(this, false);
             OnActorMoved(this, false);
 
-            EffectDice effectAddAP = null;
-            EffectDice effectAddState = null;
-
-            switch (spell.Id)
-            {
-                case (int)SpellIdEnum.TÉLÉPORTATION_88:
-                    effectAddAP = spell.CurrentSpellLevel.Effects[1];
-                    effectAddState = spell.CurrentSpellLevel.Effects[2];
-                    break;
-                case (int)SpellIdEnum.FRAPPE_DE_XÉLOR:
-                    effectAddAP = spell.CurrentSpellLevel.Effects[2];
-                    effectAddState = spell.CurrentSpellLevel.Effects[3];
-                    break;
-                case (int)SpellIdEnum.GELURE:
-                    effectAddAP = spell.CurrentSpellLevel.Effects[2];
-                    effectAddState = spell.CurrentSpellLevel.Effects[3];
-                    break;
-                case (int)SpellIdEnum.RAULEBAQUE:
-                    effectAddAP = spell.CurrentSpellLevel.Effects[1];
-                    effectAddState = spell.CurrentSpellLevel.Effects[2];
-                    break;
-                case (int)SpellIdEnum.BOBINE:
-                    effectAddAP = spell.CurrentSpellLevel.Effects[1];
-                    effectAddState = spell.CurrentSpellLevel.Effects[2];
-                    break;
-                case (int)SpellIdEnum.POUSSIÈRE_TEMPORELLE:
-                    effectAddAP = spell.CurrentSpellLevel.Effects[2];
-                    effectAddState = spell.CurrentSpellLevel.Effects[3];
-                    break;
-                case (int)SpellIdEnum.FUITE:
-                    effectAddAP = spell.CurrentSpellLevel.Effects[1];
-                    effectAddState = spell.CurrentSpellLevel.Effects[2];
-                    break;
-            }
-
-            if (effectAddAP == null || effectAddState == null)
-                return false;
-
-            if (!ApplyEffect(spell, effectAddAP, caster, caster))
-                return false;
-
-            if (!ApplyEffect(spell, effectAddState, caster, target))
-                return false;
-
-            if (this != caster)
-            {
-                if (!ApplyEffect(spell, effectAddState, caster, this))
-                    return false;
-            }
+            caster.NeedTelefragState = true;
+            target.NeedTelefragState = true;
 
             return true;
         }

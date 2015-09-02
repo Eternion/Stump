@@ -73,6 +73,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                         return new LifeCriterion(int.Parse(str.Remove(0, 1)), false);
                     case 'K':
                         return new CarriedCriterion();
+                    case 'T':
+                        return new TelefragCriterion();
                 }
 
                 return new UnknownCriterion(str);
