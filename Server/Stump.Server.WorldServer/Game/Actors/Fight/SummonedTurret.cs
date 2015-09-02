@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Monsters;
 using Stump.Server.WorldServer.Database.World;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -11,7 +12,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public class SummonedTurret : SummonedFighter
+    public class SummonedTurret : SummonedFighter, ICreature
     {
         protected readonly StatsFields m_stats;
         protected Spell m_spell;
@@ -112,6 +113,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
             private set;
+        }
+
+        public MonsterGrade MonsterGrade
+        {
+            get { return Monster; }
         }
 
         public override string Name
