@@ -23,7 +23,7 @@ using Stump.Server.WorldServer.Game.Spells.Casts.Roublard;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public class SummonedBomb : FightActor, INamedActor
+    public class SummonedBomb : FightActor, INamedActor, ICreature
     {
         [Variable]
         public static int BonusDamageStart = 40;
@@ -121,6 +121,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
             private set;
+        }
+
+        public MonsterGrade MonsterGrade
+        {
+            get { return MonsterBombTemplate; }
         }
 
         public FightActor Summoner

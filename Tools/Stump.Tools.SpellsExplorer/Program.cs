@@ -91,7 +91,19 @@ namespace Stump.Tools.SpellsExplorer
                                                                 .Effects.Any(y => y.TargetMask.Split(',').Contains(target))))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
-                                        
+
+                    if (pattern.StartsWith("zone"))
+                    {
+                        foreach (
+                            var spell in
+                                SpellManager.Instance.GetSpellTemplates()
+                                            .Where(
+                                                x =>
+                                                    SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => y.ZoneEfficiencyPercent != 0)))
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                    }
+
                     if (pattern.StartsWith("delay"))
                     {
                         foreach (
