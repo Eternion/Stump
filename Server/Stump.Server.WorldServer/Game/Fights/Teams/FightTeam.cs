@@ -400,7 +400,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Teams
         public FightTeamLightInformations GetFightTeamLightInformations()
         {
             return new FightTeamLightInformations((sbyte)Id, Leader == null ? 0 : Leader.Id, (sbyte) AlignmentSide,
-                                                  (sbyte)TeamType, 0, false, false, false, false, false, (sbyte)m_fighters.Count(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)), 0);
+                                                  (sbyte)TeamType, 0, false, false, false, false, false,
+                                                  (sbyte)m_fighters.Count(x => !(x is SummonedFighter) && !(x is SummonedBomb) && !(x is SlaveFighter)),
+                                                  200);
         }
     }
 }
