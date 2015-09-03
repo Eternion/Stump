@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:24:49
+// Generated on 09/01/2015 10:48:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,8 +47,6 @@ namespace Stump.DofusProtocol.Messages
             if (community < 0)
                 throw new Exception("Forbidden value on community = " + community + ", it doesn't respect the following condition : community < 0");
             gameType = reader.ReadSByte();
-            if (gameType < 0)
-                throw new Exception("Forbidden value on gameType = " + gameType + ", it doesn't respect the following condition : gameType < 0");
         }
         
     }

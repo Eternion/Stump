@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 }
                 else
                 {
-                    var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell);
+                    var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell, TargetedCell, EffectZone);
                     damage.GenerateDamages();
                     damage.Amount = (int)((Caster.LifePoints * (damage.Amount / 100d)));
                     damage.IgnoreDamageBoost = true;
@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             if (integerEffect == null)
                 return;
 
-            var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
+            var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell, buff.Target.Cell)
             {
                 Buff = buff,
                 

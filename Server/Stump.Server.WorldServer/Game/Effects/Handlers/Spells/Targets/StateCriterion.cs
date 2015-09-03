@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Stump.Server.WorldServer.Game.Actors.Fight;
+﻿using Stump.Server.WorldServer.Game.Actors.Fight;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
@@ -34,9 +29,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             set;
         }
 
+        public override bool IsDisjonction
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override bool IsTargetValid(FightActor actor, SpellEffectHandler handler)
         {
-            
+            if (Caster)
+                return Required ? handler.Caster.HasState(State) : !handler.Caster.HasState(State);
+
+            return Required ? actor.HasState(State) : !actor.HasState(State);
         }
     }
 }

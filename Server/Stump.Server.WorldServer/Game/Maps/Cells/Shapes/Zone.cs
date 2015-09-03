@@ -7,6 +7,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 {
     public class Zone : IShape
     {
+        public const int EFFECTSHAPE_DEFAULT_EFFICIENCY = 10;
+        public const int EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY = 4;
+
         private IShape m_shape;
 
         private SpellShapeEnum m_shapeType;
@@ -17,11 +20,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             ShapeType = shape;
         }
 
-        public Zone(SpellShapeEnum shape, byte radius, DirectionsEnum direction)
+        public Zone(SpellShapeEnum shape, byte radius, DirectionsEnum direction, int efficiencyMalus, int maxEfficiency)
         {
             Radius = radius;
             Direction = direction;
             ShapeType = shape;
+            EfficiencyMalus = efficiencyMalus > 0 ? efficiencyMalus : EFFECTSHAPE_DEFAULT_EFFICIENCY;
+            MaxEfficiency = maxEfficiency > 0 ? maxEfficiency : EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY;
         }
 
         public SpellShapeEnum ShapeType
@@ -50,6 +55,18 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         {
             get { return m_shape.MinRadius; }
             set { m_shape.MinRadius = value; }
+        }
+
+        public int EfficiencyMalus
+        {
+            get;
+            set;
+        }
+
+        public int MaxEfficiency
+        {
+            get;
+            set;
         }
 
         public DirectionsEnum Direction

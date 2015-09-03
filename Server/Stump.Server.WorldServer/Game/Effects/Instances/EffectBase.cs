@@ -29,25 +29,31 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
     public class EffectBase : ICloneable
     {
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private int m_delay;
-        private int m_duration;
-        private int m_group;
-        private bool m_hidden;
-        private short m_id;
-        private int m_modificator;
-        private int m_random;
-        private TargetCriterion[] m_targets = new TargetCriterion[0];
-        private string m_targetMask;
-        private string m_triggers;
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        int m_delay;
+        int m_duration;
+        int m_group;
+        bool m_hidden;
+        short m_id;
+        int m_modificator;
+        int m_random;
 
-        [NonSerialized] protected EffectTemplate m_template;
-        private bool m_trigger;
-        private uint m_zoneMinSize;
-        private SpellShapeEnum m_zoneShape;
-        private uint m_zoneSize;
-        private int m_zoneEfficiencyPercent;
-        private int m_zoneMaxEfficiency;
+        [NonSerialized]
+        TargetCriterion[] m_targets = new TargetCriterion[0];
+        string m_targetMask;
+        string m_triggers;
+
+        [NonSerialized]
+        protected EffectTemplate m_template;
+        bool m_trigger;
+        uint m_zoneMinSize;
+        SpellShapeEnum m_zoneShape;
+        uint m_zoneSize;
+        int m_zoneEfficiencyPercent;
+        int m_zoneMaxEfficiency;
+
+        [NonSerialized]
+        int m_priority;
 
         public EffectBase()
         {
@@ -78,6 +84,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
         public EffectBase(short id, EffectBase effect)
              : this(effect)
         {
+            Id = id;
         }
 
         public EffectBase(EffectInstance effect)
@@ -97,15 +104,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             ParseTargets();
         }
 
-        public virtual int ProtocoleId
-        {
-            get { return 76; }
-        }
+        public virtual int ProtocoleId => 76;
 
-        public virtual byte SerializationIdenfitier
-        {
-            get { return 1; }
-        }
+        public virtual byte SerializationIdenfitier => 1;
 
         public short Id
         {
@@ -151,6 +152,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
                 m_targets = value;
                 IsDirty = true;
             }
+        }
+
+        public int Priority
+        {
+            get{ return m_priority == 0 ? Template.EffectPriority : m_priority; }
+            set { m_priority = value; }
         }
 
         public int Duration
@@ -300,7 +307,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         protected void ParseTargets()
         {
-            if (m_targetMask == "a,A" || m_targetMask == "A,a")
+            if (string.IsNullOrEmpty(m_targetMask) || m_targetMask == "a,A" || m_targetMask == "A,a")
             {
                 m_targets = new TargetCriterion[0];
                 return; // default target = ALL
@@ -308,7 +315,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
             var data = m_targetMask.Split(',');
 
-            m_targets = data.Select(x => TargetCriterion.ParseCriterion(x)).ToArray();
+            m_targets = data.Select(TargetCriterion.ParseCriterion).ToArray();
         }
 
         protected void ParseRawZone(string rawZone)
@@ -327,36 +334,36 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             int zoneEfficiency = 0;
             int zoneMaxEfficiency = 0;
 
-            var data = rawZone.Remove(0, 1).Split(',');
+            var data = rawZone.Remove(0, 1).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             var hasMinSize = shape == SpellShapeEnum.C || shape == SpellShapeEnum.X || shape == SpellShapeEnum.Q || shape == SpellShapeEnum.plus || shape == SpellShapeEnum.sharp;
 
 
             try
             {
                 if (data.Length >= 4)
-            {
-                size = byte.Parse(data[0]);
-                minSize = byte.Parse(data[1]);
-                zoneEfficiency = byte.Parse(data[2]);
-                zoneMaxEfficiency = byte.Parse(data[2]);
-            }
-            else
-            {
-                if (data.Length >= 1)
+                {
                     size = byte.Parse(data[0]);
+                    minSize = byte.Parse(data[1]);
+                    zoneEfficiency = byte.Parse(data[2]);
+                    zoneMaxEfficiency = byte.Parse(data[2]);
+                }
+                else
+                {
+                    if (data.Length >= 1)
+                        size = byte.Parse(data[0]);
 
-                if (data.Length >= 2)
-                    if (hasMinSize)
-                        minSize = byte.Parse(data[1]);
-                    else
-                        zoneEfficiency = byte.Parse(data[1]);
+                    if (data.Length >= 2)
+                        if (hasMinSize)
+                            minSize = byte.Parse(data[1]);
+                        else
+                            zoneEfficiency = byte.Parse(data[1]);
 
-                if (data.Length >= 3)
-                    if (hasMinSize)
-                        zoneEfficiency = byte.Parse(data[2]);
-                    else
-                        zoneMaxEfficiency = byte.Parse(data[2]);
-            }
+                    if (data.Length >= 3)
+                        if (hasMinSize)
+                            zoneEfficiency = byte.Parse(data[2]);
+                        else
+                            zoneMaxEfficiency = byte.Parse(data[2]);
+                }
             }
             catch (Exception ex)
             {

@@ -1549,6 +1549,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             FighterPlaying.ResetUsedPoints();
 
+            //Reset NeedTelefragState
+            foreach (var fighter in Fighters)
+                fighter.NeedTelefragState = false;
+
             var time = (int)Math.Floor(GetTurnTimeLeft().TotalSeconds / 2);
             if (TimeLine.RoundNumber > 1)
                 FighterPlaying.TurnTimeReport = time > 0 ? time : 0;

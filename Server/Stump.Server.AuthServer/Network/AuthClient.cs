@@ -25,9 +25,9 @@ namespace Stump.Server.AuthServer.Network
                 return;
             }
 
-            var patch = AuthServer.Instance.GetConnectionSwfPatch();
+            /*var patch = AuthServer.Instance.GetConnectionSwfPatch();
             if (patch != null)
-                //Send(new RawDataMessageFixed(patch));
+                Send(new RawDataMessageFixed(patch));*/
 
             Send(new ProtocolRequired(VersionExtension.ProtocolRequired, VersionExtension.ActualProtocol));
 
