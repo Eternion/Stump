@@ -441,15 +441,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public override GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
-        {
-            return new GameFightFighterLightInformations(
+            => new GameFightFighterNamedLightInformations(
                 Character.Sex == SexTypeEnum.SEX_FEMALE,
                 IsAlive(),
                 Id,
                 0,
                 Level,
-                (sbyte)Character.Breed.Id);
-        }
+                (sbyte)Character.Breed.Id,
+                Name);
 
         public override string ToString()
         {
