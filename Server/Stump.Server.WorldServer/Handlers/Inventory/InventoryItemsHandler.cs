@@ -135,10 +135,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         {
             var item = client.Character.Inventory.TryGetItem(message.livingUID);
 
-            if (!(item is BoundLivingObjectItem))
-                return;
-
-            ((BoundLivingObjectItem) item).Dissociate();
+            (item as BoundLivingObjectItem)?.Dissociate();
         }
 
         [WorldHandler(ObjectDropMessage.Id)]
@@ -198,14 +195,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             }
             else
             {
-                if (!character.Inventory.RemoveItem(food) || !character.Inventory.RemoveItem(mimisymbic))
-                {
-                    SendMimicryObjectErrorMessage(client, MimicryErrorEnum.IMPOSSIBLE_ACTION);
-                    return;
-                }
-
                 host.Effects.Add(new EffectInteger(EffectsEnum.Effect_Appearance, (short)food.Template.Id));
                 host.Invalidate();
+
+                character.Inventory.UnStackItem(food, 1);
+                character.Inventory.UnStackItem(mimisymbic, 1);
 
                 character.Inventory.RefreshItem(host);
                 SendMimicryObjectAssociatedMessage(client, host);
@@ -224,6 +218,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             host.Invalidate();
 
             client.Character.Inventory.RefreshItem(host);
+            SendInventoryWeightMessage(client);
         }
 
         public static void SendMimicryObjectAssociatedMessage(IPacketReceiver client, BasePlayerItem host)
@@ -255,7 +250,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendInventoryContentAndPresetMessage(WorldClient client)
         {
             client.Send(new InventoryContentAndPresetMessage(client.Character.Inventory.Select(entry => entry.GetObjectItem()),
-                client.Character.Inventory.Kamas, client.Character.Inventory.Presets.Select(entry => entry.GetNetworkPreset())));
+                client.Character.Inventory.Kamas, client.Character.Inventory.Presets.Select(entry => entry.GetNetworkPreset()), new IdolsPreset[0]));
         }
 
         public static void SendInventoryWeightMessage(WorldClient client)

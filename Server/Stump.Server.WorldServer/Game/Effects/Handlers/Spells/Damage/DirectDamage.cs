@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                         && Spell.Template.Id != 0 && !Caster.IsIndirectSpellCast(Spell) && !Caster.IsPoisonSpellCast(Spell))
                     {
                         NotifySpellReflected(actor);
-                        var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell)
+                        var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell, Caster.Cell)
                         {
                             ReflectedDamages = true,
                             MarkTrigger = MarkTrigger,
@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     }
                     else
                     {
-                        var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell)
+                        var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell, TargetedCell, EffectZone)
                         {
                             MarkTrigger = MarkTrigger,
                             IsCritical = Critical
@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell)
+            var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell, buff.Target.Cell)
             {
                 Buff = buff
             };

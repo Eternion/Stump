@@ -1,183 +1,84 @@
-Solution 1:
+(dofus.logic.connection.managers.AuthentificationManager::setPublicKey):
+BEFORE:
+try
+{
+	readKey.verify(baSignedKey,key,baSignedKey.length);
+}
 
-com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame@331
-"if(BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)"
-->
-"if(BuildInfos.BUILD_TYPE < BuildTypeEnum.RELEASE)"
+AFTER:
+try
+{
+}
 
-com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame@453
-Remove setPublicKey()
+(dofus.logic.connection.managers.AuthentificationManager::getIdentificationMessage):
+BEFORE:
+_loc2_.initIdentificationMessage(_loc2_.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(this._lva.username,this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,this._certificate != null,false);
 
-dofus.ankamagames.dofus.logic.connection.managers.AuthentificationManager@182
-"_loc2_.initIdentificationMessage(_loc2_.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(this._lva.username,this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false);"
-->
-"_loc2_.initIdentificationMessage(_loc2_.version,this._lva.username + "|" + this._lva.password,,this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false);"
+AFTER:
+_loc2_.initIdentificationMessage(_loc2_.version,this._lva.username + "|" + this._lva.password,this.cipherRsa(this._lva.username,this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,this._certificate != null,false);
 
-pcode:
+pCode:
 getlocal_0
-getproperty Qname(PrivateNamespace("*","1264"),"_lva")
-getproperty Qname(PackageNamespace("","156"),"username")
+getproperty Qname(PrivateNamespace("*","1025"),"_lva")
+getproperty Qname(PackageNamespace("","159"),"username")
 pushstring "|"
 add
 getlocal_0
-getproperty Qname(PrivateNamespace("*","1264"),"_lva")
-getproperty Qname(PackageNamespace("","156"),"password")
+getproperty Qname(PrivateNamespace("*","1025"),"_lva")
+getproperty Qname(PackageNamespace("","159"),"password")
 add
-getlex Multiname("Vector",[PrivateNamespace("*","1494"),PackageNamespace("","156"),PrivateNamespace("*","3119"),PackageNamespace("com.ankamagames.dofus.network.messages.connection"),PackageInternalNs("com.ankamagames.dofus.network.messages.connection"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.network.messages.connection:IdentificationMessage"),StaticProtectedNs("com.ankamagames.dofus.network.messages.connection:IdentificationMessage"),StaticProtectedNs("com.ankamagames.jerakine.network:NetworkMessage"),StaticProtectedNs("com.ankamagames.jerakine.scrambling:ScramblableElement"),PackageNamespace("__AS3__.vec")])
-getlex Qname(PackageNamespace("","156"),"int")
-applytype 1
-construct 0
 
-Solution 2:
-I) Remove RDM loaded when AllModulesLoadedMessage called:
-
-com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame@process:760
-Remove:
-	- rdm = new RawDataMessage();
-	- rdm.initRawDataMessage(Base64.decode(I18n.getUiText("ui.link.changelog")));
-	- Kernel.getWorker().process(rdm);
+(dofus.logic.connection.managers.AuthentificationManager::cipherRsa):
+AFTER:
+private function cipherRsa(param1:String, param2:String, param3:TrustCertificate) : Vector.<int>
+{
+	return new Vector.<int>();
+}
 pCode:
-	Remove from 2143 to 2160
-	
-II) Remove RDM signature:
-
-com.ankamagames.dofus.logic.common.frames.ServerControlFrame@process:78
-Remove:
-	- if(Kernel.getWorker().contains(AuthentificationFrame))
-	- {
-	-	 _log.error("Impossible de traiter le paquet RawDataMessage durant cette phase.");
-	- 	 return false;
-	- }
-	- _loc3_ = new ByteArray();
-	- _loc4_ = new Signature(SIGNATURE_KEY_V1,SIGNATURE_KEY_V2);
-	
-	- if(_loc4_.verify(_loc2_.content,_loc3_))
-	- {
-	
-	- }
-	- else
-	- {
-	- 	 _log.error("Signature incorrecte");
-	- }
-
-pCode:
-	Remove from 56 to 75
-	Remove from 94 to 99
-	Remove from 121 to 125
-	
-III) Null Signature Verification
-com.ankamagames.jerakine.utils.crypto.Signature@124
-Final result:
-	private function verifyV1Signature(param1:IDataInput, param2:ByteArray) : Boolean
-	{
-		var input:IDataInput = param1;
-		var output:ByteArray = param2;
-		var formatVersion:uint = 0;
-		var len:uint = input.readShort();
-		var sigData:ByteArray = new ByteArray();
-		try
-		{
-			formatVersion = input.readInt();
-			input.readBytes(sigData,0,formatVersion);
-		}
-		catch(e:Error)
-		{
-			throw new SignatureError("Invalid signature format, not enough data.",SignatureError.INVALID_SIGNATURE);
-		}
-		input.readBytes(output);
-		output.position = 0;
-		return true;
-	}
-	
-pCode:
-
-trait method Qname(PrivateNamespace("*","1165"),"verifyV1Signature") dispid 0
+trait method Qname(PrivateNamespace("*","1028"),"cipherRsa") dispid 0
 method
 name null
 flag NEED_ACTIVATION
-param Qname(PackageNamespace("flash.utils"),"IDataInput")
-param Qname(PackageNamespace("flash.utils"),"ByteArray")
-returns Qname(PackageNamespace("","156"),"Boolean")
+param Qname(PackageNamespace("","180"),"String")
+param Qname(PackageNamespace("","180"),"String")
+param Qname(PackageNamespace("com.ankamagames.dofus.network.types.secure"),"TrustCertificate")
+returns TypeName(Qname(PackageNamespace("__AS3__.vec"),"Vector")<Qname(PackageNamespace("","180"),"int")>)
 
 body
-maxstack 8
-localcount 7
+maxstack 9
+localcount 8
 initscopedepth 5
-maxscopedepth 12
-try from ofs00ab to ofs00de target ofs00e2 type Qname(PackageNamespace("","156"),"Error") name Qname(PackageNamespace("","156"),"e")
+maxscopedepth 10
 
 code
-getlocal_0
-pushscope
-newactivation
-dup
-setlocal_3
-pushscope
-getscopeobject 1
-getlocal_1
-setslot 1
-getscopeobject 1
-getlocal_2
-setslot 2
-getscopeobject 1
-pushbyte 0
-convert_u
-setslot 3
-getscopeobject 1
-getscopeobject 1
-getslot 1
-callproperty Qname(Namespace("flash.utils:IDataInput"),"readShort") 0
-convert_u
-setslot 4
-getscopeobject 1
-findpropstrict Qname(PackageNamespace("flash.utils"),"ByteArray")
-constructprop Qname(PackageNamespace("flash.utils"),"ByteArray") 0
-coerce Qname(PackageNamespace("flash.utils"),"ByteArray")
-setslot 5
-ofs00ab:getscopeobject 1
-getscopeobject 1
-getslot 1
-callproperty Qname(Namespace("flash.utils:IDataInput"),"readInt") 0
-convert_u
-setslot 3
-getscopeobject 1
-getslot 1
-getscopeobject 1
-getslot 5
-pushbyte 0
-getscopeobject 1
-getslot 3
-callproperty Qname(Namespace("flash.utils:IDataInput"),"readBytes") 3
-pop
-ofs00de:jump ofs0137
-ofs00e2:getlocal_0
-pushscope
-getlocal_3
-pushscope
-newcatch 0
-dup
-setlocal 4
-dup
-pushscope
-swap
-setslot 1
-findpropstrict Qname(PackageNamespace("com.ankamagames.jerakine.utils.errors"),"SignatureError")
-pushstring "Invalid signature format, not enough data."
-getlex Qname(PackageNamespace("com.ankamagames.jerakine.utils.errors"),"SignatureError")
-getproperty Qname(PackageNamespace("","156"),"INVALID_SIGNATURE")
-constructprop Qname(PackageNamespace("com.ankamagames.jerakine.utils.errors"),"SignatureError") 2
-throw
-popscope
-kill 4
-ofs0137:getscopeobject 1
-getslot 1
-getscopeobject 1
-getslot 2
-callproperty Qname(Namespace("flash.utils:IDataInput"),"readBytes") 1
-pop
-getscopeobject 1
-getslot 2
-pushbyte 0
-setproperty Qname(PackageNamespace("","156"),"position")
-pushtrue
+getlex Multiname("Vector",[PrivateNamespace("*","1028"),StaticProtectedNs("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("","180"),PackageNamespace("com.ankamagames.dofus.logic.connection.managers"),PrivateNamespace("*","3032"),PackageInternalNs("com.ankamagames.dofus.logic.connection.managers"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("com.ankamagames.dofus.logic.connection.managers:AuthentificationManager"),PackageNamespace("__AS3__.vec")])
+getlex Qname(PackageNamespace("","180"),"int")
+applytype 1
+construct 0
 returnvalue
+
+(dofus.logic.connection.frames.AuthentificationFrame::LoginValidationAction):
+BEFORE:
+if(BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)
+
+AFTER:
+if(BuildInfos.BUILD_TYPE < BuildTypeEnum.RELEASE)
+
+(dofus.logic.connection.frames.ServerSelectionFrame::SelectedServerDataMessage):
+BEFORE:
+AuthentificationManager.getInstance().gameServerTicket = AuthentificationManager.getInstance().decodeWithAES(_loc6_.ticket).toString();
+
+AFTER:
+AuthentificationManager.getInstance().gameServerTicket = _loc6_.ticket.toString();
+
+pCode:
+getlex Qname(PackageNamespace("com.ankamagames.dofus.logic.connection.managers"),"AuthentificationManager")
+callproperty Qname(PackageNamespace("","180"),"getInstance") 0
+getlocal 6
+getproperty Qname(PackageNamespace("","180"),"ticket")
+callproperty Qname(PackageNamespace("","180"),"toString") 0
+setproperty Qname(PackageNamespace("","180"),"gameServerTicket")
+
+====== OPTIONAL ======
+Patch ReloginTokenStatusMessage in dofus.logic.common.frames.ChangeCharacterFrame::ReloginTokenStatusMessage
+Patch initIdentificationMessage(LoginValidationWithTicketAction) in dofus.logic.connection.managers.AuthentificationManager::getIdentificationMessage

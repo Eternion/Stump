@@ -86,7 +86,14 @@ namespace Stump.Server.WorldServer.Handlers.Approach
                 msg => WorldServer.Instance.IOTaskPool.AddMessage(() => OnAccountReceived(msg, client)), error => client.Disconnect());
         }
 
-        private static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
+        [WorldHandler(ReloginTokenRequestMessage.Id, IsGamePacket = false)]
+        public static void HandleReloginTokenRequestMessage(WorldClient client, ReloginTokenRequestMessage message)
+        {
+            //Need to keep ticket or regen one ta validate Token
+            client.Send(new ReloginTokenStatusMessage(false, Encoding.ASCII.GetBytes(client.Account.Ticket).Select(x => (sbyte)x)));
+        }
+
+        static void OnAccountReceived(AccountAnswerMessage message, WorldClient client)
         {
             Character dummy;
             if (AccountManager.Instance.IsAccountBlocked(message.Account.Id, out dummy))

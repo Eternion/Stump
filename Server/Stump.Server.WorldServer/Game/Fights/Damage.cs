@@ -6,6 +6,9 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Database.World;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -27,12 +30,14 @@ namespace Stump.Server.WorldServer.Game.Fights
                 BaseMinDamages = BaseMaxDamages;
         }
 
-        public Damage(EffectDice effect, EffectSchoolEnum school, FightActor source, Spell spell)
+        public Damage(EffectDice effect, EffectSchoolEnum school, FightActor source, Spell spell, Cell targetCell, Zone zone = null)
             : this(effect)
         {
             School = school;
             Source = source;
             Spell = spell;
+            TargetCell = targetCell;
+            Zone = zone;
         }
 
         public EffectSchoolEnum School
@@ -120,6 +125,18 @@ namespace Stump.Server.WorldServer.Game.Fights
         }
 
         public bool ReflectedDamages
+        {
+            get;
+            set;
+        }
+
+        public Cell TargetCell
+        {
+            get;
+            set;
+        }
+
+        public Zone Zone
         {
             get;
             set;

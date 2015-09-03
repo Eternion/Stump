@@ -16,10 +16,11 @@ using Stump.Server.WorldServer.Game.Formulas;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Monster = Stump.Server.WorldServer.Game.Actors.RolePlay.Monsters.Monster;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public sealed class MonsterFighter : AIFighter
+    public sealed class MonsterFighter : AIFighter, ICreature
     {
         private readonly Dictionary<DroppableItem, int> m_dropsCount = new Dictionary<DroppableItem, int>();
         private readonly StatsFields m_stats;
@@ -46,6 +47,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
             private set;
+        }
+
+        public MonsterGrade MonsterGrade
+        {
+            get { return Monster.Grade; }
         }
 
         public override string Name

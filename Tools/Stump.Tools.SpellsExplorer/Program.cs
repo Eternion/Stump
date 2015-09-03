@@ -39,10 +39,10 @@ namespace Stump.Tools.SpellsExplorer
 
         public static void Main()
         {
-            Console.BufferWidth = 90;
+            /*Console.BufferWidth = 90;
             Console.BufferHeight = 1024;
             Console.WindowWidth = 90;
-            Console.WindowHeight = 45;
+            Console.WindowHeight = 45;*/
 
             Console.WriteLine("Load {0}...", ConfigFile);
             m_config = new XmlConfig(ConfigFile);
@@ -78,9 +78,9 @@ namespace Stump.Tools.SpellsExplorer
                 var pattern = Console.ReadLine();
                 try
                 {
-                    if (pattern.StartsWith("flags:"))
+                    if (pattern.StartsWith("target:"))
                     {
-                        var flag = int.Parse(pattern.Remove(0, "flags:".Length), NumberStyles.HexNumber);
+                        var target = pattern.Remove(0, "target:".Length);
 
                         foreach (
                             var spell in
@@ -88,10 +88,22 @@ namespace Stump.Tools.SpellsExplorer
                                             .Where(
                                                 x =>
                                                     SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => (int) y.Targets == flag)))
+                                                                .Effects.Any(y => y.TargetMask.Split(',').Contains(target))))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
-                                        
+
+                    if (pattern.StartsWith("zone"))
+                    {
+                        foreach (
+                            var spell in
+                                SpellManager.Instance.GetSpellTemplates()
+                                            .Where(
+                                                x =>
+                                                    SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => y.ZoneEfficiencyPercent != 0)))
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                    }
+
                     if (pattern.StartsWith("delay"))
                     {
                         foreach (
@@ -215,7 +227,7 @@ namespace Stump.Tools.SpellsExplorer
                 Console.WriteLine("Effect \"{0}\" ({1}, {2})", TextManager.Instance.GetText(effect.Template.DescriptionId), effect.EffectId, (int)effect.EffectId);
                 Console.WriteLine("DiceFace = {0}, DiceNum = {1}, Value = {2}", effect.DiceFace, effect.DiceNum, effect.Value);
                 Console.WriteLine("Hidden = {0}, Modificator = {1}, Random = {2}, Trigger = {3}, Delay = {4}", effect.Hidden, effect.Modificator, effect.Random, effect.Trigger, effect.Delay);
-                Console.WriteLine("ZoneShape = {0}, ZoneSize = {1}-{2}, Duration = {3}, Target = {4}, Group = {5}", effect.ZoneShape, effect.ZoneMinSize, effect.ZoneSize, effect.Duration, effect.Targets, effect.Group);
+                Console.WriteLine("ZoneShape = {0}, ZoneSize = {1}-{2}, Duration = {3}, Target = {4}, Group = {5}", effect.ZoneShape, effect.ZoneMinSize, effect.ZoneSize, effect.Duration, effect.TargetMask, effect.Group);
                 Console.WriteLine("Template.Active = {0}, Template.BonusType = {1}, Template.Boost = {2}", effect.Template.Active, effect.Template.BonusType, effect.Template.Boost);
                 Console.WriteLine("Template.Category = {0}, Template.Characteristic = {1}, Template.ForceMinMax = {2}", effect.Template.Category, effect.Template.Characteristic, effect.Template.ForceMinMax);
                 Console.WriteLine("Template.Operator = {0}, Template.Id = {1}, Template.ShowInSet = {2}", effect.Template.Operator, effect.Template.Id, effect.Template.ShowInSet);

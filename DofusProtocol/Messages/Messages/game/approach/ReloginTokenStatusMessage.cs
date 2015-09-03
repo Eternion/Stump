@@ -1,6 +1,6 @@
 
 
-// Generated on 08/04/2015 13:24:49
+// Generated on 09/01/2015 10:48:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,28 +19,45 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public bool validToken;
-        public string token;
+        public IEnumerable<sbyte> ticket;
         
         public ReloginTokenStatusMessage()
         {
         }
         
-        public ReloginTokenStatusMessage(bool validToken, string token)
+        public ReloginTokenStatusMessage(bool validToken, IEnumerable<sbyte> ticket)
         {
             this.validToken = validToken;
-            this.token = token;
+            this.ticket = ticket;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteBoolean(validToken);
-            writer.WriteUTF(token);
+            var ticket_before = writer.Position;
+            var ticket_count = 0;
+            writer.WriteVarInt(0);
+            foreach (var entry in ticket)
+            {
+                 writer.WriteSByte(entry);
+                 ticket_count++;
+            }
+            var credentials_after = writer.Position;
+            writer.Seek((int)ticket_before);
+            writer.WriteVarInt((int)ticket_count);
+            writer.Seek((int)credentials_after);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             validToken = reader.ReadBoolean();
-            token = reader.ReadUTF();
+            var limit = reader.ReadVarInt();
+            var ticket_ = new sbyte[limit];
+            for (int i = 0; i < limit; i++)
+            {
+                 ticket_[i] = reader.ReadSByte();
+            }
+            ticket = ticket_;
         }
         
     }

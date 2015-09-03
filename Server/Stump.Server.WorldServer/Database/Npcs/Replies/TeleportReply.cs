@@ -97,7 +97,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
         {
             get
             {
-                return Record.GetParameter<int>(4);
+                return Record.GetParameter<int>(4, true);
             }
             set
             {
@@ -134,7 +134,7 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
             if (!base.Execute(npc, character))
                 return false;
 
-            if (string.IsNullOrEmpty(ItemsParameter))
+            if (string.IsNullOrEmpty(ItemsParameter) && KamasParameter == 0)
                 return character.Teleport(GetPosition());
 
             if (character.Kamas < KamasParameter)
@@ -144,46 +144,49 @@ namespace Stump.Server.WorldServer.Database.Npcs.Replies
                 return false;
             }
 
-            var parameter = ItemsParameter.Split(',');
-            var itemsToDelete = new Dictionary<BasePlayerItem, int>();
-
-            foreach (var itemParameter in parameter.Select(x => x.Split('_')))
+            if (ItemsParameter != null)
             {
-                int itemId;
-                int amount;
+                var parameter = ItemsParameter.Split(',');
+                var itemsToDelete = new Dictionary<BasePlayerItem, int>();
 
-                if (!int.TryParse(itemParameter[0], out itemId))
-                    return false;
-
-                if (!int.TryParse(itemParameter[1], out amount))
-                    return false;
-
-                var template = ItemManager.Instance.TryGetTemplate(itemId);
-                if (template == null)
-                    return false;
-
-                var item = character.Inventory.TryGetItem(template);
-
-                if (item == null)
+                foreach (var itemParameter in parameter.Select(x => x.Split('_')))
                 {
-                    //Vous ne possédez pas l'objet nécessaire.
-                    character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
-                    return false;
+                    int itemId;
+                    int amount;
+
+                    if (!int.TryParse(itemParameter[0], out itemId))
+                        return false;
+
+                    if (!int.TryParse(itemParameter[1], out amount))
+                        return false;
+
+                    var template = ItemManager.Instance.TryGetTemplate(itemId);
+                    if (template == null)
+                        return false;
+
+                    var item = character.Inventory.TryGetItem(template);
+
+                    if (item == null)
+                    {
+                        //Vous ne possédez pas l'objet nécessaire.
+                        character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 4);
+                        return false;
+                    }
+
+                    if (item.Stack < amount)
+                    {
+                        //Vous ne possédez pas l'objet en quantité suffisante.
+                        character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
+                        return false;
+                    }
+
+                    itemsToDelete.Add(item, amount);
                 }
 
-                if (item.Stack < amount)
+                foreach (var itemToDelete in itemsToDelete)
                 {
-                    //Vous ne possédez pas l'objet en quantité suffisante.
-                    character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 252);
-                    return false;
+                    character.Inventory.RemoveItem(itemToDelete.Key, itemToDelete.Value);
                 }
-
-                itemsToDelete.Add(item, amount);
-            }
-
-            foreach (var itemToDelete in itemsToDelete)
-            {
-                character.Inventory.RemoveItem(itemToDelete.Key, itemToDelete.Value);
             }
 
             character.Inventory.SubKamas(KamasParameter);

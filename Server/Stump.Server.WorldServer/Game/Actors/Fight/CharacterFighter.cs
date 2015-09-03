@@ -23,6 +23,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -221,12 +222,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 }
 
                 var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell,
-                    critical ==
-                    FightSpellCastCriticalEnum
-                        .CRITICAL_HIT);
+                    critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
                 handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize,
-                    handler.CastPoint.OrientationTo(handler.TargetedPoint));
-                handler.Targets = SpellTargetType.ENEMY_ALL | SpellTargetType.ALLY_ALL;
+                    handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);
+                handler.Targets = new TargetCriterion[0]; // means all
                 handlers.Add(handler);
             }
 

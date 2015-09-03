@@ -283,6 +283,7 @@
     <Compile Include="Game\Actors\Fight\TaxCollectorFighter.cs" />
     <Compile Include="Game\Actors\Interfaces\IAutoMovedEntity.cs" />
     <Compile Include="Game\Actors\Interfaces\IContextDependant.cs" />
+    <Compile Include="Game\Actors\Interfaces\ICreature.cs" />
     <Compile Include="Game\Actors\Look\ActorLook.cs" />
     <Compile Include="Game\Actors\Fight\SummonedFighter.cs" />
     <Compile Include="Game\Actors\Fight\SummonedMonster.cs" />
@@ -366,11 +367,14 @@
     <Compile Include="Game\Effects\Handlers\Spells\Others\TriggerGlyphs.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\KillAndSummon.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Summon\Slave.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\CarriedCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\LifeCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\MonsterCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\StateCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\TargetCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Targets\TargetTypeCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\TelefragCriterion.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Targets\UnknownCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
