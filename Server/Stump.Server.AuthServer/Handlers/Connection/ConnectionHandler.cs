@@ -162,9 +162,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
                 SendIdentificationSuccessMessage(client, false);
 
-                /* If autoconnect, send to the lastServer */
-                
-                if (message.serverId != -1 && client.Account.LastConnectionWorld != null && WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
+                /* If autoconnect, send to the lastServer */             
+                if (message.autoconnect && client.Account.LastConnectionWorld != null && WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
                     SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
                 else
                     SendServersListMessage(client, 0, true);

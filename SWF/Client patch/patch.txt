@@ -78,3 +78,7 @@ getlocal 6
 getproperty Qname(PackageNamespace("","180"),"ticket")
 callproperty Qname(PackageNamespace("","180"),"toString") 0
 setproperty Qname(PackageNamespace("","180"),"gameServerTicket")
+
+====== OPTIONAL ======
+Patch ReloginTokenStatusMessage in dofus.logic.common.frames.ChangeCharacterFrame::ReloginTokenStatusMessage
+Patch initIdentificationMessage(LoginValidationWithTicketAction) in dofus.logic.connection.managers.AuthentificationManager::getIdentificationMessage
