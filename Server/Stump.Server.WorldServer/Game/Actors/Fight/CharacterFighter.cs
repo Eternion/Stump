@@ -318,7 +318,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var point = new MapPoint(cell);
 
             if ((weapon.CastInDiagonal && (point.EuclideanDistanceTo(Position.Point) > weapon.WeaponRange || point.EuclideanDistanceTo(Position.Point) < weapon.MinRange)) ||
-                point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange || point.ManhattanDistanceTo(Position.Point) < weapon.MinRange)
+                (!weapon.CastInDiagonal && point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange || point.ManhattanDistanceTo(Position.Point) < weapon.MinRange))
                 return false;
 
             if (m_weaponUses >= weapon.MaxCastPerTurn)
