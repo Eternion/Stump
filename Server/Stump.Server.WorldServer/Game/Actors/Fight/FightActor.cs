@@ -831,10 +831,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage.Source != null && !damage.IgnoreDamageBoost)
             {
+                damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School, damage.IsCritical);
+
                 if (damage.Spell != null)
                     damage.Amount += damage.Source.GetSpellBoost(damage.Spell);
-
-                damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School, damage.IsCritical);
             }
 
             // zone damage
@@ -1076,22 +1076,28 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             switch (zone.ShapeType)
             {
                 case SpellShapeEnum.A:
-                    distance = targetCell.EuclideanDistanceTo(impactCell);
-                    break;
                 case SpellShapeEnum.a:
                 case SpellShapeEnum.Z:
                 case SpellShapeEnum.I:
                 case SpellShapeEnum.O:
-                    distance = targetCell.ManhattanDistanceTo(impactCell);
-                    break;
                 case SpellShapeEnum.semicolon:
                 case SpellShapeEnum.empty:
                 case SpellShapeEnum.P:
+                    return 1.0;
                 case SpellShapeEnum.B:
+                case SpellShapeEnum.V:
+                case SpellShapeEnum.G:
+                case SpellShapeEnum.W:
+                    distance = targetCell.ManhattanDistanceTo(impactCell);
+                    break;
+                case SpellShapeEnum.minus:
+                case SpellShapeEnum.plus:
+                case SpellShapeEnum.U:
                     distance = targetCell.EuclideanDistanceTo(impactCell) / 2;
                     break;
                 default:
-                    return 1.0;
+                    distance = targetCell.EuclideanDistanceTo(impactCell);
+                    break;
             }
 
             if (distance > zone.Radius)
