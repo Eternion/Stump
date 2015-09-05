@@ -1108,10 +1108,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 if (distance <= zone.MinRadius)
                     return 1.0;
 
-                return Math.Max(0d, 1 - 0 * 0.01 * Math.Min(distance - zone.MinRadius, zone.MaxEfficiency) * zone.EfficiencyMalus);
+                return Math.Max(0d, 1 - 0.01 * Math.Min(distance - zone.MinRadius, zone.MaxEfficiency) * zone.EfficiencyMalus);
             }
 
-            return Math.Max(0d, 1 - 0 * 0.01 * Math.Min(distance, zone.MaxEfficiency) * zone.EfficiencyMalus);
+            return Math.Max(0d, 1 - 0.01 * Math.Min(distance, zone.MaxEfficiency) * zone.EfficiencyMalus);
         }
 
         public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor, bool poison)
