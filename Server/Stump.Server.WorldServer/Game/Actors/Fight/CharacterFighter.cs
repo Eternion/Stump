@@ -225,7 +225,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
                 handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize,
                     handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);
-                handler.Targets = new TargetCriterion[0]; // means all
+                handler.Targets = new TargetCriterion[]
+                    { new TargetTypeCriterion(SpellTargetType.ALLY_ALL), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL) }; // everyone but caster
                 handlers.Add(handler);
             }
 
