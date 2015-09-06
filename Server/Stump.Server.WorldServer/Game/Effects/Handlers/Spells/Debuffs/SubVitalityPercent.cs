@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     Effect.Id);
 
                 if (Effect.EffectId == EffectsEnum.Effect_SubVitalityPercent)
-                    ActionsHandler.SendGameActionFightLifePointsLostMessage(Fight.Clients, actor, actor, (short)bonus, 0);
+                    ActionsHandler.SendGameActionFightLifePointsLostMessage(Fight.Clients, ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, actor, actor, (short)bonus, 0);
             }
 
             return true;

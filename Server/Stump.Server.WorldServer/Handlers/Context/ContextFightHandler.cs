@@ -209,7 +209,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.Fight.IsStarted)
                 client.Character.Team.ToggleOption((FightOptionsEnum) message.option);
             else if (message.option == 0)
-                client.Character.Fight.ToggleSpectatorClosed(!client.Character.Fight.SpectatorClosed);
+                client.Character.Fight.ToggleSpectatorClosed(client.Character, !client.Character.Fight.SpectatorClosed);
         }
 
         [WorldHandler(GameFightJoinRequestMessage.Id)]

@@ -51,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
 
             if (TargetType == SpellTargetType.ENEMY_ALL || TargetType.HasFlag(SpellTargetType.ENEMY_PLAYER)
-                || TargetType.HasFlag(SpellTargetType.ENEMY_UNKN_1) || TargetType.HasFlag(SpellTargetType.ALLY_UNKN_2)) // not sure about that
+                || TargetType.HasFlag(SpellTargetType.ENEMY_UNKN_1) || TargetType.HasFlag(SpellTargetType.ENEMY_UNKN_2)) // not sure about that
                 return true;
 
             if ((TargetType.HasFlag(SpellTargetType.ENEMY_MONSTER)) && (actor is MonsterFighter))

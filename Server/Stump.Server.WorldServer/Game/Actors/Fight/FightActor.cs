@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 CellShown(this, cell, team);
         }
 
-        public event Action<FightActor, int, int, int, FightActor> LifePointsChanged;
+        public event Action<FightActor, int, int, int, FightActor, EffectSchoolEnum> LifePointsChanged;
 
         public event Action<FightActor> FighterLeft;
         protected virtual void OnLeft()
@@ -74,12 +74,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 evnt(this);
         }
 
-        protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from, EffectSchoolEnum school)
         {
             var handler = LifePointsChanged;
 
             if (handler != null)
-                handler(this, delta, shieldDamages, permanentDamages, from);
+                handler(this, delta, shieldDamages, permanentDamages, from, school);
         }
 
         public event Action<FightActor, Damage> BeforeDamageInflicted;
@@ -946,7 +946,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.PermanentDamages += permanentDamages;
             Stats.Shield.Context -= shieldDamages;
 
-            OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source);
+            OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source, damage.School);
 
             CheckDead(damage.Source);
 
@@ -967,7 +967,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (HasState((int)SpellStatesEnum.INSOIGNABLE))
             {
-                OnLifePointsChanged(0, 0, 0, from);
+                OnLifePointsChanged(0, 0, 0, from, EffectSchoolEnum.Unknown);
                 return 0;
             }
 
@@ -976,7 +976,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             DamageTaken -= healPoints;
 
-            OnLifePointsChanged(healPoints, 0, 0, from);
+            OnLifePointsChanged(healPoints, 0, 0, from, EffectSchoolEnum.Unknown);
 
             TriggerBuffs(BuffTriggerType.AFTER_HEALED);
             from.TriggerBuffs(BuffTriggerType.AFTER_HEAL);
