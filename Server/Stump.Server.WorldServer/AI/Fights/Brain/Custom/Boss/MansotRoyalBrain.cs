@@ -3,6 +3,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Game.Effects;
 
 namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 {
@@ -48,7 +49,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             mansomonHandler.Execute();
         }
 
-        private void OnLifePointsChanged(FightActor fighter, int delta, int shieldDamages, int permanentDamages, FightActor from)
+        private void OnLifePointsChanged(FightActor fighter, int delta, int shieldDamages, int permanentDamages, FightActor from, EffectSchoolEnum school)
         {
             if (fighter != Fighter)
                 return;

@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Enums.Custom;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Effects;
 
 namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
 {
@@ -30,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Challenges.Custom
             return Fight.GetAllCharacters().Any(x => x.BreedId != PlayableBreedEnum.Pandawa);
         }
 
-        private void OnLifePointsChanged(FightActor fighter, int delta, int shieldDamages, int permanentDamages, FightActor from)
+        private void OnLifePointsChanged(FightActor fighter, int delta, int shieldDamages, int permanentDamages, FightActor from, EffectSchoolEnum school)
         {
             if (delta > 0)
                 UpdateStatus(ChallengeStatusEnum.FAILED, fighter);

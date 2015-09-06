@@ -277,9 +277,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return true;
         }
 
-        public virtual bool RequireSilentCast()
-        {
-            return false;
-        }
+        public virtual bool RequireSilentCast() => false;
     }
 }
