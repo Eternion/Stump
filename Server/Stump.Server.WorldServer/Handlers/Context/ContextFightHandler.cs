@@ -311,12 +311,12 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight)
         {
-            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds / 100, fight.AgeBonus, 0, new FightResultListEntry[0], new NamedPartyTeamWithOutcome[0]));
+            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds, fight.AgeBonus, 0, new FightResultListEntry[0], new NamedPartyTeamWithOutcome[0]));
         }
 
         public static void SendGameFightEndMessage(IPacketReceiver client, IFight fight, IEnumerable<FightResultListEntry> results)
         {
-            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds / 100, fight.AgeBonus, 0, results, new NamedPartyTeamWithOutcome[0]));
+            client.Send(new GameFightEndMessage((int)fight.GetFightDuration().TotalMilliseconds, fight.AgeBonus, 0, results, new NamedPartyTeamWithOutcome[0]));
         }
 
         public static void SendGameFightJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
