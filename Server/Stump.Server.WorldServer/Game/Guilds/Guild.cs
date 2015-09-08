@@ -278,11 +278,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
             protected set;
         }
 
-        public short HireCost
-        {
-            get { return (short) (1000 + (Level*100)); }
-        }
-
         public bool IsDirty
         {
             get { return m_isDirty || Emblem.IsDirty; }
@@ -298,7 +293,6 @@ namespace Stump.Server.WorldServer.Game.Guilds
         public void AddTaxCollector(TaxCollectorNpc taxCollector)
         {
             m_taxCollectors.Add(taxCollector);
-            //TaxCollectorHandler.SendTaxCollectorMovementAddMessage(taxCollector.Guild.Clients, taxCollector);
         }
 
         public void RemoveTaxCollector(TaxCollectorNpc taxCollector)
@@ -519,15 +513,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
             }
         }
 
-        public ReadOnlyCollection<Spell> GetTaxCollectorSpells()
-        {
-            return m_spells.Where(x => x != null).ToList().AsReadOnly();
-        }
+        public ReadOnlyCollection<Spell> GetTaxCollectorSpells() => m_spells.Where(x => x != null).ToList().AsReadOnly();
 
-        public int[] GetTaxCollectorSpellsLevels() // faster
-        {
-            return m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
-        }
+        public int[] GetTaxCollectorSpellsLevels() => m_spells.Select(x => x == null ? 0 : x.CurrentLevel).ToArray();
 
         public SocialGroupCreationResultEnum SetGuildName(Character character, string name)
         {
@@ -768,15 +756,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
             GuildHandler.SendGuildInformationsMemberUpdateMessage(m_clients, member);
         }
 
-        public bool CanAddMember()
-        {
-            return m_members.Count < MaxMembersNumber;
-        }
+        public bool CanAddMember() => m_members.Count < MaxMembersNumber;
 
-        public GuildMember TryGetMember(int id)
-        {
-            return m_members.FirstOrDefault(x => x.Id == id);
-        }
+        public GuildMember TryGetMember(int id) => m_members.FirstOrDefault(x => x.Id == id);
 
         public bool TryAddMember(Character character)
         {
@@ -872,7 +854,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_clients.Send(new GuildLevelUpMessage(Level));
         }
 
-        private void OnMemberConnected(GuildMember member)
+        void OnMemberConnected(GuildMember member)
         {
             //Un membre de votre guilde, {player,%1,%2}, est en ligne.
             BasicHandler.SendTextInformationMessage(m_clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 224,
@@ -885,7 +867,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_clients.Send(new GuildMemberOnlineStatusMessage(member.Id, true));
         }
 
-        private void OnMemberDisconnected(GuildMember member, Character character)
+        void OnMemberDisconnected(GuildMember member, Character character)
         {
             m_clients.Remove(character.Client);
 
@@ -895,29 +877,23 @@ namespace Stump.Server.WorldServer.Game.Guilds
             m_clients.Send(new GuildMemberLeavingMessage(false, member.Id));
         }
 
-        private void BindMemberEvents(GuildMember member)
+        void BindMemberEvents(GuildMember member)
         {
             member.Connected += OnMemberConnected;
             member.Disconnected += OnMemberDisconnected;
         }
 
 
-        private void UnBindMemberEvents(GuildMember member)
+        void UnBindMemberEvents(GuildMember member)
         {
             member.Connected -= OnMemberConnected;
             member.Disconnected -= OnMemberDisconnected;
         }
 
 
-        public GuildInformations GetGuildInformations()
-        {
-            return new GuildInformations(Id, Name, Emblem.GetNetworkGuildEmblem());
-        }
+        public GuildInformations GetGuildInformations() => new GuildInformations(Id, Name, Emblem.GetNetworkGuildEmblem());
 
-        public BasicGuildInformations GetBasicGuildInformations()
-        {
-            return new BasicGuildInformations(Id, Name);
-        }
+        public BasicGuildInformations GetBasicGuildInformations() => new BasicGuildInformations(Id, Name);
     }
 }
 
