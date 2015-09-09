@@ -19,8 +19,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Elementary
             if (!m_initialized)
                 Initialize();
 
-            var summonEffect = Handlers[0];
-            var glyphEffect = Handlers[1];
+            var summonEffect = Handlers[1];
+            var glyphEffect = Handlers[0];
 
             if (summonEffect == null || glyphEffect == null)
                 return;
