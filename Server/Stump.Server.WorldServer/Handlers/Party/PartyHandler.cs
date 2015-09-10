@@ -12,7 +12,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Arena;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Parties;
-using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
 {
@@ -35,7 +34,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 return;
             }
 
-            if (target.IsAway && !target.FriendsBook.IsFriend(client.Account.Id))
+            if (!target.IsAvailable(client.Character, false))
             {
                 SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY);
                 return;
@@ -55,7 +54,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
                 return;
             }
 
-            if (target.IsAway)
+            if (!target.IsAvailable(client.Character, false))
             {
                 SendPartyCannotJoinErrorMessage(client, PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY);
                 return;

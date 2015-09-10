@@ -2314,7 +2314,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual GameFightFighterInformations GetGameFightFighterInformations()
         {
-            return GetGameFightFighterInformations(null);
+            return GetGameFightFighterInformations();
         }
 
         public virtual GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
@@ -2327,7 +2327,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
-                new short[0]);
+                LastPositions.Select(x => x.First.Id).ToArray());
         }
 
         public virtual GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
