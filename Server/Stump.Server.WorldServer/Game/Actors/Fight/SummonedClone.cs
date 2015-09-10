@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -24,50 +25,33 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public FightActor Caster
         {
             get;
-            private set;
         }
 
-        public override ObjectPosition MapPosition
-        {
-            get { return Position; }
-        }
+        public override ObjectPosition MapPosition => Position;
 
-        public override string GetMapRunningFighterName()
-        {
-            return Name;
-        }
+        public override string GetMapRunningFighterName() => Name;
 
-        public override byte Level
-        {
-            get { return Caster.Level; }
-        }
+        public override byte Level => Caster.Level;
 
-        public override string Name
-        {
-            get { return (Caster is NamedFighter) ? ((NamedFighter)Caster).Name : "(no name)"; }
-        }
+        public override string Name => (Caster is NamedFighter) ? ((NamedFighter)Caster).Name : "(no name)";
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
+        public override StatsFields Stats => m_stats;
 
         public GameFightFighterNamedInformations GetGameFightFighterNamedInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
+
             return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, IsAlive(), GetGameFightMinimalStats(),
-                new short[0], Name, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE));
+                LastPositions.Select(x => x.First.Id).ToArray(), Name, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE));
         }
 
         public override GameFightFighterInformations GetGameFightFighterInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
-            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, IsAlive(), GetGameFightMinimalStats(), new short[0]);
+            return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId,
+                0, IsAlive(), GetGameFightMinimalStats(), LastPositions.Select(x => x.First.Id).ToArray());
         }
 
-        public override FightTeamMemberInformations GetFightTeamMemberInformations()
-        {
-            return new FightTeamMemberInformations(Id);
-        }
+        public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberInformations(Id);
     }
 }

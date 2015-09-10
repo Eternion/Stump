@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                         return;
                     }
 
-                    if (target.IsAway && !target.FriendsBook.IsFriend(client.Account.Id))
+                    if (!target.IsAvailable(client.Character, false))
                     {
                         SendExchangeErrorMessage(client, ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED);
                         return;

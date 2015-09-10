@@ -1500,7 +1500,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             TurnStartTime = DateTime.Now;
 
             if (!Freezed)
+            {
+                if (!Map.Area.IsRunning)
+                    Map.Area.Start();
+
                 m_turnTimer = Map.Area.CallDelayed(FighterPlaying.TurnTime, StopTurn);
+            }
+                
 
             var evnt = TurnStarted;
             if (evnt != null)

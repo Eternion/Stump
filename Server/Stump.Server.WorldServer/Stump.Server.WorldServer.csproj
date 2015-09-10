@@ -633,6 +633,7 @@
     <Compile Include="Handlers\Actions\ActionsFightHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsHandler.cs" />
     <Compile Include="Handlers\Actions\ActionsSequenceHandler.cs" />
+    <Compile Include="Handlers\Characters\CharacterStatusHandler.cs" />
     <Compile Include="Handlers\Compass\CompassHandler.cs" />
     <Compile Include="Handlers\Context\ContextArenaHandler.cs" />
     <Compile Include="Handlers\Context\ContextChallengeHandler.cs" />

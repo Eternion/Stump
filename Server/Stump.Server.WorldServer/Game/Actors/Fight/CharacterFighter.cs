@@ -434,7 +434,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                       GetGameFightMinimalStats(client),
                                                       new short[0],
                                                       Name,
-                                                      Character.GetPlayerStatus(),
+                                                      Character.Status,
                                                       Character.Level,
                                                       Character.GetActorAlignmentInformations(),
                                                       (sbyte) Character.Breed.Id,

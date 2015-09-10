@@ -73,7 +73,7 @@ namespace Stump.Server.WorldServer.Game.Social
                     Character.Sex == SexTypeEnum.SEX_FEMALE,
                     Character.GuildMember == null ? new BasicGuildInformations(0, "") : Character.GuildMember.Guild.GetBasicGuildInformations(),
                     -1,
-                    Character.GetPlayerStatus());
+                    Character.Status);
             }
 
             return new FriendInformations(
