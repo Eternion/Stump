@@ -2314,7 +2314,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual GameFightFighterInformations GetGameFightFighterInformations()
         {
-            return GetGameFightFighterInformations();
+            return GetGameFightFighterInformations(null);
         }
 
         public virtual GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
