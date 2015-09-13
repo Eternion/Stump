@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             //Send to receiver
             SendChatServerMessage(receiver.Client, sender, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
             //Send a copy to sender
-            SendChatServerCopyMessage(client, sender, sender, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
+            SendChatServerCopyMessage(client, sender, receiver, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
 
             if (receiver.Status.statusId == (sbyte)PlayerStatusEnum.PLAYER_STATUS_AFK && receiver.Status is PlayerStatusExtended)
                 SendChatServerMessage(sender.Client, receiver, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, $"Réponse automatique:{((PlayerStatusExtended)receiver.Status).message}");
@@ -133,7 +133,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             //Send to receiver
             SendChatServerWithObjectMessage(receiver.Client, sender, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content, "", message.objects);
             //Send a copy to sender
-            SendChatServerCopyWithObjectMessage(client, sender, sender, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content, message.objects);
+            SendChatServerCopyWithObjectMessage(client, sender, receiver, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content, message.objects);
 
             if (receiver.Status.statusId == (sbyte)PlayerStatusEnum.PLAYER_STATUS_AFK && receiver.Status is PlayerStatusExtended)
                 SendChatServerMessage(sender.Client, receiver, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, $"Réponse automatique:{((PlayerStatusExtended)receiver.Status).message}");

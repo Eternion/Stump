@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Social
             return Character != null;
         }
 
-        public FriendInformations GetFriendInformations()
+        public FriendInformations GetFriendInformations(Character asker)
         {
             if (IsOnline())
             {
@@ -67,8 +67,8 @@ namespace Stump.Server.WorldServer.Game.Social
                     0, // todo achievement
                     Character.Id,
                     Character.Name,
-                    Character.Level,
-                    (sbyte)Character.AlignmentSide,
+                    Character.FriendsBook.IsFriend(asker.Account.Id) ? Character.Level : (byte)0,
+                    Character.FriendsBook.IsFriend(asker.Account.Id) ? (sbyte)Character.AlignmentSide : (sbyte)AlignmentSideEnum.ALIGNMENT_UNKNOWN,
                     (sbyte)Character.Breed.Id,
                     Character.Sex == SexTypeEnum.SEX_FEMALE,
                     Character.GuildMember == null ? new BasicGuildInformations(0, "") : Character.GuildMember.Guild.GetBasicGuildInformations(),
