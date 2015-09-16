@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using MongoDB.Bson;
 using NLog;
 using Stump.Core.Attributes;
@@ -37,7 +36,6 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
-using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Exchanges;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
@@ -65,7 +63,6 @@ using Stump.Server.WorldServer.Handlers.Guilds;
 using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.Titles;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
-using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
@@ -86,6 +83,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Client = client;
             SaveSync = new object();
             LoggoutSync = new object();
+            Status = new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
 
             LoadRecord();
         }
@@ -343,25 +341,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
         }
 
-        public NpcShopDialogLogger NpcShopDialog
-        {
-            get { return Dialog as NpcShopDialogLogger; }
-        }
+        public NpcShopDialogLogger NpcShopDialog => Dialog as NpcShopDialogLogger;
 
-        public ZaapDialog ZaapDialog
-        {
-            get { return Dialog as ZaapDialog; }
-        }
+        public ZaapDialog ZaapDialog => Dialog as ZaapDialog;
 
-        public ZaapiDialog ZaapiDialog
-        {
-            get { return Dialog as ZaapiDialog; }
-        }
+        public ZaapiDialog ZaapiDialog => Dialog as ZaapiDialog;
 
-        public MerchantShopDialog MerchantShopDialog
-        {
-            get { return Dialog as MerchantShopDialog; }
-        }
+        public MerchantShopDialog MerchantShopDialog => Dialog as MerchantShopDialog;
 
         public RequestBox RequestBox
         {
@@ -552,10 +538,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             get { return Dialog as IExchange; }
         }
-        public Exchanger Exchanger
-        {
-            get { return Dialoger as Exchanger; }
-        }
+        public Exchanger Exchanger => Dialoger as Exchanger;
         public ITrade Trade
         {
             get { return Dialog as ITrade; }
@@ -843,16 +826,30 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
-        public bool IsAway
+        public PlayerStatus Status
         {
             get;
-            private set;
+            set;
         }
 
-        public bool ToggleAway()
+        public void SetStatus(PlayerStatusEnum status)
         {
-            IsAway = !IsAway;
-            return IsAway;
+            Status = new PlayerStatus((sbyte)status);
+            CharacterStatusHandler.SendPlayerStatusUpdateMessage(Client, Status);
+        }
+
+        public bool IsAvailable(Character character, bool msg)
+        {
+            if (Status.statusId == (sbyte)PlayerStatusEnum.PLAYER_STATUS_SOLO)
+                return false;
+
+            if (Status.statusId == (sbyte)PlayerStatusEnum.PLAYER_STATUS_PRIVATE && !FriendsBook.IsFriend(character.Account.Id))
+                return false;
+
+            if (Status.statusId == (sbyte)PlayerStatusEnum.PLAYER_STATUS_AFK && !msg)
+                return false;
+
+            return true;
         }
 
         public bool ToggleInvisibility(bool toggle)
@@ -2387,7 +2384,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event CharacterDiedHandler Died;
 
-        private void OnDied()
+        void OnDied()
         {
             var dest = GetSpawnPoint() ?? Breed.GetStartPosition();
 
@@ -2402,13 +2399,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (handler != null) handler(this);
         }
 
-        private void OnFightEnded(CharacterFighter fighter)
+        void OnFightEnded(CharacterFighter fighter)
         {
             var handler = FightEnded;
             if (handler != null) handler(this, fighter);
         }
 
-        private void OnCharacterContextChanged(bool inFight)
+        void OnCharacterContextChanged(bool inFight)
         {
             var handler = ContextChanged;
             if (handler != null) handler(this, inFight);
@@ -2416,8 +2413,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public FighterRefusedReasonEnum CanRequestFight(Character target)
         {
-            if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy() ||
-                target.IsAway)
+            if (!target.IsInWorld || target.IsFighting() || target.IsSpectator() || target.IsBusy() || !target.IsAvailable(this, false))
                 return FighterRefusedReasonEnum.OPPONENT_OCCUPIED;
 
             if (!IsInWorld || IsFighting() || IsSpectator() || IsBusy() )
@@ -2534,7 +2530,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return Spectator;
         }
 
-        private CharacterFighter RejoinFightAfterDisconnection(CharacterFighter oldFighter)
+        CharacterFighter RejoinFightAfterDisconnection(CharacterFighter oldFighter)
         {
             Map.Leave(this);
             Map = oldFighter.Map;
@@ -3375,11 +3371,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Sex == SexTypeEnum.SEX_FEMALE);
         }
 
-        public PlayerStatus GetPlayerStatus()
-        {
-            return new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
-        }
-
         public CharacterMinimalPlusLookInformations GetCharacterMinimalPlusLookInformations()
         {
             return new CharacterMinimalPlusLookInformations(
@@ -3517,7 +3508,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short) Map.Position.Y,
                 Map.Id,
                 (short) SubArea.Id,
-                GetPlayerStatus(),
+                Status,
                 new PartyCompanionMemberInformations[0]);
         }
 
@@ -3535,7 +3526,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 Look.GetEntityLook(),
                 (sbyte) BreedId,
                 Sex == SexTypeEnum.SEX_FEMALE,
-                GetPlayerStatus(),
+                Status,
                 new PartyCompanionMemberInformations[0]);
         }
 
@@ -3558,7 +3549,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 (short) Map.Position.Y,
                 Map.Id,
                 (short) SubArea.Id,
-                GetPlayerStatus(),
+                Status,
                 new PartyCompanionMemberInformations[0],
                 (short)ArenaRank);
         }

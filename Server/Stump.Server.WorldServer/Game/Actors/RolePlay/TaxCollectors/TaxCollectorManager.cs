@@ -94,19 +94,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return false;
             }
 
-            if (((double)character.Guild.TaxCollectors.Count(x => x.SubArea == character.SubArea) /
-                          character.SubArea.Maps.Count(x => x.AllowCollector)) * 100 > TaxCollectorNpc.MaxTaxCollectorsPercentPerArea)
-            {
-                character.SendServerMessage("Impossible de poser un percepteur, vous possédez déjà 25% de la zone.", Color.Red);
-                return false;
-            }
-
-            if (character.Inventory.Kamas < character.Guild.HireCost)
-            {
-                character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_NOT_ENOUGH_KAMAS));
-                return false;
-            }
-
             if (!character.Position.Map.AllowCollector)
             {
                 character.Client.Send(new TaxCollectorErrorMessage((sbyte)TaxCollectorErrorReasonEnum.TAX_COLLECTOR_CANT_HIRE_HERE));
@@ -119,7 +106,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 return false;
             }
 
-            character.Inventory.SubKamas(character.Guild.HireCost);
             var position = character.Position.Clone();
 
             var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), position.Map.GetNextContextualId(), position, character.Guild, character.Name);

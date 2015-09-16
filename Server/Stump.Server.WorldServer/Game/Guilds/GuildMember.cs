@@ -166,7 +166,7 @@ namespace Stump.Server.WorldServer.Game.Guilds
                 return new NetworkGuildMember(Id, Character.Level, Character.Name, (sbyte)Character.Breed.Id, Character.Sex == SexTypeEnum.SEX_FEMALE, RankId,
                                               GivenExperience, (sbyte)GivenPercent, (int)Rights, (sbyte)(IsConnected ? 1 : 0),
                                               (sbyte)Character.AlignmentSide, (ushort)DateTime.Now.Hour, 0,
-                                              Record.AccountId, 0, Character.GetPlayerStatus());
+                                              Record.AccountId, 0, Character.Status);
             }
 
             return new NetworkGuildMember(Id, ExperienceManager.Instance.GetCharacterLevel(Experience, PrestigeRank),

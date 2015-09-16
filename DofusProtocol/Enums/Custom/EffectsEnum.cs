@@ -2125,7 +2125,7 @@
         /// <summary>
         /// Invoque un percepteur
         /// </summary>
-        Effect_1153 = 1153,
+        Effect_SummonTaxcollector = 1153,
         /// <summary>
         /// 
         /// </summary>

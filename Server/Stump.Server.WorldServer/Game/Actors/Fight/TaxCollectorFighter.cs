@@ -99,6 +99,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 OpposedTeam.Fighters.OfType<CharacterFighter>().Select(x => x.Character.GetCharacterMinimalPlusLookInformations()));
         }
 
+        public override GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
+        {
+            return new GameFightFighterTaxCollectorLightInformations(
+                true,
+                IsAlive(),
+                Id,
+                0,
+                Level,
+                (sbyte)BreedEnum.TAX_COLLECTOR,
+                TaxCollectorNpc.FirstNameId,
+                TaxCollectorNpc.LastNameId);
+        }
+
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
         {
             return new FightTeamMemberTaxCollectorInformations(Id, TaxCollectorNpc.FirstNameId,

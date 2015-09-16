@@ -225,7 +225,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
                 handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize,
                     handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);
-                handler.Targets = new TargetCriterion[0]; // means all
+                handler.Targets = new TargetCriterion[]
+                    { new TargetTypeCriterion(SpellTargetType.ALLY_ALL), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL) }; // everyone but caster
                 handlers.Add(handler);
             }
 
@@ -316,8 +317,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var point = new MapPoint(cell);
 
-            if (point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange ||
-                point.ManhattanDistanceTo(Position.Point) < weapon.MinRange)
+            if ((weapon.CastInDiagonal && (point.EuclideanDistanceTo(Position.Point) > weapon.WeaponRange || point.EuclideanDistanceTo(Position.Point) < weapon.MinRange)) ||
+                (!weapon.CastInDiagonal && point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange || point.ManhattanDistanceTo(Position.Point) < weapon.MinRange))
                 return false;
 
             if (m_weaponUses >= weapon.MaxCastPerTurn)
@@ -433,7 +434,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                       GetGameFightMinimalStats(client),
                                                       new short[0],
                                                       Name,
-                                                      Character.GetPlayerStatus(),
+                                                      Character.Status,
                                                       Character.Level,
                                                       Character.GetActorAlignmentInformations(),
                                                       (sbyte) Character.Breed.Id,
@@ -441,15 +442,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public override GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
-        {
-            return new GameFightFighterLightInformations(
+            => new GameFightFighterNamedLightInformations(
                 Character.Sex == SexTypeEnum.SEX_FEMALE,
                 IsAlive(),
                 Id,
                 0,
                 Level,
-                (sbyte)Character.Breed.Id);
-        }
+                (sbyte)Character.Breed.Id,
+                Name);
 
         public override string ToString()
         {

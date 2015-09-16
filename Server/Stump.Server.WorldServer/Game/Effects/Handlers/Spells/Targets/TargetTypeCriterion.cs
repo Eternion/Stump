@@ -30,18 +30,25 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
             if (handler.Caster.IsFriendlyWith(actor) && handler.Caster != actor)
             {
-                if (TargetType == SpellTargetType.ALLY_ALL || TargetType.HasFlag(SpellTargetType.ALLY_PLAYER)) // not sure about that
+                if (TargetType == SpellTargetType.ALLY_ALL)
+                    return true;
+
+                if ((TargetType.HasFlag(SpellTargetType.ALLY_PLAYER) || TargetType.HasFlag(SpellTargetType.ALLY_UNKN_1) || TargetType.HasFlag(SpellTargetType.ALLY_UNKN_2))
+                    && (actor is CharacterFighter))
                     return true;
 
                 if ((TargetType.HasFlag(SpellTargetType.ALLY_MONSTER)) && (actor is MonsterFighter))
                     return true;
 
+                if (TargetType.HasFlag(SpellTargetType.ALLY_SUMMON) && (actor is SummonedFighter))
+                    return true;
+
                 if ((TargetType.HasFlag(SpellTargetType.ALLY_MONSTER_SUMMON) || TargetType.HasFlag(SpellTargetType.ALLY_NON_MONSTER_SUMMON))
-                    && actor is SummonedFighter)
+                    && (actor is SummonedMonster))
                     return true;
 
                 if (TargetType.HasFlag(SpellTargetType.ALLY_BOMB)
-                    && actor is SummonedBomb)
+                    && (actor is SummonedBomb))
                     return true;
             }
 
@@ -52,18 +59,22 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             if (TargetType == SpellTargetType.ENEMY_ALL)
                 return true;
 
-            if (TargetType == SpellTargetType.ENEMY_ALL || TargetType.HasFlag(SpellTargetType.ENEMY_PLAYER)) // not sure about that
+            if ((TargetType.HasFlag(SpellTargetType.ENEMY_PLAYER) || TargetType.HasFlag(SpellTargetType.ENEMY_UNKN_1) || TargetType.HasFlag(SpellTargetType.ENEMY_UNKN_2))
+                && (actor is CharacterFighter))
                 return true;
 
             if ((TargetType.HasFlag(SpellTargetType.ENEMY_MONSTER)) && (actor is MonsterFighter))
                 return true;
 
+            if (TargetType.HasFlag(SpellTargetType.ENEMY_SUMMON) && (actor is SummonedFighter))
+                return true;
+
             if ((TargetType.HasFlag(SpellTargetType.ENEMY_MONSTER_SUMMON) || TargetType.HasFlag(SpellTargetType.ENEMY_NON_MONSTER_SUMMON))
-                && actor is SummonedFighter)
+                && (actor is SummonedMonster))
                 return true;
 
             if (TargetType.HasFlag(SpellTargetType.ENEMY_BOMB)
-                && actor is SummonedBomb)
+                && (actor is SummonedBomb))
                 return true;
 
             return false;

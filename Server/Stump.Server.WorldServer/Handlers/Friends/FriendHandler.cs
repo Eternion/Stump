@@ -67,7 +67,6 @@ namespace Stump.Server.WorldServer.Handlers.Friends
             }
 
             client.Character.FriendsBook.RemoveFriend(friend);
-            SendFriendDeleteResultMessage(client, true, friend.Account.Nickname);
         }
 
         [WorldHandler(IgnoredAddRequestMessage.Id)]
@@ -143,9 +142,9 @@ namespace Stump.Server.WorldServer.Handlers.Friends
             client.Send(new FriendAddFailureMessage((sbyte)reason));
         }
 
-        public static void SendFriendAddedMessage(IPacketReceiver client, Friend friend)
+        public static void SendFriendAddedMessage(WorldClient client, Friend friend)
         {
-            client.Send(new FriendAddedMessage(friend.GetFriendInformations()));
+            client.Send(new FriendAddedMessage(friend.GetFriendInformations(client.Character)));
         }
 
         public static void SendIgnoredAddedMessage(IPacketReceiver client, Ignored ignored, bool session)
@@ -158,14 +157,14 @@ namespace Stump.Server.WorldServer.Handlers.Friends
             client.Send(new FriendDeleteResultMessage(success, name));
         }
 
-        public static void SendFriendUpdateMessage(IPacketReceiver client, Friend friend)
+        public static void SendFriendUpdateMessage(WorldClient client, Friend friend)
         {
-            client.Send(new FriendUpdateMessage(friend.GetFriendInformations()));
+            client.Send(new FriendUpdateMessage(friend.GetFriendInformations(client.Character)));
         }
 
-        public static void SendFriendsListMessage(IPacketReceiver client, IEnumerable<Friend> friends)
+        public static void SendFriendsListMessage(WorldClient client, IEnumerable<Friend> friends)
         {
-            client.Send(new FriendsListMessage(friends.Select(entry => entry.GetFriendInformations())));
+            client.Send(new FriendsListMessage(friends.Select(entry => entry.GetFriendInformations(client.Character))));
         }
 
         public static void SendIgnoredAddFailureMessage(IPacketReceiver client,  ListAddFailureEnum reason)

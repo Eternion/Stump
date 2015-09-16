@@ -76,12 +76,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             return true;
         }
 
-        private void NotifySpellReflected(FightActor source)
-        {
-            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
-        }
-
-        private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell, buff.Target.Cell)
             {
@@ -92,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         }
 
-        private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
+        static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
         {
             switch (effect)
             {
@@ -109,6 +104,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 default:
                     throw new Exception(string.Format("Effect {0} has not associated School Type", effect));
             }
+        }
+
+        void NotifySpellReflected(FightActor source)
+        {
+            ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
     }
 }

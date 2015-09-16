@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 CellShown(this, cell, team);
         }
 
-        public event Action<FightActor, int, int, int, FightActor> LifePointsChanged;
+        public event Action<FightActor, int, int, int, FightActor, EffectSchoolEnum> LifePointsChanged;
 
         public event Action<FightActor> FighterLeft;
         protected virtual void OnLeft()
@@ -74,12 +74,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 evnt(this);
         }
 
-        protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(int delta, int shieldDamages, int permanentDamages, FightActor from, EffectSchoolEnum school)
         {
             var handler = LifePointsChanged;
 
             if (handler != null)
-                handler(this, delta, shieldDamages, permanentDamages, from);
+                handler(this, delta, shieldDamages, permanentDamages, from, school);
         }
 
         public event Action<FightActor, Damage> BeforeDamageInflicted;
@@ -831,10 +831,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage.Source != null && !damage.IgnoreDamageBoost)
             {
+                damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School, damage.IsCritical);
+
                 if (damage.Spell != null)
                     damage.Amount += damage.Source.GetSpellBoost(damage.Spell);
-
-                damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School, damage.IsCritical);
             }
 
             // zone damage
@@ -946,7 +946,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Stats.Health.PermanentDamages += permanentDamages;
             Stats.Shield.Context -= shieldDamages;
 
-            OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source);
+            OnLifePointsChanged(-damage.Amount, shieldDamages, permanentDamages, damage.Source, damage.School);
 
             CheckDead(damage.Source);
 
@@ -967,7 +967,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (HasState((int)SpellStatesEnum.INSOIGNABLE))
             {
-                OnLifePointsChanged(0, 0, 0, from);
+                OnLifePointsChanged(0, 0, 0, from, EffectSchoolEnum.Unknown);
                 return 0;
             }
 
@@ -976,7 +976,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             DamageTaken -= healPoints;
 
-            OnLifePointsChanged(healPoints, 0, 0, from);
+            OnLifePointsChanged(healPoints, 0, 0, from, EffectSchoolEnum.Unknown);
 
             TriggerBuffs(BuffTriggerType.AFTER_HEALED);
             from.TriggerBuffs(BuffTriggerType.AFTER_HEAL);
@@ -1076,22 +1076,28 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             switch (zone.ShapeType)
             {
                 case SpellShapeEnum.A:
-                    distance = targetCell.EuclideanDistanceTo(impactCell);
-                    break;
                 case SpellShapeEnum.a:
                 case SpellShapeEnum.Z:
                 case SpellShapeEnum.I:
                 case SpellShapeEnum.O:
-                    distance = targetCell.ManhattanDistanceTo(impactCell);
-                    break;
                 case SpellShapeEnum.semicolon:
                 case SpellShapeEnum.empty:
                 case SpellShapeEnum.P:
+                    return 1.0;
                 case SpellShapeEnum.B:
+                case SpellShapeEnum.V:
+                case SpellShapeEnum.G:
+                case SpellShapeEnum.W:
+                    distance = targetCell.ManhattanDistanceTo(impactCell);
+                    break;
+                case SpellShapeEnum.minus:
+                case SpellShapeEnum.plus:
+                case SpellShapeEnum.U:
                     distance = targetCell.EuclideanDistanceTo(impactCell) / 2;
                     break;
                 default:
-                    return 1.0;
+                    distance = targetCell.EuclideanDistanceTo(impactCell);
+                    break;
             }
 
             if (distance > zone.Radius)
@@ -1102,10 +1108,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 if (distance <= zone.MinRadius)
                     return 1.0;
 
-                return Math.Max(0d, 1 - 0 * 0.01 * Math.Min(distance - zone.MinRadius, zone.MaxEfficiency) * zone.EfficiencyMalus);
+                return Math.Max(0d, 1 - 0.01 * Math.Min(distance - zone.MinRadius, zone.MaxEfficiency) * zone.EfficiencyMalus);
             }
 
-            return Math.Max(0d, 1 - 0 * 0.01 * Math.Min(distance, zone.MaxEfficiency) * zone.EfficiencyMalus);
+            return Math.Max(0d, 1 - 0.01 * Math.Min(distance, zone.MaxEfficiency) * zone.EfficiencyMalus);
         }
 
         public virtual int CalculateDamageResistance(int damage, EffectSchoolEnum type, bool critical, bool withArmor, bool poison)
@@ -2321,7 +2327,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
-                new short[0]);
+                LastPositions.Select(x => x.First.Id).ToArray());
         }
 
         public virtual GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
