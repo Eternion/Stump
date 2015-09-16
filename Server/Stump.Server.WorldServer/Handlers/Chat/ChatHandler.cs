@@ -18,119 +18,125 @@ namespace Stump.Server.WorldServer.Handlers.Chat
         [WorldHandler(ChatClientPrivateMessage.Id)]
         public static void HandleChatClientPrivateMessage(WorldClient client, ChatClientPrivateMessage message)
         {
-            if (String.IsNullOrEmpty(message.content))
+            if (string.IsNullOrEmpty(message.content))
                 return;
 
-            var chr = World.Instance.GetCharacter(message.receiver);
+            var sender = client.Character;
+            var receiver = World.Instance.GetCharacter(message.receiver);
 
-            if (chr != null)
-            {
-                if (client.Character.IsMuted())
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123,
-                        (int)client.Character.GetMuteRemainingTime().TotalSeconds);
-                }
-                else
-                {
-                    if (client.Character != chr)
-                    {
-                        if (!chr.FriendsBook.IsIgnored(client.Account.Id))
-                        {
-                            if (!chr.IsAway || chr.FriendsBook.IsFriend(client.Account.Id))
-                            {
-                                if (client.Character.IsAway)
-                                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
-
-                                // send a copy to sender
-                                SendChatServerCopyMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                    message.content);
-
-                                // Send to receiver
-                                SendChatServerMessage(chr.Client, client.Character,
-                                    ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                    message.content);
-                            }
-                            else
-                            {
-                                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                                    chr.Name);
-                            }
-                        }
-                        else
-                        {
-                            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                                chr.Name);
-                        }
-                    }
-                    else
-                    {
-                        SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
-                    }
-                }
-            }
-            else
+            if (receiver == null)
             {
                 SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND);
+                return;
             }
+
+            if (sender.IsMuted())
+            {
+                //Le principe de précaution vous a rendu muet pour %1 seconde(s).
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)sender.GetMuteRemainingTime().TotalSeconds);
+                return;
+            }
+
+            if (receiver.IsMuted())
+            {
+                //Message automatique : Le joueur <b>%1</b> a été rendu muet pour ne pas avoir respecté les règles. <b>%1</b> ne pourra pas vous répondre avant <b>%2</b> minutes.
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 168, receiver.Name, receiver.Name, (int)receiver.GetMuteRemainingTime().TotalMinutes);
+                return;
+            }
+
+            if (sender == receiver)
+            {
+                SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
+                return;
+            }
+
+            if(receiver.FriendsBook.IsIgnored(sender.Account.Id))
+            {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, receiver.Name);
+                return;
+            }
+
+            if (!receiver.IsAvailable(sender, true))
+            {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, receiver.Name);
+                return;
+            }
+
+            if (sender.Status.statusId != (sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE
+                && sender.Status.statusId != (sbyte)PlayerStatusEnum.PLAYER_STATUS_PRIVATE || !sender.FriendsBook.IsFriend(receiver.Account.Id))
+                sender.SetStatus(PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
+
+            //Send to receiver
+            SendChatServerMessage(receiver.Client, sender, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
+            //Send a copy to sender
+            SendChatServerCopyMessage(client, sender, receiver, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content);
+
+            if (receiver.Status.statusId == (sbyte)PlayerStatusEnum.PLAYER_STATUS_AFK && receiver.Status is PlayerStatusExtended)
+                SendChatServerMessage(sender.Client, receiver, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, $"Réponse automatique:{((PlayerStatusExtended)receiver.Status).message}");
         }
     
         [WorldHandler(ChatClientPrivateWithObjectMessage.Id)]
         public static void HandleChatClientPrivateWithObjectMessage(WorldClient client, ChatClientPrivateWithObjectMessage message)
         {
-            if (String.IsNullOrEmpty(message.content))
+            if (string.IsNullOrEmpty(message.content))
                 return;
 
-            var chr = World.Instance.GetCharacter(message.receiver);
+            var sender = client.Character;
+            var receiver = World.Instance.GetCharacter(message.receiver);
 
-            if (chr != null)
-            {
-                if (client.Character.IsMuted())
-                {
-                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123,
-                        (int)client.Character.GetMuteRemainingTime().TotalSeconds);
-                }
-                else
-                {
-                    if (client.Character != chr)
-                    {
-                        if (!chr.FriendsBook.IsIgnored(client.Account.Id))
-                        {
-                            if (!chr.IsAway || chr.FriendsBook.IsFriend(client.Account.Id))
-                            {
-                                if (client.Character.IsAway)
-                                    client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 72);
-
-                                // send a copy to sender
-                                SendChatServerCopyWithObjectMessage(client, chr, chr, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                    message.content, message.objects);
-
-                                // Send to receiver
-                                SendChatServerWithObjectMessage(chr.Client, client.Character,
-                                    ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE,
-                                    message.content, "", message.objects);
-                            }
-                            else
-                            {
-                                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                                    chr.Name);
-                            }
-                        }
-                        else
-                        {
-                            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14,
-                                chr.Name);
-                        }
-                    }
-                    else
-                    {
-                        SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
-                    }
-                }
-            }
-            else
+            if (receiver == null)
             {
                 SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND);
+                return;
             }
+
+            if (sender.IsMuted())
+            {
+                //Le principe de précaution vous a rendu muet pour %1 seconde(s).
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 123, (int)sender.GetMuteRemainingTime().TotalSeconds);
+                return;
+            }
+
+            if (receiver.IsMuted())
+            {
+                //Message automatique : Le joueur <b>%1</b> a été rendu muet pour ne pas avoir respecté les règles. <b>%1</b> ne pourra pas vous répondre avant <b>%2</b> minutes.
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 168, receiver.Name, receiver.Name, (int)receiver.GetMuteRemainingTime().TotalMinutes);
+                return;
+            }
+
+            if (sender == receiver)
+            {
+                SendChatErrorMessage(client, ChatErrorEnum.CHAT_ERROR_INTERIOR_MONOLOGUE);
+                return;
+            }
+
+            if (receiver.FriendsBook.IsIgnored(sender.Account.Id))
+            {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, receiver.Name);
+                return;
+            }
+
+            if (!receiver.IsAvailable(sender, true))
+            {
+                //Le joueur %1 était absent et n'a donc pas reçu votre message.
+                sender.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 14, receiver.Name);
+                return;
+            }
+
+            if (sender.Status.statusId != (sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE
+                && sender.Status.statusId != (sbyte)PlayerStatusEnum.PLAYER_STATUS_PRIVATE || !sender.FriendsBook.IsFriend(receiver.Account.Id))
+                sender.SetStatus(PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
+
+            //Send to receiver
+            SendChatServerWithObjectMessage(receiver.Client, sender, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content, "", message.objects);
+            //Send a copy to sender
+            SendChatServerCopyWithObjectMessage(client, sender, receiver, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, message.content, message.objects);
+
+            if (receiver.Status.statusId == (sbyte)PlayerStatusEnum.PLAYER_STATUS_AFK && receiver.Status is PlayerStatusExtended)
+                SendChatServerMessage(sender.Client, receiver, ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE, $"Réponse automatique:{((PlayerStatusExtended)receiver.Status).message}");
         }
 
         [WorldHandler(ChatClientMultiMessage.Id)]
@@ -180,7 +186,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
 
         public static void SendChatServerMessage(IPacketReceiver client, Character sender, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint)
         {
-            if (String.IsNullOrEmpty(message))
+            if (string.IsNullOrEmpty(message))
                 return;
 
             if (sender.UserGroup.Role <= RoleEnum.Moderator)
@@ -196,9 +202,10 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                 sender.Account.Id));
         }
 
-        public static void SendChatServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint, int senderId, string senderName, int accountId)
+        public static void SendChatServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint,
+            int senderId, string senderName, int accountId)
         {
-            if (!String.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(message))
             {
                 client.Send(new ChatServerMessage(
                                 (sbyte)channel,
@@ -228,11 +235,10 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                                        sender.Account.Id);
         }
 
-        public static void SendChatAdminServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message,
-                                                      int timestamp, string fingerprint, int senderId, string senderName,
-                                                      int accountId)
+        public static void SendChatAdminServerMessage(IPacketReceiver client, ChatActivableChannelsEnum channel, string message, int timestamp,
+            string fingerprint, int senderId, string senderName, int accountId)
         {
-            if (!String.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(message))
             {
                 client.Send(new ChatAdminServerMessage((sbyte)channel,
                                                        message,
@@ -244,15 +250,12 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             }
         }
         
-        public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel,
-                                                     string message)
+        public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel, string message)
         {
             SendChatServerCopyMessage(client, sender, receiver, channel, message, DateTime.UtcNow.GetUnixTimeStamp(), "");
         }
 
-        public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel,
-                                                     string message,
-                                                     int timestamp, string fingerprint)
+        public static void SendChatServerCopyMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel, string message, int timestamp, string fingerprint)
         {
             if (!sender.UserGroup.IsGameMaster)
                 message = message.HtmlEntities();
@@ -272,8 +275,7 @@ namespace Stump.Server.WorldServer.Handlers.Chat
             SendChatServerCopyWithObjectMessage(client, sender, receiver, channel, message, DateTime.UtcNow.GetUnixTimeStamp(), "", objectItems);
         }
 
-        public static void SendChatServerCopyWithObjectMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel,
-                                                     string message,
+        public static void SendChatServerCopyWithObjectMessage(IPacketReceiver client, Character sender, Character receiver, ChatActivableChannelsEnum channel, string message,
                                                      int timestamp, string fingerprint, IEnumerable<ObjectItem> objectItems)
         {
             if (!sender.UserGroup.IsGameMaster)

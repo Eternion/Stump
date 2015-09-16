@@ -64,7 +64,6 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
                 return;
 
             SendMapRunningFightDetailsMessage(client, fight);
-            BasicHandler.SendBasicNoOperationMessage(client);
         }
 
         public static void SendMapRunningFightListMessage(IPacketReceiver client, IEnumerable<IFight> fights)
