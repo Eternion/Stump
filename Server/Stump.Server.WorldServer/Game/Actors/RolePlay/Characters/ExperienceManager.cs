@@ -13,32 +13,18 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         private KeyValuePair<byte, ExperienceTableEntry> m_highestCharacterLevel;
         private KeyValuePair<byte, ExperienceTableEntry> m_highestGrade;
         private KeyValuePair<byte, ExperienceTableEntry> m_highestGuildLevel;
-        private KeyValuePair<byte, ExperienceTableEntry> m_highestMountLevel; 
+        private KeyValuePair<byte, ExperienceTableEntry> m_highestMountLevel;
+        private KeyValuePair<byte, ExperienceTableEntry> m_highestJobLevel;
 
-        public byte HighestCharacterLevel
-        {
-            get { return m_highestCharacterLevel.Key; }
-        }
+        public byte HighestCharacterLevel => m_highestCharacterLevel.Key;
 
-        public long HighestCharacterExperience
-        {
-            get { return m_highestCharacterLevel.Value.CharacterExp.Value; }
-        }
+        public long HighestCharacterExperience => m_highestCharacterLevel.Value.CharacterExp.Value;
 
-        public byte HighestGuildLevel
-        {
-            get { return m_highestGuildLevel.Key; }
-        }
+        public byte HighestGuildLevel => m_highestGuildLevel.Key;
 
-        public byte HighestGrade
-        {
-            get { return m_highestGrade.Key; }
-        }
+        public byte HighestGrade => m_highestGrade.Key;
 
-        public ushort HighestGradeHonor
-        {
-            get { return m_highestGrade.Value.AlignmentHonor.Value; }
-        }
+        public ushort HighestGradeHonor => m_highestGrade.Value.AlignmentHonor.Value;
 
         #region Character
 
@@ -282,6 +268,67 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        #region Job
+
+        /// <summary>
+        ///     Get the experience requiered to access the given Job level
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public long GetJobLevelExperience(byte level)
+        {
+            if (!m_records.ContainsKey(level))
+                throw new Exception("Level " + level + " not found");
+
+            if (m_records[level].JobExp == null)
+                throw new Exception("Level " + level + " not found");
+
+            var exp = m_records[level].JobExp;
+
+            if (!exp.HasValue)
+                throw new Exception("Job level " + level + " is not defined");
+
+            return exp.Value;
+        }
+
+        /// <summary>
+        ///     Get the experience to reach the next Job level
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public long GetJobNextLevelExperience(byte level)
+        {
+            if (!m_records.ContainsKey((byte)(level + 1)))
+                return long.MaxValue;
+
+            if (m_records[(byte)(level + 1)].JobExp == null)
+                return long.MaxValue;
+
+            var exp = m_records[(byte)(level + 1)].JobExp;
+
+            if (!exp.HasValue)
+                throw new Exception("Job level " + level + " is not defined");
+
+            return exp.Value;
+        }
+
+        public byte GetJobLevel(long experience)
+        {
+            try
+            {
+                if (experience >= m_highestJobLevel.Value.JobExp)
+                    return m_highestJobLevel.Key;
+
+                return (byte)(m_records.First(entry => entry.Value.JobExp > experience).Key - 1);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Exception(string.Format("Experience {0} isn't bind to a Job level", experience), ex);
+            }
+        }
+
+        #endregion
+
         [Initialization(InitializationPass.Fourth)]
         public override void Initialize()
         {
@@ -298,6 +345,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             m_highestGrade = m_records.OrderByDescending(entry => entry.Value.AlignmentHonor).FirstOrDefault();
             m_highestGuildLevel = m_records.OrderByDescending(entry => entry.Value.GuildExp).FirstOrDefault();
             m_highestMountLevel = m_records.OrderByDescending(entry => entry.Value.MountExp).FirstOrDefault();
+            m_highestJobLevel = m_records.OrderByDescending(entry => entry.Value.JobExp).FirstOrDefault();
         }
     }
 }

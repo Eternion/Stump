@@ -45,6 +45,7 @@ using Stump.Server.WorldServer.Game.Guilds;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Items.Player.Custom;
+using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
@@ -296,6 +297,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return Record.Kamas; }
             set { Record.Kamas = value; }
         }
+
+        #endregion
+
+        #region Jobs
+
+        private List<Job> m_jobs = new List<Job>();
+
+        public ReadOnlyCollection<Job> Jobs => m_jobs.AsReadOnly();
 
         #endregion
 
