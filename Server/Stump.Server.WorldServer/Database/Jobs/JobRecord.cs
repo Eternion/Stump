@@ -22,7 +22,14 @@ namespace Stump.Server.WorldServer.Database.Jobs
             set;
         }
 
+        [Index]
         public int OwnerId
+        {
+            get;
+            set;
+        }
+
+        public int TemplateId
         {
             get;
             set;
