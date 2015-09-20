@@ -1,21 +1,27 @@
-﻿using Stump.Server.WorldServer.Database;
-using Stump.Server.WorldServer.Database.Jobs;
+﻿using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Jobs
 {
     public class Job
     {
+        public Job(Character owner, JobRecord record)
+        {
+            Owner = owner;
+            Record = record;
+            Template = JobManager.Instance.GetJobTemplate(record.TemplateId);
+        }
+
         public Character Owner
         {
             get;
             private set;
         }
 
-        internal JobRecord Record
+        private JobRecord Record
         {
             get;
-            private set;
+            set;
         }
 
         public JobTemplate Template
@@ -24,7 +30,25 @@ namespace Stump.Server.WorldServer.Game.Jobs
             private set;
         }
 
+        public bool IsDirty
+        {
+            get;
+            set;
+        }
+
         public int Level
+        {
+            get;
+            private set;
+        }
+
+        public long UpperBoundExperience
+        {
+            get;
+            private set;
+        }
+
+        public long LowerBoundExperience
         {
             get;
             private set;
@@ -33,9 +57,28 @@ namespace Stump.Server.WorldServer.Game.Jobs
         public long Experience
         {
             get { return Record.Experience; }
-            private set { Record.Experience = value; }
+            private set
+            {
+                Record.Experience = value;
+
+                if (value >= UpperBoundExperience || value < LowerBoundExperience)
+                    RefreshLevel();
+
+                IsDirty = true;
+            }
         }
 
+        private void RefreshLevel()
+        {
+            var level = ExperienceManager.Instance.GetJobLevel(Experience);
+            UpperBoundExperience = ExperienceManager.Instance.GetJobLevelExperience(level);
+            UpperBoundExperience = ExperienceManager.Instance.GetJobNextLevelExperience(level);
 
+            Level = level;
+        }
+
+        public void Save()
+        {
+        }
     }
 }
