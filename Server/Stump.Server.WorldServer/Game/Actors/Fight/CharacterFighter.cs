@@ -318,7 +318,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var point = new MapPoint(cell);
 
             if ((weapon.CastInDiagonal && (point.EuclideanDistanceTo(Position.Point) > weapon.WeaponRange || point.EuclideanDistanceTo(Position.Point) < weapon.MinRange)) ||
-                (!weapon.CastInDiagonal && (point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange || point.ManhattanDistanceTo(Position.Point) < weapon.MinRange)))
+                (!weapon.CastInDiagonal && point.ManhattanDistanceTo(Position.Point) > weapon.WeaponRange || point.ManhattanDistanceTo(Position.Point) < weapon.MinRange))
                 return false;
 
             if (m_weaponUses >= weapon.MaxCastPerTurn)
@@ -434,7 +434,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                                       GetGameFightMinimalStats(client),
                                                       new short[0],
                                                       Name,
-                                                      Character.GetPlayerStatus(),
+                                                      Character.Status,
                                                       Character.Level,
                                                       Character.GetActorAlignmentInformations(),
                                                       (sbyte) Character.Breed.Id,

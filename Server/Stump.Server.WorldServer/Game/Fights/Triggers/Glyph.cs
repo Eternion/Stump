@@ -67,9 +67,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
-            if (trigger == Caster && !IsGlyphAura())
-                return;
-
             NotifyTriggered(trigger, GlyphSpell);
 
             if (IsGlyphAura() && trigger.GetBuffs(b => b.Spell.Id == GlyphSpell.Id).Any())

@@ -14,15 +14,6 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
 {
     public class TaxCollectorHandler : WorldHandlerContainer
     {
-        /*[WorldHandler(TaxCollectorHireRequestMessage.Id)]
-        public static void HandleTaxCollectorHireRequestMessage(WorldClient client, TaxCollectorHireRequestMessage message)
-        {
-            if (client.Character.Guild == null)
-                return;
-
-            TaxCollectorManager.Instance.AddTaxCollectorSpawn(client.Character);
-        }*/
-
         [WorldHandler(GameRolePlayTaxCollectorFightRequestMessage.Id)]
         public static void HandleGameRolePlayTaxCollectorFightRequestMessage(WorldClient client, GameRolePlayTaxCollectorFightRequestMessage message)
         {

@@ -33,6 +33,7 @@ using Stump.Server.WorldServer.Handlers.Characters;
 using Stump.Server.WorldServer.Handlers.Context;
 using FightLoot = Stump.Server.WorldServer.Game.Fights.Results.FightLoot;
 using Stump.Core.Collections;
+using Stump.Server.WorldServer.Game.Effects;
 
 namespace Stump.Server.WorldServer.Game.Fights
 {
@@ -255,7 +256,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         /// <returns>If change is possible</returns>
         bool CanChangePosition(FightActor fighter, Cell cell);
 
-        void ToggleSpectatorClosed(bool state);
+        void ToggleSpectatorClosed(Character character, bool state);
         bool CanSpectatorJoin(Character spectator);
         bool AddSpectator(FightSpectator spectator);
         void RemoveSpectator(FightSpectator spectator);
@@ -1330,12 +1331,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Spectators
 
-        public void ToggleSpectatorClosed(bool state)
+        public void ToggleSpectatorClosed(Character character, bool state)
         {
             SpectatorClosed = state;
 
             // Spectator mode Activated/Disabled
-            BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, (short)( SpectatorClosed ? 40 : 39 ));
+            BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, (short)( SpectatorClosed ? 40 : 39 ), character.Name);
 
             if (state)
                 RemoveAllSpectators();
@@ -1499,7 +1500,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             TurnStartTime = DateTime.Now;
 
             if (!Freezed)
+            {
+                if (!Map.Area.IsRunning)
+                    Map.Area.Start();
+
                 m_turnTimer = Map.Area.CallDelayed(FighterPlaying.TurnTime, StopTurn);
+            }
+                
 
             var evnt = TurnStarted;
             if (evnt != null)
@@ -1940,7 +1947,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Health & Actions points
 
-        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int shieldDamages, int permanentDamages, FightActor from)
+        protected virtual void OnLifePointsChanged(FightActor actor, int delta, int shieldDamages, int permanentDamages, FightActor from, EffectSchoolEnum school)
         {
             var loss = (short) (-delta);
 
@@ -1948,7 +1955,33 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             if (shieldDamages == 0)
-                ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, from ?? actor, actor, loss, (short)permanentDamages);
+            {
+                var action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST;
+
+                switch (school)
+                {
+                    case EffectSchoolEnum.Air:
+                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_AIR;
+                        break;
+                    case EffectSchoolEnum.Earth:
+                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_EARTH;
+                        break;
+                    case EffectSchoolEnum.Fire:
+                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_FIRE;
+                        break;
+                    case EffectSchoolEnum.Water:
+                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_WATER;
+                        break;
+                    case EffectSchoolEnum.Pushback:
+                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_PUSH;
+                        break;
+                    default:
+                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST;
+                        break;
+                }
+
+                ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, action, from ?? actor, actor, loss, (short)permanentDamages);
+            }
             else
             {
                 ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss,

@@ -33,6 +33,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                 switch (Dice.Value)
                 {
+                    case 667: //Pandawa - Picole
+                        bonesId = 44;
+                        break;
+                    case 729: //Xelor - Momification
+                        bonesId = 113;
+                        break;
                     case 1575: //Zobal - Pleutre
                         skinId = 1443;
                         break;
