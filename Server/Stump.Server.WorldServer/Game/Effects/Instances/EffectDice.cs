@@ -106,6 +106,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
             var max = m_dicenum >= m_diceface ? m_dicenum : m_diceface;
             var min = m_dicenum <= m_diceface ? m_dicenum : m_diceface;
 
+            if (min == 0)
+                min = max;
+
             if (type == EffectGenerationType.MaxEffects)
                 return new EffectInteger(Id, Template.Operator != "-" ? max : min, this);
             if (type == EffectGenerationType.MinEffects)

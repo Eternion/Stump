@@ -19,13 +19,13 @@ _loc2_.initIdentificationMessage(_loc2_.version,this._lva.username + "|" + this.
 
 pCode:
 getlocal_0
-getproperty Qname(PrivateNamespace("*","1025"),"_lva")
-getproperty Qname(PackageNamespace("","159"),"username")
+getproperty Qname(PrivateNamespace("*","1028"),"_lva")
+getproperty Qname(PackageNamespace("","180"),"username")
 pushstring "|"
 add
 getlocal_0
-getproperty Qname(PrivateNamespace("*","1025"),"_lva")
-getproperty Qname(PackageNamespace("","159"),"password")
+getproperty Qname(PrivateNamespace("*","1028"),"_lva")
+getproperty Qname(PackageNamespace("","180"),"password")
 add
 
 (dofus.logic.connection.managers.AuthentificationManager::cipherRsa):

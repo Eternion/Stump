@@ -164,7 +164,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(16147)]
+    [ItemId(ItemIdEnum.CLASS_CHANGE_POTION)]
     public class ClassChangePotion : BasePlayerItem
     {
         public ClassChangePotion(Character owner, PlayerItemRecord record)
@@ -240,6 +240,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
+    //Item doesn't exist anymore
     [ItemId(20838)]
     public class ChameleonBehaviorPotion : BasePlayerItem
     {

@@ -91,42 +91,27 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
         [WorldHandler(GuildCreationValidMessage.Id)]
         public static void HandleGuildCreationValidMessage(WorldClient client, GuildCreationValidMessage message)
         {
-            var panel = client.Character.Dialog as GuildCreationPanel;
-            if (panel != null)
-            {
-                panel.CreateGuild(message.guildName, message.guildEmblem);
-            }
+            (client.Character.Dialog as GuildCreationPanel)?.CreateGuild(message.guildName, message.guildEmblem);
         }
 
         [WorldHandler(GuildModificationValidMessage.Id)]
         public static void HandleGuildModificationValidMessage(WorldClient client, GuildModificationValidMessage message)
         {
             var panel = client.Character.Dialog as GuildModificationPanel;
-            if (panel == null)
-                return;
-
-            panel.ModifyGuildName(message.guildName);
-            panel.ModifyGuildEmblem(message.guildEmblem);
+            panel?.ModifyGuildName(message.guildName);
+            panel?.ModifyGuildEmblem(message.guildEmblem);
         }
 
         [WorldHandler(GuildModificationNameValidMessage.Id)]
         public static void HandleGuildModificationNameValidMessage(WorldClient client, GuildModificationNameValidMessage message)
         {
-            var panel = client.Character.Dialog as GuildModificationPanel;
-            if (panel != null)
-            {
-                panel.ModifyGuildName(message.guildName);
-            }
+            (client.Character.Dialog as GuildModificationPanel)?.ModifyGuildName(message.guildName);
         }
 
         [WorldHandler(GuildModificationEmblemValidMessage.Id)]
         public static void HandleGuildModificationEmblemValidMessage(WorldClient client, GuildModificationEmblemValidMessage message)
         {
-            var panel = client.Character.Dialog as GuildModificationPanel;
-            if (panel != null)
-            {
-                panel.ModifyGuildEmblem(message.guildEmblem);
-            }
+            (client.Character.Dialog as GuildModificationPanel)?.ModifyGuildEmblem(message.guildEmblem);
         }
 
         [WorldHandler(GuildChangeMemberParametersMessage.Id)]

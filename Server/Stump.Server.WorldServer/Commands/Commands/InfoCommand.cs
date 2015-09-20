@@ -12,6 +12,7 @@ using Stump.Server.WorldServer.Game;
 using Stump.Server.WorldServer.Game.Actors.RolePlay;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.DofusProtocol.Messages;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
