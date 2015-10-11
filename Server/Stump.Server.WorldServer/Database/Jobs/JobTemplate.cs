@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Database.Jobs
 {
     public class JobTemplateRelator
     {
-        public static string FetchQuery = "SELET * FROM jobs_templates";
+        public static string FetchQuery = "SELECT * FROM jobs_templates";
     }
 
     [TableName("jobs_templates")]
