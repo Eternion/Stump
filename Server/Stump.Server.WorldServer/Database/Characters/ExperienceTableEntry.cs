@@ -43,5 +43,11 @@ namespace Stump.Server.WorldServer.Database.Characters
             get;
             set;
         }
+
+        public long? JobExp
+        {
+            get;
+            set;
+        }
     }
 }
