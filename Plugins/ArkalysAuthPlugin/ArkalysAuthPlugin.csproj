@@ -130,6 +130,9 @@
       <Name>Stump.Server.BaseServer</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST "$(SolutionDir)Run\$(ConfigurationName)\AuthServer\plugins\" mkdir "$(SolutionDir)Run\$(ConfigurationName)\AuthServer\plugins\"
