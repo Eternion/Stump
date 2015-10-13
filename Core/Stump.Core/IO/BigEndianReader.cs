@@ -422,6 +422,9 @@ namespace Stump.Core.IO
         /// </summary>
         public void Dispose()
         {
+            if (m_reader == null)
+                return;
+
             m_reader.Dispose();
             m_reader = null;
         }
