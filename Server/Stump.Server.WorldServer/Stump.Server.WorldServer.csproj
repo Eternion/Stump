@@ -573,6 +573,7 @@
     <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
+    <Compile Include="Game\Jobs\JobManager.cs" />
     <Compile Include="Game\Maps\Cells\DirectionFlagEnum.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\AllPoints.cs" />
     <Compile Include="Game\Maps\Cells\Shapes\Set\Complement.cs" />
