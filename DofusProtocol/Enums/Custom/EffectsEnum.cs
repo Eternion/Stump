@@ -2153,7 +2153,7 @@
         /// <summary>
         /// Les dommages reçus soignent.
         /// </summary>
-        Effect_1164 = 1164,
+        Effect_HealWhenAttack = 1164,
         /// <summary>
         /// Pose un glyphe de rang #2
         /// </summary>
