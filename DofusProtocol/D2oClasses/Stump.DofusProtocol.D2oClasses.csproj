@@ -175,10 +175,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="SwfLib">
-      <HintPath>..\..\..\SwfLib.dll</HintPath>
+      <HintPath>..\..\Library\SwfLib.dll</HintPath>
     </Reference>
     <Reference Include="SwfLib.Avm2">
-      <HintPath>..\..\..\SwfLib.Avm2.dll</HintPath>
+      <HintPath>..\..\Library\SwfLib.Avm2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
