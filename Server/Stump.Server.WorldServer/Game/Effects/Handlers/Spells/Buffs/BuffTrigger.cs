@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                         spellLevel = 1;
                         break;
                     case SpellIdEnum.FRICTION:
-                        triggerHandler = FrictionBuffTrigger;
+                        triggerHandler = FriktBuffTrigger;
                         break;
                     case SpellIdEnum.POUTCH:
                     case SpellIdEnum.BRISE_L_ÂME:
@@ -97,6 +97,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         private static void DefaultBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+        }
+
+        private static void FriktBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            buff.Target.CastSpell(buff.Spell, buff.Caster.Cell, true, true);
         }
 
         private static void EvolutionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
