@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2015 10:48:00
+// Generated on 11/16/2015 14:25:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,18 +34,11 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteBoolean(validToken);
-            var ticket_before = writer.Position;
-            var ticket_count = 0;
-            writer.WriteVarInt(0);
+            writer.WriteVarInt((int)ticket.Count());
             foreach (var entry in ticket)
             {
                  writer.WriteSByte(entry);
-                 ticket_count++;
             }
-            var credentials_after = writer.Position;
-            writer.Seek((int)ticket_before);
-            writer.WriteVarInt((int)ticket_count);
-            writer.Seek((int)credentials_after);
         }
         
         public override void Deserialize(IDataReader reader)
