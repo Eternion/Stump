@@ -60,6 +60,10 @@
       <Project>{8ac12413-bd4f-4c35-b61a-5e5894d33afb}</Project>
       <Name>Stump.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Stump.ORM\Stump.ORM.csproj">
+      <Project>{E7406629-E127-4B96-8F29-287947075631}</Project>
+      <Name>Stump.ORM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Server\Stump.Server.BaseServer\Stump.Server.BaseServer.csproj">
       <Project>{011fbafc-7720-4d36-9c59-71bae6163c9e}</Project>
       <Name>Stump.Server.BaseServer</Name>
