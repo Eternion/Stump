@@ -43,6 +43,36 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #endregion XELOR
 
+            #region ECAFLIP
+
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 4, (level, effect, critical) => effect.Priority = 1);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 6, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 6, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 7, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 7, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 8, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 8, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 9, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 9, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 10, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 10, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 11, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 11, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 12, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 12, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 13, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 13, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 14, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 14, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 15, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 15, (level, effect, critical) => effect.Random = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Delay = 0);
+            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Random = 0);
+
+            #endregion ECAFLIP
+
             #region STEAMER
 
             FixEffectOnAllLevels((int) SpellIdEnum.HARPONNEUSE, 1, (level, effect, critical) => effect.Priority = 1);
