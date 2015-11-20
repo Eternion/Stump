@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                 var rand = random.NextDouble();
                 double randSum = groupEffects.Sum(entry => entry.Random);
                 var stopRand = false;
-                foreach (var effect in groupEffects.OrderBy(x => x.Priority))
+                foreach (var effect in groupEffects.OrderByDescending(x => x.Priority))
                 {
                     if (effect.Random > 0)
                     {
@@ -95,15 +95,17 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                     var affectedActors = handler.GetAffectedActors().ToArray();
                     handler.SetAffectedActors(affectedActors);
 
-                    var id = Caster.PopNextBuffId();
-                    var buff = new DelayBuff(id, Caster, Caster, handler.Dice, Spell, false, false, BuffTrigger)
+                    foreach (var target in affectedActors)
                     {
-                        Duration = (short)handler.Dice.Delay,
-                        Token = handler
-                    };
+                        var id = target.PopNextBuffId();
+                        var buff = new DelayBuff(id, target, Caster, handler.Dice, Spell, false, false, BuffTrigger)
+                        {
+                            Duration = (short)handler.Dice.Delay,
+                            Token = handler
+                        };
 
-                    Caster.AddAndApplyBuff(buff);
-
+                        target.AddAndApplyBuff(buff, bypassMaxStack: true);
+                    }
                 }
                 else
                     handler.Apply();
