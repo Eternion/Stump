@@ -212,6 +212,35 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 client.Character.Fight.ToggleSpectatorClosed(client.Character, !client.Character.Fight.SpectatorClosed);
         }
 
+        [WorldHandler(GameFightSpectatePlayerRequestMessage.Id)]
+        public static void HandleGameFightSpectatePlayerRequestMessage(WorldClient client, GameFightSpectatePlayerRequestMessage message)
+        {
+            if (client.Character.IsFighting())
+                return;
+
+            var friend = client.Character.FriendsBook.Friends.FirstOrDefault(x => x.Character != null && x.Character.Id == message.playerId).Character;
+
+            if (!friend.IsFighting())
+                return;
+
+            var fight = Singleton<FightManager>.Instance.GetFight(friend.Fight.Id);
+
+            if (fight == null)
+            {
+                SendChallengeFightJoinRefusedMessage(client, client.Character, FighterRefusedReasonEnum.TOO_LATE);
+                return;
+            }
+
+            if (!fight.IsStarted)
+                return;
+
+            if (!fight.CanSpectatorJoin(client.Character) || client.Character.IsInFight())
+                return;
+
+            ContextRoleplayHandler.SendCurrentMapMessage(client, fight.Map.Id);
+            fight.AddSpectator(client.Character.CreateSpectator(fight));
+        }
+
         [WorldHandler(GameFightJoinRequestMessage.Id)]
         public static void HandleGameFightJoinRequestMessage(WorldClient client, GameFightJoinRequestMessage message)
         {
@@ -262,7 +291,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
             {
                 team.AddFighter(client.Character.CreateFighter(team));
             }
-            
         }
 
         [WorldHandler(GameContextKickMessage.Id)]
