@@ -36,7 +36,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             if (spell.Id == (int) SpellIdEnum.DAIPIPAY)
                 spell = glyphSpell;
 
-            Fight.AddTriger(new Glyph((short)Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell, EffectZone.ShapeType, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell)));
+            Glyph glyph;
+            if (Effect.EffectId == EffectsEnum.Effect_GlyphAura)
+                glyph = new GlyphAura((short) Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell,
+                    EffectZone.ShapeType, (byte) Effect.ZoneSize, GetGlyphColorBySpell(Spell));
+            else
+                glyph = new Glyph((short)Fight.PopNextTriggerId(), Caster, spell, Dice, glyphSpell, TargetedCell,
+                    EffectZone.ShapeType, (byte)Effect.ZoneSize, GetGlyphColorBySpell(Spell));
+
+            Fight.AddTriger(glyph);
 
             return true;
         }

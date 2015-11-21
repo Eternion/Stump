@@ -24,9 +24,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
                 foreach (var trigger in triggers.Where(x => x is Glyph))
                 {
-                    if ((trigger as Glyph).IsGlyphAura())
-                        continue;
-
                     foreach (var fighter in fight.GetAllFighters(x => trigger.ContainsCell(x.Cell)))
                     {
                         fight.TriggerMarks(fighter.Cell, fighter, TriggerType.TURN_BEGIN);

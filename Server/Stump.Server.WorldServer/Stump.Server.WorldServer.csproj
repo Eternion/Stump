@@ -532,6 +532,7 @@
     <Compile Include="Game\Fights\Results\IExperienceResult.cs" />
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
+    <Compile Include="Game\Fights\Triggers\GlyphAura.cs" />
     <Compile Include="Game\Fights\Triggers\Wall.cs" />
     <Compile Include="Game\Fights\Triggers\WallsBinding.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />

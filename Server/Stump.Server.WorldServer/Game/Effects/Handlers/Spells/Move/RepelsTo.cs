@@ -40,7 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     break;
                 }
 
-                if (!Fight.ShouldTriggerOnMove(Fight.Map.Cells[cell.CellId]))
+                if (!Fight.ShouldTriggerOnMove(Fight.Map.Cells[cell.CellId], target))
                     continue;
 
                 endCell = Fight.Map.Cells[cell.CellId];
