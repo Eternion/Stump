@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override TriggerType TriggerType
         {
-            get { return OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura ? (TriggerType.MOVE | TriggerType.CREATION) : (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.TURN_END : TriggerType.TURN_BEGIN); }
+            get { return (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.TURN_END : TriggerType.TURN_BEGIN); }
         }
 
         public override bool DecrementDuration()
@@ -60,43 +60,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return (--Duration) <= 0;
         }
 
-        public bool IsGlyphAura()
-        {
-            return OriginEffect.EffectId == EffectsEnum.Effect_GlyphAura;
-        }
-
         public override void Trigger(FightActor trigger)
         {
             NotifyTriggered(trigger, GlyphSpell);
-
-            if (IsGlyphAura() && trigger.GetBuffs(b => b.Spell.Id == GlyphSpell.Id).Any())
-            {
-                trigger.PositionChanged += OnPositionChanged;
-                return;
-            }
-
+            
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, trigger.Cell, false);
             handler.MarkTrigger = this;
             handler.Initialize();
             handler.Execute();
-
-            if (IsGlyphAura())
-                trigger.PositionChanged += OnPositionChanged;
         }
-
-        private void OnPositionChanged(ContextActor actor, ObjectPosition position)
-        {
-            if (actor is FightActor)
-            {
-                if (Shapes.Any(x => x.GetCells().Any(c => c == position.Cell)))
-                    return;
-
-                ((FightActor)actor).RemoveSpellBuffs(GlyphSpell.Id);
-            }
-                
-
-            actor.PositionChanged -= OnPositionChanged;
-        }
+        
 
         public override GameActionMark GetGameActionMark()
         {
@@ -114,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return true;
         }
 
-        public override bool IsAffected(FightActor actor)
+        public override bool CanTrigger(FightActor actor)
         {
             return true;
         }

@@ -83,7 +83,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                                       Shapes.Select(entry => entry.GetGameActionMarkedCell()), true);
         }
 
-        public override bool IsAffected(FightActor actor)
+        public override bool CanTrigger(FightActor actor)
         {
             return true;
         }
