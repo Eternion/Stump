@@ -18,6 +18,8 @@ namespace Stump.Server.WorldServer.Core.Network
     public sealed class WorldClient : BaseClient
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private List<Message> msgRecv = new List<Message>();
+        private List<Message> msgSend = new List<Message>();
 
         public WorldClient(Socket socket)
             : base(socket)
@@ -107,8 +109,15 @@ namespace Stump.Server.WorldServer.Core.Network
                 logger.Error("Group {0} not found. Use default group instead !", account.UserGroupId);
         }
 
+        public override void OnMessageSent(Message message)
+        {
+            msgSend.Add(message);
+            base.OnMessageSent(message);
+        }
+
         protected override void OnMessageReceived(Message message)
         {
+            msgRecv.Add(message);
             WorldPacketHandler.Instance.Dispatch(this, message);
 
             base.OnMessageReceived(message);

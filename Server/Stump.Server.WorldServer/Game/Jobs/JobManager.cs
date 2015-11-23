@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Jobs;
@@ -21,5 +22,13 @@ namespace Stump.Server.WorldServer.Game.Jobs
             JobTemplate job;
             return m_jobTemplates.TryGetValue(id, out job) ? job : null;
         }
+
+        public JobRecord[] GetCharacterJobs(int characterId)
+        {
+            return Database.Query<JobRecord>(string.Format(JobRecordRelator.FetchByOwner, characterId)).ToArray();
+        }
+
+        public JobTemplate[] GetJobTemplates() => m_jobTemplates.Values.ToArray();
+        public IEnumerable<JobTemplate> EnumerateJobTemplates() => m_jobTemplates.Values;
     }
 }
