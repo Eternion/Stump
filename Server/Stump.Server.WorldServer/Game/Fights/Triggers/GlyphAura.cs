@@ -28,6 +28,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, actor.Cell, false);
             handler.MarkTrigger = this;
             handler.Initialize();
+            foreach (var effectHandler in handler.GetEffectHandlers())
+            {
+                effectHandler.SetAffectedActors(new [] { actor });
+            }
             handler.Execute();
 
             actor.PositionChanged += OnPositionChanged;
@@ -37,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         private void OnPositionChanged(ContextActor actor, ObjectPosition position)
         {
             var fighter = actor as FightActor;
-            if (!CanTrigger(fighter))
+            if (!CanTrigger(fighter) && !ContainsCell(actor.Cell))
                 Leave(fighter);
         }
 
@@ -46,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             var buffs = actor.GetBuffs(x => x.Caster == Caster && x.Spell.Id == GlyphSpell.Id).ToArray();
             foreach(var buff in buffs)
             {
-                actor.RemoveBuff(buff);
+                actor.RemoveAndDispellBuff(buff);
             }
 
             actor.PositionChanged -= OnPositionChanged;

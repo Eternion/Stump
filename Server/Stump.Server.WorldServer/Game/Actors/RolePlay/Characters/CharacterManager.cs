@@ -16,6 +16,7 @@ using Stump.Server.WorldServer.Database.Characters;
 using Stump.Server.WorldServer.Database.Shortcuts;
 using Stump.Server.WorldServer.Game.Breeds;
 using Stump.Server.WorldServer.Game.Guilds;
+using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters

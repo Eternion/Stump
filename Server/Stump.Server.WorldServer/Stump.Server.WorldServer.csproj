@@ -639,6 +639,7 @@
     <Compile Include="Handlers\Compass\CompassHandler.cs" />
     <Compile Include="Handlers\Context\ContextArenaHandler.cs" />
     <Compile Include="Handlers\Context\ContextChallengeHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayJobHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Guilds\GuildHandler.cs" />
