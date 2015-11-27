@@ -158,12 +158,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             protected set;
         }
 
-        public override sealed ObjectPosition Position
-        {
-            get;
-            protected set;
-        }
-
         public override ActorLook Look
         {
             get

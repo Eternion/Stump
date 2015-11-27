@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         private InteractiveSpawn m_current;
 
-        public InteractiveSpawn Map(InteractiveSpawn spawn, InteractiveSpawnSkills binding, InteractiveSkillRecord skill)
+        public InteractiveSpawn Map(InteractiveSpawn spawn, InteractiveSpawnSkills binding, InteractiveCustomSkillRecord skill)
         {
             if (spawn == null)
                 return m_current;
@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             if (m_current != null && m_current.Id == spawn.Id)
             {            
                 if (binding.InteractiveSpawnId == m_current.Id && binding.SkillId == skill.Id)
-                    m_current.Skills.Add(skill);
+                    m_current.CustomSkills.Add(skill);
                 return null;
             }
 
@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
             m_current = spawn;
             if (binding.InteractiveSpawnId == m_current.Id && binding.SkillId == skill.Id)
-                m_current.Skills.Add(skill);
+                m_current.CustomSkills.Add(skill);
 
             return previous;
         }
@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         public InteractiveSpawn()
         {
-            Skills = new List<InteractiveSkillRecord>();
+            CustomSkills = new List<ISkillRecord>();
         }
 
         // Primitive properties
@@ -96,6 +96,18 @@ namespace Stump.Server.WorldServer.Database.Interactives
         {
             get { return m_template ?? (m_template = InteractiveManager.Instance.GetTemplate(TemplateId)); }
         }
+        
+        public int MapId
+        {
+            get;
+            set;
+        }
+
+        public short CellId
+        {
+            get;
+            set;
+        }
 
         public int ElementId
         {
@@ -103,7 +115,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set;
         }
 
-        public int MapId
+        public bool Animated
         {
             get;
             set;
@@ -113,32 +125,15 @@ namespace Stump.Server.WorldServer.Database.Interactives
         /// Custom skills if Template is null
         /// </summary>
         [Ignore]
-        public List<InteractiveSkillRecord> Skills
+        public List<ISkillRecord> CustomSkills
         {
             get;
             set;
         }
 
-        public IEnumerable<InteractiveSkillRecord> GetSkills()
+        public IEnumerable<ISkillRecord> GetSkills()
         {
-            return Skills.Count > 0 ? Skills : Template.Skills;
-        }
-
-        public ObjectPosition GetPosition()
-        {
-            var map = GetMap();
-
-            var elements = map.Record.FindMapElement(ElementId);
-
-            if (elements.Length <= 0)
-                return new ObjectPosition(map, null);
-
-            if (elements.Length > 1)
-                logger.Debug("More than 1 elements found in interactive id = {0}", Id);
-
-            var cell = elements[0].CellId;
-
-            return new ObjectPosition(map, cell);
+            return CustomSkills.Count > 0 || Template == null ? CustomSkills : Template.GetSkills();
         }
 
         public Map GetMap()

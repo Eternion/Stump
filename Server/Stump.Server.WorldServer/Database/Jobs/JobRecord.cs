@@ -40,5 +40,17 @@ namespace Stump.Server.WorldServer.Database.Jobs
             get;
             set;
         }
+
+        public bool WorkForFree
+        {
+            get;
+            set;
+        }
+
+        public int MinLevelCraftSetting
+        {
+            get;
+            set;
+        }
     }
 }

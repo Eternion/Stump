@@ -1,21 +1,27 @@
 using System.Collections.Generic;
 using System.Linq;
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Handlers.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Interactives
 {
     public class InteractiveObject : WorldObject
     {
+        private readonly MapElement m_element;
         private readonly Dictionary<int, Skill> m_skills = new Dictionary<int, Skill>();
 
-        public InteractiveObject(InteractiveSpawn spawn)
+        public InteractiveObject(Map map, InteractiveSpawn spawn)
         {
             Spawn = spawn;
-            Position = spawn.GetPosition();
+            Position = new ObjectPosition(map, spawn.CellId);
+            Animated = spawn.Animated;
 
             GenerateSkills();
         }
@@ -26,15 +32,22 @@ namespace Stump.Server.WorldServer.Game.Interactives
             private set;
         }
 
-        public bool CanSelectSkill
+        public bool Animated
         {
-            get { return Template != null; }
+            get;
+            private set;
+        }
+
+        public InteractiveStateEnum State
+        {
+            get;
+            private set;
         }
 
         public override int Id
         {
-            get { return Spawn.ElementId; }
-            protected set { Spawn.ElementId = value; }
+            get { return Spawn.Id; }
+            protected set { Spawn.Id = value; }
         }
 
         /// <summary>
@@ -43,6 +56,13 @@ namespace Stump.Server.WorldServer.Game.Interactives
         public InteractiveTemplate Template
         {
             get { return Spawn.Template; }
+        }
+
+        public void SetInteractiveState(InteractiveStateEnum state)
+        {
+            State = state;
+
+            InteractiveHandler.SendStatedElementUpdatedMessage(Map.Clients, Id, Cell.Id, (int) State);
         }
 
         private void GenerateSkills()
@@ -89,7 +109,12 @@ namespace Stump.Server.WorldServer.Game.Interactives
         public InteractiveElement GetInteractiveElement(Character character)
         {
             return
-                new InteractiveElement(Id, Template != null ? Template.Id : -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character));
+                new InteractiveElement(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character));
+        }
+
+        public StatedElement GetStatedElement()
+        {
+            return new StatedElement(Id, Cell.Id, (int) State);
         }
     }
 }

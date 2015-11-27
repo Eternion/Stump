@@ -8,6 +8,7 @@ using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.DofusProtocol.D2oClasses.Tools.Ele;
+using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
 
 namespace DBSynchroniser.Records.Maps
 {    
@@ -46,14 +47,6 @@ namespace DBSynchroniser.Records.Maps
             UseLowpassFilter = map.UseLowPassFilter;
             UseReverb = map.UseReverb;
             PresetId = map.PresetId;
-            Elements =
-                map.Layers.SelectMany(
-                    x =>
-                        x.Cells.SelectMany(
-                            y =>
-                                y.Elements.OfType<DlmGraphicalElement>()
-                                 .Where(z => z.Identifier != 0)
-                                 .Select(z => new MapElement(z.Identifier, z.Cell.Id)))).ToArray();
             Cells =
                 map.Cells.Select(
                     x =>
@@ -275,32 +268,6 @@ namespace DBSynchroniser.Records.Maps
             }
         }
 
-        public byte[] CompressedElements
-        {
-            get { return m_compressedElements; }
-            set
-            {
-                m_compressedElements = value;
-                byte[] uncompressedElements = ZipHelper.Uncompress(m_compressedElements);
-
-                Elements = new MapElement[uncompressedElements.Length/MapElement.Size];
-                for (int i = 0, j = 0; i < uncompressedElements.Length; i += MapElement.Size, j++)
-                {
-                    var element = new MapElement();
-                    element.Deserialize(uncompressedElements, i);
-
-                    Elements[j] = element;
-                }
-            }
-        }
-
-        [Ignore]
-        public MapElement[] Elements
-        {
-            get;
-            set;
-        }
-
         [Ignore]
         public Cell[] Cells
         {
@@ -320,14 +287,6 @@ namespace DBSynchroniser.Records.Maps
             }
 
             m_compressedCells = ZipHelper.Compress(m_compressedCells);
-
-            m_compressedElements = new byte[Elements.Length*MapElement.Size];
-            for (int i = 0; i < Elements.Length; i++)
-            {
-                Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i*MapElement.Size, MapElement.Size);
-            }
-
-            m_compressedElements = ZipHelper.Compress(m_compressedElements);
         }
 
         #endregion
@@ -358,11 +317,6 @@ namespace DBSynchroniser.Records.Maps
             return cells;
         }
 
-        public MapElement[] FindMapElement(int id)
-        {
-            return Elements.Where(entry => entry.ElementId == id).ToArray();
-        }
-
         public Stump.Server.WorldServer.Database.World.Maps.MapRecord GetWorldRecord()
         {
             var record = new Stump.Server.WorldServer.Database.World.Maps.MapRecord
@@ -391,7 +345,6 @@ namespace DBSynchroniser.Records.Maps
                 BlueFightCells = BlueFightCells,
                 RedFightCells = RedFightCells,
                 CompressedCells = CompressedCells,
-                CompressedElements = CompressedElements
             };
 
             return record;

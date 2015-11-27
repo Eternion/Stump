@@ -18,16 +18,17 @@ using System;
 
 namespace Stump.Server.BaseServer.Database
 {
+    [AttributeUsage(AttributeTargets.All, AllowMultiple=true)]
     public class DiscriminatorAttribute : Attribute
     {
-        public DiscriminatorAttribute(string discriminator, Type baseType, params Type[] ctorParameters)
+        public DiscriminatorAttribute(object discriminator, Type baseType, params Type[] ctorParameters)
         {
             Discriminator = discriminator;
             BaseType = baseType;
             CtorParameters = ctorParameters;
         }
 
-        public string Discriminator
+        public object Discriminator
         {
             get;
             set;
