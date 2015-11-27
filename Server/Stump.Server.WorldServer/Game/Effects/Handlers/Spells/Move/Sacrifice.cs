@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 return;
 
             var damage = token as Fights.Damage;
-            if (damage == null)
+            if (damage == null || damage.Amount == 0 || damage.MarkTrigger != null)
                 return;
 
             target.IsSacrificeProtected = true;
