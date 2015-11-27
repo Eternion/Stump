@@ -1,3 +1,4 @@
+using System;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
@@ -7,10 +8,10 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
     public abstract class Skill
     {
-        protected Skill(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
+        protected Skill(int id, InteractiveSkillTemplate skillTemplate, InteractiveObject interactiveObject)
         {
             Id = id;
-            Record = record;
+            SkillTemplate = skillTemplate;
             InteractiveObject = interactiveObject;
         }
 
@@ -20,10 +21,10 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             private set;
         }
 
-        public InteractiveSkillRecord Record
+        public InteractiveSkillTemplate SkillTemplate
         {
             get;
-            private set;
+            set;
         }
 
         public InteractiveObject InteractiveObject
@@ -32,21 +33,21 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             private set;
         }
 
-        public virtual uint GetDuration(Character character)
+        public virtual int GetDuration(Character character)
         {
             return 0;
         }
 
         public abstract bool IsEnabled(Character character);
-        public abstract void Execute(Character character);
+        public abstract int StartExecute(Character character);
 
-        public virtual void PostExecute(Character character)
+        public virtual void EndExecute(Character character)
         {
         }
 
         public InteractiveElementSkill GetInteractiveElementSkill()
         {
-            return new InteractiveElementSkill(Record.Template.Id, Id);
+            return new InteractiveElementSkill(SkillTemplate.Id, Id);
         }
     }
 }

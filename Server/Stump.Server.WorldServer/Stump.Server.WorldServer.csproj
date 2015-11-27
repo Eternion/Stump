@@ -212,6 +212,7 @@
     <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
+    <Compile Include="Database\Interactives\ISkillRecord.cs" />
     <Compile Include="Database\Items\BidHouse\BidHouseItemRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
@@ -219,7 +220,7 @@
     <Compile Include="Database\Interactives\InteractiveSkillTemplate.cs" />
     <Compile Include="Database\Interactives\InteractiveSpawn.cs" />
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
-    <Compile Include="Database\Interactives\InteractiveSkillRecord.cs" />
+    <Compile Include="Database\Interactives\InteractiveCustomSkillRecord.cs" />
     <Compile Include="Database\ISaveable.cs" />
     <Compile Include="Database\Items\PlayerPresetRecord.cs" />
     <Compile Include="Database\Items\TaxCollectorItemRecord.cs" />
@@ -541,7 +542,9 @@
     <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
+    <Compile Include="Game\Interactives\Skills\CustomSkill.cs" />
     <Compile Include="Game\Interactives\Skills\SkillGuildCreate.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillHarvest.cs" />
     <Compile Include="Game\Interactives\Skills\SkillPaddock.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapiTeleport.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />

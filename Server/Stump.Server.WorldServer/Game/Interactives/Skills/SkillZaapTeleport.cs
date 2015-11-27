@@ -5,11 +5,17 @@ using Stump.Server.WorldServer.Game.Dialogs.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
-    [Discriminator("ZaapTeleport", typeof(Skill), typeof(int), typeof(InteractiveSkillRecord), typeof(InteractiveObject))]
+    [Discriminator(114, typeof(Skill), typeof(int), typeof(InteractiveSkillTemplate), typeof(InteractiveObject))]
+    [Discriminator("ZaapTeleport", typeof(Skill), typeof(int), typeof(InteractiveCustomSkillRecord), typeof(InteractiveObject))]
     public class SkillZaapTeleport : Skill
     {
-        public SkillZaapTeleport(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
+        public SkillZaapTeleport(int id, InteractiveSkillTemplate record, InteractiveObject interactiveObject)
             : base(id, record, interactiveObject)
+        {
+        }
+
+        public SkillZaapTeleport(int id, InteractiveCustomSkillRecord record, InteractiveObject interactiveObject)
+            : base(id, record.Template, interactiveObject)
         {
         }
 
@@ -18,11 +24,12 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             return true;
         }
 
-        public override void Execute(Character character)
+        public override int StartExecute(Character character)
         {
             var dialog = new ZaapDialog(character, InteractiveObject, character.KnownZaaps);
 
             dialog.Open();
+            return 0;
         }
     }
 }
