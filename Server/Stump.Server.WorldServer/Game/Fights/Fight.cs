@@ -275,7 +275,6 @@ namespace Stump.Server.WorldServer.Game.Fights
         void EndAllSequences();
         void AcknowledgeAction();
         IEnumerable<MarkTrigger> GetTriggers();
-        bool ShouldTriggerOnMove(Cell cell);
         bool ShouldTriggerOnMove(Cell cell, FightActor actor);
         MarkTrigger[] GetTriggersByCell(Cell cell);
         MarkTrigger[] GetTriggers(Cell cell);
@@ -1836,7 +1835,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 {
                     // if there is a trap on the way we trigger it
                     // or if there is a fighter on a adjacent cell
-                    if (i > 0 && ShouldTriggerOnMove(cells[i]))
+                    if (i > 0 && ShouldTriggerOnMove(cells[i], fighter))
                     {
                         path.CutPath(i + 1);
                         break;
@@ -2320,14 +2319,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             return m_triggers;
         }
 
-        public bool ShouldTriggerOnMove(Cell cell)
-        {
-            return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.ContainsCell(cell));
-        }
-
         public bool ShouldTriggerOnMove(Cell cell, FightActor actor)
         {
-            return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.ContainsCell(cell) && entry.IsAffected(actor));
+            return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.StopMovement && entry.ContainsCell(cell) && entry.CanTrigger(actor));
         }
 
         public MarkTrigger[] GetTriggersByCell(Cell cell)

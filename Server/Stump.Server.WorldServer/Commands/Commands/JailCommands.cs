@@ -47,12 +47,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 if (trigger.IsArgumentDefined("time"))
                 {
                     var time = trigger.Get<int>("time");
-                    if (time > 60*24 && trigger.UserRole == RoleEnum.GameMaster_Padawan)
-                        // max ban time for padawan == 24h
-                        time = 60*24;
                     message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(time);
                 }
-                else if (trigger.IsArgumentDefined("life") && trigger.UserRole != RoleEnum.GameMaster_Padawan)
+                else if (trigger.IsArgumentDefined("life"))
                     message.BanEndDate = null;
                 else
                 {

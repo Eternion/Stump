@@ -24,6 +24,8 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database;
 using Stump.DofusProtocol.D2oClasses.Tools.Ele;
+using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
+using Stump.Server.WorldServer.Database.Interactives;
 
 namespace DBSynchroniser
 {
@@ -87,6 +89,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Synchronise world database (stump_data->stump_world)", SyncDatabases),
             Tuple.Create<string, Action>("Import maps (on stump_data)", LoadMapsWithWarning),
             Tuple.Create<string, Action>("Fix fight placement (on stump_data)", PlacementsFix.ApplyFix),
+            Tuple.Create<string, Action>("Generate interactive spawn (on stump_world)", GenerateInteractiveSpawnWithWarning),
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -507,11 +510,8 @@ namespace DBSynchroniser
             }
         }
 
-        public static void SyncDatabases()
+        public static DatabaseAccessor ConnectToWorld()
         {
-            Console.WriteLine("Enter the tables to build (separated by comma, empty = all)");
-            var tables = Console.ReadLine().Split(',');
-
             var worldDatabase = new DatabaseAccessor(WorldDatabaseConfiguration);
 
             Console.WriteLine("Connecting to {0}@{1}", WorldDatabaseConfiguration.DbName,
@@ -526,10 +526,22 @@ namespace DBSynchroniser
             catch (Exception e)
             {
                 Console.WriteLine("Could not connect : " + e);
-                return;
+                return null;
             }
 
             Console.WriteLine("Connected!");
+            return worldDatabase;
+        }
+
+        public static void SyncDatabases()
+        {
+            Console.WriteLine("Enter the tables to build (separated by comma, empty = all)");
+            var tables = Console.ReadLine().Split(',');
+
+            var worldDatabase = ConnectToWorld();
+
+            if (worldDatabase == null)
+                return;
 
             var worldTables = EnumerateTables(typeof(WorldServer).Assembly).ToList();
             var monsterGradeTable = worldTables.FirstOrDefault(x => x.ClassName == "MonsterGrade");
@@ -719,6 +731,76 @@ namespace DBSynchroniser
             EndCounter();
 
         }
+
+        public static void GenerateInteractiveSpawnWithWarning()
+        {
+            Console.WriteLine("WARNING IT WILL ERASE TABLES 'interactives_spawns'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
+
+            GenerateInteractiveSpawns();
+        }
+
+        public static void GenerateInteractiveSpawns()
+        {
+            Console.WriteLine("Generating interactive spawns");
+            var worldDatabase = ConnectToWorld();
+            if (worldDatabase == null)
+                return;
+
+            worldDatabase.Database.Execute("DELETE FROM interactives_spawns");
+            worldDatabase.Database.Execute("ALTER TABLE interactives_spawns AUTO_INCREMENT=1");
+            string eleFilePath = Path.Combine(FindDofusPath(), "content", "maps", "elements.ele");
+            string mapsfilePath = Path.Combine(FindDofusPath(), "content", "maps", "maps0.d2p");
+
+            var eleFile = new EleReader(eleFilePath);
+            var eleInstance = eleFile.ReadElements();
+            var d2pFile = new D2pFile(mapsfilePath);
+            var entries = d2pFile.ReadAllFiles();
+            var i = 0;
+            var ids = new List<int>();
+            var failures = new List<int>();
+            InitializeCounter();
+            foreach (var mapBytes in entries.Values)
+            {
+                var mapFile = new DlmReader(mapBytes) {DecryptionKey = MapDecryptionKey};
+                var map = mapFile.ReadMap();
+                var elements = map.Layers.SelectMany(
+                   x => x.Cells.SelectMany(
+                           y => y.Elements.OfType<DlmGraphicalElement>()
+                                .Where(z => z.Identifier != 0)));
+
+                foreach (var element in elements)
+                {
+                    var eleElement = eleInstance.GraphicalDatas[(int)element.ElementId];
+
+                    var spawn = new InteractiveSpawn()
+                    {
+                        Id = (int) element.Identifier,
+                        MapId = map.Id,
+                        CellId = element.Cell.Id,
+                        Animated = eleElement is AnimatedGraphicalElementData,
+                        ElementId = (int) element.ElementId,
+                    };
+
+                    if (ids.Contains(spawn.Id))
+                    {
+                        Console.WriteLine($"Id {spawn.Id} already added");
+                        failures.Add(spawn.Id);
+                        continue;
+                    }
+
+                    ids.Add(spawn.Id);
+                    worldDatabase.Database.Insert("interactives_spawns", "Id", false, spawn);
+
+                }
+
+                UpdateCounter(i++, entries.Count);
+            }
+            EndCounter();
+
+
+        }   
 
         private static void ExecutePatch(string file, Database database)
         {

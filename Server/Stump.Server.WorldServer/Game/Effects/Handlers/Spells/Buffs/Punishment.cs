@@ -45,6 +45,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (bonus + currentBonus > limit)
                 bonus = (short) (limit - currentBonus);
 
+            if (bonus <= 0)
+                return;
+
             var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
                 Spell, (short)bonus, caracteristic, false, true, Dice.DiceNum) 

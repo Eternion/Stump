@@ -43,6 +43,11 @@ namespace Stump.Core.Extensions
             list.Remove(item);
             list.Insert(newIndex, item);
         }
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> knownKeys = new HashSet<TKey>();
+            return source.Where(element => knownKeys.Add(keySelector(element)));
+        }
 
         public static bool CompareEnumerable<T>(this IEnumerable<T> ie1, IEnumerable<T> ie2)
         {

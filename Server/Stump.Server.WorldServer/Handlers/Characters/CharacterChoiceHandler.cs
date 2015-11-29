@@ -235,6 +235,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 MountHandler.SendMountXpRatioMessage(client, client.Character.Mount.GivenExperience);
             }
 
+            // jobs
+            ContextRoleplay.SendJobDescriptionMessage(client, client.Character);
+            ContextRoleplay.SendJobExperienceMultiUpdateMessage(client, client.Character);
+            ContextRoleplay.SendJobCrafterDirectorySettingsMessage(client, client.Character);
+
             client.Character.SendConnectionMessages();
 
             //InitializationHandler.SendOnConnectionEventMessage(client, 3);

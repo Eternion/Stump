@@ -63,6 +63,11 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
             client.Send(new InteractiveUsedMessage(user.Id, interactiveObject.Id, (short) skill.Id, (short) skill.GetDuration(user)));
         }
 
+        public static void SendInteractiveUseErrorMessage(IPacketReceiver client, int interactiveId, int skillId)
+        {
+            client.Send(new InteractiveUseErrorMessage(interactiveId, skillId));
+        }
+
         public static void SendStatedElementUpdatedMessage(IPacketReceiver client, int elementId, short elementCellId, int state)
         {
             client.Send(new StatedElementUpdatedMessage(new StatedElement(elementId, elementCellId, state)));
@@ -71,6 +76,15 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
         public static void SendMapObstacleUpdatedMessage(IPacketReceiver client, IEnumerable<MapObstacle> obstacles)
         {
             client.Send(new MapObstacleUpdateMessage(obstacles));
+        }
+
+        public static void SendInteractiveElementUpdatedMessage(IPacketReceiver client, Character character, InteractiveObject interactive)
+        {
+            client.Send(new InteractiveElementUpdatedMessage(interactive.GetInteractiveElement(character)));
+        }
+        public static void SendInteractiveUseEndedMessage(IPacketReceiver client, InteractiveObject interactive, Skill skill)
+        {
+            client.Send(new InteractiveUseEndedMessage(interactive.Id, (short)skill.Id));
         }
     }
 }

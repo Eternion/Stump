@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
-            if (!IsAffected(trigger))
+            if (!CanTrigger(trigger))
                 return;
 
             NotifyTriggered(trigger, CastedSpell);
@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return false;
         }
 
-        public override bool IsAffected(FightActor actor)
+        public override bool CanTrigger(FightActor actor)
         {
             var bomb = Bombs.FirstOrDefault();
 

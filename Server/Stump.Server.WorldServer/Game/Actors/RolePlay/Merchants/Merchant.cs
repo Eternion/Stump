@@ -83,12 +83,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Merchants
             protected set { m_record.CharacterId = value; }
         }
 
-        public override ObjectPosition Position
-        {
-            get;
-            protected set;
-        }
-
         public MerchantBag Bag
         {
             get;

@@ -91,6 +91,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             get;
         }
 
+        public virtual bool StopMovement => true;
+
         public bool ContainsCell(Cell cell)
         {
             return Shapes.Any(entry => entry.GetCells().Contains(cell));
@@ -111,6 +113,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public abstract GameActionMark GetHiddenGameActionMark();
         public abstract bool DoesSeeTrigger(FightActor fighter);
         public abstract bool DecrementDuration();
-        public abstract bool IsAffected(FightActor actor);
+        public abstract bool CanTrigger(FightActor actor);
     }
 }

@@ -43,14 +43,14 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             if (character == null)
                 return;
+            
+            var ios = character.Map.GetInteractiveObjects().ToList();
 
-            var ios = character.Map.Record.Elements.ToList();
-
-            foreach (var io in ios.Where(x => x.ElementId != 0))
+            foreach (var io in ios)
             {
                 var randomColor = GetRandomColor();
-                character.Client.Send(new DebugHighlightCellsMessage(randomColor.ToArgb(), new[] { io.CellId }));
-                character.SendServerMessage(string.Format("Element Id: {0} - CellId: {1}", io.ElementId, io.CellId), randomColor);
+                character.Client.Send(new DebugHighlightCellsMessage(randomColor.ToArgb(), new[] { io.Cell.Id }));
+                character.SendServerMessage($"Identifier : {io.Id} - Template Id: {io.Template?.Id ?? 0} - CellId: {io.Cell.Id} - Animated - {io.Animated} - Element Id : {io.Spawn.ElementId}", randomColor);
             }
         }
 
@@ -139,7 +139,6 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var mapSrc = character.Map;
                 var cellIdDst = map.Cells[trigger.Get<short>("cellidDst")];
                 var elementId = trigger.Get<int>("elementId");
-                var skillTemplate = trigger.Get<InteractiveSkillTemplate>("skillId");
                 var template = trigger.Get<InteractiveTemplate>("templateId");
                 var templateId = template == null ? 0 : template.Id;
                 var direction = trigger.Get<DirectionsEnum>("orientationId");
@@ -153,12 +152,11 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var spawnId = InteractiveManager.Instance.PopSpawnId();
                 var skillId = InteractiveManager.Instance.PopSkillId();
 
-                var skill = new InteractiveSkillRecord
+                var skill = new InteractiveCustomSkillRecord
                 {
                     Id = skillId,
                     Type = "Teleport",
                     Duration = 0,
-                    CustomTemplateId = skillTemplate.Id,
                     Parameter0 = map.Id.ToString(),
                     Parameter1 = cellIdDst.Id.ToString(),
                     Parameter2 = direction.ToString("D")
@@ -167,9 +165,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 var spawn = new InteractiveSpawn
                 {
                     Id = spawnId,
-                    ElementId = elementId,
                     MapId = mapSrc.Id,
-                    Skills = { skill },
+                    CustomSkills = { skill },
                     TemplateId = templateId
                 };
 
@@ -198,7 +195,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             var elementId = trigger.Get<int>("elementId");
             var mapSrc = character.Map;
-            var interactive = InteractiveManager.Instance.GetOneSpawn(x => x.MapId == mapSrc.Id && x.ElementId == elementId);
+            var interactive = InteractiveManager.Instance.GetOneSpawn(x => x.MapId == mapSrc.Id && x.Id == elementId);
 
             WorldServer.Instance.IOTaskPool.AddMessage(() =>
             {

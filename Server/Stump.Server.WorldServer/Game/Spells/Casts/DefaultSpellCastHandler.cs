@@ -39,37 +39,43 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             var effects = Critical ? SpellLevel.CriticalEffects : SpellLevel.Effects;
             var handlers = new List<SpellEffectHandler>();
 
-            var rand = random.NextDouble();
-            double randSum = effects.Sum(entry => entry.Random);
-            var stopRand = false;
-            foreach (var effect in effects.OrderBy(x => x.Priority))
-            {
-                if (effect.Random > 0)
-                {
-                    if (stopRand)
-                        continue;
+            var groups = effects.GroupBy(x => x.Group);
 
-                    if (rand > effect.Random/randSum)
+            foreach(var groupEffects in groups)
+            {
+                var rand = random.NextDouble();
+                double randSum = groupEffects.Sum(entry => entry.Random);
+                var stopRand = false;
+                foreach (var effect in groupEffects.OrderByDescending(x => x.Priority))
+                {
+                    if (effect.Random > 0)
                     {
-                        // effect ignored
-                        rand -= effect.Random/randSum;
-                        continue;
+                        if (stopRand)
+                            continue;
+
+                        if (rand > effect.Random / randSum)
+                        {
+                            // effect ignored
+                            rand -= effect.Random / randSum;
+                            continue;
+                        }
+
+                        // random effect found, there can be only one
+                        stopRand = true;
                     }
 
-                    // random effect found, there can be only one
-                    stopRand = true;
+                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, TargetedCell, Critical);
+
+                    if (MarkTrigger != null)
+                        handler.MarkTrigger = MarkTrigger;
+
+                    if (!handler.CanApply())
+                        return false;
+
+                    handlers.Add(handler);
                 }
-
-                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, TargetedCell, Critical);
-
-                if (MarkTrigger != null)
-                    handler.MarkTrigger = MarkTrigger;
-
-                if (!handler.CanApply())
-                    return false;
-
-                handlers.Add(handler);
             }
+
 
             Handlers = handlers.ToArray();
             m_initialized = true;
@@ -89,15 +95,17 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                     var affectedActors = handler.GetAffectedActors().ToArray();
                     handler.SetAffectedActors(affectedActors);
 
-                    var id = Caster.PopNextBuffId();
-                    var buff = new DelayBuff(id, Caster, Caster, handler.Dice, Spell, false, false, BuffTrigger)
+                    foreach (var target in affectedActors)
                     {
-                        Duration = (short)handler.Dice.Delay,
-                        Token = handler
-                    };
+                        var id = target.PopNextBuffId();
+                        var buff = new DelayBuff(id, target, Caster, handler.Dice, Spell, false, false, BuffTrigger)
+                        {
+                            Duration = (short)handler.Dice.Delay,
+                            Token = handler
+                        };
 
-                    Caster.AddAndApplyBuff(buff);
-
+                        target.AddAndApplyBuff(buff, bypassMaxStack: true);
+                    }
                 }
                 else
                     handler.Apply();

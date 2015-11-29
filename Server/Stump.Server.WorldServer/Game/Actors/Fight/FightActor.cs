@@ -1019,7 +1019,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     (100 + Stats[PlayerFields.Strength].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                    (Stats[PlayerFields.DamageBonus].Total +
                                      Stats[PlayerFields.PhysicalDamage].TotalSafe +
                                      Stats[PlayerFields.NeutralDamageBonus].TotalSafe));
                     break;
@@ -1028,7 +1028,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     (100 + Stats[PlayerFields.Strength].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                    (Stats[PlayerFields.DamageBonus].Total +
                                      Stats[PlayerFields.PhysicalDamage].TotalSafe +
                                      Stats[PlayerFields.EarthDamageBonus].TotalSafe));
                     break;
@@ -1037,7 +1037,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     (100 + Stats[PlayerFields.Agility].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                    (Stats[PlayerFields.DamageBonus].Total +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
                                      Stats[PlayerFields.AirDamageBonus].TotalSafe));
                     break;
@@ -1046,7 +1046,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     (100 + Stats[PlayerFields.Chance].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                    (Stats[PlayerFields.DamageBonus].Total +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
                                      Stats[PlayerFields.WaterDamageBonus].TotalSafe));
                     break;
@@ -1055,7 +1055,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                                     (100 + Stats[PlayerFields.Intelligence].TotalSafe +
                                      Stats[PlayerFields.DamageBonusPercent].TotalSafe +
                                      Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].TotalSafe +
+                                    (Stats[PlayerFields.DamageBonus].Total +
                                      Stats[PlayerFields.MagicDamage].TotalSafe +
                                      Stats[PlayerFields.FireDamageBonus].TotalSafe));
                     break;

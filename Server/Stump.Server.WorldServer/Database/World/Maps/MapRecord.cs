@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stump.Core.IO;
 using Stump.ORM;
@@ -246,37 +247,12 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             }
         }
 
-        public byte[] CompressedElements
-        {
-            get { return m_compressedElements; }
-            set
-            {
-                m_compressedElements = value;
-                byte[] uncompressedElements = ZipHelper.Uncompress(m_compressedElements);
-
-                Elements = new MapElement[uncompressedElements.Length/MapElement.Size];
-                for (int i = 0, j = 0; i < uncompressedElements.Length; i += MapElement.Size, j++)
-                {
-                    var element = new MapElement();
-                    element.Deserialize(uncompressedElements, i);
-
-                    Elements[j] = element;
-                }
-            }
-        }
-
-        [Ignore]
-        public MapElement[] Elements
-        {
-            get;
-            set;
-        }
-
+     
         [Ignore]
         public Cell[] Cells
         {
             get;
-            set;
+            private set;
         }
 
         #region ISaveIntercepter Members
@@ -291,14 +267,6 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             }
 
             m_compressedCells = ZipHelper.Compress(m_compressedCells);
-
-            m_compressedElements = new byte[Elements.Length*MapElement.Size];
-            for (int i = 0; i < Elements.Length; i++)
-            {
-                Array.Copy(Elements[i].Serialize(), 0, m_compressedElements, i*MapElement.Size, MapElement.Size);
-            }
-
-            m_compressedElements = ZipHelper.Compress(m_compressedElements);
         }
 
         #endregion
@@ -327,11 +295,6 @@ namespace Stump.Server.WorldServer.Database.World.Maps
                 cells[j] = (short) (bytes[i] << 8 | bytes[i + 1]);
 
             return cells;
-        }
-
-        public MapElement[] FindMapElement(int id)
-        {
-            return Elements.Where(entry => entry.ElementId == id).ToArray();
         }
     }
 }

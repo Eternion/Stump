@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stump.Core.Extensions;
 using Stump.Core.Pool;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
@@ -10,29 +11,35 @@ namespace Stump.Server.WorldServer.Game.Interactives
 {
     public class InteractiveManager : DataManager<InteractiveManager>
     {
+        public const int DEFAULT_TEMPLATE = 184;
+
         private UniqueIdProvider m_idProviderSpawn = new UniqueIdProvider();
         private UniqueIdProvider m_idProviderSkill = new UniqueIdProvider();
         private Dictionary<int, InteractiveSpawn> m_interactivesSpawns;
         private Dictionary<int, InteractiveTemplate> m_interactivesTemplates;
         private Dictionary<int, InteractiveSkillTemplate> m_skillsTemplates;
-        private Dictionary<int, InteractiveSkillRecord> m_interactivesSkills;
+        private Dictionary<int, InteractiveCustomSkillRecord> m_interactivesCustomSkills;
+        private InteractiveSkillTemplate m_defaultSkillTemplate;
+
+        public IReadOnlyDictionary<int, InteractiveSpawn> InteractivesSpawns => m_interactivesSpawns;
+        public IReadOnlyDictionary<int, InteractiveSkillTemplate> SkillsTemplates => m_skillsTemplates;
 
         [Initialization(InitializationPass.Fourth)]
         public override void Initialize()
         {
-            m_interactivesTemplates = Database.Query<InteractiveTemplate, InteractiveTemplateSkills, InteractiveSkillRecord, InteractiveTemplate>
+            m_interactivesTemplates = Database.Query<InteractiveTemplate, InteractiveSkillTemplate, InteractiveTemplateSkills, InteractiveCustomSkillRecord, InteractiveTemplate>
                 (new InteractiveTemplateRelator().Map, InteractiveTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_interactivesSpawns = Database.Query<InteractiveSpawn, InteractiveSpawnSkills, InteractiveSkillRecord, InteractiveSpawn>
+            m_interactivesSpawns = Database.Query<InteractiveSpawn, InteractiveSpawnSkills, InteractiveCustomSkillRecord, InteractiveSpawn>
                 (new InteractiveSpawnRelator().Map, InteractiveSpawnRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_skillsTemplates = Database.Query<InteractiveSkillTemplate>(InteractiveSkillTemplateRelator.FetchQuery).ToDictionary(entry => entry.Id);
-            m_interactivesSkills =
-                Database.Query<InteractiveSkillRecord>(InteractiveSkillRelator.FetchQuery).ToDictionary(entry => entry.Id);
+            m_skillsTemplates = m_interactivesTemplates.SelectMany(x => x.Value.TemplateSkills).DistinctBy(x => x.Id).ToDictionary(entry => entry.Id);
+            m_interactivesCustomSkills =
+                Database.Query<InteractiveCustomSkillRecord>(InteractiveSkillRelator.FetchQuery).ToDictionary(entry => entry.Id);
 
             m_idProviderSpawn = m_interactivesSpawns.Any()
                 ? new UniqueIdProvider(m_interactivesSpawns.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(0);
-            m_idProviderSkill = m_interactivesSkills.Any()
-                ? new UniqueIdProvider(m_interactivesSkills.Select(x => x.Value.Id).Max())
+            m_idProviderSkill = m_interactivesCustomSkills.Any()
+                ? new UniqueIdProvider(m_interactivesCustomSkills.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(0);
         }
 
@@ -73,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
             return m_skillsTemplates.TryGetValue(id, out template) ? template : template;
         }
 
-        public void AddInteractiveSpawn(InteractiveSpawn spawn, InteractiveSkillRecord skill, InteractiveSpawnSkills spawnSkill)
+        public void AddInteractiveSpawn(InteractiveSpawn spawn, InteractiveCustomSkillRecord skill, InteractiveSpawnSkills spawnSkill)
         {
             Database.Insert(spawn);
             Database.Insert(skill);
@@ -93,11 +100,17 @@ namespace Stump.Server.WorldServer.Game.Interactives
                 Database.Delete(skill);
                 Database.Delete("interactives_spawns_skills", "SkillId", skill.Id);
             }
-
-            spawn.GetMap().UnSpawnInteractive(new InteractiveObject(spawn));
+            var map = spawn.GetMap();
+            foreach (var io in map.GetInteractiveObjects().Where(x => x.Spawn == spawn).ToArray())
+            {
+                map.UnSpawnInteractive(io);
+            }
 
             Database.Delete(spawn);
             m_interactivesSpawns.Remove(spawn.Id);     
         }
+
+        public InteractiveSkillTemplate GetDefaultSkillTemplate()
+            => m_defaultSkillTemplate ?? (m_defaultSkillTemplate = GetSkillTemplate(DEFAULT_TEMPLATE));
     }
 }

@@ -6,10 +6,10 @@ using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
-    [Discriminator("Paddock", typeof(Skill), typeof(int), typeof(InteractiveSkillRecord), typeof(InteractiveObject))]
-    public class SkillPaddock : Skill
+    [Discriminator("Paddock", typeof(Skill), typeof(int), typeof(InteractiveCustomSkillRecord), typeof(InteractiveObject))]
+    public class SkillPaddock : CustomSkill
     {
-        public SkillPaddock(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
+        public SkillPaddock(int id, InteractiveCustomSkillRecord record, InteractiveObject interactiveObject)
             : base (id, record, interactiveObject)
         {
         }
@@ -19,17 +19,18 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             return Record.IsConditionFilled(character);
         }
 
-        public override void Execute(Character character)
+        public override int StartExecute(Character character)
         {
             if (character.IsBusy())
-                return;
+                return -1;
 
             var paddock = PaddockManager.Instance.GetPaddock(InteractiveObject.Map.Id);
             if (paddock == null)
-                return;
+                return -1;
 
             var exchange = new PaddockExchange(character, paddock);
             exchange.Open();
+            return 0;
         }
     }
 }
