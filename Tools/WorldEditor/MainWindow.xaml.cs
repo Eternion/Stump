@@ -12,6 +12,7 @@ using WorldEditor.Editors.Files.D2O;
 using WorldEditor.Editors.Files.D2P;
 using WorldEditor.Maps;
 using WorldEditor.Meta;
+using Stump.DofusProtocol.D2oClasses.Tools.Swl;
 
 namespace WorldEditor
 {
@@ -33,7 +34,7 @@ namespace WorldEditor
             if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
                 var filenames = (string[])e.Data.GetData(DataFormats.FileDrop, true);
-                if ((from filename in filenames let ext = Path.GetExtension(filename) where (ext == ".d2p" || ext == ".d2i" || ext==".d2o" || ext==".d2os" || ext==".meta" || ext==".dlm") && File.Exists(filename) select filename).Any())
+                if ((from filename in filenames let ext = Path.GetExtension(filename) where (ext == ".d2p" || ext == ".d2i" || ext==".d2o" || ext==".d2os" || ext==".meta" || ext==".dlm" || ext==".swl" || ext==".swf") && File.Exists(filename) select filename).Any())
                 {
                     isCorrect = true;
                 }
@@ -85,6 +86,21 @@ namespace WorldEditor
                 case ".dlm":
                     window = new MapEditor(new DlmReader(filename, Settings.LoaderSettings.GenericMapDecryptionKey));
                     break;
+                case ".swl":
+                    var file = new SwlFile(filename);
+                    var swfName = filename.Replace(".swl", ".swf");
+                    var swfFile = File.Create(swfName);
+
+                    swfFile.Write(file.SwfData, 0, file.SwfData.Length);
+
+                    swfFile.Dispose();
+                    file.Dispose();
+                    return;
+                case ".swf":
+                    var swf = new SwfReader(filename);
+                    swf.ToSwl();
+                    swf.Dispose();
+                    return;
                 default:
                     return;
             }

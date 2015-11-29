@@ -212,6 +212,7 @@
     <Compile Include="Database\Guilds\GuildRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorFirstnamesRecord.cs" />
     <Compile Include="Database\Guilds\TaxCollectorNamesRecord.cs" />
+    <Compile Include="Database\Interactives\ISkillRecord.cs" />
     <Compile Include="Database\Items\BidHouse\BidHouseItemRecord.cs" />
     <Compile Include="Database\Items\LivingObjectRecord.cs" />
     <Compile Include="Database\Items\PlayerMerchantItemRecord.cs" />
@@ -219,7 +220,7 @@
     <Compile Include="Database\Interactives\InteractiveSkillTemplate.cs" />
     <Compile Include="Database\Interactives\InteractiveSpawn.cs" />
     <Compile Include="Database\Interactives\InteractiveTemplate.cs" />
-    <Compile Include="Database\Interactives\InteractiveSkillRecord.cs" />
+    <Compile Include="Database\Interactives\InteractiveCustomSkillRecord.cs" />
     <Compile Include="Database\ISaveable.cs" />
     <Compile Include="Database\Items\PlayerPresetRecord.cs" />
     <Compile Include="Database\Items\TaxCollectorItemRecord.cs" />
@@ -359,7 +360,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\CooldownSet.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Armor\GiveShieldPercent.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpPercentWhenAttack.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpWhenAttack.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Advance.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Attract.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Retreat.cs" />
@@ -532,6 +533,7 @@
     <Compile Include="Game\Fights\Results\IExperienceResult.cs" />
     <Compile Include="Game\Fights\Results\IPvpResult.cs" />
     <Compile Include="Game\Fights\Results\TaxCollectorProspectingResult.cs" />
+    <Compile Include="Game\Fights\Triggers\GlyphAura.cs" />
     <Compile Include="Game\Fights\Triggers\Wall.cs" />
     <Compile Include="Game\Fights\Triggers\WallsBinding.cs" />
     <Compile Include="Game\Formulas\FightFormulas.cs" />
@@ -540,7 +542,9 @@
     <Compile Include="Game\Guilds\GuildInvitationRequest.cs" />
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
+    <Compile Include="Game\Interactives\Skills\CustomSkill.cs" />
     <Compile Include="Game\Interactives\Skills\SkillGuildCreate.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillHarvest.cs" />
     <Compile Include="Game\Interactives\Skills\SkillPaddock.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapiTeleport.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
@@ -638,6 +642,7 @@
     <Compile Include="Handlers\Compass\CompassHandler.cs" />
     <Compile Include="Handlers\Context\ContextArenaHandler.cs" />
     <Compile Include="Handlers\Context\ContextChallengeHandler.cs" />
+    <Compile Include="Handlers\Context\RolePlay\ContextRoleplayJobHandler.cs" />
     <Compile Include="Handlers\Dialogs\DialogHandler.cs" />
     <Compile Include="Handlers\Friends\FriendHandler.cs" />
     <Compile Include="Handlers\Guilds\GuildHandler.cs" />

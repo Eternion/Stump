@@ -329,7 +329,7 @@ void WriteIOMethodStatements(IEnumerable<XmlField> fields, bool serializeMethod)
 
 		if (array)
 		{
-            if (serializeMethod && limit=="limit")
+            if (serializeMethod && limit=="limit" && !arrayLength.StartsWith("var"))
                 WriteLine(field.Name + "_count++;");
 
 			PopIndent();

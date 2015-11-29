@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Jobs;
 using System.Linq;
+using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Game.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Jobs
 {
@@ -21,5 +24,18 @@ namespace Stump.Server.WorldServer.Game.Jobs
             JobTemplate job;
             return m_jobTemplates.TryGetValue(id, out job) ? job : null;
         }
+
+        public JobRecord[] GetCharacterJobs(int characterId)
+        {
+            return Database.Query<JobRecord>(string.Format(JobRecordRelator.FetchByOwner, characterId)).ToArray();
+        }
+
+        public InteractiveSkillTemplate[] GetJobSkills(int jobId)
+        {
+            return InteractiveManager.Instance.SkillsTemplates.Values.Where(x => x.ParentJobId == jobId).ToArray();
+        }
+
+        public JobTemplate[] GetJobTemplates() => m_jobTemplates.Values.ToArray();
+        public IEnumerable<JobTemplate> EnumerateJobTemplates() => m_jobTemplates.Values;
     }
 }

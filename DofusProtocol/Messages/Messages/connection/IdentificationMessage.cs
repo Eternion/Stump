@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2015 10:47:56
+// Generated on 11/16/2015 14:25:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,19 +54,11 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteByte(flag1);
             version.Serialize(writer);
             writer.WriteUTF(lang);
-            var credentials_before = writer.Position;
-            var credentials_count = 0;
-            writer.WriteVarInt(0);
+            writer.WriteVarInt((int)credentials.Count());
             foreach (var entry in credentials)
             {
                  writer.WriteSByte(entry);
-                 credentials_count++;
             }
-            var credentials_after = writer.Position;
-            writer.Seek((int)credentials_before);
-            writer.WriteVarInt((int)credentials_count);
-            writer.Seek((int)credentials_after);
-
             writer.WriteShort(serverId);
             writer.WriteVarLong(sessionOptionalSalt);
             var failedAttempts_before = writer.Position;

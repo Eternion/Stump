@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Swl
 {
     public class SwlFile : IDisposable
     {
-        private BigEndianReader m_reader;
-        private Stream m_stream;
+        BigEndianReader m_reader;
+        Stream m_stream;
 
         public SwlFile(Stream stream)
         {
@@ -39,12 +39,12 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Swl
         public SwlFile(string file)
             : this(File.Open(file, FileMode.Open))
         {
+            FilePath = file;
         }
 
         public string FilePath
         {
             get;
-            private set;
         }
 
         public byte Version
@@ -71,7 +71,7 @@ namespace Stump.DofusProtocol.D2oClasses.Tools.Swl
             set;
         }
 
-        private void ReadFile()
+        void ReadFile()
         {
             if (m_reader.ReadByte() != 76)
             {

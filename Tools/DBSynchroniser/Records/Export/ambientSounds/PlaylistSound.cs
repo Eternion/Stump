@@ -1,7 +1,7 @@
  
 
 
-// Generated on 09/01/2015 10:48:46
+// Generated on 11/16/2015 14:26:38
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,6 +26,7 @@ namespace DBSynchroniser.Records
         {
             get { return id; }
         }
+
 
         [D2OIgnore]
         [PrimaryKey("Id", false)]
@@ -52,7 +53,7 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (PlaylistSound)obj;
-
+            
             Id = int.Parse(castedObj.id);
             Volume = castedObj.volume;
             Channel = castedObj.channel;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.D2oClasses;
 using Stump.DofusProtocol.Enums;
@@ -11,29 +12,39 @@ namespace Stump.Server.WorldServer.Database.Interactives
     public class InteractiveTemplateRelator
     {
         public static string FetchQuery = "SELECT * FROM interactives_templates " +
+                                          "LEFT JOIN interactives_skills_templates ON interactives_skills_templates.InteractiveId=interactives_templates.Id " +
                                           "LEFT JOIN interactives_templates_skills ON interactives_templates_skills.InteractiveTemplateId=interactives_templates.Id " +
                                           "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_templates_skills.SkillId";
 
         private InteractiveTemplate m_current;
 
-        public InteractiveTemplate Map(InteractiveTemplate template, InteractiveTemplateSkills binding,
-                                       InteractiveSkillRecord skill)
+        public InteractiveTemplate Map(InteractiveTemplate template, InteractiveSkillTemplate skillTemplate, InteractiveTemplateSkills binding,
+                                       InteractiveCustomSkillRecord skill)
         {
             if (template == null)
                 return m_current;
 
             if (m_current != null && m_current.Id == template.Id)
             {
-                if (binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id)
-                    m_current.Skills.Add(skill);
+                if (binding != null && binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id &&
+                    m_current.CustomSkills.All(x => x.Id != skill.Id))
+                    m_current.CustomSkills.Add(skill);
+
+                if (skillTemplate != null && m_current.TemplateSkills.All(x => x.Id != skillTemplate.Id))
+                    m_current.TemplateSkills.Add(skillTemplate);
+
                 return null;
             }
 
             var previous = m_current;
 
             m_current = template;
-            if (binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id)
-                m_current.Skills.Add(skill);
+            if (binding != null && binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id && 
+                m_current.CustomSkills.All(x => x.Id != skill.Id))
+                m_current.CustomSkills.Add(skill);
+
+            if (skillTemplate != null && m_current.TemplateSkills.All(x => x.Id != skillTemplate.Id))
+                m_current.TemplateSkills.Add(skillTemplate);
 
             return previous;
         }
@@ -73,7 +84,6 @@ namespace Stump.Server.WorldServer.Database.Interactives
 
         public InteractiveTemplate()
         {
-            Skills = new List<InteractiveSkillRecord>();
         }
 
         [PrimaryKey("Id", false)]
@@ -112,11 +122,23 @@ namespace Stump.Server.WorldServer.Database.Interactives
         }
 
         [Ignore]
-        public List<InteractiveSkillRecord> Skills
+        public List<InteractiveSkillTemplate> TemplateSkills
         {
             get;
             set;
-        }
+        } = new List<InteractiveSkillTemplate>();
+
+        [Ignore]
+        public List<InteractiveCustomSkillRecord> CustomSkills
+        {
+            get;
+            set;
+        } = new List<InteractiveCustomSkillRecord>();
+
+        public IEnumerable<ISkillRecord> GetSkills()
+        {
+            return TemplateSkills.Cast<ISkillRecord>().Concat(CustomSkills).ToList();
+        } 
 
         #region IAssignedByD2O Members
 

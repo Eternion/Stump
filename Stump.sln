@@ -94,6 +94,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3529038F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "Tests\UnitTest\UnitTest.csproj", "{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stump.Plugins.WebServerPlugin", "Plugins\Stump.Plugins.WebServerPlugin\Stump.Plugins.WebServerPlugin.csproj", "{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -900,6 +902,30 @@ Global
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Release|x64.Build.0 = Release|Any CPU
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Release|x86.ActiveCfg = Release|Any CPU
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5}.Release|x86.Build.0 = Release|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug|x64.Build.0 = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug|x86.Build.0 = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug-uptodate|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug-uptodate|Any CPU.Build.0 = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug-uptodate|Mixed Platforms.ActiveCfg = Debug-uptodate|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug-uptodate|Mixed Platforms.Build.0 = Debug-uptodate|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug-uptodate|x64.ActiveCfg = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug-uptodate|x64.Build.0 = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug-uptodate|x86.ActiveCfg = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Debug-uptodate|x86.Build.0 = Debug|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Release|x64.ActiveCfg = Release|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Release|x64.Build.0 = Release|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Release|x86.ActiveCfg = Release|Any CPU
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -941,6 +967,7 @@ Global
 		{C625DF79-CEA6-424F-9553-68547A04A556} = {B4F98D0C-2EB6-40DB-9B3C-C721B53B7E17}
 		{A715BA09-854E-4DAC-B20D-9B34420AB64B} = {B4F98D0C-2EB6-40DB-9B3C-C721B53B7E17}
 		{9E331628-BAF8-4DE4-ABAF-7C6C034067F5} = {3529038F-7ABD-4570-9958-5A8F2EF0DD39}
+		{FF60A1DD-CF51-49BD-B05C-09E007C56CCE} = {B4F98D0C-2EB6-40DB-9B3C-C721B53B7E17}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Stump.vsmdi

@@ -1,16 +1,36 @@
-﻿using Stump.Server.WorldServer.Database.Jobs;
+﻿using System;
+using System.Linq;
+using Stump.DofusProtocol.Types;
+using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Jobs
 {
     public class Job
     {
+        /// <summary>
+        /// Instantiate a job without record, experience equals zero
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="template"></param>
+        public Job(Character owner, JobTemplate template)
+        {
+            Owner = owner;
+            Record = null;
+            Template = template;
+            RefreshLevel();
+        }
+
         public Job(Character owner, JobRecord record)
         {
             Owner = owner;
             Record = record;
             Template = JobManager.Instance.GetJobTemplate(record.TemplateId);
+            RefreshLevel();
         }
+
+        public int Id => Template.Id;
 
         public Character Owner
         {
@@ -18,6 +38,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
             private set;
         }
 
+        // may be null
         private JobRecord Record
         {
             get;
@@ -31,6 +52,12 @@ namespace Stump.Server.WorldServer.Game.Jobs
         }
 
         public bool IsDirty
+        {
+            get;
+            set;
+        }
+
+        private bool IsNew
         {
             get;
             set;
@@ -56,15 +83,44 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
         public long Experience
         {
-            get { return Record.Experience; }
-            private set
+            get { return Record?.Experience ?? 0; }
+            set
             {
+                if (value < 0)
+                    throw new ArgumentException();
+
+                CheckRecordExists();
                 Record.Experience = value;
 
                 if (value >= UpperBoundExperience || value < LowerBoundExperience)
                     RefreshLevel();
 
                 IsDirty = true;
+            }
+        }
+
+        public bool WorkForFree
+        {
+            get { return Record?.WorkForFree ?? false; }
+            set
+            {
+                CheckRecordExists();
+                Record.WorkForFree = value;
+            }
+        }
+
+        public int MinLevelCraftSetting
+        {
+            get { return Record?.MinLevelCraftSetting ?? 1; }
+            set
+            {
+                if (value < 1 || value > 200)
+                    throw new ArgumentException();
+
+                CheckRecordExists();
+
+                Record.MinLevelCraftSetting = value;
+
             }
         }
 
@@ -77,8 +133,45 @@ namespace Stump.Server.WorldServer.Game.Jobs
             Level = level;
         }
 
-        public void Save()
+        public void Save(ORM.Database database)
         {
+            if (IsNew)
+                database.Insert(Record);
+            else if (IsDirty)
+                database.Update(Record);
         }
+
+        private bool CheckRecordExists()
+        {
+            if (Record == null)
+            {
+                Record = new JobRecord() {OwnerId = Owner.Id, TemplateId = Template.Id};
+                IsNew = true;
+            }
+
+            return IsNew;
+        }
+
+
+
+
+        private SkillActionDescription GetSkillActionDescription(InteractiveSkillTemplate skill)
+        {
+            if (skill.GatheredRessourceItem > 0)
+                return new SkillActionDescriptionCollect((short)skill.Id, 0, 0, 0);
+            else if (skill.CraftableItemIds.Length > 0)
+                return new SkillActionDescriptionCraft((short)skill.Id, 0);
+
+            return new SkillActionDescription((short) skill.Id);
+        }
+
+        public JobExperience GetJobExperience()
+            => new JobExperience((sbyte)Template.Id, (byte)Level, Experience, LowerBoundExperience, UpperBoundExperience);
+
+        public JobDescription GetJobDescription()
+            => new JobDescription((sbyte) Template.Id, Template.Skills.Select(x => GetSkillActionDescription(x)));
+
+        public JobCrafterDirectorySettings GetJobCrafterDirectorySettings()
+            => new JobCrafterDirectorySettings((sbyte) Template.Id, (byte)MinLevelCraftSetting, WorkForFree);
     }
 }

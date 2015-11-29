@@ -7,13 +7,13 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
-    [Discriminator("Teleport", typeof(Skill), typeof(int), typeof(InteractiveSkillRecord), typeof(InteractiveObject))]
-    public class SkillTeleport : Skill
+    [Discriminator("Teleport", typeof(Skill), typeof(int), typeof(InteractiveCustomSkillRecord), typeof(InteractiveObject))]
+    public class SkillTeleport : CustomSkill
     {
         private bool m_mustRefreshPosition;
         private ObjectPosition m_position;
 
-        public SkillTeleport(int id, InteractiveSkillRecord record, InteractiveObject interactiveObject)
+        public SkillTeleport(int id, InteractiveCustomSkillRecord record, InteractiveObject interactiveObject)
             : base (id, record, interactiveObject)
         {
         }
@@ -23,9 +23,10 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             return Record.IsConditionFilled(character);
         }
 
-        public override void Execute(Character character)
+        public override int StartExecute(Character character)
         {
             character.Teleport(GetPosition());
+            return 0;
         }
 
         private void RefreshPosition()

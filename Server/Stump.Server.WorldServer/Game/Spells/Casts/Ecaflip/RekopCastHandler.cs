@@ -28,11 +28,16 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
 
             // 0 to 3 rounds
             CastRound = new Random().Next(0, 4);
-            Handlers = Handlers.Where(entry => entry.Effect.Duration == CastRound).ToArray();
+            Handlers = Handlers.Where(entry => entry.Effect.Duration == CastRound || !(entry is DirectDamage)).ToArray();
 
-            foreach (var damageHandler in Handlers.OfType<DirectDamage>())
+            var target = Fight.GetOneFighter(TargetedCell);
+
+            foreach (var handler in Handlers.OfType<DirectDamage>())
             {
-                damageHandler.BuffTriggerType = BuffTriggerType.BUFF_ENDED;
+                handler.SetAffectedActors(new[] { target });
+
+                if (handler is DirectDamage)
+                    handler.BuffTriggerType = BuffTriggerType.BUFF_ENDED;
             }
 
             return true;

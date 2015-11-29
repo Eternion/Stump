@@ -302,9 +302,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Jobs
 
-        private List<Job> m_jobs = new List<Job>();
-
-        public ReadOnlyCollection<Job> Jobs => m_jobs.AsReadOnly();
+        public JobsCollection Jobs
+        {
+            get;
+            private set;
+        }
 
         #endregion
 
@@ -3269,6 +3271,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             FriendsBook.Load();
 
             ChatHistory = new ChatHistory(this);
+
+            Jobs = new JobsCollection(this);
+            Jobs.LoadJobs();
 
             m_recordLoaded = true;
         }
