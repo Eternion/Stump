@@ -8,6 +8,7 @@ using Stump.Server.WorldServer.Database.Items.Templates;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.Core.Mathematics;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
@@ -79,11 +80,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
                 InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_NORMAL);
         }
 
-        private int RollHarvestedItemCount(Character character)
+        int RollHarvestedItemCount(Character character)
         {
-            return 1;
+            var max = (int)(7 + Math.Floor(character.Jobs[SkillTemplate.ParentJobId].Level / 5.0));
+
+            return new CryptoRandom().Next(1, max);
         }
-
-
     }
 }
