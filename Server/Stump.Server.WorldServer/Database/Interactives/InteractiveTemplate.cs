@@ -14,7 +14,8 @@ namespace Stump.Server.WorldServer.Database.Interactives
         public static string FetchQuery = "SELECT * FROM interactives_templates " +
                                           "LEFT JOIN interactives_skills_templates ON interactives_skills_templates.InteractiveId=interactives_templates.Id " +
                                           "LEFT JOIN interactives_templates_skills ON interactives_templates_skills.InteractiveTemplateId=interactives_templates.Id " +
-                                          "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_templates_skills.SkillId";
+                                          "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_templates_skills.SkillId " +
+                                          "GROUP BY(interactives_templates.Id)";
 
         private InteractiveTemplate m_current;
 
