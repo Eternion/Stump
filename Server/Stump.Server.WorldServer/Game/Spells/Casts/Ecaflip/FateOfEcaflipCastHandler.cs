@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             if (!m_initialized)
                 Initialize();
 
-            var pullHandler = Handlers[1];
+            var pullHandler = Handlers[2];
 
             if (pullHandler == null)
                 return;
@@ -40,16 +40,16 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             foreach (var handler in Handlers)
             {
                 handler.AddAffectedActor(affectedActors);
-                Handlers[3].AddTriggerBuff(affectedActors, true, BuffTriggerType.DAMAGES_PUSHBACK, BuffTrigger);
+                Handlers[1].AddTriggerBuff(affectedActors, true, BuffTriggerType.DAMAGES_PUSHBACK, BuffTrigger);
             }
 
             Handlers[0].Apply(); //Damages
-            Handlers[2].Apply(); //Push
+            Handlers[3].Apply(); //Push
         }
 
-        private void BuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        void BuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            Handlers[3].Apply();
+            Handlers[1].Apply();
         }
     }
 }

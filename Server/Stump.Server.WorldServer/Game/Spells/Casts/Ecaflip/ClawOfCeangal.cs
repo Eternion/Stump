@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             if (!m_initialized)
                 Initialize();
 
-            var damageHandler = Handlers[0];
+            var damageHandler = Handlers[1];
 
             if (damageHandler == null)
                 return;
@@ -30,13 +30,13 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             if (affectedActor == null)
                 return;
 
-            Handlers[0].Apply(); //Damages
-            Handlers[1].AddTriggerBuff(affectedActor, true, BuffTriggerType.AFTER_HEALED, BuffTrigger);
+            damageHandler.Apply(); //Damages
+            Handlers[0].AddTriggerBuff(affectedActor, true, BuffTriggerType.AFTER_HEALED, BuffTrigger);
         }
 
-        private void BuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        void BuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            Handlers[1].Apply();
+            Handlers[0].Apply();
         }
     }
 }
