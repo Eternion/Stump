@@ -60,15 +60,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             protected set;
         }
 
-        public ExchangeTypeEnum ExchangeType
-        {
-            get { return Buy ? ExchangeTypeEnum.BIDHOUSE_BUY : ExchangeTypeEnum.BIDHOUSE_SELL; }
-        }
+        public ExchangeTypeEnum ExchangeType => Buy ? ExchangeTypeEnum.BIDHOUSE_BUY : ExchangeTypeEnum.BIDHOUSE_SELL;
 
-        public DialogTypeEnum DialogType
-        {
-            get { return DialogTypeEnum.DIALOG_EXCHANGE; }
-        }
+        public DialogTypeEnum DialogType => DialogTypeEnum.DIALOG_EXCHANGE;
 
         #region IDialog Members
 

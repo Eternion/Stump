@@ -206,6 +206,16 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         #endregion
 
+
+        public ObjectItemNotInContainer GetObjectItemNotInContainer()
+        {
+            return new ObjectItemNotInContainer(
+                (short)Template.Id,
+                Effects.Where(entry => !entry.Hidden).Select(entry => entry.GetObjectEffect()),
+                Guid,
+                (int)Stack);
+        }
+
         #endregion
 
         #region Properties
@@ -286,5 +296,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         }
 
         #endregion
+
     }
 }

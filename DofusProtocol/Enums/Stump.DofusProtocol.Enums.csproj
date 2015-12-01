@@ -172,6 +172,7 @@
     <Compile Include="Custom\ActionsEnum.cs" />
     <Compile Include="Custom\ChallengeEnum.cs" />
     <Compile Include="Custom\ChallengeStatusEnum.cs" />
+    <Compile Include="Custom\ExchangeCraftResultEnum.cs" />
     <Compile Include="Custom\GuildCreationResultEnum.cs" />
     <Compile Include="Custom\GuildInvitationStateEnum.cs" />
     <Compile Include="Custom\InteractiveStateEnum.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="Custom\OptionalFeaturesEnum.cs" />
     <Compile Include="Custom\OrnamentEnum.cs" />
     <Compile Include="Custom\PartyFightReasonEnum.cs" />
+    <Compile Include="Custom\SkillTemplateEnum.cs" />
     <Compile Include="Custom\SpellShapeEnum.cs" />
     <Compile Include="Custom\StableExchangeActionsEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />
