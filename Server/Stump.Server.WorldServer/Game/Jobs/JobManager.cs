@@ -12,12 +12,16 @@ namespace Stump.Server.WorldServer.Game.Jobs
     public class JobManager : DataManager<JobManager>
     {
         private Dictionary<int, JobTemplate> m_jobTemplates;
+        private Dictionary<int, RecipeRecord> m_recipeRecords;
 
         [Initialization(InitializationPass.Fifth)]
         public void Initialize()
         {
             m_jobTemplates = Database.Query<JobTemplate>(JobTemplateRelator.FetchQuery).ToDictionary(x => x.Id);
+            m_recipeRecords = Database.Query<RecipeRecord>(RecipeRelator.FetchQuery).ToDictionary(x => x.Id);
         }
+
+        public IReadOnlyDictionary<int, RecipeRecord> Recipes => m_recipeRecords;
 
         public JobTemplate GetJobTemplate(int id)
         {

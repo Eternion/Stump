@@ -11,7 +11,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
 {
     public class InteractiveManager : DataManager<InteractiveManager>
     {
-        public const int DEFAULT_TEMPLATE = 184;
+        public const int DEFAULT_SKILL_TEMPLATE = 184;
 
         private UniqueIdProvider m_idProviderSpawn = new UniqueIdProvider();
         private UniqueIdProvider m_idProviderSkill = new UniqueIdProvider();
@@ -21,6 +21,8 @@ namespace Stump.Server.WorldServer.Game.Interactives
         private Dictionary<int, InteractiveCustomSkillRecord> m_interactivesCustomSkills;
         private InteractiveSkillTemplate m_defaultSkillTemplate;
 
+
+        public IReadOnlyDictionary<int, InteractiveTemplate> InteractivesTemplates => m_interactivesTemplates;
         public IReadOnlyDictionary<int, InteractiveSpawn> InteractivesSpawns => m_interactivesSpawns;
         public IReadOnlyDictionary<int, InteractiveSkillTemplate> SkillsTemplates => m_skillsTemplates;
 
@@ -111,6 +113,6 @@ namespace Stump.Server.WorldServer.Game.Interactives
         }
 
         public InteractiveSkillTemplate GetDefaultSkillTemplate()
-            => m_defaultSkillTemplate ?? (m_defaultSkillTemplate = GetSkillTemplate(DEFAULT_TEMPLATE));
+            => m_defaultSkillTemplate ?? (m_defaultSkillTemplate = GetSkillTemplate(DEFAULT_SKILL_TEMPLATE));
     }
 }

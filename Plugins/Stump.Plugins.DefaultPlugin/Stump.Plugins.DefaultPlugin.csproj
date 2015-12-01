@@ -144,6 +144,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\InteractivesEnumGeneration.cs" />
     <Compile Include="Security\SecurityChecker.cs" />
     <Compile Include="Code\EffectsEnumGeneration.cs" />
     <Compile Include="Code\ItemIdEnumGeneration.cs" />

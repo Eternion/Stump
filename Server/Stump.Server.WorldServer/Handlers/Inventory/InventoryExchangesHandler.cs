@@ -15,14 +15,17 @@ using Stump.Server.WorldServer.Game.Dialogs;
 using Stump.Server.WorldServer.Game.Dialogs.Merchants;
 using Stump.Server.WorldServer.Game.Dialogs.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.BidHouse;
+using Stump.Server.WorldServer.Game.Exchanges.Craft;
 using Stump.Server.WorldServer.Game.Exchanges.Merchant;
 using Stump.Server.WorldServer.Game.Exchanges.Paddock;
 using Stump.Server.WorldServer.Game.Exchanges.TaxCollector;
 using Stump.Server.WorldServer.Game.Exchanges.Trades;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Npcs;
 using Stump.Server.WorldServer.Game.Exchanges.Trades.Players;
+using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
@@ -118,8 +121,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (message == null || client == null)
                 return;
 
-            if (client.Character.Trader != null)
-                client.Character.Trader.ToggleReady(message.ready);
+            client.Character.Trader?.ToggleReady(message.ready);
         }
 
         [WorldHandler(ExchangeBuyMessage.Id)]
@@ -399,6 +401,22 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 68);
         }
 
+        [WorldHandler(ExchangeCraftCountRequestMessage.Id)]
+        public static void HandleExchangeCraftCountRequestMessage(WorldClient client, ExchangeCraftCountRequestMessage message)
+        {
+            (client.Character.Dialog as CraftDialog)?.ChangeAmount(message.count);
+        }
+
+        [WorldHandler(ExchangeSetCraftRecipeMessage.Id)]
+        public static void HandleExchangeSetCraftRecipeMessage(WorldClient client, ExchangeSetCraftRecipeMessage message)
+        {
+            if (!JobManager.Instance.Recipes.ContainsKey(message.objectGID))
+                return;
+
+            var recipe = JobManager.Instance.Recipes[message.objectGID];
+            (client.Character.Dialog as CraftDialog)?.ChangeRecipe(recipe);
+        }
+
         public static void SendExchangeRequestedTradeMessage(IPacketReceiver client, ExchangeTypeEnum type, Character source,
                                                              Character target)
         {
@@ -571,6 +589,31 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeBidHouseGenericItemRemovedMessage(IPacketReceiver client, BidHouseItem item)
         {
             client.Send(new ExchangeBidHouseGenericItemRemovedMessage((short)item.Template.Id));
+        }
+
+        public static void SendExchangeStartOkCraftWithInformationMessage(IPacketReceiver client, Skill skill)
+        {
+            client.Send(new ExchangeStartOkCraftWithInformationMessage(skill.SkillTemplate.Id));
+        }
+
+        public static void SendExchangeCraftCountModifiedMessage(IPacketReceiver client, int amount)
+        {
+            client.Send(new ExchangeCraftCountModifiedMessage(amount));
+        }
+
+        public static void SendExchangeCraftResultMessage(IPacketReceiver client, ExchangeCraftResultEnum result)
+        {
+            client.Send(new ExchangeCraftResultMessage((sbyte)result));
+        }
+
+        public static void SendExchangeCraftResultWithObjectDescMessage(IPacketReceiver client, ExchangeCraftResultEnum result, BasePlayerItem createdItem)
+        {
+            client.Send(new ExchangeCraftResultWithObjectDescMessage((sbyte)result, createdItem.GetObjectItemNotInContainer()));
+        }
+
+        public static void SendExchangeCraftInformationObjectMessage(IPacketReceiver client, BasePlayerItem item, Character owner)
+        {
+            client.Send(new ExchangeCraftInformationObjectMessage((sbyte)ExchangeCraftResultEnum.CRAFT_SUCCESS, (short)item.Template.Id, owner.Id));
         }
     }
 }

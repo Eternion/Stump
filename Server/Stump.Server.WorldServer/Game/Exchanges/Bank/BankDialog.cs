@@ -11,10 +11,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
             Customer = new BankCustomer(character, this);
         }
 
-        public Character Character
-        {
-            get { return Customer.Character; }
-        }
+        public Character Character => Customer.Character;
 
         public BankCustomer Customer
         {
