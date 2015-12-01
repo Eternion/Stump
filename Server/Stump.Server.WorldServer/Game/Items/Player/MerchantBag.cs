@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             base.OnItemAdded(item, false);
         }
 
-        public override int RemoveItem(MerchantItem item, int amount, bool delete = true)
+        public override int RemoveItem(MerchantItem item, int amount, bool delete = true, bool sendMsg = false)
         {
             if (!HasItem(item) || item.Stack == 0)
                 return 0;
@@ -84,12 +84,12 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 item.StackSold += removed;
                 item.Stack = 0;
 
-                NotifyItemRemoved(item, false);
+                NotifyItemRemoved(item, sendMsg);
 
                 return (int)removed;
             }
 
-            UnStackItem(item, amount);
+            UnStackItem(item, amount, sendMsg);
             return amount;
         }
 
