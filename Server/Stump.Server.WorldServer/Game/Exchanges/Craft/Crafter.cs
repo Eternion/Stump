@@ -30,30 +30,36 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
         public bool MoveItem(BasePlayerItem item, int quantity)
         {
-            if (quantity < 0 || quantity > item.Stack)
+            if (quantity > item.Stack)
                 return false;
 
             var existingItem = Items.FirstOrDefault(x => x.Guid == item.Guid);
             if (existingItem != null)
             {
-                if (quantity == 0)
+                if (quantity < 0 && -quantity >= existingItem.Stack)
                 {
                     RemoveItem(existingItem);
                     InventoryHandler.SendExchangeObjectRemovedMessage(Character.Client, false, item.Guid);
                 }
                 else
                 {
-                    existingItem.Stack = (uint)quantity;
+                    if (existingItem.Stack + quantity > item.Stack)
+                        quantity = (int) (item.Stack - existingItem.Stack);
+
+                    existingItem.Stack += (uint)quantity;
                     InventoryHandler.SendExchangeObjectModifiedMessage(Character.Client, false, existingItem);
                 }
 
                 return true;
             }
 
-            var newItem = new PlayerTradeItem(item, (uint)quantity);
+            if (quantity < 0)
+                return false;
+
+                var newItem = new PlayerTradeItem(item, (uint)quantity);
             AddItem(newItem);
             InventoryHandler.SendExchangeObjectAddedMessage(Character.Client, false, newItem);
-            return false;
+            return true;
         }
 
         public override bool MoveItem(int id, int quantity)

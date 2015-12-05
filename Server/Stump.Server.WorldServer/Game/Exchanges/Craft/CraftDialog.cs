@@ -67,6 +67,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         public void Close()
         {
             Character.ResetDialog();
+            InventoryHandler.SendExchangeLeaveMessage(Character.Client, DialogType, false);
         }
 
         public void Open()
