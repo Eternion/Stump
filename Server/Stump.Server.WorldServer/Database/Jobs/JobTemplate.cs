@@ -49,6 +49,12 @@ namespace Stump.Server.WorldServer.Database.Jobs
         [Ignore]
         public InteractiveSkillTemplate[] Skills => m_skills ?? (m_skills = JobManager.Instance.GetJobSkills(Id));
 
+        public int HarvestedCountMax
+        {
+            get;
+            set;
+        }
+
         #region IAssignedByD2O Members
 
         public void AssignFields(object d2oObject)

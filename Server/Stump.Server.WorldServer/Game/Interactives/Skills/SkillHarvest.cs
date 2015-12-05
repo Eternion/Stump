@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Items;
 using Stump.Server.WorldServer.Handlers.Inventory;
 using Stump.Core.Mathematics;
+using Stump.Server.WorldServer.Game.Jobs;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
@@ -68,6 +69,9 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
             character.Inventory.AddItem(m_harvestedItem, count);
             InventoryHandler.SendObtainedItemMessage(character.Client, m_harvestedItem, count);
+
+            var xp = JobManager.Instance.GetHarvestJobXp((int) SkillTemplate.LevelMin);
+            character.Jobs[SkillTemplate.ParentJobId].Experience += xp;
         }
 
         public void SetHarvestedState(bool state)
@@ -80,11 +84,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
                 InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_NORMAL);
         }
 
-        int RollHarvestedItemCount(Character character)
+        private int RollHarvestedItemCount(Character character)
         {
-            var max = (int)(7 + Math.Floor(character.Jobs[SkillTemplate.ParentJobId].Level / 5.0));
-
-            return new CryptoRandom().Next(1, max);
+            var job = character.Jobs[SkillTemplate.ParentJobId];
+            var minMax = JobManager.Instance.GetHarvestItemMinMax(job.Template, job.Level, SkillTemplate);
+            return new CryptoRandom().Next(minMax.First, minMax.Second + 1);
         }
     }
 }
