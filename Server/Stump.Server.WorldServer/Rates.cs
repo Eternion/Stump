@@ -21,5 +21,7 @@ namespace Stump.Server.WorldServer
         [Variable(true)]
         public static float DropsRate = 1;
 
+        [Variable(true)]
+        public static float JobXpRate = 1;
     }
 }

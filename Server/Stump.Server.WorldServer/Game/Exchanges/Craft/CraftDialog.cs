@@ -140,14 +140,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 }
             }
 
+            var xp = JobManager.Instance.GetCraftJobXp(recipe, Job.Level)* Amount;
+            Job.Experience += xp;
+
             var createdItem = Character.Inventory.AddItem(recipe.ItemTemplate, Amount, false);
             InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Character.Client,
                 ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem);
             InventoryHandler.SendExchangeCraftInformationObjectMessage(Character.Client, createdItem, Character);
             ChangeAmount(1);
             return true;
-        }
-
+        } 
         private RecipeRecord FindMatchingRecipe()
         {
             return (from recipe in Skill.SkillTemplate.Recipes

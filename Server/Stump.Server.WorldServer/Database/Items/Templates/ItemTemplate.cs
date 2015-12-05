@@ -295,6 +295,12 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             set;
         }
 
+        public int CraftXpRatio
+        {
+            get;
+            set;
+        }
+
         public bool IsLinkedToOwner
         {
             get;
@@ -330,6 +336,7 @@ namespace Stump.Server.WorldServer.Database.Items.Templates
             BonusIsSecret = template.bonusIsSecret;
             PossibleEffects = template.possibleEffects;
             FavoriteSubAreasBonus = template.favoriteSubAreasBonus;
+            CraftXpRatio = template.craftXpRatio;
         }
 
         #endregion

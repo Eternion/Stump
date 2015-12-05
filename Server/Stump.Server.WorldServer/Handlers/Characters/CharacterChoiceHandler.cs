@@ -236,9 +236,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             }
 
             // jobs
-            ContextRoleplay.SendJobDescriptionMessage(client, client.Character);
-            ContextRoleplay.SendJobExperienceMultiUpdateMessage(client, client.Character);
-            ContextRoleplay.SendJobCrafterDirectorySettingsMessage(client, client.Character);
+            ContextRoleplayHandler.SendJobDescriptionMessage(client, client.Character);
+            ContextRoleplayHandler.SendJobExperienceMultiUpdateMessage(client, client.Character);
+            ContextRoleplayHandler.SendJobCrafterDirectorySettingsMessage(client, client.Character);
 
             client.Character.SendConnectionMessages();
 
