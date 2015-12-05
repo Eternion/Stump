@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Stump.Core.Extensions;
 using Stump.Core.Mathematics;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
@@ -46,20 +47,19 @@ namespace Stump.Server.WorldServer.Commands.Commands
             
             var ios = character.Map.GetInteractiveObjects().ToList();
 
+            var colors = ColorExtensions.ColorValues;
+            var i = 0;
             foreach (var io in ios)
             {
-                var randomColor = GetRandomColor();
+                var randomColor = colors[i];
                 character.Client.Send(new DebugHighlightCellsMessage(randomColor.ToArgb(), new[] { io.Cell.Id }));
-                character.SendServerMessage($"Identifier : {io.Id} - Template Id: {io.Template?.Id ?? 0} - CellId: {io.Cell.Id} - Animated - {io.Animated} - Element Id : {io.Spawn.ElementId}", randomColor);
-            }
-        }
+                trigger.Reply(trigger.Color($"Identifier : {io.Id} - Template Id: {io.Template?.Id ?? 0} - CellId: {io.Cell.Id} - Animated - {io.Animated} - Element Id : {io.Spawn.ElementId}", randomColor));
 
-        private static Color GetRandomColor()
-        {
-            var randomGen = new CryptoRandom();
-            var names = (KnownColor[])Enum.GetValues(typeof(KnownColor));
-            var randomColorName = names[randomGen.Next(names.Length)];
-            return Color.FromKnownColor(randomColorName);
+                i++;
+
+                if (i >= colors.Length)
+                    i = 0;
+            }
         }
     }
 

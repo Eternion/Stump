@@ -247,6 +247,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -269,6 +270,7 @@
     <Compile Include="Collections\PriorityQueueB.cs" />
     <Compile Include="Cryptography\Cryptography.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\FileSizeFormatProvider.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\NetExtensions.cs" />
