@@ -73,7 +73,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         }
 
         public override int Id => Character.Id;
-
         public override bool SetKamas(int amount)
         {
             return false;
