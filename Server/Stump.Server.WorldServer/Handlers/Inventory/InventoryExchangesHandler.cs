@@ -606,9 +606,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeCraftResultMessage((sbyte)result));
         }
 
-        public static void SendExchangeCraftResultWithObjectDescMessage(IPacketReceiver client, ExchangeCraftResultEnum result, BasePlayerItem createdItem)
+        public static void SendExchangeCraftResultWithObjectDescMessage(IPacketReceiver client, ExchangeCraftResultEnum result, BasePlayerItem createdItem, int amount)
         {
-            client.Send(new ExchangeCraftResultWithObjectDescMessage((sbyte)result, createdItem.GetObjectItemNotInContainer()));
+            client.Send(new ExchangeCraftResultWithObjectDescMessage((sbyte)result, new ObjectItemNotInContainer((short) createdItem.Template.Id, createdItem.Effects.Select(x => x.GetObjectEffect()), createdItem.Guid, amount)));
         }
 
         public static void SendExchangeCraftInformationObjectMessage(IPacketReceiver client, BasePlayerItem item, Character owner)

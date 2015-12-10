@@ -131,13 +131,8 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             foreach (var item in Crafter.Items.ToArray())
             {
                 var playerItem = Character.Inventory[item.Guid];
-                var left = playerItem.Stack - Character.Inventory.RemoveItem(playerItem, (int)item.Stack*Amount, removeItemMsg:false);
-
-                // remove the ingredient since there are no longer enough item
-                if (item.Stack > left)
-                {
-                    Crafter.MoveItem(playerItem, 0);
-                }
+                Character.Inventory.RemoveItem(playerItem, (int)item.Stack*Amount, removeItemMsg:false);
+                Crafter.MoveItem(item.Guid, 0);
             }
 
             var xp = JobManager.Instance.GetCraftJobXp(recipe, Job.Level)* Amount;
@@ -145,14 +140,16 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
 
             var createdItem = Character.Inventory.AddItem(recipe.ItemTemplate, Amount, false);
             InventoryHandler.SendExchangeCraftResultWithObjectDescMessage(Character.Client,
-                ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem);
+                ExchangeCraftResultEnum.CRAFT_SUCCESS, createdItem, Amount);
             InventoryHandler.SendExchangeCraftInformationObjectMessage(Character.Client, createdItem, Character);
             ChangeAmount(1);
+
             return true;
         } 
         private RecipeRecord FindMatchingRecipe()
         {
             return (from recipe in Skill.SkillTemplate.Recipes
+                    where recipe.ResultLevel <= Job.Level && recipe.IngredientIds.Count == Crafter.Items.Count
                     let valid = !(from item in Crafter.Items
                                   let index = recipe.IngredientIds.IndexOf(item.Template.Id)
                                   where index < 0 || recipe.Quantities[index] != item.Stack
