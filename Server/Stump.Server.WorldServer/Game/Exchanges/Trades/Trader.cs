@@ -106,6 +106,11 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Trades
             return m_items.Remove(item);
         }
 
+        protected void ClearItems()
+        {
+            m_items.Clear();
+        }
+
         public void ToggleReady()
         {
             ToggleReady(!ReadyToApply);
