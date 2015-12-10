@@ -32,10 +32,7 @@ namespace Stump.Server.WorldServer.Game.Actors
             set;
         }
 
-        public virtual ICharacterContainer CharacterContainer
-        {
-            get { return Position.Map; }
-        }
+        public virtual ICharacterContainer CharacterContainer => Position.Map;
 
         public override ObjectPosition Position
         {
@@ -46,10 +43,11 @@ namespace Stump.Server.WorldServer.Game.Actors
                     m_position.PositionChanged -= OnPositionChanged;
 
                 m_position = value;
-                OnPositionChanged(m_position);
-
+                
                 if (m_position != null)
                     m_position.PositionChanged += OnPositionChanged;
+
+                OnPositionChanged(m_position);
             }
         }
 
@@ -58,26 +56,20 @@ namespace Stump.Server.WorldServer.Game.Actors
         #region EntityDispositionInformations
 
         public virtual EntityDispositionInformations GetEntityDispositionInformations()
-        {
-            return new EntityDispositionInformations(Cell.Id, (sbyte) Direction);
-        }
+            => new EntityDispositionInformations(Cell.Id, (sbyte)Direction);
 
         #endregion
 
         #region GameContextActorInformations
 
         public virtual GameContextActorInformations GetGameContextActorInformations(Character character)
-        {
-            return new GameContextActorInformations(
+            => new GameContextActorInformations(
                 Id,
                 Look.GetEntityLook(),
                 GetEntityDispositionInformations());
-        }
 
         public virtual IdentifiedEntityDispositionInformations GetIdentifiedEntityDispositionInformations()
-        {
-            return new IdentifiedEntityDispositionInformations(Cell.Id, (sbyte) Direction, Id);
-        }
+            => new IdentifiedEntityDispositionInformations(Cell.Id, (sbyte)Direction, Id);
 
         #endregion
 
