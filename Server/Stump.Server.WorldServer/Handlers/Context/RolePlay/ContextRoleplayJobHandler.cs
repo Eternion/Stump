@@ -10,7 +10,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
     {
         public static void SendJobExperienceMultiUpdateMessage(IPacketReceiver client, Character character)
         {
-            client.Send(new JobExperienceMultiUpdateMessage(character.Jobs.Select(x => x.GetJobExperience())));
+            client.Send(new JobExperienceMultiUpdateMessage(character.Jobs.Where(x => x.Id != 1).Select(x => x.GetJobExperience())));
         }
 
         public static void SendJobExperienceUpdateMessage(IPacketReceiver client, Job job)

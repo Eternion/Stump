@@ -29,6 +29,12 @@ namespace Stump.Server.WorldServer.Game.Jobs
                 m_jobs.Add(job.Id, new Job(Owner, job));
         }
 
+        public void Save(ORM.Database database)
+        {
+            foreach (var job in m_jobs.Values)
+                job.Save(database);
+        }
+
         public Job this[int templateId] => m_jobs[templateId];
 
         public IEnumerator<Job> GetEnumerator() => m_jobs.Values.GetEnumerator();

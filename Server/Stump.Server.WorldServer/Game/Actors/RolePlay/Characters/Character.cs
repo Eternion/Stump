@@ -3170,6 +3170,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         Spells.Save();
                         Shortcuts.Save();
                         FriendsBook.Save();
+                        Jobs.Save(WorldServer.Instance.DBAccessor.Database);
 
                         if (GuildMember != null && GuildMember.IsDirty)
                             GuildMember.Save(WorldServer.Instance.DBAccessor.Database);

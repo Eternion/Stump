@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
             var existingItem = Items.FirstOrDefault(x => x.Guid == item.Guid);
             if (existingItem != null)
             {
-                if (quantity <= 0 && -quantity >= existingItem.Stack)
+                if ((quantity < 0 && -quantity >= existingItem.Stack) || quantity == 0)
                 {
                     RemoveItem(existingItem);
                     InventoryHandler.SendExchangeObjectRemovedMessage(Character.Client, false, item.Guid);
