@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendJobDescriptionMessage(IPacketReceiver client, Character character)
         {
-            client.Send(new JobDescriptionMessage(character.Jobs.Select(x => x.GetJobDescription())));
+            client.Send(new JobDescriptionMessage(character.Jobs.Where(x => x.Id != 1).Select(x => x.GetJobDescription())));
         }
 
         public static void SendJobCrafterDirectorySettingsMessage(IPacketReceiver client, Character character)
