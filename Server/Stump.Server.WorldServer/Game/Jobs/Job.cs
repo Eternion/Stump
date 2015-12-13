@@ -147,6 +147,8 @@ namespace Stump.Server.WorldServer.Game.Jobs
                 database.Insert(Record);
             else if (IsDirty)
                 database.Update(Record);
+
+            IsNew = IsDirty = false;
         }
 
         private bool CheckRecordExists()
