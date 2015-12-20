@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +21,14 @@ namespace Stump.DofusProtocol.Messages
         public Types.AllianceFactSheetInformations infos;
         public IEnumerable<Types.GuildInAllianceInformations> guilds;
         public IEnumerable<short> controlledSubareaIds;
-        public int leaderCharacterId;
+        public long leaderCharacterId;
         public string leaderCharacterName;
         
         public AllianceFactsMessage()
         {
         }
         
-        public AllianceFactsMessage(Types.AllianceFactSheetInformations infos, IEnumerable<Types.GuildInAllianceInformations> guilds, IEnumerable<short> controlledSubareaIds, int leaderCharacterId, string leaderCharacterName)
+        public AllianceFactsMessage(Types.AllianceFactSheetInformations infos, IEnumerable<Types.GuildInAllianceInformations> guilds, IEnumerable<short> controlledSubareaIds, long leaderCharacterId, string leaderCharacterName)
         {
             this.infos = infos;
             this.guilds = guilds;
@@ -67,7 +67,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)controlledSubareaIds_count);
             writer.Seek((int)controlledSubareaIds_after);
 
-            writer.WriteVarInt(leaderCharacterId);
+            writer.WriteVarLong(leaderCharacterId);
             writer.WriteUTF(leaderCharacterName);
         }
         
@@ -90,9 +90,9 @@ namespace Stump.DofusProtocol.Messages
                  controlledSubareaIds_[i] = reader.ReadVarShort();
             }
             controlledSubareaIds = controlledSubareaIds_;
-            leaderCharacterId = reader.ReadVarInt();
-            if (leaderCharacterId < 0)
-                throw new Exception("Forbidden value on leaderCharacterId = " + leaderCharacterId + ", it doesn't respect the following condition : leaderCharacterId < 0");
+            leaderCharacterId = reader.ReadVarLong();
+            if (leaderCharacterId < 0 || leaderCharacterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on leaderCharacterId = " + leaderCharacterId + ", it doesn't respect the following condition : leaderCharacterId < 0 || leaderCharacterId > 9.007199254740992E15");
             leaderCharacterName = reader.ReadUTF();
         }
         

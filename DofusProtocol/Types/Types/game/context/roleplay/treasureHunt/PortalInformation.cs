@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:24
+// Generated on 12/20/2015 17:30:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public short portalId;
+        public int portalId;
         public short areaId;
         
         public PortalInformation()
         {
         }
         
-        public PortalInformation(short portalId, short areaId)
+        public PortalInformation(int portalId, short areaId)
         {
             this.portalId = portalId;
             this.areaId = areaId;
@@ -32,15 +32,13 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteVarShort(portalId);
+            writer.WriteInt(portalId);
             writer.WriteShort(areaId);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            portalId = reader.ReadVarShort();
-            if (portalId < 0)
-                throw new Exception("Forbidden value on portalId = " + portalId + ", it doesn't respect the following condition : portalId < 0");
+            portalId = reader.ReadInt();
             areaId = reader.ReadShort();
         }
         

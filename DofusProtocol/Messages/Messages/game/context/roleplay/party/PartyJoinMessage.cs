@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:11
+// Generated on 12/20/2015 16:36:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte partyType;
-        public int partyLeaderId;
+        public long partyLeaderId;
         public sbyte maxParticipants;
         public IEnumerable<Types.PartyMemberInformations> members;
         public IEnumerable<Types.PartyGuestInformations> guests;
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyJoinMessage(int partyId, sbyte partyType, int partyLeaderId, sbyte maxParticipants, IEnumerable<Types.PartyMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests, bool restricted, string partyName)
+        public PartyJoinMessage(int partyId, sbyte partyType, long partyLeaderId, sbyte maxParticipants, IEnumerable<Types.PartyMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests, bool restricted, string partyName)
          : base(partyId)
         {
             this.partyType = partyType;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteSByte(partyType);
-            writer.WriteVarInt(partyLeaderId);
+            writer.WriteVarLong(partyLeaderId);
             writer.WriteSByte(maxParticipants);
             var members_before = writer.Position;
             var members_count = 0;
@@ -85,9 +85,9 @@ namespace Stump.DofusProtocol.Messages
             partyType = reader.ReadSByte();
             if (partyType < 0)
                 throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
-            partyLeaderId = reader.ReadVarInt();
-            if (partyLeaderId < 0)
-                throw new Exception("Forbidden value on partyLeaderId = " + partyLeaderId + ", it doesn't respect the following condition : partyLeaderId < 0");
+            partyLeaderId = reader.ReadVarLong();
+            if (partyLeaderId < 0 || partyLeaderId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on partyLeaderId = " + partyLeaderId + ", it doesn't respect the following condition : partyLeaderId < 0 || partyLeaderId > 9.007199254740992E15");
             maxParticipants = reader.ReadSByte();
             if (maxParticipants < 0)
                 throw new Exception("Forbidden value on maxParticipants = " + maxParticipants + ", it doesn't respect the following condition : maxParticipants < 0");

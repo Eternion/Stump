@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:04
+// Generated on 12/20/2015 16:36:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +18,8 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int masterId;
-        public int slaveId;
+        public double masterId;
+        public double slaveId;
         public IEnumerable<Types.SpellItem> slaveSpells;
         public Types.CharacterCharacteristicsInformations slaveStats;
         public IEnumerable<Types.Shortcut> shortcuts;
@@ -28,7 +28,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public SlaveSwitchContextMessage(int masterId, int slaveId, IEnumerable<Types.SpellItem> slaveSpells, Types.CharacterCharacteristicsInformations slaveStats, IEnumerable<Types.Shortcut> shortcuts)
+        public SlaveSwitchContextMessage(double masterId, double slaveId, IEnumerable<Types.SpellItem> slaveSpells, Types.CharacterCharacteristicsInformations slaveStats, IEnumerable<Types.Shortcut> shortcuts)
         {
             this.masterId = masterId;
             this.slaveId = slaveId;
@@ -39,8 +39,8 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(masterId);
-            writer.WriteInt(slaveId);
+            writer.WriteDouble(masterId);
+            writer.WriteDouble(slaveId);
             var slaveSpells_before = writer.Position;
             var slaveSpells_count = 0;
             writer.WriteUShort(0);
@@ -73,8 +73,12 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            masterId = reader.ReadInt();
-            slaveId = reader.ReadInt();
+            masterId = reader.ReadDouble();
+            if (masterId < -9.007199254740992E15 || masterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on masterId = " + masterId + ", it doesn't respect the following condition : masterId < -9.007199254740992E15 || masterId > 9.007199254740992E15");
+            slaveId = reader.ReadDouble();
+            if (slaveId < -9.007199254740992E15 || slaveId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on slaveId = " + slaveId + ", it doesn't respect the following condition : slaveId < -9.007199254740992E15 || slaveId > 9.007199254740992E15");
             var limit = reader.ReadUShort();
             var slaveSpells_ = new Types.SpellItem[limit];
             for (int i = 0; i < limit; i++)

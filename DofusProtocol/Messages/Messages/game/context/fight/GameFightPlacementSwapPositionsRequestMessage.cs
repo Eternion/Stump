@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:03
+// Generated on 12/20/2015 16:36:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int requestedId;
+        public double requestedId;
         
         public GameFightPlacementSwapPositionsRequestMessage()
         {
         }
         
-        public GameFightPlacementSwapPositionsRequestMessage(short cellId, int requestedId)
+        public GameFightPlacementSwapPositionsRequestMessage(short cellId, double requestedId)
          : base(cellId)
         {
             this.requestedId = requestedId;
@@ -33,13 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(requestedId);
+            writer.WriteDouble(requestedId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            requestedId = reader.ReadInt();
+            requestedId = reader.ReadDouble();
+            if (requestedId < -9.007199254740992E15 || requestedId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on requestedId = " + requestedId + ", it doesn't respect the following condition : requestedId < -9.007199254740992E15 || requestedId > 9.007199254740992E15");
         }
         
     }

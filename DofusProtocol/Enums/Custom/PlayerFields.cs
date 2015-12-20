@@ -28,6 +28,8 @@ namespace Stump.DofusProtocol.Enums
         DamageBonusPercent = 20,
         TrapBonus = 21,
         TrapBonusPercent = 22,
+        GlyphBonusPercent,
+        RuneBonusPercent,
         PermanentDamagePercent = 23,
         TackleBlock = 24,
         TackleEvade = 25,

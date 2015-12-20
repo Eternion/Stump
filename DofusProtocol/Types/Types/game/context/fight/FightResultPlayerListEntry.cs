@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightResultPlayerListEntry(short outcome, sbyte wave, Types.FightLoot rewards, int id, bool alive, byte level, IEnumerable<Types.FightResultAdditionalData> additional)
+        public FightResultPlayerListEntry(short outcome, sbyte wave, Types.FightLoot rewards, double id, bool alive, byte level, IEnumerable<Types.FightResultAdditionalData> additional)
          : base(outcome, wave, rewards, id, alive)
         {
             this.level = level;

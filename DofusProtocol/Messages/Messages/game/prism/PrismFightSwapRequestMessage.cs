@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:25
+// Generated on 12/20/2015 16:37:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short subAreaId;
-        public int targetId;
+        public long targetId;
         
         public PrismFightSwapRequestMessage()
         {
         }
         
-        public PrismFightSwapRequestMessage(short subAreaId, int targetId)
+        public PrismFightSwapRequestMessage(short subAreaId, long targetId)
         {
             this.subAreaId = subAreaId;
             this.targetId = targetId;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarShort(subAreaId);
-            writer.WriteVarInt(targetId);
+            writer.WriteVarLong(targetId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,9 +42,9 @@ namespace Stump.DofusProtocol.Messages
             subAreaId = reader.ReadVarShort();
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            targetId = reader.ReadVarInt();
-            if (targetId < 0)
-                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0");
+            targetId = reader.ReadVarLong();
+            if (targetId < 0 || targetId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0 || targetId > 9.007199254740992E15");
         }
         
     }

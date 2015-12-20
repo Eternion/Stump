@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Types
         
         public bool sex;
         public bool alive;
-        public int id;
+        public double id;
         public sbyte wave;
         public short level;
         public sbyte breed;
@@ -28,7 +28,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterLightInformations(bool sex, bool alive, int id, sbyte wave, short level, sbyte breed)
+        public GameFightFighterLightInformations(bool sex, bool alive, double id, sbyte wave, short level, sbyte breed)
         {
             this.sex = sex;
             this.alive = alive;
@@ -44,7 +44,7 @@ namespace Stump.DofusProtocol.Types
             flag1 = BooleanByteWrapper.SetFlag(flag1, 0, sex);
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, alive);
             writer.WriteByte(flag1);
-            writer.WriteInt(id);
+            writer.WriteDouble(id);
             writer.WriteSByte(wave);
             writer.WriteVarShort(level);
             writer.WriteSByte(breed);
@@ -55,7 +55,9 @@ namespace Stump.DofusProtocol.Types
             byte flag1 = reader.ReadByte();
             sex = BooleanByteWrapper.GetFlag(flag1, 0);
             alive = BooleanByteWrapper.GetFlag(flag1, 1);
-            id = reader.ReadInt();
+            id = reader.ReadDouble();
+            if (id < -9.007199254740992E15 || id > 9.007199254740992E15)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9.007199254740992E15 || id > 9.007199254740992E15");
             wave = reader.ReadSByte();
             if (wave < 0)
                 throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0");

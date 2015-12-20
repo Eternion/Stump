@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short actionId;
-        public int authorId;
+        public double authorId;
         public sbyte sequenceType;
         
         public SequenceEndMessage()
         {
         }
         
-        public SequenceEndMessage(short actionId, int authorId, sbyte sequenceType)
+        public SequenceEndMessage(short actionId, double authorId, sbyte sequenceType)
         {
             this.actionId = actionId;
             this.authorId = authorId;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarShort(actionId);
-            writer.WriteInt(authorId);
+            writer.WriteDouble(authorId);
             writer.WriteSByte(sequenceType);
         }
         
@@ -45,7 +45,9 @@ namespace Stump.DofusProtocol.Messages
             actionId = reader.ReadVarShort();
             if (actionId < 0)
                 throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
-            authorId = reader.ReadInt();
+            authorId = reader.ReadDouble();
+            if (authorId < -9.007199254740992E15 || authorId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on authorId = " + authorId + ", it doesn't respect the following condition : authorId < -9.007199254740992E15 || authorId > 9.007199254740992E15");
             sequenceType = reader.ReadSByte();
         }
         

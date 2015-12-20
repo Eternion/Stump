@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:08
+// Generated on 12/20/2015 16:36:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte jobId;
-        public int playerId;
+        public long playerId;
         
         public JobCrafterDirectoryRemoveMessage()
         {
         }
         
-        public JobCrafterDirectoryRemoveMessage(sbyte jobId, int playerId)
+        public JobCrafterDirectoryRemoveMessage(sbyte jobId, long playerId)
         {
             this.jobId = jobId;
             this.playerId = playerId;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(jobId);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,9 +42,9 @@ namespace Stump.DofusProtocol.Messages
             jobId = reader.ReadSByte();
             if (jobId < 0)
                 throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
         }
         
     }

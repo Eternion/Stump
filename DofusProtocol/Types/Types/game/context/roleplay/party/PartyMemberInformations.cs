@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:23
+// Generated on 12/20/2015 17:30:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public PartyMemberInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, int lifePoints, int maxLifePoints, short prospecting, byte regenRate, short initiative, sbyte alignmentSide, short worldX, short worldY, int mapId, short subAreaId, Types.PlayerStatus status, IEnumerable<Types.PartyCompanionMemberInformations> companions)
+        public PartyMemberInformations(long id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, int lifePoints, int maxLifePoints, short prospecting, byte regenRate, short initiative, sbyte alignmentSide, short worldX, short worldY, int mapId, short subAreaId, Types.PlayerStatus status, IEnumerable<Types.PartyCompanionMemberInformations> companions)
          : base(id, level, name, entityLook, breed, sex)
         {
             this.lifePoints = lifePoints;

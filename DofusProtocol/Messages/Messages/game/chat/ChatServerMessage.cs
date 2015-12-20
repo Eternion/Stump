@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:01
+// Generated on 12/20/2015 16:36:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int senderId;
+        public double senderId;
         public string senderName;
         public int senderAccountId;
         
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ChatServerMessage(sbyte channel, string content, int timestamp, string fingerprint, int senderId, string senderName, int senderAccountId)
+        public ChatServerMessage(sbyte channel, string content, int timestamp, string fingerprint, double senderId, string senderName, int senderAccountId)
          : base(channel, content, timestamp, fingerprint)
         {
             this.senderId = senderId;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(senderId);
+            writer.WriteDouble(senderId);
             writer.WriteUTF(senderName);
             writer.WriteInt(senderAccountId);
         }
@@ -45,7 +45,9 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            senderId = reader.ReadInt();
+            senderId = reader.ReadDouble();
+            if (senderId < -9.007199254740992E15 || senderId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on senderId = " + senderId + ", it doesn't respect the following condition : senderId < -9.007199254740992E15 || senderId > 9.007199254740992E15");
             senderName = reader.ReadUTF();
             senderAccountId = reader.ReadInt();
             if (senderAccountId < 0)

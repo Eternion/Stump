@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:22
+// Generated on 12/20/2015 16:37:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int npcSellerId;
+        public double npcSellerId;
         public short tokenId;
         public IEnumerable<Types.ObjectItemToSellInNpcShop> objectsInfos;
         
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ExchangeStartOkNpcShopMessage(int npcSellerId, short tokenId, IEnumerable<Types.ObjectItemToSellInNpcShop> objectsInfos)
+        public ExchangeStartOkNpcShopMessage(double npcSellerId, short tokenId, IEnumerable<Types.ObjectItemToSellInNpcShop> objectsInfos)
         {
             this.npcSellerId = npcSellerId;
             this.tokenId = tokenId;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(npcSellerId);
+            writer.WriteDouble(npcSellerId);
             writer.WriteVarShort(tokenId);
             var objectsInfos_before = writer.Position;
             var objectsInfos_count = 0;
@@ -54,7 +54,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            npcSellerId = reader.ReadInt();
+            npcSellerId = reader.ReadDouble();
+            if (npcSellerId < -9.007199254740992E15 || npcSellerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on npcSellerId = " + npcSellerId + ", it doesn't respect the following condition : npcSellerId < -9.007199254740992E15 || npcSellerId > 9.007199254740992E15");
             tokenId = reader.ReadVarShort();
             if (tokenId < 0)
                 throw new Exception("Forbidden value on tokenId = " + tokenId + ", it doesn't respect the following condition : tokenId < 0");

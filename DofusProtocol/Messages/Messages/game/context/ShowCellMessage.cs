@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:03
+// Generated on 12/20/2015 16:36:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int sourceId;
+        public double sourceId;
         public short cellId;
         
         public ShowCellMessage()
         {
         }
         
-        public ShowCellMessage(int sourceId, short cellId)
+        public ShowCellMessage(double sourceId, short cellId)
         {
             this.sourceId = sourceId;
             this.cellId = cellId;
@@ -33,13 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(sourceId);
+            writer.WriteDouble(sourceId);
             writer.WriteVarShort(cellId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            sourceId = reader.ReadInt();
+            sourceId = reader.ReadDouble();
+            if (sourceId < -9.007199254740992E15 || sourceId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on sourceId = " + sourceId + ", it doesn't respect the following condition : sourceId < -9.007199254740992E15 || sourceId > 9.007199254740992E15");
             cellId = reader.ReadVarShort();
             if (cellId < 0 || cellId > 559)
                 throw new Exception("Forbidden value on cellId = " + cellId + ", it doesn't respect the following condition : cellId < 0 || cellId > 559");

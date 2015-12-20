@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:07
+// Generated on 12/20/2015 16:36:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int fightId;
-        public IEnumerable<int> alliesId;
+        public IEnumerable<double> alliesId;
         public short duration;
         
         public GameRolePlayArenaFightPropositionMessage()
         {
         }
         
-        public GameRolePlayArenaFightPropositionMessage(int fightId, IEnumerable<int> alliesId, short duration)
+        public GameRolePlayArenaFightPropositionMessage(int fightId, IEnumerable<double> alliesId, short duration)
         {
             this.fightId = fightId;
             this.alliesId = alliesId;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in alliesId)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteDouble(entry);
                  alliesId_count++;
             }
             var alliesId_after = writer.Position;
@@ -58,10 +58,10 @@ namespace Stump.DofusProtocol.Messages
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
             var limit = reader.ReadUShort();
-            var alliesId_ = new int[limit];
+            var alliesId_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
-                 alliesId_[i] = reader.ReadInt();
+                 alliesId_[i] = reader.ReadDouble();
             }
             alliesId = alliesId_;
             duration = reader.ReadVarShort();

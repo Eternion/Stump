@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:59
+// Generated on 12/20/2015 16:36:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int memberId;
+        public long memberId;
         public string memberName;
         
         public CompassUpdatePvpSeekMessage()
         {
         }
         
-        public CompassUpdatePvpSeekMessage(sbyte type, Types.MapCoordinates coords, int memberId, string memberName)
+        public CompassUpdatePvpSeekMessage(sbyte type, Types.MapCoordinates coords, long memberId, string memberName)
          : base(type, coords)
         {
             this.memberId = memberId;
@@ -35,16 +35,16 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(memberId);
+            writer.WriteVarLong(memberId);
             writer.WriteUTF(memberName);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            memberId = reader.ReadVarInt();
-            if (memberId < 0)
-                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0");
+            memberId = reader.ReadVarLong();
+            if (memberId < 0 || memberId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0 || memberId > 9.007199254740992E15");
             memberName = reader.ReadUTF();
         }
         

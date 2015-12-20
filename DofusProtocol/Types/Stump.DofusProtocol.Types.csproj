@@ -288,6 +288,7 @@
     <Compile Include="Types\game\context\roleplay\BasicAllianceInformations.cs" />
     <Compile Include="Types\game\context\roleplay\BasicGuildInformations.cs" />
     <Compile Include="Types\game\context\roleplay\BasicNamedAllianceInformations.cs" />
+    <Compile Include="Types\game\context\roleplay\fight\arena\ArenaRankInfos.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayActorInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayCharacterInformations.cs" />
     <Compile Include="Types\game\context\roleplay\GameRolePlayGroupMonsterInformations.cs" />
@@ -314,6 +315,7 @@
     <Compile Include="Types\game\context\roleplay\HumanOptionGuild.cs" />
     <Compile Include="Types\game\context\roleplay\HumanOptionObjectUse.cs" />
     <Compile Include="Types\game\context\roleplay\HumanOptionOrnament.cs" />
+    <Compile Include="Types\game\context\roleplay\HumanOptionSkillUse.cs" />
     <Compile Include="Types\game\context\roleplay\HumanOptionTitle.cs" />
     <Compile Include="Types\game\context\roleplay\job\DecraftedItemStackInfo.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectoryEntryJobInfo.cs" />
@@ -322,6 +324,7 @@
     <Compile Include="Types\game\context\roleplay\job\JobCrafterDirectorySettings.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobDescription.cs" />
     <Compile Include="Types\game\context\roleplay\job\JobExperience.cs" />
+    <Compile Include="Types\game\context\roleplay\MonsterBoosts.cs" />
     <Compile Include="Types\game\context\roleplay\MonsterInGroupInformations.cs" />
     <Compile Include="Types\game\context\roleplay\MonsterInGroupLightInformations.cs" />
     <Compile Include="Types\game\context\roleplay\ObjectItemInRolePlay.cs" />
@@ -365,6 +368,7 @@
     <Compile Include="Types\game\data\items\Item.cs" />
     <Compile Include="Types\game\data\items\ObjectItem.cs" />
     <Compile Include="Types\game\data\items\ObjectItemGenericQuantity.cs" />
+    <Compile Include="Types\game\data\items\ObjectItemGenericQuantityPrice.cs" />
     <Compile Include="Types\game\data\items\ObjectItemInformationWithQuantity.cs" />
     <Compile Include="Types\game\data\items\ObjectItemMinimalInformation.cs" />
     <Compile Include="Types\game\data\items\ObjectItemNotInContainer.cs" />
@@ -385,6 +389,7 @@
     <Compile Include="Types\game\friend\IgnoredOnlineInformations.cs" />
     <Compile Include="Types\game\guild\GuildEmblem.cs" />
     <Compile Include="Types\game\guild\GuildMember.cs" />
+    <Compile Include="Types\game\guild\HavenBagFurnitureInformation.cs" />
     <Compile Include="Types\game\guild\tax\AdditionalTaxCollectorInformations.cs" />
     <Compile Include="Types\game\guild\tax\TaxCollectorBasicInformations.cs" />
     <Compile Include="Types\game\guild\tax\TaxCollectorComplementaryInformations.cs" />
@@ -392,6 +397,7 @@
     <Compile Include="Types\game\guild\tax\TaxCollectorGuildInformations.cs" />
     <Compile Include="Types\game\guild\tax\TaxCollectorInformations.cs" />
     <Compile Include="Types\game\guild\tax\TaxCollectorLootInformations.cs" />
+    <Compile Include="Types\game\guild\tax\TaxCollectorMovement.cs" />
     <Compile Include="Types\game\guild\tax\TaxCollectorWaitingForHelpInformations.cs" />
     <Compile Include="Types\game\house\AccountHouseInformations.cs" />
     <Compile Include="Types\game\house\HouseInformations.cs" />

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightTeamMemberCompanionInformations(int id, sbyte companionId, byte level, int masterId)
+        public FightTeamMemberCompanionInformations(double id, sbyte companionId, byte level, int masterId)
          : base(id)
         {
             this.companionId = companionId;

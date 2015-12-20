@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:12
+// Generated on 12/20/2015 16:36:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int id;
+        public long id;
         public int lifePoints;
         public int maxLifePoints;
         public short prospecting;
@@ -28,7 +28,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyUpdateLightMessage(int partyId, int id, int lifePoints, int maxLifePoints, short prospecting, byte regenRate)
+        public PartyUpdateLightMessage(int partyId, long id, int lifePoints, int maxLifePoints, short prospecting, byte regenRate)
          : base(partyId)
         {
             this.id = id;
@@ -41,7 +41,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(id);
+            writer.WriteVarLong(id);
             writer.WriteVarInt(lifePoints);
             writer.WriteVarInt(maxLifePoints);
             writer.WriteVarShort(prospecting);
@@ -51,9 +51,9 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            id = reader.ReadVarInt();
-            if (id < 0)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
+            id = reader.ReadVarLong();
+            if (id < 0 || id > 9.007199254740992E15)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 9.007199254740992E15");
             lifePoints = reader.ReadVarInt();
             if (lifePoints < 0)
                 throw new Exception("Forbidden value on lifePoints = " + lifePoints + ", it doesn't respect the following condition : lifePoints < 0");

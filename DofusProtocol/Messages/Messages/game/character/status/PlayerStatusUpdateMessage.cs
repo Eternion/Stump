@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:01
+// Generated on 12/20/2015 16:36:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int accountId;
-        public int playerId;
+        public long playerId;
         public Types.PlayerStatus status;
         
         public PlayerStatusUpdateMessage()
         {
         }
         
-        public PlayerStatusUpdateMessage(int accountId, int playerId, Types.PlayerStatus status)
+        public PlayerStatusUpdateMessage(int accountId, long playerId, Types.PlayerStatus status)
         {
             this.accountId = accountId;
             this.playerId = playerId;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(accountId);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             writer.WriteShort(status.TypeId);
             status.Serialize(writer);
         }
@@ -46,9 +46,9 @@ namespace Stump.DofusProtocol.Messages
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
             status.Deserialize(reader);
         }

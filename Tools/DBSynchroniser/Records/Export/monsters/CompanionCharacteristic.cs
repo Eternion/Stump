@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/16/2015 14:26:41
+// Generated on 12/20/2015 18:16:40
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,9 +22,7 @@ namespace DBSynchroniser.Records
         public int caracId;
         public int companionId;
         public int order;
-        public int initialValue;
-        public int levelPerValue;
-        public int valuePerLevel;
+        public List<List<double>> statPerLevelRange;
 
         int ID2ORecord.Id
         {
@@ -62,24 +60,29 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
-        public int InitialValue
+        [Ignore]
+        public List<List<double>> StatPerLevelRange
         {
-            get { return initialValue; }
-            set { initialValue = value; }
+            get { return statPerLevelRange; }
+            set
+            {
+                statPerLevelRange = value;
+                m_statPerLevelRangeBin = value == null ? null : value.ToBinary();
+            }
         }
 
+        private byte[] m_statPerLevelRangeBin;
         [D2OIgnore]
-        public int LevelPerValue
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] StatPerLevelRangeBin
         {
-            get { return levelPerValue; }
-            set { levelPerValue = value; }
-        }
-
-        [D2OIgnore]
-        public int ValuePerLevel
-        {
-            get { return valuePerLevel; }
-            set { valuePerLevel = value; }
+            get { return m_statPerLevelRangeBin; }
+            set
+            {
+                m_statPerLevelRangeBin = value;
+                statPerLevelRange = value == null ? null : value.ToObject<List<List<double>>>();
+            }
         }
 
         public virtual void AssignFields(object obj)
@@ -90,9 +93,7 @@ namespace DBSynchroniser.Records
             CaracId = castedObj.caracId;
             CompanionId = castedObj.companionId;
             Order = castedObj.order;
-            InitialValue = castedObj.initialValue;
-            LevelPerValue = castedObj.levelPerValue;
-            ValuePerLevel = castedObj.valuePerLevel;
+            StatPerLevelRange = castedObj.statPerLevelRange;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -102,14 +103,13 @@ namespace DBSynchroniser.Records
             obj.caracId = CaracId;
             obj.companionId = CompanionId;
             obj.order = Order;
-            obj.initialValue = InitialValue;
-            obj.levelPerValue = LevelPerValue;
-            obj.valuePerLevel = ValuePerLevel;
+            obj.statPerLevelRange = StatPerLevelRange;
             return obj;
         }
         
         public virtual void BeforeSave(bool insert)
         {
+            m_statPerLevelRangeBin = statPerLevelRange == null ? null : statPerLevelRange.ToBinary();
         
         }
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:04
+// Generated on 12/20/2015 16:36:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int id;
+        public double id;
         public int waitTime;
         
         public GameFightTurnStartMessage()
         {
         }
         
-        public GameFightTurnStartMessage(int id, int waitTime)
+        public GameFightTurnStartMessage(double id, int waitTime)
         {
             this.id = id;
             this.waitTime = waitTime;
@@ -33,13 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(id);
+            writer.WriteDouble(id);
             writer.WriteVarInt(waitTime);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            id = reader.ReadInt();
+            id = reader.ReadDouble();
+            if (id < -9.007199254740992E15 || id > 9.007199254740992E15)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9.007199254740992E15 || id > 9.007199254740992E15");
             waitTime = reader.ReadVarInt();
             if (waitTime < 0)
                 throw new Exception("Forbidden value on waitTime = " + waitTime + ", it doesn't respect the following condition : waitTime < 0");

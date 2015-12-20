@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:55
+// Generated on 12/20/2015 16:36:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public string name;
-        public int playerId;
+        public long playerId;
         
         public AchievementFinishedInformationMessage()
         {
         }
         
-        public AchievementFinishedInformationMessage(short id, byte finishedlevel, string name, int playerId)
+        public AchievementFinishedInformationMessage(short id, byte finishedlevel, string name, long playerId)
          : base(id, finishedlevel)
         {
             this.name = name;
@@ -36,16 +36,16 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteUTF(name);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             name = reader.ReadUTF();
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
         }
         
     }

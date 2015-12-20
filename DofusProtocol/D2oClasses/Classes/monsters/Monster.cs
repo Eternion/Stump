@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:33
+// Generated on 12/20/2015 18:01:20
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -39,6 +39,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean fastAnimsFun;
         public Boolean canSwitchPos;
         public List<uint> incompatibleIdols;
+        public Boolean allIdolsDisabled;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -192,6 +193,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.incompatibleIdols; }
             set { this.incompatibleIdols = value; }
+        }
+        [D2OIgnore]
+        public Boolean AllIdolsDisabled
+        {
+            get { return this.allIdolsDisabled; }
+            set { this.allIdolsDisabled = value; }
         }
     }
 }

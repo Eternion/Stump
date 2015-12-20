@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2015 10:48:40
+// Generated on 12/20/2015 17:38:52
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +16,7 @@ namespace Stump.DofusProtocol.Enums
         ACCESSORY_POSITION_SHIELD = 15,
         ACCESSORY_POSITION_WEAPON = 1,
         ACCESSORY_POSITION_PETS = 8,
+        ACCESSORY_POSITION_RIDE_HARNESS = 29,
         INVENTORY_POSITION_RING_LEFT = 2,
         INVENTORY_POSITION_RING_RIGHT = 4,
         INVENTORY_POSITION_DOFUS_1 = 9,
@@ -34,6 +35,7 @@ namespace Stump.DofusProtocol.Enums
         INVENTORY_POSITION_ROLEPLAY_BUFFER = 26,
         INVENTORY_POSITION_FOLLOWER = 27,
         INVENTORY_POSITION_COMPANION = 28,
+        INVENTORY_POSITION_RIDE_MODIFICATOR = 30,
         INVENTORY_POSITION_NOT_EQUIPED = 63,
     }
 }

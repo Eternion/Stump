@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/16/2015 14:26:43
+// Generated on 12/20/2015 18:16:43
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,6 +44,7 @@ namespace DBSynchroniser.Records
         public Boolean criticalFailureEndsTurn;
         public Boolean hideEffects;
         public Boolean hidden;
+        public Boolean playAnimation;
         public List<int> statesRequired;
         public List<int> statesForbidden;
         public List<EffectInstanceDice> effects;
@@ -239,6 +240,13 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public Boolean PlayAnimation
+        {
+            get { return playAnimation; }
+            set { playAnimation = value; }
+        }
+
+        [D2OIgnore]
         [Ignore]
         public List<int> StatesRequired
         {
@@ -372,6 +380,7 @@ namespace DBSynchroniser.Records
             CriticalFailureEndsTurn = castedObj.criticalFailureEndsTurn;
             HideEffects = castedObj.hideEffects;
             Hidden = castedObj.hidden;
+            PlayAnimation = castedObj.playAnimation;
             StatesRequired = castedObj.statesRequired;
             StatesForbidden = castedObj.statesForbidden;
             Effects = castedObj.effects;
@@ -407,6 +416,7 @@ namespace DBSynchroniser.Records
             obj.criticalFailureEndsTurn = CriticalFailureEndsTurn;
             obj.hideEffects = HideEffects;
             obj.hidden = Hidden;
+            obj.playAnimation = PlayAnimation;
             obj.statesRequired = StatesRequired;
             obj.statesForbidden = StatesForbidden;
             obj.effects = Effects;

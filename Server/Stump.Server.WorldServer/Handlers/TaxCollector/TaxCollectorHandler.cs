@@ -120,9 +120,9 @@ namespace Stump.Server.WorldServer.Handlers.TaxCollector
             client.Send(taxCollector.GetExchangeGuildTaxCollector());
         }
 
-        public static void SendTaxCollectorMovementMessage(IPacketReceiver client, bool hireOrFire, TaxCollectorNpc taxCollector, int playerId,  string name)
+        public static void SendTaxCollectorMovementMessage(IPacketReceiver client, TaxCollectorMovementTypeEnum movementType, TaxCollectorNpc taxCollector, int playerId,  string name)
         {
-            client.Send(new TaxCollectorMovementMessage(hireOrFire, taxCollector.GetTaxCollectorBasicInformations(), playerId, name));
+            client.Send(new TaxCollectorMovementMessage((sbyte)movementType, taxCollector.GetTaxCollectorBasicInformations(), playerId, name));
         }
 
         public static void SendTaxCollectorMovementAddMessage(IPacketReceiver client, TaxCollectorNpc taxCollector)

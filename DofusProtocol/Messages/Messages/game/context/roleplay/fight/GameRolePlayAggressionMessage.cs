@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:07
+// Generated on 12/20/2015 16:36:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int attackerId;
-        public int defenderId;
+        public long attackerId;
+        public long defenderId;
         
         public GameRolePlayAggressionMessage()
         {
         }
         
-        public GameRolePlayAggressionMessage(int attackerId, int defenderId)
+        public GameRolePlayAggressionMessage(long attackerId, long defenderId)
         {
             this.attackerId = attackerId;
             this.defenderId = defenderId;
@@ -33,18 +33,18 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(attackerId);
-            writer.WriteVarInt(defenderId);
+            writer.WriteVarLong(attackerId);
+            writer.WriteVarLong(defenderId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            attackerId = reader.ReadVarInt();
-            if (attackerId < 0)
-                throw new Exception("Forbidden value on attackerId = " + attackerId + ", it doesn't respect the following condition : attackerId < 0");
-            defenderId = reader.ReadVarInt();
-            if (defenderId < 0)
-                throw new Exception("Forbidden value on defenderId = " + defenderId + ", it doesn't respect the following condition : defenderId < 0");
+            attackerId = reader.ReadVarLong();
+            if (attackerId < 0 || attackerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on attackerId = " + attackerId + ", it doesn't respect the following condition : attackerId < 0 || attackerId > 9.007199254740992E15");
+            defenderId = reader.ReadVarLong();
+            if (defenderId < 0 || defenderId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on defenderId = " + defenderId + ", it doesn't respect the following condition : defenderId < 0 || defenderId > 9.007199254740992E15");
         }
         
     }

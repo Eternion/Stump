@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:26
+// Generated on 12/20/2015 17:30:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GuildMember(int id, byte level, string name, sbyte breed, bool sex, short rank, long givenExperience, sbyte experienceGivenPercent, int rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, short moodSmileyId, int accountId, int achievementPoints, Types.PlayerStatus status)
+        public GuildMember(long id, byte level, string name, sbyte breed, bool sex, short rank, long givenExperience, sbyte experienceGivenPercent, int rights, sbyte connected, sbyte alignmentSide, ushort hoursSinceLastConnection, short moodSmileyId, int accountId, int achievementPoints, Types.PlayerStatus status)
          : base(id, level, name)
         {
             this.breed = breed;

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:10
+// Generated on 12/20/2015 16:36:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int cancelerId;
-        public int guestId;
+        public long cancelerId;
+        public long guestId;
         
         public PartyCancelInvitationNotificationMessage()
         {
         }
         
-        public PartyCancelInvitationNotificationMessage(int partyId, int cancelerId, int guestId)
+        public PartyCancelInvitationNotificationMessage(int partyId, long cancelerId, long guestId)
          : base(partyId)
         {
             this.cancelerId = cancelerId;
@@ -35,19 +35,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(cancelerId);
-            writer.WriteVarInt(guestId);
+            writer.WriteVarLong(cancelerId);
+            writer.WriteVarLong(guestId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            cancelerId = reader.ReadVarInt();
-            if (cancelerId < 0)
-                throw new Exception("Forbidden value on cancelerId = " + cancelerId + ", it doesn't respect the following condition : cancelerId < 0");
-            guestId = reader.ReadVarInt();
-            if (guestId < 0)
-                throw new Exception("Forbidden value on guestId = " + guestId + ", it doesn't respect the following condition : guestId < 0");
+            cancelerId = reader.ReadVarLong();
+            if (cancelerId < 0 || cancelerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on cancelerId = " + cancelerId + ", it doesn't respect the following condition : cancelerId < 0 || cancelerId > 9.007199254740992E15");
+            guestId = reader.ReadVarLong();
+            if (guestId < 0 || guestId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on guestId = " + guestId + ", it doesn't respect the following condition : guestId < 0 || guestId > 9.007199254740992E15");
         }
         
     }

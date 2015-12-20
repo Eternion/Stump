@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:22
+// Generated on 12/20/2015 17:30:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameRolePlayNpcInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, short npcId, bool sex, short specialArtworkId)
+        public GameRolePlayNpcInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, short npcId, bool sex, short specialArtworkId)
          : base(contextualId, look, disposition)
         {
             this.npcId = npcId;

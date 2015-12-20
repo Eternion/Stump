@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:02
+// Generated on 12/20/2015 16:36:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<int> id;
+        public IEnumerable<double> id;
         
         public GameContextRemoveMultipleElementsMessage()
         {
         }
         
-        public GameContextRemoveMultipleElementsMessage(IEnumerable<int> id)
+        public GameContextRemoveMultipleElementsMessage(IEnumerable<double> id)
         {
             this.id = id;
         }
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in id)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteDouble(entry);
                  id_count++;
             }
             var id_after = writer.Position;
@@ -49,10 +49,10 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            var id_ = new int[limit];
+            var id_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
-                 id_[i] = reader.ReadInt();
+                 id_[i] = reader.ReadDouble();
             }
             id = id_;
         }

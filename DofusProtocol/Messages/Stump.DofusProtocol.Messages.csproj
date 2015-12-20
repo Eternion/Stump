@@ -191,6 +191,7 @@
     <Compile Include="Messages\common\basic\BasicPingMessage.cs" />
     <Compile Include="Messages\common\basic\BasicPongMessage.cs" />
     <Compile Include="Messages\common\basic\BasicStatMessage.cs" />
+    <Compile Include="Messages\common\basic\BasicStatWithDataMessage.cs" />
     <Compile Include="Messages\common\NetworkDataContainerMessage.cs" />
     <Compile Include="Messages\connection\CredentialsAcknowledgementMessage.cs" />
     <Compile Include="Messages\connection\HelloConnectMessage.cs" />
@@ -470,6 +471,7 @@
     <Compile Include="Messages\game\context\GameMapMovementMessage.cs" />
     <Compile Include="Messages\game\context\GameMapMovementRequestMessage.cs" />
     <Compile Include="Messages\game\context\GameMapNoMovementMessage.cs" />
+    <Compile Include="Messages\game\context\GameRefreshMonsterBoostsMessage.cs" />
     <Compile Include="Messages\game\context\mount\GameDataPaddockObjectAddMessage.cs" />
     <Compile Include="Messages\game\context\mount\GameDataPaddockObjectListAddMessage.cs" />
     <Compile Include="Messages\game\context\mount\GameDataPaddockObjectRemoveMessage.cs" />
@@ -530,6 +532,7 @@
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaSwitchToGameServerMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUnregisterMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUpdatePlayerInfosMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\fight\arena\GameRolePlayArenaUpdatePlayerInfosWithTeamMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayAggressionMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayAttackMonsterRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayFightRequestCanceledMessage.cs" />
@@ -541,6 +544,27 @@
     <Compile Include="Messages\game\context\roleplay\fight\GameRolePlayShowChallengeMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\GameRolePlayShowActorMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\GameRolePlayShowActorWithEventMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\ChangeHavenBagRoomRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\ChangeThemeRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\CloseHavenBagFurnitureSequenceRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\EditHavenBagCancelRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\EditHavenBagFinishedMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\EditHavenBagRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\EditHavenBagStartMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\EnterHavenBagRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\ExitHavenBagRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagDailyLoteryMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagFurnituresMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagFurnituresRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagPackListMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\KickHavenBagRequest.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagClosedMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagOfferMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\meeting\TeleportHavenBagAnswerMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\meeting\TeleportHavenBagRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\OpenHavenBagFurnitureSequenceRequestMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\RoomAvailableUpdateMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\houses\AccountHouseMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\houses\guild\HouseGuildNoneMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\houses\guild\HouseGuildRightsMessage.cs" />
@@ -581,6 +605,7 @@
     <Compile Include="Messages\game\context\roleplay\lockable\LockableStateUpdateHouseDoorMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\lockable\LockableStateUpdateStorageMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\lockable\LockableUseCodeMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\MapComplementaryInformationsDataInHavenBagMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\MapComplementaryInformationsDataInHouseMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\MapComplementaryInformationsDataMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\MapComplementaryInformationsWithCoordsMessage.cs" />
@@ -650,6 +675,7 @@
     <Compile Include="Messages\game\context\roleplay\party\PartyLeaveMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyLeaveRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyLocateMembersMessage.cs" />
+    <Compile Include="Messages\game\context\roleplay\party\PartyLocateMembersRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyLoyaltyStatusMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyMemberEjectedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\party\PartyMemberInFightMessage.cs" />
@@ -784,6 +810,7 @@
     <Compile Include="Messages\game\guild\GuildModificationValidMessage.cs" />
     <Compile Include="Messages\game\guild\GuildMotdMessage.cs" />
     <Compile Include="Messages\game\guild\GuildMotdSetErrorMessage.cs" />
+    <Compile Include="Messages\game\guild\GuildMotdSetRequestMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockBoughtMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockRemovedMessage.cs" />
     <Compile Include="Messages\game\guild\GuildPaddockTeleportRequestMessage.cs" />
@@ -805,6 +832,7 @@
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementAddMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorMovementRemoveMessage.cs" />
+    <Compile Include="Messages\game\guild\tax\TaxCollectorMovementsOfflineMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TaxCollectorStateUpdateMessage.cs" />
     <Compile Include="Messages\game\guild\tax\TopTaxCollectorListMessage.cs" />
     <Compile Include="Messages\game\idol\IdolFightPreparationUpdateMessage.cs" />
@@ -854,6 +882,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHousePriceMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseSearchMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseTypeMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeBidHouseUnsoldItemsMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidPriceForSellerMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidPriceMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeBidSearchOkMessage.cs" />
@@ -899,6 +928,7 @@
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertListToInvMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectTransfertListWithQuantityToInvMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeObjectUseInWorkshopMessage.cs" />
+    <Compile Include="Messages\game\inventory\exchanges\ExchangeOfflineSoldItemsMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeOkMultiCraftMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangeOnHumanVendorRequestMessage.cs" />
     <Compile Include="Messages\game\inventory\exchanges\ExchangePlayerMultiCraftRequestMessage.cs" />
@@ -1009,6 +1039,8 @@
     <Compile Include="Messages\game\inventory\preset\IdolsPresetSaveMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\IdolsPresetSaveResultMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\IdolsPresetUpdateMessage.cs" />
+    <Compile Include="Messages\game\inventory\preset\IdolsPresetUseMessage.cs" />
+    <Compile Include="Messages\game\inventory\preset\IdolsPresetUseResultMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetDeleteMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetDeleteResultMessage.cs" />
     <Compile Include="Messages\game\inventory\preset\InventoryPresetItemUpdateErrorMessage.cs" />
@@ -1075,6 +1107,7 @@
     <Compile Include="Messages\game\social\ContactLookErrorMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookRequestByIdMessage.cs" />
+    <Compile Include="Messages\game\social\ContactLookRequestByNameMessage.cs" />
     <Compile Include="Messages\game\social\ContactLookRequestMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionAddMessage.cs" />
     <Compile Include="Messages\game\startup\StartupActionFinishedMessage.cs" />
@@ -1148,7 +1181,10 @@
       <Name>Stump.DofusProtocol.Enums</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Messages\subscription\" />
+    <Folder Include="Messages\web\haapi\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

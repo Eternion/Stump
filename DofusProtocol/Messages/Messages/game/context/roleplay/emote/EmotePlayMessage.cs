@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:07
+// Generated on 12/20/2015 16:36:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int actorId;
+        public double actorId;
         public int accountId;
         
         public EmotePlayMessage()
         {
         }
         
-        public EmotePlayMessage(byte emoteId, double emoteStartTime, int actorId, int accountId)
+        public EmotePlayMessage(byte emoteId, double emoteStartTime, double actorId, int accountId)
          : base(emoteId, emoteStartTime)
         {
             this.actorId = actorId;
@@ -35,14 +35,16 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(actorId);
+            writer.WriteDouble(actorId);
             writer.WriteInt(accountId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            actorId = reader.ReadInt();
+            actorId = reader.ReadDouble();
+            if (actorId < -9.007199254740992E15 || actorId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on actorId = " + actorId + ", it doesn't respect the following condition : actorId < -9.007199254740992E15 || actorId > 9.007199254740992E15");
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");

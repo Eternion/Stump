@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:22
+// Generated on 12/20/2015 17:30:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,6 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public byte guildLevel;
         public byte nbMembers;
         public bool enabled;
         
@@ -25,10 +24,9 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GuildInAllianceInformations(int guildId, string guildName, Types.GuildEmblem guildEmblem, byte guildLevel, byte nbMembers, bool enabled)
-         : base(guildId, guildName, guildEmblem)
+        public GuildInAllianceInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, byte nbMembers, bool enabled)
+         : base(guildId, guildName, guildLevel, guildEmblem)
         {
-            this.guildLevel = guildLevel;
             this.nbMembers = nbMembers;
             this.enabled = enabled;
         }
@@ -36,7 +34,6 @@ namespace Stump.DofusProtocol.Types
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteByte(guildLevel);
             writer.WriteByte(nbMembers);
             writer.WriteBoolean(enabled);
         }
@@ -44,9 +41,6 @@ namespace Stump.DofusProtocol.Types
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            guildLevel = reader.ReadByte();
-            if (guildLevel < 1 || guildLevel > 200)
-                throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 1 || guildLevel > 200");
             nbMembers = reader.ReadByte();
             if (nbMembers < 1 || nbMembers > 240)
                 throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 1 || nbMembers > 240");

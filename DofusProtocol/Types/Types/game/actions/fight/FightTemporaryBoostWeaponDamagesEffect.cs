@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:19
+// Generated on 12/20/2015 17:30:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightTemporaryBoostWeaponDamagesEffect(int uid, int targetId, short turnDuration, sbyte dispelable, short spellId, int effectId, int parentBoostUid, short delta, short weaponTypeId)
+        public FightTemporaryBoostWeaponDamagesEffect(int uid, double targetId, short turnDuration, sbyte dispelable, short spellId, int effectId, int parentBoostUid, short delta, short weaponTypeId)
          : base(uid, targetId, turnDuration, dispelable, spellId, effectId, parentBoostUid, delta)
         {
             this.weaponTypeId = weaponTypeId;

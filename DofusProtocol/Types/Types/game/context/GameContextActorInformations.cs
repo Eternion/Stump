@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:20
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int contextualId;
+        public double contextualId;
         public Types.EntityLook look;
         public Types.EntityDispositionInformations disposition;
         
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameContextActorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition)
+        public GameContextActorInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition)
         {
             this.contextualId = contextualId;
             this.look = look;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(contextualId);
+            writer.WriteDouble(contextualId);
             look.Serialize(writer);
             writer.WriteShort(disposition.TypeId);
             disposition.Serialize(writer);
@@ -42,7 +42,9 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            contextualId = reader.ReadInt();
+            contextualId = reader.ReadDouble();
+            if (contextualId < -9.007199254740992E15 || contextualId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on contextualId = " + contextualId + ", it doesn't respect the following condition : contextualId < -9.007199254740992E15 || contextualId > 9.007199254740992E15");
             look = new Types.EntityLook();
             look.Deserialize(reader);
             disposition = Types.ProtocolTypeManager.GetInstance<Types.EntityDispositionInformations>(reader.ReadShort());

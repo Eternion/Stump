@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:58
+// Generated on 12/20/2015 16:36:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,15 +21,15 @@ namespace Stump.DofusProtocol.Messages
         public bool tutorialAvailable;
         public bool canCreateNewCharacter;
         public int accountId;
-        public ushort breedsVisible;
-        public ushort breedsAvailable;
+        public int breedsVisible;
+        public int breedsAvailable;
         public sbyte status;
         
         public AccountCapabilitiesMessage()
         {
         }
         
-        public AccountCapabilitiesMessage(bool tutorialAvailable, bool canCreateNewCharacter, int accountId, ushort breedsVisible, ushort breedsAvailable, sbyte status)
+        public AccountCapabilitiesMessage(bool tutorialAvailable, bool canCreateNewCharacter, int accountId, int breedsVisible, int breedsAvailable, sbyte status)
         {
             this.tutorialAvailable = tutorialAvailable;
             this.canCreateNewCharacter = canCreateNewCharacter;
@@ -46,8 +46,8 @@ namespace Stump.DofusProtocol.Messages
             flag1 = BooleanByteWrapper.SetFlag(flag1, 1, canCreateNewCharacter);
             writer.WriteByte(flag1);
             writer.WriteInt(accountId);
-            writer.WriteUShort(breedsVisible);
-            writer.WriteUShort(breedsAvailable);
+            writer.WriteVarInt(breedsVisible);
+            writer.WriteVarInt(breedsAvailable);
             writer.WriteSByte(status);
         }
         
@@ -59,12 +59,12 @@ namespace Stump.DofusProtocol.Messages
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            breedsVisible = reader.ReadUShort();
-            if (breedsVisible < 0 || breedsVisible > 65535)
-                throw new Exception("Forbidden value on breedsVisible = " + breedsVisible + ", it doesn't respect the following condition : breedsVisible < 0 || breedsVisible > 65535");
-            breedsAvailable = reader.ReadUShort();
-            if (breedsAvailable < 0 || breedsAvailable > 65535)
-                throw new Exception("Forbidden value on breedsAvailable = " + breedsAvailable + ", it doesn't respect the following condition : breedsAvailable < 0 || breedsAvailable > 65535");
+            breedsVisible = reader.ReadVarInt();
+            if (breedsVisible < 0)
+                throw new Exception("Forbidden value on breedsVisible = " + breedsVisible + ", it doesn't respect the following condition : breedsVisible < 0");
+            breedsAvailable = reader.ReadVarInt();
+            if (breedsAvailable < 0)
+                throw new Exception("Forbidden value on breedsAvailable = " + breedsAvailable + ", it doesn't respect the following condition : breedsAvailable < 0");
             status = reader.ReadSByte();
         }
         

@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         
         public static void SendGameRolePlayArenaFightPropositionMessage(IPacketReceiver client, ArenaPopup popup, int delay)
         {
-            var members = popup.Team.Members.Select(x => x.Character.Id);
+            var members = popup.Team.Members.Select(x => (double)x.Character.Id);
             client.Send(new GameRolePlayArenaFightPropositionMessage(popup.Team.Fight.Id, members, (short)delay));
         }
 

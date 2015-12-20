@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:03
+// Generated on 12/20/2015 16:36:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int requestId;
-        public int cancellerId;
+        public double cancellerId;
         
         public GameFightPlacementSwapPositionsCancelledMessage()
         {
         }
         
-        public GameFightPlacementSwapPositionsCancelledMessage(int requestId, int cancellerId)
+        public GameFightPlacementSwapPositionsCancelledMessage(int requestId, double cancellerId)
         {
             this.requestId = requestId;
             this.cancellerId = cancellerId;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(requestId);
-            writer.WriteVarInt(cancellerId);
+            writer.WriteDouble(cancellerId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,9 +42,9 @@ namespace Stump.DofusProtocol.Messages
             requestId = reader.ReadInt();
             if (requestId < 0)
                 throw new Exception("Forbidden value on requestId = " + requestId + ", it doesn't respect the following condition : requestId < 0");
-            cancellerId = reader.ReadVarInt();
-            if (cancellerId < 0)
-                throw new Exception("Forbidden value on cancellerId = " + cancellerId + ", it doesn't respect the following condition : cancellerId < 0");
+            cancellerId = reader.ReadDouble();
+            if (cancellerId < -9.007199254740992E15 || cancellerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on cancellerId = " + cancellerId + ", it doesn't respect the following condition : cancellerId < -9.007199254740992E15 || cancellerId > 9.007199254740992E15");
         }
         
     }

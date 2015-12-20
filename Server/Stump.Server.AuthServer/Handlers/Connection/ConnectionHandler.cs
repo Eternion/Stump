@@ -188,7 +188,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                     ? client.Account.SubscriptionEnd.GetUnixTimeStampLong()
                     : 0,
                 0d,
-                (DateTime.Now - client.Account.CreationDate).TotalMilliseconds));
+                (DateTime.Now - client.Account.CreationDate).TotalMilliseconds, 
+                0));
 
             client.LookingOfServers = true;
         }

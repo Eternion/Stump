@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:21
+// Generated on 12/20/2015 16:37:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int target;
+        public long target;
         
         public ExchangePlayerRequestMessage()
         {
         }
         
-        public ExchangePlayerRequestMessage(sbyte exchangeType, int target)
+        public ExchangePlayerRequestMessage(sbyte exchangeType, long target)
          : base(exchangeType)
         {
             this.target = target;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(target);
+            writer.WriteVarLong(target);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            target = reader.ReadVarInt();
-            if (target < 0)
-                throw new Exception("Forbidden value on target = " + target + ", it doesn't respect the following condition : target < 0");
+            target = reader.ReadVarLong();
+            if (target < 0 || target > 9.007199254740992E15)
+                throw new Exception("Forbidden value on target = " + target + ", it doesn't respect the following condition : target < 0 || target > 9.007199254740992E15");
         }
         
     }

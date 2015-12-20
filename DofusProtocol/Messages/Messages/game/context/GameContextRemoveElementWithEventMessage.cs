@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:02
+// Generated on 12/20/2015 16:36:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameContextRemoveElementWithEventMessage(int id, sbyte elementEventId)
+        public GameContextRemoveElementWithEventMessage(double id, sbyte elementEventId)
          : base(id)
         {
             this.elementEventId = elementEventId;

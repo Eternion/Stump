@@ -21,17 +21,17 @@ namespace <#= Profile.OutPutNamespace #>
 var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
 
 if (idField == null)
-    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type == "int" || x.Type == "uint") && !x.Name.ToLower().Contains("type"));
+    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type.Name == "int" || x.Type.Name == "uint") && !x.Name.ToLower().Contains("type"));
 
 if (idField == null)
-    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type == "int" || x.Type == "uint"));
+    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type.Name == "int" || x.Type.Name == "uint"));
 
 if (Parser.Class.Name == "InfoMessage" || Parser.Class.Name == "RideFood")
     idField = null;
 #>
 <# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\", \"" + Parser.Class.Namespace + "\")]"); #>
 [Serializable]
-public class <#=Parser.Class.Name #><#=( Parser.Class.Heritage != "Object" ? (" : " + Parser.Class.Heritage) : (" : IDataObject" + (idField != null ? ", IIndexedData" : "")) ) #>
+public class <#=Parser.Class.Name #><#=( HasHeritage(Parser.Class.Heritage) ? (" : " + Parser.Class.Heritage) : (" : IDataObject" + (idField != null ? ", IIndexedData" : "")) ) #>
 {
 <# PushIndent("    "); #>
 <#
@@ -62,7 +62,7 @@ foreach (var field in Parser.Fields)
     WriteField(field);
 } 
 
-if (idField != null && Parser.Class.Heritage == "Object")
+if (idField != null && !HasHeritage(Parser.Class.Heritage))
 {
     WriteLine("int IIndexedData.Id");
     WriteLine("{");
@@ -85,7 +85,7 @@ foreach (var field in Parser.Fields)
     
     WriteLine("[D2OIgnore]");
     Write("public ");
-    Write(field.Type);
+    Write(field.Type.ToString());
     WriteLine(" " + name);
     WriteLine("{");
     WriteLine("    get { return this." + field.Name + "; }");

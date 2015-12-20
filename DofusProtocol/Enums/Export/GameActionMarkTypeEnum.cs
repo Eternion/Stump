@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2015 10:48:40
+// Generated on 12/20/2015 17:38:52
 using System;
 using System.Collections.Generic;
 
@@ -12,5 +12,6 @@ namespace Stump.DofusProtocol.Enums
         TRAP = 2,
         WALL = 3,
         PORTAL = 4,
+        RUNE = 5,
     }
 }

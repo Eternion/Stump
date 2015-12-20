@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:02
+// Generated on 12/20/2015 16:36:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int accountId;
-        public int playerId;
+        public long playerId;
         public short smileyId;
         
         public MoodSmileyUpdateMessage()
         {
         }
         
-        public MoodSmileyUpdateMessage(int accountId, int playerId, short smileyId)
+        public MoodSmileyUpdateMessage(int accountId, long playerId, short smileyId)
         {
             this.accountId = accountId;
             this.playerId = playerId;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(accountId);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             writer.WriteVarShort(smileyId);
         }
         
@@ -45,9 +45,9 @@ namespace Stump.DofusProtocol.Messages
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             smileyId = reader.ReadVarShort();
             if (smileyId < 0)
                 throw new Exception("Forbidden value on smileyId = " + smileyId + ", it doesn't respect the following condition : smileyId < 0");
