@@ -124,7 +124,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (!client.Character.IsInParty(message.partyId))
                 return;
 
-            var guest = client.Character.GetParty(message.partyId).GetGuest(message.guestId);
+            var guest = client.Character.GetParty(message.partyId).GetGuest((int) message.guestId);
 
             if (guest == null)
                 return;
@@ -155,7 +155,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (!client.Character.IsPartyLeader(message.partyId))
                 return;
 
-            var member = client.Character.GetParty(message.partyId).GetMember(message.playerId);
+            var member = client.Character.GetParty(message.partyId).GetMember((int) message.playerId);
 
             client.Character.GetParty(message.partyId).ChangeLeader(member);
         }
@@ -169,7 +169,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (!client.Character.IsPartyLeader(message.partyId))
                 return;
 
-            var member = client.Character.GetParty(message.partyId).GetMember(message.playerId);
+            var member = client.Character.GetParty(message.partyId).GetMember((int) message.playerId);
 
             client.Character.GetParty(message.partyId).Kick(member);
         }
@@ -180,7 +180,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (!client.Character.IsInParty(message.partyId))
                 return;
 
-            var target = client.Character.Party.GetMember(message.playerId);
+            var target = client.Character.Party.GetMember((int) message.playerId);
 
             if (target == null)
                 return;
@@ -194,7 +194,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay.Party
             if (!client.Character.IsPartyLeader(message.partyId))
                 return;
 
-            var target = client.Character.Party.GetMember(message.playerId);
+            var target = client.Character.Party.GetMember((int) message.playerId);
 
             if (target == null)
                 return;

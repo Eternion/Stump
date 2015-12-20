@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:11
+// Generated on 12/20/2015 16:36:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int partyLeaderId;
+        public long partyLeaderId;
         
         public PartyLeaderUpdateMessage()
         {
         }
         
-        public PartyLeaderUpdateMessage(int partyId, int partyLeaderId)
+        public PartyLeaderUpdateMessage(int partyId, long partyLeaderId)
          : base(partyId)
         {
             this.partyLeaderId = partyLeaderId;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(partyLeaderId);
+            writer.WriteVarLong(partyLeaderId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            partyLeaderId = reader.ReadVarInt();
-            if (partyLeaderId < 0)
-                throw new Exception("Forbidden value on partyLeaderId = " + partyLeaderId + ", it doesn't respect the following condition : partyLeaderId < 0");
+            partyLeaderId = reader.ReadVarLong();
+            if (partyLeaderId < 0 || partyLeaderId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on partyLeaderId = " + partyLeaderId + ", it doesn't respect the following condition : partyLeaderId < 0 || partyLeaderId > 9.007199254740992E15");
         }
         
     }

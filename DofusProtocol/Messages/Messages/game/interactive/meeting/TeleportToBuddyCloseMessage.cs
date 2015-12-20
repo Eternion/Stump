@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:18
+// Generated on 12/20/2015 16:37:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short dungeonId;
-        public int buddyId;
+        public long buddyId;
         
         public TeleportToBuddyCloseMessage()
         {
         }
         
-        public TeleportToBuddyCloseMessage(short dungeonId, int buddyId)
+        public TeleportToBuddyCloseMessage(short dungeonId, long buddyId)
         {
             this.dungeonId = dungeonId;
             this.buddyId = buddyId;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarShort(dungeonId);
-            writer.WriteVarInt(buddyId);
+            writer.WriteVarLong(buddyId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,9 +42,9 @@ namespace Stump.DofusProtocol.Messages
             dungeonId = reader.ReadVarShort();
             if (dungeonId < 0)
                 throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
-            buddyId = reader.ReadVarInt();
-            if (buddyId < 0)
-                throw new Exception("Forbidden value on buddyId = " + buddyId + ", it doesn't respect the following condition : buddyId < 0");
+            buddyId = reader.ReadVarLong();
+            if (buddyId < 0 || buddyId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on buddyId = " + buddyId + ", it doesn't respect the following condition : buddyId < 0 || buddyId > 9.007199254740992E15");
         }
         
     }

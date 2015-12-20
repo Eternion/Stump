@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:17
+// Generated on 12/20/2015 16:37:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int fightId;
-        public int playerId;
+        public long playerId;
         
         public GuildFightPlayersHelpersLeaveMessage()
         {
         }
         
-        public GuildFightPlayersHelpersLeaveMessage(int fightId, int playerId)
+        public GuildFightPlayersHelpersLeaveMessage(int fightId, long playerId)
         {
             this.fightId = fightId;
             this.playerId = playerId;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(fightId);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,9 +42,9 @@ namespace Stump.DofusProtocol.Messages
             fightId = reader.ReadInt();
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
         }
         
     }

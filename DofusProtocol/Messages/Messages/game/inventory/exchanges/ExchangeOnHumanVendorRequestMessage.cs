@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:21
+// Generated on 12/20/2015 16:37:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int humanVendorId;
+        public long humanVendorId;
         public short humanVendorCell;
         
         public ExchangeOnHumanVendorRequestMessage()
         {
         }
         
-        public ExchangeOnHumanVendorRequestMessage(int humanVendorId, short humanVendorCell)
+        public ExchangeOnHumanVendorRequestMessage(long humanVendorId, short humanVendorCell)
         {
             this.humanVendorId = humanVendorId;
             this.humanVendorCell = humanVendorCell;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(humanVendorId);
+            writer.WriteVarLong(humanVendorId);
             writer.WriteVarShort(humanVendorCell);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            humanVendorId = reader.ReadVarInt();
-            if (humanVendorId < 0)
-                throw new Exception("Forbidden value on humanVendorId = " + humanVendorId + ", it doesn't respect the following condition : humanVendorId < 0");
+            humanVendorId = reader.ReadVarLong();
+            if (humanVendorId < 0 || humanVendorId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on humanVendorId = " + humanVendorId + ", it doesn't respect the following condition : humanVendorId < 0 || humanVendorId > 9.007199254740992E15");
             humanVendorCell = reader.ReadVarShort();
             if (humanVendorCell < 0 || humanVendorCell > 559)
                 throw new Exception("Forbidden value on humanVendorCell = " + humanVendorCell + ", it doesn't respect the following condition : humanVendorCell < 0 || humanVendorCell > 559");

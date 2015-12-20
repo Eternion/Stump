@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public sbyte teamId;
-        public int leaderId;
+        public double leaderId;
         public sbyte teamSide;
         public sbyte teamTypeId;
         public sbyte nbWaves;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public AbstractFightTeamInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves)
+        public AbstractFightTeamInformations(sbyte teamId, double leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves)
         {
             this.teamId = teamId;
             this.leaderId = leaderId;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(teamId);
-            writer.WriteInt(leaderId);
+            writer.WriteDouble(leaderId);
             writer.WriteSByte(teamSide);
             writer.WriteSByte(teamTypeId);
             writer.WriteSByte(nbWaves);
@@ -50,7 +50,9 @@ namespace Stump.DofusProtocol.Types
             teamId = reader.ReadSByte();
             if (teamId < 0)
                 throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
-            leaderId = reader.ReadInt();
+            leaderId = reader.ReadDouble();
+            if (leaderId < -9.007199254740992E15 || leaderId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < -9.007199254740992E15 || leaderId > 9.007199254740992E15");
             teamSide = reader.ReadSByte();
             teamTypeId = reader.ReadSByte();
             if (teamTypeId < 0)

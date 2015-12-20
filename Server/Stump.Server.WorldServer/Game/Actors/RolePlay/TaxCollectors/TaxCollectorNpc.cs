@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         /// <summary>
         /// Create a new tax collector with a new record (no IO)
         /// </summary>
-        public TaxCollectorNpc(int globalId, int contextId, ObjectPosition position, Guild guild, string callerName)
+        public TaxCollectorNpc(int globalId, int contextId, ObjectPosition position, Guild guild, Character caller)
         {
             m_contextId = contextId;
             Position = position;
@@ -69,7 +69,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                 FirstNameId = (short) TaxCollectorManager.Instance.GetRandomTaxCollectorFirstname(),
                 LastNameId = (short) TaxCollectorManager.Instance.GetRandomTaxCollectorName(),
                 GuildId = guild.Id,
-                CallerName = callerName,
+                CallerName = caller.Name,
+                CallerId = caller.Id,
                 Date = DateTime.Now
             };
 
@@ -455,7 +456,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
         public ExchangeGuildTaxCollectorGetMessage GetExchangeGuildTaxCollector()
         {
             return new ExchangeGuildTaxCollectorGetMessage(Name, (short)Position.Map.Position.X, (short)Position.Map.Position.Y, Position.Map.Id,
-                (short)Position.Map.SubArea.Id, Record.CallerName, GatheredExperience, Bag.Select(x => x.GetObjectItemGenericQuantity()));
+                (short)Position.Map.SubArea.Id, Record.CallerName, Record.CallerId, Record.CallerName, GatheredExperience, (short)Bag.BagWeight, Bag.Select(x => x.GetObjectItemGenericQuantity()));
         }
 
         public StorageInventoryContentMessage GetStorageInventoryContent()

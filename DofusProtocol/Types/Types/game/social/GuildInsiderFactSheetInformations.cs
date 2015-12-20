@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:28
+// Generated on 12/20/2015 17:31:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +27,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GuildInsiderFactSheetInformations(int guildId, string guildName, Types.GuildEmblem guildEmblem, int leaderId, byte guildLevel, short nbMembers, string leaderName, short nbConnectedMembers, sbyte nbTaxCollectors, int lastActivity, bool enabled)
-         : base(guildId, guildName, guildEmblem, leaderId, guildLevel, nbMembers)
+        public GuildInsiderFactSheetInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, long leaderId, short nbMembers, string leaderName, short nbConnectedMembers, sbyte nbTaxCollectors, int lastActivity, bool enabled)
+         : base(guildId, guildName, guildLevel, guildEmblem, leaderId, nbMembers)
         {
             this.leaderName = leaderName;
             this.nbConnectedMembers = nbConnectedMembers;

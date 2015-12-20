@@ -250,7 +250,9 @@
     <Compile Include="Export\GuestLimitationEnum.cs" />
     <Compile Include="Export\GuildInformationsTypeEnum.cs" />
     <Compile Include="Export\GuildRightsBitEnum.cs" />
+    <Compile Include="Export\HaapiTokenTypeEnum.cs" />
     <Compile Include="Export\HardcoreOrEpicDeathStateEnum.cs" />
+    <Compile Include="Export\HavenBagDailyLoteryErrorEnum.cs" />
     <Compile Include="Export\IdentificationFailureReasonEnum.cs" />
     <Compile Include="Export\ListAddFailureEnum.cs" />
     <Compile Include="Export\MapObstacleStateEnum.cs" />
@@ -287,6 +289,7 @@
     <Compile Include="Export\SubEntityBindingPointCategoryEnum.cs" />
     <Compile Include="Export\SubscriptionRequiredEnum.cs" />
     <Compile Include="Export\TaxCollectorErrorReasonEnum.cs" />
+    <Compile Include="Export\TaxCollectorMovementTypeEnum.cs" />
     <Compile Include="Export\TaxCollectorStateEnum.cs" />
     <Compile Include="Export\TeamEnum.cs" />
     <Compile Include="Export\TeamTypeEnum.cs" />

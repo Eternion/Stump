@@ -245,6 +245,8 @@
     <Compile Include="Classes\guild\EmblemSymbol.cs" />
     <Compile Include="Classes\guild\EmblemSymbolCategory.cs" />
     <Compile Include="Classes\guild\RankName.cs" />
+    <Compile Include="Classes\houses\HavenbagFurniture.cs" />
+    <Compile Include="Classes\houses\HavenbagTheme.cs" />
     <Compile Include="Classes\houses\House.cs" />
     <Compile Include="Classes\idols\Idol.cs" />
     <Compile Include="Classes\idols\IdolsPresetIcon.cs" />
@@ -401,6 +403,7 @@
     <Compile Include="IIndexedData.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proxy.cs" />
     <Compile Include="Rectangle.cs" />
     <Compile Include="Tools\D2i\D2IEntry.cs" />
     <Compile Include="Tools\D2i\D2IFile.cs" />

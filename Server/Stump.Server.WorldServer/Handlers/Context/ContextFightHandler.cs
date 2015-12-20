@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (spell == null)
                 return;
 
-            var target = client.Character.Fight.GetOneFighter(message.targetId);
+            var target = client.Character.Fight.GetOneFighter((int)message.targetId);
 
             if (target == null)
                 return;
@@ -134,7 +134,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameRolePlayPlayerFightRequestMessage.Id)]
         public static void HandleGameRolePlayPlayerFightRequestMessage(WorldClient client, GameRolePlayPlayerFightRequestMessage message)
         {
-            var target = client.Character.Map.GetActor<Character>(message.targetId);
+            var target = client.Character.Map.GetActor<Character>((int)message.targetId);
 
             if (target == null)
                 return;
@@ -303,7 +303,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (!client.Character.Fight.CanKickPlayer)
                 return;
 
-            var target = client.Character.Fight.GetOneFighter<CharacterFighter>(message.targetId);
+            var target = client.Character.Fight.GetOneFighter<CharacterFighter>((int)message.targetId);
 
             if (target == null)
                 return;
@@ -351,7 +351,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
                                                     bool isSpectator, bool isFightStarted, int timeMaxBeforeFightStart,
                                                     FightTypeEnum fightTypeEnum)
         {
-            client.Send(new GameFightJoinMessage(canBeCancelled, canSayReady, isFightStarted,
+            client.Send(new GameFightJoinMessage(!isFightStarted, canBeCancelled, canSayReady, isFightStarted,
                                                  (short)timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
         }
 
@@ -400,7 +400,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameFightTurnListMessage(IPacketReceiver client, IFight fight)
         {
-            client.Send(new GameFightTurnListMessage(fight.GetAliveFightersIds(), fight.GetDeadFightersIds()));
+            client.Send(new GameFightTurnListMessage(fight.GetAliveFightersIds().Select(x => (double)x), fight.GetDeadFightersIds().Select(x => (double)x)));
         }
 
         public static void SendGameFightTurnStartMessage(IPacketReceiver client, int id, int waitTime)

@@ -61,7 +61,7 @@ void WriteField(XmlField field)
 void WriteDBProperty(FieldInfo field)
 {
     bool isComplexType = false;
-    if (!IsPrimitiveType(field.Type))
+    if (!IsPrimitiveType(field.Type.ToString()))
     {
         isComplexType = true;
     }
@@ -69,12 +69,12 @@ void WriteDBProperty(FieldInfo field)
     if(isComplexType)
         WriteLine("[Ignore]");
 
-    if (field.Type == "String")
+    if (field.Type.ToString() == "String")
         WriteLine("[NullString]");
 
     Write("public ");
 
-    Write(field.Type);
+    Write(field.Type.ToString(false));
     WriteLine(" " + ToPascalCase(field.Name));
     
     WriteLine("{");
@@ -479,5 +479,10 @@ string GetFieldBytesCountCode(string fieldType, string fieldName)
 		}
 		
 	}
+}
+
+static bool HasHeritage(string heritage)
+{
+	return !string.IsNullOrEmpty(heritage) && heritage != "Object";
 }
 #>

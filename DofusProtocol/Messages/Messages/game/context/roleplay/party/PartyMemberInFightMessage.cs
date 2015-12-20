@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:11
+// Generated on 12/20/2015 16:36:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte reason;
-        public int memberId;
+        public long memberId;
         public int memberAccountId;
         public string memberName;
         public int fightId;
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyMemberInFightMessage(int partyId, sbyte reason, int memberId, int memberAccountId, string memberName, int fightId, Types.MapCoordinatesExtended fightMap, short timeBeforeFightStart)
+        public PartyMemberInFightMessage(int partyId, sbyte reason, long memberId, int memberAccountId, string memberName, int fightId, Types.MapCoordinatesExtended fightMap, short timeBeforeFightStart)
          : base(partyId)
         {
             this.reason = reason;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteSByte(reason);
-            writer.WriteVarInt(memberId);
+            writer.WriteVarLong(memberId);
             writer.WriteInt(memberAccountId);
             writer.WriteUTF(memberName);
             writer.WriteInt(fightId);
@@ -60,9 +60,9 @@ namespace Stump.DofusProtocol.Messages
             reason = reader.ReadSByte();
             if (reason < 0)
                 throw new Exception("Forbidden value on reason = " + reason + ", it doesn't respect the following condition : reason < 0");
-            memberId = reader.ReadVarInt();
-            if (memberId < 0)
-                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0");
+            memberId = reader.ReadVarLong();
+            if (memberId < 0 || memberId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0 || memberId > 9.007199254740992E15");
             memberAccountId = reader.ReadInt();
             if (memberAccountId < 0)
                 throw new Exception("Forbidden value on memberAccountId = " + memberAccountId + ", it doesn't respect the following condition : memberAccountId < 0");

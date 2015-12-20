@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:15
+// Generated on 12/20/2015 16:36:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int memberId;
+        public long memberId;
         public short rank;
         public sbyte experienceGivenPercent;
         public int rights;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GuildChangeMemberParametersMessage(int memberId, short rank, sbyte experienceGivenPercent, int rights)
+        public GuildChangeMemberParametersMessage(long memberId, short rank, sbyte experienceGivenPercent, int rights)
         {
             this.memberId = memberId;
             this.rank = rank;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(memberId);
+            writer.WriteVarLong(memberId);
             writer.WriteVarShort(rank);
             writer.WriteSByte(experienceGivenPercent);
             writer.WriteVarInt(rights);
@@ -45,9 +45,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            memberId = reader.ReadVarInt();
-            if (memberId < 0)
-                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0");
+            memberId = reader.ReadVarLong();
+            if (memberId < 0 || memberId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0 || memberId > 9.007199254740992E15");
             rank = reader.ReadVarShort();
             if (rank < 0)
                 throw new Exception("Forbidden value on rank = " + rank + ", it doesn't respect the following condition : rank < 0");

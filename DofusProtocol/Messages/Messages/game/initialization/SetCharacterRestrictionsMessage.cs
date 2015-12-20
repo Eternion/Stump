@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:17
+// Generated on 12/20/2015 16:37:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int actorId;
+        public double actorId;
         public Types.ActorRestrictionsInformations restrictions;
         
         public SetCharacterRestrictionsMessage()
         {
         }
         
-        public SetCharacterRestrictionsMessage(int actorId, Types.ActorRestrictionsInformations restrictions)
+        public SetCharacterRestrictionsMessage(double actorId, Types.ActorRestrictionsInformations restrictions)
         {
             this.actorId = actorId;
             this.restrictions = restrictions;
@@ -33,13 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(actorId);
+            writer.WriteDouble(actorId);
             restrictions.Serialize(writer);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            actorId = reader.ReadInt();
+            actorId = reader.ReadDouble();
+            if (actorId < -9.007199254740992E15 || actorId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on actorId = " + actorId + ", it doesn't respect the following condition : actorId < -9.007199254740992E15 || actorId > 9.007199254740992E15");
             restrictions = new Types.ActorRestrictionsInformations();
             restrictions.Deserialize(reader);
         }

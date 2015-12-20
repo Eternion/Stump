@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:03
+// Generated on 12/20/2015 16:36:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int fighterId;
+        public double fighterId;
         public int fightId;
         
         public GameFightJoinRequestMessage()
         {
         }
         
-        public GameFightJoinRequestMessage(int fighterId, int fightId)
+        public GameFightJoinRequestMessage(double fighterId, int fightId)
         {
             this.fighterId = fighterId;
             this.fightId = fightId;
@@ -33,13 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(fighterId);
+            writer.WriteDouble(fighterId);
             writer.WriteInt(fightId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            fighterId = reader.ReadInt();
+            fighterId = reader.ReadDouble();
+            if (fighterId < -9.007199254740992E15 || fighterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on fighterId = " + fighterId + ", it doesn't respect the following condition : fighterId < -9.007199254740992E15 || fighterId > 9.007199254740992E15");
             fightId = reader.ReadInt();
         }
         

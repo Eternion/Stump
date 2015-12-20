@@ -9,6 +9,8 @@ namespace DofusProtocolBuilder.XmlPatterns
 {
     public abstract class XmlIOBuilder : XmlPatternBuilder
     {
+        private const string RegexNewObject = @"new ([\w\d]+\.)*([\w\d]+)";
+
         protected XmlIOBuilder(Parser parser) : base(parser)
         {
         }
@@ -87,7 +89,7 @@ namespace DofusProtocolBuilder.XmlPatterns
 
                     if (field != null && xmlFields.Count(entry => entry.Name == field.Name) <= 0)
                     {
-                        type = "Types." + field.Type;
+                        type = "Types." + field.Type.Name;
 
                         string condition = null;
 
@@ -113,11 +115,11 @@ namespace DofusProtocolBuilder.XmlPatterns
                         
                         var substatement = ( (AssignationStatement)deserializeAsMethod.Statements[i - 1] );
                         var name = substatement.Name;
-                        Match match = Regex.Match(substatement.Value, @"new ([\d\w]+)");
+                        Match match = Regex.Match(substatement.Value, RegexNewObject);
 
                         if (match.Success)
                         {
-                            type = "Types." + match.Groups[1].Value;
+                            type = "Types." + match.Groups[2].Value;
 
                             Match arrayMatch = Regex.Match(name, @"^([\w\d]+)\[.+\]$");
                             if (arrayMatch.Success)
@@ -128,7 +130,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                                                                     ( (AssignationStatement)entry ).Name == arrayMatch.Groups[1].Value
                                                                 let entryMatch =
                                                                     Regex.Match(( (AssignationStatement)entry ).Value,
-                                                                                @"new List<[\d\w\._]+>\(([\d]+)\)")
+                                                                                @"new List<[\d\w\._]+>\(([\d]+)")
                                                                 where entryMatch.Success
                                                                 select entryMatch.Groups[1].Value;
 
@@ -197,7 +199,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                     var statement = ( (AssignationStatement)deserializeAsMethod.Statements[i] );
                     FieldInfo field = Parser.Fields.Find(entry => entry.Name == statement.Name);
 
-                    type = "instance of Types." + Regex.Match(statement.Value, @"getInstance\(([\w\d_\.]+),").Groups[1].Value;
+                    type = "instance of Types." + Regex.Match(statement.Value, @"getInstance\((?:[\w\d\._]+\.)?([\w\d_]+),").Groups[1].Value;
 
                     if (field != null)
                     {

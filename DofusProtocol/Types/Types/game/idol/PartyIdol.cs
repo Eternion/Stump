@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:26
+// Generated on 12/20/2015 17:31:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public IEnumerable<int> ownersIds;
+        public IEnumerable<long> ownersIds;
         
         public PartyIdol()
         {
         }
         
-        public PartyIdol(short id, short xpBonusPercent, short dropBonusPercent, IEnumerable<int> ownersIds)
+        public PartyIdol(short id, short xpBonusPercent, short dropBonusPercent, IEnumerable<long> ownersIds)
          : base(id, xpBonusPercent, dropBonusPercent)
         {
             this.ownersIds = ownersIds;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteUShort(0);
             foreach (var entry in ownersIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteVarLong(entry);
                  ownersIds_count++;
             }
             var ownersIds_after = writer.Position;
@@ -51,10 +51,10 @@ namespace Stump.DofusProtocol.Types
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            var ownersIds_ = new int[limit];
+            var ownersIds_ = new long[limit];
             for (int i = 0; i < limit; i++)
             {
-                 ownersIds_[i] = reader.ReadInt();
+                 ownersIds_[i] = reader.ReadVarLong();
             }
             ownersIds = ownersIds_;
         }

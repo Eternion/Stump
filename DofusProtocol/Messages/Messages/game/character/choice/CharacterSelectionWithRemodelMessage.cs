@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:00
+// Generated on 12/20/2015 16:36:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public CharacterSelectionWithRemodelMessage(int id, Types.RemodelingInformation remodel)
+        public CharacterSelectionWithRemodelMessage(long id, Types.RemodelingInformation remodel)
          : base(id)
         {
             this.remodel = remodel;

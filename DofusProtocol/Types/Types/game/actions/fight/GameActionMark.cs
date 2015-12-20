@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:20
+// Generated on 12/20/2015 17:30:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int markAuthorId;
+        public double markAuthorId;
         public sbyte markTeamId;
         public int markSpellId;
         public sbyte markSpellLevel;
@@ -31,7 +31,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameActionMark(int markAuthorId, sbyte markTeamId, int markSpellId, sbyte markSpellLevel, short markId, sbyte markType, short markimpactCell, IEnumerable<Types.GameActionMarkedCell> cells, bool active)
+        public GameActionMark(double markAuthorId, sbyte markTeamId, int markSpellId, sbyte markSpellLevel, short markId, sbyte markType, short markimpactCell, IEnumerable<Types.GameActionMarkedCell> cells, bool active)
         {
             this.markAuthorId = markAuthorId;
             this.markTeamId = markTeamId;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(markAuthorId);
+            writer.WriteDouble(markAuthorId);
             writer.WriteSByte(markTeamId);
             writer.WriteInt(markSpellId);
             writer.WriteSByte(markSpellLevel);
@@ -71,7 +71,9 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            markAuthorId = reader.ReadInt();
+            markAuthorId = reader.ReadDouble();
+            if (markAuthorId < -9.007199254740992E15 || markAuthorId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on markAuthorId = " + markAuthorId + ", it doesn't respect the following condition : markAuthorId < -9.007199254740992E15 || markAuthorId > 9.007199254740992E15");
             markTeamId = reader.ReadSByte();
             if (markTeamId < 0)
                 throw new Exception("Forbidden value on markTeamId = " + markTeamId + ", it doesn't respect the following condition : markTeamId < 0");

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:10
+// Generated on 12/20/2015 16:36:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyFollowThisMemberRequestMessage(int partyId, int playerId, bool enabled)
+        public PartyFollowThisMemberRequestMessage(int partyId, long playerId, bool enabled)
          : base(partyId, playerId)
         {
             this.enabled = enabled;

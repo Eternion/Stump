@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:22
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int slaveId;
+        public double slaveId;
         public IEnumerable<Types.GameFightSpellCooldown> spellCooldowns;
         public sbyte summonCount;
         public sbyte bombCount;
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightResumeSlaveInfo(int slaveId, IEnumerable<Types.GameFightSpellCooldown> spellCooldowns, sbyte summonCount, sbyte bombCount)
+        public GameFightResumeSlaveInfo(double slaveId, IEnumerable<Types.GameFightSpellCooldown> spellCooldowns, sbyte summonCount, sbyte bombCount)
         {
             this.slaveId = slaveId;
             this.spellCooldowns = spellCooldowns;
@@ -36,7 +36,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(slaveId);
+            writer.WriteDouble(slaveId);
             var spellCooldowns_before = writer.Position;
             var spellCooldowns_count = 0;
             writer.WriteUShort(0);
@@ -56,7 +56,9 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            slaveId = reader.ReadInt();
+            slaveId = reader.ReadDouble();
+            if (slaveId < -9.007199254740992E15 || slaveId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on slaveId = " + slaveId + ", it doesn't respect the following condition : slaveId < -9.007199254740992E15 || slaveId > 9.007199254740992E15");
             var limit = reader.ReadUShort();
             var spellCooldowns_ = new Types.GameFightSpellCooldown[limit];
             for (int i = 0; i < limit; i++)

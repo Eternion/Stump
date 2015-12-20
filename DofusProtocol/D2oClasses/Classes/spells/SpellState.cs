@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:35
+// Generated on 12/20/2015 18:01:22
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -26,6 +26,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean cantBePushed;
         public Boolean cantSwitchPosition;
         public List<int> effectsIds;
+        public String icon = "";
+        public int iconVisibilityMask;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -101,6 +103,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.effectsIds; }
             set { this.effectsIds = value; }
+        }
+        [D2OIgnore]
+        public String Icon
+        {
+            get { return this.icon; }
+            set { this.icon = value; }
+        }
+        [D2OIgnore]
+        public int IconVisibilityMask
+        {
+            get { return this.iconVisibilityMask; }
+            set { this.iconVisibilityMask = value; }
         }
     }
 }

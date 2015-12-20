@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:22
+// Generated on 12/20/2015 17:30:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameRolePlayNpcWithQuestInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, short npcId, bool sex, short specialArtworkId, Types.GameRolePlayNpcQuestFlag questFlag)
+        public GameRolePlayNpcWithQuestInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, short npcId, bool sex, short specialArtworkId, Types.GameRolePlayNpcQuestFlag questFlag)
          : base(contextualId, look, disposition, npcId, sex, specialArtworkId)
         {
             this.questFlag = questFlag;

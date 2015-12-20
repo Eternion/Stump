@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:56
+// Generated on 12/20/2015 16:36:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightDispellEffectMessage(short actionId, int sourceId, int targetId, int boostUID)
+        public GameActionFightDispellEffectMessage(short actionId, double sourceId, double targetId, int boostUID)
          : base(actionId, sourceId, targetId)
         {
             this.boostUID = boostUID;

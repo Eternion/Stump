@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/16/2015 14:26:43
+// Generated on 12/20/2015 18:16:43
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,10 +21,6 @@ namespace DBSynchroniser.Records
         public uint compressedCoords;
         public List<int> mapIds;
 
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
 
         [D2OIgnore]
         [PrimaryKey("Id")]

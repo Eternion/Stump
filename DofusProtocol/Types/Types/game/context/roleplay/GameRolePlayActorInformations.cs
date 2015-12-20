@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:22
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameRolePlayActorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition)
+        public GameRolePlayActorInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition)
          : base(contextualId, look, disposition)
         {
         }

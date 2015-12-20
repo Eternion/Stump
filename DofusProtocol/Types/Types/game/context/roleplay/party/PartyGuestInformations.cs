@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:23
+// Generated on 12/20/2015 17:30:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +17,8 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int guestId;
-        public int hostId;
+        public long guestId;
+        public long hostId;
         public string name;
         public Types.EntityLook guestLook;
         public sbyte breed;
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public PartyGuestInformations(int guestId, int hostId, string name, Types.EntityLook guestLook, sbyte breed, bool sex, Types.PlayerStatus status, IEnumerable<Types.PartyCompanionBaseInformations> companions)
+        public PartyGuestInformations(long guestId, long hostId, string name, Types.EntityLook guestLook, sbyte breed, bool sex, Types.PlayerStatus status, IEnumerable<Types.PartyCompanionBaseInformations> companions)
         {
             this.guestId = guestId;
             this.hostId = hostId;
@@ -44,8 +44,8 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(guestId);
-            writer.WriteInt(hostId);
+            writer.WriteVarLong(guestId);
+            writer.WriteVarLong(hostId);
             writer.WriteUTF(name);
             guestLook.Serialize(writer);
             writer.WriteSByte(breed);
@@ -69,12 +69,12 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            guestId = reader.ReadInt();
-            if (guestId < 0)
-                throw new Exception("Forbidden value on guestId = " + guestId + ", it doesn't respect the following condition : guestId < 0");
-            hostId = reader.ReadInt();
-            if (hostId < 0)
-                throw new Exception("Forbidden value on hostId = " + hostId + ", it doesn't respect the following condition : hostId < 0");
+            guestId = reader.ReadVarLong();
+            if (guestId < 0 || guestId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on guestId = " + guestId + ", it doesn't respect the following condition : guestId < 0 || guestId > 9.007199254740992E15");
+            hostId = reader.ReadVarLong();
+            if (hostId < 0 || hostId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on hostId = " + hostId + ", it doesn't respect the following condition : hostId < 0 || hostId > 9.007199254740992E15");
             name = reader.ReadUTF();
             guestLook = new Types.EntityLook();
             guestLook.Deserialize(reader);

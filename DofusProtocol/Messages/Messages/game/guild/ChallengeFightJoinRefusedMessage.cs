@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:15
+// Generated on 12/20/2015 16:36:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int playerId;
+        public long playerId;
         public sbyte reason;
         
         public ChallengeFightJoinRefusedMessage()
         {
         }
         
-        public ChallengeFightJoinRefusedMessage(int playerId, sbyte reason)
+        public ChallengeFightJoinRefusedMessage(long playerId, sbyte reason)
         {
             this.playerId = playerId;
             this.reason = reason;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             writer.WriteSByte(reason);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             reason = reader.ReadSByte();
         }
         

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:59
+// Generated on 12/20/2015 16:36:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         public string accountNickname;
         public int accountId;
         public string playerName;
-        public int playerId;
+        public long playerId;
         public short areaId;
         public IEnumerable<Types.AbstractSocialGroupInfos> socialGroups;
         public sbyte playerState;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public BasicWhoIsMessage(bool self, bool verbose, sbyte position, string accountNickname, int accountId, string playerName, int playerId, short areaId, IEnumerable<Types.AbstractSocialGroupInfos> socialGroups, sbyte playerState)
+        public BasicWhoIsMessage(bool self, bool verbose, sbyte position, string accountNickname, int accountId, string playerName, long playerId, short areaId, IEnumerable<Types.AbstractSocialGroupInfos> socialGroups, sbyte playerState)
         {
             this.self = self;
             this.verbose = verbose;
@@ -57,7 +57,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUTF(accountNickname);
             writer.WriteInt(accountId);
             writer.WriteUTF(playerName);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             writer.WriteShort(areaId);
             var socialGroups_before = writer.Position;
             var socialGroups_count = 0;
@@ -87,9 +87,9 @@ namespace Stump.DofusProtocol.Messages
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
             playerName = reader.ReadUTF();
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             areaId = reader.ReadShort();
             var limit = reader.ReadUShort();
             var socialGroups_ = new Types.AbstractSocialGroupInfos[limit];

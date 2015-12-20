@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:11
+// Generated on 12/20/2015 16:36:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,15 +21,15 @@ namespace Stump.DofusProtocol.Messages
         public sbyte partyType;
         public string partyName;
         public sbyte maxParticipants;
-        public int fromId;
+        public long fromId;
         public string fromName;
-        public int toId;
+        public long toId;
         
         public PartyInvitationMessage()
         {
         }
         
-        public PartyInvitationMessage(int partyId, sbyte partyType, string partyName, sbyte maxParticipants, int fromId, string fromName, int toId)
+        public PartyInvitationMessage(int partyId, sbyte partyType, string partyName, sbyte maxParticipants, long fromId, string fromName, long toId)
          : base(partyId)
         {
             this.partyType = partyType;
@@ -46,9 +46,9 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteSByte(partyType);
             writer.WriteUTF(partyName);
             writer.WriteSByte(maxParticipants);
-            writer.WriteVarInt(fromId);
+            writer.WriteVarLong(fromId);
             writer.WriteUTF(fromName);
-            writer.WriteVarInt(toId);
+            writer.WriteVarLong(toId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -61,13 +61,13 @@ namespace Stump.DofusProtocol.Messages
             maxParticipants = reader.ReadSByte();
             if (maxParticipants < 0)
                 throw new Exception("Forbidden value on maxParticipants = " + maxParticipants + ", it doesn't respect the following condition : maxParticipants < 0");
-            fromId = reader.ReadVarInt();
-            if (fromId < 0)
-                throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0");
+            fromId = reader.ReadVarLong();
+            if (fromId < 0 || fromId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0 || fromId > 9.007199254740992E15");
             fromName = reader.ReadUTF();
-            toId = reader.ReadVarInt();
-            if (toId < 0)
-                throw new Exception("Forbidden value on toId = " + toId + ", it doesn't respect the following condition : toId < 0");
+            toId = reader.ReadVarLong();
+            if (toId < 0 || toId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on toId = " + toId + ", it doesn't respect the following condition : toId < 0 || toId > 9.007199254740992E15");
         }
         
     }

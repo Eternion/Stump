@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:14
+// Generated on 12/20/2015 16:36:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int casterId;
+        public long casterId;
         public short targetCellId;
         public short spellId;
         public sbyte spellLevel;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameRolePlaySpellAnimMessage(int casterId, short targetCellId, short spellId, sbyte spellLevel)
+        public GameRolePlaySpellAnimMessage(long casterId, short targetCellId, short spellId, sbyte spellLevel)
         {
             this.casterId = casterId;
             this.targetCellId = targetCellId;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(casterId);
+            writer.WriteVarLong(casterId);
             writer.WriteVarShort(targetCellId);
             writer.WriteVarShort(spellId);
             writer.WriteSByte(spellLevel);
@@ -45,7 +45,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            casterId = reader.ReadInt();
+            casterId = reader.ReadVarLong();
+            if (casterId < 0 || casterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on casterId = " + casterId + ", it doesn't respect the following condition : casterId < 0 || casterId > 9.007199254740992E15");
             targetCellId = reader.ReadVarShort();
             if (targetCellId < 0 || targetCellId > 559)
                 throw new Exception("Forbidden value on targetCellId = " + targetCellId + ", it doesn't respect the following condition : targetCellId < 0 || targetCellId > 559");

@@ -89,7 +89,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             if (item == null)
                 return;
 
-            var character = client.Character.Map.GetActor<Character>(message.characterId);
+            var character = client.Character.Map.GetActor<Character>((int) message.characterId);
 
             if (character == null)
                 return;

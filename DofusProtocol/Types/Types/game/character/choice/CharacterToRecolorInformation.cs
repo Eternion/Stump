@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:20
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public CharacterToRecolorInformation(int id, IEnumerable<int> colors, int cosmeticId)
+        public CharacterToRecolorInformation(long id, IEnumerable<int> colors, int cosmeticId)
          : base(id, colors, cosmeticId)
         {
         }

@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             if (challenge.Target == null)
                 return;
 
-            SendChallengeTargetsListMessage(challenge.Fight.Clients, new[] { challenge.Target.Id }, new[] { challenge.Target.Cell.Id });
+            SendChallengeTargetsListMessage(challenge.Fight.Clients, new[] { (double)challenge.Target.Id }, new[] { challenge.Target.Cell.Id });
         }
 
         public static void SendChallengeInfoMessage(IPacketReceiver client, DefaultChallenge challenge)
@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new ChallengeResultMessage((short)challenge.Id, challenge.Status == ChallengeStatusEnum.SUCCESS));
         }
 
-        public static void SendChallengeTargetsListMessage(IPacketReceiver client, IEnumerable<int> targetIds, IEnumerable<short> targetCells)
+        public static void SendChallengeTargetsListMessage(IPacketReceiver client, IEnumerable<double> targetIds, IEnumerable<short> targetCells)
         {
             client.Send(new ChallengeTargetsListMessage(targetIds, targetCells));
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:56
+// Generated on 12/20/2015 16:36:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +18,15 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int targetId;
-        public short loss;
-        public short permanentDamages;
+        public double targetId;
+        public int loss;
+        public int permanentDamages;
         
         public GameActionFightLifePointsLostMessage()
         {
         }
         
-        public GameActionFightLifePointsLostMessage(short actionId, int sourceId, int targetId, short loss, short permanentDamages)
+        public GameActionFightLifePointsLostMessage(short actionId, double sourceId, double targetId, int loss, int permanentDamages)
          : base(actionId, sourceId)
         {
             this.targetId = targetId;
@@ -37,19 +37,21 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(targetId);
-            writer.WriteVarShort(loss);
-            writer.WriteVarShort(permanentDamages);
+            writer.WriteDouble(targetId);
+            writer.WriteVarInt(loss);
+            writer.WriteVarInt(permanentDamages);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            targetId = reader.ReadInt();
-            loss = reader.ReadVarShort();
+            targetId = reader.ReadDouble();
+            if (targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15");
+            loss = reader.ReadVarInt();
             if (loss < 0)
                 throw new Exception("Forbidden value on loss = " + loss + ", it doesn't respect the following condition : loss < 0");
-            permanentDamages = reader.ReadVarShort();
+            permanentDamages = reader.ReadVarInt();
             if (permanentDamages < 0)
                 throw new Exception("Forbidden value on permanentDamages = " + permanentDamages + ", it doesn't respect the following condition : permanentDamages < 0");
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:10
+// Generated on 12/20/2015 16:36:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public short dungeonId;
         public IEnumerable<Types.DungeonPartyFinderPlayer> addedPlayers;
-        public IEnumerable<int> removedPlayersIds;
+        public IEnumerable<long> removedPlayersIds;
         
         public DungeonPartyFinderRoomContentUpdateMessage()
         {
         }
         
-        public DungeonPartyFinderRoomContentUpdateMessage(short dungeonId, IEnumerable<Types.DungeonPartyFinderPlayer> addedPlayers, IEnumerable<int> removedPlayersIds)
+        public DungeonPartyFinderRoomContentUpdateMessage(short dungeonId, IEnumerable<Types.DungeonPartyFinderPlayer> addedPlayers, IEnumerable<long> removedPlayersIds)
         {
             this.dungeonId = dungeonId;
             this.addedPlayers = addedPlayers;
@@ -54,7 +54,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in removedPlayersIds)
             {
-                 writer.WriteVarInt(entry);
+                 writer.WriteVarLong(entry);
                  removedPlayersIds_count++;
             }
             var removedPlayersIds_after = writer.Position;
@@ -78,10 +78,10 @@ namespace Stump.DofusProtocol.Messages
             }
             addedPlayers = addedPlayers_;
             limit = reader.ReadUShort();
-            var removedPlayersIds_ = new int[limit];
+            var removedPlayersIds_ = new long[limit];
             for (int i = 0; i < limit; i++)
             {
-                 removedPlayersIds_[i] = reader.ReadVarInt();
+                 removedPlayersIds_[i] = reader.ReadVarLong();
             }
             removedPlayersIds = removedPlayersIds_;
         }

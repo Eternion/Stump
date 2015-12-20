@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:20
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public CharacterRemodelingInformation(int id, string name, sbyte breed, bool sex, short cosmeticId, IEnumerable<int> colors)
+        public CharacterRemodelingInformation(long id, string name, sbyte breed, bool sex, short cosmeticId, IEnumerable<int> colors)
          : base(id)
         {
             this.name = name;

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightSpellCastMessage(short actionId, int sourceId, int targetId, short destinationCellId, sbyte critical, bool silentCast, short spellId, sbyte spellLevel, IEnumerable<short> portalsIds)
+        public GameActionFightSpellCastMessage(short actionId, double sourceId, double targetId, short destinationCellId, sbyte critical, bool silentCast, short spellId, sbyte spellLevel, IEnumerable<short> portalsIds)
          : base(actionId, sourceId, targetId, destinationCellId, critical, silentCast)
         {
             this.spellId = spellId;

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:04
+// Generated on 12/20/2015 16:36:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<int> ids;
-        public IEnumerable<int> deadsIds;
+        public IEnumerable<double> ids;
+        public IEnumerable<double> deadsIds;
         
         public GameFightTurnListMessage()
         {
         }
         
-        public GameFightTurnListMessage(IEnumerable<int> ids, IEnumerable<int> deadsIds)
+        public GameFightTurnListMessage(IEnumerable<double> ids, IEnumerable<double> deadsIds)
         {
             this.ids = ids;
             this.deadsIds = deadsIds;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in ids)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteDouble(entry);
                  ids_count++;
             }
             var ids_after = writer.Position;
@@ -51,7 +51,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in deadsIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteDouble(entry);
                  deadsIds_count++;
             }
             var deadsIds_after = writer.Position;
@@ -64,17 +64,17 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            var ids_ = new int[limit];
+            var ids_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
-                 ids_[i] = reader.ReadInt();
+                 ids_[i] = reader.ReadDouble();
             }
             ids = ids_;
             limit = reader.ReadUShort();
-            var deadsIds_ = new int[limit];
+            var deadsIds_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
-                 deadsIds_[i] = reader.ReadInt();
+                 deadsIds_[i] = reader.ReadDouble();
             }
             deadsIds = deadsIds_;
         }

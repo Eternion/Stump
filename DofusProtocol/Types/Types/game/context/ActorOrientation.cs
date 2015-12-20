@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:20
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +17,14 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int id;
+        public double id;
         public sbyte direction;
         
         public ActorOrientation()
         {
         }
         
-        public ActorOrientation(int id, sbyte direction)
+        public ActorOrientation(double id, sbyte direction)
         {
             this.id = id;
             this.direction = direction;
@@ -32,13 +32,15 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(id);
+            writer.WriteDouble(id);
             writer.WriteSByte(direction);
         }
         
         public virtual void Deserialize(IDataReader reader)
         {
-            id = reader.ReadInt();
+            id = reader.ReadDouble();
+            if (id < -9.007199254740992E15 || id > 9.007199254740992E15)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9.007199254740992E15 || id > 9.007199254740992E15");
             direction = reader.ReadSByte();
             if (direction < 0)
                 throw new Exception("Forbidden value on direction = " + direction + ", it doesn't respect the following condition : direction < 0");

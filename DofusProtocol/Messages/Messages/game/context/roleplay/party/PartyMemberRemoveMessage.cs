@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:11
+// Generated on 12/20/2015 16:36:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int leavingPlayerId;
+        public long leavingPlayerId;
         
         public PartyMemberRemoveMessage()
         {
         }
         
-        public PartyMemberRemoveMessage(int partyId, int leavingPlayerId)
+        public PartyMemberRemoveMessage(int partyId, long leavingPlayerId)
          : base(partyId)
         {
             this.leavingPlayerId = leavingPlayerId;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(leavingPlayerId);
+            writer.WriteVarLong(leavingPlayerId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            leavingPlayerId = reader.ReadVarInt();
-            if (leavingPlayerId < 0)
-                throw new Exception("Forbidden value on leavingPlayerId = " + leavingPlayerId + ", it doesn't respect the following condition : leavingPlayerId < 0");
+            leavingPlayerId = reader.ReadVarLong();
+            if (leavingPlayerId < 0 || leavingPlayerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on leavingPlayerId = " + leavingPlayerId + ", it doesn't respect the following condition : leavingPlayerId < 0 || leavingPlayerId > 9.007199254740992E15");
         }
         
     }

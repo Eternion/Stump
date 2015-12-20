@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:00
+// Generated on 12/20/2015 16:36:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int characterId;
+        public long characterId;
         public string secretAnswerHash;
         
         public CharacterDeletionRequestMessage()
         {
         }
         
-        public CharacterDeletionRequestMessage(int characterId, string secretAnswerHash)
+        public CharacterDeletionRequestMessage(long characterId, string secretAnswerHash)
         {
             this.characterId = characterId;
             this.secretAnswerHash = secretAnswerHash;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(characterId);
+            writer.WriteVarLong(characterId);
             writer.WriteUTF(secretAnswerHash);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            characterId = reader.ReadInt();
-            if (characterId < 0)
-                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0");
+            characterId = reader.ReadVarLong();
+            if (characterId < 0 || characterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0 || characterId > 9.007199254740992E15");
             secretAnswerHash = reader.ReadUTF();
         }
         

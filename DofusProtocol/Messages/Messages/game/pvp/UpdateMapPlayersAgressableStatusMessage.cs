@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:26
+// Generated on 12/20/2015 16:37:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<int> playerIds;
+        public IEnumerable<long> playerIds;
         public IEnumerable<sbyte> enable;
         
         public UpdateMapPlayersAgressableStatusMessage()
         {
         }
         
-        public UpdateMapPlayersAgressableStatusMessage(IEnumerable<int> playerIds, IEnumerable<sbyte> enable)
+        public UpdateMapPlayersAgressableStatusMessage(IEnumerable<long> playerIds, IEnumerable<sbyte> enable)
         {
             this.playerIds = playerIds;
             this.enable = enable;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in playerIds)
             {
-                 writer.WriteVarInt(entry);
+                 writer.WriteVarLong(entry);
                  playerIds_count++;
             }
             var playerIds_after = writer.Position;
@@ -64,10 +64,10 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             var limit = reader.ReadUShort();
-            var playerIds_ = new int[limit];
+            var playerIds_ = new long[limit];
             for (int i = 0; i < limit; i++)
             {
-                 playerIds_[i] = reader.ReadVarInt();
+                 playerIds_[i] = reader.ReadVarLong();
             }
             playerIds = playerIds_;
             limit = reader.ReadUShort();

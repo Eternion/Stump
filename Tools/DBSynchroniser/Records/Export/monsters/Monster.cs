@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/16/2015 14:26:41
+// Generated on 12/20/2015 18:16:41
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,6 +44,7 @@ namespace DBSynchroniser.Records
         public Boolean fastAnimsFun;
         public Boolean canSwitchPos;
         public List<uint> incompatibleIdols;
+        public Boolean allIdolsDisabled;
 
         int ID2ORecord.Id
         {
@@ -343,6 +344,13 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        public Boolean AllIdolsDisabled
+        {
+            get { return allIdolsDisabled; }
+            set { allIdolsDisabled = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Monster)obj;
@@ -372,6 +380,7 @@ namespace DBSynchroniser.Records
             FastAnimsFun = castedObj.fastAnimsFun;
             CanSwitchPos = castedObj.canSwitchPos;
             IncompatibleIdols = castedObj.incompatibleIdols;
+            AllIdolsDisabled = castedObj.allIdolsDisabled;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -402,6 +411,7 @@ namespace DBSynchroniser.Records
             obj.fastAnimsFun = FastAnimsFun;
             obj.canSwitchPos = CanSwitchPos;
             obj.incompatibleIdols = IncompatibleIdols;
+            obj.allIdolsDisabled = AllIdolsDisabled;
             return obj;
         }
         

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:19
+// Generated on 12/20/2015 16:37:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int playerId;
+        public long playerId;
         
         public ExchangeCraftInformationObjectMessage()
         {
         }
         
-        public ExchangeCraftInformationObjectMessage(sbyte craftResult, short objectGenericId, int playerId)
+        public ExchangeCraftInformationObjectMessage(sbyte craftResult, short objectGenericId, long playerId)
          : base(craftResult, objectGenericId)
         {
             this.playerId = playerId;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
         }
         
     }

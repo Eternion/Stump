@@ -12,11 +12,11 @@ namespace DofusProtocolBuilder.Parsing
 	public class Parser
     {
         public static readonly string PackagePattern = @"package ([\w\d\.]+)";
-        public static readonly string ClassPatern = @"public class (\w+)\s";
+        public static readonly string ClassPatern = @"public class (\w+)";
         public static readonly string ClassHeritagePattern = @"extends (?:[\w_]+\.)*(\w+)";
         public static readonly string ConstructorPattern = @"(?<acces>public|protected|private|internal)\s*function\s*(?<name>{0})\((?<argument>[^,)]+,?)*\)";
-        public static readonly string ConstFieldPattern = @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*const\s*(?<name>\w+):(?<type>[\w_\.]+(?:<(?:\w+\.)*(?<generictype>[\w_<>]+)>)?)(?<value>\s*=\s*.*)?;";
-        public static readonly string FieldPattern = @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*var\s*(?<name>[\w\d@]+):(?<type>[\w\d_\.<>]+)(?<value>\s*=\s*.*)?;";
+        public static readonly string ConstFieldPattern = @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*const\s*(?<name>\w+):(?<type>[\w_\.\<\>]+)(?<value>\s*=\s*.*)?;";
+        public static readonly string FieldPattern = @"(?<acces>public|protected|private|internal)\s*(?<static>static)?\s*var\s*(?<name>[\w\d@]+):(?<type>[\w\d_\.\<\>]+)(?<value>\s*=\s*.*)?;";
         public static readonly string MethodPattern = @"(^(?<acces>public|protected|private|internal)|(?<override>override)\s)+\s*function\s*(?<prop>get|set)?\s+(?<name>\w+)\((?<arguments>.+)?\)\s*:?\s*(?:\w+\.)*(?<returntype>\w+)?";
 
 
@@ -159,10 +159,7 @@ namespace DofusProtocolBuilder.Parsing
 								   matchConst.Groups["acces"].Value,
 								   true),
 					Name = matchConst.Groups["name"].Value,
-					Type =
-						matchConst.Groups["generictype"].Value == string.Empty
-												   ? matchConst.Groups["type"].Value
-												   : "List<" + matchConst.Groups["generictype"].Value + ">",
+					Type = new TypeReference(matchConst.Groups["type"].Value),
 					Value = matchConst.Groups["value"].Value.Replace("=", "").Trim(),
 					IsConst = true,
 					IsStatic = matchConst.Groups["static"].Value != string.Empty,
@@ -184,7 +181,7 @@ namespace DofusProtocolBuilder.Parsing
 						Enum.Parse(typeof(AccessModifiers), matchVar.Groups["acces"].Value,
 								   true),
 					Name = matchVar.Groups["name"].Value,
-					Type = matchVar.Groups["type"].Value,
+					Type = new TypeReference(matchVar.Groups["type"].Value),
 					Value = matchVar.Groups["value"].Value.Replace("=", "").Trim(),
 					IsStatic = matchConst.Groups["static"].Value != string.Empty
 				};
@@ -417,10 +414,10 @@ namespace DofusProtocolBuilder.Parsing
 						(statement as InvokeExpression).Name == "Add" &&
 						Fields.Count(entry => entry.Name == ((InvokeExpression)statement).Target.Split('.').Last()) > 0)
 					{
-						string generictype =
-							Fields.First(entry => entry.Name == ((InvokeExpression)statement).Target.Split('.').Last()).Type.Split('<').Last().Split('>').First();
+						var type =
+							Fields.First(entry => entry.Name == ((InvokeExpression)statement).Target.Split('.').Last()).Type;
 
-						(statement as InvokeExpression).Args[0] = "(" + generictype + ")" +
+						(statement as InvokeExpression).Args[0] = "(" + (type.HasGenericType? type.GenericType.ToString() : "object") + ")" +
 															  (statement as InvokeExpression).Args[0];
 					}
 				}

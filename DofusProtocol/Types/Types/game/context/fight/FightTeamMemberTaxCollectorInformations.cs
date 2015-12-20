@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightTeamMemberTaxCollectorInformations(int id, short firstNameId, short lastNameId, byte level, int guildId, int uid)
+        public FightTeamMemberTaxCollectorInformations(double id, short firstNameId, short lastNameId, byte level, int guildId, int uid)
          : base(id)
         {
             this.firstNameId = firstNameId;

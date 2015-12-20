@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:27
+// Generated on 12/20/2015 17:31:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Types
         
         public int lastTimeSlotModificationDate;
         public int lastTimeSlotModificationAuthorGuildId;
-        public int lastTimeSlotModificationAuthorId;
+        public long lastTimeSlotModificationAuthorId;
         public string lastTimeSlotModificationAuthorName;
         public IEnumerable<Types.ObjectItem> modulesObjects;
         
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public AllianceInsiderPrismInformation(sbyte typeId, sbyte state, int nextVulnerabilityDate, int placementDate, int rewardTokenCount, int lastTimeSlotModificationDate, int lastTimeSlotModificationAuthorGuildId, int lastTimeSlotModificationAuthorId, string lastTimeSlotModificationAuthorName, IEnumerable<Types.ObjectItem> modulesObjects)
+        public AllianceInsiderPrismInformation(sbyte typeId, sbyte state, int nextVulnerabilityDate, int placementDate, int rewardTokenCount, int lastTimeSlotModificationDate, int lastTimeSlotModificationAuthorGuildId, long lastTimeSlotModificationAuthorId, string lastTimeSlotModificationAuthorName, IEnumerable<Types.ObjectItem> modulesObjects)
          : base(typeId, state, nextVulnerabilityDate, placementDate, rewardTokenCount)
         {
             this.lastTimeSlotModificationDate = lastTimeSlotModificationDate;
@@ -42,7 +42,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteInt(lastTimeSlotModificationDate);
             writer.WriteVarInt(lastTimeSlotModificationAuthorGuildId);
-            writer.WriteVarInt(lastTimeSlotModificationAuthorId);
+            writer.WriteVarLong(lastTimeSlotModificationAuthorId);
             writer.WriteUTF(lastTimeSlotModificationAuthorName);
             var modulesObjects_before = writer.Position;
             var modulesObjects_count = 0;
@@ -68,9 +68,9 @@ namespace Stump.DofusProtocol.Types
             lastTimeSlotModificationAuthorGuildId = reader.ReadVarInt();
             if (lastTimeSlotModificationAuthorGuildId < 0)
                 throw new Exception("Forbidden value on lastTimeSlotModificationAuthorGuildId = " + lastTimeSlotModificationAuthorGuildId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorGuildId < 0");
-            lastTimeSlotModificationAuthorId = reader.ReadVarInt();
-            if (lastTimeSlotModificationAuthorId < 0)
-                throw new Exception("Forbidden value on lastTimeSlotModificationAuthorId = " + lastTimeSlotModificationAuthorId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorId < 0");
+            lastTimeSlotModificationAuthorId = reader.ReadVarLong();
+            if (lastTimeSlotModificationAuthorId < 0 || lastTimeSlotModificationAuthorId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on lastTimeSlotModificationAuthorId = " + lastTimeSlotModificationAuthorId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorId < 0 || lastTimeSlotModificationAuthorId > 9.007199254740992E15");
             lastTimeSlotModificationAuthorName = reader.ReadUTF();
             var limit = reader.ReadUShort();
             var modulesObjects_ = new Types.ObjectItem[limit];
