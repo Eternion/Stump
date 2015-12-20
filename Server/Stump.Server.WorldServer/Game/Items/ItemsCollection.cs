@@ -167,18 +167,18 @@ namespace Stump.Server.WorldServer.Game.Items
         /// <param name="item"></param>
         /// <param name="amount"></param>
         /// <param name="delete"></param>
-        public virtual int RemoveItem(T item, int amount, bool delete = true)
+        public virtual int RemoveItem(T item, int amount, bool delete = true, bool removeItemMsg = true)
         {
             if (!HasItem(item))
                 return 0;
 
             if (item.Stack <= amount)
             {
-                RemoveItem(item, delete);
+                RemoveItem(item, delete, removeItemMsg);
                 return (int)item.Stack;
             }
 
-            UnStackItem(item, amount);
+            UnStackItem(item, amount, removeItemMsg);
             return amount;
         }
 

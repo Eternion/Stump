@@ -1,23 +1,32 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Jobs;
 using System.Linq;
+using Stump.Core.Collections;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives;
 
 namespace Stump.Server.WorldServer.Game.Jobs
 {
     public class JobManager : DataManager<JobManager>
     {
+        public const int MAX_JOB_LEVEL_GAP = 100;
+
         private Dictionary<int, JobTemplate> m_jobTemplates;
+        private Dictionary<int, RecipeRecord> m_recipeRecords;
 
         [Initialization(InitializationPass.Fifth)]
         public void Initialize()
         {
             m_jobTemplates = Database.Query<JobTemplate>(JobTemplateRelator.FetchQuery).ToDictionary(x => x.Id);
+            m_recipeRecords = Database.Query<RecipeRecord>(RecipeRelator.FetchQuery).ToDictionary(x => x.Id);
         }
+
+        public IReadOnlyDictionary<int, RecipeRecord> Recipes => m_recipeRecords;
 
         public JobTemplate GetJobTemplate(int id)
         {
@@ -37,5 +46,39 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
         public JobTemplate[] GetJobTemplates() => m_jobTemplates.Values.ToArray();
         public IEnumerable<JobTemplate> EnumerateJobTemplates() => m_jobTemplates.Values;
+
+        public int GetCraftJobXp(RecipeRecord recipe, int jobLevel)
+        {
+            if (jobLevel - MAX_JOB_LEVEL_GAP > recipe.ItemTemplate.Level)
+                return 0;
+
+            var xp = 20d*recipe.ItemTemplate.Level/(Math.Pow((jobLevel - recipe.ItemTemplate.Level), 1.1)/10 + 1);
+
+            if (recipe.ItemTemplate.CraftXpRatio > -1)
+                xp *= recipe.ItemTemplate.CraftXpRatio/100d;
+            else if (recipe.ItemTemplate.Type.CraftXpRatio > -1)
+                xp *= recipe.ItemTemplate.Type.CraftXpRatio/100d;
+
+            xp *= Rates.JobXpRate;
+
+            return (int)Math.Floor(xp);
+        }
+
+        public int GetHarvestJobXp(int minLevel)
+        {
+            return (int)Math.Floor(5 + minLevel / 10d);
+        }
+
+        public Pair<int, int> GetHarvestItemMinMax(JobTemplate job, int jobLevel, InteractiveSkillTemplate skillTemplate)
+        {
+            if (skillTemplate.LevelMin > jobLevel || job.HarvestedCountMax == 0)
+                return new Pair<int, int>(0, 0);
+
+            if (skillTemplate.LevelMin == 200)
+                return new Pair<int, int>(1, 1);
+
+            return new Pair<int, int>((int) (1 + 2*((jobLevel - skillTemplate.LevelMin)/10)),
+                (int) (job.HarvestedCountMax + 2*((jobLevel - skillTemplate.LevelMin)/10)));
+        }
     }
 }

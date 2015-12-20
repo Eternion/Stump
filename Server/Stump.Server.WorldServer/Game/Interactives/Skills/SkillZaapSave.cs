@@ -1,11 +1,12 @@
-﻿using Stump.Server.BaseServer.Database;
+﻿using Stump.DofusProtocol.Enums;
+using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
-    [Discriminator(44, typeof(Skill), typeof(int), typeof(InteractiveSkillTemplate), typeof(InteractiveObject))]
+    [Discriminator((int)SkillTemplateEnum.BASE_ZAAP_SAVE, typeof(Skill), typeof(int), typeof(InteractiveSkillTemplate), typeof(InteractiveObject))]
     [Discriminator("ZaapSave", typeof(Skill), typeof(int), typeof(InteractiveCustomSkillRecord), typeof(InteractiveObject))]
     public class SkillZaapSave : Skill
     {

@@ -14,7 +14,6 @@ namespace Stump.Server.WorldServer.Game.Interactives
 {
     public class InteractiveObject : WorldObject
     {
-        private readonly MapElement m_element;
         private readonly Dictionary<int, Skill> m_skills = new Dictionary<int, Skill>();
 
         public InteractiveObject(Map map, InteractiveSpawn spawn)
@@ -69,9 +68,16 @@ namespace Stump.Server.WorldServer.Game.Interactives
         {
             foreach (var skillTemplate in Spawn.GetSkills())
             {
-                var id = InteractiveManager.Instance.PopSkillId();
+                try
+                {
+                    var id = InteractiveManager.Instance.PopSkillId();
+                    var skill = skillTemplate.GenerateSkill(id, this);
 
-                m_skills.Add(id, skillTemplate.GenerateSkill(id, this));
+                    m_skills.Add(id, skill);
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -98,12 +104,12 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         public IEnumerable<InteractiveElementSkill> GetEnabledElementSkills(Character character)
         {
-            return m_skills.Values.Where(entry => entry.IsEnabled(character)).Select(entry => entry.GetInteractiveElementSkill());
+            return m_skills.Values.Where(entry => entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
         }
 
         public IEnumerable<InteractiveElementSkill> GetDisabledElementSkills(Character character)
         {
-            return m_skills.Values.Where(entry => !entry.IsEnabled(character)).Select(entry => entry.GetInteractiveElementSkill());
+            return m_skills.Values.Where(entry => !entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
         }
 
         public InteractiveElement GetInteractiveElement(Character character)

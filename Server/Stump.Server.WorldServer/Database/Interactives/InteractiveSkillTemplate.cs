@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Stump.Core.IO;
 using Stump.DofusProtocol.D2oClasses.Tools.D2o;
 using Stump.DofusProtocol.Types;
@@ -6,8 +8,10 @@ using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.WorldServer.Database.I18n;
+using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
+using Stump.Server.WorldServer.Game.Jobs;
 using Skill = Stump.DofusProtocol.D2oClasses.Skill;
 
 namespace Stump.Server.WorldServer.Database.Interactives
@@ -27,6 +31,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
         private string m_modifiableItemTypesCSV;
         private InteractiveTemplate m_interactive;
         private string m_name;
+        private RecipeRecord[] m_recipes;
 
         [PrimaryKey("Id", false)]
         public int Id
@@ -88,19 +93,25 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set
             {
                 m_craftableItemIdsCSV = value;
-                m_craftableItemIds = CraftableItemIdsCSV.FromCSV<int>(",");
+                m_craftableItemIds = CraftableItemIdsCSV?.FromCSV<int>(",");
             }
         }
 
         [Ignore]
         public int[] CraftableItemIds
         {
-            get { return m_craftableItemIds ?? (m_craftableItemIds = CraftableItemIdsCSV.FromCSV<int>(",")); }
+            get { return m_craftableItemIds ?? (m_craftableItemIds = CraftableItemIdsCSV?.FromCSV<int>(",") ?? new int[0]); }
             set
             {
                 m_craftableItemIds = value;
                 CraftableItemIdsCSV = value.ToCSV(",");
+                m_recipes = null;
             }
+        }
+
+        public RecipeRecord[] Recipes
+        {
+            get { return m_recipes ?? (m_recipes = CraftableItemIds.Select(x => JobManager.Instance.Recipes[x]).ToArray()); }
         }
 
         public int InteractiveId
@@ -178,6 +189,8 @@ namespace Stump.Server.WorldServer.Database.Interactives
         {
             if (GatheredRessourceItem > 0)
                 return new SkillHarvest(id, this, interactiveObject);
+            else if (CraftableItemIds?.Length > 0)
+                return new SkillCraft(id, this, interactiveObject);
 
             return DiscriminatorManager<Game.Interactives.Skills.Skill, int>.Instance.Generate(Id, id, this, interactiveObject);
         }
