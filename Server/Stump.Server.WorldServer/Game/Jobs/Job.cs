@@ -4,6 +4,7 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Handlers.Context.RolePlay;
 
 namespace Stump.Server.WorldServer.Game.Jobs
 {
@@ -96,6 +97,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
                     RefreshLevel();
 
                 IsDirty = true;
+                ContextRoleplayHandler.SendJobExperienceUpdateMessage(Owner.Client, this);
             }
         }
 
@@ -130,7 +132,13 @@ namespace Stump.Server.WorldServer.Game.Jobs
             UpperBoundExperience = ExperienceManager.Instance.GetJobLevelExperience(level);
             UpperBoundExperience = ExperienceManager.Instance.GetJobNextLevelExperience(level);
 
+            var oldLevel = Level;
             Level = level;
+
+            if (oldLevel < Level)
+            {
+                ContextRoleplayHandler.SendJobLevelUpMessage(Owner.Client, this);
+            }
         }
 
         public void Save(ORM.Database database)
@@ -139,6 +147,8 @@ namespace Stump.Server.WorldServer.Game.Jobs
                 database.Insert(Record);
             else if (IsDirty)
                 database.Update(Record);
+
+            IsNew = IsDirty = false;
         }
 
         private bool CheckRecordExists()
@@ -158,9 +168,12 @@ namespace Stump.Server.WorldServer.Game.Jobs
         private SkillActionDescription GetSkillActionDescription(InteractiveSkillTemplate skill)
         {
             if (skill.GatheredRessourceItem > 0)
-                return new SkillActionDescriptionCollect((short)skill.Id, 0, 0, 0);
+            {
+                var minMax = JobManager.Instance.GetHarvestItemMinMax(Template, Level, skill);
+                return new SkillActionDescriptionCollect((short) skill.Id, 0, (short) minMax.First, (short) minMax.Second);
+            }
             else if (skill.CraftableItemIds.Length > 0)
-                return new SkillActionDescriptionCraft((short)skill.Id, 0);
+                return new SkillActionDescriptionCraft((short) skill.Id, 0);
 
             return new SkillActionDescription((short) skill.Id);
         }
@@ -169,7 +182,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
             => new JobExperience((sbyte)Template.Id, (byte)Level, Experience, LowerBoundExperience, UpperBoundExperience);
 
         public JobDescription GetJobDescription()
-            => new JobDescription((sbyte) Template.Id, Template.Skills.Select(x => GetSkillActionDescription(x)));
+            => new JobDescription((sbyte) Template.Id, Template.Skills.Where(x => x.LevelMin <= Level).Select(x => GetSkillActionDescription(x)));
 
         public JobCrafterDirectorySettings GetJobCrafterDirectorySettings()
             => new JobCrafterDirectorySettings((sbyte) Template.Id, (byte)MinLevelCraftSetting, WorkForFree);

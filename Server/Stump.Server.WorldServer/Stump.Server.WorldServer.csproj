@@ -231,6 +231,7 @@
     <Compile Include="Database\Items\Templates\WeaponTemplate.cs" />
     <Compile Include="Database\Jobs\JobRecord.cs" />
     <Compile Include="Database\Jobs\JobTemplate.cs" />
+    <Compile Include="Database\Jobs\RecipeRecord.cs" />
     <Compile Include="Database\Monsters\DroppableItem.cs" />
     <Compile Include="Database\Monsters\MonsterDungeonSpawn.cs" />
     <Compile Include="Database\Monsters\MonsterGrade.cs" />
@@ -409,6 +410,8 @@
     <Compile Include="Game\Exchanges\Bank\BankCustomer.cs" />
     <Compile Include="Game\Exchanges\BidHouse\BidHouseExchanger.cs" />
     <Compile Include="Game\Exchanges\BidHouse\BidHouseExchange.cs" />
+    <Compile Include="Game\Exchanges\Craft\CraftDialog.cs" />
+    <Compile Include="Game\Exchanges\Craft\Crafter.cs" />
     <Compile Include="Game\Exchanges\IExchange.cs" />
     <Compile Include="Game\Exchanges\Exchanger.cs" />
     <Compile Include="Game\Exchanges\Merchant\CharacterMerchant.cs" />
@@ -543,6 +546,7 @@
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
     <Compile Include="Game\Interactives\Skills\CustomSkill.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillCraft.cs" />
     <Compile Include="Game\Interactives\Skills\SkillGuildCreate.cs" />
     <Compile Include="Game\Interactives\Skills\SkillHarvest.cs" />
     <Compile Include="Game\Interactives\Skills\SkillPaddock.cs" />
@@ -574,7 +578,6 @@
     <Compile Include="Game\Items\Player\MerchantBag.cs" />
     <Compile Include="Game\Items\Player\CharacterMerchantBag.cs" />
     <Compile Include="Game\Items\Player\MerchantItem.cs" />
-    <Compile Include="Game\Items\Pet.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorBag.cs" />
     <Compile Include="Game\Items\TaxCollector\TaxCollectorItem.cs" />
     <Compile Include="Game\Jobs\JobManager.cs" />
@@ -622,7 +625,6 @@
     <Compile Include="Game\Spells\Casts\Sram\ChakraConcentrationCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
-    <Compile Include="Game\Spells\Casts\Ecaflip\FelineSpiritCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingChestCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Ecaflip\RekopCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\SpellCastHandler.cs" />
