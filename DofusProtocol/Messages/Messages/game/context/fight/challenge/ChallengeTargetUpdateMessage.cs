@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:04
+// Generated on 12/20/2015 16:36:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short challengeId;
-        public int targetId;
+        public double targetId;
         
         public ChallengeTargetUpdateMessage()
         {
         }
         
-        public ChallengeTargetUpdateMessage(short challengeId, int targetId)
+        public ChallengeTargetUpdateMessage(short challengeId, double targetId)
         {
             this.challengeId = challengeId;
             this.targetId = targetId;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarShort(challengeId);
-            writer.WriteInt(targetId);
+            writer.WriteDouble(targetId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,7 +42,9 @@ namespace Stump.DofusProtocol.Messages
             challengeId = reader.ReadVarShort();
             if (challengeId < 0)
                 throw new Exception("Forbidden value on challengeId = " + challengeId + ", it doesn't respect the following condition : challengeId < 0");
-            targetId = reader.ReadInt();
+            targetId = reader.ReadDouble();
+            if (targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15");
         }
         
     }

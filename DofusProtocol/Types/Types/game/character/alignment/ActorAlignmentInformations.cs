@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:20
+// Generated on 12/20/2015 17:30:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Types
         public sbyte alignmentSide;
         public sbyte alignmentValue;
         public sbyte alignmentGrade;
-        public int characterPower;
+        public double characterPower;
         
         public ActorAlignmentInformations()
         {
         }
         
-        public ActorAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, int characterPower)
+        public ActorAlignmentInformations(sbyte alignmentSide, sbyte alignmentValue, sbyte alignmentGrade, double characterPower)
         {
             this.alignmentSide = alignmentSide;
             this.alignmentValue = alignmentValue;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteSByte(alignmentSide);
             writer.WriteSByte(alignmentValue);
             writer.WriteSByte(alignmentGrade);
-            writer.WriteVarInt(characterPower);
+            writer.WriteDouble(characterPower);
         }
         
         public virtual void Deserialize(IDataReader reader)
@@ -51,9 +51,9 @@ namespace Stump.DofusProtocol.Types
             alignmentGrade = reader.ReadSByte();
             if (alignmentGrade < 0)
                 throw new Exception("Forbidden value on alignmentGrade = " + alignmentGrade + ", it doesn't respect the following condition : alignmentGrade < 0");
-            characterPower = reader.ReadVarInt();
-            if (characterPower < 0)
-                throw new Exception("Forbidden value on characterPower = " + characterPower + ", it doesn't respect the following condition : characterPower < 0");
+            characterPower = reader.ReadDouble();
+            if (characterPower < -9.007199254740992E15 || characterPower > 9.007199254740992E15)
+                throw new Exception("Forbidden value on characterPower = " + characterPower + ", it doesn't respect the following condition : characterPower < -9.007199254740992E15 || characterPower > 9.007199254740992E15");
         }
         
         

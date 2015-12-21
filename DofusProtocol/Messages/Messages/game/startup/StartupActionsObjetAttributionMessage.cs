@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:27
+// Generated on 12/20/2015 16:37:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int actionId;
-        public int characterId;
+        public long characterId;
         
         public StartupActionsObjetAttributionMessage()
         {
         }
         
-        public StartupActionsObjetAttributionMessage(int actionId, int characterId)
+        public StartupActionsObjetAttributionMessage(int actionId, long characterId)
         {
             this.actionId = actionId;
             this.characterId = characterId;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(actionId);
-            writer.WriteInt(characterId);
+            writer.WriteVarLong(characterId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,9 +42,9 @@ namespace Stump.DofusProtocol.Messages
             actionId = reader.ReadInt();
             if (actionId < 0)
                 throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
-            characterId = reader.ReadInt();
-            if (characterId < 0)
-                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0");
+            characterId = reader.ReadVarLong();
+            if (characterId < 0 || characterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0 || characterId > 9.007199254740992E15");
         }
         
     }

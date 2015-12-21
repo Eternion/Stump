@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
 
             var position = character.Position.Clone();
 
-            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), position.Map.GetNextContextualId(), position, character.Guild, character.Name);
+            var taxCollectorNpc = new TaxCollectorNpc(m_idProvider.Pop(), position.Map.GetNextContextualId(), position, character.Guild, character);
 
             if (lazySave)
                 WorldServer.Instance.IOTaskPool.AddMessage(() => Database.Insert(taxCollectorNpc.Record));
@@ -121,7 +121,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
             taxCollectorNpc.Map.Enter(taxCollectorNpc);
             character.Guild.AddTaxCollector(taxCollectorNpc);
 
-            TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, true, taxCollectorNpc, character.Id, character.Name);
+            TaxCollectorHandler.SendTaxCollectorMovementMessage(taxCollectorNpc.Guild.Clients, TaxCollectorMovementTypeEnum.TAX_COLLECTOR_HIRED, taxCollectorNpc, character.Id, character.Name);
 
             return true;
         }

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +19,14 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short markId;
-        public int triggeringCharacterId;
+        public double triggeringCharacterId;
         public short triggeredSpellId;
         
         public GameActionFightTriggerGlyphTrapMessage()
         {
         }
         
-        public GameActionFightTriggerGlyphTrapMessage(short actionId, int sourceId, short markId, int triggeringCharacterId, short triggeredSpellId)
+        public GameActionFightTriggerGlyphTrapMessage(short actionId, double sourceId, short markId, double triggeringCharacterId, short triggeredSpellId)
          : base(actionId, sourceId)
         {
             this.markId = markId;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteShort(markId);
-            writer.WriteInt(triggeringCharacterId);
+            writer.WriteDouble(triggeringCharacterId);
             writer.WriteVarShort(triggeredSpellId);
         }
         
@@ -46,7 +46,9 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             markId = reader.ReadShort();
-            triggeringCharacterId = reader.ReadInt();
+            triggeringCharacterId = reader.ReadDouble();
+            if (triggeringCharacterId < -9.007199254740992E15 || triggeringCharacterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on triggeringCharacterId = " + triggeringCharacterId + ", it doesn't respect the following condition : triggeringCharacterId < -9.007199254740992E15 || triggeringCharacterId > 9.007199254740992E15");
             triggeredSpellId = reader.ReadVarShort();
             if (triggeredSpellId < 0)
                 throw new Exception("Forbidden value on triggeredSpellId = " + triggeredSpellId + ", it doesn't respect the following condition : triggeredSpellId < 0");

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:33
+// Generated on 12/20/2015 18:01:20
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -17,9 +17,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public int caracId;
         public int companionId;
         public int order;
-        public int initialValue;
-        public int levelPerValue;
-        public int valuePerLevel;
+        public List<List<double>> statPerLevelRange;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -49,22 +47,10 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.order = value; }
         }
         [D2OIgnore]
-        public int InitialValue
+        public List<List<double>> StatPerLevelRange
         {
-            get { return this.initialValue; }
-            set { this.initialValue = value; }
-        }
-        [D2OIgnore]
-        public int LevelPerValue
-        {
-            get { return this.levelPerValue; }
-            set { this.levelPerValue = value; }
-        }
-        [D2OIgnore]
-        public int ValuePerLevel
-        {
-            get { return this.valuePerLevel; }
-            set { this.valuePerLevel = value; }
+            get { return this.statPerLevelRange; }
+            set { this.statPerLevelRange = value; }
         }
     }
 }

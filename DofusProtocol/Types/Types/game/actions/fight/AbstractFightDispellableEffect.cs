@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:19
+// Generated on 12/20/2015 17:30:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public int uid;
-        public int targetId;
+        public double targetId;
         public short turnDuration;
         public sbyte dispelable;
         public short spellId;
@@ -29,7 +29,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public AbstractFightDispellableEffect(int uid, int targetId, short turnDuration, sbyte dispelable, short spellId, int effectId, int parentBoostUid)
+        public AbstractFightDispellableEffect(int uid, double targetId, short turnDuration, sbyte dispelable, short spellId, int effectId, int parentBoostUid)
         {
             this.uid = uid;
             this.targetId = targetId;
@@ -43,7 +43,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteVarInt(uid);
-            writer.WriteInt(targetId);
+            writer.WriteDouble(targetId);
             writer.WriteShort(turnDuration);
             writer.WriteSByte(dispelable);
             writer.WriteVarShort(spellId);
@@ -56,7 +56,9 @@ namespace Stump.DofusProtocol.Types
             uid = reader.ReadVarInt();
             if (uid < 0)
                 throw new Exception("Forbidden value on uid = " + uid + ", it doesn't respect the following condition : uid < 0");
-            targetId = reader.ReadInt();
+            targetId = reader.ReadDouble();
+            if (targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15");
             turnDuration = reader.ReadShort();
             dispelable = reader.ReadSByte();
             if (dispelable < 0)

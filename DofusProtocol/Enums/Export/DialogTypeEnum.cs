@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2015 10:48:40
+// Generated on 12/20/2015 17:38:52
 using System;
 using System.Collections.Generic;
 
@@ -23,5 +23,6 @@ namespace Stump.DofusProtocol.Enums
         DIALOG_ALLIANCE_INVITATION = 12,
         DIALOG_ALLIANCE_CREATE = 13,
         DIALOG_ALLIANCE_RENAME = 14,
+        DIALOG_HAVENBAG_MEETING = 15,
     }
 }

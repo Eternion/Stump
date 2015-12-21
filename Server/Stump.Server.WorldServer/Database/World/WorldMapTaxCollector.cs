@@ -79,6 +79,12 @@ namespace Stump.Server.WorldServer.Database.World
             set;
         }
 
+        public int CallerId
+        {
+            get;
+            set;
+        }
+
         public string CallerName
         {
             get;
@@ -108,6 +114,5 @@ namespace Stump.Server.WorldServer.Database.World
             get;
             set;
         }
-    
     }
 }

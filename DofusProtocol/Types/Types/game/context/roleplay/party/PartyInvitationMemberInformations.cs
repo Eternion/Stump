@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:23
+// Generated on 12/20/2015 17:30:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public PartyInvitationMemberInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<Types.PartyCompanionBaseInformations> companions)
+        public PartyInvitationMemberInformations(long id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, short worldX, short worldY, int mapId, short subAreaId, IEnumerable<Types.PartyCompanionBaseInformations> companions)
          : base(id, level, name, entityLook, breed, sex)
         {
             this.worldX = worldX;

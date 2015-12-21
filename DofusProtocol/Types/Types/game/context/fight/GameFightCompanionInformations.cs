@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Types
         
         public sbyte companionGenericId;
         public byte level;
-        public int masterId;
+        public double masterId;
         
         public GameFightCompanionInformations()
         {
         }
         
-        public GameFightCompanionInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, sbyte companionGenericId, byte level, int masterId)
+        public GameFightCompanionInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, sbyte companionGenericId, byte level, double masterId)
          : base(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions)
         {
             this.companionGenericId = companionGenericId;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
             base.Serialize(writer);
             writer.WriteSByte(companionGenericId);
             writer.WriteByte(level);
-            writer.WriteInt(masterId);
+            writer.WriteDouble(masterId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -50,7 +50,9 @@ namespace Stump.DofusProtocol.Types
             level = reader.ReadByte();
             if (level < 0 || level > 255)
                 throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
-            masterId = reader.ReadInt();
+            masterId = reader.ReadDouble();
+            if (masterId < -9.007199254740992E15 || masterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on masterId = " + masterId + ", it doesn't respect the following condition : masterId < -9.007199254740992E15 || masterId > 9.007199254740992E15");
         }
         
         

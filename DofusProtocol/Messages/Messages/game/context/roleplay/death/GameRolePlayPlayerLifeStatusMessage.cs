@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:06
+// Generated on 12/20/2015 16:36:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,19 +19,22 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public sbyte state;
+        public int phenixMapId;
         
         public GameRolePlayPlayerLifeStatusMessage()
         {
         }
         
-        public GameRolePlayPlayerLifeStatusMessage(sbyte state)
+        public GameRolePlayPlayerLifeStatusMessage(sbyte state, int phenixMapId)
         {
             this.state = state;
+            this.phenixMapId = phenixMapId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteSByte(state);
+            writer.WriteInt(phenixMapId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -39,6 +42,9 @@ namespace Stump.DofusProtocol.Messages
             state = reader.ReadSByte();
             if (state < 0)
                 throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
+            phenixMapId = reader.ReadInt();
+            if (phenixMapId < 0)
+                throw new Exception("Forbidden value on phenixMapId = " + phenixMapId + ", it doesn't respect the following condition : phenixMapId < 0");
         }
         
     }

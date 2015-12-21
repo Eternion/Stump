@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:03
+// Generated on 12/20/2015 16:36:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public IEnumerable<short> keyMovements;
-        public int actorId;
+        public double actorId;
         
         public GameMapMovementMessage()
         {
         }
         
-        public GameMapMovementMessage(IEnumerable<short> keyMovements, int actorId)
+        public GameMapMovementMessage(IEnumerable<short> keyMovements, double actorId)
         {
             this.keyMovements = keyMovements;
             this.actorId = actorId;
@@ -46,7 +46,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)keyMovements_count);
             writer.Seek((int)keyMovements_after);
 
-            writer.WriteInt(actorId);
+            writer.WriteDouble(actorId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -58,7 +58,9 @@ namespace Stump.DofusProtocol.Messages
                  keyMovements_[i] = reader.ReadShort();
             }
             keyMovements = keyMovements_;
-            actorId = reader.ReadInt();
+            actorId = reader.ReadDouble();
+            if (actorId < -9.007199254740992E15 || actorId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on actorId = " + actorId + ", it doesn't respect the following condition : actorId < -9.007199254740992E15 || actorId > 9.007199254740992E15");
         }
         
     }

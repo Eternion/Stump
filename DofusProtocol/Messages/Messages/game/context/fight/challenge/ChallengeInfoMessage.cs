@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:04
+// Generated on 12/20/2015 16:36:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public short challengeId;
-        public int targetId;
+        public double targetId;
         public int xpBonus;
         public int dropBonus;
         
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ChallengeInfoMessage(short challengeId, int targetId, int xpBonus, int dropBonus)
+        public ChallengeInfoMessage(short challengeId, double targetId, int xpBonus, int dropBonus)
         {
             this.challengeId = challengeId;
             this.targetId = targetId;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteVarShort(challengeId);
-            writer.WriteInt(targetId);
+            writer.WriteDouble(targetId);
             writer.WriteVarInt(xpBonus);
             writer.WriteVarInt(dropBonus);
         }
@@ -48,7 +48,9 @@ namespace Stump.DofusProtocol.Messages
             challengeId = reader.ReadVarShort();
             if (challengeId < 0)
                 throw new Exception("Forbidden value on challengeId = " + challengeId + ", it doesn't respect the following condition : challengeId < 0");
-            targetId = reader.ReadInt();
+            targetId = reader.ReadDouble();
+            if (targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15");
             xpBonus = reader.ReadVarInt();
             if (xpBonus < 0)
                 throw new Exception("Forbidden value on xpBonus = " + xpBonus + ", it doesn't respect the following condition : xpBonus < 0");

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:03
+// Generated on 12/20/2015 16:36:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ShowCellSpectatorMessage(int sourceId, short cellId, string playerName)
+        public ShowCellSpectatorMessage(double sourceId, short cellId, string playerName)
          : base(sourceId, cellId)
         {
             this.playerName = playerName;

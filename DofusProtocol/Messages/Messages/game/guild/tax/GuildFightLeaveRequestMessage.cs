@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:17
+// Generated on 12/20/2015 16:37:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int taxCollectorId;
-        public int characterId;
+        public long characterId;
         
         public GuildFightLeaveRequestMessage()
         {
         }
         
-        public GuildFightLeaveRequestMessage(int taxCollectorId, int characterId)
+        public GuildFightLeaveRequestMessage(int taxCollectorId, long characterId)
         {
             this.taxCollectorId = taxCollectorId;
             this.characterId = characterId;
@@ -34,7 +34,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(taxCollectorId);
-            writer.WriteVarInt(characterId);
+            writer.WriteVarLong(characterId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -42,9 +42,9 @@ namespace Stump.DofusProtocol.Messages
             taxCollectorId = reader.ReadInt();
             if (taxCollectorId < 0)
                 throw new Exception("Forbidden value on taxCollectorId = " + taxCollectorId + ", it doesn't respect the following condition : taxCollectorId < 0");
-            characterId = reader.ReadVarInt();
-            if (characterId < 0)
-                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0");
+            characterId = reader.ReadVarLong();
+            if (characterId < 0 || characterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0 || characterId > 9.007199254740992E15");
         }
         
     }

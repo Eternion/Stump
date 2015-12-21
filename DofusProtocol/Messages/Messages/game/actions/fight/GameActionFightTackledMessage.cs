@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<int> tacklersIds;
+        public IEnumerable<double> tacklersIds;
         
         public GameActionFightTackledMessage()
         {
         }
         
-        public GameActionFightTackledMessage(short actionId, int sourceId, IEnumerable<int> tacklersIds)
+        public GameActionFightTackledMessage(short actionId, double sourceId, IEnumerable<double> tacklersIds)
          : base(actionId, sourceId)
         {
             this.tacklersIds = tacklersIds;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in tacklersIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteDouble(entry);
                  tacklersIds_count++;
             }
             var tacklersIds_after = writer.Position;
@@ -52,10 +52,10 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            var tacklersIds_ = new int[limit];
+            var tacklersIds_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
-                 tacklersIds_[i] = reader.ReadInt();
+                 tacklersIds_[i] = reader.ReadDouble();
             }
             tacklersIds = tacklersIds_;
         }

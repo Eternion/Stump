@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:34
+// Generated on 12/20/2015 18:01:22
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -10,7 +10,7 @@ namespace Stump.DofusProtocol.D2oClasses
 {
     [D2OClass("QuestObjectiveParameters", "com.ankamagames.dofus.datacenter.quest.objectives")]
     [Serializable]
-    public class QuestObjectiveParameters : QuestObjective
+    public class QuestObjectiveParameters : Proxy
     {
         public uint numParams;
         public int parameter0;

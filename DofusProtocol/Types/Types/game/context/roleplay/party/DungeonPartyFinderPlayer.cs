@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:23
+// Generated on 12/20/2015 17:30:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int playerId;
+        public long playerId;
         public string playerName;
         public sbyte breed;
         public bool sex;
@@ -27,7 +27,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public DungeonPartyFinderPlayer(int playerId, string playerName, sbyte breed, bool sex, byte level)
+        public DungeonPartyFinderPlayer(long playerId, string playerName, sbyte breed, bool sex, byte level)
         {
             this.playerId = playerId;
             this.playerName = playerName;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             writer.WriteUTF(playerName);
             writer.WriteSByte(breed);
             writer.WriteBoolean(sex);
@@ -47,13 +47,13 @@ namespace Stump.DofusProtocol.Types
         
         public virtual void Deserialize(IDataReader reader)
         {
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             playerName = reader.ReadUTF();
             breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliotrope)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliotrope");
+            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage)
+                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Huppermage");
             sex = reader.ReadBoolean();
             level = reader.ReadByte();
             if (level < 0 || level > 255)

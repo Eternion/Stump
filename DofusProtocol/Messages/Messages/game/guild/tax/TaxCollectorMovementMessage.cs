@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:17
+// Generated on 12/20/2015 16:37:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,18 +18,18 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public bool hireOrFire;
+        public sbyte movementType;
         public Types.TaxCollectorBasicInformations basicInfos;
-        public int playerId;
+        public long playerId;
         public string playerName;
         
         public TaxCollectorMovementMessage()
         {
         }
         
-        public TaxCollectorMovementMessage(bool hireOrFire, Types.TaxCollectorBasicInformations basicInfos, int playerId, string playerName)
+        public TaxCollectorMovementMessage(sbyte movementType, Types.TaxCollectorBasicInformations basicInfos, long playerId, string playerName)
         {
-            this.hireOrFire = hireOrFire;
+            this.movementType = movementType;
             this.basicInfos = basicInfos;
             this.playerId = playerId;
             this.playerName = playerName;
@@ -37,20 +37,22 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteBoolean(hireOrFire);
+            writer.WriteSByte(movementType);
             basicInfos.Serialize(writer);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             writer.WriteUTF(playerName);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            hireOrFire = reader.ReadBoolean();
+            movementType = reader.ReadSByte();
+            if (movementType < 0)
+                throw new Exception("Forbidden value on movementType = " + movementType + ", it doesn't respect the following condition : movementType < 0");
             basicInfos = new Types.TaxCollectorBasicInformations();
             basicInfos.Deserialize(reader);
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             playerName = reader.ReadUTF();
         }
         

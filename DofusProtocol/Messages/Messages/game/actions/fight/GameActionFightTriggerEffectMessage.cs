@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightTriggerEffectMessage(short actionId, int sourceId, int targetId, int boostUID)
+        public GameActionFightTriggerEffectMessage(short actionId, double sourceId, double targetId, int boostUID)
          : base(actionId, sourceId, targetId, boostUID)
         {
         }

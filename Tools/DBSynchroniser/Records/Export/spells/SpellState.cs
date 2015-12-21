@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/16/2015 14:26:43
+// Generated on 12/20/2015 18:16:43
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +31,8 @@ namespace DBSynchroniser.Records
         public Boolean cantBePushed;
         public Boolean cantSwitchPosition;
         public List<int> effectsIds;
+        public String icon = "";
+        public int iconVisibilityMask;
 
         int ID2ORecord.Id
         {
@@ -143,6 +145,21 @@ namespace DBSynchroniser.Records
             }
         }
 
+        [D2OIgnore]
+        [NullString]
+        public String Icon
+        {
+            get { return icon; }
+            set { icon = value; }
+        }
+
+        [D2OIgnore]
+        public int IconVisibilityMask
+        {
+            get { return iconVisibilityMask; }
+            set { iconVisibilityMask = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SpellState)obj;
@@ -159,6 +176,8 @@ namespace DBSynchroniser.Records
             CantBePushed = castedObj.cantBePushed;
             CantSwitchPosition = castedObj.cantSwitchPosition;
             EffectsIds = castedObj.effectsIds;
+            Icon = castedObj.icon;
+            IconVisibilityMask = castedObj.iconVisibilityMask;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -176,6 +195,8 @@ namespace DBSynchroniser.Records
             obj.cantBePushed = CantBePushed;
             obj.cantSwitchPosition = CantSwitchPosition;
             obj.effectsIds = EffectsIds;
+            obj.icon = Icon;
+            obj.iconVisibilityMask = IconVisibilityMask;
             return obj;
         }
         

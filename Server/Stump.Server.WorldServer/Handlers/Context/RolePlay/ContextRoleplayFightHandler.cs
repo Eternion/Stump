@@ -1,4 +1,5 @@
 using Stump.DofusProtocol.Messages;
+using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -38,9 +39,8 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 
         public static void SendGameRolePlayArenaUpdatePlayerInfosMessage(IPacketReceiver client, Character character)
         {
-            client.Send(new GameRolePlayArenaUpdatePlayerInfosMessage((short) character.ArenaRank, 
-                (short) character.ArenaDailyMaxRank, (short) character.ArenaMaxRank, 
-                (short) character.ArenaDailyMatchsWon, (short) character.ArenaDailyMatchsCount));
+            client.Send(new GameRolePlayArenaUpdatePlayerInfosMessage(new ArenaRankInfos((short) character.ArenaRank, 
+                (short) character.ArenaMaxRank, (short) character.ArenaDailyMatchsWon, (short) character.ArenaDailyMatchsCount)));
         }
 
         public static void SendGameRolePlayAggressionMessage(IPacketReceiver client, Character challenger, Character defender)

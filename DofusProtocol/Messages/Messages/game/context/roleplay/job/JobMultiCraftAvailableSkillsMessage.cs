@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:09
+// Generated on 12/20/2015 16:36:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int playerId;
+        public long playerId;
         public IEnumerable<short> skills;
         
         public JobMultiCraftAvailableSkillsMessage()
         {
         }
         
-        public JobMultiCraftAvailableSkillsMessage(bool enabled, int playerId, IEnumerable<short> skills)
+        public JobMultiCraftAvailableSkillsMessage(bool enabled, long playerId, IEnumerable<short> skills)
          : base(enabled)
         {
             this.playerId = playerId;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             var skills_before = writer.Position;
             var skills_count = 0;
             writer.WriteUShort(0);
@@ -54,9 +54,9 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             var limit = reader.ReadUShort();
             var skills_ = new short[limit];
             for (int i = 0; i < limit; i++)

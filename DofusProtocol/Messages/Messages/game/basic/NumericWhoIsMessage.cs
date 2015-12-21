@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:59
+// Generated on 12/20/2015 16:36:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int playerId;
+        public long playerId;
         public int accountId;
         
         public NumericWhoIsMessage()
         {
         }
         
-        public NumericWhoIsMessage(int playerId, int accountId)
+        public NumericWhoIsMessage(long playerId, int accountId)
         {
             this.playerId = playerId;
             this.accountId = accountId;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             writer.WriteInt(accountId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             accountId = reader.ReadInt();
             if (accountId < 0)
                 throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");

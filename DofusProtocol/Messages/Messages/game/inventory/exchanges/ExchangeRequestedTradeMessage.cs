@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:21
+// Generated on 12/20/2015 16:37:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int source;
-        public int target;
+        public long source;
+        public long target;
         
         public ExchangeRequestedTradeMessage()
         {
         }
         
-        public ExchangeRequestedTradeMessage(sbyte exchangeType, int source, int target)
+        public ExchangeRequestedTradeMessage(sbyte exchangeType, long source, long target)
          : base(exchangeType)
         {
             this.source = source;
@@ -35,19 +35,19 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(source);
-            writer.WriteVarInt(target);
+            writer.WriteVarLong(source);
+            writer.WriteVarLong(target);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            source = reader.ReadVarInt();
-            if (source < 0)
-                throw new Exception("Forbidden value on source = " + source + ", it doesn't respect the following condition : source < 0");
-            target = reader.ReadVarInt();
-            if (target < 0)
-                throw new Exception("Forbidden value on target = " + target + ", it doesn't respect the following condition : target < 0");
+            source = reader.ReadVarLong();
+            if (source < 0 || source > 9.007199254740992E15)
+                throw new Exception("Forbidden value on source = " + source + ", it doesn't respect the following condition : source < 0 || source > 9.007199254740992E15");
+            target = reader.ReadVarLong();
+            if (target < 0 || target > 9.007199254740992E15)
+                throw new Exception("Forbidden value on target = " + target + ", it doesn't respect the following condition : target < 0 || target > 9.007199254740992E15");
         }
         
     }

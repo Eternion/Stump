@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:59
+// Generated on 12/20/2015 16:36:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public CharacterFirstSelectionMessage(int id, bool doTutorial)
+        public CharacterFirstSelectionMessage(long id, bool doTutorial)
          : base(id)
         {
             this.doTutorial = doTutorial;

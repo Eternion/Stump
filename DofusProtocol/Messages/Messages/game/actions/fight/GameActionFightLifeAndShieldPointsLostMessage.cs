@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:56
+// Generated on 12/20/2015 16:36:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightLifeAndShieldPointsLostMessage(short actionId, int sourceId, int targetId, short loss, short permanentDamages, short shieldLoss)
+        public GameActionFightLifeAndShieldPointsLostMessage(short actionId, double sourceId, double targetId, int loss, int permanentDamages, short shieldLoss)
          : base(actionId, sourceId, targetId, loss, permanentDamages)
         {
             this.shieldLoss = shieldLoss;

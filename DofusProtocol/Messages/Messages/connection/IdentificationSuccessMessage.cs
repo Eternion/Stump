@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:54
+// Generated on 12/20/2015 16:36:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,12 +28,13 @@ namespace Stump.DofusProtocol.Messages
         public double accountCreation;
         public double subscriptionElapsedDuration;
         public double subscriptionEndDate;
+        public byte havenbagAvailableRoom;
         
         public IdentificationSuccessMessage()
         {
         }
         
-        public IdentificationSuccessMessage(bool hasRights, bool wasAlreadyConnected, string login, string nickname, int accountId, sbyte communityId, string secretQuestion, double accountCreation, double subscriptionElapsedDuration, double subscriptionEndDate)
+        public IdentificationSuccessMessage(bool hasRights, bool wasAlreadyConnected, string login, string nickname, int accountId, sbyte communityId, string secretQuestion, double accountCreation, double subscriptionElapsedDuration, double subscriptionEndDate, byte havenbagAvailableRoom)
         {
             this.hasRights = hasRights;
             this.wasAlreadyConnected = wasAlreadyConnected;
@@ -45,6 +46,7 @@ namespace Stump.DofusProtocol.Messages
             this.accountCreation = accountCreation;
             this.subscriptionElapsedDuration = subscriptionElapsedDuration;
             this.subscriptionEndDate = subscriptionEndDate;
+            this.havenbagAvailableRoom = havenbagAvailableRoom;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -61,6 +63,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteDouble(accountCreation);
             writer.WriteDouble(subscriptionElapsedDuration);
             writer.WriteDouble(subscriptionEndDate);
+            writer.WriteByte(havenbagAvailableRoom);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -86,6 +89,9 @@ namespace Stump.DofusProtocol.Messages
             subscriptionEndDate = reader.ReadDouble();
             if (subscriptionEndDate < 0 || subscriptionEndDate > 9.007199254740992E15)
                 throw new Exception("Forbidden value on subscriptionEndDate = " + subscriptionEndDate + ", it doesn't respect the following condition : subscriptionEndDate < 0 || subscriptionEndDate > 9.007199254740992E15");
+            havenbagAvailableRoom = reader.ReadByte();
+            if (havenbagAvailableRoom < 0 || havenbagAvailableRoom > 255)
+                throw new Exception("Forbidden value on havenbagAvailableRoom = " + havenbagAvailableRoom + ", it doesn't respect the following condition : havenbagAvailableRoom < 0 || havenbagAvailableRoom > 255");
         }
         
     }

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightFighterNamedLightInformations(bool sex, bool alive, int id, sbyte wave, short level, sbyte breed, string name)
+        public GameFightFighterNamedLightInformations(bool sex, bool alive, double id, sbyte wave, short level, sbyte breed, string name)
          : base(sex, alive, id, wave, level, breed)
         {
             this.name = name;

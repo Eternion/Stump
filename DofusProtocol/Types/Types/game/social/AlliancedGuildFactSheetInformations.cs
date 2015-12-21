@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:27
+// Generated on 12/20/2015 17:31:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public AlliancedGuildFactSheetInformations(int guildId, string guildName, Types.GuildEmblem guildEmblem, Types.BasicNamedAllianceInformations allianceInfos)
-         : base(guildId, guildName, guildEmblem)
+        public AlliancedGuildFactSheetInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, Types.BasicNamedAllianceInformations allianceInfos)
+         : base(guildId, guildName, guildLevel, guildEmblem)
         {
             this.allianceInfos = allianceInfos;
         }

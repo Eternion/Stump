@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:07
+// Generated on 12/20/2015 16:36:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,27 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int monsterGroupId;
+        public double monsterGroupId;
         
         public GameRolePlayAttackMonsterRequestMessage()
         {
         }
         
-        public GameRolePlayAttackMonsterRequestMessage(int monsterGroupId)
+        public GameRolePlayAttackMonsterRequestMessage(double monsterGroupId)
         {
             this.monsterGroupId = monsterGroupId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(monsterGroupId);
+            writer.WriteDouble(monsterGroupId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            monsterGroupId = reader.ReadInt();
+            monsterGroupId = reader.ReadDouble();
+            if (monsterGroupId < -9.007199254740992E15 || monsterGroupId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on monsterGroupId = " + monsterGroupId + ", it doesn't respect the following condition : monsterGroupId < -9.007199254740992E15 || monsterGroupId > 9.007199254740992E15");
         }
         
     }

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/16/2015 14:26:41
+// Generated on 12/20/2015 18:16:40
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,10 +23,6 @@ namespace DBSynchroniser.Records
         public int oldValue;
         public int newValue;
 
-        int ID2ORecord.Id
-        {
-            get { return (int)Id; }
-        }
 
         [D2OIgnore]
         [PrimaryKey("Id")]

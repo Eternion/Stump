@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightUnmarkCellsMessage(short actionId, int sourceId, short markId)
+        public GameActionFightUnmarkCellsMessage(short actionId, double sourceId, short markId)
          : base(actionId, sourceId)
         {
             this.markId = markId;

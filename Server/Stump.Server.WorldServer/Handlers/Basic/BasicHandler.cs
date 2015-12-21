@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         public static void HandleNumericWhoIsRequestMessage(WorldClient client, NumericWhoIsRequestMessage message)
         {
             /* Get character */
-            var character = World.Instance.GetCharacter(message.playerId);
+            var character = World.Instance.GetCharacter((int)message.playerId);
 
             /* check null */
             if (character != null)

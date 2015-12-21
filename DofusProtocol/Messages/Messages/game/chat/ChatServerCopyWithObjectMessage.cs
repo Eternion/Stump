@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:01
+// Generated on 12/20/2015 16:36:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ChatServerCopyWithObjectMessage(sbyte channel, string content, int timestamp, string fingerprint, int receiverId, string receiverName, IEnumerable<Types.ObjectItem> objects)
+        public ChatServerCopyWithObjectMessage(sbyte channel, string content, int timestamp, string fingerprint, long receiverId, string receiverName, IEnumerable<Types.ObjectItem> objects)
          : base(channel, content, timestamp, fingerprint, receiverId, receiverName)
         {
             this.objects = objects;

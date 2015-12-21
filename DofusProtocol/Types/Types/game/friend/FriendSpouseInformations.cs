@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:26
+// Generated on 12/20/2015 17:30:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Types
         }
         
         public int spouseAccountId;
-        public int spouseId;
+        public long spouseId;
         public string spouseName;
         public byte spouseLevel;
         public sbyte breed;
@@ -31,7 +31,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FriendSpouseInformations(int spouseAccountId, int spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide)
+        public FriendSpouseInformations(int spouseAccountId, long spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide)
         {
             this.spouseAccountId = spouseAccountId;
             this.spouseId = spouseId;
@@ -47,7 +47,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteInt(spouseAccountId);
-            writer.WriteVarInt(spouseId);
+            writer.WriteVarLong(spouseId);
             writer.WriteUTF(spouseName);
             writer.WriteByte(spouseLevel);
             writer.WriteSByte(breed);
@@ -62,9 +62,9 @@ namespace Stump.DofusProtocol.Types
             spouseAccountId = reader.ReadInt();
             if (spouseAccountId < 0)
                 throw new Exception("Forbidden value on spouseAccountId = " + spouseAccountId + ", it doesn't respect the following condition : spouseAccountId < 0");
-            spouseId = reader.ReadVarInt();
-            if (spouseId < 0)
-                throw new Exception("Forbidden value on spouseId = " + spouseId + ", it doesn't respect the following condition : spouseId < 0");
+            spouseId = reader.ReadVarLong();
+            if (spouseId < 0 || spouseId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on spouseId = " + spouseId + ", it doesn't respect the following condition : spouseId < 0 || spouseId > 9.007199254740992E15");
             spouseName = reader.ReadUTF();
             spouseLevel = reader.ReadByte();
             if (spouseLevel < 1 || spouseLevel > 200)
