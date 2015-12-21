@@ -357,8 +357,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         {
             return GetCellInDirection(direction, 1);
         }
-
-        public IEnumerable<MapPoint> GetAdjacentCells(Func<short, bool> predicate)
+        public IEnumerable<MapPoint> GetAdjacentCells(bool diagonal = false)
+        {
+            return GetAdjacentCells(x => true, diagonal);
+        }
+        public IEnumerable<MapPoint> GetAdjacentCells(Func<short, bool> predicate, bool diagonal = false)
         {
             var southEast = new MapPoint(m_x + 1, m_y);
             if (IsInMap(southEast.X, southEast.Y) && predicate(southEast.CellId))
@@ -375,6 +378,26 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             var northWest = new MapPoint(m_x - 1, m_y);
             if (IsInMap(northWest.X, northWest.Y) && predicate(northWest.CellId))
                 yield return northWest;
+
+            if (diagonal)
+            {
+                var south = new MapPoint(m_x + 1, m_y - 1);
+                if (IsInMap(south.X, south.Y) && predicate(south.CellId))
+                    yield return south;
+
+                var west = new MapPoint(m_x - 1, m_y - 1);
+                if (IsInMap(west.X, west.Y) && predicate(west.CellId))
+                    yield return west;
+
+                var north = new MapPoint(m_x - 1, m_y + 1);
+                if (IsInMap(north.X, north.Y) && predicate(north.CellId))
+                    yield return northEast;
+
+                var east = new MapPoint(m_x + 1, m_y + 1);
+                if (IsInMap(east.X, east.Y) && predicate(east.CellId))
+                    yield return northWest;
+
+            }
         }
 
         public bool IsInMap()

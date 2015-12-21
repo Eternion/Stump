@@ -70,8 +70,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             character.Inventory.AddItem(m_harvestedItem, count);
             InventoryHandler.SendObtainedItemMessage(character.Client, m_harvestedItem, count);
 
-            var xp = JobManager.Instance.GetHarvestJobXp((int) SkillTemplate.LevelMin);
-            character.Jobs[SkillTemplate.ParentJobId].Experience += xp;
+            if (SkillTemplate.ParentJobId != 1)
+            {
+                var xp = JobManager.Instance.GetHarvestJobXp((int)SkillTemplate.LevelMin);
+                character.Jobs[SkillTemplate.ParentJobId].Experience += xp;
+            }
         }
 
         public void SetHarvestedState(bool state)

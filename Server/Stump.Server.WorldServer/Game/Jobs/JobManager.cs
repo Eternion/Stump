@@ -71,14 +71,14 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
         public Pair<int, int> GetHarvestItemMinMax(JobTemplate job, int jobLevel, InteractiveSkillTemplate skillTemplate)
         {
-            if (skillTemplate.LevelMin > jobLevel || job.HarvestedCountMax == 0)
+            if (skillTemplate.LevelMin > jobLevel)
                 return new Pair<int, int>(0, 0);
 
-            if (skillTemplate.LevelMin == 200)
+            if (skillTemplate.LevelMin == 200 || job.HarvestedCountMax == 0)
                 return new Pair<int, int>(1, 1);
 
-            return new Pair<int, int>((int) (1 + 2*((jobLevel - skillTemplate.LevelMin)/10)),
-                (int) (job.HarvestedCountMax + 2*((jobLevel - skillTemplate.LevelMin)/10)));
+            return new Pair<int, int>(Math.Max(1, jobLevel / 20),
+                (int) (job.HarvestedCountMax + ((jobLevel - skillTemplate.LevelMin)/100)));
         }
     }
 }

@@ -9,6 +9,7 @@ using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Handlers.Interactives;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Interactives
 {
@@ -66,17 +67,18 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         private void GenerateSkills()
         {
-            foreach (var skillTemplate in Spawn.GetSkills())
+            foreach (var skillRecord in Spawn.GetSkills())
             {
                 try
                 {
                     var id = InteractiveManager.Instance.PopSkillId();
-                    var skill = skillTemplate.GenerateSkill(id, this);
+                    var skill = skillRecord.GenerateSkill(id, this);
 
                     m_skills.Add(id, skill);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    logger.Error($"Cannot generate skills of spawn {Spawn.Id} interactive ({Spawn.Template}) : {ex.Message}");
                 }
             }
         }
