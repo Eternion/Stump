@@ -181,7 +181,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                     InteractiveManager.Instance.AddInteractiveSpawn(spawn, skill, spawnSkill);
                     ContextRoleplayHandler.SendMapComplementaryInformationsDataMessage(character.Client);
                 });
-                trigger.ReplyBold("Add Interactive {0} on map {1}", spawn.Template.Name, spawn.MapId);
+                trigger.ReplyBold("Add Interactive {0} on map {1}", spawn.Template?.Name ?? "(no name)", spawn.MapId);
             }
         }
 

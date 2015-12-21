@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             set;
         }
 
-        public int TemplateId
+        public int? TemplateId
         {
             get;
             set;
@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
         [Ignore]
         public InteractiveTemplate Template
         {
-            get { return m_template ?? (m_template = InteractiveManager.Instance.GetTemplate(TemplateId)); }
+            get { return TemplateId.HasValue ? (m_template ?? (m_template = InteractiveManager.Instance.GetTemplate(TemplateId.Value))) : null; }
         }
         
         public int MapId

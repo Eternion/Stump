@@ -14,9 +14,10 @@ namespace Stump.Server.WorldServer.Database.Interactives
         public static string FetchQuery = "SELECT * FROM interactives_templates " +
                                           "LEFT JOIN interactives_skills_templates ON interactives_skills_templates.InteractiveId=interactives_templates.Id " +
                                           "LEFT JOIN interactives_templates_skills ON interactives_templates_skills.InteractiveTemplateId=interactives_templates.Id " +
-                                          "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_templates_skills.SkillId " +
-                                          "GROUP BY(interactives_templates.Id)";
+                                          "LEFT JOIN interactives_skills ON interactives_skills.Id=interactives_templates_skills.SkillId ";
 
+
+        private Dictionary<int, InteractiveTemplate> m_currentMapping = new Dictionary<int, InteractiveTemplate>();
         private InteractiveTemplate m_current;
 
         public InteractiveTemplate Map(InteractiveTemplate template, InteractiveSkillTemplate skillTemplate, InteractiveTemplateSkills binding,
@@ -25,14 +26,16 @@ namespace Stump.Server.WorldServer.Database.Interactives
             if (template == null)
                 return m_current;
 
-            if (m_current != null && m_current.Id == template.Id)
+            InteractiveTemplate current;
+
+            if (m_currentMapping.TryGetValue(template.Id, out current))
             {
                 if (binding != null && binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id &&
-                    m_current.CustomSkills.All(x => x.Id != skill.Id))
-                    m_current.CustomSkills.Add(skill);
+                    current.CustomSkills.All(x => x.Id != skill.Id))
+                    current.CustomSkills.Add(skill);
 
                 if (skillTemplate != null && m_current.TemplateSkills.All(x => x.Id != skillTemplate.Id))
-                    m_current.TemplateSkills.Add(skillTemplate);
+                    current.TemplateSkills.Add(skillTemplate);
 
                 return null;
             }
@@ -40,6 +43,7 @@ namespace Stump.Server.WorldServer.Database.Interactives
             var previous = m_current;
 
             m_current = template;
+            m_currentMapping.Add(template.Id, template);
             if (binding != null && binding.InteractiveTemplateId == m_current.Id && binding.SkillId == skill.Id && 
                 m_current.CustomSkills.All(x => x.Id != skill.Id))
                 m_current.CustomSkills.Add(skill);
@@ -153,5 +157,10 @@ namespace Stump.Server.WorldServer.Database.Interactives
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"{Name} ({Type})";
+        }
     }
 }

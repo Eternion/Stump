@@ -129,7 +129,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
         private void RefreshLevel()
         {
             var level = ExperienceManager.Instance.GetJobLevel(Experience);
-            UpperBoundExperience = ExperienceManager.Instance.GetJobLevelExperience(level);
+            LowerBoundExperience = ExperienceManager.Instance.GetJobLevelExperience(level);
             UpperBoundExperience = ExperienceManager.Instance.GetJobNextLevelExperience(level);
 
             var oldLevel = Level;
