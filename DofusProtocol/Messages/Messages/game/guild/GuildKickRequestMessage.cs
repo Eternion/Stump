@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:16
+// Generated on 12/20/2015 16:37:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +18,27 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int kickedId;
+        public long kickedId;
         
         public GuildKickRequestMessage()
         {
         }
         
-        public GuildKickRequestMessage(int kickedId)
+        public GuildKickRequestMessage(long kickedId)
         {
             this.kickedId = kickedId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(kickedId);
+            writer.WriteVarLong(kickedId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            kickedId = reader.ReadVarInt();
-            if (kickedId < 0)
-                throw new Exception("Forbidden value on kickedId = " + kickedId + ", it doesn't respect the following condition : kickedId < 0");
+            kickedId = reader.ReadVarLong();
+            if (kickedId < 0 || kickedId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on kickedId = " + kickedId + ", it doesn't respect the following condition : kickedId < 0 || kickedId > 9.007199254740992E15");
         }
         
     }

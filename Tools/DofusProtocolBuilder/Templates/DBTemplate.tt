@@ -34,16 +34,16 @@ else if (Parser.Class.Name == "Weapon") // only exception
     WriteLine(string.Format("[TableName(\"Weapons\")]", Parser.Class.Name));
 #>
 <# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\", \"" + Parser.Class.Namespace + "\")]"); #>
-public class <#=Parser.Class.Name #>Record<#=( Parser.Class.Heritage != "Object" ? " : " + Parser.Class.Heritage + "Record, ID2ORecord, ISaveIntercepter" : " : ID2ORecord, ISaveIntercepter" ) #>
+public class <#=Parser.Class.Name #>Record<#=( HasHeritage(Parser.Class.Heritage) ? " : " + Parser.Class.Heritage + "Record, ID2ORecord, ISaveIntercepter" : " : ID2ORecord, ISaveIntercepter" ) #>
 {
 <# PushIndent("    "); #>
 <# var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
 
 if (idField == null)
-    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type == "int" || x.Type == "uint") && !x.Name.ToLower().Contains("type"));
+    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type.Name == "int" || x.Type.Name == "uint") && !x.Name.ToLower().Contains("type"));
 
 if (idField == null)
-    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type == "int" || x.Type == "uint"));
+    idField = Parser.Fields.FirstOrDefault(x => x.Modifiers == AccessModifiers.Public && x.Name.ToLower().Contains("id") && (x.Type.Name == "int" || x.Type.Name == "uint"));
 
 if (Parser.Class.Name == "InfoMessage" || Parser.Class.Name == "RideFood")
     idField = null;
@@ -76,7 +76,7 @@ foreach (var field in Parser.Fields)
 } 
 WriteLine("");
 
-if (Parser.Class.Heritage == "Object")
+if (idField != null && !HasHeritage(Parser.Class.Heritage))
 {
     WriteLine("int ID2ORecord.Id");
     WriteLine("{");
@@ -88,7 +88,7 @@ if (Parser.Class.Heritage == "Object")
 }
 
 WriteLine("");
-if (idField == null && Parser.Class.Heritage == "Object")
+if (idField == null && !HasHeritage(Parser.Class.Heritage))
 {
     WriteLine("[D2OIgnore]");
     WriteLine("[PrimaryKey(\"Id\")]");
@@ -115,7 +115,7 @@ foreach (var field in Parser.Fields)
 		continue;
 
     WriteLine("[D2OIgnore]");
-    if (field == idField && Parser.Class.Heritage == "Object")
+    if (field == idField && !HasHeritage(Parser.Class.Heritage))
         WriteLine("[PrimaryKey(\"" + ToPascalCase(idField.Name) + "\", false)]");
         
     bool isI18nField = false;
@@ -141,13 +141,13 @@ foreach (var field in Parser.Fields)
     WriteLine("");
 }
 #>
-public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> void AssignFields(object obj)
+public <#= HasHeritage(Parser.Class.Heritage) ? "override" : "virtual" #> void AssignFields(object obj)
 {
 <# PushIndent("    "); #>
 var castedObj = (<#=Parser.Class.Name #>)obj;
 
 <#
-if (Parser.Class.Heritage != "Object")
+if (HasHeritage(Parser.Class.Heritage))
 {
     WriteLine("base.AssignFields(obj);");
 }
@@ -168,11 +168,11 @@ foreach (var field in Parser.Fields)
 <# PopIndent(); #>
 }
 
-public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> object CreateObject(object parent = null)
+public <#= HasHeritage(Parser.Class.Heritage) ? "override" : "virtual" #> object CreateObject(object parent = null)
 {
 <# PushIndent("    "); #>
 <#
-if (Parser.Class.Heritage != "Object")
+if (HasHeritage(Parser.Class.Heritage))
 {
     WriteLine("var obj = new " + Parser.Class.Name + "();");
     WriteLine("base.CreateObject(obj);");
@@ -197,11 +197,11 @@ return obj;
 <# PopIndent(); #>
 }
 
-public <#= Parser.Class.Heritage != "Object" ? "override" : "virtual" #> void BeforeSave(bool insert)
+public <#= HasHeritage(Parser.Class.Heritage) ? "override" : "virtual" #> void BeforeSave(bool insert)
 {
 <# PushIndent("    "); #>
 <#
-if (Parser.Class.Heritage != "Object")
+if (HasHeritage(Parser.Class.Heritage))
 {
     WriteLine("base.BeforeSave(insert);");
 }
@@ -211,7 +211,7 @@ foreach (var field in Parser.Fields)
 	if (field.Modifiers != AccessModifiers.Public || field.Name == "MODULE" || field.IsConst || field.IsStatic)
 		continue;
 
-    if (!IsPrimitiveType(field.Type))
+    if (!IsPrimitiveType(field.Type.Name))
         WriteLine(string.Format("m_{0}Bin = {0} == null ? null : {0}.ToBinary();", field.Name));
 }
 #>

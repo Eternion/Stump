@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:22
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightMonsterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, short creatureGenericId, sbyte creatureGrade)
+        public GameFightMonsterInformations(double contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, sbyte teamId, sbyte wave, bool alive, Types.GameFightMinimalStats stats, IEnumerable<short> previousPositions, short creatureGenericId, sbyte creatureGrade)
          : base(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions)
         {
             this.creatureGenericId = creatureGenericId;

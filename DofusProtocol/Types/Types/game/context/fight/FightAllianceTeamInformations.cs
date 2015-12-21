@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightAllianceTeamInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves, IEnumerable<Types.FightTeamMemberInformations> teamMembers, sbyte relation)
+        public FightAllianceTeamInformations(sbyte teamId, double leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves, IEnumerable<Types.FightTeamMemberInformations> teamMembers, sbyte relation)
          : base(teamId, leaderId, teamSide, teamTypeId, nbWaves, teamMembers)
         {
             this.relation = relation;

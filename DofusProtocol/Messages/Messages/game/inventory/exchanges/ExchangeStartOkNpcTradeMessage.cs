@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:22
+// Generated on 12/20/2015 16:37:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,25 +18,27 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int npcId;
+        public double npcId;
         
         public ExchangeStartOkNpcTradeMessage()
         {
         }
         
-        public ExchangeStartOkNpcTradeMessage(int npcId)
+        public ExchangeStartOkNpcTradeMessage(double npcId)
         {
             this.npcId = npcId;
         }
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(npcId);
+            writer.WriteDouble(npcId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            npcId = reader.ReadInt();
+            npcId = reader.ReadDouble();
+            if (npcId < -9.007199254740992E15 || npcId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on npcId = " + npcId + ", it doesn't respect the following condition : npcId < -9.007199254740992E15 || npcId > 9.007199254740992E15");
         }
         
     }

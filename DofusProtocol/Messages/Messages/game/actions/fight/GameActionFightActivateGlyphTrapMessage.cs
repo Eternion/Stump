@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:55
+// Generated on 12/20/2015 16:36:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightActivateGlyphTrapMessage(short actionId, int sourceId, short markId, bool active)
+        public GameActionFightActivateGlyphTrapMessage(short actionId, double sourceId, short markId, bool active)
          : base(actionId, sourceId)
         {
             this.markId = markId;

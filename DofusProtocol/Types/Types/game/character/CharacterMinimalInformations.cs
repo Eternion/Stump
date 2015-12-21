@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:20
+// Generated on 12/20/2015 17:30:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public CharacterMinimalInformations(int id, byte level, string name)
+        public CharacterMinimalInformations(long id, byte level, string name)
          : base(id)
         {
             this.level = level;

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:11
+// Generated on 12/20/2015 16:36:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +20,9 @@ namespace Stump.DofusProtocol.Messages
         
         public sbyte partyType;
         public string partyName;
-        public int fromId;
+        public long fromId;
         public string fromName;
-        public int leaderId;
+        public long leaderId;
         public IEnumerable<Types.PartyInvitationMemberInformations> members;
         public IEnumerable<Types.PartyGuestInformations> guests;
         
@@ -30,7 +30,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public PartyInvitationDetailsMessage(int partyId, sbyte partyType, string partyName, int fromId, string fromName, int leaderId, IEnumerable<Types.PartyInvitationMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests)
+        public PartyInvitationDetailsMessage(int partyId, sbyte partyType, string partyName, long fromId, string fromName, long leaderId, IEnumerable<Types.PartyInvitationMemberInformations> members, IEnumerable<Types.PartyGuestInformations> guests)
          : base(partyId)
         {
             this.partyType = partyType;
@@ -47,9 +47,9 @@ namespace Stump.DofusProtocol.Messages
             base.Serialize(writer);
             writer.WriteSByte(partyType);
             writer.WriteUTF(partyName);
-            writer.WriteVarInt(fromId);
+            writer.WriteVarLong(fromId);
             writer.WriteUTF(fromName);
-            writer.WriteVarInt(leaderId);
+            writer.WriteVarLong(leaderId);
             var members_before = writer.Position;
             var members_count = 0;
             writer.WriteUShort(0);
@@ -85,13 +85,13 @@ namespace Stump.DofusProtocol.Messages
             if (partyType < 0)
                 throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
             partyName = reader.ReadUTF();
-            fromId = reader.ReadVarInt();
-            if (fromId < 0)
-                throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0");
+            fromId = reader.ReadVarLong();
+            if (fromId < 0 || fromId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0 || fromId > 9.007199254740992E15");
             fromName = reader.ReadUTF();
-            leaderId = reader.ReadVarInt();
-            if (leaderId < 0)
-                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0");
+            leaderId = reader.ReadVarLong();
+            if (leaderId < 0 || leaderId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0 || leaderId > 9.007199254740992E15");
             var limit = reader.ReadUShort();
             var members_ = new Types.PartyInvitationMemberInformations[limit];
             for (int i = 0; i < limit; i++)

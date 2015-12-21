@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
         public static void SendGameActionFightTackledMessage(IPacketReceiver client, FightActor source, IEnumerable<FightActor> tacklers)
         {
-            client.Send(new GameActionFightTackledMessage((short)ActionsEnum.ACTION_CHARACTER_ACTION_TACKLED, source.Id, tacklers.Select(entry => entry.Id)));
+            client.Send(new GameActionFightTackledMessage((short)ActionsEnum.ACTION_CHARACTER_ACTION_TACKLED, source.Id, tacklers.Select(entry => (double)entry.Id)));
         }
 
         public static void SendGameActionFightLifePointsLostMessage(IPacketReceiver client, ActionsEnum action, FightActor source, FightActor target, short loss, short permanentDamages)

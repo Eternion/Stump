@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             switch ((ExchangeTypeEnum)message.exchangeType)
             {
                 case ExchangeTypeEnum.PLAYER_TRADE:
-                    var target = World.Instance.GetCharacter(message.target);
+                    var target = World.Instance.GetCharacter((int) message.target);
 
                     if (target == null)
                     {
@@ -211,7 +211,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ExchangeOnHumanVendorRequestMessage.Id)]
         public static void HandleExchangeOnHumanVendorRequestMessage(WorldClient client, ExchangeOnHumanVendorRequestMessage message)
         {
-            var merchant = client.Character.Map.GetActor<Merchant>(message.humanVendorId);
+            var merchant = client.Character.Map.GetActor<Merchant>((int) message.humanVendorId);
 
             if (merchant == null || merchant.Cell.Id != message.humanVendorCell)
                 return;

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int targetId;
+        public double targetId;
         public short spellId;
         public short value;
         
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightSpellCooldownVariationMessage(short actionId, int sourceId, int targetId, short spellId, short value)
+        public GameActionFightSpellCooldownVariationMessage(short actionId, double sourceId, double targetId, short spellId, short value)
          : base(actionId, sourceId)
         {
             this.targetId = targetId;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteInt(targetId);
+            writer.WriteDouble(targetId);
             writer.WriteVarShort(spellId);
             writer.WriteVarShort(value);
         }
@@ -45,7 +45,9 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            targetId = reader.ReadInt();
+            targetId = reader.ReadDouble();
+            if (targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < -9.007199254740992E15 || targetId > 9.007199254740992E15");
             spellId = reader.ReadVarShort();
             if (spellId < 0)
                 throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");

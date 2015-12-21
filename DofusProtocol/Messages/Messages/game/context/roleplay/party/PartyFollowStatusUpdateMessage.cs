@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:10
+// Generated on 12/20/2015 16:36:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public bool success;
-        public int followedId;
+        public long followedId;
         
         public PartyFollowStatusUpdateMessage()
         {
         }
         
-        public PartyFollowStatusUpdateMessage(int partyId, bool success, int followedId)
+        public PartyFollowStatusUpdateMessage(int partyId, bool success, long followedId)
          : base(partyId)
         {
             this.success = success;
@@ -36,16 +36,16 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteBoolean(success);
-            writer.WriteVarInt(followedId);
+            writer.WriteVarLong(followedId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             success = reader.ReadBoolean();
-            followedId = reader.ReadVarInt();
-            if (followedId < 0)
-                throw new Exception("Forbidden value on followedId = " + followedId + ", it doesn't respect the following condition : followedId < 0");
+            followedId = reader.ReadVarLong();
+            if (followedId < 0 || followedId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on followedId = " + followedId + ", it doesn't respect the following condition : followedId < 0 || followedId > 9.007199254740992E15");
         }
         
     }

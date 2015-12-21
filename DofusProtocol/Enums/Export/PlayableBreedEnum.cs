@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2015 10:48:41
+// Generated on 12/20/2015 17:38:53
 using System;
 using System.Collections.Generic;
 
@@ -25,5 +25,6 @@ namespace Stump.DofusProtocol.Enums
         Zobal = 14,
         Steamer = 15,
         Eliotrope = 16,
+        Huppermage = 17,
     }
 }

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:30
+// Generated on 12/20/2015 18:01:11
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -32,6 +32,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public Object zoneEfficiencyPercent;
         public Object zoneMaxEfficiency;
         public Object zoneStopAtTarget;
+        public int effectElement;
         public String rawZone;
         int IIndexedData.Id
         {
@@ -156,6 +157,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.zoneStopAtTarget; }
             set { this.zoneStopAtTarget = value; }
+        }
+        [D2OIgnore]
+        public int EffectElement
+        {
+            get { return this.effectElement; }
+            set { this.effectElement = value; }
         }
         [D2OIgnore]
         public String RawZone

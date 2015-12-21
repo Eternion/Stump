@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:20
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public CharacterBaseInformations(int id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex)
+        public CharacterBaseInformations(long id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex)
          : base(id, level, name, entityLook)
         {
             this.breed = breed;

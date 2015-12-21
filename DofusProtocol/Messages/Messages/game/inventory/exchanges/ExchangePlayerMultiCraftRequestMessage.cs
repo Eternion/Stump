@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:21
+// Generated on 12/20/2015 16:37:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int target;
+        public long target;
         public int skillId;
         
         public ExchangePlayerMultiCraftRequestMessage()
         {
         }
         
-        public ExchangePlayerMultiCraftRequestMessage(sbyte exchangeType, int target, int skillId)
+        public ExchangePlayerMultiCraftRequestMessage(sbyte exchangeType, long target, int skillId)
          : base(exchangeType)
         {
             this.target = target;
@@ -35,16 +35,16 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(target);
+            writer.WriteVarLong(target);
             writer.WriteVarInt(skillId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            target = reader.ReadVarInt();
-            if (target < 0)
-                throw new Exception("Forbidden value on target = " + target + ", it doesn't respect the following condition : target < 0");
+            target = reader.ReadVarLong();
+            if (target < 0 || target > 9.007199254740992E15)
+                throw new Exception("Forbidden value on target = " + target + ", it doesn't respect the following condition : target < 0 || target > 9.007199254740992E15");
             skillId = reader.ReadVarInt();
             if (skillId < 0)
                 throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");

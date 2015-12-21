@@ -14,7 +14,7 @@
             set;
         }
 
-        public string Type
+        public TypeReference Type
         {
             get;
             set;

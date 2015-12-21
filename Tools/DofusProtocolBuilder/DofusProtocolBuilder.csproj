@@ -186,6 +186,7 @@
     <Compile Include="Parsing\MethodInfo.cs" />
     <Compile Include="Parsing\Parser.cs" />
     <Compile Include="Parsing\PropertyInfo.cs" />
+    <Compile Include="Parsing\TypeReference.cs" />
     <Compile Include="Profiles\DatacenterProfile.cs" />
     <Compile Include="Profiles\DataRecordProfile.cs" />
     <Compile Include="Profiles\EnumsProfile.cs" />

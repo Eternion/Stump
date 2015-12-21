@@ -1,7 +1,7 @@
  
 
 
-// Generated on 11/16/2015 14:26:40
+// Generated on 12/20/2015 18:16:39
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,8 +58,10 @@ namespace DBSynchroniser.Records
         public uint favoriteSubAreasBonus;
         public int craftXpRatio;
         public Boolean needUseConfirm;
+        public Boolean isDestructible;
         public List<List<double>> nuggetsBySubarea;
         public List<uint> containerIds;
+        public List<List<int>> resourcesBySubarea;
         public uint weight;
 
         int ID2ORecord.Id
@@ -374,6 +376,13 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        public Boolean IsDestructible
+        {
+            get { return isDestructible; }
+            set { isDestructible = value; }
+        }
+
+        [D2OIgnore]
         [Ignore]
         public List<List<double>> NuggetsBySubarea
         {
@@ -426,6 +435,32 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [Ignore]
+        public List<List<int>> ResourcesBySubarea
+        {
+            get { return resourcesBySubarea; }
+            set
+            {
+                resourcesBySubarea = value;
+                m_resourcesBySubareaBin = value == null ? null : value.ToBinary();
+            }
+        }
+
+        private byte[] m_resourcesBySubareaBin;
+        [D2OIgnore]
+        [BinaryField]
+        [Browsable(false)]
+        public byte[] ResourcesBySubareaBin
+        {
+            get { return m_resourcesBySubareaBin; }
+            set
+            {
+                m_resourcesBySubareaBin = value;
+                resourcesBySubarea = value == null ? null : value.ToObject<List<List<int>>>();
+            }
+        }
+
+        [D2OIgnore]
         public uint Weight
         {
             get { return weight; }
@@ -468,8 +503,10 @@ namespace DBSynchroniser.Records
             FavoriteSubAreasBonus = castedObj.favoriteSubAreasBonus;
             CraftXpRatio = castedObj.craftXpRatio;
             NeedUseConfirm = castedObj.needUseConfirm;
+            IsDestructible = castedObj.isDestructible;
             NuggetsBySubarea = castedObj.nuggetsBySubarea;
             ContainerIds = castedObj.containerIds;
+            ResourcesBySubarea = castedObj.resourcesBySubarea;
             Weight = castedObj.weight;
         }
         
@@ -508,8 +545,10 @@ namespace DBSynchroniser.Records
             obj.favoriteSubAreasBonus = FavoriteSubAreasBonus;
             obj.craftXpRatio = CraftXpRatio;
             obj.needUseConfirm = NeedUseConfirm;
+            obj.isDestructible = IsDestructible;
             obj.nuggetsBySubarea = NuggetsBySubarea;
             obj.containerIds = ContainerIds;
+            obj.resourcesBySubarea = ResourcesBySubarea;
             obj.weight = Weight;
             return obj;
         }
@@ -522,6 +561,7 @@ namespace DBSynchroniser.Records
             m_favoriteSubAreasBin = favoriteSubAreas == null ? null : favoriteSubAreas.ToBinary();
             m_nuggetsBySubareaBin = nuggetsBySubarea == null ? null : nuggetsBySubarea.ToBinary();
             m_containerIdsBin = containerIds == null ? null : containerIds.ToBinary();
+            m_resourcesBySubareaBin = resourcesBySubarea == null ? null : resourcesBySubarea.ToBinary();
         
         }
     }

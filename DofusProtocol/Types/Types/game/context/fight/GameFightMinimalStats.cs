@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Types
         public short maxActionPoints;
         public short movementPoints;
         public short maxMovementPoints;
-        public int summoner;
+        public double summoner;
         public bool summoned;
         public short neutralElementResistPercent;
         public short earthElementResistPercent;
@@ -60,7 +60,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public GameFightMinimalStats(int lifePoints, int maxLifePoints, int baseMaxLifePoints, int permanentDamagePercent, int shieldPoints, short actionPoints, short maxActionPoints, short movementPoints, short maxMovementPoints, int summoner, bool summoned, short neutralElementResistPercent, short earthElementResistPercent, short waterElementResistPercent, short airElementResistPercent, short fireElementResistPercent, short neutralElementReduction, short earthElementReduction, short waterElementReduction, short airElementReduction, short fireElementReduction, short criticalDamageFixedResist, short pushDamageFixedResist, short pvpNeutralElementResistPercent, short pvpEarthElementResistPercent, short pvpWaterElementResistPercent, short pvpAirElementResistPercent, short pvpFireElementResistPercent, short pvpNeutralElementReduction, short pvpEarthElementReduction, short pvpWaterElementReduction, short pvpAirElementReduction, short pvpFireElementReduction, short dodgePALostProbability, short dodgePMLostProbability, short tackleBlock, short tackleEvade, sbyte invisibilityState)
+        public GameFightMinimalStats(int lifePoints, int maxLifePoints, int baseMaxLifePoints, int permanentDamagePercent, int shieldPoints, short actionPoints, short maxActionPoints, short movementPoints, short maxMovementPoints, double summoner, bool summoned, short neutralElementResistPercent, short earthElementResistPercent, short waterElementResistPercent, short airElementResistPercent, short fireElementResistPercent, short neutralElementReduction, short earthElementReduction, short waterElementReduction, short airElementReduction, short fireElementReduction, short criticalDamageFixedResist, short pushDamageFixedResist, short pvpNeutralElementResistPercent, short pvpEarthElementResistPercent, short pvpWaterElementResistPercent, short pvpAirElementResistPercent, short pvpFireElementResistPercent, short pvpNeutralElementReduction, short pvpEarthElementReduction, short pvpWaterElementReduction, short pvpAirElementReduction, short pvpFireElementReduction, short dodgePALostProbability, short dodgePMLostProbability, short tackleBlock, short tackleEvade, sbyte invisibilityState)
         {
             this.lifePoints = lifePoints;
             this.maxLifePoints = maxLifePoints;
@@ -113,7 +113,7 @@ namespace Stump.DofusProtocol.Types
             writer.WriteVarShort(maxActionPoints);
             writer.WriteVarShort(movementPoints);
             writer.WriteVarShort(maxMovementPoints);
-            writer.WriteInt(summoner);
+            writer.WriteDouble(summoner);
             writer.WriteBoolean(summoned);
             writer.WriteVarShort(neutralElementResistPercent);
             writer.WriteVarShort(earthElementResistPercent);
@@ -165,7 +165,9 @@ namespace Stump.DofusProtocol.Types
             maxActionPoints = reader.ReadVarShort();
             movementPoints = reader.ReadVarShort();
             maxMovementPoints = reader.ReadVarShort();
-            summoner = reader.ReadInt();
+            summoner = reader.ReadDouble();
+            if (summoner < -9.007199254740992E15 || summoner > 9.007199254740992E15)
+                throw new Exception("Forbidden value on summoner = " + summoner + ", it doesn't respect the following condition : summoner < -9.007199254740992E15 || summoner > 9.007199254740992E15");
             summoned = reader.ReadBoolean();
             neutralElementResistPercent = reader.ReadVarShort();
             earthElementResistPercent = reader.ReadVarShort();

@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:03
+// Generated on 12/20/2015 16:36:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public bool isTeamPhase;
         public bool canBeCancelled;
         public bool canSayReady;
         public bool isFightStarted;
@@ -28,8 +29,9 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameFightJoinMessage(bool canBeCancelled, bool canSayReady, bool isFightStarted, short timeMaxBeforeFightStart, sbyte fightType)
+        public GameFightJoinMessage(bool isTeamPhase, bool canBeCancelled, bool canSayReady, bool isFightStarted, short timeMaxBeforeFightStart, sbyte fightType)
         {
+            this.isTeamPhase = isTeamPhase;
             this.canBeCancelled = canBeCancelled;
             this.canSayReady = canSayReady;
             this.isFightStarted = isFightStarted;
@@ -40,9 +42,10 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, canBeCancelled);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, canSayReady);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, isFightStarted);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, isTeamPhase);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, canBeCancelled);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, canSayReady);
+            flag1 = BooleanByteWrapper.SetFlag(flag1, 3, isFightStarted);
             writer.WriteByte(flag1);
             writer.WriteShort(timeMaxBeforeFightStart);
             writer.WriteSByte(fightType);
@@ -51,9 +54,10 @@ namespace Stump.DofusProtocol.Messages
         public override void Deserialize(IDataReader reader)
         {
             byte flag1 = reader.ReadByte();
-            canBeCancelled = BooleanByteWrapper.GetFlag(flag1, 0);
-            canSayReady = BooleanByteWrapper.GetFlag(flag1, 1);
-            isFightStarted = BooleanByteWrapper.GetFlag(flag1, 2);
+            isTeamPhase = BooleanByteWrapper.GetFlag(flag1, 0);
+            canBeCancelled = BooleanByteWrapper.GetFlag(flag1, 1);
+            canSayReady = BooleanByteWrapper.GetFlag(flag1, 2);
+            isFightStarted = BooleanByteWrapper.GetFlag(flag1, 3);
             timeMaxBeforeFightStart = reader.ReadShort();
             if (timeMaxBeforeFightStart < 0)
                 throw new Exception("Forbidden value on timeMaxBeforeFightStart = " + timeMaxBeforeFightStart + ", it doesn't respect the following condition : timeMaxBeforeFightStart < 0");

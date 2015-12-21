@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:20
+// Generated on 12/20/2015 16:37:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int id;
+        public double id;
         public bool ready;
         
         public ExchangeIsReadyMessage()
         {
         }
         
-        public ExchangeIsReadyMessage(int id, bool ready)
+        public ExchangeIsReadyMessage(double id, bool ready)
         {
             this.id = id;
             this.ready = ready;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(id);
+            writer.WriteDouble(id);
             writer.WriteBoolean(ready);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            id = reader.ReadVarInt();
-            if (id < 0)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
+            id = reader.ReadDouble();
+            if (id < -9.007199254740992E15 || id > 9.007199254740992E15)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < -9.007199254740992E15 || id > 9.007199254740992E15");
             ready = reader.ReadBoolean();
         }
         

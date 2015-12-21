@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:07
+// Generated on 12/20/2015 16:36:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int targetId;
+        public long targetId;
         public short targetCellId;
         public bool friendly;
         
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameRolePlayPlayerFightRequestMessage(int targetId, short targetCellId, bool friendly)
+        public GameRolePlayPlayerFightRequestMessage(long targetId, short targetCellId, bool friendly)
         {
             this.targetId = targetId;
             this.targetCellId = targetCellId;
@@ -35,16 +35,16 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(targetId);
+            writer.WriteVarLong(targetId);
             writer.WriteShort(targetCellId);
             writer.WriteBoolean(friendly);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            targetId = reader.ReadVarInt();
-            if (targetId < 0)
-                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0");
+            targetId = reader.ReadVarLong();
+            if (targetId < 0 || targetId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0 || targetId > 9.007199254740992E15");
             targetCellId = reader.ReadShort();
             if (targetCellId < -1 || targetCellId > 559)
                 throw new Exception("Forbidden value on targetCellId = " + targetCellId + ", it doesn't respect the following condition : targetCellId < -1 || targetCellId > 559");

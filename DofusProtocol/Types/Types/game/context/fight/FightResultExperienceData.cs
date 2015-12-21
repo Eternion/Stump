@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,17 +26,17 @@ namespace Stump.DofusProtocol.Types
         public bool isIncarnationExperience;
         public long experience;
         public long experienceLevelFloor;
-        public double experienceNextLevelFloor;
-        public int experienceFightDelta;
-        public int experienceForGuild;
-        public int experienceForMount;
+        public long experienceNextLevelFloor;
+        public long experienceFightDelta;
+        public long experienceForGuild;
+        public long experienceForMount;
         public sbyte rerollExperienceMul;
         
         public FightResultExperienceData()
         {
         }
         
-        public FightResultExperienceData(bool showExperience, bool showExperienceLevelFloor, bool showExperienceNextLevelFloor, bool showExperienceFightDelta, bool showExperienceForGuild, bool showExperienceForMount, bool isIncarnationExperience, long experience, long experienceLevelFloor, double experienceNextLevelFloor, int experienceFightDelta, int experienceForGuild, int experienceForMount, sbyte rerollExperienceMul)
+        public FightResultExperienceData(bool showExperience, bool showExperienceLevelFloor, bool showExperienceNextLevelFloor, bool showExperienceFightDelta, bool showExperienceForGuild, bool showExperienceForMount, bool isIncarnationExperience, long experience, long experienceLevelFloor, long experienceNextLevelFloor, long experienceFightDelta, long experienceForGuild, long experienceForMount, sbyte rerollExperienceMul)
         {
             this.showExperience = showExperience;
             this.showExperienceLevelFloor = showExperienceLevelFloor;
@@ -68,10 +68,10 @@ namespace Stump.DofusProtocol.Types
             writer.WriteByte(flag1);
             writer.WriteVarLong(experience);
             writer.WriteVarLong(experienceLevelFloor);
-            writer.WriteDouble(experienceNextLevelFloor);
-            writer.WriteVarInt(experienceFightDelta);
-            writer.WriteVarInt(experienceForGuild);
-            writer.WriteVarInt(experienceForMount);
+            writer.WriteVarLong(experienceNextLevelFloor);
+            writer.WriteVarLong(experienceFightDelta);
+            writer.WriteVarLong(experienceForGuild);
+            writer.WriteVarLong(experienceForMount);
             writer.WriteSByte(rerollExperienceMul);
         }
         
@@ -92,16 +92,18 @@ namespace Stump.DofusProtocol.Types
             experienceLevelFloor = reader.ReadVarLong();
             if (experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15");
-            experienceNextLevelFloor = reader.ReadDouble();
+            experienceNextLevelFloor = reader.ReadVarLong();
             if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15");
-            experienceFightDelta = reader.ReadVarInt();
-            experienceForGuild = reader.ReadVarInt();
-            if (experienceForGuild < 0)
-                throw new Exception("Forbidden value on experienceForGuild = " + experienceForGuild + ", it doesn't respect the following condition : experienceForGuild < 0");
-            experienceForMount = reader.ReadVarInt();
-            if (experienceForMount < 0)
-                throw new Exception("Forbidden value on experienceForMount = " + experienceForMount + ", it doesn't respect the following condition : experienceForMount < 0");
+            experienceFightDelta = reader.ReadVarLong();
+            if (experienceFightDelta < 0 || experienceFightDelta > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceFightDelta = " + experienceFightDelta + ", it doesn't respect the following condition : experienceFightDelta < 0 || experienceFightDelta > 9.007199254740992E15");
+            experienceForGuild = reader.ReadVarLong();
+            if (experienceForGuild < 0 || experienceForGuild > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceForGuild = " + experienceForGuild + ", it doesn't respect the following condition : experienceForGuild < 0 || experienceForGuild > 9.007199254740992E15");
+            experienceForMount = reader.ReadVarLong();
+            if (experienceForMount < 0 || experienceForMount > 9.007199254740992E15)
+                throw new Exception("Forbidden value on experienceForMount = " + experienceForMount + ", it doesn't respect the following condition : experienceForMount < 0 || experienceForMount > 9.007199254740992E15");
             rerollExperienceMul = reader.ReadSByte();
             if (rerollExperienceMul < 0)
                 throw new Exception("Forbidden value on rerollExperienceMul = " + rerollExperienceMul + ", it doesn't respect the following condition : rerollExperienceMul < 0");

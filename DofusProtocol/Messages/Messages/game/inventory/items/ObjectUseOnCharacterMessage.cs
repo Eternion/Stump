@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:24
+// Generated on 12/20/2015 16:37:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int characterId;
+        public long characterId;
         
         public ObjectUseOnCharacterMessage()
         {
         }
         
-        public ObjectUseOnCharacterMessage(int objectUID, int characterId)
+        public ObjectUseOnCharacterMessage(int objectUID, long characterId)
          : base(objectUID)
         {
             this.characterId = characterId;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(characterId);
+            writer.WriteVarLong(characterId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            characterId = reader.ReadVarInt();
-            if (characterId < 0)
-                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0");
+            characterId = reader.ReadVarLong();
+            if (characterId < 0 || characterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0 || characterId > 9.007199254740992E15");
         }
         
     }

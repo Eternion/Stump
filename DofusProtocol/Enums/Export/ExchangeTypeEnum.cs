@@ -1,6 +1,6 @@
 
 
-// Generated on 09/01/2015 10:48:40
+// Generated on 12/20/2015 17:38:52
 using System;
 using System.Collections.Generic;
 
@@ -30,5 +30,9 @@ namespace Stump.DofusProtocol.Enums
         REALESTATE_FARM = 20,
         RUNES_TRADE = 21,
         RECYCLE_TRADE = 22,
+        BANK = 23,
+        TRASHBIN = 24,
+        ALLIANCE_PRISM = 25,
+        HAVENBAG = 26,
     }
 }

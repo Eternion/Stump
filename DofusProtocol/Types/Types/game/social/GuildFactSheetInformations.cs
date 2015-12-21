@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:28
+// Generated on 12/20/2015 17:31:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,39 +17,33 @@ namespace Stump.DofusProtocol.Types
             get { return Id; }
         }
         
-        public int leaderId;
-        public byte guildLevel;
+        public long leaderId;
         public short nbMembers;
         
         public GuildFactSheetInformations()
         {
         }
         
-        public GuildFactSheetInformations(int guildId, string guildName, Types.GuildEmblem guildEmblem, int leaderId, byte guildLevel, short nbMembers)
-         : base(guildId, guildName, guildEmblem)
+        public GuildFactSheetInformations(int guildId, string guildName, byte guildLevel, Types.GuildEmblem guildEmblem, long leaderId, short nbMembers)
+         : base(guildId, guildName, guildLevel, guildEmblem)
         {
             this.leaderId = leaderId;
-            this.guildLevel = guildLevel;
             this.nbMembers = nbMembers;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(leaderId);
-            writer.WriteByte(guildLevel);
+            writer.WriteVarLong(leaderId);
             writer.WriteVarShort(nbMembers);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            leaderId = reader.ReadVarInt();
-            if (leaderId < 0)
-                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0");
-            guildLevel = reader.ReadByte();
-            if (guildLevel < 0 || guildLevel > 255)
-                throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 0 || guildLevel > 255");
+            leaderId = reader.ReadVarLong();
+            if (leaderId < 0 || leaderId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0 || leaderId > 9.007199254740992E15");
             nbMembers = reader.ReadVarShort();
             if (nbMembers < 0)
                 throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 0");

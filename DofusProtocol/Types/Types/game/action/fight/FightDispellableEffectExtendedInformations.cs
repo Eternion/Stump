@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:19
+// Generated on 12/20/2015 17:30:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Types
         }
         
         public short actionId;
-        public int sourceId;
+        public double sourceId;
         public Types.AbstractFightDispellableEffect effect;
         
         public FightDispellableEffectExtendedInformations()
         {
         }
         
-        public FightDispellableEffectExtendedInformations(short actionId, int sourceId, Types.AbstractFightDispellableEffect effect)
+        public FightDispellableEffectExtendedInformations(short actionId, double sourceId, Types.AbstractFightDispellableEffect effect)
         {
             this.actionId = actionId;
             this.sourceId = sourceId;
@@ -35,7 +35,7 @@ namespace Stump.DofusProtocol.Types
         public virtual void Serialize(IDataWriter writer)
         {
             writer.WriteVarShort(actionId);
-            writer.WriteInt(sourceId);
+            writer.WriteDouble(sourceId);
             writer.WriteShort(effect.TypeId);
             effect.Serialize(writer);
         }
@@ -45,7 +45,9 @@ namespace Stump.DofusProtocol.Types
             actionId = reader.ReadVarShort();
             if (actionId < 0)
                 throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
-            sourceId = reader.ReadInt();
+            sourceId = reader.ReadDouble();
+            if (sourceId < -9.007199254740992E15 || sourceId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on sourceId = " + sourceId + ", it doesn't respect the following condition : sourceId < -9.007199254740992E15 || sourceId > 9.007199254740992E15");
             effect = Types.ProtocolTypeManager.GetInstance<Types.AbstractFightDispellableEffect>(reader.ReadShort());
             effect.Deserialize(reader);
         }

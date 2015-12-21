@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:01
+// Generated on 12/20/2015 16:36:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int receiverId;
+        public long receiverId;
         public string receiverName;
         
         public ChatServerCopyMessage()
         {
         }
         
-        public ChatServerCopyMessage(sbyte channel, string content, int timestamp, string fingerprint, int receiverId, string receiverName)
+        public ChatServerCopyMessage(sbyte channel, string content, int timestamp, string fingerprint, long receiverId, string receiverName)
          : base(channel, content, timestamp, fingerprint)
         {
             this.receiverId = receiverId;
@@ -35,16 +35,16 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(receiverId);
+            writer.WriteVarLong(receiverId);
             writer.WriteUTF(receiverName);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            receiverId = reader.ReadVarInt();
-            if (receiverId < 0)
-                throw new Exception("Forbidden value on receiverId = " + receiverId + ", it doesn't respect the following condition : receiverId < 0");
+            receiverId = reader.ReadVarLong();
+            if (receiverId < 0 || receiverId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on receiverId = " + receiverId + ", it doesn't respect the following condition : receiverId < 0 || receiverId > 9.007199254740992E15");
             receiverName = reader.ReadUTF();
         }
         

@@ -176,6 +176,8 @@
     <Compile Include="Records\Export\guild\EmblemSymbol.cs" />
     <Compile Include="Records\Export\guild\EmblemSymbolCategory.cs" />
     <Compile Include="Records\Export\guild\RankName.cs" />
+    <Compile Include="Records\Export\houses\HavenbagFurniture.cs" />
+    <Compile Include="Records\Export\houses\HavenbagTheme.cs" />
     <Compile Include="Records\Export\houses\House.cs" />
     <Compile Include="Records\Export\idols\Idol.cs" />
     <Compile Include="Records\Export\idols\IdolsPresetIcon.cs" />

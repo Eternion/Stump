@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:25
+// Generated on 12/20/2015 16:37:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +20,13 @@ namespace Stump.DofusProtocol.Messages
         
         public short subAreaId;
         public short fightId;
-        public int fighterToRemoveId;
+        public long fighterToRemoveId;
         
         public PrismFightAttackerRemoveMessage()
         {
         }
         
-        public PrismFightAttackerRemoveMessage(short subAreaId, short fightId, int fighterToRemoveId)
+        public PrismFightAttackerRemoveMessage(short subAreaId, short fightId, long fighterToRemoveId)
         {
             this.subAreaId = subAreaId;
             this.fightId = fightId;
@@ -37,7 +37,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteVarShort(subAreaId);
             writer.WriteVarShort(fightId);
-            writer.WriteVarInt(fighterToRemoveId);
+            writer.WriteVarLong(fighterToRemoveId);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -48,9 +48,9 @@ namespace Stump.DofusProtocol.Messages
             fightId = reader.ReadVarShort();
             if (fightId < 0)
                 throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
-            fighterToRemoveId = reader.ReadVarInt();
-            if (fighterToRemoveId < 0)
-                throw new Exception("Forbidden value on fighterToRemoveId = " + fighterToRemoveId + ", it doesn't respect the following condition : fighterToRemoveId < 0");
+            fighterToRemoveId = reader.ReadVarLong();
+            if (fighterToRemoveId < 0 || fighterToRemoveId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on fighterToRemoveId = " + fighterToRemoveId + ", it doesn't respect the following condition : fighterToRemoveId < 0 || fighterToRemoveId > 9.007199254740992E15");
         }
         
     }

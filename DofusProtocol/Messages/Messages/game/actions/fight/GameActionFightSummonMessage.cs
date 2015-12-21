@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:57
+// Generated on 12/20/2015 16:36:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameActionFightSummonMessage(short actionId, int sourceId, Types.GameFightFighterInformations summon)
+        public GameActionFightSummonMessage(short actionId, double sourceId, Types.GameFightFighterInformations summon)
          : base(actionId, sourceId)
         {
             this.summon = summon;

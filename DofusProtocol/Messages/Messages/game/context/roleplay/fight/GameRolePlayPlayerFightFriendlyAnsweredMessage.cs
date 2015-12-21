@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:07
+// Generated on 12/20/2015 16:36:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +19,15 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public int fightId;
-        public int sourceId;
-        public int targetId;
+        public long sourceId;
+        public long targetId;
         public bool accept;
         
         public GameRolePlayPlayerFightFriendlyAnsweredMessage()
         {
         }
         
-        public GameRolePlayPlayerFightFriendlyAnsweredMessage(int fightId, int sourceId, int targetId, bool accept)
+        public GameRolePlayPlayerFightFriendlyAnsweredMessage(int fightId, long sourceId, long targetId, bool accept)
         {
             this.fightId = fightId;
             this.sourceId = sourceId;
@@ -38,20 +38,20 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             writer.WriteInt(fightId);
-            writer.WriteVarInt(sourceId);
-            writer.WriteVarInt(targetId);
+            writer.WriteVarLong(sourceId);
+            writer.WriteVarLong(targetId);
             writer.WriteBoolean(accept);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             fightId = reader.ReadInt();
-            sourceId = reader.ReadVarInt();
-            if (sourceId < 0)
-                throw new Exception("Forbidden value on sourceId = " + sourceId + ", it doesn't respect the following condition : sourceId < 0");
-            targetId = reader.ReadVarInt();
-            if (targetId < 0)
-                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0");
+            sourceId = reader.ReadVarLong();
+            if (sourceId < 0 || sourceId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on sourceId = " + sourceId + ", it doesn't respect the following condition : sourceId < 0 || sourceId > 9.007199254740992E15");
+            targetId = reader.ReadVarLong();
+            if (targetId < 0 || targetId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on targetId = " + targetId + ", it doesn't respect the following condition : targetId < 0 || targetId > 9.007199254740992E15");
             accept = reader.ReadBoolean();
         }
         

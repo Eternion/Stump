@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:19
+// Generated on 12/20/2015 16:37:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +24,17 @@ namespace Stump.DofusProtocol.Messages
         public int mapId;
         public short subAreaId;
         public string userName;
+        public long callerId;
+        public string callerName;
         public double experience;
+        public short pods;
         public IEnumerable<Types.ObjectItemGenericQuantity> objectsInfos;
         
         public ExchangeGuildTaxCollectorGetMessage()
         {
         }
         
-        public ExchangeGuildTaxCollectorGetMessage(string collectorName, short worldX, short worldY, int mapId, short subAreaId, string userName, double experience, IEnumerable<Types.ObjectItemGenericQuantity> objectsInfos)
+        public ExchangeGuildTaxCollectorGetMessage(string collectorName, short worldX, short worldY, int mapId, short subAreaId, string userName, long callerId, string callerName, double experience, short pods, IEnumerable<Types.ObjectItemGenericQuantity> objectsInfos)
         {
             this.collectorName = collectorName;
             this.worldX = worldX;
@@ -39,7 +42,10 @@ namespace Stump.DofusProtocol.Messages
             this.mapId = mapId;
             this.subAreaId = subAreaId;
             this.userName = userName;
+            this.callerId = callerId;
+            this.callerName = callerName;
             this.experience = experience;
+            this.pods = pods;
             this.objectsInfos = objectsInfos;
         }
         
@@ -51,7 +57,10 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteInt(mapId);
             writer.WriteVarShort(subAreaId);
             writer.WriteUTF(userName);
+            writer.WriteVarLong(callerId);
+            writer.WriteUTF(callerName);
             writer.WriteDouble(experience);
+            writer.WriteVarShort(pods);
             var objectsInfos_before = writer.Position;
             var objectsInfos_count = 0;
             writer.WriteUShort(0);
@@ -81,9 +90,16 @@ namespace Stump.DofusProtocol.Messages
             if (subAreaId < 0)
                 throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
             userName = reader.ReadUTF();
+            callerId = reader.ReadVarLong();
+            if (callerId < 0 || callerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on callerId = " + callerId + ", it doesn't respect the following condition : callerId < 0 || callerId > 9.007199254740992E15");
+            callerName = reader.ReadUTF();
             experience = reader.ReadDouble();
             if (experience < -9.007199254740992E15 || experience > 9.007199254740992E15)
                 throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9.007199254740992E15 || experience > 9.007199254740992E15");
+            pods = reader.ReadVarShort();
+            if (pods < 0)
+                throw new Exception("Forbidden value on pods = " + pods + ", it doesn't respect the following condition : pods < 0");
             var limit = reader.ReadUShort();
             var objectsInfos_ = new Types.ObjectItemGenericQuantity[limit];
             for (int i = 0; i < limit; i++)

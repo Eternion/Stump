@@ -36,7 +36,8 @@ namespace Stump.Server.WorldServer.Game.Breeds
                 PlayableBreedEnum.Roublard,
                 PlayableBreedEnum.Zobal,
                 PlayableBreedEnum.Steamer,
-                PlayableBreedEnum.Eliotrope
+                PlayableBreedEnum.Eliotrope,
+                PlayableBreedEnum.Huppermage
             };
 
         public uint AvailableBreedsFlags
@@ -92,10 +93,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
             return m_heads.Values.FirstOrDefault(x => predicate(x));
         }
 
-        public bool IsBreedAvailable(int id)
-        {
-            return AvailableBreeds.Contains((PlayableBreedEnum)id);
-        }
+        public bool IsBreedAvailable(int id) => AvailableBreeds.Contains((PlayableBreedEnum)id);
 
         /// <summary>
         /// Add a breed instance to the database
@@ -143,7 +141,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
             Database.Delete(breed);
         }
 
-        public void ChangeBreed(Character character, PlayableBreedEnum breed)
+        public static void ChangeBreed(Character character, PlayableBreedEnum breed)
         {
             character.Spells.ForgetAllSpells();
             character.ResetStats();
@@ -174,7 +172,7 @@ namespace Stump.Server.WorldServer.Game.Breeds
 
         private static SpellLevelTemplate GetSpecialSpell(PlayableBreedEnum breedId)
         {
-            SpellIdEnum spellId = SpellIdEnum.COUP_DE_POING;
+            var spellId = SpellIdEnum.COUP_DE_POING;
 
             switch (breedId)
             {

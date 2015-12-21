@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:26
+// Generated on 12/20/2015 16:37:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +20,14 @@ namespace Stump.DofusProtocol.Messages
         
         public int requestId;
         public string playerName;
-        public int playerId;
+        public long playerId;
         public Types.EntityLook look;
         
         public ContactLookMessage()
         {
         }
         
-        public ContactLookMessage(int requestId, string playerName, int playerId, Types.EntityLook look)
+        public ContactLookMessage(int requestId, string playerName, long playerId, Types.EntityLook look)
         {
             this.requestId = requestId;
             this.playerName = playerName;
@@ -39,7 +39,7 @@ namespace Stump.DofusProtocol.Messages
         {
             writer.WriteVarInt(requestId);
             writer.WriteUTF(playerName);
-            writer.WriteVarInt(playerId);
+            writer.WriteVarLong(playerId);
             look.Serialize(writer);
         }
         
@@ -49,9 +49,9 @@ namespace Stump.DofusProtocol.Messages
             if (requestId < 0)
                 throw new Exception("Forbidden value on requestId = " + requestId + ", it doesn't respect the following condition : requestId < 0");
             playerName = reader.ReadUTF();
-            playerId = reader.ReadVarInt();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
+            playerId = reader.ReadVarLong();
+            if (playerId < 0 || playerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0 || playerId > 9.007199254740992E15");
             look = new Types.EntityLook();
             look.Deserialize(reader);
         }

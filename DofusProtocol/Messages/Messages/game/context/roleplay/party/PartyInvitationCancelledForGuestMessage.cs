@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:11
+// Generated on 12/20/2015 16:36:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int cancelerId;
+        public long cancelerId;
         
         public PartyInvitationCancelledForGuestMessage()
         {
         }
         
-        public PartyInvitationCancelledForGuestMessage(int partyId, int cancelerId)
+        public PartyInvitationCancelledForGuestMessage(int partyId, long cancelerId)
          : base(partyId)
         {
             this.cancelerId = cancelerId;
@@ -33,15 +33,15 @@ namespace Stump.DofusProtocol.Messages
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
-            writer.WriteVarInt(cancelerId);
+            writer.WriteVarLong(cancelerId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
-            cancelerId = reader.ReadVarInt();
-            if (cancelerId < 0)
-                throw new Exception("Forbidden value on cancelerId = " + cancelerId + ", it doesn't respect the following condition : cancelerId < 0");
+            cancelerId = reader.ReadVarLong();
+            if (cancelerId < 0 || cancelerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on cancelerId = " + cancelerId + ", it doesn't respect the following condition : cancelerId < 0 || cancelerId > 9.007199254740992E15");
         }
         
     }

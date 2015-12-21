@@ -120,7 +120,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (client.Character.Guild == null)
                 return;
 
-            var target = client.Character.Guild.TryGetMember(message.memberId);
+            var target = client.Character.Guild.TryGetMember((int) message.memberId);
             if (target == null)
                 return;
 
@@ -134,7 +134,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
             if (client.Character.Guild == null)
                 return;
 
-            var target = client.Character.Guild.TryGetMember(message.kickedId);
+            var target = client.Character.Guild.TryGetMember((int) message.kickedId);
             if (target == null)
                 return;
 
@@ -154,7 +154,7 @@ namespace Stump.Server.WorldServer.Handlers.Guilds
                 return;
             }
 
-            var target = Singleton<World>.Instance.GetCharacter(message.targetId);
+            var target = World.Instance.GetCharacter((int) message.targetId);
             if (target == null)
             {
                 // Impossible d'inviter, ce joueur est inconnu ou non connecté.

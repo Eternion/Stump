@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:00
+// Generated on 12/20/2015 16:36:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Stump.DofusProtocol.Messages
         }
         
         public string name;
-        public int id;
+        public long id;
         
         public CharacterLevelUpInformationMessage()
         {
         }
         
-        public CharacterLevelUpInformationMessage(byte newLevel, string name, int id)
+        public CharacterLevelUpInformationMessage(byte newLevel, string name, long id)
          : base(newLevel)
         {
             this.name = name;
@@ -36,16 +36,16 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Serialize(writer);
             writer.WriteUTF(name);
-            writer.WriteVarInt(id);
+            writer.WriteVarLong(id);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
             name = reader.ReadUTF();
-            id = reader.ReadVarInt();
-            if (id < 0)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
+            id = reader.ReadVarLong();
+            if (id < 0 || id > 9.007199254740992E15)
+                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0 || id > 9.007199254740992E15");
         }
         
     }

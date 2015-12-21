@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:35
+// Generated on 12/20/2015 18:01:22
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -39,6 +39,7 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean criticalFailureEndsTurn;
         public Boolean hideEffects;
         public Boolean hidden;
+        public Boolean playAnimation;
         public List<int> statesRequired;
         public List<int> statesForbidden;
         public List<EffectInstanceDice> effects;
@@ -202,6 +203,12 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.hidden; }
             set { this.hidden = value; }
+        }
+        [D2OIgnore]
+        public Boolean PlayAnimation
+        {
+            get { return this.playAnimation; }
+            set { this.playAnimation = value; }
         }
         [D2OIgnore]
         public List<int> StatesRequired

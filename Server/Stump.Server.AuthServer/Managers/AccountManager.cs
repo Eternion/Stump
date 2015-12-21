@@ -37,7 +37,8 @@ namespace Stump.Server.AuthServer.Managers
             PlayableBreedEnum.Roublard,
             PlayableBreedEnum.Zobal,
             PlayableBreedEnum.Steamer,
-            PlayableBreedEnum.Eliotrope
+            PlayableBreedEnum.Eliotrope,
+            PlayableBreedEnum.Huppermage
             };
 
 

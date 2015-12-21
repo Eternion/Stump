@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:22
+// Generated on 12/20/2015 16:37:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int sellerId;
+        public double sellerId;
         public IEnumerable<Types.ObjectItemToSellInHumanVendorShop> objectsInfos;
         
         public ExchangeStartOkHumanVendorMessage()
         {
         }
         
-        public ExchangeStartOkHumanVendorMessage(int sellerId, IEnumerable<Types.ObjectItemToSellInHumanVendorShop> objectsInfos)
+        public ExchangeStartOkHumanVendorMessage(double sellerId, IEnumerable<Types.ObjectItemToSellInHumanVendorShop> objectsInfos)
         {
             this.sellerId = sellerId;
             this.objectsInfos = objectsInfos;
@@ -33,7 +33,7 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteVarInt(sellerId);
+            writer.WriteDouble(sellerId);
             var objectsInfos_before = writer.Position;
             var objectsInfos_count = 0;
             writer.WriteUShort(0);
@@ -51,9 +51,9 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Deserialize(IDataReader reader)
         {
-            sellerId = reader.ReadVarInt();
-            if (sellerId < 0)
-                throw new Exception("Forbidden value on sellerId = " + sellerId + ", it doesn't respect the following condition : sellerId < 0");
+            sellerId = reader.ReadDouble();
+            if (sellerId < -9.007199254740992E15 || sellerId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on sellerId = " + sellerId + ", it doesn't respect the following condition : sellerId < -9.007199254740992E15 || sellerId > 9.007199254740992E15");
             var limit = reader.ReadUShort();
             var objectsInfos_ = new Types.ObjectItemToSellInHumanVendorShop[limit];
             for (int i = 0; i < limit; i++)

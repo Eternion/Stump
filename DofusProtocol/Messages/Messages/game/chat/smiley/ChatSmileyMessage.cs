@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:01
+// Generated on 12/20/2015 16:36:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int entityId;
+        public double entityId;
         public short smileyId;
         public int accountId;
         
@@ -26,7 +26,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public ChatSmileyMessage(int entityId, short smileyId, int accountId)
+        public ChatSmileyMessage(double entityId, short smileyId, int accountId)
         {
             this.entityId = entityId;
             this.smileyId = smileyId;
@@ -35,14 +35,16 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(entityId);
+            writer.WriteDouble(entityId);
             writer.WriteVarShort(smileyId);
             writer.WriteInt(accountId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            entityId = reader.ReadInt();
+            entityId = reader.ReadDouble();
+            if (entityId < -9.007199254740992E15 || entityId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on entityId = " + entityId + ", it doesn't respect the following condition : entityId < -9.007199254740992E15 || entityId > 9.007199254740992E15");
             smileyId = reader.ReadVarShort();
             if (smileyId < 0)
                 throw new Exception("Forbidden value on smileyId = " + smileyId + ", it doesn't respect the following condition : smileyId < 0");

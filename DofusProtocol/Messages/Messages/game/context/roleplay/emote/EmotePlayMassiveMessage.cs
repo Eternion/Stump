@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:07
+// Generated on 12/20/2015 16:36:52
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public IEnumerable<int> actorIds;
+        public IEnumerable<double> actorIds;
         
         public EmotePlayMassiveMessage()
         {
         }
         
-        public EmotePlayMassiveMessage(byte emoteId, double emoteStartTime, IEnumerable<int> actorIds)
+        public EmotePlayMassiveMessage(byte emoteId, double emoteStartTime, IEnumerable<double> actorIds)
          : base(emoteId, emoteStartTime)
         {
             this.actorIds = actorIds;
@@ -38,7 +38,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort(0);
             foreach (var entry in actorIds)
             {
-                 writer.WriteInt(entry);
+                 writer.WriteDouble(entry);
                  actorIds_count++;
             }
             var actorIds_after = writer.Position;
@@ -52,10 +52,10 @@ namespace Stump.DofusProtocol.Messages
         {
             base.Deserialize(reader);
             var limit = reader.ReadUShort();
-            var actorIds_ = new int[limit];
+            var actorIds_ = new double[limit];
             for (int i = 0; i < limit; i++)
             {
-                 actorIds_[i] = reader.ReadInt();
+                 actorIds_[i] = reader.ReadDouble();
             }
             actorIds = actorIds_;
         }

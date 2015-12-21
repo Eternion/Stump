@@ -891,9 +891,9 @@ namespace Stump.Server.WorldServer.Game.Guilds
         }
 
 
-        public GuildInformations GetGuildInformations() => new GuildInformations(Id, Name, Emblem.GetNetworkGuildEmblem());
+        public GuildInformations GetGuildInformations() => new GuildInformations(Id, Name, Level, Emblem.GetNetworkGuildEmblem());
 
-        public BasicGuildInformations GetBasicGuildInformations() => new BasicGuildInformations(Id, Name);
+        public BasicGuildInformations GetBasicGuildInformations() => new BasicGuildInformations(Id, Name, Level);
     }
 }
 

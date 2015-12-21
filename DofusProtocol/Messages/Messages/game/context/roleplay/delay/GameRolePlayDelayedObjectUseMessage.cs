@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:06
+// Generated on 12/20/2015 16:36:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public GameRolePlayDelayedObjectUseMessage(int delayedCharacterId, sbyte delayTypeId, double delayEndTime, short objectGID)
+        public GameRolePlayDelayedObjectUseMessage(double delayedCharacterId, sbyte delayTypeId, double delayEndTime, short objectGID)
          : base(delayedCharacterId, delayTypeId, delayEndTime)
         {
             this.objectGID = objectGID;

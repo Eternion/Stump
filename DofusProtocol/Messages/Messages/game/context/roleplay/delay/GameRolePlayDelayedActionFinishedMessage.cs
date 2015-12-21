@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:26:06
+// Generated on 12/20/2015 16:36:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +18,14 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
-        public int delayedCharacterId;
+        public double delayedCharacterId;
         public sbyte delayTypeId;
         
         public GameRolePlayDelayedActionFinishedMessage()
         {
         }
         
-        public GameRolePlayDelayedActionFinishedMessage(int delayedCharacterId, sbyte delayTypeId)
+        public GameRolePlayDelayedActionFinishedMessage(double delayedCharacterId, sbyte delayTypeId)
         {
             this.delayedCharacterId = delayedCharacterId;
             this.delayTypeId = delayTypeId;
@@ -33,13 +33,15 @@ namespace Stump.DofusProtocol.Messages
         
         public override void Serialize(IDataWriter writer)
         {
-            writer.WriteInt(delayedCharacterId);
+            writer.WriteDouble(delayedCharacterId);
             writer.WriteSByte(delayTypeId);
         }
         
         public override void Deserialize(IDataReader reader)
         {
-            delayedCharacterId = reader.ReadInt();
+            delayedCharacterId = reader.ReadDouble();
+            if (delayedCharacterId < -9.007199254740992E15 || delayedCharacterId > 9.007199254740992E15)
+                throw new Exception("Forbidden value on delayedCharacterId = " + delayedCharacterId + ", it doesn't respect the following condition : delayedCharacterId < -9.007199254740992E15 || delayedCharacterId > 9.007199254740992E15");
             delayTypeId = reader.ReadSByte();
             if (delayTypeId < 0)
                 throw new Exception("Forbidden value on delayTypeId = " + delayTypeId + ", it doesn't respect the following condition : delayTypeId < 0");

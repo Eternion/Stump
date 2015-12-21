@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:20:21
+// Generated on 12/20/2015 17:30:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Types
         {
         }
         
-        public FightTeamMemberMonsterInformations(int id, int monsterId, sbyte grade)
+        public FightTeamMemberMonsterInformations(double id, int monsterId, sbyte grade)
          : base(id)
         {
             this.monsterId = monsterId;

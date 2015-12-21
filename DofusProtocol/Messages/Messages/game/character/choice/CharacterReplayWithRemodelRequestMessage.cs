@@ -1,6 +1,6 @@
 
 
-// Generated on 11/16/2015 14:25:59
+// Generated on 12/20/2015 16:36:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace Stump.DofusProtocol.Messages
         {
         }
         
-        public CharacterReplayWithRemodelRequestMessage(int characterId, Types.RemodelingInformation remodel)
+        public CharacterReplayWithRemodelRequestMessage(long characterId, Types.RemodelingInformation remodel)
          : base(characterId)
         {
             this.remodel = remodel;
