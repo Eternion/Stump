@@ -79,6 +79,22 @@ getproperty Qname(PackageNamespace("","180"),"ticket")
 callproperty Qname(PackageNamespace("","180"),"toString") 0
 setproperty Qname(PackageNamespace("","180"),"gameServerTicket")
 
+(dofus.logic.game.approach.frames.GameServerApproachFrame::AllModulesLoadedMessage):
+BEFORE:
+if(!PlayerManager.getInstance() || PlayerManager.getInstance().server.id != 129 && PlayerManager.getInstance().server.id != 130)
+{
+	rdm = new RawDataMessage();
+	rdm.initRawDataMessage(Base64.decode(I18n.getUiText("ui.link.changelog")));
+	Kernel.getWorker().process(rdm);
+}
+
+AFTER:
+if(!PlayerManager.getInstance() || PlayerManager.getInstance().server.id != 129 && PlayerManager.getInstance().server.id != 130)
+{
+	rdm = new RawDataMessage();
+}
+
+
 ====== OPTIONAL ======
 Patch ReloginTokenStatusMessage in dofus.logic.common.frames.ChangeCharacterFrame::ReloginTokenStatusMessage
 Patch initIdentificationMessage(LoginValidationWithTicketAction) in dofus.logic.connection.managers.AuthentificationManager::getIdentificationMessage

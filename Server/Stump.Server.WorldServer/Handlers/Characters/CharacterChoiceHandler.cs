@@ -107,8 +107,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 == (sbyte)CharacterRemodelingEnum.CHARACTER_REMODELING_BREED))
             {
                 client.Character = new Character(character, client);
-
-                BreedManager.Instance.ChangeBreed(client.Character, (PlayableBreedEnum)remodel.breed);
+                BreedManager.ChangeBreed(client.Character, (PlayableBreedEnum)remodel.breed);
                 client.Character.SaveNow();
 
                 character = client.Character.Record;
