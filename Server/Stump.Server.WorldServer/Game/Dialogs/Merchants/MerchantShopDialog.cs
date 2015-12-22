@@ -79,21 +79,15 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Merchants
             }
 
             var removed = Merchant.Bag.RemoveItem(item, quantity);
-            
-            if (removed < quantity)
-            {
-                Character.Client.Send(new ExchangeErrorMessage((int)ExchangeErrorEnum.BUY_ERROR));
-                return false;
-            }
 
-            var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, quantity,
+            var newItem = ItemManager.Instance.CreatePlayerItem(Character, item.Template, removed,
                                                             item.Effects);
 
             Character.Inventory.AddItem(newItem);
             BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    21, quantity, item.Template.Id);
+                                                    21, removed, item.Template.Id);
 
-            var finalPrice = item.Price*quantity;
+            var finalPrice = item.Price* removed;
             Character.Inventory.SubKamas((int)finalPrice);
 
             Character.Client.Send(new ExchangeBuyOkMessage());
