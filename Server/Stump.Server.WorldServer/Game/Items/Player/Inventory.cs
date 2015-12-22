@@ -403,7 +403,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
             var item = TryGetItem(template);
 
-            if (item != null && !item.IsEquiped() && template.Effects.All(x => x is EffectInteger)) // unrandomable
+            if (item != null && !item.IsEquiped() && template.Effects.All(x => x.GetType() == typeof(EffectInteger))) // unrandomable
             {            
                 if (!item.OnAddItem())
                     return null;
