@@ -122,6 +122,12 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
                 return false;
             }
 
+            if (recipe.ResultLevel > Job.Level)
+            {
+                InventoryHandler.SendExchangeCraftResultWithObjectIdMessage(Character.Client, ExchangeCraftResultEnum.CRAFT_FAILED, recipe.ItemTemplate);
+                return false;
+            }
+
             if (Crafter.Items.Any(x => Character.Inventory[x.Guid]?.Stack < x.Stack*Amount))
             {
                 InventoryHandler.SendExchangeCraftResultMessage(Character.Client, ExchangeCraftResultEnum.CRAFT_FAILED);
@@ -149,7 +155,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Craft
         private RecipeRecord FindMatchingRecipe()
         {
             return (from recipe in Skill.SkillTemplate.Recipes
-                    where recipe.ResultLevel <= Job.Level && recipe.IngredientIds.Count == Crafter.Items.Count
+                    where recipe.IngredientIds.Count == Crafter.Items.Count
                     let valid = !(from item in Crafter.Items
                                   let index = recipe.IngredientIds.IndexOf(item.Template.Id)
                                   where index < 0 || recipe.Quantities[index] != item.Stack
