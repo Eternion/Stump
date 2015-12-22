@@ -27,6 +27,7 @@ using Stump.Server.WorldServer.Game.Items.BidHouse;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Jobs;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
+using Stump.Server.WorldServer.Database.Items.Templates;
 
 namespace Stump.Server.WorldServer.Handlers.Inventory
 {
@@ -604,6 +605,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         public static void SendExchangeCraftResultMessage(IPacketReceiver client, ExchangeCraftResultEnum result)
         {
             client.Send(new ExchangeCraftResultMessage((sbyte)result));
+        }
+
+        public static void SendExchangeCraftResultWithObjectIdMessage(IPacketReceiver client, ExchangeCraftResultEnum result, ItemTemplate item)
+        {
+            client.Send(new ExchangeCraftResultWithObjectIdMessage((sbyte)result, (short)item.Id));
         }
 
         public static void SendExchangeCraftResultWithObjectDescMessage(IPacketReceiver client, ExchangeCraftResultEnum result, BasePlayerItem createdItem, int amount)
