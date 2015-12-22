@@ -544,7 +544,6 @@ namespace Stump.Server.BaseServer
 
                 OnShutdown();
 
-
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 

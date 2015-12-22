@@ -203,6 +203,13 @@ namespace Stump.Plugins.WebServerPlugin
                         response = "Ok";
                         break;
                     }
+                case "restart":
+                    {
+                        WorldServer.Instance.Shutdown();
+
+                        response = "Ok";
+                        break;
+                    }
                 default:
                     {
                         response = "404 Not Found";
