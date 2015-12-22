@@ -49,9 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             target.IsSacrificeProtected = true;
 
-            if (buff.Spell.Template.Id == (int)SpellIdEnum.SACRIFICE_440)
-                Caster.ExchangePositions(target);
-            else if (Caster is SummonedTurret)
+            if (Caster is SummonedTurret)
             {
                 target.IsSacrificeProtected = false;
 
