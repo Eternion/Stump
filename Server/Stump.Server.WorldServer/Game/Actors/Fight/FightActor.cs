@@ -1384,6 +1384,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private readonly UniqueIdProvider m_buffIdProvider = new UniqueIdProvider();
         private readonly List<Buff> m_buffList = new List<Buff>();
 
+        public ReadOnlyCollection<Buff> Buffs => m_buffList.AsReadOnly();
+
         public int PopNextBuffId()
         {
             return m_buffIdProvider.Pop();

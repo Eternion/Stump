@@ -67,6 +67,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, trigger.Cell, false);
             handler.MarkTrigger = this;
             handler.Initialize();
+
+            foreach (var effectHandler in handler.GetEffectHandlers())
+                effectHandler.SetAffectedActors(new[] { trigger });
+
             handler.Execute();
         }
         
