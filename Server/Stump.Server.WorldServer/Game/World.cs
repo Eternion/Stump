@@ -23,36 +23,40 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors;
 using Stump.Server.WorldServer.Game.Interactives;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
+using Stump.Server.WorldServer.Database.World.Database.World;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game
 {
     public class World : DataManager<World>
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly ConcurrentDictionary<int, Character> m_charactersById =
+        readonly ConcurrentDictionary<int, Character> m_charactersById =
             new ConcurrentDictionary<int, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections);
 
-        private readonly ConcurrentDictionary<string, Character> m_charactersByName =
+        readonly ConcurrentDictionary<string, Character> m_charactersByName =
             new ConcurrentDictionary<string, Character>(Environment.ProcessorCount, ClientManager.MaxConcurrentConnections);
 
-        private readonly ConcurrentDictionary<int, WorldAccount> m_connectedAccounts =
+        readonly ConcurrentDictionary<int, WorldAccount> m_connectedAccounts =
             new ConcurrentDictionary<int, WorldAccount>();
 
-        private Dictionary<int, Area> m_areas = new Dictionary<int, Area>();
+        Dictionary<int, Area> m_areas = new Dictionary<int, Area>();
 
-        private int m_characterCount;
+        int m_characterCount;
 
-        private Dictionary<int, Map> m_maps = new Dictionary<int, Map>();
-        private Dictionary<int, SubArea> m_subAreas = new Dictionary<int, SubArea>();
-        private Dictionary<int, SuperArea> m_superAreas = new Dictionary<int, SuperArea>();
+        Dictionary<int, Map> m_maps = new Dictionary<int, Map>();
+        Dictionary<int, SubArea> m_subAreas = new Dictionary<int, SubArea>();
+        Dictionary<int, SuperArea> m_superAreas = new Dictionary<int, SuperArea>();
+        Dictionary<int, WorldMapGraveyardRecord> m_graveyards = new Dictionary<int, WorldMapGraveyardRecord>();
+        Dictionary<int, WorldMapPhoenixRecord> m_phoenixes = new Dictionary<int, WorldMapPhoenixRecord>();
 
-        private readonly object m_saveLock = new object();
-        private readonly ConcurrentBag<ISaveable> m_saveablesInstances = new ConcurrentBag<ISaveable>();
+        readonly object m_saveLock = new object();
+        readonly ConcurrentBag<ISaveable> m_saveablesInstances = new ConcurrentBag<ISaveable>();
 
         public event Action<Character> CharacterJoined;
 
-        private void OnCharacterEntered(Character character)
+        void OnCharacterEntered(Character character)
         {
             var handler = CharacterJoined;
             if (handler != null) handler(character);
@@ -60,7 +64,7 @@ namespace Stump.Server.WorldServer.Game
 
         public event Action<Character> CharacterLeft;
 
-        private void OnCharacterLeft(Character character)
+        void OnCharacterLeft(Character character)
         {
             var handler = CharacterLeft;
             if (handler != null) handler(character);
@@ -110,6 +114,12 @@ namespace Stump.Server.WorldServer.Game
 
             logger.Info("Load super areas...");
             m_superAreas = Database.Query<SuperAreaRecord>(SuperAreaRecordRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => new SuperArea(entry));
+
+            logger.Info("Load graveyards...");
+            m_graveyards = Database.Query<WorldMapGraveyardRecord>(WorldMapGraveyardRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => entry);
+
+            logger.Info("Load phoenixes...");
+            m_phoenixes = Database.Query<WorldMapPhoenixRecord>(WorldMapPhoenixRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => entry);
 
             SetLinks();
         }
@@ -452,6 +462,30 @@ namespace Stump.Server.WorldServer.Game
         public SuperArea GetSuperArea(string name)
         {
             return m_superAreas.Values.FirstOrDefault(entry => entry.Name == name);
+        }
+
+        public IEnumerable<WorldMapGraveyardRecord> GetGraveyards()
+        {
+            return m_graveyards.Values.ToArray();
+        }
+
+        public IEnumerable<WorldMapPhoenixRecord> GetPhoenixes()
+        {
+            return m_phoenixes.Values.ToArray();
+        }
+
+        public WorldMapGraveyardRecord GetNearestGraveyard(Map currentMap)
+        {
+            var actualPoint = new MapPoint(currentMap.Position);
+            return GetGraveyards().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position))).FirstOrDefault();
+        }
+
+        public Map GetNearestPhoenix(Map currentMap)
+        {
+            var actualPoint = new MapPoint(currentMap.Position);
+            var phoenix = GetPhoenixes().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position))).FirstOrDefault();
+
+            return phoenix == null ? null : phoenix.Map;
         }
 
         #endregion

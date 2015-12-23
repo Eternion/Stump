@@ -21,7 +21,7 @@ namespace ArkalysPlugin
         [Initialization(typeof(World))]
         public static void Initialize()
         {
-            m_zaaps = InteractiveManager.Instance.GetInteractiveSpawns().Where(x => x.TemplateId == ZAAP_TEMPLATE).
+            m_zaaps = InteractiveManager.Instance.GetInteractiveSpawns().Where(x => x.TemplateId != null && x.TemplateId == ZAAP_TEMPLATE).
                 Select(x => World.Instance.GetMap(x.MapId)).Where(x => x != null).ToArray();
         }
 

@@ -65,6 +65,7 @@ using Stump.Server.WorldServer.Handlers.Moderation;
 using Stump.Server.WorldServer.Handlers.Titles;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 using Stump.Server.WorldServer.Handlers.Interactives;
+using Stump.Server.WorldServer.Handlers.Initialization;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -119,6 +120,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 if (item != null)
                     Inventory.RemoveItem(item, true, false);
             }
+
+            OnPlayerLifeStatusChanged(PlayerLifeStatus);
 
             var handler = LoggedIn;
             if (handler != null) handler(this);
@@ -882,35 +885,42 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void UpdateLook(bool send = true)
         {
-            var skins = new List<short>(Breed.GetLook(Sex).Skins);
-            skins.AddRange(Head.Skins);
-            skins.AddRange(Inventory.GetItemsSkins());
-
-            if (skins.Contains(2990) && Guild != null)
+            if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
             {
-                skins.Remove(2990); //Old ApparenceId
-                skins.Add(1730); //New ApparenceId
+                var skins = new List<short>(Breed.GetLook(Sex).Skins);
+                skins.AddRange(Head.Skins);
+                skins.AddRange(Inventory.GetItemsSkins());
 
-                skins.Add((short)Guild.Emblem.Template.SkinId); //Emblem Skin
+                if (skins.Contains(2990) && Guild != null)
+                {
+                    skins.Remove(2990); //Old ApparenceId
+                    skins.Add(1730); //New ApparenceId
 
-                if (RealLook.Colors.ContainsKey(7))
-                    RealLook.RemoveColor(7);
-                if (RealLook.Colors.ContainsKey(8))
-                    RealLook.RemoveColor(8);
+                    skins.Add((short)Guild.Emblem.Template.SkinId); //Emblem Skin
 
-                RealLook.AddColor(8, Guild.Emblem.SymbolColor);
-                RealLook.AddColor(7, Guild.Emblem.BackgroundColor);
+                    if (RealLook.Colors.ContainsKey(7))
+                        RealLook.RemoveColor(7);
+                    if (RealLook.Colors.ContainsKey(8))
+                        RealLook.RemoveColor(8);
+
+                    RealLook.AddColor(8, Guild.Emblem.SymbolColor);
+                    RealLook.AddColor(7, Guild.Emblem.BackgroundColor);
+                }
+
+                RealLook.SetSkins(skins.ToArray());
+
+                var petSkin = Inventory.GetPetSkin();
+
+                if (petSkin != null && petSkin.Item1.HasValue && petSkin.Item2)
+                    RealLook.SetPetSkin(petSkin.Item1.Value);
+                else
+                    RealLook.RemovePets();
             }
+            else if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_PHANTOM)
+                RealLook.BonesID = 3;
+            else if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE)
+                RealLook.BonesID = (short)(23 + Breed.Id);
 
-            RealLook.SetSkins(skins.ToArray());
-
-            var petSkin = Inventory.GetPetSkin();
-
-            if (petSkin != null && petSkin.Item1.HasValue && petSkin.Item2)
-                RealLook.SetPetSkin(petSkin.Item1.Value);
-            else
-                RealLook.RemovePets();
-                
             if (send)
                 RefreshActor();
         }
@@ -1053,7 +1063,21 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public short Energy
         {
             get { return m_record.Energy; }
-            set { m_record.Energy = value; }
+            set
+            {
+                m_record.Energy = (short)(value < 0 ? 0 : value);
+                OnEnergyChanged(m_record.Energy);
+            }
+        }
+
+        public PlayerLifeStatusEnum PlayerLifeStatus
+        {
+            get { return m_record.PlayerLifeStatus; }
+            set
+            {
+                m_record.PlayerLifeStatus = value;
+                OnPlayerLifeStatusChanged(value);
+            }
         }
 
         public int LifePoints
@@ -1130,9 +1154,41 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
+        void OnEnergyChanged(short energy)
+        {
+            if (energy > 0)
+                return;
+
+            PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_TOMBSTONE;
+        }
+
+        void OnPlayerLifeStatusChanged(PlayerLifeStatusEnum status)
+        {
+            var phoenixMapId = -1;
+
+            if (status == PlayerLifeStatusEnum.STATUS_PHANTOM)
+                phoenixMapId = World.Instance.GetNearestPhoenix(Map).Id;
+
+            CharacterHandler.SendGameRolePlayPlayerLifeStatusMessage(Client, status, phoenixMapId);
+            InitializationHandler.SendSetCharacterRestrictionsMessage(Client, this);
+
+            UpdateLook();
+        }
+
+        public void FreeSoul()
+        {
+            if (PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_TOMBSTONE)
+                return;
+
+            var graveyard = World.Instance.GetNearestGraveyard(Map);
+            Teleport(graveyard.Map, graveyard.Map.GetCell(graveyard.CellId));
+
+            PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_PHANTOM;
+        }
+
         public event LevelChangedHandler LevelChanged;
 
-        private void OnLevelChanged(byte currentLevel, int difference)
+        void OnLevelChanged(byte currentLevel, int difference)
         {
             if (difference > 0)
             {
@@ -2397,13 +2453,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         void OnDied()
         {
-            var dest = GetSpawnPoint() ?? Breed.GetStartPosition();
+            Energy -= (short)(10 * Level);
 
-            NextMap = dest.Map;
-            Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
-            Direction = dest.Direction;
+            if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+            {
+                var dest = GetSpawnPoint() ?? Breed.GetStartPosition();
 
-            // energy lost go here
+                NextMap = dest.Map;
+                Cell = dest.Cell ?? dest.Map.GetRandomFreeCell();
+                Direction = dest.Direction;
+            }
+
             Stats.Health.DamageTaken = (Stats.Health.TotalMax - 1);
 
             var handler = Died;
@@ -2635,6 +2695,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (IsRegenActive())
                 StopRegen();
+
+            if (PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+                return;
 
             RegenStartTime = DateTime.Now;
             RegenSpeed = timePerHp;
@@ -3571,6 +3634,34 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         #endregion
+
+        public override ActorRestrictionsInformations GetActorRestrictionsInformations()
+        {
+            return new ActorRestrictionsInformations(
+                                !Map.AllowAggression, // cantBeAgressed
+                                !Map.AllowChallenge, // cantBeChallenged
+                                !Map.AllowExchangesBetweenPlayers, // cantTrade
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantBeAttackedByMutant
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantRun
+                                false, // cantMinimize
+                                PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE, // cantMove
+
+                                !Map.AllowAggression, // cantAggress
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantChallenge
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantExchange
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantAttack
+                                false, // cantChat
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantBeMerchant
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantUseObject
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantUseTaxCollector
+
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantUseInteractive
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantSpeakToNPC
+                                false, // cantChangeZone
+                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantAttackMonster
+                                false // cantWalk8Directions
+                                );
+        }
 
         public override HumanInformations GetHumanInformations()
         {
