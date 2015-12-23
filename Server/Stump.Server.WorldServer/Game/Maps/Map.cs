@@ -1831,7 +1831,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 new HouseInformations[0],
                 m_actors.Where(entry => entry.CanBeSee(character)).Select(entry => entry.GetGameContextActorInformations(character) as GameRolePlayActorInformations),
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
-                m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetStatedElement()),
+                m_interactives.Where(entry => entry.Value.CanBeSee(character)).Where(x => x.Value.Spawn.Animated).Select(entry => entry.Value.GetStatedElement()),
                 new MapObstacle[0],
                 m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()),
                 (short)Position.X,
