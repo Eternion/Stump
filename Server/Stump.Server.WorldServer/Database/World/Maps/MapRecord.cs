@@ -197,6 +197,7 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
+
         [Ignore]
         public short[] BlueFightCells
         {
@@ -253,6 +254,12 @@ namespace Stump.Server.WorldServer.Database.World.Maps
         {
             get;
             private set;
+        }
+
+        public bool SpawnDisabled
+        {
+            get;
+            set;
         }
 
         #region ISaveIntercepter Members
