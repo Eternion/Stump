@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Game.Spells.Casts.Roublard;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -59,6 +60,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private readonly StatsFields m_stats;
         private readonly bool m_initialized;
+        private bool m_isExploding;
 
         public SummonedBomb(int id, FightTeam team, SpellBombTemplate spellBombTemplate, MonsterGrade monsterBombTemplate, FightActor summoner, Cell cell)
             : base(team)
@@ -276,6 +278,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         private void Explode(int currentBonus)
         {
+            m_isExploding = true;
+
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, ExplodSpell, Cell, false) as BombExplodSpellCastHandler;
@@ -417,10 +421,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            if (HasState((int)SpellStatesEnum.INDÉPLAÇABLE))
+            if (!m_isExploding && Buffs.OfType<EmptyBuff>().Any(x => x.Effect.EffectId == EffectsEnum.Effect_TriggerBomb)) // poudre
             {
-                var state = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.INDÉPLAÇABLE);
-                RemoveState(state);
+                Explode();
+                return;
             }
 
             base.OnDead(killedBy, passTurn);

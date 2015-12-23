@@ -26,5 +26,63 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         TACKLE = 0x00040000,
         PUSH = 0x00080000,
         UNKNOWN = 0x7FFFFFFF,
+
+        /*
+        A=lose AP (101)
+        CC=
+        d=
+        D=damage
+        DA=damage air
+        DBA=damage on ally
+        DBE=damage on enemy
+        DC=use weapon
+        DE=damage earth
+        DF=damage fire
+        DG=
+        DI=
+        DM=distance between 0 and 1
+        DN=damage neutral
+        DP=
+        Dr=
+        DR=distance > 1
+        DS=not weapon
+        DTB=
+        DTE=
+        DW=damage water
+        EO=
+        EO215=
+        EO244=
+        EO276=
+        EO277=
+        EO278=
+        EO3=
+        EO341=
+        EO342=
+        EO343=
+        EO344=
+        EO345=
+        EO40=
+        Eo56=
+        EO7=
+        Eo8=
+        EO8=
+        H=
+        I=
+        m=
+        M=
+        mA=
+        MD=
+        MDM=
+        MDP=
+        ML=
+        MP=
+        MS=
+        P=
+        R=
+        TB=
+        TE=
+        tF=
+        tS=
+        X*/
     }
 }

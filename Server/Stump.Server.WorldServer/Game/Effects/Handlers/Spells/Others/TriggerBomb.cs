@@ -4,6 +4,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
@@ -16,12 +17,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         public override bool Apply()
         {
-            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter) Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
+            foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter)Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
             {
-                if (bomb.HasState((int) SpellStatesEnum.INDÉPLAÇABLE))
-                    bomb.RemoveSpellBuffs((int)SpellIdEnum.POUDRE);
-
-                ((SummonedBomb) bomb).Explode();
+                if (Dice.Duration > 0)
+                {
+                    bomb.AddAndApplyBuff(new EmptyBuff(bomb.PopNextBuffId(), bomb, Caster, Dice, Spell, false));
+                }
+                else
+                {
+                    ((SummonedBomb)bomb).Explode();
+                }
             }
 
             return true;

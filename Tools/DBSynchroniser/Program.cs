@@ -779,7 +779,7 @@ namespace DBSynchroniser
                         Id = (int) element.Identifier,
                         MapId = map.Id,
                         CellId = element.Cell.Id,
-                        Animated = eleElement is AnimatedGraphicalElementData,
+                        Animated = eleElement is AnimatedGraphicalElementData || eleElement is EntityGraphicalElementData,
                         ElementId = (int) element.ElementId,
                     };
 
