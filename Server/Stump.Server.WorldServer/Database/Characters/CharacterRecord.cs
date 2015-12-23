@@ -196,132 +196,6 @@ namespace Stump.Server.WorldServer.Database.Characters
             }
         }
 
-        public bool CantBeAggressed
-        {
-            get;
-            set;
-        }
-
-        public bool CantBeChallenged
-        {
-            get;
-            set;
-        }
-
-        public bool CantTrade
-        {
-            get;
-            set;
-        }
-
-        public bool CantBeAttackedByMutant
-        {
-            get;
-            set;
-        }
-
-        public bool CantRun
-        {
-            get;
-            set;
-        }
-
-        public bool ForceSlowWalk
-        {
-            get;
-            set;
-        }
-
-        public bool CantMinimize
-        {
-            get;
-            set;
-        }
-
-        public bool CantMove
-        {
-            get;
-            set;
-        }
-
-        public bool CantAggress
-        {
-            get;
-            set;
-        }
-
-        public bool CantChallenge
-        {
-            get;
-            set;
-        }
-
-        public bool CantExchange
-        {
-            get;
-            set;
-        }
-
-        public bool CantAttack
-        {
-            get;
-            set;
-        }
-
-        public bool CantChat
-        {
-            get;
-            set;
-        }
-
-        public bool CantBeMerchant
-        {
-            get;
-            set;
-        }
-
-        public bool CantUseObject
-        {
-            get;
-            set;
-        }
-
-        public bool CantUseTaxCollector
-        {
-            get;
-            set;
-        }
-
-        public bool CantUseInteractive
-        {
-            get;
-            set;
-        }
-
-        public bool CantSpeakToNpc
-        {
-            get;
-            set;
-        }
-
-        public bool CantChangeZone
-        {
-            get;
-            set;
-        }
-
-        public bool CantAttackMonster
-        {
-            get;
-            set;
-        }
-
-        public bool CantWalk8Directions
-        {
-            get;
-            set;
-        }
-
         public int MapId
         {
             get;
@@ -615,6 +489,12 @@ namespace Stump.Server.WorldServer.Database.Characters
             set;
         }
 
+        public PlayerLifeStatusEnum PlayerLifeStatus
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         public CharacterRecord(Breed breed)
@@ -647,6 +527,8 @@ namespace Stump.Server.WorldServer.Database.Characters
 
             if (breed.StartLevel > 100)
                 AP++;
+
+            PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
         }
 
 
