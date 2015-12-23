@@ -101,6 +101,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                                            IEnumerable<int> colors, int headId, Action successCallback, Action<CharacterCreationResultEnum> failCallback)
         {
             WorldServer.Instance.IOTaskPool.EnsureContext();
+
             if (client.Characters.Count >= MaxCharacterSlot && client.UserGroup.Role <= RoleEnum.Player)
             {
                 failCallback(CharacterCreationResultEnum.ERR_TOO_MANY_CHARACTERS);
@@ -167,6 +168,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                         AlignmentSide = AlignmentSideEnum.ALIGNMENT_NEUTRAL,
                         WarnOnConnection = true,
                         WarnOnLevel = true,
+                        PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING,
+                        Energy = 10000,
+                        EnergyMax = 10000
                     };
 
                 Database.Insert(record);
@@ -237,8 +241,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Character Name Random Generation
 
-        private const string Vowels = "aeiouy";
-        private const string Consonants = "bcdfghjklmnpqrstvwxz";
+        const string Vowels = "aeiouy";
+        const string Consonants = "bcdfghjklmnpqrstvwxz";
 
         public string GenerateName()
         {

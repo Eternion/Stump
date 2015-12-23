@@ -66,6 +66,12 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             SendMapRunningFightDetailsMessage(client, fight);
         }
 
+        [WorldHandler(GameRolePlayFreeSoulRequestMessage.Id)]
+        public static void HandleGameRoleplayFreeSoulRequestMessage(WorldClient client, GameRolePlayFreeSoulRequestMessage message)
+        {
+            client.Character.FreeSoul();
+        }
+
         public static void SendMapRunningFightListMessage(IPacketReceiver client, IEnumerable<IFight> fights)
         {
             client.Send(new MapRunningFightListMessage(fights.Select(entry => entry.GetFightExternalInformations())));
