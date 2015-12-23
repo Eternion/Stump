@@ -15,6 +15,8 @@ namespace Stump.Server.WorldServer.Game.Jobs
     public class JobManager : DataManager<JobManager>
     {
         public const int MAX_JOB_LEVEL_GAP = 100;
+        public const int WEIGHT_BONUS_PER_LEVEL = 12;
+        public const double WEIGHT_BONUS_DECREASE = 1/200d;
 
         private Dictionary<int, JobTemplate> m_jobTemplates;
         private Dictionary<int, RecipeRecord> m_recipeRecords;
@@ -79,6 +81,22 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
             return new Pair<int, int>(Math.Max(1, jobLevel / 20),
                 (int) (job.HarvestedCountMax + ((jobLevel - skillTemplate.LevelMin)/10)));
+        }
+
+        public int GetWeightBonus(int lastLevel, int newLevel)
+        {
+            // sum(WEIGHT_BONUS_PER_LEVEL - WEIGHT_BONUS_DECREASE*newLevel) from lastLevel + 1 to newLevel
+            // approx WEIGHT_BONUS_PER_LEVEL*diff - WEIGHT_BONUS_DECREASE * (diff*(diff+1) / 2 + lastLevel*diff) + diff/2
+
+            var diff = newLevel - lastLevel;
+            int sum = 0;
+            for (int i = lastLevel + 1; i < newLevel+1; i++)
+            {
+                sum += Math.Max(1, (int)Math.Ceiling(WEIGHT_BONUS_PER_LEVEL - WEIGHT_BONUS_DECREASE * i));
+            }
+            return sum;
+
+            // return (int)(WEIGHT_BONUS_PER_LEVEL * diff - WEIGHT_BONUS_DECREASE * (diff * (diff + 1) / 2 + lastLevel * diff));
         }
     }
 }
