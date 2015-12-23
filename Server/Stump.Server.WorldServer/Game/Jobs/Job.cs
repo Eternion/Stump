@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Jobs;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Context.RolePlay;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Jobs
 {
@@ -20,7 +21,11 @@ namespace Stump.Server.WorldServer.Game.Jobs
             Owner = owner;
             Record = null;
             Template = template;
-            RefreshLevel();
+
+            var level = ExperienceManager.Instance.GetJobLevel(Experience);
+            LowerBoundExperience = ExperienceManager.Instance.GetJobLevelExperience(level);
+            UpperBoundExperience = ExperienceManager.Instance.GetJobNextLevelExperience(level);
+            Level = level;
         }
 
         public Job(Character owner, JobRecord record)
@@ -28,7 +33,11 @@ namespace Stump.Server.WorldServer.Game.Jobs
             Owner = owner;
             Record = record;
             Template = JobManager.Instance.GetJobTemplate(record.TemplateId);
-            RefreshLevel();
+
+            var level = ExperienceManager.Instance.GetJobLevel(Experience);
+            LowerBoundExperience = ExperienceManager.Instance.GetJobLevelExperience(level);
+            UpperBoundExperience = ExperienceManager.Instance.GetJobNextLevelExperience(level);
+            Level = level;
         }
 
         public int Id => Template.Id;
@@ -135,10 +144,20 @@ namespace Stump.Server.WorldServer.Game.Jobs
             var oldLevel = Level;
             Level = level;
 
-            if (oldLevel < Level)
+            if (oldLevel != Level)
             {
-                ContextRoleplayHandler.SendJobLevelUpMessage(Owner.Client, this);
+                OnLevelChanged(oldLevel, Level);
             }
+        }
+
+        private void OnLevelChanged(int lastLevel, int newLevel)
+        {
+            ContextRoleplayHandler.SendJobLevelUpMessage(Owner.Client, this);
+            var sumLevel = Owner.Jobs.Sum(x => x.Level);
+            var diff = newLevel - lastLevel;
+
+            var weightBonus = JobManager.Instance.GetWeightBonus(sumLevel - diff, sumLevel);
+            Owner.Stats[PlayerFields.Weight].Base += weightBonus;
         }
 
         public void Save(ORM.Database database)
@@ -161,10 +180,8 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
             return IsNew;
         }
-
-
-
-
+        
+        
         private SkillActionDescription GetSkillActionDescription(InteractiveSkillTemplate skill)
         {
             if (skill.GatheredRessourceItem > 0)

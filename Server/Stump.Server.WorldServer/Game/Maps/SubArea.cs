@@ -161,7 +161,7 @@ namespace Stump.Server.WorldServer.Game.Maps
         {
             m_monsterSpawns.Add(spawn);
 
-            foreach (var map in Maps.Where(map => map.Outdoor))
+            foreach (var map in Maps.Where(map => map.Outdoor && !map.Record.SpawnDisabled))
             {
                 map.AddMonsterSpawn(spawn);
             }
