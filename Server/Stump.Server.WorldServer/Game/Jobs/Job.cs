@@ -20,7 +20,11 @@ namespace Stump.Server.WorldServer.Game.Jobs
             Owner = owner;
             Record = null;
             Template = template;
-            RefreshLevel();
+
+            var level = ExperienceManager.Instance.GetJobLevel(Experience);
+            LowerBoundExperience = ExperienceManager.Instance.GetJobLevelExperience(level);
+            UpperBoundExperience = ExperienceManager.Instance.GetJobNextLevelExperience(level);
+            Level = level;
         }
 
         public Job(Character owner, JobRecord record)
@@ -28,7 +32,11 @@ namespace Stump.Server.WorldServer.Game.Jobs
             Owner = owner;
             Record = record;
             Template = JobManager.Instance.GetJobTemplate(record.TemplateId);
-            RefreshLevel();
+
+            var level = ExperienceManager.Instance.GetJobLevel(Experience);
+            LowerBoundExperience = ExperienceManager.Instance.GetJobLevelExperience(level);
+            UpperBoundExperience = ExperienceManager.Instance.GetJobNextLevelExperience(level);
+            Level = level;
         }
 
         public int Id => Template.Id;
@@ -161,10 +169,8 @@ namespace Stump.Server.WorldServer.Game.Jobs
 
             return IsNew;
         }
-
-
-
-
+        
+        
         private SkillActionDescription GetSkillActionDescription(InteractiveSkillTemplate skill)
         {
             if (skill.GatheredRessourceItem > 0)

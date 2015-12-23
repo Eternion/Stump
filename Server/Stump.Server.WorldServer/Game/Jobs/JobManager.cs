@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.Game.Jobs
                 return new Pair<int, int>(1, 1);
 
             return new Pair<int, int>(Math.Max(1, jobLevel / 20),
-                (int) (job.HarvestedCountMax + ((jobLevel - skillTemplate.LevelMin)/100)));
+                (int) (job.HarvestedCountMax + ((jobLevel - skillTemplate.LevelMin)/10)));
         }
     }
 }
