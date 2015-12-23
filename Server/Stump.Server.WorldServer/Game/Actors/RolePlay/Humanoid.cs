@@ -34,9 +34,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
         #region HumanInformations
 
+        public virtual ActorRestrictionsInformations GetActorRestrictionsInformations()
+        {
+            return new ActorRestrictionsInformations();
+        }
+
         public virtual HumanInformations GetHumanInformations()
         {
-            return new HumanInformations(new ActorRestrictionsInformations(),
+            return new HumanInformations(GetActorRestrictionsInformations(),
                 Sex == SexTypeEnum.SEX_FEMALE,
                 Enumerable.Empty<HumanOption>()); // todo
         }

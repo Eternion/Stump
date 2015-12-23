@@ -1,7 +1,9 @@
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.Server.WorldServer.Game.Maps;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
@@ -40,6 +42,11 @@ namespace Stump.Server.WorldServer.Handlers.Characters
         public static void SendCharacterLevelUpInformationMessage(IPacketReceiver client, Character character, byte level)
         {
             client.Send(new CharacterLevelUpInformationMessage(level, character.Name, character.Id));
+        }
+
+        public static void SendGameRolePlayPlayerLifeStatusMessage(IPacketReceiver client, PlayerLifeStatusEnum status, int phoenixMapId)
+        {
+            client.Send(new GameRolePlayPlayerLifeStatusMessage((sbyte)status, phoenixMapId));
         }
     }
 }

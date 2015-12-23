@@ -272,8 +272,10 @@
     <Compile Include="Database\Tinsel\TitleRecord.cs" />
     <Compile Include="Database\World\Maps\MapElement.cs" />
     <Compile Include="Database\World\Triggers\CellTriggerRecord.cs" />
+    <Compile Include="Database\World\WorldMapGraveyardRecord.cs" />
     <Compile Include="Database\World\WorldMapMerchant.cs" />
     <Compile Include="Database\World\WorldMapPaddock.cs" />
+    <Compile Include="Database\World\WorldMapPhoenixRecord.cs" />
     <Compile Include="Database\World\WorldMapTaxCollector.cs" />
     <Compile Include="Game\Accounts\Startup\StartupAction.cs" />
     <Compile Include="Game\Accounts\Startup\StartupActionItem.cs" />
