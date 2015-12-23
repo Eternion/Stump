@@ -27,6 +27,9 @@ namespace Stump.Server.WorldServer.Game.Jobs
             // in order to free space we avoid storing job record with no experience in databse
             foreach(var job in JobManager.Instance.EnumerateJobTemplates().Where(x => !m_jobs.ContainsKey(x.Id)).ToArray())
                 m_jobs.Add(job.Id, new Job(Owner, job));
+
+            var weightBonus = JobManager.Instance.GetWeightBonus(m_jobs.Count, m_jobs.Sum(x => x.Value.Level));
+            Owner.Stats[DofusProtocol.Enums.PlayerFields.Weight].Base += weightBonus;
         }
 
         public void Save(ORM.Database database)
