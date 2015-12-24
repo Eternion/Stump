@@ -21,14 +21,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                var triggerType = BuffTriggerType.AFTER_ATTACKED;
+                var triggerType = BuffTriggerType.AfterDamaged;
                 TriggerBuffApplyHandler triggerHandler = DefaultBuffTrigger;
                 var spellLevel = Spell.CurrentLevel;
 
                 switch ((SpellIdEnum)Spell.Id)
                 {
                     case SpellIdEnum.REMBOBINAGE:
-                        triggerType = BuffTriggerType.TURN_END;
+                        triggerType = BuffTriggerType.OnTurnEnd;
                         spellLevel = 1;
                         break;
                     case SpellIdEnum.FRICTION:
@@ -36,28 +36,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                         break;
                     case SpellIdEnum.POUTCH:
                     case SpellIdEnum.BRISE_L_ÂME:
-                        triggerType = BuffTriggerType.BUFF_ADDED;
+                        triggerType = BuffTriggerType.Instant;
                         break;
                     case SpellIdEnum.RÉMISSION:
                         triggerHandler = RemissionBuffTrigger;
                         break;
                     case SpellIdEnum.MOT_LOTOF:
-                        triggerType = BuffTriggerType.TURN_BEGIN;
+                        triggerType = BuffTriggerType.OnTurnBegin;
                         break;
                     case SpellIdEnum.SACCHAROSE:
-                        triggerType = BuffTriggerType.LOST_MP;
+                        triggerType = BuffTriggerType.OnMPLost;
                         break;
                     case SpellIdEnum.MANSOMURE:
-                        triggerType = BuffTriggerType.AFTER_HEALED;
+                        triggerType = BuffTriggerType.OnHealed;
                         break;
                     case SpellIdEnum.INIMOUTH:
-                        triggerType = BuffTriggerType.DAMAGES_PUSHBACK;
+                        triggerType = BuffTriggerType.OnDamagedByPush;
                         break;
                     case SpellIdEnum.RATTRAPAGE:
-                        triggerType = BuffTriggerType.TACKLE;
+                        triggerType = BuffTriggerType.OnTackle;
                         break;
                     case SpellIdEnum.ÉVOLUTION:
-                        triggerType = BuffTriggerType.BUFF_ADDED;
+                        triggerType = BuffTriggerType.Instant;
                         triggerHandler = EvolutionBuffTrigger;
                         break;
                     case SpellIdEnum.POLLEN:
@@ -68,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                         break;
                     case SpellIdEnum.MANSOPOUDRAGE:
                     case SpellIdEnum.HAIMJI:
-                        triggerType = BuffTriggerType.PUSH;
+                        triggerType = BuffTriggerType.OnPush;
                         break;
                     case SpellIdEnum.GLOURS_POURSUITE:
                     case SpellIdEnum.GLOURSON_DE_CLOCHE:

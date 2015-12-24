@@ -1431,7 +1431,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!(buff is TriggerBuff) && !(buff is DelayBuff))
                 buff.Apply();
 
-            if (buff is TriggerBuff && (((TriggerBuff) buff).Trigger & BuffTriggerType.BUFF_ADDED) == BuffTriggerType.BUFF_ADDED)
+            if (buff is TriggerBuff && (((TriggerBuff) buff).Trigger & BuffTriggerType.Instant) == BuffTriggerType.Instant)
                 buff.Apply();
 
             return true;
