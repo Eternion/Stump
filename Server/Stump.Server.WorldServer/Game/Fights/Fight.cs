@@ -1901,10 +1901,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (path.MPCost > actor.MP)
                 path.CutPath(actor.MP + 1);
 
-            actor.TriggerBuffs(BuffTriggerType.TACKLED);
+            actor.TriggerBuffs(BuffTriggerType.OnTackled);
 
             foreach (var tackler in tacklers)
-                tackler.TriggerBuffs(BuffTriggerType.TACKLE);
+                tackler.TriggerBuffs(BuffTriggerType.OnTackle);
 
             var handler = Tackled;
             if (handler != null)
@@ -1925,7 +1925,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             fighter.UseMP((short) path.MPCost);
-            fighter.TriggerBuffs(BuffTriggerType.MOVE, path);
+            fighter.TriggerBuffs(BuffTriggerType.OnMoved, path);
         }
 
         protected virtual void OnPositionChanged(ContextActor actor, ObjectPosition objectPosition)
