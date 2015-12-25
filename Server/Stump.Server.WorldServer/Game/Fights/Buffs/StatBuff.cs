@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             set;
         }
 
-        public override void Apply()
+        public override void Apply(BuffTriggerType type, object token)
         {
             Target.Stats[Caracteristic].Context += Value;
         }

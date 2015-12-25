@@ -203,7 +203,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             var id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable);
 
-            target.AddAndApplyBuff(buff);
+            target.AddBuff(buff);
 
             return buff;
         }
@@ -215,7 +215,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable,
                                     customActionId);
 
-            target.AddAndApplyBuff(buff);
+            target.AddBuff(buff);
 
             return buff;
         }
@@ -226,7 +226,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             var id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger);
 
-            target.AddAndApplyBuff(buff);
+            target.AddBuff(buff);
 
             return buff;
         }
@@ -240,7 +240,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                 Token = token
             };
 
-            target.AddAndApplyBuff(buff);
+            target.AddBuff(buff);
 
             return buff;
         }
@@ -252,7 +252,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger,
                                        removeTrigger);
 
-            target.AddAndApplyBuff(buff);
+            target.AddBuff(buff);
 
             return buff;
         }
@@ -262,7 +262,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             var id = target.PopNextBuffId();
             var buff = new StateBuff(id, target, Caster, Dice, Spell, dispelable, state);
 
-            target.AddAndApplyBuff(buff, true, bypassMaxStack);
+            target.AddBuff(buff, bypassMaxStack);
 
             return buff;
         }
@@ -271,7 +271,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         {
             foreach (var state in target.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == (int)stateId).ToArray())
             {
-                target.RemoveAndDispellBuff(state);
+                target.RemoveBuff(state);
             }
 
             return true;

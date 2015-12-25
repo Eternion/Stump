@@ -84,10 +84,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             private set;
         }
 
-        public override void Apply()
+        public override void Apply(BuffTriggerType type, object token)
         {
             if (ApplyTrigger != null)
-                ApplyTrigger(this, BuffTriggerType.UNKNOWN, Token);
+                ApplyTrigger(this, type, Token);
         }
 
         public void Apply(BuffTriggerType trigger)
@@ -95,12 +95,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             if (ApplyTrigger != null)
                 ApplyTrigger(this, trigger, Token);
         }
-
-        public void Apply(BuffTriggerType trigger, object token)
-        {
-            if (ApplyTrigger != null)
-                ApplyTrigger(this, trigger, token);
-        }
+        
 
         public override void Dispell()
         {

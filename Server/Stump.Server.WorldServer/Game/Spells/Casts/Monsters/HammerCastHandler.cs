@@ -44,12 +44,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
                 var buffId = actor.PopNextBuffId();
                 var effect = Spell.CurrentSpellLevel.Effects[0];
 
-                var buff = new TriggerBuff(buffId, actor, actor, effect, Spell, Spell, false, false, BuffTriggerType.AFTER_ATTACKED, SpellBuffTrigger)
+                var buff = new TriggerBuff(buffId, actor, actor, effect, Spell, Spell, false, false, BuffTriggerType.AfterDamaged, SpellBuffTrigger)
                 {
                     Duration = (short)effect.Duration
                 };
 
-                actor.AddAndApplyBuff(buff); 
+                actor.AddBuff(buff); 
             }
         }
 

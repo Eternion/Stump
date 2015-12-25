@@ -22,9 +22,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             {
                 var buffId = actor.PopNextBuffId();
                 var buff = new TriggerBuff(buffId, actor, Caster, Dice, Spell, Spell, false, false,
-                    BuffTriggerType.AFTER_ATTACKED, PutschBuffTrigger);
+                    BuffTriggerType.AfterDamaged, PutschBuffTrigger);
 
-                actor.AddAndApplyBuff(buff);
+                actor.AddBuff(buff);
             }
 
             return true;

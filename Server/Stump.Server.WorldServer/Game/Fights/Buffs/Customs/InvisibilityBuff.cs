@@ -18,7 +18,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
         }
 
-        public override void Apply()
+        public override void Apply(BuffTriggerType type, object token)
         {
             Target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.INVISIBLE);
         }

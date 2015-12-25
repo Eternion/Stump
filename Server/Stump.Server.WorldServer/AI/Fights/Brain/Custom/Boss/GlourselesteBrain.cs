@@ -78,7 +78,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
                 Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
-                player.RemoveAndDispellBuff(stateBuff);
+                player.RemoveBuff(stateBuff);
 
                 Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
             }

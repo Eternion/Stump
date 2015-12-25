@@ -6,8 +6,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
     public enum TriggerType
     {
         NEVER=0,
-        TURN_BEGIN=1,
-        TURN_END=2,
+        OnTurnBegin=1,
+        OnTurnEnd=2,
         MOVE=4,
         CREATION=8,
     }

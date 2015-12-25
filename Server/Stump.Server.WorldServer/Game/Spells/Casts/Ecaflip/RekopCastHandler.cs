@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
                 handler.SetAffectedActors(new[] { target });
 
                 if (handler is DirectDamage)
-                    handler.BuffTriggerType = BuffTriggerType.BUFF_ENDED;
+                    handler.BuffTriggerType = BuffTriggerType.OnBuffEnded;
             }
 
             return true;

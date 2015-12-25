@@ -23,12 +23,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             var buffId = Caster.PopNextBuffId();
             var effect = Spell.CurrentSpellLevel.Effects[0];
 
-            var buff = new TriggerBuff(buffId, Caster, Caster, effect, Spell, Spell, false, false, BuffTriggerType.AFTER_ATTACKED, SpellBuffTrigger)
+            var buff = new TriggerBuff(buffId, Caster, Caster, effect, Spell, Spell, false, false, BuffTriggerType.AfterDamaged, SpellBuffTrigger)
             {
                 Duration = (short)effect.Duration
             };
 
-            Caster.AddAndApplyBuff(buff);
+            Caster.AddBuff(buff);
         }
 
         private void SpellBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)

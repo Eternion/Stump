@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                 {
                     foreach (var fighter in fight.GetAllFighters(x => trigger.ContainsCell(x.Cell)))
                     {
-                        fight.TriggerMarks(fighter.Cell, fighter, TriggerType.TURN_BEGIN);
+                        fight.TriggerMarks(fighter.Cell, fighter, TriggerType.OnTurnBegin);
                     }
                 }
             }

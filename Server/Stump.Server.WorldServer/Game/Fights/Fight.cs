@@ -1455,10 +1455,10 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
-            FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_BEGIN);
+            FighterPlaying.TriggerBuffs(BuffTriggerType.OnTurnBegin);
             FighterPlaying.DecrementAllCastedBuffsDuration();
             DecrementGlyphDuration(FighterPlaying);
-            TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_BEGIN);
+            TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);
 
             EndSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
@@ -1544,13 +1544,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (evnt != null)
                 evnt(this, FighterPlaying);
 
-            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
+            StartSequence(SequenceTypeEnum.SEQUENCE_OnTurnEnd);
 
             if (FighterPlaying.IsAlive())
             {
-                FighterPlaying.TriggerBuffs(BuffTriggerType.TURN_END);
+                FighterPlaying.TriggerBuffs(BuffTriggerType.OnTurnEnd);
                 FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
-                TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.TURN_END);
+                TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnEnd);
             }
 
             FighterPlaying.ResetUsedPoints();
@@ -1563,7 +1563,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (TimeLine.RoundNumber > 1)
                 FighterPlaying.TurnTimeReport = time > 0 ? time : 0;
 
-            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
+            EndSequence(SequenceTypeEnum.SEQUENCE_OnTurnEnd);
 
             // can die with triggers
             if (CheckFightEnd())

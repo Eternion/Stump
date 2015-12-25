@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     continue;
 
                 var buff = new DodgeBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, Critical, true, Dice.DiceNum, Dice.DiceFace);
-                actor.AddAndApplyBuff(buff);
+                actor.AddBuff(buff);
             }
 
             return true;

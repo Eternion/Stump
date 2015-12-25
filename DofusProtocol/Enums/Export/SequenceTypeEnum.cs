@@ -15,7 +15,7 @@ namespace Stump.DofusProtocol.Enums
         SEQUENCE_MOVE = 5,
         SEQUENCE_CHARACTER_DEATH = 6,
         SEQUENCE_TURN_START = 7,
-        SEQUENCE_TURN_END = 8,
+        SEQUENCE_OnTurnEnd = 8,
         SEQUENCE_FIGHT_START = 9,
     }
 }

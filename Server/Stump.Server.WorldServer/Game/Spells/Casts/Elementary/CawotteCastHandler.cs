@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Elementary
                 Duration = -1
             };
 
-            cawotte.AddAndApplyBuff(stateBuff);
+            cawotte.AddBuff(stateBuff);
 
             glyphEffect.Apply();
         }

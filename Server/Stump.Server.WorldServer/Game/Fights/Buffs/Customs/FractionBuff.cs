@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             get { return Caster.Fight; }
         }
 
-        public override void Apply()
+        public override void Apply(BuffTriggerType type, object token)
         {
             
         }

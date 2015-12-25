@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, true, BuffTriggerType.AFTER_ATTACKED, OnActorAttacked);
+                AddTriggerBuff(actor, true, BuffTriggerType.AfterDamaged, OnActorAttacked);
             }
 
             return true;
@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 Spell, (short)bonus, caracteristic, false, true, Dice.DiceNum) 
                 {Duration = Dice.Value};
 
-            buff.Target.AddAndApplyBuff(statBuff, true, true);
+            buff.Target.AddBuff(statBuff, true);
             m_buffs.Add(new Tuple<int, StatBuff>(Fight.TimeLine.RoundNumber, statBuff));
         }
 

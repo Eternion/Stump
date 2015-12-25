@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 var buffId = actor.PopNextBuffId();
                 var buff = new HealOrMultiplyBuff(buffId, actor, Caster, Dice, Spell, Critical, true);
 
-                actor.AddAndApplyBuff(buff);
+                actor.AddBuff(buff);
             }
 
             return true;
