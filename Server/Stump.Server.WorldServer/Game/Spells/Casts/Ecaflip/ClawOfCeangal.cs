@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
                 return;
 
             damageHandler.Apply(); //Damages
-            Handlers[0].AddTriggerBuff(affectedActor, true, BuffTriggerType.AFTER_HEALED, BuffTrigger);
+            Handlers[0].AddTriggerBuff(affectedActor, true, BuffTriggerType.OnHealed, BuffTrigger);
         }
 
         void BuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)

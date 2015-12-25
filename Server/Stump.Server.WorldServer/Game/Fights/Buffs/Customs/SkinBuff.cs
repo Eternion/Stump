@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             private set;
         }
 
-        public override void Apply()
+        public override void Apply(BuffTriggerType type, object token)
         {
             OriginalLook = Target.Look.Clone();
             Target.Look = Look.Clone();

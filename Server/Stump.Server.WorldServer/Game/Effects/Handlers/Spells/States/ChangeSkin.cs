@@ -80,12 +80,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                 if (Dice.Value >= 0)
                 {
                     var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
-                    actor.AddAndApplyBuff(buff);
+                    actor.AddBuff(buff);
                 }
                 else
                 {
                     var buff = actor.GetBuffs(x => x is SkinBuff && ((SkinBuff)x).Look.BonesID == Math.Abs(Dice.Value)).FirstOrDefault();
-                    actor.RemoveAndDispellBuff(buff);
+                    actor.RemoveBuff(buff);
                 }
             }
 

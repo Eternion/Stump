@@ -517,7 +517,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameActionFightMarkCellsMessage(IPacketReceiver client, MarkTrigger trigger, bool visible = true)
         {
-            var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? (trigger.TriggerType == TriggerType.TURN_END ? ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL_ENDTURN : ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL) : ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
+            var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? (trigger.TriggerType == TriggerType.OnTurnEnd ? ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL_ENDTURN : ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL) : ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
             client.Send(new GameActionFightMarkCellsMessage((short)action, trigger.Caster.Id, visible ? trigger.GetGameActionMark() : trigger.GetHiddenGameActionMark()));
         }
 

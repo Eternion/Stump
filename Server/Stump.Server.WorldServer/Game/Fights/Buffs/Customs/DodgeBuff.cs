@@ -34,13 +34,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             set;
         }
 
-        public override void Apply()
+        public override void Apply(BuffTriggerType type, object token)
         {
             var id = Target.PopNextBuffId();
             var buff = new TriggerBuff(id, Target, Caster, Effect as EffectDice, Spell, Spell, Critical, Dispellable,
-                BuffTriggerType.BEFORE_ATTACKED, EvasionBuffTrigger);
+                BuffTriggerType.OnDamaged, EvasionBuffTrigger);
 
-            Target.AddAndApplyBuff(buff);
+            Target.AddBuff(buff);
         }
 
         public override void Dispell()

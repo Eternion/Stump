@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     buff.Duration -= integerEffect.Value;
 
                     if (buff.Duration <= 0)
-                        actor.RemoveAndDispellBuff(buff);
+                        actor.RemoveBuff(buff);
                 }
 
                 ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor,

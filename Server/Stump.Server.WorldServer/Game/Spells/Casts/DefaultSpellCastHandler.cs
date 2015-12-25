@@ -104,7 +104,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                             Token = handler
                         };
 
-                        target.AddAndApplyBuff(buff, bypassMaxStack: true);
+                        target.AddBuff(buff, bypassMaxStack: true);
                     }
                 }
                 else

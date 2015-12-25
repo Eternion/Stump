@@ -89,8 +89,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                     };
 
                                     fighter.InflictDamage(damage);
-                                    fighter.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
-                                    fighter.TriggerBuffs(BuffTriggerType.PUSH);
+                                    fighter.TriggerBuffs(BuffTriggerType.OnDamagedByPush);
+                                    fighter.TriggerBuffs(BuffTriggerType.OnPush);
 
                                     fighter.OnActorMoved(actor, true);
                                 }
@@ -120,10 +120,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 actor.Position.Cell = Map.Cells[endCell.CellId];
                 actor.OnActorMoved(Caster, takeDamage);
 
-                actor.TriggerBuffs(BuffTriggerType.PUSH);
+                actor.TriggerBuffs(BuffTriggerType.OnPush);
 
                 if (takeDamage)
-                    actor.TriggerBuffs(BuffTriggerType.DAMAGES_PUSHBACK);
+                    actor.TriggerBuffs(BuffTriggerType.OnDamagedByPush);
             }
 
             return true;

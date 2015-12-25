@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         Token = stateBuff
                     };
 
-                    Caster.AddAndApplyBuff(buff);
+                    Caster.AddBuff(buff);
                 }
 
 
@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
             if (state == null)
                 return;
 
-            buff.Target.AddAndApplyBuff(state);
+            buff.Target.AddBuff(state);
         }
     }
 }

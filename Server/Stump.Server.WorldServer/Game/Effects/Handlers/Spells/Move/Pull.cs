@@ -80,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 actor.Position.Cell = Map.Cells[endCell.CellId];
                 actor.OnActorMoved(Caster, false);
 
-                Caster.TriggerBuffs(BuffTriggerType.PUSH);
+                Caster.TriggerBuffs(BuffTriggerType.OnPush);
             }
 
             return true;

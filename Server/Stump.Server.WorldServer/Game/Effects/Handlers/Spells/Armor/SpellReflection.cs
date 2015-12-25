@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 var buffId = actor.PopNextBuffId();
                 var buff = new SpellReflectionBuff(buffId, actor, Caster, Dice, Spell, Critical, true);
 
-                actor.AddAndApplyBuff(buff);
+                actor.AddBuff(buff);
             }
 
             return true;

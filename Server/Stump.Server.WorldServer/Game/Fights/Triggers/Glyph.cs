@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override TriggerType TriggerType
         {
-            get { return (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.TURN_END : TriggerType.TURN_BEGIN); }
+            get { return (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.OnTurnEnd : TriggerType.OnTurnBegin); }
         }
 
         public override bool DecrementDuration()

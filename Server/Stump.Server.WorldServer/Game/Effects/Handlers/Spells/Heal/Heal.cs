@@ -28,12 +28,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
                 if (Effect.Duration > 0)
                 {
-                    var triggerType = BuffTriggerType.TURN_BEGIN;
+                    var triggerType = BuffTriggerType.OnTurnBegin;
 
                     switch (Spell.Id)
                     {
                         case (int)SpellIdEnum.SPORE_TEILLE:
-                            triggerType = BuffTriggerType.TACKLE;
+                            triggerType = BuffTriggerType.OnTackle;
                             break;
                     }
 

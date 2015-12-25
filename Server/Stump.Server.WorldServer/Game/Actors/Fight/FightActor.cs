@@ -217,6 +217,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnBuffAdded(Buff buff)
         {
+            if (buff.ShouldTrigger(BuffTriggerType.Instant))
+                buff.Apply(BuffTriggerType.Instant, null);
+
             var handler = BuffAdded;
             if (handler != null) handler(this, buff);
         }
@@ -816,16 +819,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public virtual int InflictDamage(Damage damage)
         {
             OnBeforeDamageInflicted(damage);
-            damage.Source.TriggerBuffs(BuffTriggerType.BEFORE_ATTACK, damage);
-            TriggerBuffs(BuffTriggerType.BEFORE_ATTACKED, damage);
+            damage.Source.TriggerBuffs(BuffTriggerType.BeforeAttack, damage);
+            TriggerBuffs(BuffTriggerType.OnDamaged, damage);
 
             damage.GenerateDamages();
 
             if (HasState((int)SpellStatesEnum.INVULNÉRABLE_56))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
-                damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
-                TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+                damage.Source.TriggerBuffs(BuffTriggerType.AfterAttack, damage);
+                TriggerBuffs(BuffTriggerType.AfterDamaged, damage);
                 return 0;
             }
 
@@ -953,17 +956,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnDamageInflicted(damage);
 
             if (damage.Source != null)
-                damage.Source.TriggerBuffs(BuffTriggerType.AFTER_ATTACK, damage);
+                damage.Source.TriggerBuffs(BuffTriggerType.AfterAttack, damage);
 
-            TriggerBuffs(BuffTriggerType.AFTER_ATTACKED, damage);
+            TriggerBuffs(BuffTriggerType.AfterDamaged, damage);
 
             return damage.Amount;
         }
 
         public virtual int HealDirect(int healPoints, FightActor from)
         {
-            TriggerBuffs(BuffTriggerType.BEFORE_HEALED);
-            from.TriggerBuffs(BuffTriggerType.BEFORE_HEAL);
+            TriggerBuffs(BuffTriggerType.OnHealed);
+            from.TriggerBuffs(BuffTriggerType.OnHeal);
 
             if (HasState((int)SpellStatesEnum.INSOIGNABLE))
             {
@@ -978,8 +981,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnLifePointsChanged(healPoints, 0, 0, from, EffectSchoolEnum.Unknown);
 
-            TriggerBuffs(BuffTriggerType.AFTER_HEALED);
-            from.TriggerBuffs(BuffTriggerType.AFTER_HEAL);
+            TriggerBuffs(BuffTriggerType.AfterHealed);
+            from.TriggerBuffs(BuffTriggerType.AfterHeal);
 
             return healPoints;
         }
@@ -1416,17 +1419,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return buff.Spell.CurrentSpellLevel.MaxStack > 0 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell && entry.Effect.EffectId == buff.Effect.EffectId && !(buff is DelayBuff));
         }
 
-        public bool AddAndApplyBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
+        /*public bool AddBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
         {
-            if (!CanAddBuff(buff) || (BuffMaxStackReached(buff) && !bypassMaxStack))
-            {
-                if (freeIdIfFail)
-                    FreeBuffId(buff.Id);
-
+            if (!AddBuff(buff, freeIdIfFail, bypassMaxStack))
                 return false;
-            }
-
-            AddBuff(buff, freeIdIfFail, bypassMaxStack);
 
             if (!(buff is TriggerBuff) && !(buff is DelayBuff))
                 buff.Apply();
@@ -1435,15 +1431,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 buff.Apply();
 
             return true;
-        }
+        }*/
 
-        public bool AddBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
+        public bool AddBuff(Buff buff, bool bypassMaxStack = false)
         {
             if (!CanAddBuff(buff) || (BuffMaxStackReached(buff) && !bypassMaxStack))
             {
-                if (freeIdIfFail)
-                    FreeBuffId(buff.Id);
-
+                FreeBuffId(buff.Id);
                 return false;
             }
 
@@ -1454,15 +1448,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        public void RemoveAndDispellBuff(Buff buff)
-        {
-            RemoveBuff(buff);
-
-            buff.Dispell();
-        }
-
         public void RemoveBuff(Buff buff)
         {
+
+            buff.Dispell();
             m_buffList.Remove(buff);
 
             OnBuffRemoved(buff);
@@ -1474,7 +1463,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             foreach (var buff in m_buffList.Where(x => x.Spell.Id == spellId).ToArray())
             {
-                RemoveAndDispellBuff(buff);
+                RemoveBuff(buff);
             }
         }
 
@@ -1482,7 +1471,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             foreach (var buff in m_buffList.ToArray())
             {
-                RemoveAndDispellBuff(buff);
+                RemoveBuff(buff);
             }
         }
 
@@ -1492,7 +1481,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var buff in copyOfBuffs.Where(buff => buff.Caster == caster))
             {
-                RemoveAndDispellBuff(buff);
+                RemoveBuff(buff);
             }
         }
 
@@ -1507,7 +1496,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void TriggerBuffs(BuffTriggerType trigger, object token = null)
         {
             var copy = m_buffList.ToArray();
-            foreach (var triggerBuff in copy.OfType<TriggerBuff>().Where(triggerBuff => (triggerBuff.Trigger & trigger) == trigger))
+            foreach (var triggerBuff in copy.Where(buff => buff.ShouldTrigger(trigger, token)))
             {
                 Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
                 triggerBuff.Apply(trigger, token);
@@ -1521,21 +1510,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var buff in buffsToRemove)
             {
-                if (buff is TriggerBuff && ( buff as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.BUFF_ENDED))
-                    (buff as TriggerBuff).Apply(BuffTriggerType.BUFF_ENDED);
+                if (buff is TriggerBuff && ( buff as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.OnBuffEnded))
+                    (buff as TriggerBuff).Apply(BuffTriggerType.OnBuffEnded);
 
-                if (!(buff is TriggerBuff && ( buff as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.BUFF_ENDED_TURNEND)))
-                    RemoveAndDispellBuff(buff);
+                if (!(buff is TriggerBuff && ( buff as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.OnBuffEndedTurnEnd)))
+                    RemoveBuff(buff);
             }
         }
 
         public void TriggerBuffsRemovedOnTurnEnd()
         {
             foreach (var buff in m_buffList.Where(entry => entry.Duration <= 0 && entry is TriggerBuff &&
-                ((TriggerBuff) entry).Trigger.HasFlag(BuffTriggerType.BUFF_ENDED_TURNEND)).ToArray())
+                ((TriggerBuff) entry).Trigger.HasFlag(BuffTriggerType.OnBuffEndedTurnEnd)).ToArray())
             {
-                buff.Apply();
-                RemoveAndDispellBuff(buff);
+                buff.Apply(BuffTriggerType.OnBuffEndedTurnEnd);
+                RemoveBuff(buff);
             }
         }
 
@@ -1826,7 +1815,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var buff in buffs)
             {
-                RemoveAndDispellBuff(buff);
+                RemoveBuff(buff);
             }
 
             return buffs.Any();
@@ -1913,8 +1902,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 Duration = -1
             };
 
-            AddAndApplyBuff(actorBuff);
-            target.AddAndApplyBuff(targetBuff);
+            AddBuff(actorBuff);
+            target.AddBuff(targetBuff);
 
             ActionsHandler.SendGameActionFightCarryCharacterMessage(Fight.Clients, this, target);        
 
@@ -1944,10 +1933,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 ActionsHandler.SendGameActionFightThrowCharacterMessage(Fight.Clients, this, m_carriedActor, cell);
 
             if (actorState != null)
-                RemoveAndDispellBuff(actorState);
+                RemoveBuff(actorState);
 
             if (targetState != null)
-                m_carriedActor.RemoveAndDispellBuff(targetState);
+                m_carriedActor.RemoveBuff(targetState);
 
             RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
             m_carriedActor.RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);

@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                     Duration = (short)Dice.Duration
                 };
 
-                actor.AddAndApplyBuff(buff);
+                actor.AddBuff(buff);
             }
 
             return true;

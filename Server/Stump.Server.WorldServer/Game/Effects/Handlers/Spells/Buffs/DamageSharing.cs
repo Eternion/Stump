@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 var buffId = actor.PopNextBuffId();
                 var buff = new FractionBuff(buffId, actor, Caster, Dice, Spell, Critical, true, actors);
 
-                actor.AddAndApplyBuff(buff);
+                actor.AddBuff(buff);
             }
 
             return true;

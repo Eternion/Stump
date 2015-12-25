@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             {
                 if (Effect.Duration > 0 && Spell.Id != (int)SpellIdEnum.MARTEAU_D_OKIM)
                 {
-                    AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, StealHpBuffTrigger);
+                    AddTriggerBuff(actor, true, BuffTriggerType.OnTurnBegin, StealHpBuffTrigger);
                 }
                 else
                 {
@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                         Caster.InflictDamage(damage);
 
                         if (buff.Duration <= 0)
-                            actor.RemoveAndDispellBuff(buff);
+                            actor.RemoveBuff(buff);
                     }
                     else
                     {

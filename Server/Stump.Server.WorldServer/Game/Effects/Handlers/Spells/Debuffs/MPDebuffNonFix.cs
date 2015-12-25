@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     actor.LostMP(value, Caster);
                 }
 
-                actor.TriggerBuffs(BuffTriggerType.LOST_MP);
+                actor.TriggerBuffs(BuffTriggerType.OnMPLost);
             }
 
             return true;

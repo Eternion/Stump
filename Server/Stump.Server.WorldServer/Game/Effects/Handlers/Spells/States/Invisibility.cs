@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
             foreach (var actor in GetAffectedActors())
             {
                 var buff = new InvisibilityBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, false, true);
-                actor.AddAndApplyBuff(buff);
+                actor.AddBuff(buff);
             }
 
             return true;

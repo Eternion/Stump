@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             {
                 if (Dice.Duration > 0)
                 {
-                    bomb.AddAndApplyBuff(new EmptyBuff(bomb.PopNextBuffId(), bomb, Caster, Dice, Spell, false));
+                    bomb.AddBuff(new EmptyBuff(bomb.PopNextBuffId(), bomb, Caster, Dice, Spell, false));
                 }
                 else
                 {

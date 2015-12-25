@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             private set;
         }
 
-        public override void Apply()
+        public override void Apply(BuffTriggerType type, object token)
         {
             Target.Stats[PlayerFields.AirResistPercent].Context += Value;
             Target.Stats[PlayerFields.FireResistPercent].Context += Value;

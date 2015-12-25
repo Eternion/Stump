@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             var buffs = actor.GetBuffs(x => x.Caster == Caster && x.Spell.Id == GlyphSpell.Id).ToArray();
             foreach(var buff in buffs)
             {
-                actor.RemoveAndDispellBuff(buff);
+                actor.RemoveBuff(buff);
             }
 
             actor.PositionChanged -= OnPositionChanged;

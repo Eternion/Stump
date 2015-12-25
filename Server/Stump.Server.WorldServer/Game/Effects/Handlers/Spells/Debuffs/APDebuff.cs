@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     target = Caster;
 
                     if (buff.Duration <= 0)
-                        actor.RemoveAndDispellBuff(buff);
+                        actor.RemoveBuff(buff);
                 }
 
                 if (Effect.Duration > 1)
@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     target.LostAP(integerEffect.Value, Caster);
                 }
 
-                target.TriggerBuffs(BuffTriggerType.LOST_AP);
+                target.TriggerBuffs(BuffTriggerType.OnAPLost);
             }
 
             return true;

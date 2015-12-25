@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
             foreach (var actor in GetAffectedActors())
             {
                 var buff = new SkipTurnBuff(actor.PopNextBuffId(), actor, Caster, Dice, Spell, false, false);
-                actor.AddAndApplyBuff(buff);
+                actor.AddBuff(buff);
             }
 
             return true;

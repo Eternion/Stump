@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             private set;
         }
 
-        public override void Apply()
+        public override void Apply(BuffTriggerType type, object token)
         {
             Target.AddState(State);
         }

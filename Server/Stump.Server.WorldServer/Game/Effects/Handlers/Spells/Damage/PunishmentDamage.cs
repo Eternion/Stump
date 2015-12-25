@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     Caster.InflictDamage(damages);
 
                     if (buff.Duration <= 0)
-                        actor.RemoveAndDispellBuff(buff);
+                        actor.RemoveBuff(buff);
                 }
                 else
                 {

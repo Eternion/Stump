@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 if (Effect.Duration > 0)
                 {
-                    AddTriggerBuff(actor, true, BuffTriggerType.TURN_BEGIN, DamageBuffTrigger);
+                    AddTriggerBuff(actor, true, BuffTriggerType.OnTurnBegin, DamageBuffTrigger);
                 }
                 else
                 {
@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                         Caster.InflictDamage(damage);
 
                         if (buff.Duration <= 0)
-                            actor.RemoveAndDispellBuff(buff);
+                            actor.RemoveBuff(buff);
                     }
                     else
                     {

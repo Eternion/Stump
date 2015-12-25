@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override TriggerType TriggerType
         {
-            get { return TriggerType.MOVE | TriggerType.TURN_BEGIN | TriggerType.TURN_END; }
+            get { return TriggerType.MOVE | TriggerType.OnTurnBegin | TriggerType.OnTurnEnd; }
         }
 
         public SummonedBomb[] Bombs

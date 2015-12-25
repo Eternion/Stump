@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 if (integerEffect == null)
                     return false;
 
-                AddTriggerBuff(actor, true, BuffTriggerType.AFTER_ATTACKED, OnBuffTriggered);
+                AddTriggerBuff(actor, true, BuffTriggerType.AfterDamaged, OnBuffTriggered);
             }
 
             return true;
@@ -62,7 +62,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 if (integerEffect == null)
                     return false;
 
-                AddTriggerBuff(actor, true, BuffTriggerType.AFTER_ATTACKED, OnBuffTriggered);
+                AddTriggerBuff(actor, true, BuffTriggerType.AfterDamaged, OnBuffTriggered);
             }
 
             return true;
