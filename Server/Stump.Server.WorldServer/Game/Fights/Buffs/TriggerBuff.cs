@@ -10,38 +10,27 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
     public class TriggerBuff : Buff
     {
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger)
-            : base(id, target, caster, effect, spell, critical, dispelable)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, TriggerBuffApplyHandler applyTrigger)
+            : this(id, target, caster, effect, spell, parentSpell, critical, dispelable, applyTrigger, (short?)null)
         {
-            Trigger = trigger;
-            Dice = effect;
-            ParentSpell = parentSpell;
-            ApplyTrigger = applyTrigger;
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
-            : base(id, target, caster, effect, spell, critical, dispelable)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+            : this(id, target, caster, effect, spell, parentSpell, critical, dispelable, applyTrigger, removeTrigger, null)
         {
-            Trigger = trigger;
-            Dice = effect;
-            ParentSpell = parentSpell;
-            ApplyTrigger = applyTrigger;
-            RemoveTrigger = removeTrigger;
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell,  Spell parentSpell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, short customActionId)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell,  Spell parentSpell, bool critical, bool dispelable, TriggerBuffApplyHandler applyTrigger, short? customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
         {
-            Trigger = trigger;
             Dice = effect;
             ParentSpell = parentSpell;
             ApplyTrigger = applyTrigger;
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, BuffTriggerType trigger, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short customActionId)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short? customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
         {
-            Trigger = trigger;
             Dice = effect;
             ParentSpell = parentSpell;
             ApplyTrigger = applyTrigger;
@@ -55,12 +44,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         }
 
         public Spell ParentSpell
-        {
-            get;
-            private set;
-        }
-
-        public BuffTriggerType Trigger
         {
             get;
             private set;

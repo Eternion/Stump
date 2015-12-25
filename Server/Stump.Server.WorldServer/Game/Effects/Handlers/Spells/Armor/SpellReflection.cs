@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
         {
             foreach (var actor in GetAffectedActors())
             {
-                if (Effect.Duration <= 0)
+                if (Effect.Duration == 0)
                     return false;
 
                 var buffId = actor.PopNextBuffId();

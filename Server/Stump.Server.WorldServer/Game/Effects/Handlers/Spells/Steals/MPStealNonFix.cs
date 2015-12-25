@@ -54,7 +54,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 actor.LostMP((short)value, Caster);
                 actor.TriggerBuffs(BuffTriggerType.OnMPLost);
 
-                if (Effect.Duration > 0)
+                if (Effect.Duration != 0)
                 {
                     AddStatBuff(Caster, (short)(value), PlayerFields.MP, true, (short)EffectsEnum.Effect_AddMP_128);
                 }

@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration <= 0)
+                if (Effect.Duration == 0)
                     continue;
 
                 if (Effect.EffectId == EffectsEnum.Effect_SubRange)

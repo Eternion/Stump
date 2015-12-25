@@ -57,11 +57,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public const int CHARACTERISTIC_STATE = 71;
 
         protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable)
-            : this(id, target,caster,effect,spell,critical, dispelable, 0)
+            : this(id, target,caster,effect,spell,critical, dispelable, null)
         {
         }
 
-        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId)
+        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short? customActionId)
         {
             Id = id;
             Target = target;
@@ -160,6 +160,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             }
         }
 
+        public void SetTrigger(BuffTriggerType trigger)
+        {
+            Triggers = new List<BuffTrigger>() { new BuffTrigger(trigger) };
+        }
+
         public List<BuffTrigger> Triggers
         {
             get;
@@ -177,6 +182,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         /// <returns></returns>
         public bool DecrementDuration()
         {
+            if (Duration == -1) // Duration = -1 => unlimited buff
+                return false;
+
             return --Duration == 0;
         }
 

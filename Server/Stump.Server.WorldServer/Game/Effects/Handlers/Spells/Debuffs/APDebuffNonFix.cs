@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (value <= 0)
                     return false;
 
-                if (Effect.Duration > 1)
+                if (Effect.Duration != 0)
                 {
                     AddStatBuff(target, (short)(-value), PlayerFields.AP, true);
                 }

@@ -27,14 +27,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration <= 0)
+                if (Effect.Duration == 0)
                     return false;
 
                 // these spells cannot stacks
                 if (actor.GetBuffs(x => x.Effect.EffectId == Effect.EffectId && x.Spell.Template.Id == Spell.Template.Id).Any())
                     continue;
 
-                AddTriggerBuff(actor, true, BuffTriggerType.Instant, ApplyArmorBuff, RemoveArmorBuff);
+                AddTriggerBuff(actor, true, ApplyArmorBuff, RemoveArmorBuff);
             }
 
             return true;

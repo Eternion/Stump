@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 
                 var shieldAmount = (short) (Caster.MaxLifePoints*(integerEffect.Value/100d));
 
-                if (Effect.Duration > 1)
+                if (Effect.Duration != 0)
                 {
                     AddStatBuff(actor, shieldAmount, PlayerFields.Shield, true);
                 }
