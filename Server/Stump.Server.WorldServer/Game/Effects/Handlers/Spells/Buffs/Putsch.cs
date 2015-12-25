@@ -21,9 +21,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             foreach (var actor in GetAffectedActors())
             {
                 var buffId = actor.PopNextBuffId();
-                var buff = new TriggerBuff(buffId, actor, Caster, Dice, Spell, Spell, false, false,
-                    BuffTriggerType.AfterDamaged, PutschBuffTrigger);
-
+                var buff = new TriggerBuff(buffId, actor, Caster, Dice, Spell, Spell, false, false, PutschBuffTrigger);
+                buff.SetTrigger(BuffTriggerType.AfterDamaged);
                 actor.AddBuff(buff);
             }
 

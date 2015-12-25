@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 var bonus = (int)(actor.Stats.Health.TotalMax * (integerEffect.Value / 100d));
 
-                if (Effect.Duration > 0)
+                if (Effect.Duration != 0)
                 {
                     AddStatBuff(actor, (short)bonus, PlayerFields.Health, true,
                         (short)EffectsEnum.Effect_AddVitalityPercent);

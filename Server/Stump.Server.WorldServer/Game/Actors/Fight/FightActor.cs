@@ -37,6 +37,7 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
+using Stump.Server.WorldServer.Game.Fights.Triggers;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -152,7 +153,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected virtual void OnSpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast, bool history = true)
         {
             if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
-                VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+                VisibleState == VisibleStateEnum.INVISIBLE)
             {
                 ShowCell(Cell, false);
 
@@ -163,6 +164,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (history)
                 SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
+
+            if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
+                TriggerBuffs(BuffTriggerType.OnCriticalHit);
+
 
             var handler = SpellCasted;
             if (handler != null)
@@ -816,11 +821,59 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, this);
         }
 
+        private void TriggerDamageBuffs(Damage damage)
+        {
+            TriggerBuffs(BuffTriggerType.OnDamaged, damage);
+
+            if (damage.Source.IsEnnemyWith(this))
+                TriggerBuffs(BuffTriggerType.OnDamagedByEnemy, damage);
+            else
+                TriggerBuffs(BuffTriggerType.OnDamagedByAlly, damage);
+
+            switch (damage.School)
+            {
+                case EffectSchoolEnum.Neutral:
+                    TriggerBuffs(BuffTriggerType.OnDamagedNeutral, damage);
+                    break;
+                case EffectSchoolEnum.Earth:
+                    TriggerBuffs(BuffTriggerType.OnDamagedEarth, damage);
+                    break;
+                case EffectSchoolEnum.Water:
+                    TriggerBuffs(BuffTriggerType.OnDamagedWater, damage);
+                    break;
+                case EffectSchoolEnum.Air:
+                    TriggerBuffs(BuffTriggerType.OnDamagedAir, damage);
+                    break;
+                case EffectSchoolEnum.Fire:
+                    TriggerBuffs(BuffTriggerType.OnDamagedFire, damage);
+                    break;
+                case EffectSchoolEnum.Pushback:
+                    TriggerBuffs(BuffTriggerType.OnDamagedByPush, damage);
+                    break;
+            }
+            if (damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1)
+                TriggerBuffs(BuffTriggerType.OnDamagedInCloseRange, damage);
+            else
+                TriggerBuffs(BuffTriggerType.OnDamagedInLongRange, damage);
+
+            if (damage.IsWeaponAttack)
+                TriggerBuffs(BuffTriggerType.OnDamagedByWeapon, damage);
+            else
+                TriggerBuffs(BuffTriggerType.OnDamagedBySpell, damage);
+
+            if (damage.MarkTrigger is Trap)
+                TriggerBuffs(BuffTriggerType.OnDamagedByTrap, damage);
+
+            if (damage.MarkTrigger is Glyph)
+                TriggerBuffs(BuffTriggerType.OnDamagedByGlyph, damage);
+
+        }
+
         public virtual int InflictDamage(Damage damage)
         {
             OnBeforeDamageInflicted(damage);
             damage.Source.TriggerBuffs(BuffTriggerType.BeforeAttack, damage);
-            TriggerBuffs(BuffTriggerType.OnDamaged, damage);
+            TriggerDamageBuffs(damage);
 
             damage.GenerateDamages();
 
@@ -1510,10 +1563,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             foreach (var buff in buffsToRemove)
             {
-                if (buff is TriggerBuff && ( buff as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.OnBuffEnded))
+                if (buff is TriggerBuff && ( buff as TriggerBuff ).ShouldTrigger(BuffTriggerType.OnBuffEnded))
                     (buff as TriggerBuff).Apply(BuffTriggerType.OnBuffEnded);
 
-                if (!(buff is TriggerBuff && ( buff as TriggerBuff ).Trigger.HasFlag(BuffTriggerType.OnBuffEndedTurnEnd)))
+                if (!(buff is TriggerBuff && ( buff as TriggerBuff ).ShouldTrigger(BuffTriggerType.OnBuffEndedTurnEnd)))
                     RemoveBuff(buff);
             }
         }
@@ -1521,7 +1574,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void TriggerBuffsRemovedOnTurnEnd()
         {
             foreach (var buff in m_buffList.Where(entry => entry.Duration <= 0 && entry is TriggerBuff &&
-                ((TriggerBuff) entry).Trigger.HasFlag(BuffTriggerType.OnBuffEndedTurnEnd)).ToArray())
+                ((TriggerBuff) entry).ShouldTrigger(BuffTriggerType.OnBuffEndedTurnEnd)).ToArray())
             {
                 buff.Apply(BuffTriggerType.OnBuffEndedTurnEnd);
                 RemoveBuff(buff);
@@ -1698,11 +1751,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public void AddState(SpellState state)
         {
             m_states.Add(state);
+
+            TriggerBuffs(BuffTriggerType.OnStateAdded);
+            TriggerBuffs(BuffTriggerType.OnSpecificStateAdded, state.Id);
         }
 
         public void RemoveState(SpellState state)
         {
             m_states.Remove(state);
+
+            TriggerBuffs(BuffTriggerType.OnStateRemoved);
+            TriggerBuffs(BuffTriggerType.OnSpecificStateRemoved, state.Id);
         }
 
         public bool HasState(int stateId)

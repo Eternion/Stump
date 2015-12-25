@@ -220,22 +220,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger,
-                                          TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger);
 
             target.AddBuff(buff);
 
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger,
-                                          object token, TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, object token, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger)
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger)
             {
                 Token = token
             };
@@ -245,11 +243,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType trigger,
-                                          TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, trigger, applyTrigger,
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger,
                                        removeTrigger);
 
             target.AddBuff(buff);

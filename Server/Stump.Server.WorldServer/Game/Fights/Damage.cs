@@ -142,6 +142,8 @@ namespace Stump.Server.WorldServer.Game.Fights
             set;
         }
 
+        public bool IsWeaponAttack => Spell.Id == 0;
+
         public void GenerateDamages()
         {
             if (Generated)

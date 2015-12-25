@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
                 AddStatBuff(actor, (short)( -( integerEffect.Value ) ), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
                 actor.TriggerBuffs(BuffTriggerType.OnMPLost);
 
-                if (Effect.Duration > 0)
+                if (Effect.Duration != 0)
                 {
                     AddStatBuff(Caster, integerEffect.Value, PlayerFields.MP, true, (short)EffectsEnum.Effect_AddMP_128);
                 }

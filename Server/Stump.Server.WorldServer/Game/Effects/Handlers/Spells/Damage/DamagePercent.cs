@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors().ToArray())
             {
-                if (Effect.Duration > 0)
+                if (Effect.Duration != 0)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.OnTurnBegin, DamageBuffTrigger);
                 }
