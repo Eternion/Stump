@@ -62,6 +62,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
+            // Caster can't trigger his own glyph
+            if (trigger == Caster)
+                return;
+
             NotifyTriggered(trigger, GlyphSpell);
             
             var handler = SpellManager.Instance.GetSpellCastHandler(Caster, GlyphSpell, trigger.Cell, false);

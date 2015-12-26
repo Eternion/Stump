@@ -2161,7 +2161,7 @@
         /// <summary>
         /// #1{~1~2 à }#2 Puissance (glyphes)
         /// </summary>
-        Effect_1166 = 1166,
+        Effect_IncreaseGlyphDamages = 1166,
         /// <summary>
         /// 
         /// </summary>

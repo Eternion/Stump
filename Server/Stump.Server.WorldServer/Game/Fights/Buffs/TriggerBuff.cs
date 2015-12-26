@@ -70,7 +70,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public override void Apply(BuffTriggerType type, object token)
         {
             if (ApplyTrigger != null)
-                ApplyTrigger(this, type, Token);
+                ApplyTrigger(this, type, token);
         }
 
         public void Apply(BuffTriggerType trigger)

@@ -296,15 +296,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
 
-        public override int CalculateDamage(int damage, EffectSchoolEnum type, bool critical)
+        public override Damage CalculateDamageBonuses(Damage damage)
         {
             if (Character.GodMode)
-                return short.MaxValue;
+                damage.Amount = short.MaxValue;
 
-            return
-                base.CalculateDamage(
-                ((m_isUsingWeapon ? m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus] : 0) + damage),
-                    type, critical);
+            var result = base.CalculateDamageBonuses(damage);
+
+            if (m_isUsingWeapon)
+                damage.Amount += m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus].TotalSafe;
+
+            return base.CalculateDamageBonuses(damage);
         }
 
         public bool CanUseWeapon(Cell cell, WeaponTemplate weapon)

@@ -24,10 +24,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
                 foreach (var trigger in triggers.Where(x => x is Glyph))
                 {
+                    fight.StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+
                     foreach (var fighter in fight.GetAllFighters(x => trigger.ContainsCell(x.Cell)))
                     {
-                        fight.TriggerMarks(fighter.Cell, fighter, TriggerType.OnTurnBegin);
+                        trigger.Trigger(fighter);   
                     }
+
+                    fight.EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
+
                 }
             }
 
