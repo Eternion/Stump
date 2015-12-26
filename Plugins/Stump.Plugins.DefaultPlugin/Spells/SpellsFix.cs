@@ -18,12 +18,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         {
             logger.Debug("Apply spells fix");
 
-            #region SRAM
-
-            FixEffectOnAllLevels((int)SpellIdEnum.RÉPULSION, 0, (level, effect, critical) => effect.Priority = 1);
-
-            #endregion SRAM
-
             #region XELOR
 
             RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5486, 1, false);
@@ -51,7 +45,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
 
             #region ECAFLIP
 
-            FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 4, (level, effect, critical) => effect.Priority = 1);
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Delay = 0);
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Random = 0);
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 6, (level, effect, critical) => effect.Delay = 0);
