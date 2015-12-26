@@ -206,10 +206,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             get { return MonsterBombTemplate.Template.Name; }
         }
 
-        public override int CalculateDamage(int damage, EffectSchoolEnum type, bool critical)
+        public override Damage CalculateDamageBonuses(Damage damage)
         {
             PlayerFields stats;
-            switch (type)
+            switch (damage.School)
             {
 
                 case EffectSchoolEnum.Neutral:
@@ -230,9 +230,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     break;
             }
 
-            return (int)Math.Floor(damage *
+            damage.Amount = (int)Math.Floor(damage.Amount *
                                     (100 + Summoner.Stats[stats].Total + Summoner.Stats[PlayerFields.DamageBonusPercent]) /
                                     100d + Summoner.Stats[PlayerFields.DamageBonus].Total);
+
+            return damage;
         }
 
 

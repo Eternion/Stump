@@ -873,7 +873,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             OnBeforeDamageInflicted(damage);
             damage.Source.TriggerBuffs(BuffTriggerType.BeforeAttack, damage);
-            TriggerDamageBuffs(damage);
 
             damage.GenerateDamages();
 
@@ -887,10 +886,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (damage.Source != null && !damage.IgnoreDamageBoost)
             {
-                damage.Amount = damage.Source.CalculateDamage(damage.Amount, damage.School, damage.IsCritical);
+                damage.Source.CalculateDamageBonuses(damage);
 
-                if (damage.Spell != null)
-                    damage.Amount += damage.Source.GetSpellBoost(damage.Spell);
             }
 
             // zone damage
@@ -914,6 +911,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 var damageWithoutArmor = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, false, isPoisonSpell);
                 damage.Amount = CalculateDamageResistance(damage.Amount, damage.School, damage.IsCritical, true, isPoisonSpell);
 
+                // removed
                 var reduction = CalculateArmorReduction(damage.School);
 
                 var damageSustainedBuff = GetBuffs(x => x is DamageSustainedBuff).FirstOrDefault() as DamageSustainedBuff;
@@ -985,6 +983,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                 permanentDamages = 0;
             }
+
+            TriggerDamageBuffs(damage);
 
             if (damage.Amount <= 0)
                 damage.Amount = 0;
@@ -1063,62 +1063,64 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Formulas
 
-        public virtual int CalculateDamage(int damage, EffectSchoolEnum type, bool critical)
+        public virtual Damage CalculateDamageBonuses(Damage damage)
         {
             // formulas :
             // DAMAGE * [(100 + STATS + %BONUS + MULT*100)/100 + (BONUS + PHS/MGKBONUS + ELTBONUS)]
 
-            switch (type)
+            int bonusPercent = Stats[PlayerFields.DamageBonusPercent].TotalSafe;
+            int mult = Stats[PlayerFields.DamageMultiplicator].TotalSafe;
+            int bonus = Stats[PlayerFields.DamageBonus].TotalSafe;
+            int phyMgkBonus = 0;
+            int stats = 0;
+            int eltBonus = 0;
+            
+            switch (damage.School)
             {
                 case EffectSchoolEnum.Neutral:
-                    damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Strength].TotalSafe +
-                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
-                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total +
-                                     Stats[PlayerFields.PhysicalDamage].TotalSafe +
-                                     Stats[PlayerFields.NeutralDamageBonus].TotalSafe));
+                    stats = Stats[PlayerFields.Strength].TotalSafe;
+                    phyMgkBonus = Stats[PlayerFields.PhysicalDamage].TotalSafe;
+                    eltBonus = Stats[PlayerFields.NeutralDamageBonus].TotalSafe;
                     break;
                 case EffectSchoolEnum.Earth:
-                    damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Strength].TotalSafe +
-                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
-                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total +
-                                     Stats[PlayerFields.PhysicalDamage].TotalSafe +
-                                     Stats[PlayerFields.EarthDamageBonus].TotalSafe));
+                    stats = Stats[PlayerFields.Strength].TotalSafe;
+                    phyMgkBonus = Stats[PlayerFields.PhysicalDamage].TotalSafe;
+                    eltBonus = Stats[PlayerFields.EarthDamageBonus].TotalSafe;
                     break;
                 case EffectSchoolEnum.Air:
-                    damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Agility].TotalSafe +
-                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
-                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total +
-                                     Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.AirDamageBonus].TotalSafe));
+                    stats = Stats[PlayerFields.Agility].TotalSafe;
+                    phyMgkBonus = Stats[PlayerFields.MagicDamage].TotalSafe;
+                    eltBonus = Stats[PlayerFields.AirDamageBonus].TotalSafe;
                     break;
                 case EffectSchoolEnum.Water:
-                    damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Chance].TotalSafe +
-                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
-                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total +
-                                     Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.WaterDamageBonus].TotalSafe));
+                    stats = Stats[PlayerFields.Chance].TotalSafe;
+                    phyMgkBonus = Stats[PlayerFields.MagicDamage].TotalSafe;
+                    eltBonus = Stats[PlayerFields.WaterDamageBonus].TotalSafe;
                     break;
                 case EffectSchoolEnum.Fire:
-                    damage = (int) (damage*
-                                    (100 + Stats[PlayerFields.Intelligence].TotalSafe +
-                                     Stats[PlayerFields.DamageBonusPercent].TotalSafe +
-                                     Stats[PlayerFields.DamageMultiplicator].TotalSafe*100)/100d +
-                                    (Stats[PlayerFields.DamageBonus].Total +
-                                     Stats[PlayerFields.MagicDamage].TotalSafe +
-                                     Stats[PlayerFields.FireDamageBonus].TotalSafe));
+                    stats = Stats[PlayerFields.Intelligence].TotalSafe;
+                    phyMgkBonus = Stats[PlayerFields.MagicDamage].TotalSafe;
+                    eltBonus = Stats[PlayerFields.FireDamageBonus].TotalSafe;
                     break;
             }
 
-            if (critical)
-                return damage + Stats[PlayerFields.CriticalDamageBonus].Total;
+            if (damage.IsCritical)
+                bonus += Stats[PlayerFields.CriticalDamageBonus].TotalSafe;
+
+            if (damage.MarkTrigger is Glyph)
+            {
+                bonusPercent += Stats[PlayerFields.GlyphBonusPercent].TotalSafe;
+            }
+
+            if (damage.MarkTrigger is Trap)
+            {
+                bonusPercent += Stats[PlayerFields.TrapBonusPercent].TotalSafe;
+            }
+
+            if (damage.Spell != null)
+                bonus += damage.Source.GetSpellBoost(damage.Spell);
+
+            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + mult * 100) / 100d + (bonus + phyMgkBonus + eltBonus)));
 
             return damage;
         }
@@ -1174,12 +1176,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {           
             var percentResistance = CalculateTotalResistances(type, true, poison);
             var fixResistance = CalculateTotalResistances(type, false, poison);
-            var armorResistance = withArmor && !poison ? CalculateArmorReduction(type) : 0;
 
             percentResistance = percentResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : percentResistance;
             fixResistance = fixResistance > StatsFields.ResistanceLimit ? StatsFields.ResistanceLimit : fixResistance;
 
-            var result = (int)((1 - percentResistance / 100d) * (damage - armorResistance - fixResistance)) -
+            var result = (int)((1 - percentResistance / 100d) * (damage - fixResistance)) -
                          (critical ? Stats[PlayerFields.CriticalDamageReduction].Total : 0);
 
             return result;

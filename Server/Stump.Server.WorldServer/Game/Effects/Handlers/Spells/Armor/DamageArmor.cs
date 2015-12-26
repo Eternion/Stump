@@ -6,6 +6,8 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Handlers.Actions;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 {
@@ -34,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 if (actor.GetBuffs(x => x.Effect.EffectId == Effect.EffectId && x.Spell.Template.Id == Spell.Template.Id).Any())
                     continue;
 
-                AddTriggerBuff(actor, true, ApplyArmorBuff, RemoveArmorBuff);
+                AddTriggerBuff(actor, true, ApplyArmorBuff);
             }
 
             return true;
@@ -42,6 +44,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 
         public static void ApplyArmorBuff(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
+            var damage = token as Fights.Damage;
+            if (damage == null)
+                return;
+
             var integerEffect = buff.GenerateEffect();
 
             if (integerEffect == null)
@@ -53,46 +59,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 target = ((SummonedBomb) target).Summoner;
             }
 
-            foreach (var caracteristic in GetAssociatedCaracteristics(buff.Spell.Id))
-            {
-                buff.Target.Stats[caracteristic].Context += target.CalculateArmorValue(integerEffect.Value);
-            }
-        }
-
-        public static void RemoveArmorBuff(TriggerBuff buff)
-        {
-            var integerEffect = buff.GenerateEffect();
-
-            if (integerEffect == null)
-                return;
-
-            foreach (var caracteristic in GetAssociatedCaracteristics(buff.Spell.Id))
-            {
-                buff.Target.Stats[caracteristic].Context -= buff.Target.CalculateArmorValue(integerEffect.Value);
-            }
-        }
-
-        public static IEnumerable<PlayerFields> GetAssociatedCaracteristics(int spellId)
-        {
-            switch ((SpellIdEnum)spellId)
-            {
-                case SpellIdEnum.ARMURE_AQUEUSE:
-                    yield return PlayerFields.WaterDamageArmor;
-                    break;
-                case SpellIdEnum.ARMURE_TERRESTRE:
-                    yield return PlayerFields.EarthDamageArmor;
-                    yield return PlayerFields.NeutralDamageArmor;
-                    break;
-                case SpellIdEnum.ARMURE_VENTEUSE:
-                    yield return PlayerFields.AirDamageArmor;
-                    break;
-                case SpellIdEnum.ARMURE_INCANDESCENTE:
-                    yield return PlayerFields.FireDamageArmor;
-                    break;
-                default:
-                    yield return PlayerFields.GlobalDamageReduction;
-                    break;
-            }
+            var reduction = Math.Min(damage.Amount, target.CalculateArmorValue(integerEffect.Value));
+            ActionsHandler.SendGameActionFightReduceDamagesMessage(target.Fight.Clients, damage.Source, target, reduction);
+            damage.Amount -= reduction;
         }
     }
 }
