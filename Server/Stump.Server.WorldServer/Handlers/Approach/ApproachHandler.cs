@@ -166,8 +166,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
         {
             client.Send(new AccountCapabilitiesMessage(false, true,
                             client.Account.Id,
-                            (ushort)BreedManager.Instance.AvailableBreedsFlags,
-                            (ushort)BreedManager.Instance.AvailableBreedsFlags,
+                            (int)BreedManager.Instance.AvailableBreedsFlags,
+                            (int)BreedManager.Instance.AvailableBreedsFlags,
                             (sbyte) client.UserGroup.Role));
         }
 
