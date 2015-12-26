@@ -917,9 +917,13 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     RealLook.RemovePets();
             }
             else if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_PHANTOM)
-                RealLook.BonesID = 3;
+            {
+                RealLook.BonesID = 3; //Ghost Bones
+                RealLook.AddSkin(Sex == SexTypeEnum.SEX_FEMALE ? (short)323 : (short)322);
+                RealLook.AddSkin(Sex == SexTypeEnum.SEX_FEMALE ? Breed.FemaleGhostBonesId : Breed.MaleGhostBonesId);
+            }
             else if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE)
-                RealLook.BonesID = (short)(23 + Breed.Id);
+                RealLook.BonesID = Breed.TombBonesId;
 
             if (send)
                 RefreshActor();

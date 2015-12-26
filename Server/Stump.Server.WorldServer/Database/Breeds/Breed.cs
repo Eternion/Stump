@@ -123,7 +123,25 @@ namespace Stump.Server.WorldServer.Database.Breeds
             }
         }
 
-        public long CreatureBonesId
+        public short CreatureBonesId
+        {
+            get;
+            set;
+        }
+
+        public short TombBonesId
+        {
+            get;
+            set;
+        }
+
+        public short MaleGhostBonesId
+        {
+            get;
+            set;
+        }
+
+        public short FemaleGhostBonesId
         {
             get;
             set;
@@ -540,7 +558,7 @@ namespace Stump.Server.WorldServer.Database.Breeds
             DescriptionId = (int) breed.descriptionId;
             MaleLookString = breed.maleLook;
             FemaleLookString = breed.femaleLook;
-            CreatureBonesId = breed.creatureBonesId;
+            CreatureBonesId = (short)breed.creatureBonesId;
             MaleArtwork = breed.maleArtwork;
             FemaleArtwork = breed.femaleArtwork;
             StatsPointsForStrength = breed.statsPointsForStrength.Select(x => x.ToArray()).ToArray();
