@@ -24,10 +24,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             foreach (var actor in GetAffectedActors())
             {
                 HealHpPercent(actor, integerEffect.Value);
-            }
 
-            if (Effect.Duration == 0)
-                DealHpPercent(integerEffect.Value);
+                if (Effect.Duration == 0)
+                    DealHpPercent(integerEffect.Value);
+            }
 
             return true;
         }

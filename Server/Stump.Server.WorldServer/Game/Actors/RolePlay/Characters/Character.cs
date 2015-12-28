@@ -885,7 +885,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void UpdateLook(bool send = true)
         {
-            if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+            if (!IsGhost())
             {
                 var skins = new List<short>(Breed.GetLook(Sex).Skins);
                 skins.AddRange(Head.Skins);
@@ -1069,8 +1069,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_record.Energy; }
             set
             {
-                m_record.Energy = (short)(value < 0 ? 0 : value);
-                OnEnergyChanged(m_record.Energy);
+                var energy = (short)(value < 0 ? 0 : value);
+                var diff = (short)(energy - m_record.Energy);
+
+                m_record.Energy = energy;
+                OnEnergyChanged(energy, diff);
             }
         }
 
@@ -1158,8 +1161,14 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #endregion
 
-        void OnEnergyChanged(short energy)
+        void OnEnergyChanged(short energy, short diff)
         {
+            if (diff < 0)
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 34, Math.Abs(diff)); //Vous avez perdu <b>%1</b> points d'énergie.
+
+            if (energy <= 500 && diff < 0)
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 11);
+
             if (energy > 0)
                 return;
 
@@ -1552,6 +1561,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public FightTeam Team
         {
             get { return Fighter != null ? Fighter.Team : null; }
+        }
+
+        public bool IsGhost()
+        {
+            return PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
         }
 
         public bool IsSpectator()
@@ -2090,6 +2104,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool CanMove()
         {
+            if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE)
+                return false;
+
             if (Inventory.Weight <= Inventory.WeightTotal)
                 return base.CanMove() && !IsDialoging();
 
@@ -2459,7 +2476,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             Energy -= (short)(10 * Level);
 
-            if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+            if (!IsGhost())
             {
                 var dest = GetSpawnPoint() ?? Breed.GetStartPosition();
 
@@ -2500,6 +2517,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.Map != Map || !Map.AllowChallenge)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
+            if (IsGhost())
+                return FighterRefusedReasonEnum.GHOST_REFUSED;
+
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
@@ -2532,6 +2552,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (Level - target.Level > 20)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
 
+            if (IsGhost())
+                return FighterRefusedReasonEnum.GHOST_REFUSED;
+
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
 
@@ -2546,6 +2569,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.Map != Map)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
+            if (IsGhost())
+                return FighterRefusedReasonEnum.GHOST_REFUSED;
+
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }        
         
@@ -2556,6 +2582,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (group.Map != Map)
                 return FighterRefusedReasonEnum.WRONG_MAP;
+
+            if (IsGhost())
+                return FighterRefusedReasonEnum.GHOST_REFUSED;
 
             return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
         }
@@ -2700,7 +2729,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (IsRegenActive())
                 StopRegen();
 
-            if (PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+            if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE)
                 return;
 
             RegenStartTime = DateTime.Now;
@@ -3642,27 +3671,27 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public override ActorRestrictionsInformations GetActorRestrictionsInformations()
         {
             return new ActorRestrictionsInformations(
-                                !Map.AllowAggression, // cantBeAgressed
-                                !Map.AllowChallenge, // cantBeChallenged
-                                !Map.AllowExchangesBetweenPlayers, // cantTrade
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantBeAttackedByMutant
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantRun
+                                !Map.AllowAggression || IsGhost(), // cantBeAgressed
+                                !Map.AllowChallenge || IsGhost(), // cantBeChallenged
+                                !Map.AllowExchangesBetweenPlayers || IsGhost(), // cantTrade
+                                IsGhost(), // cantBeAttackedByMutant
+                                IsGhost(), // cantRun
                                 false, // cantMinimize
                                 PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE, // cantMove
 
-                                !Map.AllowAggression, // cantAggress
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantChallenge
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantExchange
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantAttack
+                                !Map.AllowAggression || IsGhost(), // cantAggress
+                                IsGhost(), // cantChallenge
+                                IsGhost(), // cantExchange
+                                IsGhost(), // cantAttack
                                 false, // cantChat
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantBeMerchant
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantUseObject
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantUseTaxCollector
+                                IsGhost(), // cantBeMerchant
+                                IsGhost(), // cantUseObject
+                                IsGhost(), // cantUseTaxCollector
 
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantUseInteractive
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantSpeakToNPC
+                                IsGhost(), // cantUseInteractive
+                                IsGhost(), // cantSpeakToNPC
                                 false, // cantChangeZone
-                                PlayerLifeStatus != PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING, // cantAttackMonster
+                                IsGhost(), // cantAttackMonster
                                 false // cantWalk8Directions
                                 );
         }

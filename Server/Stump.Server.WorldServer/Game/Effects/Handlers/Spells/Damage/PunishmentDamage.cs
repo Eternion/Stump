@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 damages.GenerateDamages();
 
                 var damagesPercent = Critical ? 0.30d : 0.25d;
-                damages.Amount = (int)((damagesPercent * Math.Pow(Math.Cos(2 * Math.PI * (0.5 - Caster.LifePoints / (double)Caster.MaxLifePoints)) + 1, 2)) / 4 * Caster.MaxLifePoints);
+                damages.Amount = (int)((damagesPercent * Math.Pow(Math.Cos(2 * Math.PI * ((Caster.LifePoints / (double)Caster.MaxLifePoints) - 0.5)) + 1, 2)) / 4 * Caster.MaxLifePoints);
 
                // spell reflected
                 var buff = actor.GetBestReflectionBuff();
