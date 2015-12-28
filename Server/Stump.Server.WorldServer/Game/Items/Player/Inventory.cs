@@ -918,7 +918,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
         {
             var effects = itemSet.GetEffects(count);
 
-            foreach (var handler in effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect, Owner, itemSet, apply)))
+            foreach (var handler in effects.Select(effect => EffectManager.Instance.GetItemEffectHandler(effect.GenerateEffect(EffectGenerationContext.Item), Owner, itemSet, apply)))
             {
                 handler.Apply();
             }
