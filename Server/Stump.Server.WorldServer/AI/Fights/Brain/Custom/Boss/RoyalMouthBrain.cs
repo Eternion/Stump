@@ -2,6 +2,7 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Spells;
 
@@ -27,6 +28,9 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             var inimouthSpell = SpellManager.Instance.GetSpellCastHandler(Fighter, new Spell((int)SpellIdEnum.INIMOUTH, 1), Fighter.Cell, false);
             inimouthSpell.Initialize();
             m_iniMouthHandlers = inimouthSpell.GetEffectHandlers().ToArray();
+
+            var addState = m_iniMouthHandlers[3] as AddState;
+            if (addState != null) addState.Dispelable = false;
 
             Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 

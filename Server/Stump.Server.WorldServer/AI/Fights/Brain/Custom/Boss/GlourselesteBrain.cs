@@ -19,6 +19,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
             fighter.ActorMoved += OnBossMoved;
             fighter.FightPointsVariation += OnFightPointsVariation;
             fighter.BeforeDamageInflicted += OnBeforeDamageInflicted;
+            fighter.SpellCasting += OnSpellCasting;
 
             fighter.Fight.FightStarted += OnFightStarted;
             fighter.Fight.TurnStarted += OnTurnStarted;
@@ -141,6 +142,11 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Boss
 
             //State Résuglours
             GetEffectHandler(SpellIdEnum.GLOURSONGEUR, Fighter.Cell, 3).Apply();
+        }
+
+        private void OnSpellCasting(FightActor caster, Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentcast)
+        {
+            // todo
         }
     }
 }

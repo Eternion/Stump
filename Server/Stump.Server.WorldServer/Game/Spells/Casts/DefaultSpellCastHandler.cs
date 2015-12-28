@@ -46,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                 var rand = random.NextDouble();
                 double randSum = groupEffects.Sum(entry => entry.Random);
                 var stopRand = false;
-                foreach (var effect in groupEffects.OrderBy(x => x.Priority))
+                foreach (var effect in groupEffects)
                 {
                     if (effect.Random > 0)
                     {
@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             }
 
 
-            Handlers = handlers.ToArray();
+            Handlers = handlers.OrderByDescending(x => x.Priority).ToArray();
             m_initialized = true;
 
             return true;

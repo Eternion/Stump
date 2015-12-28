@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         {
         }
 
-        public override void Apply(BuffTriggerType type, object token)
+        public override void Apply()
         {
         }
 

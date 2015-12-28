@@ -124,6 +124,11 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return (uint) (Math.Abs(m_x - point.X) + Math.Abs(m_y - point.Y));
         }
 
+        public uint SquareDistanceTo(MapPoint point)
+        {
+            return (uint) Math.Max(Math.Abs(m_x - point.X), Math.Abs(m_y - point.Y));
+        }
+
         public bool IsAdjacentTo(MapPoint point)
         {
             return ManhattanDistanceTo(point) == 1;

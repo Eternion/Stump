@@ -87,6 +87,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             set;
         }
 
+        public virtual int Priority => Effect.Priority;
 
         public Cell CastCell
         {
@@ -198,18 +199,27 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             m_customAffectedActors = tmpActors.ToArray();
         }
 
-        public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable)
+        public bool IsBuff()
         {
-            var id = target.PopNextBuffId();
-            var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable);
-
-            target.AddBuff(buff);
-
-            return buff;
+            return Effect.Duration != 0;
         }
 
-        public StatBuff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
-                                    short customActionId)
+        public bool IsTriggerBuff()
+        {
+            return Effect.Duration != 0 && Effect.Triggers != "I";
+        }
+
+        public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
+                                   short? customActionId = null)
+        {
+            if (IsTriggerBuff())
+                return AddTriggerBuff(target, dispelable, (buff, type, token) => AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId));
+            
+            return AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId);
+        }
+
+        private Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
+                                    short? customActionId = null)
         {
             var id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable,
@@ -220,7 +230,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerBuffApplyHandler applyTrigger)
+        public Buff AddTriggerBuff(FightActor target, bool dispelable, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
             var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger);
@@ -230,13 +240,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, object token, TriggerBuffApplyHandler applyTrigger)
+        public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType type, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger)
-            {
-                Token = token
-            };
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger);
+            buff.SetTrigger(type);
 
             target.AddBuff(buff);
 
@@ -254,7 +262,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public StateBuff AddStateBuff(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state)
+        public Buff AddStateBuff(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state)
+        {
+            if (IsTriggerBuff())
+                return AddTriggerBuff(target, dispelable, (buff, type, token) => AddStateBuffInternal(target, dispelable, bypassMaxStack, state));
+
+            return AddStateBuffInternal(target, dispelable, bypassMaxStack, state);
+
+        }
+
+        private Buff AddStateBuffInternal(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state)
         {
             var id = target.PopNextBuffId();
             var buff = new StateBuff(id, target, Caster, Dice, Spell, dispelable, state);
