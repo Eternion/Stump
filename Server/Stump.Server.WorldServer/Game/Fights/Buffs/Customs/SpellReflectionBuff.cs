@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             get { return Dice.DiceFace; }
         }
 
-        public override void Apply(BuffTriggerType type, object token)
+        public override void Apply()
         {
             
         }

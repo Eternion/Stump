@@ -39,11 +39,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (Effect.Duration != 0)
                 {
                     AddStatBuff(target, (short)(-(integerEffect.Value)), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
+                    actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, Caster, actor, (short)(-integerEffect.Value));
                 }
                 else
                 {
                     target.LostAP(integerEffect.Value, Caster);
                 }
+
 
                 target.TriggerBuffs(BuffTriggerType.OnAPLost);
             }

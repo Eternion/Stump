@@ -9,51 +9,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
     public abstract class Buff
     {
-        public static readonly Dictionary<string, BuffTriggerType> m_triggersMapping = new Dictionary<string, BuffTriggerType>()
-        {
-            {"I", BuffTriggerType.Instant},
-            {"D", BuffTriggerType.OnDamaged},
-            {"DA", BuffTriggerType.OnDamagedAir},
-            {"DE", BuffTriggerType.OnDamagedEarth},
-            {"DF", BuffTriggerType.OnDamagedFire},
-            {"DW", BuffTriggerType.OnDamagedWater},
-            {"DN", BuffTriggerType.OnDamagedNeutral},
-            {"DBA", BuffTriggerType.OnDamagedByAlly},
-            {"DBE", BuffTriggerType.OnDamagedByEnemy},
-            {"DC", BuffTriggerType.OnDamagedByWeapon},
-            {"DS", BuffTriggerType.OnDamagedBySpell},
-            {"DG", BuffTriggerType.OnDamagedByGlyph},
-            {"DP", BuffTriggerType.OnDamagedByTrap},
-            {"DM", BuffTriggerType.OnDamagedInCloseRange},
-            {"DR", BuffTriggerType.OnDamagedInLongRange},
-            {"MD", BuffTriggerType.OnDamagedByPush},
-            {"DI", BuffTriggerType.OnDamagedUnknown_1},
-            {"Dr", BuffTriggerType.OnDamagedUnknown_2},
-            {"DTB", BuffTriggerType.OnDamagedUnknown_3},
-            {"DTE", BuffTriggerType.OnDamagedUnknown_4},
-            {"MDM", BuffTriggerType.OnDamagedUnknown_5},
-            {"MDP", BuffTriggerType.OnDamagedUnknown_6},
-            {"TB", BuffTriggerType.OnTurnBegin},
-            {"TE", BuffTriggerType.OnTurnEnd},
-            {"m", BuffTriggerType.OnMPLost},
-            {"A", BuffTriggerType.OnAPLost},
-            {"H", BuffTriggerType.OnHealed},
-            {"EO", BuffTriggerType.OnStateAdded},
-            {"Eo", BuffTriggerType.OnStateRemoved},
-            {"CC", BuffTriggerType.OnCriticalHit},
-            {"d", BuffTriggerType.Unknown_1},
-            {"M", BuffTriggerType.OnPush},
-            {"mA", BuffTriggerType.Unknown_3},
-            {"ML", BuffTriggerType.Unknown_4},
-            {"MP", BuffTriggerType.Unknown_5},
-            {"MS", BuffTriggerType.Unknown_6},
-            {"P", BuffTriggerType.Unknown_7},
-            {"R", BuffTriggerType.Unknown_8},
-            {"tF", BuffTriggerType.Unknown_9},
-            {"tS", BuffTriggerType.OnTackle},
-            {"X", BuffTriggerType.Unknown_11},
-        };
-
+       
         public const int CHARACTERISTIC_STATE = 71;
 
         protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable)
@@ -74,9 +30,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
             Duration = (short)Effect.Duration;
             Efficiency = 1.0d;
-
-            var triggerStr = Effect.Triggers.Split('|');
-            Triggers = triggerStr.Select(GetTriggerFromString).ToList();
         }
 
         public int Id
@@ -97,6 +50,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             private set;
         }
 
+        public FightActor PlayerOnCreation
+        {
+            get;
+            set;
+        }
 
         public EffectBase Effect
         {
@@ -160,22 +118,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             }
         }
 
-        public void SetTrigger(BuffTriggerType trigger)
-        {
-            Triggers = new List<BuffTrigger>() { new BuffTrigger(trigger) };
-        }
-
-        public List<BuffTrigger> Triggers
-        {
-            get;
-            protected set;
-        }
-
-        public bool ShouldTrigger(BuffTriggerType type, object token = null)
-        {
-            return Triggers.Any(x => x.Type == type && (x.Parameter == null || x.Parameter == token));
-        }
-
         /// <summary>
         /// Decrement Duration and return true whenever the buff is over
         /// </summary>
@@ -187,9 +129,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
             return --Duration == 0;
         }
-
-        public virtual void Apply(BuffTriggerType type) => Apply(type, null);
-        public abstract void Apply(BuffTriggerType type, object token);
+        
+        public abstract void Apply();
         public abstract void Dispell();
 
         public virtual short GetActionId()
@@ -217,18 +158,5 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public abstract AbstractFightDispellableEffect GetAbstractFightDispellableEffect();
 
-        public static BuffTrigger GetTriggerFromString(string str)
-        {
-            if (m_triggersMapping.ContainsKey(str))
-                return new BuffTrigger(m_triggersMapping[str]);
-
-            if (str.StartsWith("EO"))
-                return new BuffTrigger(BuffTriggerType.OnSpecificStateAdded, int.Parse(str.Remove(0, "EO".Length)));
-
-            if (str.StartsWith("Eo"))
-                return new BuffTrigger(BuffTriggerType.OnSpecificStateRemoved, int.Parse(str.Remove(0, "Eo".Length)));
-
-            return new BuffTrigger(BuffTriggerType.Unknown);
-        }
     }
 }

@@ -63,11 +63,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 }
 
                 if (value <= 0)
-                    return false;
+                    continue;
 
                 if (Effect.Duration != 0)
                 {
-                    AddStatBuff(target, (short)(-value), PlayerFields.AP, true);
+                    AddStatBuff(target, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
                 }
                 else
                 {

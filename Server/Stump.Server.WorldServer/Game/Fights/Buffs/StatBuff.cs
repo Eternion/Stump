@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Caracteristic = caracteristic;
         }
 
-        public StatBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, PlayerFields caracteristic, bool critical, bool dispelable, short customActionId)
+        public StatBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, short value, PlayerFields caracteristic, bool critical, bool dispelable, short? customActionId)
             : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
         {
             Value = value;
@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             set;
         }
 
-        public override void Apply(BuffTriggerType type, object token)
+        public override void Apply()
         {
             Target.Stats[Caracteristic].Context += Value;
         }

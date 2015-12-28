@@ -222,9 +222,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnBuffAdded(Buff buff)
         {
-            if (buff.ShouldTrigger(BuffTriggerType.Instant))
-                buff.Apply(BuffTriggerType.Instant, null);
-
             var handler = BuffAdded;
             if (handler != null) handler(this, buff);
         }
@@ -502,7 +499,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         #endregion
-
 
         #region Fighting
 
@@ -1146,15 +1142,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 case SpellShapeEnum.V:
                 case SpellShapeEnum.G:
                 case SpellShapeEnum.W:
-                    distance = targetCell.ManhattanDistanceTo(impactCell);
+                    distance = targetCell.SquareDistanceTo(impactCell);
                     break;
                 case SpellShapeEnum.minus:
                 case SpellShapeEnum.plus:
                 case SpellShapeEnum.U:
-                    distance = targetCell.EuclideanDistanceTo(impactCell) / 2;
+                    distance = targetCell.ManhattanDistanceTo(impactCell) / 2;
                     break;
                 default:
-                    distance = targetCell.EuclideanDistanceTo(impactCell);
+                    distance = targetCell.ManhattanDistanceTo(impactCell);
                     break;
             }
 
@@ -1470,7 +1466,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool BuffMaxStackReached(Buff buff)
         {
-            return buff.Spell.CurrentSpellLevel.MaxStack > 0 && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell && entry.Effect.EffectId == buff.Effect.EffectId && !(buff is DelayBuff));
+            return buff.Spell.CurrentSpellLevel.MaxStack > 0 && 
+                buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => 
+                entry.Spell == buff.Spell &&
+                entry.Effect.EffectId == buff.Effect.EffectId &&
+                entry.GetType() == buff.GetType() &&
+                !(buff is DelayBuff));
         }
 
         /*public bool AddBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
@@ -1489,14 +1490,18 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool AddBuff(Buff buff, bool bypassMaxStack = false)
         {
-            if (!CanAddBuff(buff) || (BuffMaxStackReached(buff) && !bypassMaxStack))
+            if (!CanAddBuff(buff) || (!bypassMaxStack && BuffMaxStackReached(buff)))
             {
                 FreeBuffId(buff.Id);
                 return false;
             }
 
+            if (!IsFighterTurn())
+                buff.Duration++;
+
             m_buffList.Add(buff);
 
+            buff.Apply();
             OnBuffAdded(buff);
 
             return true;
@@ -1549,8 +1554,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void TriggerBuffs(BuffTriggerType trigger, object token = null)
         {
-            var copy = m_buffList.ToArray();
-            foreach (var triggerBuff in copy.Where(buff => buff.ShouldTrigger(trigger, token)))
+            foreach (var triggerBuff in m_buffList.OfType<TriggerBuff>().Where(buff => buff.ShouldTrigger(trigger, token)).ToArray())
             {
                 Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
                 triggerBuff.Apply(trigger, token);
@@ -1574,8 +1578,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void TriggerBuffsRemovedOnTurnEnd()
         {
-            foreach (var buff in m_buffList.Where(entry => entry.Duration <= 0 && entry is TriggerBuff &&
-                ((TriggerBuff) entry).ShouldTrigger(BuffTriggerType.OnBuffEndedTurnEnd)).ToArray())
+            foreach (var buff in m_buffList.OfType<TriggerBuff>().Where(entry => entry.Duration <= 0 && 
+                entry.ShouldTrigger(BuffTriggerType.OnBuffEndedTurnEnd)).ToArray())
             {
                 buff.Apply(BuffTriggerType.OnBuffEndedTurnEnd);
                 RemoveBuff(buff);

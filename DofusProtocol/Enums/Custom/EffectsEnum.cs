@@ -2177,11 +2177,11 @@
         /// <summary>
         /// Augmente les dommages finaux occasionnés de #1%
         /// </summary>
-        Effect_1171 = 1171,
+        Effect_IncreaseFinalDamages = 1171,
         /// <summary>
         /// Réduit les dommages finaux occasionnés de #1%
         /// </summary>
-        Effect_1172 = 1172,
+        Effect_ReduceFinalDamages = 1172,
         /// <summary>
         /// 
         /// </summary>

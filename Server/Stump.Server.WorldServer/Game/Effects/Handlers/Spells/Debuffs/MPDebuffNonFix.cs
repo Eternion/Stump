@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 if (Effect.Duration != 0)
                 {
-                    AddStatBuff(actor, (short)(-value), PlayerFields.MP, true);
+                    AddStatBuff(actor, (short)(-value), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
                     //ActionsHandler.SendGameActionFightPointsVariationMessage(Fight.Clients, ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, Caster, actor, (short)(-value));
                     //actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, Caster, actor, (short)(-value));
                 }
