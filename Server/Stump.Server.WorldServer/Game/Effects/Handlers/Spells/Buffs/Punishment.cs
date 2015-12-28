@@ -49,6 +49,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 return;
 
             var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
+            if (caracteristic == PlayerFields.Health)
+            {
+                buff.Target.HealDirect(bonus, Caster);
+                return;
+            }
+
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
                 Spell, (short)bonus, caracteristic, false, true, Dice.DiceNum) 
                 {Duration = Dice.Value};
