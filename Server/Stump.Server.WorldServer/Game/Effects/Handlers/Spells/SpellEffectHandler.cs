@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public Cell CastCell
         {
-            get { return m_customCastCell ?? (MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell); }
+            get { return m_customCastCell ?? (MarkTrigger != null ? MarkTrigger.Shape.Cell : Caster.Cell); }
             set { m_customCastCell = value; }
         }
 
@@ -100,14 +100,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             get { return m_castPoint ?? (m_castPoint = new MapPoint(CastCell)); }
             set { m_castPoint = value; }
         }
-
+        
         public Zone EffectZone
         {
             get
             {
                 return m_effectZone ??
                        (m_effectZone =
-                        new Zone(Effect.ZoneShape, (byte) Effect.ZoneSize, CastPoint.OrientationTo(TargetedPoint), Effect.ZoneEfficiencyPercent, Effect.ZoneMaxEfficiency));
+                        new Zone(Effect.ZoneShape, (byte) Effect.ZoneSize, (byte) Effect.ZoneMinSize, CastPoint.OrientationTo(TargetedPoint), Effect.ZoneEfficiencyPercent, Effect.ZoneMaxEfficiency));
             }
             set
             {

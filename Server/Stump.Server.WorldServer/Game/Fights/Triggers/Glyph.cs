@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public override GameActionMark GetGameActionMark()
         {
             return new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id, (sbyte)Type, CenterCell.Id,
-                                      Shapes[0].GetGameActionMarkedCells(), true);
+                                      Shape.GetGameActionMarkedCells(), true);
         }
 
         public override GameActionMark GetHiddenGameActionMark()

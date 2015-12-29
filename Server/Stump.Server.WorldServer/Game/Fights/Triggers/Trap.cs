@@ -14,10 +14,16 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
     public class Trap : MarkTrigger
     {
         public Trap(short id, FightActor caster, Spell spell, EffectDice originEffect, Spell trapSpell, Cell centerCell, SpellShapeEnum shape, byte size)
-            : base(id, caster, spell, originEffect, centerCell, new MarkShape(caster.Fight, centerCell, shape, GameActionMarkCellsTypeEnum.CELLS_CIRCLE, size, GetTrapColorBySpell(spell)))
+            : base(id, caster, spell, originEffect, centerCell, new MarkShape(caster.Fight, centerCell, shape, GetMarkShape(shape), size, GetTrapColorBySpell(spell)))
         {
             TrapSpell = trapSpell;
             VisibleState = GameActionFightInvisibilityStateEnum.INVISIBLE;
+        }
+
+        public bool HasBeenTriggered
+        {
+            get;
+            private set;
         }
 
         public Spell TrapSpell
@@ -54,21 +60,23 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
+            if (HasBeenTriggered)
+                return;
+
+            HasBeenTriggered = true;
             NotifyTriggered(trigger, TrapSpell);
+            var handler = SpellManager.Instance.GetSpellCastHandler(Caster, TrapSpell, Shape.Cell, false);
+            handler.MarkTrigger = this;
+            handler.Initialize();
 
-            foreach (var shape in Shapes)
+            foreach (var effectHandler in handler.GetEffectHandlers())
             {
-                var handler = SpellManager.Instance.GetSpellCastHandler(Caster, TrapSpell, shape.Cell, false);
-                handler.MarkTrigger = this;
-                handler.Initialize();
-
-                foreach (var effectHandler in handler.GetEffectHandlers())
-                {
-                    effectHandler.EffectZone = new Zone(shape.Shape == GameActionMarkCellsTypeEnum.CELLS_CROSS ? SpellShapeEnum.Q : effectHandler.Effect.ZoneShape, shape.Size);
-                }
-
-                handler.Execute();
+                effectHandler.EffectZone = new Zone(effectHandler.Effect.ZoneShape, Shape.Size);
             }
+
+            handler.Execute();
+
+            Remove();
         }
 
         public override GameActionMark GetHiddenGameActionMark()
@@ -80,12 +88,25 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public override GameActionMark GetGameActionMark()
         {
             return new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id, (sbyte)Type, CenterCell.Id,
-                                      Shapes.Select(entry => entry.GetGameActionMarkedCell()), true);
+                                      Shape.GetGameActionMarkedCells(), true);
         }
 
         public override bool CanTrigger(FightActor actor)
         {
             return true;
+        }
+
+        private static GameActionMarkCellsTypeEnum GetMarkShape(SpellShapeEnum shape)
+        {
+            switch (shape)
+            {
+                case SpellShapeEnum.G:
+                    return GameActionMarkCellsTypeEnum.CELLS_SQUARE;
+                case SpellShapeEnum.X:
+                    return GameActionMarkCellsTypeEnum.CELLS_CROSS;
+                default:
+                    return GameActionMarkCellsTypeEnum.CELLS_CIRCLE;
+            }
         }
 
         private static Color GetTrapColorBySpell(Spell spell)

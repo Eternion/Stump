@@ -31,6 +31,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
             var trap = new Trap((short)Fight.PopNextTriggerId(), Caster, Spell, Dice, trapSpell, TargetedCell, EffectZone.ShapeType, (byte) Effect.ZoneSize);
 
+            if (Spell.Id == (int) SpellIdEnum.PIÈGE_RÉPULSIF)
+                trap.Priority = -1;
+
             Fight.AddTriger(trap);
             return true;
         }
