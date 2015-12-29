@@ -2363,33 +2363,13 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         public void TriggerMarks(Cell cell, FightActor trigger, TriggerType triggerType)
         {
-            var otherTriggers = m_triggers.Where(x => x.CastedSpell.Template.Id == (int)SpellIdEnum.PIÈGE_RÉPULSIF).ToArray();
-            var triggers = m_triggers.Where(x => !otherTriggers.Contains(x)).ToArray();
+            var triggers = m_triggers.ToArray();
             
             // we use a copy 'cause a trigger can be deleted when a fighter die with it
-            foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
+            foreach (var markTrigger in triggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)).OrderByDescending(x => x.Priority))
             {
                 StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-
-                // avoid the trigger to trigger twice
-                if (markTrigger is Trap)
-                    RemoveTrigger(markTrigger); 
-                    
                 markTrigger.Trigger(trigger);
-
-                EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-            }
-
-            foreach (var markTrigger in otherTriggers.Where(markTrigger => markTrigger.TriggerType.HasFlag(triggerType) && markTrigger.ContainsCell(cell)))
-            {
-                StartSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
-
-                // avoid the trigger to trigger twice
-                if (markTrigger is Trap)
-                    RemoveTrigger(markTrigger);
-
-                markTrigger.Trigger(trigger);
-
                 EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
             }
         }
