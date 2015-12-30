@@ -1475,6 +1475,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 FighterPlaying.ResetUsedPoints();
                 PassTurn();
+                
                 return;
             }
 
@@ -1529,8 +1530,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             
             if (CheckFightEnd())
                 return;
-
-            OnTurnStopped();
 
             ReadyChecker = ReadyChecker.RequestCheck(this, PassTurnAndCheck, LagAndPassTurn);
         }
@@ -1600,6 +1599,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ReadyChecker = null;
 
+            OnTurnStopped();
             PassTurn();
         }
 
@@ -1827,6 +1827,12 @@ namespace Stump.Server.WorldServer.Game.Fights
             {
                 var fighterCells = fighter.OpposedTeam.GetAllFighters(entry => entry.CanTackle(fighter)).Select(entry => entry.Cell.Id).ToList();
                 var obstaclesCells = GetAllFighters(entry => entry != fighter && entry.Position.Cell != fighter.Cell && entry.IsAlive()).Select(entry => entry.Cell.Id).ToList();
+
+                if (cells[0].Id != fighter.Cell.Id)
+                {
+                    EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
+                    return;
+                }
 
                 if (fighter.MP < path.MPCost)
                     path.CutPath(fighter.MP + 1);
