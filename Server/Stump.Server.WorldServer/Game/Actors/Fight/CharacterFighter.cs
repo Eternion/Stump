@@ -223,7 +223,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
                 var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell,
                     critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
-                handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize,
+                handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize, (byte) weaponTemplate.Type.ZoneMinSize,
                     handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);
                 handler.Targets = new TargetCriterion[]
                     { new TargetTypeCriterion(SpellTargetType.ALLY_ALL), new TargetTypeCriterion(SpellTargetType.ENEMY_ALL) }; // everyone but caster

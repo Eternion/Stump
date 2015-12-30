@@ -20,11 +20,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             ShapeType = shape;
         }
 
-        public Zone(SpellShapeEnum shape, byte radius, DirectionsEnum direction, int efficiencyMalus, int maxEfficiency)
+        public Zone(SpellShapeEnum shape, byte radius, byte minRadius, DirectionsEnum direction, int efficiencyMalus, int maxEfficiency)
         {
             Radius = radius;
             Direction = direction;
             ShapeType = shape;
+            MinRadius = minRadius;
             EfficiencyMalus = efficiencyMalus > 0 ? efficiencyMalus : EFFECTSHAPE_DEFAULT_EFFICIENCY;
             MaxEfficiency = maxEfficiency > 0 ? maxEfficiency : EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY;
         }

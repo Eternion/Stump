@@ -13,8 +13,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class Wall : MarkTrigger
     {
-        public Wall(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, WallsBinding binding, params MarkShape[] shapes)
-            : base(id, caster, castedSpell, originEffect, centerCell, shapes)
+        public Wall(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, WallsBinding binding, MarkShape shape)
+            : base(id, caster, castedSpell, originEffect, centerCell, shape)
         {
             WallBinding = binding;
         }
@@ -63,7 +63,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public override GameActionMark GetGameActionMark()
         {
             return new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, (short)CastedSpell.Id,
-                (sbyte)Type, CenterCell.Id, Shapes.Select(entry => entry.GetGameActionMarkedCell()), true);
+                (sbyte)Type, CenterCell.Id, Shape.GetGameActionMarkedCells(), true);
         }
 
         public override GameActionMark GetHiddenGameActionMark()
