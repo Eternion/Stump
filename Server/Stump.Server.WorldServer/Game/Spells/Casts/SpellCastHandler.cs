@@ -77,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
         public Cell CastCell
         {
-            get { return m_customCastCell ?? (MarkTrigger != null && MarkTrigger.Shapes.Length > 0 ? MarkTrigger.Shapes[0].Cell : Caster.Cell); }
+            get { return m_customCastCell ?? (MarkTrigger != null ? MarkTrigger.Shape.Cell : Caster.Cell); }
             set { m_customCastCell = value; }
 
         }

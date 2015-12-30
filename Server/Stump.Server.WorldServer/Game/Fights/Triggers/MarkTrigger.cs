@@ -30,20 +30,26 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 handler(this);
         }
 
-        protected MarkTrigger(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, params MarkShape[] shapes)
+        protected MarkTrigger(short id, FightActor caster, Spell castedSpell, EffectDice originEffect, Cell centerCell, MarkShape shape)
         {
             Id = id;
             Caster = caster;
             CastedSpell = castedSpell;
             OriginEffect = originEffect;
             CenterCell = centerCell;
-            Shapes = shapes;
+            Shape = shape;
         }
 
         public short Id
         {
             get;
             private set;
+        }
+
+        public int Priority
+        {
+            get;
+            set;
         }
 
         public FightActor Caster
@@ -75,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             get { return Caster.Fight; }
         }
 
-        public MarkShape[] Shapes
+        public MarkShape Shape
         {
             get;
             private set;
@@ -95,12 +101,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public bool ContainsCell(Cell cell)
         {
-            return Shapes.Any(entry => entry.GetCells().Contains(cell));
+            return Shape.GetCells().Contains(cell);
         }
 
         public IEnumerable<Cell> GetCells()
         {
-            return Shapes.SelectMany(entry => entry.GetCells());
+            return Shape.GetCells();
         }
 
         public virtual void Remove()

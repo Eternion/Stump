@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
             var containedTraps = Fight.GetTriggers().OfType<Trap>().Where(entry => entry.VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE && 
                 Caster.IsEnnemyWith(entry.Caster) &&
-                entry.Shapes.Any(subentry => AffectedCells.Contains(subentry.Cell)));
+                AffectedCells.Contains(entry.Shape.Cell));
 
             foreach (var trap in containedTraps)
             {

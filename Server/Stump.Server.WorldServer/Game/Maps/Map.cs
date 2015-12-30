@@ -1479,7 +1479,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             if (actor is IContextDependant)
                 FreeContextualId((sbyte)actor.Id);
 
-            if (m_autoMoveTimer != null && !Actors.OfType<IAutoMovedEntity>().Any())
+            if (m_autoMoveTimer != null && !Actors.OfType<Character>().Any())
             {
                 m_autoMoveTimer.Dispose();
                 m_autoMoveTimer = null;

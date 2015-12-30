@@ -25,35 +25,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
             foreach (var actor in GetAffectedActors())
             {
-                if (Effect.Duration != 0 && Spell.Id != (int)SpellIdEnum.MARTEAU_D_OKIM)
-                {
-                    AddTriggerBuff(actor, true, BuffTriggerType.OnTurnBegin, StealHpBuffTrigger);
-                }
+                if (IsBuff())
+                    AddTriggerBuff(actor, true, StealHpBuffTrigger);
                 else
-                {
-                    var damage = new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell, TargetedCell, EffectZone) {IsCritical = Critical};
-
-                    // spell reflected
-                    var buff = actor.GetBestReflectionBuff();
-                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
-                    {
-                        NotifySpellReflected(actor);
-                        damage.Source = Caster;
-                        damage.ReflectedDamages = true;
-                        Caster.InflictDamage(damage);
-
-                        if (buff.Duration <= 0)
-                            actor.RemoveBuff(buff);
-                    }
-                    else
-                    {
-                        actor.InflictDamage(damage);
-
-                        var amount = (short)Math.Round(damage.Amount/2.0);
-                        if (amount > 0)
-                            Caster.HealDirect(amount, actor);
-                    }
-                }
+                    StealHp(actor);
             }
 
             return true;
@@ -64,14 +39,35 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
 
-        private static void StealHpBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void StealHp(FightActor target)
         {
-            var integerEffect = buff.GenerateEffect();
+            var damage = new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell, TargetedCell, EffectZone) { IsCritical = Critical };
 
-            if (integerEffect == null)
-                return;
+            // spell reflected
+            var buff = target.GetBestReflectionBuff();
+            if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
+            {
+                NotifySpellReflected(target);
+                damage.Source = Caster;
+                damage.ReflectedDamages = true;
+                Caster.InflictDamage(damage);
 
-            buff.Target.Heal(integerEffect.Value, buff.Caster);
+                if (buff.Duration <= 0)
+                    target.RemoveBuff(buff);
+            }
+            else
+            {
+                target.InflictDamage(damage);
+
+                var amount = (short)Math.Floor(damage.Amount / 2.0);
+                if (amount > 0)
+                    Caster.HealDirect(amount, target);
+            }
+        }
+
+        private void StealHpBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            StealHp(buff.Target);
         }
 
         private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
