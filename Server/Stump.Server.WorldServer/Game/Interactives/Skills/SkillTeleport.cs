@@ -10,18 +10,15 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
     [Discriminator("Teleport", typeof(Skill), typeof(int), typeof(InteractiveCustomSkillRecord), typeof(InteractiveObject))]
     public class SkillTeleport : CustomSkill
     {
-        private bool m_mustRefreshPosition;
-        private ObjectPosition m_position;
+        bool m_mustRefreshPosition;
+        ObjectPosition m_position;
 
         public SkillTeleport(int id, InteractiveCustomSkillRecord record, InteractiveObject interactiveObject)
             : base (id, record, interactiveObject)
         {
         }
 
-        public override bool IsEnabled(Character character)
-        {
-            return Record.IsConditionFilled(character);
-        }
+        public override bool IsEnabled(Character character) => base.IsEnabled(character) && Record.IsConditionFilled(character);
 
         public override int StartExecute(Character character)
         {
@@ -29,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             return 0;
         }
 
-        private void RefreshPosition()
+        void RefreshPosition()
         {
             var map = World.Instance.GetMap(MapId);
 
@@ -51,19 +48,10 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             return m_position;
         }
 
-        public int MapId
-        {
-            get { return Record.GetParameter<int>(0); }
-        }
+        public int MapId => Record.GetParameter<int>(0);
 
-        public int CellId
-        {
-            get { return Record.GetParameter<int>(1); }
-        }
+        public int CellId => Record.GetParameter<int>(1);
 
-        public DirectionsEnum Direction
-        {
-            get { return (DirectionsEnum)Record.GetParameter<int>(2, true); }
-        }
+        public DirectionsEnum Direction => (DirectionsEnum)Record.GetParameter<int>(2, true);
     }
 }

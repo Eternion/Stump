@@ -3,7 +3,6 @@ using System.Linq;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Database.Interactives;
-using Stump.Server.WorldServer.Database.World.Maps;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Interactives.Skills;
 using Stump.Server.WorldServer.Game.Maps;
@@ -15,7 +14,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
 {
     public class InteractiveObject : WorldObject
     {
-        private readonly Dictionary<int, Skill> m_skills = new Dictionary<int, Skill>();
+        readonly Dictionary<int, Skill> m_skills = new Dictionary<int, Skill>();
 
         public InteractiveObject(Map map, InteractiveSpawn spawn)
         {
@@ -29,13 +28,11 @@ namespace Stump.Server.WorldServer.Game.Interactives
         public InteractiveSpawn Spawn
         {
             get;
-            private set;
         }
 
         public bool Animated
         {
             get;
-            private set;
         }
 
         public InteractiveStateEnum State
@@ -53,10 +50,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
         /// <summary>
         /// Can be null
         /// </summary>
-        public InteractiveTemplate Template
-        {
-            get { return Spawn.Template; }
-        }
+        public InteractiveTemplate Template => Spawn.Template;
 
         public void SetInteractiveState(InteractiveStateEnum state)
         {
@@ -65,7 +59,7 @@ namespace Stump.Server.WorldServer.Game.Interactives
             InteractiveHandler.SendStatedElementUpdatedMessage(Map.Clients, Id, Cell.Id, (int) State);
         }
 
-        private void GenerateSkills()
+        void GenerateSkills()
         {
             foreach (var skillRecord in Spawn.GetSkills())
             {
@@ -89,40 +83,21 @@ namespace Stump.Server.WorldServer.Game.Interactives
             return !m_skills.TryGetValue(id, out result) ? null : result;
         }
 
-        public IEnumerable<Skill> GetSkills()
-        {
-            return m_skills.Values;
-        }
+        public IEnumerable<Skill> GetSkills() => m_skills.Values;
 
-        public IEnumerable<Skill> GetEnabledSkills(Character character)
-        {
-            return m_skills.Values.Where(entry => entry.IsEnabled(character));
-        }
+        public IEnumerable<Skill> GetEnabledSkills(Character character) => m_skills.Values.Where(entry => entry.IsEnabled(character));
 
-        public IEnumerable<Skill> GetDisabledSkills(Character character)
-        {
-            return m_skills.Values.Where(entry => !entry.IsEnabled(character));
-        }
+        public IEnumerable<Skill> GetDisabledSkills(Character character) => m_skills.Values.Where(entry => !entry.IsEnabled(character));
 
         public IEnumerable<InteractiveElementSkill> GetEnabledElementSkills(Character character)
-        {
-            return m_skills.Values.Where(entry => entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
-        }
+            => m_skills.Values.Where(entry => entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
 
         public IEnumerable<InteractiveElementSkill> GetDisabledElementSkills(Character character)
-        {
-            return m_skills.Values.Where(entry => !entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
-        }
+            => m_skills.Values.Where(entry => !entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
 
         public InteractiveElement GetInteractiveElement(Character character)
-        {
-            return
-                new InteractiveElement(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character));
-        }
+            => new InteractiveElement(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character));
 
-        public StatedElement GetStatedElement()
-        {
-            return new StatedElement(Id, Cell.Id, (int) State);
-        }
+        public StatedElement GetStatedElement() => new StatedElement(Id, Cell.Id, (int)State);
     }
 }

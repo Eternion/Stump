@@ -82,6 +82,7 @@ namespace Stump.Server.WorldServer.Handlers.Interactives
         {
             client.Send(new InteractiveElementUpdatedMessage(interactive.GetInteractiveElement(character)));
         }
+
         public static void SendInteractiveUseEndedMessage(IPacketReceiver client, InteractiveObject interactive, Skill skill)
         {
             client.Send(new InteractiveUseEndedMessage(interactive.Id, (short)skill.SkillTemplate.Id));
