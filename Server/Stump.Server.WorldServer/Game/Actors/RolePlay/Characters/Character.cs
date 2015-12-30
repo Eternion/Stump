@@ -2106,6 +2106,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE)
                 return false;
 
+            if (Fight?.State == FightState.Placement || Fight?.State == FightState.NotStarted)
+                return false;
+
             if (Inventory.Weight <= Inventory.WeightTotal)
                 return base.CanMove() && !IsDialoging();
 
