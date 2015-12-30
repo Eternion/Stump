@@ -1,6 +1,5 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
@@ -20,10 +19,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         {
         }
 
-        public override bool IsEnabled(Character character)
-        {
-            return true;
-        }
+        public override bool IsEnabled(Character character) => base.IsEnabled(character);
 
         public override int StartExecute(Character character)
         {

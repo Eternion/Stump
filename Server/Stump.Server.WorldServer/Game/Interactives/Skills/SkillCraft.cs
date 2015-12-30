@@ -10,11 +10,6 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         {
         }
 
-        public override bool IsEnabled(Character character)
-        {
-            return true;
-        }
-
         public override int StartExecute(Character character)
         {
             var dialog = new CraftDialog(character, InteractiveObject, this);

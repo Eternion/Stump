@@ -20,10 +20,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         {
         }
 
-        public override bool IsEnabled(Character character)
-        {
-            return true;
-        }
+        public override bool IsEnabled(Character character) => base.IsEnabled(character);
 
         public override int StartExecute(Character character)
         {
