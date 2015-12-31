@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 var damages = new Fights.Damage(Dice) {MarkTrigger = MarkTrigger};
                 damages.GenerateDamages();
 
-                damages.Amount = (int)(((Dice.DiceNum / (double)100)* Math.Pow(Math.Cos(2 * Math.PI * (Math.Round(Caster.LifePoints / (double)Caster.MaxLifePoints, 2) - 0.5)) + 1, 2)) / 4 * Caster.Stats.Health.TotalMaxWithoutPermanentDamages);
+                damages.Amount = (int)(Dice.DiceNum * Caster.Stats.Health.TotalMaxWithoutPermanentDamages * (Math.Pow(Math.Cos(2 * Math.PI * ((100 * Caster.LifePoints / Caster.MaxLifePoints) * 0.01 - 0.5)) + 1, 2) / 4) / 100);
 
                 // spell reflected
                 var buff = actor.GetBestReflectionBuff();
