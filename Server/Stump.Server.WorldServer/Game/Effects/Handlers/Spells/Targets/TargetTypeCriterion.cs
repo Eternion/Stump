@@ -55,7 +55,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             if (!handler.Caster.IsEnnemyWith(actor))
                 return false;
 
-
             if (TargetType == SpellTargetType.ENEMY_ALL)
                 return true;
 
