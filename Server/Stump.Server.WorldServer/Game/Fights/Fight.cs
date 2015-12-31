@@ -1390,7 +1390,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (TimeLine.Current != null)
             {
-                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying, FighterPlaying.TurnTime/100);
+                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying);
             }
         }
 
@@ -1422,7 +1422,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnSpectatorRemoved(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightLeaveMessage(spectator.Client, spectator);
+            //ContextHandler.SendGameFightLeaveMessage(spectator.Client, spectator);
             spectator.Character.RejoinMap();
         }
 
@@ -2287,7 +2287,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, ChallengersTeam);
             ContextHandler.SendGameFightUpdateTeamMessage(fighter.Character.Client, this, DefendersTeam);
 
-            ContextHandler.SendGameFightTurnStartMessage(fighter.Character.Client, FighterPlaying.Id, (int)TurnTimeLeft.TotalMilliseconds);
+            ContextHandler.SendGameFightTurnResumeMessage(fighter.Character.Client, FighterPlaying);
 
             // <b>%1</b> vient de se reconnecter en combat.
             BasicHandler.SendTextInformationMessage(Clients, TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 184, fighter.GetMapRunningFighterName());
@@ -2461,7 +2461,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void SendGameFightSpectatorJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightSpectatorJoinMessage(spectator.Character.Client, false, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
+            ContextHandler.SendGameFightSpectatorJoinMessage(spectator.Character.Client, false, false, IsStarted, 0, FightType);
         }
 
         #endregion
