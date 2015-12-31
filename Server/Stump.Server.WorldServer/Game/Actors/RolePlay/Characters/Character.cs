@@ -2627,7 +2627,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);
 
-            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType, 0, 0);
+            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType, fight.ChallengersTeam.Leader.Id, fight.DefendersTeam.Leader.Id);
 
             Spectator = new FightSpectator(this, fight);
 
@@ -2652,7 +2652,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             oldFighter.RestoreFighterFromDisconnection(this);
             Fighter = oldFighter;
             
-            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType, 0, 0);
+            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType, Fighter.Fight.ChallengersTeam.Leader.Id, Fighter.Fight.DefendersTeam.Leader.Id);
             Fighter.Fight.RejoinFightFromDisconnection(Fighter);
             OnCharacterContextChanged(true);
 

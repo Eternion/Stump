@@ -1369,7 +1369,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnSpectatorAdded(FightSpectator spectator)
         {
-            SendGameFightJoinMessage(spectator);
+            SendGameFightSpectatorJoinMessage(spectator);
 
             foreach (var fighter in GetAllFighters())
             {
@@ -1390,7 +1390,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (TimeLine.Current != null)
             {
-                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying, (int)GetPlacementTimeLeft().TotalMilliseconds/100);
+                ContextHandler.SendGameFightTurnResumeMessage(spectator.Client, FighterPlaying, FighterPlaying.TurnTime/100);
             }
         }
 
@@ -2456,12 +2456,12 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds/100, FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds/100, FightType);
         }
 
-        protected virtual void SendGameFightJoinMessage(FightSpectator spectator)
+        protected virtual void SendGameFightSpectatorJoinMessage(FightSpectator spectator)
         {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
+            ContextHandler.SendGameFightSpectatorJoinMessage(spectator.Character.Client, false, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
         }
 
         #endregion

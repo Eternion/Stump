@@ -31,25 +31,13 @@ namespace Stump.Server.WorldServer.Game.Fights
             base.StartFighting();
         }
 
-        public override bool IsDeathTemporarily
-        {
-            get { return true; }
-        }
+        public override bool IsDeathTemporarily => true;
 
-        public override FightTypeEnum FightType
-        {
-            get { return FightTypeEnum.FIGHT_TYPE_CHALLENGE; }
-        }
+        public override FightTypeEnum FightType => FightTypeEnum.FIGHT_TYPE_CHALLENGE;
 
-        public override bool IsPvP
-        {
-            get { return true; }
-        }
+        public override bool IsPvP => true;
 
-        public override bool IsMultiAccountRestricted
-        {
-            get { return false; }
-        }
+        public override bool IsMultiAccountRestricted => false;
 
         protected override IEnumerable<IFightResult> GenerateResults()
         {
@@ -60,15 +48,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, CanCancelFight(), !IsStarted, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
         }
 
-        protected override void SendGameFightJoinMessage(FightSpectator spectator)
-        {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, false, true, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds, FightType);
-        }
-
-        public TimeSpan GetPlacementTimeLeft()
+        public override TimeSpan GetPlacementTimeLeft()
         {
             var timeleft = TimeSpan.FromMilliseconds(FightConfiguration.PlacementPhaseTime) - ( DateTime.Now - CreationTime );
 
@@ -78,9 +61,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             return timeleft;
         }
 
-        protected override bool CanCancelFight()
-        {
-            return State == FightState.Placement;
-        }
+        protected override bool CanCancelFight() => State == FightState.Placement;
     }
 }
