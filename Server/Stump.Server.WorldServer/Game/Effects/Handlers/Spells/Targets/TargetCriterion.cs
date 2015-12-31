@@ -7,7 +7,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
     public abstract class TargetCriterion
     {
-        static readonly Dictionary<char, SpellTargetType> m_targetsMapping = new Dictionary<char, SpellTargetType>()
+        static readonly Dictionary<char, SpellTargetType> m_targetsMapping = new Dictionary<char, SpellTargetType>
         {
             {'C', SpellTargetType.SELF_ONLY},
             {'c', SpellTargetType.SELF},

@@ -27,66 +27,40 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors().ToArray())
             {
-                if (Effect.Duration != 0)
+                var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell, TargetedCell, EffectZone);
+                damage.GenerateDamages();
+                damage.Amount = (int)((Caster.LifePoints * (damage.Amount / 100.0)));
+                damage.IgnoreDamageBoost = true;
+                damage.MarkTrigger = MarkTrigger;
+                damage.IsCritical = Critical;
+
+                // spell reflected
+                var buff = actor.GetBestReflectionBuff();
+                if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
                 {
-                    AddTriggerBuff(actor, true, BuffTriggerType.OnTurnBegin, DamageBuffTrigger);
+                    NotifySpellReflected(actor);
+                    damage.Source = Caster;
+                    damage.ReflectedDamages = true;
+                    Caster.InflictDamage(damage);
+
+                    if (buff.Duration <= 0)
+                        actor.RemoveBuff(buff);
                 }
                 else
                 {
-                    var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell, TargetedCell, EffectZone);
-                    damage.GenerateDamages();
-                    damage.Amount = (int)((Caster.LifePoints * (damage.Amount / 100d)));
-                    damage.IgnoreDamageBoost = true;
-                    damage.MarkTrigger = MarkTrigger;
-                    damage.IsCritical = Critical;
-
-                    // spell reflected
-                    var buff = actor.GetBestReflectionBuff();
-                    if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
-                    {
-                        NotifySpellReflected(actor);
-                        damage.Source = Caster;
-                        damage.ReflectedDamages = true;
-                        Caster.InflictDamage(damage);
-
-                        if (buff.Duration <= 0)
-                            actor.RemoveBuff(buff);
-                    }
-                    else
-                    {
-                        actor.InflictDamage(damage);
-                    }
+                    actor.InflictDamage(damage);
                 }
             }
 
             return true;
         }
 
-        private void NotifySpellReflected(FightActor source)
+        void NotifySpellReflected(FightActor source)
         {
             ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
 
-        private static void DamageBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
-        {
-            var integerEffect = buff.GenerateEffect();
-
-            if (integerEffect == null)
-                return;
-
-            var damage = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell, buff.Target.Cell)
-            {
-                Buff = buff,
-                
-            };
-            damage.GenerateDamages();
-            damage.Amount = (int)((buff.Target.MaxLifePoints * (damage.Amount / 100d)));
-            damage.IgnoreDamageBoost = true;
-
-            buff.Target.InflictDamage(damage);
-        }
-
-        private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
+        static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
         {
             switch (effect)
             {
