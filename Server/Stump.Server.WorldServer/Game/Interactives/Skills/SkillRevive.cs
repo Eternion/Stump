@@ -18,6 +18,8 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public override int StartExecute(Character character)
         {
             character.Energy = 1000;
+            character.RefreshStats();
+
             character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 33);
 
             return 0;

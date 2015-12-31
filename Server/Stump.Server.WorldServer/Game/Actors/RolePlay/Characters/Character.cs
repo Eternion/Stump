@@ -3677,7 +3677,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                 !Map.AllowChallenge || IsGhost(), // cantBeChallenged
                                 !Map.AllowExchangesBetweenPlayers || IsGhost(), // cantTrade
                                 IsGhost(), // cantBeAttackedByMutant
-                                IsGhost(), // cantRun
+                                false, // cantRun
                                 false, // cantMinimize
                                 PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE, // cantMove
 
