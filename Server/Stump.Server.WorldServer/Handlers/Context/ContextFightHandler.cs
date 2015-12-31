@@ -369,9 +369,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 fight.TimeLine.RoundNumber, 0, Enumerable.Empty<Idol>()));    
         }
 
-        public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor playingTurn, int waitTime)
+        public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor fighterPlaying)
         {
-            client.Send(new GameFightTurnResumeMessage(playingTurn.Id, waitTime, waitTime));
+            client.Send(new GameFightTurnResumeMessage(fighterPlaying.Id, fighterPlaying.TurnTime / 100, (int)fighterPlaying.Fight.GetTurnTimeLeft().TotalMilliseconds / 100));
         }
 
         public static void SendChallengeFightJoinRefusedMessage(IPacketReceiver client, Character character,

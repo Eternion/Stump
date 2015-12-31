@@ -1168,7 +1168,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (diff < 0)
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 34, Math.Abs(diff)); //Vous avez perdu <b>%1</b> points d'énergie.
 
-            if (energy > 0 && energy <= 500 && diff < 0)
+            if (energy > 0 && energy <= (Level * 10) && diff < 0)
                 SendSystemMessage(11, false, energy);
 
         PlayerLifeStatus = energy > 0 ? PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING : PlayerLifeStatusEnum.STATUS_TOMBSTONE;
