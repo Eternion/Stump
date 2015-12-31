@@ -116,18 +116,10 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected override void SendGameFightJoinMessage(CharacterFighter fighter)
         {
-            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, true, !IsStarted, false, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
+            ContextHandler.SendGameFightJoinMessage(fighter.Character.Client, true, !IsStarted, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
         }
 
-        protected override void SendGameFightJoinMessage(FightSpectator spectator)
-        {
-            ContextHandler.SendGameFightJoinMessage(spectator.Character.Client, false, !IsStarted, true, IsStarted, (int)GetPlacementTimeLeft().TotalMilliseconds / 100, FightType);
-        }
-
-        protected override bool CanCancelFight()
-        {
-            return false;
-        }
+        protected override bool CanCancelFight() => false;
 
         public override TimeSpan GetPlacementTimeLeft()
         {
