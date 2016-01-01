@@ -2097,7 +2097,7 @@
         /// <summary>
         /// #1{~1~2 à }#2 Puissance (armes)
         /// </summary>
-        Effect_1144 = 1144,
+        Effect_AddWeaponDamageBonus = 1144,
         /// <summary>
         /// Changer le blason de l'alliance
         /// </summary>
