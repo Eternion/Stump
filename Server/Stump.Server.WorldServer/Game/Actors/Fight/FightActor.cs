@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Web.UI.WebControls;
 using Stump.Core.Collections;
 using Stump.Core.Mathematics;
 using Stump.Core.Pool;

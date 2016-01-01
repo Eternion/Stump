@@ -348,11 +348,17 @@ namespace Stump.Server.WorldServer.Handlers.Context
         }
 
         public static void SendGameFightJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
-                                                    bool isSpectator, bool isFightStarted, int timeMaxBeforeFightStart,
-                                                    FightTypeEnum fightTypeEnum)
+            bool isFightStarted, int timeMaxBeforeFightStart, FightTypeEnum fightTypeEnum)
         {
             client.Send(new GameFightJoinMessage(!isFightStarted, canBeCancelled, canSayReady, isFightStarted,
                                                  (short)timeMaxBeforeFightStart, (sbyte) fightTypeEnum));
+        }
+
+        public static void SendGameFightSpectatorJoinMessage(IPacketReceiver client, bool canBeCancelled, bool canSayReady,
+            bool isFightStarted, int timeMaxBeforeFightStart, FightTypeEnum fightTypeEnum)
+        {
+            client.Send(new GameFightSpectatorJoinMessage(false, canBeCancelled, canSayReady, isFightStarted,
+                (short)timeMaxBeforeFightStart, (sbyte)fightTypeEnum, new NamedPartyTeam[0]));
         }
 
         public static void SendGameFightSpectateMessage(IPacketReceiver client, IFight fight)
@@ -363,9 +369,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
                 fight.TimeLine.RoundNumber, 0, Enumerable.Empty<Idol>()));    
         }
 
-        public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor playingTurn, int waitTime)
+        public static void SendGameFightTurnResumeMessage(IPacketReceiver client, FightActor fighterPlaying)
         {
-            client.Send(new GameFightTurnResumeMessage(playingTurn.Fight.Id, playingTurn.Id, waitTime));
+            client.Send(new GameFightTurnResumeMessage(fighterPlaying.Id, fighterPlaying.TurnTime / 100, (int)fighterPlaying.Fight.GetTurnTimeLeft().TotalMilliseconds / 100));
         }
 
         public static void SendChallengeFightJoinRefusedMessage(IPacketReceiver client, Character character,

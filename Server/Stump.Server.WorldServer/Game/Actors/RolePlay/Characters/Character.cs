@@ -887,6 +887,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (!IsGhost())
             {
+                RealLook.BonesID = 1; //Player Bones
+
                 var skins = new List<short>(Breed.GetLook(Sex).Skins);
                 skins.AddRange(Head.Skins);
                 skins.AddRange(Inventory.GetItemsSkins());
@@ -1166,13 +1168,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (diff < 0)
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 34, Math.Abs(diff)); //Vous avez perdu <b>%1</b> points d'énergie.
 
-            if (energy <= 500 && diff < 0)
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_POPUP, 11);
+            if (energy > 0 && energy <= (Level * 10) && diff < 0)
+                SendSystemMessage(11, false, energy);
 
-            if (energy > 0)
-                return;
-
-            PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_TOMBSTONE;
+        PlayerLifeStatus = energy > 0 ? PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING : PlayerLifeStatusEnum.STATUS_TOMBSTONE;
         }
 
         void OnPlayerLifeStatusChanged(PlayerLifeStatusEnum status)
@@ -2107,6 +2106,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE)
                 return false;
 
+            if (Fight?.State == FightState.Placement || Fight?.State == FightState.NotStarted)
+                return false;
+
             if (Inventory.Weight <= Inventory.WeightTotal)
                 return base.CanMove() && !IsDialoging();
 
@@ -2625,7 +2627,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             ContextHandler.SendGameContextDestroyMessage(Client);
             ContextHandler.SendGameContextCreateMessage(Client, 2);
 
-            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType, 0, 0);
+            ContextHandler.SendGameFightStartingMessage(Client, fight.FightType, fight.ChallengersTeam.Leader.Id, fight.DefendersTeam.Leader.Id);
 
             Spectator = new FightSpectator(this, fight);
 
@@ -2650,7 +2652,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             oldFighter.RestoreFighterFromDisconnection(this);
             Fighter = oldFighter;
             
-            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType, 0, 0);
+            ContextHandler.SendGameFightStartingMessage(Client, Fighter.Fight.FightType, Fighter.Fight.ChallengersTeam.Leader.Id, Fighter.Fight.DefendersTeam.Leader.Id);
             Fighter.Fight.RejoinFightFromDisconnection(Fighter);
             OnCharacterContextChanged(true);
 
@@ -3675,7 +3677,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                                 !Map.AllowChallenge || IsGhost(), // cantBeChallenged
                                 !Map.AllowExchangesBetweenPlayers || IsGhost(), // cantTrade
                                 IsGhost(), // cantBeAttackedByMutant
-                                IsGhost(), // cantRun
+                                false, // cantRun
                                 false, // cantMinimize
                                 PlayerLifeStatus == PlayerLifeStatusEnum.STATUS_TOMBSTONE, // cantMove
 

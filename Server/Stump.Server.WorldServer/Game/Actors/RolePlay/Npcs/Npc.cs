@@ -99,7 +99,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Npcs
 
         public bool CanInteractWith(NpcActionTypeEnum action, Character dialoguer)
         {
-            if (dialoguer.Map != Position.Map)
+            if (dialoguer.Map != Position.Map || dialoguer.IsFighting() || dialoguer.IsBusy() || dialoguer.IsGhost())
                 return false;
 
             return Actions.Count > 0 && Actions.Any(entry => entry.ActionType.Contains(action) && entry.CanExecute(this, dialoguer));

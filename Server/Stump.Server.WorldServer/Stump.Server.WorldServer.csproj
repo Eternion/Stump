@@ -358,6 +358,7 @@
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamageModificator.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\RestoreEnergy.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\SummonTaxcollector.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\DamageSustained.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPLost.cs" />
@@ -554,6 +555,7 @@
     <Compile Include="Game\Interactives\Skills\SkillGuildCreate.cs" />
     <Compile Include="Game\Interactives\Skills\SkillHarvest.cs" />
     <Compile Include="Game\Interactives\Skills\SkillPaddock.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillRevive.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapiTeleport.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapSave.cs" />
     <Compile Include="Game\Interactives\Skills\SkillZaapTeleport.cs" />

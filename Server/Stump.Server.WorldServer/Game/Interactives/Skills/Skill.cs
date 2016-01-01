@@ -38,7 +38,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             return 0;
         }
 
-        public abstract bool IsEnabled(Character character);
+        public virtual bool IsEnabled(Character character)
+        {
+            return !character.IsGhost();
+        }
+
         public abstract int StartExecute(Character character);
 
         public virtual void EndExecute(Character character)
