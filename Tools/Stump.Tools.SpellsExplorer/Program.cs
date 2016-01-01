@@ -110,6 +110,20 @@ namespace Stump.Tools.SpellsExplorer
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
 
+                    if (pattern.StartsWith("zone:"))
+                    {
+                        var zone = pattern.Remove(0, "zone:".Length);
+
+                        foreach (
+                            var spell in
+                                SpellManager.Instance.GetSpellTemplates()
+                                            .Where(
+                                                x =>
+                                                    SpellManager.Instance.GetSpellLevel((int)x.SpellLevelsIds[0])
+                                                                .Effects.Any(y => y.ZoneShape.ToString() == zone)))
+                            Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
+                    }
+
                     if (pattern.StartsWith("delay"))
                     {
                         foreach (

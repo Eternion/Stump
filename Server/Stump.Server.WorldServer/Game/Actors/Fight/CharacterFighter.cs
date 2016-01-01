@@ -306,7 +306,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (m_isUsingWeapon)
                 damage.Amount += m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus].TotalSafe;
 
-            return base.CalculateDamageBonuses(damage);
+            return result;
         }
 
         public bool CanUseWeapon(Cell cell, WeaponTemplate weapon)

@@ -25,6 +25,7 @@ namespace Stump.DofusProtocol.Enums
         B = 66,
         Z = 90,
         semicolon = 59,
-        empty = 32
+        empty = 32,
+        l = 108,
     }
 }
