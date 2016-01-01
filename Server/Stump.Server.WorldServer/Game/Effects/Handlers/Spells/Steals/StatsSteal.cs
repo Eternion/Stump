@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             return true;
         }
 
-        private static PlayerFields GetEffectCaracteristic(EffectsEnum effect)
+        static PlayerFields GetEffectCaracteristic(EffectsEnum effect)
         {
             switch (effect)
             {
@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             }
         }
 
-        private static EffectsEnum[] GetBuffDisplayedEffect(EffectsEnum effect)
+        static EffectsEnum[] GetBuffDisplayedEffect(EffectsEnum effect)
         {
             switch (effect)
             {

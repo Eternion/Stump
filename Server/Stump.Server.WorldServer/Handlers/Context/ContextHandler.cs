@@ -35,6 +35,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
         [WorldHandler(GameMapChangeOrientationRequestMessage.Id)]
         public static void HandleGameMapChangeOrientationRequestMessage(WorldClient client, GameMapChangeOrientationRequestMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             client.Character.Direction = (DirectionsEnum) message.direction;
             SendGameMapChangeOrientationMessage(client.Character.CharacterContainer.Clients, client.Character);
         }

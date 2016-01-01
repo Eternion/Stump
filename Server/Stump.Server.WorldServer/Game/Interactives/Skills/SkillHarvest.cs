@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Web.UI;
 using Stump.Core.Attributes;
-using Stump.Core.Collections;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Items.Templates;
@@ -21,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         [Variable]
         public static int RegrowTime = 60000;
 
-        private ItemTemplate m_harvestedItem;
+        ItemTemplate m_harvestedItem;
 
         public SkillHarvest(int id, InteractiveSkillTemplate skillTemplate, InteractiveObject interactiveObject)
             : base(id, skillTemplate, interactiveObject)
@@ -44,15 +42,10 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             private set;
         }
 
-        public override int GetDuration(Character character)
-        {
-            return HarvestTime;
-        }
+        public override int GetDuration(Character character) => HarvestTime;
 
         public override bool IsEnabled(Character character)
-        {
-            return !Harvested && character.Jobs[SkillTemplate.ParentJobId].Level >= SkillTemplate.LevelMin;
-        }
+            => base.IsEnabled(character) && !Harvested && character.Jobs[SkillTemplate.ParentJobId].Level >= SkillTemplate.LevelMin;
 
         public override int StartExecute(Character character)
         {
@@ -87,7 +80,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
                 InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_NORMAL);
         }
 
-        private int RollHarvestedItemCount(Character character)
+        int RollHarvestedItemCount(Character character)
         {
             var job = character.Jobs[SkillTemplate.ParentJobId];
             var minMax = JobManager.Instance.GetHarvestItemMinMax(job.Template, job.Level, SkillTemplate);

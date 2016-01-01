@@ -831,6 +831,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             if (Owner.IsInExchange() || (Owner.IsInFight() && Owner.Fight.State != FightState.Placement))
                 return false;
 
+            if (Owner.IsGhost())
+                return false;
+
             if (!item.AreConditionFilled(Owner))
             {
                 if (send)

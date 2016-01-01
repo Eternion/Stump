@@ -438,7 +438,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.TaxCollectors
                     informations.Add(new TaxCollectorWaitingForHelpInformations(
                             new ProtectedEntityWaitingForHelpInfo(
                                 (int)(fight.GetAttackersPlacementTimeLeft().TotalMilliseconds / 100),
-                                (int)(fight.GetDefendersWaitTimeForPlacement().TotalMilliseconds / 100),
+                                (int)(FightPvT.GetDefendersWaitTimeForPlacement().TotalMilliseconds / 100),
                                 (sbyte)fight.GetDefendersLeftSlot())));
                 }
 

@@ -42,15 +42,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             private set;
         }
 
-        public override GameActionMarkTypeEnum Type
-        {
-            get { return GameActionMarkTypeEnum.GLYPH; }
-        }
+        public override GameActionMarkTypeEnum Type => GameActionMarkTypeEnum.GLYPH;
 
-        public override TriggerType TriggerType
-        {
-            get { return (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.OnTurnEnd : TriggerType.OnTurnBegin); }
-        }
+        public override TriggerType TriggerType => (SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id) ? TriggerType.OnTurnEnd : TriggerType.OnTurnBegin);
 
         public override bool DecrementDuration()
         {
@@ -63,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public override void Trigger(FightActor trigger)
         {
             // Caster can't trigger his own glyph
-            if (trigger == Caster)
+            if (trigger == Caster && !SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id))
                 return;
 
             NotifyTriggered(trigger, GlyphSpell);
