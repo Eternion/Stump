@@ -91,7 +91,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
                 var pushDamage = new Damage(pushbackDamages)
                 {
                     Source = target,
-                    School = EffectSchoolEnum.Unknown,
+                    School = EffectSchoolEnum.Pushback,
                     IgnoreDamageBoost = true,
                     IgnoreDamageReduction = false
                 };

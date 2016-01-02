@@ -13,6 +13,7 @@ using Stump.Core.IO;
 using Stump.Core.Reflection;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.AuthServer.Database;
+using Stump.DofusProtocol.Messages.Custom;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -78,13 +79,13 @@ namespace Stump.Server.AuthServer.Managers
             return Convert.FromBase64String(partial).Select(entry => (sbyte)entry).ToArray();
         }
 
-        public bool DecryptCredentials(out Account account, IdentificationMessage message)
+        public bool DecryptCredentials(out Account account, ClearIdentificationMessage message)
         {
             try
             {
                 account = null;
 
-                if (message.useLoginToken)
+                /*if (message.useLoginToken)
                 {
                     var ticket = Encoding.ASCII.GetString(message.lang.Split(',').Select(x => (byte)int.Parse(x)).ToArray());
 
@@ -92,25 +93,26 @@ namespace Stump.Server.AuthServer.Managers
 
                     return account != null;
                 }
-                else
+
+                var split = message.lang.Split('|');
+                if (split.Length != 2)
                 {
-                    var split = message.lang.Split('|');
-                    if (split.Length != 2)
-                    {
-                        logger.Debug("Connection attempt without the patched client");
-                        return false;
-                    }
-
-                    var username = split[0];
-                    var password = split[1];
-
-                    account = AccountManager.Instance.FindAccountByLogin(username);
-
-                    if (account == null)
-                        return false;
-
-                    return account.PasswordHash == password.GetMD5();
+                    logger.Debug("Connection attempt without the patched client");
+                    return false;
                 }
+
+                var username = split[0];
+                var password = split[1];*/
+
+                var username = message.username;
+                var password = message.password;
+
+                account = AccountManager.Instance.FindAccountByLogin(username);
+
+                if (account == null)
+                    return false;
+
+                return account.PasswordHash == password.GetMD5();
             }
             catch (Exception)
             {

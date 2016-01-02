@@ -1,11 +1,3 @@
-//
-// ClearIdentificationMessage.as
-// CawotteSrv
-//
-// Created by Luax on 7/18/15.
-// Copyright (c) 2015 Luax. All rights reserved.
-//
-
 package
 {
     import com.ankamagames.jerakine.network.NetworkMessage;
@@ -13,19 +5,26 @@ package
     import com.ankamagames.jerakine.network.CustomDataWrapper;
     import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.jerakine.network.ICustomDataOutput;
+	import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
     import flash.utils.ByteArray;
 
     public class ClearIdentificationMessage extends NetworkMessage implements INetworkMessage
     {
 
-        public static const protocolId:uint = 10000;
+        public static const protocolId:uint = 888;
 
         private var _isInitialized:Boolean = false;
 
+		public var autoconnect:Boolean = false;
+		
+		public var lang:String = "";
+		
         public var username:String = "";
-
+		
         public var password:String = "";
-
+		
+		public var serverId:uint = 0;
+		
         public function ClearIdentificationMessage()
         {
             super();
@@ -41,19 +40,25 @@ package
             return protocolId;
         }
 
-        public function initClearIdentificationMessage(username:String = "", password:String = "") : ClearIdentificationMessage
+        public function initClearIdentificationMessage(autoconnect:Boolean = false, lang:String = "", username:String = "", password:String = "", serverId:uint = 0) : ClearIdentificationMessage
         {
-            this.username = username;
+			this.autoconnect = autoconnect;
+			this.lang = lang;
+			this.username = username;
             this.password = password;
-
+			this.serverId = serverId;
+			this._isInitialized = true;
+			
             return this;
         }
 
         override public function reset() : void
         {
+			this.autoconnect = false;
             this.username = "";
             this.password = "";
-
+			this.serverId = 0;
+			
             this._isInitialized = false;
         }
 
@@ -71,14 +76,25 @@ package
 
         public function serialize(output:ICustomDataOutput) : void
         {
+			var _box0:uint = 0;
+			_box0 = BooleanByteWrapper.setFlag(_box0, 0, this.autoconnect);
+			
+			output.writeByte(_box0);
+			output.writeUTF(this.lang);
             output.writeUTF(this.username);
             output.writeUTF(this.password);
+			output.writeShort(this.serverId);
         }
 
         public function deserialize(input:ICustomDataInput) : void
         {
+			var _box0:uint = input.readByte();
+			
+			this.autoconnect = BooleanByteWrapper.getFlag(_box0, 0);
+			this.lang = input.readUTF();
             this.username = input.readUTF();
             this.password = input.readUTF();
+			this.serverId = input.readShort();
         }
 
     }

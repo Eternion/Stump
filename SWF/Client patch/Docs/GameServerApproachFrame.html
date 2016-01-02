@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0065)file:///C:/Users/Yann/AppData/Local/Temp/BC42168.tmp/Rapport.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<style>
+.AlignLeft { text-align: left; }
+.AlignCenter { text-align: center; }
+.AlignRight { text-align: right; }
+body { font-family: sans-serif; font-size: 11pt; }
+td { vertical-align: top; padding-left: 4px; padding-right: 4px; }
+
+tr.SectionGap td { font-size: 4px; border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionBegin td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionMiddle td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SubsectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+tr.SubsectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+table.fc { border-top: 1px solid Black; border-left: 1px solid Black; width: 100%; font-family: monospace; font-size: 10pt; }
+td.TextItemInsigAdd { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigDel { color: #000000; background-color: #EEEEFF; text-decoration: line-through; }
+td.TextItemInsigMod { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigOrphan { color: #000000; background-color: #FAEEFF; }
+td.TextItemNum { color: #696969; background-color: #F0F0F0; }
+td.TextItemSame { color: #000000; background-color: #FFFFFF; }
+td.TextItemSigAdd { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigDel { color: #000000; background-color: #FFE3E3; text-decoration: line-through; }
+td.TextItemSigMod { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigOrphan { color: #000000; background-color: #F1E3FF; }
+.TextSegInsigDiff { color: #0000FF; }
+.TextSegReplacedDiff { color: #0000FF; font-style: italic; }
+.TextSegSigDiff { color: #FF0000; }
+</style>
+<title>Patch 2.32</title>
+</head>
+<body>
+com\ankamagames\dofus\logic\game\approach\frames\GameServerApproachFrame.as &nbsp;
+<br>
+<table class="fc" cellspacing="0" cellpadding="0">
+<tbody><tr class="SectionBegin">
+<td class="TextItemNum AlignRight">90</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.network.enums.CharacterRemodelingEnum;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">90</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.network.enums.CharacterRemodelingEnum;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">91</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">91</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">92</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.jerakine.types.DataStoreType;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">92</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.jerakine.types.DataStoreType;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">93</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.Constants;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">93</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.Constants;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">94</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">94</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">95</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.misc.stats.StatisticsManager;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">95</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.misc.stats.StatisticsManager;</td>
+</tr>
+<tr class="SectionAll">
+<td class="TextItemNum AlignRight">96</td>
+<td class="TextItemSigMod">&nbsp;&nbsp;&nbsp; <span class="TextSegSigDiff">import</span> <span class="TextSegSigDiff">by.blooddy.crypto.Base64;</span></td>
+<td class="AlignCenter">+-</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">97</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.WorldFrame;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">96</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.WorldFrame;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">98</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.AlignmentFrame;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">97</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.AlignmentFrame;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">99</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.SynchronisationFrame;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">98</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.SynchronisationFrame;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">100</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.LivingObjectFrame;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">99</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.LivingObjectFrame;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">101</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.AllianceFrame;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">100</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.AllianceFrame;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">102</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.PlayedCharacterUpdatesFrame;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">101</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.logic.game.common.frames.PlayedCharacterUpdatesFrame;</td>
+</tr>
+<tr class="SectionGap"><td colspan="5">&nbsp;</td></tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">727</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; ExternalNotificationManager.getInstance().init();</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">726</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; ExternalNotificationManager.getInstance().init();</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">728</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">727</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">729</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; StatisticsManager.getInstance().statsEnabled = cssmsg.isCollectingStats;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">728</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; StatisticsManager.getInstance().statsEnabled = cssmsg.isCollectingStats;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">730</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; return (true);</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">729</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; return (true);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">731</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is AllModulesLoadedMessage):</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">730</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is AllModulesLoadedMessage):</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">732</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; this._gmaf = null;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">731</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; this._gmaf = null;</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">733</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">try</span></td>
+<td class="AlignCenter">+-</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">734</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">735</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">_changeLogLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,</span> <span class="TextSegSigDiff">onChangeLogError);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">736</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">_changeLogLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,</span> <span class="TextSegSigDiff">onChangeLogLoaded);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">737</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">if</span> <span class="TextSegSigDiff">(((!(PlayerManager.getInstance()))</span> <span class="TextSegSigDiff">||</span> <span class="TextSegSigDiff">(((!((PlayerManager.getInstance().server.id</span> <span class="TextSegSigDiff">==</span> <span class="TextSegSigDiff">129)))</span> <span class="TextSegSigDiff">&amp;&amp;</span> <span class="TextSegSigDiff">(!((PlayerManager.getInstance().server.id</span> <span class="TextSegSigDiff">==</span> <span class="TextSegSigDiff">130)))))))</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">738</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">739</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">rdm</span> <span class="TextSegSigDiff">=</span> <span class="TextSegSigDiff">new</span> <span class="TextSegSigDiff">RawDataMessage();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">740</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">rdm.initRawDataMessage(Base64.decode(I18n.getUiText("ui.link.changelog")));</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">741</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">Kernel.getWorker().process(rdm);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">742</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">743</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">}</span> <span class="TextSegSigDiff">catch(e:Error)</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">744</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">745</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">trace("Error</span> <span class="TextSegSigDiff">on</span> <span class="TextSegSigDiff">changelog</span> <span class="TextSegSigDiff">loading.");</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">746</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; <span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">747</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new WorldFrame());</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">732</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new WorldFrame());</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">748</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new AlignmentFrame());</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">733</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new AlignmentFrame());</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">749</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new SynchronisationFrame());</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">734</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new SynchronisationFrame());</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">750</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new LivingObjectFrame());</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">735</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new LivingObjectFrame());</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">751</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new AllianceFrame());</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">736</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new AllianceFrame());</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">752</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new PlayedCharacterUpdatesFrame());</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">737</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Kernel.getWorker().addFrame(new PlayedCharacterUpdatesFrame());</td>
+</tr>
+</tbody></table>
+<br>
+
+
+</body></html>

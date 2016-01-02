@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0065)file:///C:/Users/Yann/AppData/Local/Temp/BC4CB84.tmp/Rapport.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<style>
+.AlignLeft { text-align: left; }
+.AlignCenter { text-align: center; }
+.AlignRight { text-align: right; }
+body { font-family: sans-serif; font-size: 11pt; }
+td { vertical-align: top; padding-left: 4px; padding-right: 4px; }
+
+tr.SectionGap td { font-size: 4px; border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionBegin td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionMiddle td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SubsectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+tr.SubsectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+table.fc { border-top: 1px solid Black; border-left: 1px solid Black; width: 100%; font-family: monospace; font-size: 10pt; }
+td.TextItemInsigAdd { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigDel { color: #000000; background-color: #EEEEFF; text-decoration: line-through; }
+td.TextItemInsigMod { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigOrphan { color: #000000; background-color: #FAEEFF; }
+td.TextItemNum { color: #696969; background-color: #F0F0F0; }
+td.TextItemSame { color: #000000; background-color: #FFFFFF; }
+td.TextItemSigAdd { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigDel { color: #000000; background-color: #FFE3E3; text-decoration: line-through; }
+td.TextItemSigMod { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigOrphan { color: #000000; background-color: #F1E3FF; }
+.TextSegInsigDiff { color: #0000FF; }
+.TextSegReplacedDiff { color: #0000FF; font-style: italic; }
+.TextSegSigDiff { color: #FF0000; }
+</style>
+<title>Patch 2.32</title>
+</head>
+<body>
+com\ankamagames\dofus\logic\connection\frames\ServerSelectionFrame.as &nbsp;
+<br>
+<table class="fc" cellspacing="0" cellpadding="0">
+<tbody><tr class="SectionBegin">
+<td class="TextItemNum AlignRight">193</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; PlayerManager.getInstance().serversList.push(sdeid);</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">193</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; PlayerManager.getInstance().serversList.push(sdeid);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">194</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">194</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">195</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is SelectedServerDataMessage):</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">195</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is SelectedServerDataMessage):</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">196</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_6 = (msg as SelectedServerDataMessage);</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">196</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_6 = (msg as SelectedServerDataMessage);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">197</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; ConnectionsHandler.connectionGonnaBeClosed(DisconnectionReasonEnum.SWITCHING_TO_GAME_SERVER);</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">197</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; ConnectionsHandler.connectionGonnaBeClosed(DisconnectionReasonEnum.SWITCHING_TO_GAME_SERVER);</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">198</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; this._selectedServer = _local_6;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">198</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; this._selectedServer = _local_6;</td>
+</tr>
+<tr class="SectionAll">
+<td class="TextItemNum AlignRight">199</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; AuthentificationManager.getInstance().gameServerTicket = <span class="TextSegSigDiff">AuthentificationManager.getInstance().decodeWithAES(</span>_local_6.ticket<span class="TextSegSigDiff">)</span>.toString();</td>
+<td class="AlignCenter">&lt;&gt;</td>
+<td class="TextItemNum AlignRight">199</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; AuthentificationManager.getInstance().gameServerTicket = _local_6.ticket.toString();</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">200</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; PlayerManager.getInstance().server = Server.getServerById(_local_6.serverId);</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">200</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; PlayerManager.getInstance().server = Server.getServerById(_local_6.serverId);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">201</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; return (true);</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">201</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; return (true);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">202</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is ExpectedSocketClosureMessage):</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">202</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is ExpectedSocketClosureMessage):</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">203</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_7 = (msg as ExpectedSocketClosureMessage);</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">203</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_7 = (msg as ExpectedSocketClosureMessage);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">204</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; if (_local_7.reason != DisconnectionReasonEnum.SWITCHING_TO_GAME_SERVER)</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">204</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; if (_local_7.reason != DisconnectionReasonEnum.SWITCHING_TO_GAME_SERVER)</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">205</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">205</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+</tr>
+</tbody></table>
+<br>
+
+
+</body></html>
