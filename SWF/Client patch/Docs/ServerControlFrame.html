@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0065)file:///C:/Users/Yann/AppData/Local/Temp/BC4AD1A.tmp/Rapport.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<style>
+.AlignLeft { text-align: left; }
+.AlignCenter { text-align: center; }
+.AlignRight { text-align: right; }
+body { font-family: sans-serif; font-size: 11pt; }
+td { vertical-align: top; padding-left: 4px; padding-right: 4px; }
+
+tr.SectionGap td { font-size: 4px; border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionBegin td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionMiddle td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SubsectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+tr.SubsectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+table.fc { border-top: 1px solid Black; border-left: 1px solid Black; width: 100%; font-family: monospace; font-size: 10pt; }
+td.TextItemInsigAdd { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigDel { color: #000000; background-color: #EEEEFF; text-decoration: line-through; }
+td.TextItemInsigMod { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigOrphan { color: #000000; background-color: #FAEEFF; }
+td.TextItemNum { color: #696969; background-color: #F0F0F0; }
+td.TextItemSame { color: #000000; background-color: #FFFFFF; }
+td.TextItemSigAdd { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigDel { color: #000000; background-color: #FFE3E3; text-decoration: line-through; }
+td.TextItemSigMod { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigOrphan { color: #000000; background-color: #F1E3FF; }
+.TextSegInsigDiff { color: #0000FF; }
+.TextSegReplacedDiff { color: #0000FF; font-style: italic; }
+.TextSegSigDiff { color: #FF0000; }
+</style>
+<title>Patch 2.32</title>
+</head>
+<body>
+com\ankamagames\dofus\logic\common\frames\ServerControlFrame.as &nbsp;
+<br>
+<table class="fc" cellspacing="0" cellpadding="0">
+<tbody><tr class="SectionBegin">
+<td class="TextItemNum AlignRight">14</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.network.messages.secure.TrustStatusMessage;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">14</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.network.messages.secure.TrustStatusMessage;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">15</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.display.Loader;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">15</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.display.Loader;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">16</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.system.LoaderContext;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">16</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.system.LoaderContext;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">17</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.net.URLRequest;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">17</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.net.URLRequest;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">18</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.datacenter.misc.OptionalFeature;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">18</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.datacenter.misc.OptionalFeature;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">19</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.kernel.Kernel;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">19</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.kernel.Kernel;</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">20</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp;&nbsp; </span><span class="TextSegSigDiff">import</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame;</span></td>
+<td class="AlignCenter">+-</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">21</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp;&nbsp; </span><span class="TextSegSigDiff">import</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">by.blooddy.crypto.MD5;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">22</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.system.ApplicationDomain;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">20</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.system.ApplicationDomain;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">23</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.jerakine.utils.system.AirScanner;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">21</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.jerakine.utils.system.AirScanner;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">24</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.net.navigateToURL;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">22</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import flash.net.navigateToURL;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">25</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.berilia.managers.KernelEventsManager;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">23</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.berilia.managers.KernelEventsManager;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">26</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.misc.lists.HookList;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">24</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofus.misc.lists.HookList;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">27</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofusModuleLibrary.enum.WebLocationEnum;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">25</td>
+<td class="TextItemSame">&nbsp;&nbsp;&nbsp; import com.ankamagames.dofusModuleLibrary.enum.WebLocationEnum;</td>
+</tr>
+<tr class="SectionGap"><td colspan="5">&nbsp;</td></tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">64</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; var f:MiscFrame;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">62</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; var f:MiscFrame;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">65</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; var feature:OptionalFeature;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">63</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; var feature:OptionalFeature;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">66</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; switch (true)</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">64</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; switch (true)</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">67</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">65</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">68</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is RawDataMessage):</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">66</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is RawDataMessage):</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">69</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_2 = (msg as RawDataMessage);</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">67</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_2 = (msg as RawDataMessage);</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">70</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">if</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(Kernel.getWorker().contains(AuthentificationFrame))</span></td>
+<td class="AlignCenter">&lt;&gt;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">71</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">72</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_log.error("Impossible</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">de</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">traiter</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">le</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">paquet</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">RawDataMessage</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">durant</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">cette</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">phase.");</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">73</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">return</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(false);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">74</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">75</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_local_3</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ByteArray();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">76</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_local_4</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">Signature(SIGNATURE_KEY_V1,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">SIGNATURE_KEY_V2);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">77</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_log.info(((("Bytecode</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">len:</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">"</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">+</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_2.content.length)</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">+</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">",</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">hash:</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">")</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">+</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">MD5.hashBytes(_local_2.content)));</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">78</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_local_2.content.position</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">0;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">79</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">if</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(_local_4.verify(_local_2.content,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_3))</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">80</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">81</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">l</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">Loader();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">82</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">lc</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">LoaderContext(false,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ApplicationDomain(ApplicationDomain.currentDomain));</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">83</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">AirScanner.allowByteCodeExecution(lc,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">84</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">l.loadBytes(_local_3,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">lc);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">85</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">else</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">86</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">87</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_log.error("Signature</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">incorrecte");</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">88</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">68</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">l</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">Loader();</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">69</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">lc</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">LoaderContext(false,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ApplicationDomain(ApplicationDomain.currentDomain));</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">70</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">AirScanner.allowByteCodeExecution(lc,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">true);</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">71</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">l.loadBytes(_local_2.content,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">lc);</span></td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">89</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; return (true);</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">72</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; return (true);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">90</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is URLOpenMessage):</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">73</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case (msg is URLOpenMessage):</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">91</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_5 = (msg as URLOpenMessage);</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">74</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_5 = (msg as URLOpenMessage);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">92</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_6 = Url.getUrlById(_local_5.urlId);</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">75</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; _local_6 = Url.getUrlById(_local_5.urlId);</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">93</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; switch (_local_6.browserId)</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">76</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; switch (_local_6.browserId)</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">94</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">77</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+</tr>
+</tbody></table>
+<br>
+
+
+</body></html>

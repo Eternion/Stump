@@ -47,7 +47,7 @@ namespace Stump.Server.AuthServer
 
 
         [Variable]
-        public static string ConnectionSwfPatch = "./swf_patchs/StumpPatch.swf";
+        public static string ConnectionSwfPatch = "./swf_patchs/AuthPatch.swf";
 
         private string m_host;
 

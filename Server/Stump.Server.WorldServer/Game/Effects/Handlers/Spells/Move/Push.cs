@@ -74,14 +74,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                             takeDamage = true;
                             actor.InflictDamage(damage);
 
-                            for (var i2 = 0; i2 < (range -i); i2++)
+                            for (var i2 = 0; i2 < (range - i); i2++)
                             {
                                 if (nextCell != null)
                                 {
                                     var fighter = Fight.GetOneFighter(Map.Cells[nextCell.CellId]);
                                     if (fighter != null)
                                     {
-                                        pushbackDamages = (pushbackDamages - fighter.Stats[PlayerFields.PushDamageReduction]) / 2;
+                                        pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, ((range - i) - i2)) / 2;
                                         damage = new Fights.Damage(pushbackDamages)
                                         {
                                             Source = fighter,
@@ -96,9 +96,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
                                         fighter.OnActorMoved(actor, true);
                                     }
-                                }
 
-                                nextCell = nextCell.GetNearestCellInDirection(pushDirection);
+                                    nextCell = nextCell.GetNearestCellInDirection(pushDirection);
+                                }
                             }
                         }
 

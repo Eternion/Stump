@@ -1,0 +1,1150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0065)file:///C:/Users/Yann/AppData/Local/Temp/BC465D5.tmp/Rapport.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<style>
+.AlignLeft { text-align: left; }
+.AlignCenter { text-align: center; }
+.AlignRight { text-align: right; }
+body { font-family: sans-serif; font-size: 11pt; }
+td { vertical-align: top; padding-left: 4px; padding-right: 4px; }
+
+tr.SectionGap td { font-size: 4px; border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionBegin td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionMiddle td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SubsectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+tr.SubsectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+table.fc { border-top: 1px solid Black; border-left: 1px solid Black; width: 100%; font-family: monospace; font-size: 10pt; }
+td.TextItemInsigAdd { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigDel { color: #000000; background-color: #EEEEFF; text-decoration: line-through; }
+td.TextItemInsigMod { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigOrphan { color: #000000; background-color: #FAEEFF; }
+td.TextItemNum { color: #696969; background-color: #F0F0F0; }
+td.TextItemSame { color: #000000; background-color: #FFFFFF; }
+td.TextItemSigAdd { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigDel { color: #000000; background-color: #FFE3E3; text-decoration: line-through; }
+td.TextItemSigMod { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigOrphan { color: #000000; background-color: #F1E3FF; }
+.TextSegInsigDiff { color: #0000FF; }
+.TextSegReplacedDiff { color: #0000FF; font-style: italic; }
+.TextSegSigDiff { color: #FF0000; }
+</style>
+<title>Patch 2.32</title>
+</head>
+<body>
+com\ankamagames\jerakine\utils\crypto\Signature.as &nbsp;
+<br>
+<table class="fc" cellspacing="0" cellpadding="0">
+<tbody><tr class="SectionBegin">
+<td class="TextItemNum AlignRight">108</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; return (this.verifyV1Signature(input, output));</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">108</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; return (this.verifyV1Signature(input, output));</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">109</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">109</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">110</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; throw (new SignatureError("Invalid header", SignatureError.INVALID_HEADER));</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">110</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; throw (new SignatureError("Invalid header", SignatureError.INVALID_HEADER));</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">111</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; }</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">111</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; }</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">112</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">112</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">113</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; private function verifyV1Signature(input:IDataInput, output:ByteArray):Boolean{</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">113</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; private function verifyV1Signature(input:IDataInput, output:ByteArray):Boolean{</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">114</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_4;</span></td>
+<td class="AlignCenter">&lt;&gt;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">115</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">do</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">116</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">117</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_2;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">118</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">do</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">119</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">120</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_3;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">121</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">122</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_5</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_5;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">123</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">124</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_1:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">125</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">sigData:ByteArray</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ByteArray();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">126</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">127</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">do</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">128</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">129</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_1;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">130</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_4</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_4;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">131</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">132</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_2:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">133</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">decryptedHash:ByteArray</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ByteArray();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">134</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_5;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">135</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">136</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_3:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">137</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">formatVersion:uint</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">input.readShort();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">138</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">139</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">verifyV1Signature$0</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">verifyV1Signature$0;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">140</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">141</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_4:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">142</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">len:uint;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">143</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">input:IDataInput</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">input;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">144</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">//unresolved</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">jump</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">145</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_6</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_6;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">146</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">try</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">147</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">148</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">149</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_5:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">150</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">len</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">input.readInt();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">151</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(input.readBytes(sigData,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">0,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">len),</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">true)</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">152</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">153</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">//unresolved</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">jump</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">154</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">155</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">catch(e:Error)</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">156</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">157</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">throw</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">SignatureError("Invalid</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">signature</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">format,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">not</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">enough</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">data.",</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">SignatureError.INVALID_SIGNATURE));</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">158</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">159</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">try</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">160</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">161</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">this._key.verify(sigData,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">decryptedHash,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">sigData.length);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">162</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">catch(e:Error)</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">163</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">164</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">return</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(false);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">165</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">166</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">decryptedHash.position</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">0;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">167</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_7;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">168</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">do</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">169</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">170</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">hash:ByteArray</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ByteArray();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">171</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_6;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">172</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">173</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">174</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_6:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">175</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_8;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">176</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">177</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_7:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">178</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ramdomPart:int</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">decryptedHash.readByte();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">179</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">//unresolved</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">jump</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">180</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">181</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_8:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">182</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">i:uint</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">2;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">183</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_loop_1:</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">184</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">for</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(;i</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">&lt;</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">decryptedHash.length;i++)</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">185</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">186</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">((decryptedHash[i]</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(decryptedHash[i]</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">^</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ramdomPart)),</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">true)</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">187</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">188</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">continue</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_loop_1;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">189</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">190</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_local_0</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">this;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">191</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">192</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_16;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">193</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">do</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">194</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">195</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">contentHash:String</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">MD5.hash(output.readUTFBytes(output.bytesAvailable)).substr(1);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">196</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true)</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">197</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">198</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">trace((("Temps</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">de</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">hash</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">pour</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">validation</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">de</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">signature</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">:</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">"</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">+</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(getTimer()</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">-</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">tH))</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">+</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">"</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ms"));</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">199</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_11;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">200</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">201</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">do</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">202</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">203</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_17;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">204</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">205</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_9:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">206</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">testedContentLen:int</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">input.bytesAvailable;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">207</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_14;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">208</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">do</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">209</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">210</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_13;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">211</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">212</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_10:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">213</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">input.readBytes(output);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">214</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">215</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">216</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_11:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">217</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">output.position</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">0;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">218</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">219</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">220</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_12:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">221</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_10;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">222</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">223</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_13:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">224</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">tH:Number</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">getTimer();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">225</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">//unresolved</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">jump</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">226</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">227</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_14:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">228</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_15;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">229</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">230</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">231</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_15:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">232</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">signHash:String</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">decryptedHash.readUTFBytes(decryptedHash.bytesAvailable).substr(1);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">233</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_12;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">234</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_local_0</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">this;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">235</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">do</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">236</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">237</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">goto</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">_label_9;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">238</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">239</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_16:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">240</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">contentLen:int</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">decryptedHash.readUnsignedInt();</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">241</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">while</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">242</td>
+<td class="TextItemInsigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">243</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">_label_17:</span><span class="TextSegInsigDiff">&nbsp;</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">244</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">result:Boolean</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">((((signHash)</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">&amp;&amp;</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">((signHash</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">==</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">contentHash))))</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">&amp;&amp;</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">((contentLen</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">==</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">testedContentLen)));</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">245</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">return</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(result);</span></td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">114</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">formatVersion:uint</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">null;</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">115</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">len:uint</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">input.readShort();</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">116</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">var</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">sigData:ByteArray</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">ByteArray();</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">117</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">try</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">118</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">119</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">formatVersion</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">input.readInt();</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">120</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">input.readBytes(sigData,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">0,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">formatVersion);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">121</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">}</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">catch(e:Error)</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">122</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">{</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">123</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">throw</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(new</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">SignatureError("Invalid</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">signature</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">format,</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">not</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">enough</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">data.",</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">SignatureError.INVALID_SIGNATURE));</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">124</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">};</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">125</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">input.readBytes(output);</span></td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">126</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">output.position</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">=</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">0;</span></td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">&nbsp;</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">127</td>
+<td class="TextItemSigMod"><span class="TextSegInsigDiff">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; </span><span class="TextSegSigDiff">return</span><span class="TextSegInsigDiff"> </span><span class="TextSegSigDiff">(true);</span></td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">246</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; }</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">128</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; }</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">247</td>
+<td class="TextItemSame">&nbsp;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">129</td>
+<td class="TextItemSame">&nbsp;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">248</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; private function verifyV2Signature(input:IDataInput, output:ByteArray, headerPosition:int):Boolean{</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">130</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; private function verifyV2Signature(input:IDataInput, output:ByteArray, headerPosition:int):Boolean{</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">249</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; for (;;var tsHash:uint, goto _label_8, var cryptedData:ByteArray, var sigData:ByteArray, goto _label_2, (output = output), var sigHash:String, continue, (var _local_0 = this))</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">131</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; for (;;var tsHash:uint, goto _label_8, var cryptedData:ByteArray, var sigData:ByteArray, goto _label_2, (output = output), var sigHash:String, continue, (var _local_0 = this))</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">250</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">132</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">251</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; goto _label_9;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">133</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; goto _label_9;</td>
+</tr>
+</tbody></table>
+<br>
+
+
+</body></html>

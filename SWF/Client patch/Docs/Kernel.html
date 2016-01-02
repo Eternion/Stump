@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0065)file:///C:/Users/Yann/AppData/Local/Temp/BC4F6A6.tmp/Rapport.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<style>
+.AlignLeft { text-align: left; }
+.AlignCenter { text-align: center; }
+.AlignRight { text-align: right; }
+body { font-family: sans-serif; font-size: 11pt; }
+td { vertical-align: top; padding-left: 4px; padding-right: 4px; }
+
+tr.SectionGap td { font-size: 4px; border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionBegin td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Black; border-right: 1px solid Black; }
+tr.SectionMiddle td { border-left: none; border-top: none; border-right: 1px solid Black; }
+tr.SubsectionAll td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+tr.SubsectionEnd td { border-left: none; border-top: none; border-bottom: 1px solid Gray; border-right: 1px solid Black; }
+table.fc { border-top: 1px solid Black; border-left: 1px solid Black; width: 100%; font-family: monospace; font-size: 10pt; }
+td.TextItemInsigAdd { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigDel { color: #000000; background-color: #EEEEFF; text-decoration: line-through; }
+td.TextItemInsigMod { color: #000000; background-color: #EEEEFF; }
+td.TextItemInsigOrphan { color: #000000; background-color: #FAEEFF; }
+td.TextItemNum { color: #696969; background-color: #F0F0F0; }
+td.TextItemSame { color: #000000; background-color: #FFFFFF; }
+td.TextItemSigAdd { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigDel { color: #000000; background-color: #FFE3E3; text-decoration: line-through; }
+td.TextItemSigMod { color: #000000; background-color: #FFE3E3; }
+td.TextItemSigOrphan { color: #000000; background-color: #F1E3FF; }
+.TextSegInsigDiff { color: #0000FF; }
+.TextSegReplacedDiff { color: #0000FF; font-style: italic; }
+.TextSegSigDiff { color: #FF0000; }
+</style>
+<title>Patch 2.32</title>
+</head>
+<body>
+com\ankamagames\dofus\kernel\Kernel.as &nbsp;
+<br>
+<table class="fc" cellspacing="0" cellpadding="0">
+<tbody><tr class="SectionBegin">
+<td class="TextItemNum AlignRight">228</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; buildType = BuildTypeEnum.BETA;</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">228</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; buildType = BuildTypeEnum.BETA;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">229</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">229</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">230</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case "release":</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">230</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; case "release":</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">231</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; buildType = BuildTypeEnum.RELEASE;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">231</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; buildType = BuildTypeEnum.RELEASE;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">232</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">232</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; break;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">233</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">233</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+</tr>
+<tr class="SectionAll">
+<td class="TextItemNum AlignRight">234</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; if (((!((buildType == -1))) &amp;&amp; ((buildType <span class="TextSegSigDiff">&lt;</span> <span class="TextSegSigDiff">BuildInfos.BUILD_TYPE</span>))))</td>
+<td class="AlignCenter">&lt;&gt;</td>
+<td class="TextItemNum AlignRight">234</td>
+<td class="TextItemSigMod">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; if (((!((buildType == -1))) &amp;&amp; ((buildType <span class="TextSegSigDiff">&gt;</span> <span class="TextSegSigDiff">-1</span>))))</td>
+</tr>
+<tr class="SectionBegin">
+<td class="TextItemNum AlignRight">235</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+<td class="AlignCenter">=</td>
+<td class="TextItemNum AlignRight">235</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">236</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; BuildInfos.BUILD_TYPE = buildType;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">236</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; BuildInfos.BUILD_TYPE = buildType;</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">237</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">237</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">238</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">238</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; };</td>
+</tr>
+<tr class="SectionMiddle">
+<td class="TextItemNum AlignRight">239</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; BuildInfos.BUILD_VERSION.buildType = BuildInfos.BUILD_TYPE;</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">239</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; BuildInfos.BUILD_VERSION.buildType = BuildInfos.BUILD_TYPE;</td>
+</tr>
+<tr class="SectionEnd">
+<td class="TextItemNum AlignRight">240</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; this.initOptions();</td>
+<td class="AlignCenter">&nbsp;</td>
+<td class="TextItemNum AlignRight">240</td>
+<td class="TextItemSame">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; this.initOptions();</td>
+</tr>
+</tbody></table>
+<br>
+
+
+</body></html>

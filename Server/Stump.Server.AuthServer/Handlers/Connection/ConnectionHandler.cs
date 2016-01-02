@@ -15,6 +15,7 @@ using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.BaseServer.Network;
 using Version = Stump.DofusProtocol.Types.Version;
+using Stump.DofusProtocol.Messages.Custom;
 
 namespace Stump.Server.AuthServer.Handlers.Connection
 {
@@ -76,22 +77,14 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
         #region Identification
 
-        [AuthHandler(IdentificationMessage.Id)]
-        public static void HandleIdentificationMessage(AuthClient client, IdentificationMessage message)
+        [AuthHandler(ClearIdentificationMessage.Id)]
+        public static void HandleClearIdentificationMessage(AuthClient client, ClearIdentificationMessage message)
         {
             lock (ConnectionQueue.SyncRoot)
                 ConnectionQueue.Remove(client);
 
             if (client.QueueShowed)
                 SendQueueStatusMessage(client, 0, 0); // close the popup
-
-             /* Wrong Version */
-            if (!message.version.IsUpToDate())
-            {
-                SendIdentificationFailedForBadVersionMessage(client, VersionExtension.ExpectedVersion);
-                client.DisconnectLater(1000);
-                return;
-            }
 
 
             /* Get corresponding account */
@@ -104,7 +97,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.DisconnectLater(1000);
                 return;
             }
-            
+
             client.Account = account;
             /* Check Sanctions */
             if (account.IsBanned && account.BanEndDate > DateTime.Now)
@@ -162,7 +155,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
 
                 SendIdentificationSuccessMessage(client, false);
 
-                /* If autoconnect, send to the lastServer */             
+                /* If autoconnect, send to the lastServer */
                 if (message.autoconnect && client.Account.LastConnectionWorld != null && WorldServerManager.Instance.CanAccessToWorld(client, client.Account.LastConnectionWorld.Value))
                     SendSelectServerData(client, WorldServerManager.Instance.GetServerById(client.Account.LastConnectionWorld.Value));
                 else
@@ -172,6 +165,22 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 client.Disconnect();
                 logger.Error("Error while joining last used world server, connection aborted");
             });
+        }
+
+        [AuthHandler(IdentificationMessage.Id)]
+        public static void HandleIdentificationMessage(AuthClient client, IdentificationMessage message)
+        {
+            /* Wrong Version */
+            if (!message.version.IsUpToDate())
+            {
+                SendIdentificationFailedForBadVersionMessage(client, VersionExtension.ExpectedVersion);
+                client.DisconnectLater(1000);
+                return;
+            }
+
+            var patch = AuthServer.Instance.GetConnectionSwfPatch();
+            if (patch != null)
+                client.Send(new RawDataMessageFixed(patch));
         }
 
         public static void SendIdentificationSuccessMessage(AuthClient client, bool wasAlreadyConnected)
