@@ -23,9 +23,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
         public Zone(SpellShapeEnum shape, byte radius, byte minRadius, DirectionsEnum direction, int efficiencyMalus, int maxEfficiency)
         {
             Radius = radius;
+            MinRadius = minRadius;
             Direction = direction;
             ShapeType = shape;
-            MinRadius = minRadius;
             EfficiencyMalus = efficiencyMalus > 0 ? efficiencyMalus : EFFECTSHAPE_DEFAULT_EFFICIENCY;
             MaxEfficiency = maxEfficiency > 0 ? maxEfficiency : EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY;
         }
@@ -54,8 +54,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
         public byte MinRadius
         {
-            get { return m_shape.MinRadius; }
-            set { m_shape.MinRadius = value; }
+            get { return m_minRadius; }
+            set { m_minRadius = value;
+
+                if (m_shape != null)
+                    m_shape.MinRadius = value;
+            }
         }
 
         public int EfficiencyMalus
@@ -86,6 +90,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
 
         private byte m_radius;
         private DirectionsEnum m_direction;
+        private byte m_minRadius;
 
         public byte Radius
         {
@@ -115,6 +120,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                 case SpellShapeEnum.L:
                     m_shape = new Line(Radius);
                     break;
+                case SpellShapeEnum.l:
+                    m_shape = new Line(Radius);
+                    break;
                 case SpellShapeEnum.T:
                     m_shape = new Cross(0, Radius)
                     {
@@ -125,7 +133,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     m_shape = new Cross(0, Radius);
                     break;
                 case SpellShapeEnum.C:
-                    m_shape = new Lozenge(0, Radius);
+                    m_shape = new Lozenge(MinRadius, Radius);
                     break;
                 case SpellShapeEnum.I:
                     m_shape = new Lozenge(Radius, 63);
@@ -134,7 +142,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     m_shape = new Lozenge(Radius, Radius);
                     break;
                 case SpellShapeEnum.Q:
-                    m_shape = new Cross(1, Radius);
+                    m_shape = new Cross(MinRadius > 0 ? MinRadius : (byte)1, Radius);
                     break;
                 case SpellShapeEnum.G:
                     m_shape = new Square(0, Radius);
@@ -155,7 +163,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     };
                     break;
                 case SpellShapeEnum.sharp:
-                    m_shape = new Cross(1, Radius)
+                    m_shape = new Cross(MinRadius > 0 ? MinRadius : (byte)1, Radius)
                     {
                         Diagonal = true
                     };
@@ -187,7 +195,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
                     };
                     break;
                 default:
-                    m_shape = new Cross(0, 0);
+                    m_shape = new Cross(MinRadius, Radius);
                     break;
             }
 
