@@ -74,26 +74,31 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                             takeDamage = true;
                             actor.InflictDamage(damage);
 
-                            if (nextCell != null)
+                            for (var i2 = 0; i2 < (range -i); i2++)
                             {
-                                var fighter = Fight.GetOneFighter(Map.Cells[nextCell.CellId]);
-                                if (fighter != null)
+                                if (nextCell != null)
                                 {
-                                    pushbackDamages = pushbackDamages / 2 - fighter.Stats[PlayerFields.PushDamageReduction];
-                                    damage = new Fights.Damage(pushbackDamages)
+                                    var fighter = Fight.GetOneFighter(Map.Cells[nextCell.CellId]);
+                                    if (fighter != null)
                                     {
-                                        Source = fighter,
-                                        School = EffectSchoolEnum.Pushback,
-                                        IgnoreDamageBoost = true,
-                                        IgnoreDamageReduction = false
-                                    };
+                                        pushbackDamages = (pushbackDamages - fighter.Stats[PlayerFields.PushDamageReduction]) / 2;
+                                        damage = new Fights.Damage(pushbackDamages)
+                                        {
+                                            Source = fighter,
+                                            School = EffectSchoolEnum.Pushback,
+                                            IgnoreDamageBoost = true,
+                                            IgnoreDamageReduction = false
+                                        };
 
-                                    fighter.InflictDamage(damage);
-                                    fighter.TriggerBuffs(BuffTriggerType.OnDamagedByPush);
-                                    fighter.TriggerBuffs(BuffTriggerType.OnPush);
+                                        fighter.InflictDamage(damage);
+                                        fighter.TriggerBuffs(BuffTriggerType.OnDamagedByPush);
+                                        fighter.TriggerBuffs(BuffTriggerType.OnPush);
 
-                                    fighter.OnActorMoved(actor, true);
+                                        fighter.OnActorMoved(actor, true);
+                                    }
                                 }
+
+                                nextCell = nextCell.GetNearestCellInDirection(pushDirection);
                             }
                         }
 

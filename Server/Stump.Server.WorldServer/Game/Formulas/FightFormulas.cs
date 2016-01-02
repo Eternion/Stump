@@ -116,7 +116,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
             if (summon != null)
                 level = summon.Summoner.Level;
 
-            return (8 + new CryptoRandom().Next(1, 8) * (level / 50)) * range + source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction];
+            return (level / 2 + (source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction]) + 32) * range / 4;
         }
     }
 }
