@@ -18,22 +18,6 @@ AFTER:
 
 (dofus.logic.connection.managers.AuthentificationManager::cipherRsa):
 AFTER:
-	public function initAESKey() : ByteArray
-	{
-		this._AESKey = this.generateRandomAESKey();
-		return this._AESKey;
-	}
-pCode:
-returns Qname(PackageNamespace("flash.utils"),"ByteArray")
-
-getlocal_0
-getproperty Qname(PrivateNamespace("*","1031"),"_AESKey")
-
-================================
-================================
-
-(dofus.logic.connection.managers.AuthentificationManager::cipherRsa):
-AFTER:
 private function cipherRsa(param1:String, param2:String, param3:TrustCertificate) : Vector.<int>
 {
 	return new Vector.<int>();
