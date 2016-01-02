@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                 // return false; note : wtf, why is there spells with TargetType = NONE ?
                 return true;
 
-            if (handler.Caster == actor && (TargetType.HasFlag(SpellTargetType.SELF) || TargetType.HasFlag(SpellTargetType.SELF_ONLY)))
+            if (handler.Caster == actor && (TargetType.HasFlag(SpellTargetType.SELF) || TargetType.HasFlag(SpellTargetType.SELF_ONLY) || TargetType.HasFlag(SpellTargetType.ALLY_ALL)))
                 return true;
 
             if (TargetType.HasFlag(SpellTargetType.SELF_ONLY) && actor != handler.Caster)
@@ -30,10 +30,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
             if (handler.Caster.IsFriendlyWith(actor) && handler.Caster != actor)
             {
-                if (TargetType == SpellTargetType.ALLY_ALL)
+                if (TargetType == SpellTargetType.ALLY_ALL_EXCEPT_SELF)
                     return true;
 
-                if ((TargetType.HasFlag(SpellTargetType.ALLY_PLAYER) || TargetType.HasFlag(SpellTargetType.ALLY_UNKN_1) || TargetType.HasFlag(SpellTargetType.ALLY_UNKN_2))
+                if ((TargetType.HasFlag(SpellTargetType.ALLY_PLAYER) || TargetType.HasFlag(SpellTargetType.ALLY_UNKN_1))
                     && (actor is CharacterFighter))
                     return true;
 
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             if (TargetType == SpellTargetType.ENEMY_ALL)
                 return true;
 
-            if ((TargetType.HasFlag(SpellTargetType.ENEMY_PLAYER) || TargetType.HasFlag(SpellTargetType.ENEMY_UNKN_1) || TargetType.HasFlag(SpellTargetType.ENEMY_UNKN_2))
+            if ((TargetType.HasFlag(SpellTargetType.ENEMY_PLAYER) || TargetType.HasFlag(SpellTargetType.ENEMY_UNKN_1))
                 && (actor is CharacterFighter))
                 return true;
 
