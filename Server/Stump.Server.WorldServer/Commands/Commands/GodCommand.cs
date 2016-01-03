@@ -202,4 +202,24 @@ namespace Stump.Server.WorldServer.Commands.Commands
             }
         }
     }
+
+    public class CriticalModeCommand : TargetCommand
+    {
+        public CriticalModeCommand()
+        {
+            Aliases = new[] { "criticalmode" };
+            RequiredRole = RoleEnum.Administrator;
+            Description = "Critical damages each time";
+            AddTargetParameter(true);
+        }
+
+        public override void Execute(TriggerBase trigger)
+        {
+            foreach (var target in GetTargets(trigger))
+            {
+                target.ToggleCriticalMode(!target.CriticalDmgMode);
+                trigger.Reply(target.CriticalDmgMode ? "Critical Mode ON" : "Critical Mode OFF");
+            }
+        }
+    }
 }
