@@ -123,6 +123,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             OnPlayerLifeStatusChanged(PlayerLifeStatus);
 
+            if (!IsGhost())
+            {
+                var energyGain = (short)(DateTime.Now - Record.LastUsage.Value).Minutes;
+                Energy += energyGain;
+
+                //Vous avez récupéré <b>%1</b> points d'énergie.
+                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 7, energyGain);
+            }
+
             var handler = LoggedIn;
             if (handler != null) handler(this);
         }
@@ -163,6 +172,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             };
 
             MongoLogger.Instance.Insert("characters_connections", document);
+
+            Record.LastUsage = DateTime.Now;
 
             var handler = LoggedOut;
             if (handler != null) handler(this);
@@ -1188,7 +1199,10 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             var phoenixMapId = -1;
 
             if (status == PlayerLifeStatusEnum.STATUS_PHANTOM)
+            {
                 phoenixMapId = World.Instance.GetNearestPhoenix(Map).Id;
+                StartRegen();
+            }
 
             CharacterHandler.SendGameRolePlayPlayerLifeStatusMessage(Client, status, phoenixMapId);
             InitializationHandler.SendSetCharacterRestrictionsMessage(Client, this);
@@ -2141,6 +2155,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool StartMove(Path movementPath)
         {
+            StartRegen();
+
             if (IsFighting() || MustBeJailed() || !IsInJail())
                 return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
 
@@ -2737,7 +2753,16 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void StartRegen()
         {
-            StartRegen((byte) (20f/Rates.RegenRate));
+            StartRegen((byte) (10f/Rates.RegenRate));
+        }
+
+        public void StartRegen(EmotesEnum emote)
+        {
+            var rate = Rates.RegenRate;
+            if (emote == EmotesEnum.EMOTE_S_ASSEOIR)
+                rate *= 2;
+
+            StartRegen((byte)(10f / rate));
         }
 
         public void StartRegen(byte timePerHp)
@@ -2913,6 +2938,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void PlayEmote(EmotesEnum emote)
         {
+            StartRegen(emote);
             ContextRoleplayHandler.SendEmotePlayMessage(Map.Clients, this, emote);
         }
 
