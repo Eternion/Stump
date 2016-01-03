@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
             var map = client.Character.Map;
             var monster = map.GetActor<MonsterGroup>(entry => entry.Id == message.monsterGroupId);
 
-            if (monster != null)
+            if (monster != null && monster.Position.Cell == client.Character.Position.Cell)
                 monster.FightWith(client.Character);
         }
 

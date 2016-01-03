@@ -126,6 +126,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsGhost())
             {
                 var energyGain = (short)(DateTime.Now - Record.LastUsage.Value).Minutes;
+                if (energyGain <= 0)
+                    return;
+
                 Energy += energyGain;
 
                 //Vous avez récupéré <b>%1</b> points d'énergie.
@@ -2155,7 +2158,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool StartMove(Path movementPath)
         {
-            StartRegen();
+            if (!IsFighting())
+                StartRegen();
 
             if (IsFighting() || MustBeJailed() || !IsInJail())
                 return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
