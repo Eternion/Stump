@@ -1120,6 +1120,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set;
         }
 
+        public bool CriticalMode
+        {
+            get;
+            private set;
+        }
+
         #region Restat
 
         public short PermanentAddedStrength
@@ -1301,6 +1307,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void ToggleGodMode(bool state)
         {
             GodMode = state;
+        }
+
+        public void ToggleCriticalMode(bool state)
+        {
+            CriticalMode = state;
         }
 
         public bool IsGameMaster()
