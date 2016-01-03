@@ -217,8 +217,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                target.ToggleCriticalMode(!target.CriticalDmgMode);
-                trigger.Reply(target.CriticalDmgMode ? "Critical Mode ON" : "Critical Mode OFF");
+                target.ToggleCriticalMode(!target.CriticalMode);
+                trigger.Reply(target.CriticalMode ? "Critical Mode ON" : "Critical Mode OFF");
             }
         }
     }
