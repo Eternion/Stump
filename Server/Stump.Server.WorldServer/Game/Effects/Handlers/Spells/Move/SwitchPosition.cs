@@ -26,9 +26,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 && (target.HasState((int)SpellStatesEnum.INDÉPLAÇABLE) || target.HasState((int)SpellStatesEnum.ENRACINÉ)))
                 return false;
 
-            if (Caster.HasState((int) SpellStatesEnum.DÉPLACÉ))
-                return false;
-
             if (target.IsCarrying())
                 return false;
 
