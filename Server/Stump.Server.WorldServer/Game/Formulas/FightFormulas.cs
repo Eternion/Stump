@@ -108,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
             return InvokeDropRateModifier(looter, item, rate);
         }
 
-        public static int CalculatePushBackDamages(FightActor source, FightActor target, int range)
+        public static int CalculatePushBackDamages(FightActor source, FightActor target, int range, int targets)
         {
             var level = source.Level;
 
@@ -116,7 +116,7 @@ namespace Stump.Server.WorldServer.Game.Formulas
             if (summon != null)
                 level = summon.Summoner.Level;
 
-            return (level / 2 + (source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction]) + 32) * range / 4;
+            return (int)((level / 2 + (source.Stats[PlayerFields.PushDamageBonus] - target.Stats[PlayerFields.PushDamageReduction]) + 32) * range / (4 * (Math.Pow(2, targets))));
         }
     }
 }

@@ -848,6 +848,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void SetStatus(PlayerStatusEnum status)
         {
+            if (Status.statusId == (sbyte)status)
+                return;
+
             Status = new PlayerStatus((sbyte)status);
             CharacterStatusHandler.SendPlayerStatusUpdateMessage(Client, Status);
         }
