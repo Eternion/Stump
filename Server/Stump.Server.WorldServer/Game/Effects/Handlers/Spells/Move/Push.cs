@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using Stump.Server.WorldServer.Game.Maps.Cells;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 {
@@ -74,14 +75,32 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                             takeDamage = true;
                             actor.InflictDamage(damage);
 
-                            for (var i2 = 0; i2 < (range - i); i2++)
+                            var lastFighter = actor;
+                            MapPoint maxEndCell = null;
+                            var tmpRange = range + 1;
+
+                            while (maxEndCell == null)
+                            {
+                                maxEndCell = Caster.Position.Point.GetCellInDirection(pushDirection, tmpRange);
+                                tmpRange--;
+                            }
+
+                            var cells = lastFighter.Position.Point.GetCellsOnLineBetween(maxEndCell);
+
+                            for (var i2 = 0; i2 < cells.Length; i2++)
                             {
                                 if (nextCell != null)
                                 {
                                     var fighter = Fight.GetOneFighter(Map.Cells[nextCell.CellId]);
                                     if (fighter != null)
                                     {
-                                        pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, ((range - i) - i2)) / 2;
+                                        var lastFighterStat = lastFighter.Stats[PlayerFields.PushDamageReduction].Total;
+                                        if (i2 > 0 && lastFighterStat != 0)
+                                            lastFighterStat /= 2;
+
+                                        pushbackDamages = (pushbackDamages + lastFighterStat - fighter.Stats[PlayerFields.PushDamageReduction]) / 2;
+                                        lastFighter = fighter;
+
                                         damage = new Fights.Damage(pushbackDamages)
                                         {
                                             Source = fighter,
