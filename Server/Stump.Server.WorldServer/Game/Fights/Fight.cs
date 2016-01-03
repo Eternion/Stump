@@ -307,6 +307,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         T GetFirstFighter<T>(int id) where T : FightActor;
         T GetFirstFighter<T>(Cell cell) where T : FightActor;
         T GetFirstFighter<T>(Predicate<T> predicate) where T : FightActor;
+        List<FightActor> GetAllFightersInLine(MapPoint startCell, int range, DirectionsEnum direction);
         ReadOnlyCollection<FightActor> GetAllFighters();
         ReadOnlyCollection<FightActor> GetLeavers();
         CharacterFighter GetLeaver(int characterId);
@@ -2617,6 +2618,29 @@ namespace Stump.Server.WorldServer.Game.Fights
         public T GetFirstFighter<T>(Predicate<T> predicate) where T : FightActor
         {
             return Fighters.OfType<T>().FirstOrDefault(entry => predicate(entry));
+        }
+
+        public List<FightActor> GetAllFightersInLine(MapPoint startCell, int range, DirectionsEnum direction)
+        {
+            var fighters = new List<FightActor>();
+            var nextCell = startCell.GetNearestCellInDirection(direction);
+            var i = 0;
+
+            while (nextCell != null && Map.Cells[nextCell.CellId].Walkable && !Map.Cells[nextCell.CellId].NonWalkableDuringFight && i < range)
+            {
+                var fighter = GetOneFighter(Map.Cells[nextCell.CellId]);
+
+                if (fighter == null && fighters.Any())
+                    break;
+
+                if (fighter != null)
+                    fighters.Add(fighter);
+
+                nextCell = nextCell.GetNearestCellInDirection(direction);
+                i++;
+            }
+
+            return fighters;
         }
 
         public ReadOnlyCollection<FightActor> GetAllFighters()

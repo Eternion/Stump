@@ -53,18 +53,24 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var lastCell = startCell;
                 var range = SubRangeForActor == actor ? (integerEffect.Value - 1) : integerEffect.Value;
                 var takeDamage = false;
+                var stopCell = startCell.GetCellInDirection(pushDirection, range);
+                var fightersInline = Fight.GetAllFightersInLine(startCell, range, pushDirection);
 
-                for (var i = 0; i < range; i++)
+
+                if (fightersInline.Any())
                 {
-                    var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
+                    stopCell = fightersInline.First().Position.Point.GetCellInDirection(pushDirection, -1);
 
-                    if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]))
+                    if (!DamagesDisabled)
                     {
-                        var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, (range - i));
+                        var distance = range - (fightersInline.First().Position.Point.EuclideanDistanceTo(startCell) - 1);
+                        var targets = 0;
 
-                        if (!DamagesDisabled)
+                        foreach (var fighter in fightersInline)
                         {
-                            var damage = new Fights.Damage(pushbackDamages)
+                            var pushDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, fighter, (int)distance, targets) / 2;
+
+                            var pushDamage = new Fights.Damage(pushDamages)
                             {
                                 Source = actor,
                                 School = EffectSchoolEnum.Pushback,
@@ -72,76 +78,52 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                                 IgnoreDamageReduction = false
                             };
 
-                            takeDamage = true;
-                            actor.InflictDamage(damage);
+                            fighter.InflictDamage(pushDamage);
+                            fighter.TriggerBuffs(BuffTriggerType.OnDamagedByPush);
 
-                            var lastFighter = actor;
-                            MapPoint maxEndCell = null;
-                            var tmpRange = range + 1;
+                            targets++;
+                        }
+                    }
+                }
+                else
+                {
+                    for (var i = 0; i < range; i++)
+                    {
+                        var nextCell = lastCell.GetNearestCellInDirection(pushDirection);
 
-                            while (maxEndCell == null)
-                            {
-                                maxEndCell = Caster.Position.Point.GetCellInDirection(pushDirection, tmpRange);
-                                tmpRange--;
-                            }
-
-                            var cells = lastFighter.Position.Point.GetCellsOnLineBetween(maxEndCell);
-
-                            for (var i2 = 0; i2 < cells.Length; i2++)
-                            {
-                                if (nextCell != null)
-                                {
-                                    var fighter = Fight.GetOneFighter(Map.Cells[nextCell.CellId]);
-                                    if (fighter != null)
-                                    {
-                                        var lastFighterStat = lastFighter.Stats[PlayerFields.PushDamageReduction].Total;
-                                        if (i2 > 0 && lastFighterStat != 0)
-                                            lastFighterStat /= 2;
-
-                                        pushbackDamages = (pushbackDamages + lastFighterStat - fighter.Stats[PlayerFields.PushDamageReduction]) / 2;
-                                        lastFighter = fighter;
-
-                                        damage = new Fights.Damage(pushbackDamages)
-                                        {
-                                            Source = fighter,
-                                            School = EffectSchoolEnum.Pushback,
-                                            IgnoreDamageBoost = true,
-                                            IgnoreDamageReduction = false
-                                        };
-
-                                        fighter.InflictDamage(damage);
-                                        fighter.TriggerBuffs(BuffTriggerType.OnDamagedByPush);
-                                        fighter.TriggerBuffs(BuffTriggerType.OnPush);
-
-                                        fighter.OnActorMoved(actor, true);
-                                    }
-
-                                    nextCell = nextCell.GetNearestCellInDirection(pushDirection);
-                                }
-                            }
+                        if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]) || Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
+                        {
+                            stopCell = lastCell;
+                            break;
                         }
 
-                        break;
+                        if (nextCell != null)
+                            lastCell = nextCell;
                     }
-
-                    if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
-                    {
-                        lastCell = nextCell;
-                        break;
-                    }
-
-                    lastCell = nextCell;
                 }
 
-                var endCell = lastCell;
+                if (!DamagesDisabled)
+                {
+                    var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, (range - (int)(startCell.EuclideanDistanceTo(stopCell))), 0);
+                    var damage = new Fights.Damage(pushbackDamages)
+                    {
+                        Source = actor,
+                        School = EffectSchoolEnum.Pushback,
+                        IgnoreDamageBoost = true,
+                        IgnoreDamageReduction = false
+                    };
+
+                    takeDamage = true;
+                    actor.InflictDamage(damage);
+                }
 
                 if (actor.IsCarrying())
                     actor.ThrowActor(Map.Cells[startCell.CellId], true);
 
                 foreach (var character in Fight.GetCharactersAndSpectators().Where(actor.IsVisibleFor))
-                    ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actor, startCell.CellId, endCell.CellId);
+                    ActionsHandler.SendGameActionFightSlideMessage(character.Client, Caster, actor, startCell.CellId, stopCell.CellId);
 
-                actor.Position.Cell = Map.Cells[endCell.CellId];
+                actor.Position.Cell = Map.Cells[stopCell.CellId];
                 actor.OnActorMoved(Caster, takeDamage);
 
                 actor.TriggerBuffs(BuffTriggerType.OnPush);
