@@ -87,7 +87,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
             if (!target.Fight.IsCellFree(targetedCell))
             {
-                var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(source, target, BackCellsCount);
+                var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(source, target, BackCellsCount, 0);
                 var pushDamage = new Damage(pushbackDamages)
                 {
                     Source = target,
