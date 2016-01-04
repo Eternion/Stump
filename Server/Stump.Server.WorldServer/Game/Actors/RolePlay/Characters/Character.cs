@@ -130,6 +130,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                     return;
 
                 Energy += energyGain;
+                RefreshStats();
 
                 //Vous avez récupéré <b>%1</b> points d'énergie.
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 7, energyGain);

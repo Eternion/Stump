@@ -1017,7 +1017,9 @@ namespace Stump.Server.WorldServer.Game.Maps
                     monster = MonsterManager.Instance.GetMonsterGrade(spawn.MonsterId, SubArea.RollMonsterGrade(spawn.MinGrade, spawn.MaxGrade));
 
                     if (CheckMonsterAI(monster))
-                        break;
+                        monster = null;
+
+                    break;
                 }
 
                 if (monster == null)
