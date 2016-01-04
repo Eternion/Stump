@@ -320,11 +320,10 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             client.Send(new ServersListMessage(WorldServerManager.Instance.GetServersInformationArray(client), alreadyConnectedToServer, canCreateCharacter));
         }
 
-        public void SendServerStatusUpdateMessage(AuthClient client, WorldServer world)
+        public static void SendServerStatusUpdateMessage(AuthClient client, WorldServer world)
         {
             if (world != null)
-                client.Send(
-                    new ServerStatusUpdateMessage(WorldServerManager.Instance.GetServerInformation(client, world)));
+                client.Send(new ServerStatusUpdateMessage(WorldServerManager.Instance.GetServerInformation(client, world)));
         }
 
         #endregion

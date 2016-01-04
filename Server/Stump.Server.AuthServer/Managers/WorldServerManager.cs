@@ -213,7 +213,7 @@ namespace Stump.Server.AuthServer.Managers
         public GameServerInformations[] GetServersInformationArray(AuthClient client)
             => m_realmlist.Values.Where(x => client.UserGroup.CanAccessWorld(x)).Select(world => GetServerInformation(client, world)).ToArray();
 
-        public static GameServerInformations GetServerInformation(AuthClient client, WorldServer world)
+        public GameServerInformations GetServerInformation(AuthClient client, WorldServer world)
         {
             var charactersCount = client.Account.GetCharactersCountByWorld(world.Id);
 
