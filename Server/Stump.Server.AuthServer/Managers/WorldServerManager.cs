@@ -37,23 +37,16 @@ namespace Stump.Server.AuthServer.Managers
         public static int PingCheckInterval = 2000;
 
         [Variable(true)]
-#if DEBUG
-        public static bool CheckPassword;
-#else
-        public static bool CheckPassword = true;
-#endif
-
-        [Variable(true)]
         public static List<string> AllowedServerIps = new List<string>
         {
             "127.0.0.1",
         };
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public event Action<WorldServer> ServerAdded;
 
-        private void OnServerAdded(WorldServer server)
+        void OnServerAdded(WorldServer server)
         {
             ClientManager.Instance.FindAll<AuthClient>(entry => entry.LookingOfServers).
                 ForEach(entry => ConnectionHandler.SendServerStatusUpdateMessage(entry, server));
@@ -65,29 +58,29 @@ namespace Stump.Server.AuthServer.Managers
 
         public event Action<WorldServer> ServerRemoved;
 
-        private void OnServerRemoved(WorldServer server)
+        void OnServerRemoved(WorldServer server)
         {
             ClientManager.Instance.FindAll<AuthClient>(entry => entry.LookingOfServers).
                 ForEach(entry => ConnectionHandler.SendServerStatusUpdateMessage(entry, server));
 
-            Action<WorldServer> handler = ServerRemoved;
+            var handler = ServerRemoved;
             if (handler != null)
                 handler(server);
         }
 
         public event Action<WorldServer> ServerStateChanged;
 
-        private void OnServerStateChanged(WorldServer server)
+        void OnServerStateChanged(WorldServer server)
         {
             ClientManager.Instance.FindAll<AuthClient>(entry => entry.LookingOfServers).
                 ForEach(entry => ConnectionHandler.SendServerStatusUpdateMessage(entry, server));
 
-            Action<WorldServer> handler = ServerStateChanged;
+            var handler = ServerStateChanged;
             if (handler != null)
                 handler(server);
         }
 
-        private ConcurrentDictionary<int, WorldServer> m_realmlist;
+        ConcurrentDictionary<int, WorldServer> m_realmlist;
 
         /// <summary>
         ///   Initialize up our list and get all
@@ -178,17 +171,11 @@ namespace Stump.Server.AuthServer.Managers
             return server;
         }
 
-        public bool IsIPAllowed(IPAddress ip)
-        {
-            return AllowedServerIps.Select(IPAddressRange.Parse).Any(x => x.Match(ip));
-        }
+        public static bool IsIPAllowed(IPAddress ip) => AllowedServerIps.Select(IPAddressRange.Parse).Any(x => x.Match(ip));
 
-        public WorldServer GetServerById(int id)
-        {
-            return m_realmlist.ContainsKey(id) ? m_realmlist[id] : null;
-        }
+        public WorldServer GetServerById(int id) => m_realmlist.ContainsKey(id) ? m_realmlist[id] : null;
 
-        public bool CanAccessToWorld(AuthClient client, WorldServer world)
+        public static bool CanAccessToWorld(AuthClient client, WorldServer world)
         {
             if (world == null)
                 return false;
@@ -224,18 +211,17 @@ namespace Stump.Server.AuthServer.Managers
         }
 
         public GameServerInformations[] GetServersInformationArray(AuthClient client)
-        {
-            return m_realmlist.Values.Where(x => client.UserGroup.CanAccessWorld(x)).Select(
-                world => GetServerInformation(client, world)).ToArray();
-        }
+            => m_realmlist.Values.Where(x => client.UserGroup.CanAccessWorld(x)).Select(world => GetServerInformation(client, world)).ToArray();
 
-        public GameServerInformations GetServerInformation(AuthClient client, WorldServer world)
+        public static GameServerInformations GetServerInformation(AuthClient client, WorldServer world)
         {
+            var charactersCount = client.Account.GetCharactersCountByWorld(world.Id);
+
             return new GameServerInformations((short) world.Id, 1, (sbyte) world.Status,
                                               (sbyte) world.Completion,
                                               world.ServerSelectable,
-                                              client.Account.GetCharactersCountByWorld(world.Id),
-                                              5,
+                                              charactersCount,
+                                              (sbyte)(charactersCount > 5 ? charactersCount : 5),
                                               DateTime.Now.GetUnixTimeStampLong());
         }
 
@@ -280,7 +266,9 @@ namespace Stump.Server.AuthServer.Managers
         {
             var server = GetServerById(world.Id);
 
-            if (server == null || !server.Connected) return;
+            if (server == null || !server.Connected)
+                return;
+
             server.SetOffline();
             Database.Update(server);
 

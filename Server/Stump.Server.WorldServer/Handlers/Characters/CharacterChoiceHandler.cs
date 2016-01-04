@@ -259,20 +259,6 @@ namespace Stump.Server.WorldServer.Handlers.Characters
             client.WorldAccount.LastIp = client.IP;
             client.WorldAccount.ConnectedCharacter = character.Id;
             WorldServer.Instance.DBAccessor.Database.Update(client.WorldAccount);
-
-            character.LastUsage = DateTime.Now;
-            WorldServer.Instance.DBAccessor.Database.Update(character);
-
-            var document = new BsonDocument
-            {
-                { "AcctId", client.WorldAccount.Id },
-                { "CharacterId", character.Id },
-                { "IPAddress", client.IP },
-                { "Action", "Login" },
-                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-            };
-
-            MongoLogger.Instance.Insert("characters_connections", document);
         }
 
 
