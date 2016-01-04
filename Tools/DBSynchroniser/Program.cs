@@ -836,10 +836,11 @@ namespace DBSynchroniser
                     var record = new MonsterSpawn
                     {
                         SubAreaId = (int?)subarea,
-                        Frequency = obj.IsMiniBoss ? 0.1 : 1,
+                        Frequency = obj.IsMiniBoss ? 0.1 : (obj.FavoriteSubareaId == subarea ? 1.25 : 1),
                         MonsterId = obj.Id,
                         MinGrade = (int)obj.Grades.First()?.Grade,
-                        MaxGrade = (int)obj.Grades.Last()?.Grade
+                        MaxGrade = (int)obj.Grades.Last()?.Grade,
+                        IsDisabled = obj.IsQuestMonster
                     };
 
                     worldDatabase.Database.Insert(record);
@@ -847,6 +848,9 @@ namespace DBSynchroniser
 
                 foreach (var drop in obj.Drops)
                 {
+                    if (drop.HasCriteria)
+                        continue;
+
                     var record = new DroppableItem
                     {
                         MonsterOwnerId = drop.MonsterId,
