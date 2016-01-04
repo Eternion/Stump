@@ -72,12 +72,12 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
     public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
         [Variable]
-        private const ushort HonorLimit = 16000;
+        const ushort HonorLimit = 16000;
 
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly CharacterRecord m_record;
-        private bool m_recordLoaded;
+        readonly CharacterRecord m_record;
+        bool m_recordLoaded;
 
         public Character(CharacterRecord record, WorldClient client)
         {
@@ -94,7 +94,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event Action<Character> LoggedIn;
 
-        private void OnLoggedIn()
+        void OnLoggedIn()
         {
             if (GuildMember != null)
                 GuildMember.OnCharacterConnected(this);
@@ -125,7 +125,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             if (!IsGhost())
             {
-                var energyGain = (short)(DateTime.Now - Record.LastUsage.Value).Minutes;
+                var energyGain = (short)(DateTime.Now - Record.LastUsage.Value).TotalMinutes;
                 if (energyGain <= 0)
                     return;
 
@@ -134,6 +134,19 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 //Vous avez récupéré <b>%1</b> points d'énergie.
                 SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 7, energyGain);
             }
+
+            Record.LastUsage = DateTime.Now;
+
+            var document = new BsonDocument
+            {
+                { "AcctId", Account.Id },
+                { "CharacterId", Id },
+                { "IPAddress", Client.IP },
+                { "Action", "Login" },
+                { "Date", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
+            };
+
+            MongoLogger.Instance.Insert("characters_connections", document);
 
             var handler = LoggedIn;
             if (handler != null) handler(this);

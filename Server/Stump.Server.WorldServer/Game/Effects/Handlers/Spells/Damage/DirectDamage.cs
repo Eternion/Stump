@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         public DirectDamage(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
-            BuffTriggerType = BuffTriggerType.OnTurnBegin;
+            BuffTriggerType = BuffTriggerType.Unknown;
         }
 
         public BuffTriggerType BuffTriggerType
@@ -34,7 +34,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             {
                 if (Effect.Duration != 0)
                 {
-                    AddTriggerBuff(actor, true, BuffTriggerType, DamageBuffTrigger);
+                    if (BuffTriggerType == BuffTriggerType.Unknown)
+                        AddTriggerBuff(actor, true, DamageBuffTrigger);
+                    else
+                        AddTriggerBuff(actor, true, BuffTriggerType, DamageBuffTrigger);
                 }
                 else
                 {

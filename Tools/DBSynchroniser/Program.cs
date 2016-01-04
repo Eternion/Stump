@@ -26,6 +26,7 @@ using Stump.Server.WorldServer.Database;
 using Stump.DofusProtocol.D2oClasses.Tools.Ele;
 using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Database.Monsters;
 
 namespace DBSynchroniser
 {
@@ -90,6 +91,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Import maps (on stump_data)", LoadMapsWithWarning),
             Tuple.Create<string, Action>("Fix fight placement (on stump_data)", PlacementsFix.ApplyFix),
             Tuple.Create<string, Action>("Generate interactive spawn (on stump_world)", GenerateInteractiveSpawnWithWarning),
+            Tuple.Create<string, Action>("Generate monsters spawns and drops (on stump_world)", GenerateMonstersSpawnsAndDrops),
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -774,7 +776,7 @@ namespace DBSynchroniser
                 {
                     var eleElement = eleInstance.GraphicalDatas[(int)element.ElementId];
 
-                    var spawn = new InteractiveSpawn()
+                    var spawn = new InteractiveSpawn
                     {
                         Id = (int) element.Identifier,
                         MapId = map.Id,
@@ -798,11 +800,76 @@ namespace DBSynchroniser
                 UpdateCounter(i++, entries.Count);
             }
             EndCounter();
+        }
 
+        public static void GenerateMonstersSpawnsAndDrops()
+        {
+            Console.WriteLine("WARNING IT WILL ERASE TABLES 'monsters_spawns' AND 'monsters_drops'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
 
-        }   
+            Console.WriteLine("Generating monsters spawns");
+            var worldDatabase = ConnectToWorld();
+            if (worldDatabase == null)
+                return;
 
-        private static void ExecutePatch(string file, Database database)
+            worldDatabase.Database.Execute("DELETE FROM monsters_spawns");
+            worldDatabase.Database.Execute("ALTER TABLE monsters_spawns AUTO_INCREMENT=1");
+
+            worldDatabase.Database.Execute("DELETE FROM monsters_drops");
+            worldDatabase.Database.Execute("ALTER TABLE monsters_drops AUTO_INCREMENT=1");
+
+            var dataTable = m_tables["Monster"];
+
+            if (dataTable == null)
+                return;
+
+            InitializeCounter();
+            var i = 0;
+            var rows = GetTableRows(dataTable);
+            foreach (ID2ORecord row in rows)
+            {
+                var obj = row.CreateObject() as Monster;
+
+                foreach (var subarea in obj.Subareas)
+                {
+                    var record = new MonsterSpawn
+                    {
+                        SubAreaId = (int?)subarea,
+                        Frequency = obj.IsMiniBoss ? 0.1 : 1,
+                        MonsterId = obj.Id,
+                        MinGrade = (int)obj.Grades.First()?.Grade,
+                        MaxGrade = (int)obj.Grades.Last()?.Grade
+                    };
+
+                    worldDatabase.Database.Insert(record);
+                }
+
+                foreach (var drop in obj.Drops)
+                {
+                    var record = new DroppableItem
+                    {
+                        MonsterOwnerId = drop.MonsterId,
+                        ItemId = (short)drop.ObjectId,
+                        DropLimit = drop.Count,
+                        RollsCounter = 1,
+                        DropRateForGrade1 = drop.PercentDropForGrade1,
+                        DropRateForGrade2 = drop.PercentDropForGrade2,
+                        DropRateForGrade3 = drop.PercentDropForGrade3,
+                        DropRateForGrade4 = drop.PercentDropForGrade4,
+                        DropRateForGrade5 = drop.PercentDropForGrade5
+                    };
+
+                    worldDatabase.Database.Insert(record);
+                }
+
+                i++;
+                UpdateCounter(i, rows.Count);
+            }
+            EndCounter();
+        }
+
+        static void ExecutePatch(string file, Database database)
         {
             Console.WriteLine("Execute patch '{0}'", Path.GetFileName(file));
             var lineIndex = 0;
