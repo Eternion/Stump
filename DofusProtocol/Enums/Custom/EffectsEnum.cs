@@ -37,7 +37,7 @@
         /// <summary>
         /// Allows the use of emoticon #3
         /// </summary>
-        Effect_10 = 10,
+        Effect_LearnEmote = 10,
         /// <summary>
         /// Changes the playing time of a player
         /// </summary>

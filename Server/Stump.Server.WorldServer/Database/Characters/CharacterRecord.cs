@@ -207,7 +207,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set
             {
                 m_emotes = value;
-                m_emotesCSV = m_emotes.ToCSV(",");
+                m_emotesCSV = m_emotes.Select(x => (short)x).ToCSV(",");
             }
         }
 
@@ -221,7 +221,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             set
             {
                 m_emotesCSV = value;
-                m_emotes = !string.IsNullOrEmpty(m_emotesCSV) ? m_emotesCSV.FromCSV<EmotesEnum>(",").ToList() : new List<EmotesEnum>();
+                m_emotes = !string.IsNullOrEmpty(m_emotesCSV) ? m_emotesCSV.FromCSV<short>(",").Select(x => (EmotesEnum)x).ToList() : new List<EmotesEnum>();
             }
         }
 
