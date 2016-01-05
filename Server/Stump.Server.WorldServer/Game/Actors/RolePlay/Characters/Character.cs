@@ -615,19 +615,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Titles & Ornaments
 
-        public ReadOnlyCollection<short> Titles
-        {
-            get { return Record.Titles.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<short> Titles => Record.Titles.AsReadOnly();
 
-        public ReadOnlyCollection<short> Ornaments
-        {
-            get
-            {
-                return Record.Ornaments.AsReadOnly();
-            }
-        }
-
+        public ReadOnlyCollection<short> Ornaments => Record.Ornaments.AsReadOnly();
 
         public short? SelectedTitle
         {
@@ -635,10 +625,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             private set { Record.TitleId = value; }
         }
 
-        public bool HasTitle(short title)
-        {
-            return Record.Titles.Contains(title);
-        }
+        public bool HasTitle(short title) => Record.Titles.Contains(title);
 
         public void AddTitle(short title)
         {
@@ -2895,64 +2882,28 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         #region Emotes
 
-        public List<EmotesEnum> AvailableEmotes = new List<EmotesEnum>
+        public ReadOnlyCollection<EmotesEnum> Emotes => Record.Emotes.AsReadOnly();
+
+        public bool HasEmote(EmotesEnum emote) => Record.Emotes.Contains(emote);
+
+        public void AddEmote(EmotesEnum emote)
         {
-            EmotesEnum.EMOTE_S_ASSEOIR,
-            EmotesEnum.EMOTE_S_ALLONGER,
-            EmotesEnum.EMOTE_CROISER_LES_BRAS,
-            EmotesEnum.EMOTE_MAINS_SUR_LES_HANCHES,
-            EmotesEnum.EMOTE_S_AGENOUILLER,
-            EmotesEnum.EMOTE_SE_PROSTERNER,
-            EmotesEnum.EMOTE_MONTRER_DU_DOIGT,
-            EmotesEnum.EMOTE_SALUER,
-            EmotesEnum.EMOTE_FAIRE_UN_SIGNE_DE_LA_MAIN,
-            EmotesEnum.EMOTE_FAIRE_UN_BISOU,
-            EmotesEnum.EMOTE_COUCOU,
-            EmotesEnum.EMOTE_ATTIRER_L_ATTENTION,
-            EmotesEnum.EMOTE_SALUT_VULKAIN,
-            EmotesEnum.EMOTE_GONFLER_SES_MUSCLES,
-            EmotesEnum.EMOTE_MONTRER_SON_ARME,
-            EmotesEnum.EMOTE_SE_METTRE_EN_COLÈRE,
-            EmotesEnum.EMOTE_POING_LEVÉ,
-            EmotesEnum.EMOTE_MONTRER_SA_PEUR,
-            EmotesEnum.EMOTE_FACEPAUME,
-            EmotesEnum.EMOTE_APPLAUDIR,
-            EmotesEnum.EMOTE_ENCOURAGER,
-            EmotesEnum.EMOTE_RIRE,
-            EmotesEnum.EMOTE_PLEURER,
-            EmotesEnum.EMOTE_REFUSER,
-            EmotesEnum.EMOTE_DOTS,
-            EmotesEnum.EMOTE_HALOUINE,
-            EmotesEnum.EMOTE_FLEURS,
-            EmotesEnum.EMOTE_MANOLIAS,
-            EmotesEnum.EMOTE_OFFRIR_UN_CADEAU,
-            EmotesEnum.EMOTE_LEVER_LE_POUCE,
-            EmotesEnum.EMOTE_BAISSER_LE_POUCE,
-            EmotesEnum.EMOTE_PIED_DE_NEZ,
-            EmotesEnum.EMOTE_SUPER_HEROS,
-            EmotesEnum.EMOTE_PIOU,
-            EmotesEnum.EMOTE_SE_FROTTER_LES_MAINS,
-            EmotesEnum.EMOTE_ÊTRE_FRIGORIFIÉ,
-            EmotesEnum.EMOTE_ÉTERNUER,
-            EmotesEnum.EMOTE_AVOIR_FROID,
-            EmotesEnum.EMOTE_AVOIR_CHAUD,
-            EmotesEnum.EMOTE_MOTUS,
-            EmotesEnum.EMOTE_OGRINE,
-            EmotesEnum.EMOTE_LÂCHER_LES_GAZ,
-            EmotesEnum.EMOTE_TRACE,
-            EmotesEnum.EMOTE_JOUER_DE_LA_FLÛTE,
-            EmotesEnum.EMOTE_ÉCRIRE,
-            EmotesEnum.EMOTE_LIRE_UN_LIVRE,
-            EmotesEnum.EMOTE_LIRE_UNE_CARTE,
-            EmotesEnum.EMOTE_LONGUE_VUE,
-            EmotesEnum.EMOTE_CHAMPION,
-            EmotesEnum.EMOTE_ATTITUDE_TÉMÉRAIRE,
-            EmotesEnum.EMOTE_PIERRE,
-            EmotesEnum.EMOTE_FEUILLE,
-            EmotesEnum.EMOTE_CISEAUX,
-            EmotesEnum.EMOTE_LÉZARD,
-            EmotesEnum.EMOTE_STOK
-        };
+            if (HasEmote(emote))
+                return;
+
+            Record.Emotes.Add(emote);
+            ContextRoleplayHandler.SendEmoteAddMessage(Client, (byte)emote);
+        }
+
+        public bool RemoveEmote(EmotesEnum emote)
+        {
+            var result = Record.Emotes.Remove(emote);
+
+            if (result)
+                ContextRoleplayHandler.SendEmoteRemoveMessage(Client, (byte)emote);
+
+            return result;
+        }
 
         public void PlayEmote(EmotesEnum emote)
         {
