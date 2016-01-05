@@ -686,7 +686,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             m_entityLookString = m_entityLook == null ? null : m_entityLook.ToString();
             m_titlesCSV = m_titles.ToCSV(",");
             m_ornamentsCSV = m_ornaments.ToCSV(",");
-            m_emotesCSV = m_emotes.ToCSV(",");
+            m_emotesCSV = m_emotes.Select(x => (short)x).ToCSV(",");
         }
     }
 }
