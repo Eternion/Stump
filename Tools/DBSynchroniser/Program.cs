@@ -32,6 +32,8 @@ using System.Text;
 using HtmlAgilityPack;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
+using Stump.Core.Collections;
 
 namespace DBSynchroniser
 {
@@ -518,12 +520,12 @@ namespace DBSynchroniser
             }
         }
 
-        public static DatabaseAccessor ConnectToWorld()
+        public static DatabaseAccessor ConnectToWorld(bool showmsg = true)
         {
             var worldDatabase = new DatabaseAccessor(WorldDatabaseConfiguration);
 
-            Console.WriteLine("Connecting to {0}@{1}", WorldDatabaseConfiguration.DbName,
-                WorldDatabaseConfiguration.Host);
+            if (showmsg)
+                Console.WriteLine("Connecting to {0}@{1}", WorldDatabaseConfiguration.DbName, WorldDatabaseConfiguration.Host);
 
             worldDatabase.RegisterMappingAssembly(typeof(WorldServer).Assembly);
             worldDatabase.Initialize();
@@ -537,7 +539,9 @@ namespace DBSynchroniser
                 return null;
             }
 
-            Console.WriteLine("Connected!");
+            if (showmsg)
+                Console.WriteLine("Connected!");
+
             return worldDatabase;
         }
 
@@ -879,62 +883,12 @@ namespace DBSynchroniser
             EndCounter();
         }
 
-        public async static void ParseMonstersSpells()
+        public static void ParseMonstersSpells()
         {
             Console.WriteLine("WARNING IT WILL ERASE TABLES 'monsters_spells'. ARE YOU SURE ? (y/n)");
             if (Console.ReadLine() != "y")
                 return;
 
-            Console.WriteLine("Generating monsters spells...");
-
-            var http = new HttpClient();
-            var response = await http.GetByteArrayAsync("http://www.dofus.com/fr/mmorpg/encyclopedie/monstres?size=1398");
-            var source = Encoding.GetEncoding("utf-8").GetString(response, 0, response.Length - 1);
-            source = WebUtility.HtmlDecode(source);
-            var resultat = new HtmlDocument();
-            resultat.LoadHtml(source);
-
-            var monsters = resultat.DocumentNode.Descendants().Where(x => (x.Name == "a" && x.ParentNode.Name == "span" && x.ParentNode.Attributes["class"] != null && x.ParentNode.Attributes["class"].Value.Contains("ak-linker"))).ToList();
-
-            InitializeCounter();
-            var i = 0;
-
-            foreach (var monster in monsters)
-            {
-                var link = monster.Attributes["href"].Value;
-                ParseMonsterSpells(link);
-                Thread.Sleep(500);
-
-                i++;
-                UpdateCounter(i, monsters.Count);
-            }
-
-            EndCounter();
-
-            var worldDatabase = ConnectToWorld();
-            if (worldDatabase == null)
-                return;
-
-            foreach (var record in Records)
-            {
-                worldDatabase.Database.Insert(record);
-            }
-
-            File.WriteAllLines("spellsdoublons.txt", SpellsDoublons);
-
-            Console.WriteLine("");
-
-            foreach (var error in SpellsDoublons)
-            {
-                Console.WriteLine(error);
-            }
-        }
-
-        public static List<string> SpellsDoublons = new List<string>();
-        public static List<MonsterSpell> Records = new List<MonsterSpell>();
-
-        public async static void ParseMonsterSpells(string link)
-        {
             var worldDatabase = ConnectToWorld();
             if (worldDatabase == null)
                 return;
@@ -942,14 +896,53 @@ namespace DBSynchroniser
             worldDatabase.Database.Execute("DELETE FROM monsters_spells");
             worldDatabase.Database.Execute("ALTER TABLE monsters_spells AUTO_INCREMENT=1");
 
-            var monsterId = link.Split('-')[0].Replace("/fr/mmorpg/encyclopedie/monstres/", "");
+            Console.WriteLine("Generating monsters spells...");
 
-            var http = new HttpClient();
-            var response = await http.GetByteArrayAsync("http://www.dofus.com" + link);
-            var source = Encoding.GetEncoding("utf-8").GetString(response, 0, response.Length - 1);
-            source = WebUtility.HtmlDecode(source);
+            var rows = GetTableRows(m_tables["Monster"]);
+            InitializeCounter();
+            var i = 0;
+
+            foreach (ID2ORecord row in rows)
+            {
+                var monster = row.CreateObject() as Monster;
+
+                ParseMonsterSpells(monster.Id);
+                Thread.Sleep(500);
+
+                i++;
+                UpdateCounter(i, rows.Count);
+            }
+
+            EndCounter();
+
+            File.WriteAllLines("parseErrors.txt", ParseErrors);
+            Console.WriteLine("Create parseErrors.txt");
+        }
+
+        public static List<string> ParseErrors = new List<string>();
+
+        public async static void ParseMonsterSpells(int monsterId)
+        {
+
+            var worldDatabase = ConnectToWorld(false);
+            if (worldDatabase == null)
+                return;
+
             var resultat = new HtmlDocument();
-            resultat.LoadHtml(source);
+
+            try
+            {
+                var http = new HttpClient();
+                var response = await http.GetByteArrayAsync(string.Format("http://www.dofus.com/fr/mmorpg/encyclopedie/monstres/{0}-test", monsterId));
+                var source = Encoding.GetEncoding("utf-8").GetString(response, 0, response.Length - 1);
+                source = WebUtility.HtmlDecode(source);
+                resultat.LoadHtml(source);
+            }
+            catch (Exception ex)
+            {
+                ParseErrors.Add(string.Format("HTTP ERROR for MonsterId ({0}). Exception: {1}", monsterId, ex.Message));
+                return;
+            }
 
             var spellsNames = resultat.DocumentNode.Descendants()
                 .Where(x => (x.Name == "a"
@@ -971,12 +964,12 @@ namespace DBSynchroniser
 
                 if (!spellsId.Any())
                 {
-                    SpellsDoublons.Add(string.Format("Can't find spell ({0}) for monsterId ({1}).", spellName, monsterId));
+                    ParseErrors.Add(string.Format("Can't find spell ({0}) for monsterId ({1}).", spellName, monsterId));
                     continue;
                 }
 
                 if (spellsId.Count > 1)
-                    SpellsDoublons.Add(string.Format("Found multiple spells({0}) for name {1}({2}) for monsterId ({3}).", spellsId.Count, spellName, spellsId.First(), monsterId));
+                    ParseErrors.Add(string.Format("Found multiple spells({0}) for name {1}({2}) for monsterId ({3}).", spellsId.Count, spellName, spellsId.First(), monsterId));
 
                 spells.Add(spellsId.First());
             }
@@ -992,7 +985,7 @@ namespace DBSynchroniser
                         SpellId = spell
                     };
 
-                    Records.Add(record);
+                    worldDatabase.Database.Insert(record);
                 }
             }
         }
