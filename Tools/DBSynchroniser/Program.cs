@@ -27,6 +27,11 @@ using Stump.DofusProtocol.D2oClasses.Tools.Ele;
 using Stump.DofusProtocol.D2oClasses.Tools.Ele.Datas;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Database.Monsters;
+using System.Net;
+using System.Text;
+using HtmlAgilityPack;
+using System.Net.Http;
+using System.Threading;
 
 namespace DBSynchroniser
 {
@@ -92,6 +97,7 @@ namespace DBSynchroniser
             Tuple.Create<string, Action>("Fix fight placement (on stump_data)", PlacementsFix.ApplyFix),
             Tuple.Create<string, Action>("Generate interactive spawn (on stump_world)", GenerateInteractiveSpawnWithWarning),
             Tuple.Create<string, Action>("Generate monsters spawns and drops (on stump_world)", GenerateMonstersSpawnsAndDrops),
+            Tuple.Create<string, Action>("Parse monsters Spells", ParseMonstersSpells),
         };
 
         private static Dictionary<string, D2OTable> m_tables = new Dictionary<string, D2OTable>();
@@ -808,7 +814,7 @@ namespace DBSynchroniser
             if (Console.ReadLine() != "y")
                 return;
 
-            Console.WriteLine("Generating monsters spawns");
+            Console.WriteLine("Generating monsters spawns and drops");
             var worldDatabase = ConnectToWorld();
             if (worldDatabase == null)
                 return;
@@ -871,6 +877,124 @@ namespace DBSynchroniser
                 UpdateCounter(i, rows.Count);
             }
             EndCounter();
+        }
+
+        public async static void ParseMonstersSpells()
+        {
+            Console.WriteLine("WARNING IT WILL ERASE TABLES 'monsters_spells'. ARE YOU SURE ? (y/n)");
+            if (Console.ReadLine() != "y")
+                return;
+
+            Console.WriteLine("Generating monsters spells...");
+
+            var http = new HttpClient();
+            var response = await http.GetByteArrayAsync("http://www.dofus.com/fr/mmorpg/encyclopedie/monstres?size=1398");
+            var source = Encoding.GetEncoding("utf-8").GetString(response, 0, response.Length - 1);
+            source = WebUtility.HtmlDecode(source);
+            var resultat = new HtmlDocument();
+            resultat.LoadHtml(source);
+
+            var monsters = resultat.DocumentNode.Descendants().Where(x => (x.Name == "a" && x.ParentNode.Name == "span" && x.ParentNode.Attributes["class"] != null && x.ParentNode.Attributes["class"].Value.Contains("ak-linker"))).ToList();
+
+            InitializeCounter();
+            var i = 0;
+
+            foreach (var monster in monsters)
+            {
+                var link = monster.Attributes["href"].Value;
+                ParseMonsterSpells(link);
+                Thread.Sleep(500);
+
+                i++;
+                UpdateCounter(i, monsters.Count);
+            }
+
+            EndCounter();
+
+            var worldDatabase = ConnectToWorld();
+            if (worldDatabase == null)
+                return;
+
+            foreach (var record in Records)
+            {
+                worldDatabase.Database.Insert(record);
+            }
+
+            File.WriteAllLines("spellsdoublons.txt", SpellsDoublons);
+
+            Console.WriteLine("");
+
+            foreach (var error in SpellsDoublons)
+            {
+                Console.WriteLine(error);
+            }
+        }
+
+        public static List<string> SpellsDoublons = new List<string>();
+        public static List<MonsterSpell> Records = new List<MonsterSpell>();
+
+        public async static void ParseMonsterSpells(string link)
+        {
+            var worldDatabase = ConnectToWorld();
+            if (worldDatabase == null)
+                return;
+
+            worldDatabase.Database.Execute("DELETE FROM monsters_spells");
+            worldDatabase.Database.Execute("ALTER TABLE monsters_spells AUTO_INCREMENT=1");
+
+            var monsterId = link.Split('-')[0].Replace("/fr/mmorpg/encyclopedie/monstres/", "");
+
+            var http = new HttpClient();
+            var response = await http.GetByteArrayAsync("http://www.dofus.com" + link);
+            var source = Encoding.GetEncoding("utf-8").GetString(response, 0, response.Length - 1);
+            source = WebUtility.HtmlDecode(source);
+            var resultat = new HtmlDocument();
+            resultat.LoadHtml(source);
+
+            var spellsNames = resultat.DocumentNode.Descendants()
+                .Where(x => (x.Name == "a"
+                            && x.Attributes["href"] != null
+                            && x.Attributes["href"].Value.StartsWith("http://staticns.ankama.com/dofus/renderer/look/")
+                            && x.ParentNode.Name == "div"
+                            && x.ParentNode.Attributes["class"] != null
+                            && x.ParentNode.Attributes["class"].Value.Contains("ak-title"))).Select(x => x.InnerText.Replace("’", "'")).ToList();
+
+            var grades = worldDatabase.Database.Fetch<Stump.Server.WorldServer.Database.Monsters.MonsterGrade>(string.Format("SELECT * FROM monsters_grades WHERE MonsterId = {0}", monsterId));
+            var spells = new List<int>();
+
+            foreach (var spellName in spellsNames)
+            {
+                var spellsId = worldDatabase.Database.Fetch<int>("SELECT DISTINCT t2.Id FROM langs t1 JOIN spells_templates t2, spells_levels t3 WHERE t1.French=@0 AND t2.NameId=t1.Id AND t3.SpellId = t2.Id AND t3.SpellBreed = 0", spellName);
+
+                if (!spellsId.Any())
+                    spellsId = worldDatabase.Database.Fetch<int>("SELECT DISTINCT t2.Id FROM langs t1 JOIN spells_templates t2, spells_levels t3 WHERE t1.French=@0 AND t2.NameId=t1.Id AND t3.SpellId = t2.Id", spellName);
+
+                if (!spellsId.Any())
+                {
+                    SpellsDoublons.Add(string.Format("Can't find spell ({0}) for monsterId ({1}).", spellName, monsterId));
+                    continue;
+                }
+
+                if (spellsId.Count > 1)
+                    SpellsDoublons.Add(string.Format("Found multiple spells({0}) for name {1}({2}) for monsterId ({3}).", spellsId.Count, spellName, spellsId.First(), monsterId));
+
+                spells.Add(spellsId.First());
+            }
+
+            foreach (var spell in spells)
+            {
+                foreach (var grade in grades)
+                {
+                    var record = new MonsterSpell
+                    {
+                        MonsterGradeId = grade.Id,
+                        Level = (short)grade.GradeId,
+                        SpellId = spell
+                    };
+
+                    Records.Add(record);
+                }
+            }
         }
 
         static void ExecutePatch(string file, Database database)
