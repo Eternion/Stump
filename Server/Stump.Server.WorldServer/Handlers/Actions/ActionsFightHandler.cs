@@ -57,6 +57,10 @@ namespace Stump.Server.WorldServer.Handlers.Actions
             client.Send(new GameActionFightInvisibilityMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, (sbyte)state));
         }
 
+        public static void SendGameActionFightInvisibleDetectedMessage(IPacketReceiver client, FightActor source, FightActor target)
+        {
+            client.Send(new GameActionFightInvisibleDetectedMessage((short)ActionsEnum.ACTION_CHARACTER_MAKE_INVISIBLE, source.Id, target.Id, target.Cell.Id));
+        }
 
         public static void SendGameActionFightDispellSpellMessage(IPacketReceiver client, FightActor source, FightActor target, int spellId)
         {
