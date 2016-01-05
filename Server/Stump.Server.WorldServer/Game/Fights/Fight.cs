@@ -1211,9 +1211,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ForEach(entry => ContextHandler.SendGameFightShowFighterMessage(entry.Client, actor), true);
 
-            // update blades if shown
-            if (BladesVisible)
-                UpdateBlades(team);
+            UpdateBlades(team);
             
             ContextHandler.SendGameFightTurnListMessage(Clients, this);
         }
@@ -1302,8 +1300,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     break;
             }
 
-            if (BladesVisible)
-                UpdateBlades(team);
+            UpdateBlades(team);
         }
 
         protected virtual void OnSummonRemoved(SummonedFighter fighter)
