@@ -196,6 +196,35 @@ namespace Stump.Server.WorldServer.Database.Characters
             }
         }
 
+
+        [Ignore]
+        public List<EmotesEnum> Emotes
+        {
+            get
+            {
+                return m_emotes;
+            }
+            set
+            {
+                m_emotes = value;
+                m_emotesCSV = m_emotes.ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string EmotesCSV
+        {
+            get
+            {
+                return m_emotesCSV;
+            }
+            set
+            {
+                m_emotesCSV = value;
+                m_emotes = !string.IsNullOrEmpty(m_emotesCSV) ? m_emotesCSV.FromCSV<EmotesEnum>(",").ToList() : new List<EmotesEnum>();
+            }
+        }
+
         public int MapId
         {
             get;
@@ -529,6 +558,7 @@ namespace Stump.Server.WorldServer.Database.Characters
                 AP++;
 
             PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
+            Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
         }
 
 
@@ -556,14 +586,16 @@ namespace Stump.Server.WorldServer.Database.Characters
 
         #region Zaaps
 
-        private ActorLook m_customEntityLook;
-        private string m_customLookAsString;
-        private List<Map> m_knownZaaps = new List<Map>();
-        private Map m_spawnMap;
-        private List<short> m_titles = new List<short>();
-        private string m_titlesCSV;
-        private List<short> m_ornaments = new List<short>();
-        private string m_ornamentsCSV;
+        ActorLook m_customEntityLook;
+        string m_customLookAsString;
+        List<Map> m_knownZaaps = new List<Map>();
+        Map m_spawnMap;
+        List<short> m_titles = new List<short>();
+        string m_titlesCSV;
+        List<short> m_ornaments = new List<short>();
+        string m_ornamentsCSV;
+        List<EmotesEnum> m_emotes = new List<EmotesEnum>();
+        string m_emotesCSV;
 
         [Ignore]
         public List<Map> KnownZaaps
@@ -654,6 +686,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             m_entityLookString = m_entityLook == null ? null : m_entityLook.ToString();
             m_titlesCSV = m_titles.ToCSV(",");
             m_ornamentsCSV = m_ornaments.ToCSV(",");
+            m_emotesCSV = m_emotes.ToCSV(",");
         }
     }
 }
