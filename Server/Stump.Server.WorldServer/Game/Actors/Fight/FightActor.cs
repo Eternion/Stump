@@ -151,14 +151,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnSpellCasted(Spell spell, Cell target, FightSpellCastCriticalEnum critical, bool silentCast, bool history = true)
         {
-            if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
-                VisibleState == VisibleStateEnum.INVISIBLE)
+            if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) && VisibleState == VisibleStateEnum.INVISIBLE)
             {
-                ShowCell(Cell, false);
-
                 if (!IsInvisibleSpellCast(spell))
+                {
                     if (!DispellInvisibilityBuff())
                         SetInvisibilityState(VisibleStateEnum.VISIBLE);
+                }
+                else
+                {
+
+                    Fight.ForEach(x => ActionsHandler.SendGameActionFightInvisibleDetectedMessage(x.Client, this, this), true);
+                }
+                
             }
 
             if (history)
@@ -178,11 +183,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (spell.CurrentSpellLevel.Effects.All(effect => effect.EffectId != EffectsEnum.Effect_Invisibility) &&
                 VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
             {
-                ShowCell(Cell, false);
-
                 if (!IsInvisibleSpellCast(spell))
+                {
                     if (!DispellInvisibilityBuff())
                         SetInvisibilityState(VisibleStateEnum.VISIBLE);
+                }
+                else
+                {
+
+                    Fight.ForEach(x => ActionsHandler.SendGameActionFightInvisibleDetectedMessage(x.Client, this, this), true);
+                }
             }
 
             if (history)
@@ -205,10 +215,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnWeaponUsed(WeaponTemplate weapon, Cell cell, FightSpellCastCriticalEnum critical, bool silentCast)
         {
-            if (VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            if (VisibleState == VisibleStateEnum.INVISIBLE)
             {
-                ShowCell(Cell, false);
-
                 if (!DispellInvisibilityBuff())
                      SetInvisibilityState(VisibleStateEnum.VISIBLE);
             }
@@ -1886,7 +1894,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public VisibleStateEnum GetVisibleStateFor(FightActor fighter)
         {
-            return fighter.IsFriendlyWith(this) && VisibleState != VisibleStateEnum.VISIBLE ? VisibleStateEnum.DETECTED : VisibleState;
+
+            return fighter.IsFriendlyWith(this) && VisibleState != VisibleStateEnum.VISIBLE
+                ? VisibleStateEnum.DETECTED : VisibleState;
         }
 
         public VisibleStateEnum GetVisibleStateFor(Character character)
@@ -1899,7 +1909,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsVisibleFor(FightActor fighter)
         {
-            return GetVisibleStateFor(fighter) != GameActionFightInvisibilityStateEnum.INVISIBLE;
+            return GetVisibleStateFor(fighter) != VisibleStateEnum.INVISIBLE;
         }
 
         public bool IsVisibleFor(Character character)
@@ -1911,7 +1921,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Fight.ForEach(entry => ActionsHandler.SendGameActionFightInvisibilityMessage(entry.Client, source, this, GetVisibleStateFor(entry)), true);
         
-            if (lastState == GameActionFightInvisibilityStateEnum.INVISIBLE)
+            if (lastState == VisibleStateEnum.INVISIBLE)
                 Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, this), true);
         }
 
