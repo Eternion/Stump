@@ -1,5 +1,6 @@
 ﻿using System;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using Stump.DofusProtocol.Enums;
 
 namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
@@ -14,10 +15,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         }
 
         public override bool Eval(Character character)
-        {
-            // todo
-            return true;
-        }
+            => Operator == ComparaisonOperatorEnum.EQUALS ? character.HasEmote((EmotesEnum)Emote) : !character.HasEmote((EmotesEnum)Emote);
 
         public override void Build()
         {
@@ -29,9 +27,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             Emote = emote;
         }
 
-        public override string ToString()
-        {
-            return FormatToString(Identifier);
-        } 
+        public override string ToString() => FormatToString(Identifier);
     }
 }

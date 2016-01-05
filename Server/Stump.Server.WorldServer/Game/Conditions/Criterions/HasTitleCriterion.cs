@@ -14,9 +14,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
         }
 
         public override bool Eval(Character character)
-        {
-            return character.HasTitle(Title);
-        }
+            => Operator == ComparaisonOperatorEnum.EQUALS ? character.HasTitle(Title) : !character.HasTitle(Title);
 
         public override void Build()
         {
@@ -28,9 +26,6 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             Title = title;
         }
 
-        public override string ToString()
-        {
-            return FormatToString(Identifier);
-        }
+        public override string ToString() => FormatToString(Identifier);
     }
 }
