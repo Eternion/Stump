@@ -4,6 +4,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.BaseServer.Commands;
 using Stump.Server.WorldServer.Commands.Trigger;
 using Stump.Server.WorldServer.Game;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Commands.Commands
 {
@@ -18,6 +19,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             Description = "Display an announce to all players";
             RequiredRole = RoleEnum.GameMaster_Padawan;
             AddParameter<string>("message", "msg", "The announce");
+            AddParameter("target", "t", "Target", converter: ParametersConverter.CharacterConverter, isOptional: true);
         }
 
         public override void Execute(TriggerBase trigger)
@@ -29,7 +31,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
                                 ? string.Format("(ANNOUNCE) {0} : {1}", ((GameTrigger) trigger).Character.Name, msg)
                                 : string.Format("(ANNOUNCE) {0}", msg);
 
-            World.Instance.SendAnnounce(formatMsg, color);
+            if (trigger.IsArgumentDefined("target"))
+            {
+                var target = trigger.Get<Character>("target");
+                target.SendServerMessage(formatMsg, color);
+            }
+            else
+            {
+                World.Instance.SendAnnounce(formatMsg, color);
+            }
         }
     }
 }

@@ -1685,6 +1685,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void UnMute()
         {
             MuteUntil = null;
+            SendServerMessage("Vous avez été démuté.");
         }
 
         public bool IsMuted()

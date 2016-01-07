@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
         {
             foreach (var target in GetTargets(trigger))
             {
-                var time = trigger.Get<int>("time") > 720 ? 720 : trigger.Get<int>("time");
+                var time = trigger.Get<int>("time");
 
                 target.Mute(TimeSpan.FromMinutes(time), trigger.User as Character);
                 trigger.Reply("{0} muted", target.Name);
