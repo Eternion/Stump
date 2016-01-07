@@ -48,9 +48,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 {
                     var time = trigger.Get<int>("time");
                     message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(time);
+
+                    target.Mute(TimeSpan.FromMinutes(time), source.Character);
+                    target.OpenPopup(string.Format("Vous avez été emprisonné et muté pendant {0} minutes par {1}", time, source.Character));
                 }
-                else if (trigger.IsArgumentDefined("life"))
-                    message.BanEndDate = null;
                 else
                 {
                     trigger.ReplyError("No ban duration given");
