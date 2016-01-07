@@ -36,10 +36,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         private int m_guildEarnedExp;
         private short m_earnedHonor;
         private int m_weaponUses;
-        private bool m_isUsingWeapon;
-
-
-
 
         public CharacterFighter(Character character, FightTeam team)
             : base(team)
@@ -186,7 +182,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_WEAPON);
 
             var random = new AsyncRandom();
-            var critical = RollCriticalDice(weaponTemplate);
+            var critical = Character.CriticalMode ? FightSpellCastCriticalEnum.CRITICAL_HIT : RollCriticalDice(weaponTemplate);
 
             switch (critical)
             {
@@ -301,12 +297,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (Character.GodMode)
                 damage.Amount = short.MaxValue;
 
-            var result = base.CalculateDamageBonuses(damage);
-
             if (m_isUsingWeapon)
-                damage.Amount += m_criticalWeaponBonus + Stats[PlayerFields.WeaponDamageBonus].TotalSafe;
+                damage.Amount += m_criticalWeaponBonus;
 
-            return result;
+            return base.CalculateDamageBonuses(damage);
         }
 
         public bool CanUseWeapon(Cell cell, WeaponTemplate weapon)
