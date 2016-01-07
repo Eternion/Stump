@@ -309,6 +309,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Constructor
 
+        protected bool m_isUsingWeapon;
+
         protected FightActor(FightTeam team)
         {
             Team = team;
@@ -1075,41 +1077,46 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             int bonusPercent = Stats[PlayerFields.DamageBonusPercent].TotalSafe;
             int mult = Stats[PlayerFields.DamageMultiplicator].TotalSafe;
             int bonus = Stats[PlayerFields.DamageBonus].TotalSafe;
+            int criticalBonus = 0;
             int phyMgkBonus = 0;
             int stats = 0;
             int eltBonus = 0;
-            
+            int weaponBonus = 0;
+
+            if (m_isUsingWeapon)
+                weaponBonus = Stats[PlayerFields.WeaponDamageBonus].TotalSafe;
+
             switch (damage.School)
             {
                 case EffectSchoolEnum.Neutral:
                     stats = Stats[PlayerFields.Strength].TotalSafe;
                     phyMgkBonus = Stats[PlayerFields.PhysicalDamage].TotalSafe;
-                    eltBonus = Stats[PlayerFields.NeutralDamageBonus].TotalSafe;
+                    eltBonus = Stats[PlayerFields.NeutralDamageBonus].Total;
                     break;
                 case EffectSchoolEnum.Earth:
                     stats = Stats[PlayerFields.Strength].TotalSafe;
                     phyMgkBonus = Stats[PlayerFields.PhysicalDamage].TotalSafe;
-                    eltBonus = Stats[PlayerFields.EarthDamageBonus].TotalSafe;
+                    eltBonus = Stats[PlayerFields.EarthDamageBonus].Total;
                     break;
                 case EffectSchoolEnum.Air:
                     stats = Stats[PlayerFields.Agility].TotalSafe;
                     phyMgkBonus = Stats[PlayerFields.MagicDamage].TotalSafe;
-                    eltBonus = Stats[PlayerFields.AirDamageBonus].TotalSafe;
+                    eltBonus = Stats[PlayerFields.AirDamageBonus].Total;
                     break;
                 case EffectSchoolEnum.Water:
                     stats = Stats[PlayerFields.Chance].TotalSafe;
                     phyMgkBonus = Stats[PlayerFields.MagicDamage].TotalSafe;
-                    eltBonus = Stats[PlayerFields.WaterDamageBonus].TotalSafe;
+                    eltBonus = Stats[PlayerFields.WaterDamageBonus].Total;
                     break;
                 case EffectSchoolEnum.Fire:
                     stats = Stats[PlayerFields.Intelligence].TotalSafe;
                     phyMgkBonus = Stats[PlayerFields.MagicDamage].TotalSafe;
-                    eltBonus = Stats[PlayerFields.FireDamageBonus].TotalSafe;
+                    eltBonus = Stats[PlayerFields.FireDamageBonus].Total;
                     break;
             }
 
             if (damage.IsCritical)
-                bonus += Stats[PlayerFields.CriticalDamageBonus].TotalSafe;
+                criticalBonus += Stats[PlayerFields.CriticalDamageBonus].Total;
 
             if (damage.MarkTrigger is Glyph)
             {
@@ -1124,7 +1131,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (damage.Spell != null)
                 bonus += damage.Source.GetSpellBoost(damage.Spell);
 
-            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + mult * 100) / 100d + (bonus + phyMgkBonus + eltBonus)));
+            damage.Amount = (int)Math.Max(0, (damage.Amount * (100 + stats + bonusPercent + weaponBonus + mult * 100) / 100d + (bonus + criticalBonus + phyMgkBonus + eltBonus)));
 
             return damage;
         }

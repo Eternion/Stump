@@ -56,8 +56,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public override void Trigger(FightActor trigger)
         {
-            // Caster can't trigger his own glyph
-            if (trigger == Caster && !SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id))
+            // Allies can't trigger glyph
+            if (trigger.IsFriendlyWith(Caster) && !SPELLS_GLYPH_END_TURN.Contains(CastedSpell.Id))
                 return;
 
             NotifyTriggered(trigger, GlyphSpell);
