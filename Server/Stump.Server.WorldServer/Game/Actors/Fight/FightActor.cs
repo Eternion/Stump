@@ -1307,6 +1307,27 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             else if (spell.CriticalHitProbability != 0 && random.NextDouble() * 100 < spell.CriticalHitProbability + Stats[PlayerFields.CriticalHit].Total)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
+            if (this is CharacterFighter && ((CharacterFighter)this).Character.CriticalMode)
+                critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
+
+            return critical;
+        }
+
+        public virtual FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate weapon)
+        {
+            var random = new AsyncRandom();
+
+            var critical = FightSpellCastCriticalEnum.NORMAL;
+
+            if (weapon.CriticalHitProbability != 0 && random.NextDouble() * 100 < weapon.CriticalFailureProbability + Stats[PlayerFields.CriticalMiss])
+                critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
+            else if (weapon.CriticalHitProbability != 0 &&
+                     random.NextDouble() * 100 < weapon.CriticalHitProbability + Stats[PlayerFields.CriticalHit])
+                critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
+
+            if (this is CharacterFighter && ((CharacterFighter)this).Character.CriticalMode)
+                critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
+
             return critical;
         }
 

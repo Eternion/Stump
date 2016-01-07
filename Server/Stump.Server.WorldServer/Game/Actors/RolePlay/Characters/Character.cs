@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
     public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
         [Variable]
-        const ushort HonorLimit = 16000;
+        const ushort HonorLimit = 20000;
 
         readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -1423,7 +1423,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             get { return m_record.Honor; }
             set
             {
-                m_record.Honor = value > ExperienceManager.Instance.HighestGradeHonor ? ExperienceManager.Instance.HighestGradeHonor : value;
+                m_record.Honor = value;
                 if ((value > LowerBoundHonor && value < UpperBoundHonor))
                     return;
 
@@ -1483,7 +1483,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void AddHonor(ushort amount)
         {
-            Honor += (Honor + amount) >= HonorLimit ? HonorLimit : amount;
+            Honor += (Honor + amount) >= HonorLimit ? (ushort)(HonorLimit - Honor) : amount;
         }
 
         public void SubHonor(ushort amount)
@@ -1685,7 +1685,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         public void UnMute()
         {
             MuteUntil = null;
-            SendServerMessage("Vous avez été démuté.");
+            SendServerMessage("Vous avez été démuté.", Color.Red);
         }
 
         public bool IsMuted()
@@ -2585,7 +2585,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
             if (string.Equals(target.Client.IP, Client.IP))
-                return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
+                return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
 
             if (Level - target.Level > 20)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
