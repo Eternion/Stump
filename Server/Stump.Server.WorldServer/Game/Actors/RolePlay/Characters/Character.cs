@@ -2584,8 +2584,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (target.Map != Map || !Map.AllowAggression)
                 return FighterRefusedReasonEnum.WRONG_MAP;
 
-            if (string.Equals(target.Client.IP, Client.IP))
-                return FighterRefusedReasonEnum.FIGHTER_ACCEPTED;
+            if (string.Equals(target.Client.IP, Client.IP) && !IsGameMaster())
+                return FighterRefusedReasonEnum.MULTIACCOUNT_NOT_ALLOWED;
 
             if (Level - target.Level > 20)
                 return FighterRefusedReasonEnum.INSUFFICIENT_RIGHTS;
