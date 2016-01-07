@@ -72,7 +72,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
     public sealed class Character : Humanoid, IStatsOwner, IInventoryOwner, ICommandsUser
     {
         [Variable]
-        const ushort HonorLimit = 20000;
+        public static ushort HonorLimit = 20000;
 
         readonly Logger logger = LogManager.GetCurrentClassLogger();
 
