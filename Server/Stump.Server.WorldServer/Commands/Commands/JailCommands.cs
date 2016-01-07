@@ -44,28 +44,29 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 if (source != null)
                     message.BannerAccountId = source.Account.Id;
 
-                if (trigger.IsArgumentDefined("time"))
-                {
-                    var time = trigger.Get<int>("time");
-                    message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(time);
-
-                    target.Mute(TimeSpan.FromMinutes(time), source.Character);
-                    target.OpenPopup(string.Format("Vous avez été emprisonné et muté pendant {0} minutes par {1}", time, source.Character));
-                }
-                else
+                if (!trigger.IsArgumentDefined("time"))
                 {
                     trigger.ReplyError("No ban duration given");
                     return;
                 }
 
-                target.TeleportToJail();
-                target.Account.IsJailed = true;
+                var time = trigger.Get<int>("time");
+
+                message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(time);
                 message.Jailed = true;
 
                 IPCAccessor.Instance.SendRequest(message,
                     ok =>
+                    {
+                        target.Area.ExecuteInContext(() => target.TeleportToJail());
+                        target.Account.IsJailed = true;
+
+                        target.Mute(TimeSpan.FromMinutes(time), source.Character);
+                        target.OpenPopup(string.Format("Vous avez été emprisonné et muté pendant {0} minutes par {1}", time, source.Character.Name));
+
                         trigger.Reply("Account {0} jailed for {1} minutes. Reason : {2}", target.Account.Login,
-                            trigger.Get<int>("time"), reason),
+                            trigger.Get<int>("time"), reason);
+                    },
                     error => trigger.ReplyError("Account {0} not jailed : {1}", target.Account.Login, error.Message));
             }
         }
