@@ -338,7 +338,7 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private static void SpawnMerchants()
+        static void SpawnMerchants()
         {
             foreach (var merchant in from spawn in MerchantManager.Instance.GetMerchantSpawns() where spawn.Map != null select new Merchant(spawn))
             {
@@ -348,7 +348,7 @@ namespace Stump.Server.WorldServer.Game
             }
         }
 
-        private void UnSpawnMerchants()
+        void UnSpawnMerchants()
         {
             foreach (var merchant in MerchantManager.Instance.Merchants)
             {
