@@ -64,6 +64,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         Unknown_11, //X
 
         /* CUSTOM */
+        BeforeDamaged,
         AfterDamaged,
         OnTackled,
         OnMoved,
@@ -74,6 +75,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         AfterHeal,
         OnBuffEnded,
         OnBuffEndedTurnEnd,
+        BeforeRollCritical,
+        AfterRollCritical,
 
         Unknown,
 

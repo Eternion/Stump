@@ -479,6 +479,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnBeforeDamageInflicted(damage);
 
             damage.Source.TriggerBuffs(BuffTriggerType.BeforeAttack, damage);
+            TriggerBuffs(BuffTriggerType.BeforeDamaged, damage);
             TriggerBuffs(BuffTriggerType.OnDamaged, damage);
 
             OnDamageReducted(damage.Source, damage.Amount);

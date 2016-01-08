@@ -399,6 +399,22 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             set;
         }
 
+        FightSpellCastCriticalEnum m_forceCritical;
+        public FightSpellCastCriticalEnum ForceCritical
+        {
+            get
+            {
+                if (this is CharacterFighter && ((CharacterFighter)this).Character.CriticalMode)
+                    return FightSpellCastCriticalEnum.CRITICAL_HIT;
+
+                return m_forceCritical;
+            }
+            set
+            {
+                m_forceCritical = value;
+            }
+        }
+
         public virtual bool IsVisibleInTimeline
         {
             get { return true; }
@@ -759,8 +775,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
-            var character = (this as CharacterFighter);
-            var critical = (character != null && character.Character.CriticalMode) ? FightSpellCastCriticalEnum.CRITICAL_HIT : RollCriticalDice(spellLevel);
+            var critical =  RollCriticalDice(spellLevel);
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
             {
@@ -827,14 +842,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, this);
         }
 
-        private void TriggerDamageBuffs(Damage damage)
+        void TriggerDamageBuffs(Damage damage)
         {
             TriggerBuffs(BuffTriggerType.OnDamaged, damage);
-
-            if (damage.Source.IsEnnemyWith(this))
-                TriggerBuffs(BuffTriggerType.OnDamagedByEnemy, damage);
-            else
-                TriggerBuffs(BuffTriggerType.OnDamagedByAlly, damage);
+            TriggerBuffs(damage.Source.IsEnnemyWith(this) ? BuffTriggerType.OnDamagedByEnemy : BuffTriggerType.OnDamagedByAlly, damage);
 
             switch (damage.School)
             {
@@ -857,15 +868,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     TriggerBuffs(BuffTriggerType.OnDamagedByPush, damage);
                     break;
             }
-            if (damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1)
-                TriggerBuffs(BuffTriggerType.OnDamagedInCloseRange, damage);
-            else
-                TriggerBuffs(BuffTriggerType.OnDamagedInLongRange, damage);
 
-            if (damage.IsWeaponAttack)
-                TriggerBuffs(BuffTriggerType.OnDamagedByWeapon, damage);
-            else
-                TriggerBuffs(BuffTriggerType.OnDamagedBySpell, damage);
+            TriggerBuffs(damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1 ? BuffTriggerType.OnDamagedInCloseRange : BuffTriggerType.OnDamagedInLongRange, damage);
+            TriggerBuffs(damage.IsWeaponAttack ? BuffTriggerType.OnDamagedByWeapon : BuffTriggerType.OnDamagedBySpell, damage);
 
             if (damage.MarkTrigger is Trap)
                 TriggerBuffs(BuffTriggerType.OnDamagedByTrap, damage);
@@ -879,6 +884,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             OnBeforeDamageInflicted(damage);
             damage.Source.TriggerBuffs(BuffTriggerType.BeforeAttack, damage);
+            TriggerBuffs(BuffTriggerType.BeforeDamaged, damage);
 
             damage.GenerateDamages();
 
@@ -1297,24 +1303,30 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
         {
+            TriggerBuffs(BuffTriggerType.BeforeRollCritical, this);
+
             var random = new AsyncRandom();
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
 
-            if (spell.CriticalFailureProbability != 0 && random.NextDouble()*100 < spell.CriticalFailureProbability + Stats[PlayerFields.CriticalMiss].Total)
+            if (spell.CriticalFailureProbability != 0 && random.NextDouble() * 100 < spell.CriticalFailureProbability + Stats[PlayerFields.CriticalMiss].Total)
                 critical = FightSpellCastCriticalEnum.CRITICAL_FAIL;
 
             else if (spell.CriticalHitProbability != 0 && random.NextDouble() * 100 < spell.CriticalHitProbability + Stats[PlayerFields.CriticalHit].Total)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
-            if (this is CharacterFighter && ((CharacterFighter)this).Character.CriticalMode)
-                critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
+            if (ForceCritical != 0)
+                critical = ForceCritical;
+
+            TriggerBuffs(BuffTriggerType.AfterRollCritical, this);
 
             return critical;
         }
 
         public virtual FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate weapon)
         {
+            TriggerBuffs(BuffTriggerType.BeforeRollCritical, this);
+
             var random = new AsyncRandom();
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
@@ -1325,8 +1337,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                      random.NextDouble() * 100 < weapon.CriticalHitProbability + Stats[PlayerFields.CriticalHit])
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
-            if (this is CharacterFighter && ((CharacterFighter)this).Character.CriticalMode)
-                critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
+            if (ForceCritical != FightSpellCastCriticalEnum.NORMAL)
+                critical = ForceCritical;
+
+            TriggerBuffs(BuffTriggerType.AfterRollCritical, this);
 
             return critical;
         }
