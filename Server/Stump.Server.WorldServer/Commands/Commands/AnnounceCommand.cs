@@ -33,6 +33,10 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
             if (trigger.IsArgumentDefined("target"))
             {
+                formatMsg = trigger is GameTrigger
+                                ? string.Format("(WARNING) {0} : {1}", ((GameTrigger)trigger).Character.Name, msg)
+                                : string.Format("(WARNING) {0}", msg);
+
                 var target = trigger.Get<Character>("target");
                 target.SendServerMessage(formatMsg, color);
             }
