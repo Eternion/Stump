@@ -102,6 +102,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
 
                 target.Account.IsJailed = false;
                 target.Account.BanEndDate = null;
+                target.UnMute();
 
                 var target2 = target;
                 target.Area.ExecuteInContext(() => target2.Teleport(target2.Breed.GetStartPosition()));
