@@ -1337,7 +1337,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                      random.NextDouble() * 100 < weapon.CriticalHitProbability + Stats[PlayerFields.CriticalHit])
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
-            if (ForceCritical != FightSpellCastCriticalEnum.NORMAL)
+            if (ForceCritical != 0)
                 critical = ForceCritical;
 
             TriggerBuffs(BuffTriggerType.AfterRollCritical, this);

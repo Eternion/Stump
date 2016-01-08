@@ -2982,7 +2982,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             return true;
         }
 
-        private void CheckMerchantModeReconnection()
+        void CheckMerchantModeReconnection()
         {
            foreach (var merchant in MerchantManager.Instance.UnActiveMerchantFromAccount(Client.WorldAccount))
             {
