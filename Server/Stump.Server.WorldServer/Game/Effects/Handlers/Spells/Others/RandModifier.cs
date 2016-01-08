@@ -20,14 +20,29 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var target in GetAffectedActors())
             {
+                if (Dice.EffectId == EffectsEnum.Effect_RandDownModifier)
+                {
+                    AddTriggerBuff(target, true, BuffTriggerType.BeforeRollCritical, RollTrigger);
+                    AddTriggerBuff(target, true, BuffTriggerType.AfterRollCritical, RollTrigger);
+                }
+
                 AddTriggerBuff(target, true, Dice.EffectId == EffectsEnum.Effect_RandDownModifier ?
-                BuffTriggerType.BeforeAttack : BuffTriggerType.OnDamaged, DamageModifier);
+                BuffTriggerType.BeforeAttack : BuffTriggerType.BeforeDamaged, DamageModifier);
             }
 
             return true;
         }
 
-        private void DamageModifier(TriggerBuff buff, BuffTriggerType trigger, object token)
+        void RollTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        {
+            var actor = token as FightActor;
+            if (actor == null)
+                return;
+
+            actor.ForceCritical = trigger == BuffTriggerType.BeforeRollCritical ? FightSpellCastCriticalEnum.NORMAL : 0;
+        }
+
+        void DamageModifier(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)
