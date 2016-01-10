@@ -110,6 +110,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new AlignmentCriterion();
                 case AreaCriterion.Identifier:
                     return new AreaCriterion();
+                case BonusSetCriterion.Identifier:
+                    return new BonusSetCriterion();
                 case BonesCriterion.Identifier:
                     return new BonesCriterion();
                 case BreedCriterion.Identifier:
