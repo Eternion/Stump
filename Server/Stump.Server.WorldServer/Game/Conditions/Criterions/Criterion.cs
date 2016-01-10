@@ -100,6 +100,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             // switch are ugly but faster
             switch (name)
             {
+                case AchievementCriterion.Identifier:
+                    return new AchievementCriterion();
                 case AdminRightsCriterion.Identifier:
                     return new AdminRightsCriterion();
                 case AlignementLevelCriterion.Identifier:
@@ -108,6 +110,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new AlignmentCriterion();
                 case AreaCriterion.Identifier:
                     return new AreaCriterion();
+                case BonusSetCriterion.Identifier:
+                    return new BonusSetCriterion();
                 case BonesCriterion.Identifier:
                     return new BonesCriterion();
                 case BreedCriterion.Identifier:
