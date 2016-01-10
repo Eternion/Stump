@@ -96,19 +96,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return true;
         }
 
-        private static GameActionMarkCellsTypeEnum GetMarkShape(SpellShapeEnum shape)
-        {
-            switch (shape)
-            {
-                case SpellShapeEnum.G:
-                    return GameActionMarkCellsTypeEnum.CELLS_SQUARE;
-                case SpellShapeEnum.X:
-                    return GameActionMarkCellsTypeEnum.CELLS_CROSS;
-                default:
-                    return GameActionMarkCellsTypeEnum.CELLS_CIRCLE;
-            }
-        }
-
         private static Color GetTrapColorBySpell(Spell spell)
         {
             switch (spell.Id)
