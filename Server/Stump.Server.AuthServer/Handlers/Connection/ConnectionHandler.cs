@@ -98,6 +98,8 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
             }
 
+            SendCredentialsAcknowledgementMessage(client);
+
             client.Account = account;
             /* Check Sanctions */
             if (account.IsBanned && account.BanEndDate > DateTime.Now)
@@ -324,6 +326,11 @@ namespace Stump.Server.AuthServer.Handlers.Connection
         {
             if (world != null)
                 client.Send(new ServerStatusUpdateMessage(WorldServerManager.Instance.GetServerInformation(client, world)));
+        }
+
+        public static void SendCredentialsAcknowledgementMessage(AuthClient client)
+        {
+            client.Send(new CredentialsAcknowledgementMessage());
         }
 
         #endregion
