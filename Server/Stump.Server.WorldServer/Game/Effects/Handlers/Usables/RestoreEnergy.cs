@@ -31,9 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Usables
 
             var energy = (int)(integerEffect.Value * NumberOfUses);
             if ((Target.EnergyMax - Target.Energy) < energy)
-            {
                 energy = Target.EnergyMax - Target.Energy;
-            }
 
             UsedItems = (uint)Math.Ceiling((double)energy / integerEffect.Value);
             Target.Energy += (short)energy;
