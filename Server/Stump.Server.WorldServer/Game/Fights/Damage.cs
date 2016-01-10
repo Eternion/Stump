@@ -1,5 +1,5 @@
 ﻿using System;
-using Stump.Core.Threading;
+using Stump.Core.Mathematics;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -159,7 +159,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                     break;
                 default:
                 {
-                    var rand = new AsyncRandom();
+                    var rand = new CryptoRandom();
 
                     Amount = rand.Next(BaseMinDamages, BaseMaxDamages + 1);
                 }
