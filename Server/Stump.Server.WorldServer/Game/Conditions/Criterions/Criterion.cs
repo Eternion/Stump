@@ -100,6 +100,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
             // switch are ugly but faster
             switch (name)
             {
+                case AchievementCriterion.Identifier:
+                    return new AchievementCriterion();
                 case AdminRightsCriterion.Identifier:
                     return new AdminRightsCriterion();
                 case AlignementLevelCriterion.Identifier:
