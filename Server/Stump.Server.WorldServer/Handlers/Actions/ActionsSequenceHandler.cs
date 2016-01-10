@@ -17,5 +17,10 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         {
             client.Send(new SequenceEndMessage((short) lastSequenceType, entity.Id, (sbyte)sequenceType));
         }
+
+        public static void SendSequenceNumberRequestMessage(IPacketReceiver client)
+        {
+            client.Send(new SequenceNumberRequestMessage());
+        }
     }
 }

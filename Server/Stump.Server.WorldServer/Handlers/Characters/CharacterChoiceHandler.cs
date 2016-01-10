@@ -28,6 +28,7 @@ using Stump.Server.WorldServer.Handlers.Mounts;
 using Stump.Server.WorldServer.Handlers.PvP;
 using Stump.Server.WorldServer.Handlers.Shortcuts;
 using Stump.Server.WorldServer.Handlers.Startup;
+using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Handlers.Characters
 {
@@ -195,9 +196,9 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
             client.Character = new Character(character, client);
 
-            SendCharacterSelectedSuccessMessage(client);
-
             ContextHandler.SendNotificationListMessage(client, new[] { 0x7FFFFFFF });
+
+            SendCharacterSelectedSuccessMessage(client);
 
             if (client.Character.Inventory.Presets.Any())
                 InventoryHandler.SendInventoryContentAndPresetMessage(client);
@@ -205,15 +206,20 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 InventoryHandler.SendInventoryContentMessage(client);
 
             ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.GENERAL_SHORTCUT_BAR);
-            ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
-            //ContextHandler.SendSpellForgottenMessage(client);
 
             ContextRoleplayHandler.SendEmoteListMessage(client, client.Character.Emotes.Select(x => (byte)x));
-            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] { });
+
+            // Jobs
+            ContextRoleplayHandler.SendJobDescriptionMessage(client, client.Character);
+            ContextRoleplayHandler.SendJobExperienceMultiUpdateMessage(client, client.Character);
+            ContextRoleplayHandler.SendJobCrafterDirectorySettingsMessage(client, client.Character);
 
             PvPHandler.SendAlignmentRankUpdateMessage(client);
 
+            ChatHandler.SendEnabledChannelsMessage(client, new sbyte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13 }, new sbyte[] { });
+
             InventoryHandler.SendSpellListMessage(client, true);
+            ShortcutHandler.SendShortcutBarContentMessage(client, ShortcutBarEnum.SPELL_SHORTCUT_BAR);
 
             InitializationHandler.SendSetCharacterRestrictionsMessage(client, client.Character);
 
@@ -234,16 +240,12 @@ namespace Stump.Server.WorldServer.Handlers.Characters
                 MountHandler.SendMountXpRatioMessage(client, client.Character.Mount.GivenExperience);
             }
 
-            // jobs
-            ContextRoleplayHandler.SendJobDescriptionMessage(client, client.Character);
-            ContextRoleplayHandler.SendJobExperienceMultiUpdateMessage(client, client.Character);
-            ContextRoleplayHandler.SendJobCrafterDirectorySettingsMessage(client, client.Character);
-
             client.Character.SendConnectionMessages();
 
-            //InitializationHandler.SendOnConnectionEventMessage(client, 3);
+            //Don't know why ?
+            ActionsHandler.SendSequenceNumberRequestMessage(client);
 
-            //Start Cinematic(Doesn't work for now)
+            //Start Cinematic
             if ((DateTime.Now - client.Character.Record.CreationDate).TotalSeconds <= 30)
                 BasicHandler.SendCinematicMessage(client, 10);
 
@@ -364,7 +366,7 @@ namespace Stump.Server.WorldServer.Handlers.Characters
 
         public static void SendCharacterSelectedSuccessMessage(WorldClient client)
         {
-            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations(), true));
+            client.Send(new CharacterSelectedSuccessMessage(client.Character.GetCharacterBaseInformations(), false));
         }
 
         public static void SendCharacterSelectedForceMessage(IPacketReceiver client, int id)
