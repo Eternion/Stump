@@ -9,7 +9,7 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
 {
     public class BonusSetCriterion : Criterion
     {
-        public static string Identifier = "Pk";
+        public const string Identifier = "Pk";
 
         public int BonusCount;
 
