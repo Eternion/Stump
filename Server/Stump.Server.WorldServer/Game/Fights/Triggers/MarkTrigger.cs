@@ -120,5 +120,20 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public abstract bool DoesSeeTrigger(FightActor fighter);
         public abstract bool DecrementDuration();
         public abstract bool CanTrigger(FightActor actor);
+
+
+
+        protected static GameActionMarkCellsTypeEnum GetMarkShape(SpellShapeEnum shape)
+        {
+            switch (shape)
+            {
+                case SpellShapeEnum.G:
+                    return GameActionMarkCellsTypeEnum.CELLS_SQUARE;
+                case SpellShapeEnum.X:
+                    return GameActionMarkCellsTypeEnum.CELLS_CROSS;
+                default:
+                    return GameActionMarkCellsTypeEnum.CELLS_CIRCLE;
+            }
+        }
     }
 }

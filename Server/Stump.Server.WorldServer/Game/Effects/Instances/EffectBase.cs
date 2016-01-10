@@ -156,7 +156,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Instances
 
         public int Priority
         {
-            get{ return m_priority == 0 ? Template.EffectPriority : m_priority; }
+            get { return m_priority; } //m_priority == 0 ? Template.EffectPriority : m_priority; } NOT USED OBLIVIOUSLY
             set { m_priority = value; }
         }
 

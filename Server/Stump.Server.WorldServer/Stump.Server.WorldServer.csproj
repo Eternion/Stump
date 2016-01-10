@@ -310,11 +310,13 @@
     <Compile Include="Game\Arena\ArenaTeam.cs" />
     <Compile Include="Game\Arena\ArenaWaitingCharacter.cs" />
     <Compile Include="Game\Conditions\BoolOperator.cs" />
+    <Compile Include="Game\Conditions\Criterions\AchievementCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AdminRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AlignementLevelCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AlignmentCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\AreaCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BonesCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\BonusSetCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\HasOrnament.cs" />
