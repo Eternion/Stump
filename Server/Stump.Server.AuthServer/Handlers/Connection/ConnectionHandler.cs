@@ -86,7 +86,6 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             if (client.QueueShowed)
                 SendQueueStatusMessage(client, 0, 0); // close the popup
 
-
             /* Get corresponding account */
             Account account;
 
@@ -94,6 +93,14 @@ namespace Stump.Server.AuthServer.Handlers.Connection
             if (!CredentialManager.Instance.DecryptCredentials(out account, message))
             {
                 SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.WRONG_CREDENTIALS);
+                client.DisconnectLater(1000);
+                return;
+            }
+
+            /* Check ServerIP - AntiBot Mesure */
+            if (!message.serverIp.Contains(AuthServer.CustomHost)) //Will cause problem with NAT as CustomHost will not be the public server IP
+            {
+                SendIdentificationFailedMessage(client, IdentificationFailureReasonEnum.BANNED);
                 client.DisconnectLater(1000);
                 return;
             }

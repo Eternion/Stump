@@ -49,7 +49,7 @@ namespace Stump.Server.AuthServer
         [Variable]
         public static string ConnectionSwfPatch = "./swf_patchs/AuthPatch.swf";
 
-        private string m_host;
+        string m_host;
 
         [Variable(Priority = 10)]
         public static DatabaseConfiguration DatabaseConfiguration = new DatabaseConfiguration
@@ -147,6 +147,7 @@ namespace Stump.Server.AuthServer
 
             logger.Info("Start listening on port : " + Port + "...");
             m_host = HostAutoDefined ? IPAddress.Loopback.ToString() : CustomHost;
+
             ClientManager.Start(m_host, Port);
 
             IOTaskPool.Start();

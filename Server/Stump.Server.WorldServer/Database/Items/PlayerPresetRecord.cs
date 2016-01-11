@@ -31,7 +31,7 @@ namespace Stump.Server.WorldServer.Database.Items
             set;
         }
 
-        private int m_presetId;
+        int m_presetId;
 
         public int PresetId
         {
@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Database.Items
             }
         }
 
-        private int m_ownerId;
+        int m_ownerId;
 
         [Index]
         public int OwnerId
@@ -56,7 +56,7 @@ namespace Stump.Server.WorldServer.Database.Items
             }
         }
 
-        private int m_symbolId;
+        int m_symbolId;
 
         public int SymbolId
         {
@@ -75,7 +75,7 @@ namespace Stump.Server.WorldServer.Database.Items
             set;
         }
 
-        private byte[] m_serializedObjects;
+        byte[] m_serializedObjects;
 
         public byte[] SerializedObjects
         {
@@ -106,22 +106,16 @@ namespace Stump.Server.WorldServer.Database.Items
             IsDirty = true;
         }
 
-        public PresetItem GetPresetItem(int itemGuid)
-        {
-            return Objects.FirstOrDefault(x => x.objUid == itemGuid);
-        }
+        public PresetItem GetPresetItem(int itemGuid) => Objects.FirstOrDefault(x => x.objUid == itemGuid);
 
         public void BeforeSave(bool insert)
         {
             m_serializedObjects = Serialize();
         }
 
-        public Preset GetNetworkPreset()
-        {
-            return new Preset((sbyte)PresetId, (sbyte)SymbolId, false, Objects);
-        }
+        public Preset GetNetworkPreset() => new Preset((sbyte)PresetId, (sbyte)SymbolId, false, Objects);
 
-        private byte[] Serialize()
+        byte[] Serialize()
         {
             var buffer = new List<byte>();
 
@@ -139,7 +133,7 @@ namespace Stump.Server.WorldServer.Database.Items
             return buffer.ToArray();
         }
 
-        private static List<PresetItem> Deserialize(byte[] buffer)
+        static List<PresetItem> Deserialize(byte[] buffer)
         {
             var presetObjects = new List<PresetItem>();
 
@@ -148,12 +142,11 @@ namespace Stump.Server.WorldServer.Database.Items
             while (reader.BaseStream.Position < buffer.Length)
             {
                 var objUid = reader.ReadInt32();
-                var objGid = reader.ReadInt32();
+                var objGid = reader.ReadInt16();
                 var position = reader.ReadByte();
 
-                presetObjects.Add(new PresetItem(position, (short)objGid, objUid));
+                presetObjects.Add(new PresetItem(position, objGid, objUid));
             }
-
 
             return presetObjects.ToList();
         }
