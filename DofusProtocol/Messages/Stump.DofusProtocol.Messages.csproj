@@ -177,7 +177,6 @@
   <ItemGroup>
     <Compile Include="BooleanByteWrapper.cs" />
     <Compile Include="Custom\ClearIdentificationMessage.cs" />
-    <Compile Include="Custom\CustomTicketMessage.cs" />
     <Compile Include="Custom\ErrorMessage.cs" />
     <Compile Include="Custom\OverrideMessageAttribute.cs" />
     <Compile Include="Custom\RawDataMessageFixed.cs" />

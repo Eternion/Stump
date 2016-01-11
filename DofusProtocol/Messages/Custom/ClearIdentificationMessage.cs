@@ -15,18 +15,20 @@ namespace Stump.DofusProtocol.Messages.Custom
         public string username;
         public string password;
         public short serverId;
+        public string serverIp;
 
         public ClearIdentificationMessage()
         {
         }
 
-        public ClearIdentificationMessage(bool autoconnect, string lang, string username, string password, short serverId)
+        public ClearIdentificationMessage(bool autoconnect, string lang, string username, string password, short serverId, string serverIp)
         {
             this.autoconnect = autoconnect;
             this.lang = lang;
             this.username = username;
             this.password = password;
             this.serverId = serverId;
+            this.serverIp = serverIp;
         }
 
         public override void Serialize(IDataWriter writer)
@@ -39,6 +41,7 @@ namespace Stump.DofusProtocol.Messages.Custom
             writer.WriteUTF(username);
             writer.WriteUTF(password);
             writer.WriteShort(serverId);
+            writer.WriteUTF(serverIp);
         }
 
         public override void Deserialize(IDataReader reader)
@@ -50,6 +53,7 @@ namespace Stump.DofusProtocol.Messages.Custom
             username = reader.ReadUTF();
             password = reader.ReadUTF();
             serverId = reader.ReadShort();
+            serverIp = reader.ReadUTF();
         }
     }
 }
