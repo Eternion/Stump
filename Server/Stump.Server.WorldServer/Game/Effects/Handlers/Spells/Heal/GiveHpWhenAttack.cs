@@ -24,24 +24,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 if (integerEffect == null)
                     return false;
 
-                AddTriggerBuff(actor, true, BuffTriggerType.AfterDamaged, OnBuffTriggered);
+                AddTriggerBuff(actor, true, BuffTriggerType.BeforeDamaged, OnBuffTriggered);
             }
 
             return true;
         }
 
-        private void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
+        void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
         {
-            var integerEffect = GenerateEffect();
-
-            if (integerEffect == null)
-                return;
-
             var damage = token as Fights.Damage;
             if (damage == null)
                 return;
 
             buff.Target.Heal(damage.Amount, damage.Source);
+            damage.Amount = 0;
         }
     }
 

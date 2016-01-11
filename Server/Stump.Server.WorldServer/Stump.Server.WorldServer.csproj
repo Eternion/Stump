@@ -386,7 +386,7 @@
     <Compile Include="Game\Effects\Handlers\Spells\Targets\UnknownCriterion.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiplyDamage.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiply.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\Putsch.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerRemainingMP.cs" />
@@ -475,10 +475,8 @@
     <Compile Include="Game\Exchanges\Trades\TradeItem.cs" />
     <Compile Include="Game\Exchanges\Trades\Trader.cs" />
     <Compile Include="Game\Fights\Buffs\BuffTrigger.cs" />
-    <Compile Include="Game\Fights\Buffs\Customs\DamageSustainedBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\DodgeBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\FractionBuff.cs" />
-    <Compile Include="Game\Fights\Buffs\Customs\HealOrMultiplyBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />

@@ -1,19 +1,18 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using Stump.Core.Mathematics;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Game.Spells;
 using System;
-using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
-    [EffectHandler(EffectsEnum.Effect_DamageSustained)]
-    public class DamageSustained : SpellEffectHandler
+    [EffectHandler(EffectsEnum.Effect_HealOrMultiply)]
+    public class HealOrMultiply : SpellEffectHandler
     {
-        public DamageSustained(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public HealOrMultiply(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
         {
         }
@@ -34,10 +33,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (damage == null)
                 return;
 
-            if (damage.Spell != null && Caster.IsPoisonSpellCast(damage.Spell))
-                return;
-
-            damage.Amount = (int)Math.Round(damage.Amount * (Dice.DiceNum / 100.0));
+            if (new CryptoRandom().Next(0, 2) == 0)
+            {
+                buff.Target.Heal((int)Math.Round(damage.Amount * (Dice.Value / 100.0)), buff.Target);
+                damage.Amount = 0;
+            }
+            else
+                damage.Amount *= Dice.DiceNum;
         }
     }
 }
