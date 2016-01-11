@@ -926,15 +926,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 // removed
                 var reduction = CalculateArmorReduction(damage.School);
 
-                var damageSustainedBuff = GetBuffs(x => x is DamageSustainedBuff).FirstOrDefault() as DamageSustainedBuff;
-                if (damageSustainedBuff != null && !isPoisonSpell)
-                {
-                    var value = (int)Math.Round(damage.Amount * (damageSustainedBuff.Value / 100d)) - damage.Amount;
-
-                    reduction += value;
-                    damage.Amount += value;
-                }
-
                 if (isPoisonSpell)
                     reduction = 0;
 
@@ -977,23 +968,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     shieldDamages += Stats.Shield.TotalSafe;
                     damage.Amount -= Stats.Shield.TotalSafe;
                 }
-            }
-
-            //Heal Or Multiply
-            var healOrMultiplyBuff = GetBuffs(x => x is HealOrMultiplyBuff).FirstOrDefault() as HealOrMultiplyBuff;
-            if (healOrMultiplyBuff != null)
-            {
-                var newDamage = healOrMultiplyBuff.GetDamages(damage.Amount);
-
-                if (newDamage > 0)
-                    damage.Amount = newDamage;
-                else
-                {
-                    Heal(-newDamage, damage.Source, false);
-                    return 0;
-                }
-
-                permanentDamages = 0;
             }
 
             TriggerDamageBuffs(damage);
@@ -1546,12 +1520,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            if (!IsFighterTurn())
+            if (!IsFighterTurn() && buff is TriggerBuff)
                 buff.Duration++;
 
             m_buffList.Add(buff);
 
-            buff.Apply();
+            if (!(buff is DelayBuff))
+                buff.Apply();
+
             OnBuffAdded(buff);
 
             return true;
