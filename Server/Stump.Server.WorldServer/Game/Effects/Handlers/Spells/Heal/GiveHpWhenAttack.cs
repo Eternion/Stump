@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             return true;
         }
 
-        void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
+        void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)
@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             return true;
         }
 
-        private void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var integerEffect = GenerateEffect();
 

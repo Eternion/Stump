@@ -213,16 +213,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                                    short? customActionId = null)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, dispelable, (buff, type, token) => AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId));
+                return AddTriggerBuff(target, dispelable, (buff, triggerrer, type, token) => AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId, triggerrer));
             
             return AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId);
         }
 
         private Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
-                                    short? customActionId = null)
+                                    short? customActionId = null, FightActor caster = null)
         {
             var id = target.PopNextBuffId();
-            var buff = new StatBuff(id, target, Caster, Effect, Spell, value, caracteritic, Critical, dispelable,
+            var buff = new StatBuff(id, target, caster ?? Caster, Effect, Spell, value, caracteritic, Critical, dispelable,
                                     customActionId);
 
             target.AddBuff(buff);
@@ -265,16 +265,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public Buff AddStateBuff(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, dispelable, (buff, type, token) => AddStateBuffInternal(target, dispelable, bypassMaxStack, state));
+                return AddTriggerBuff(target, dispelable, (buff, triggerrer, type, token) => AddStateBuffInternal(target, dispelable, bypassMaxStack, state, triggerrer));
 
             return AddStateBuffInternal(target, dispelable, bypassMaxStack, state);
 
         }
 
-        private Buff AddStateBuffInternal(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state)
+        private Buff AddStateBuffInternal(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state, FightActor caster = null)
         {
             var id = target.PopNextBuffId();
-            var buff = new StateBuff(id, target, Caster, Dice, Spell, dispelable, state);
+            var buff = new StateBuff(id, target, caster ?? Caster, Dice, Spell, dispelable, state);
 
             target.AddBuff(buff, bypassMaxStack);
 

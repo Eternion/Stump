@@ -29,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             return true;
         }
 
-        private void PutschBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void PutschBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)

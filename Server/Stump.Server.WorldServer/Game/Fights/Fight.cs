@@ -1453,7 +1453,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
-            FighterPlaying.TriggerBuffs(BuffTriggerType.OnTurnBegin);
+            FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
             FighterPlaying.DecrementAllCastedBuffsDuration();
             DecrementGlyphDuration(FighterPlaying);
             TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);
@@ -1545,7 +1545,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             if (FighterPlaying.IsAlive())
             {
-                FighterPlaying.TriggerBuffs(BuffTriggerType.OnTurnEnd);
+                FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnEnd);
                 FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
                 TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnEnd);
             }
@@ -1905,10 +1905,10 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (path.MPCost > actor.MP)
                 path.CutPath(actor.MP + 1);
 
-            actor.TriggerBuffs(BuffTriggerType.OnTackled);
+            actor.TriggerBuffs(actor, BuffTriggerType.OnTackled);
 
             foreach (var tackler in tacklers)
-                tackler.TriggerBuffs(BuffTriggerType.OnTackle);
+                tackler.TriggerBuffs(tackler, BuffTriggerType.OnTackle);
 
             var handler = Tackled;
             if (handler != null)
@@ -1929,7 +1929,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 return;
 
             fighter.UseMP((short) path.MPCost);
-            fighter.TriggerBuffs(BuffTriggerType.OnMoved, path);
+            fighter.TriggerBuffs(fighter, BuffTriggerType.OnMoved, path);
         }
 
         protected virtual void OnPositionChanged(ContextActor actor, ObjectPosition objectPosition)

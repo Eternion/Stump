@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Stump.Core.Collections;
 using Stump.Core.Mathematics;
+using Stump.Core.Memory;
 using Stump.Core.Pool;
 using Stump.Core.Threading;
 using Stump.DofusProtocol.Enums;
@@ -170,7 +171,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 SpellHistory.RegisterCastedSpell(spell.CurrentSpellLevel, Fight.GetOneFighter(target));
 
             if (critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
-                TriggerBuffs(BuffTriggerType.OnCriticalHit);
+                TriggerBuffs(this, BuffTriggerType.OnCriticalHit);
 
 
             var handler = SpellCasted;
@@ -397,22 +398,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             get;
             set;
-        }
-
-        FightSpellCastCriticalEnum m_forceCritical;
-        public FightSpellCastCriticalEnum ForceCritical
-        {
-            get
-            {
-                if (this is CharacterFighter && ((CharacterFighter)this).Character.CriticalMode)
-                    return FightSpellCastCriticalEnum.CRITICAL_HIT;
-
-                return m_forceCritical;
-            }
-            set
-            {
-                m_forceCritical = value;
-            }
         }
 
         public virtual bool IsVisibleInTimeline
@@ -842,57 +827,57 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return InflictDirectDamage(damage, this);
         }
 
-        void TriggerDamageBuffs(Damage damage)
+        private void TriggerDamageBuffs(Damage damage)
         {
-            TriggerBuffs(BuffTriggerType.OnDamaged, damage);
-            TriggerBuffs(damage.Source.IsEnnemyWith(this) ? BuffTriggerType.OnDamagedByEnemy : BuffTriggerType.OnDamagedByAlly, damage);
+            TriggerBuffs(damage.Source, BuffTriggerType.OnDamaged, damage);
+            TriggerBuffs(damage.Source, damage.Source.IsEnnemyWith(this) ? BuffTriggerType.OnDamagedByEnemy : BuffTriggerType.OnDamagedByAlly, damage);
 
             switch (damage.School)
             {
                 case EffectSchoolEnum.Neutral:
-                    TriggerBuffs(BuffTriggerType.OnDamagedNeutral, damage);
+                    TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedNeutral, damage);
                     break;
                 case EffectSchoolEnum.Earth:
-                    TriggerBuffs(BuffTriggerType.OnDamagedEarth, damage);
+                    TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedEarth, damage);
                     break;
                 case EffectSchoolEnum.Water:
-                    TriggerBuffs(BuffTriggerType.OnDamagedWater, damage);
+                    TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedWater, damage);
                     break;
                 case EffectSchoolEnum.Air:
-                    TriggerBuffs(BuffTriggerType.OnDamagedAir, damage);
+                    TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedAir, damage);
                     break;
                 case EffectSchoolEnum.Fire:
-                    TriggerBuffs(BuffTriggerType.OnDamagedFire, damage);
+                    TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedFire, damage);
                     break;
                 case EffectSchoolEnum.Pushback:
-                    TriggerBuffs(BuffTriggerType.OnDamagedByPush, damage);
+                    TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByPush, damage);
                     break;
             }
 
-            TriggerBuffs(damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1 ? BuffTriggerType.OnDamagedInCloseRange : BuffTriggerType.OnDamagedInLongRange, damage);
-            TriggerBuffs(damage.IsWeaponAttack ? BuffTriggerType.OnDamagedByWeapon : BuffTriggerType.OnDamagedBySpell, damage);
+            TriggerBuffs(damage.Source, damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1 ? BuffTriggerType.OnDamagedInCloseRange : BuffTriggerType.OnDamagedInLongRange, damage);
+            TriggerBuffs(damage.Source, damage.IsWeaponAttack ? BuffTriggerType.OnDamagedByWeapon : BuffTriggerType.OnDamagedBySpell, damage);
 
             if (damage.MarkTrigger is Trap)
-                TriggerBuffs(BuffTriggerType.OnDamagedByTrap, damage);
+                TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByTrap, damage);
 
             if (damage.MarkTrigger is Glyph)
-                TriggerBuffs(BuffTriggerType.OnDamagedByGlyph, damage);
+                TriggerBuffs(damage.Source, BuffTriggerType.OnDamagedByGlyph, damage);
 
         }
 
         public virtual int InflictDamage(Damage damage)
         {
             OnBeforeDamageInflicted(damage);
-            damage.Source.TriggerBuffs(BuffTriggerType.BeforeAttack, damage);
-            TriggerBuffs(BuffTriggerType.BeforeDamaged, damage);
+            damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.BeforeAttack, damage);
+            TriggerBuffs(damage.Source, BuffTriggerType.BeforeDamaged, damage);
 
             damage.GenerateDamages();
 
             if (HasState((int)SpellStatesEnum.INVULNÉRABLE_56))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
-                damage.Source.TriggerBuffs(BuffTriggerType.AfterAttack, damage);
-                TriggerBuffs(BuffTriggerType.AfterDamaged, damage);
+                damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
+                TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
                 return 0;
             }
 
@@ -995,17 +980,17 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             OnDamageInflicted(damage);
 
             if (damage.Source != null)
-                damage.Source.TriggerBuffs(BuffTriggerType.AfterAttack, damage);
+                damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
 
-            TriggerBuffs(BuffTriggerType.AfterDamaged, damage);
+            TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
 
             return damage.Amount;
         }
 
         public virtual int HealDirect(int healPoints, FightActor from)
         {
-            TriggerBuffs(BuffTriggerType.OnHealed);
-            from.TriggerBuffs(BuffTriggerType.OnHeal);
+            TriggerBuffs(from, BuffTriggerType.OnHealed);
+            from.TriggerBuffs(from, BuffTriggerType.OnHeal);
 
             if (HasState((int)SpellStatesEnum.INSOIGNABLE))
             {
@@ -1020,8 +1005,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnLifePointsChanged(healPoints, 0, 0, from, EffectSchoolEnum.Unknown);
 
-            TriggerBuffs(BuffTriggerType.AfterHealed);
-            from.TriggerBuffs(BuffTriggerType.AfterHeal);
+            TriggerBuffs(from, BuffTriggerType.AfterHealed);
+            from.TriggerBuffs(from, BuffTriggerType.AfterHeal);
 
             return healPoints;
         }
@@ -1277,8 +1262,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
         {
-            TriggerBuffs(BuffTriggerType.BeforeRollCritical, this);
-
             var random = new AsyncRandom();
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
@@ -1289,18 +1272,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             else if (spell.CriticalHitProbability != 0 && random.NextDouble() * 100 < spell.CriticalHitProbability + Stats[PlayerFields.CriticalHit].Total)
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
-            if (ForceCritical != 0)
-                critical = ForceCritical;
+            var token = new Ref<FightSpellCastCriticalEnum>(critical);
+            TriggerBuffs(this, BuffTriggerType.AfterRollCritical, token);
 
-            TriggerBuffs(BuffTriggerType.AfterRollCritical, this);
+            critical = token.Target;
 
             return critical;
         }
 
         public virtual FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate weapon)
         {
-            TriggerBuffs(BuffTriggerType.BeforeRollCritical, this);
-
             var random = new AsyncRandom();
 
             var critical = FightSpellCastCriticalEnum.NORMAL;
@@ -1311,10 +1292,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                      random.NextDouble() * 100 < weapon.CriticalHitProbability + Stats[PlayerFields.CriticalHit])
                 critical = FightSpellCastCriticalEnum.CRITICAL_HIT;
 
-            if (ForceCritical != 0)
-                critical = ForceCritical;
+            var token = new Ref<FightSpellCastCriticalEnum>(critical);
+            TriggerBuffs(this, BuffTriggerType.AfterRollCritical, token);
 
-            TriggerBuffs(BuffTriggerType.AfterRollCritical, this);
+            critical = token.Target;
 
             return critical;
         }
@@ -1520,9 +1501,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            if (!IsFighterTurn() && buff is TriggerBuff)
-                buff.Duration++;
-
             m_buffList.Add(buff);
 
             if (!(buff is DelayBuff))
@@ -1578,12 +1556,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
         }
 
-        public void TriggerBuffs(BuffTriggerType trigger, object token = null)
+        public void TriggerBuffs(FightActor triggerer, BuffTriggerType trigger, object token = null)
         {
             foreach (var triggerBuff in m_buffList.OfType<TriggerBuff>().Where(buff => buff.ShouldTrigger(trigger, token)).ToArray())
             {
                 Fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
-                triggerBuff.Apply(trigger, token);
+                triggerBuff.Apply(triggerer, trigger, token);
                 Fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
             }
         }
@@ -1595,7 +1573,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             foreach (var buff in buffsToRemove)
             {
                 if (buff is TriggerBuff && ( buff as TriggerBuff ).ShouldTrigger(BuffTriggerType.OnBuffEnded))
-                    (buff as TriggerBuff).Apply(BuffTriggerType.OnBuffEnded);
+                    (buff as TriggerBuff).Apply(this, BuffTriggerType.OnBuffEnded);
 
                 if (!(buff is TriggerBuff && ( buff as TriggerBuff ).ShouldTrigger(BuffTriggerType.OnBuffEndedTurnEnd)))
                     RemoveBuff(buff);
@@ -1607,7 +1585,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             foreach (var buff in m_buffList.OfType<TriggerBuff>().Where(entry => entry.Duration <= 0 && 
                 entry.ShouldTrigger(BuffTriggerType.OnBuffEndedTurnEnd)).ToArray())
             {
-                buff.Apply(BuffTriggerType.OnBuffEndedTurnEnd);
+                buff.Apply(this, BuffTriggerType.OnBuffEndedTurnEnd);
                 RemoveBuff(buff);
             }
         }
@@ -1783,16 +1761,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             m_states.Add(state);
 
-            TriggerBuffs(BuffTriggerType.OnStateAdded);
-            TriggerBuffs(BuffTriggerType.OnSpecificStateAdded, state.Id);
+            TriggerBuffs(this, BuffTriggerType.OnStateAdded);
+            TriggerBuffs(this, BuffTriggerType.OnSpecificStateAdded, state.Id);
         }
 
         public void RemoveState(SpellState state)
         {
             m_states.Remove(state);
 
-            TriggerBuffs(BuffTriggerType.OnStateRemoved);
-            TriggerBuffs(BuffTriggerType.OnSpecificStateRemoved, state.Id);
+            TriggerBuffs(this, BuffTriggerType.OnStateRemoved);
+            TriggerBuffs(this, BuffTriggerType.OnSpecificStateRemoved, state.Id);
         }
 
         public bool HasState(int stateId)

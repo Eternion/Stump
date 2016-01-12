@@ -290,6 +290,7 @@
     <Compile Include="Mathematics\CryptoRandom.cs" />
     <Compile Include="Mathematics\FastRandom.cs" />
     <Compile Include="Mathematics\MathExtensions.cs" />
+    <Compile Include="Memory\Ref.cs" />
     <Compile Include="Memory\SafeGCHandle.cs" />
     <Compile Include="Memory\WeakCollection.cs" />
     <Compile Include="Memory\WeakReference.cs" />

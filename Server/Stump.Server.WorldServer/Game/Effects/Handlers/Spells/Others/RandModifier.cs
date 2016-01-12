@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Enums;
+﻿using Stump.Core.Memory;
+using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -22,7 +23,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             {
                 if (Dice.EffectId == EffectsEnum.Effect_RandDownModifier)
                 {
-                    AddTriggerBuff(target, true, BuffTriggerType.BeforeRollCritical, RollTrigger);
                     AddTriggerBuff(target, true, BuffTriggerType.AfterRollCritical, RollTrigger);
                 }
 
@@ -33,16 +33,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             return true;
         }
 
-        void RollTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void RollTrigger(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
-            var actor = token as FightActor;
-            if (actor == null)
-                return;
-
-            actor.ForceCritical = trigger == BuffTriggerType.BeforeRollCritical ? FightSpellCastCriticalEnum.NORMAL : 0;
+            var @ref = token as Ref<FightSpellCastCriticalEnum>;
+            if (@ref != null)
+                @ref.Target = FightSpellCastCriticalEnum.NORMAL;
         }
 
-        void DamageModifier(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void DamageModifier(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)

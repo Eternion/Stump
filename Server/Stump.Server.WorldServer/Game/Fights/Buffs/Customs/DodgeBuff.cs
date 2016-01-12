@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
                 Target.RemoveBuff(buff);*/
         }
 
-        private void EvasionBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void EvasionBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var damage = token as Damage;
             if (damage == null)

@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 }
 
 
-                target.TriggerBuffs(BuffTriggerType.OnAPLost);
+                target.TriggerBuffs(target, BuffTriggerType.OnAPLost);
             }
 
             return true;

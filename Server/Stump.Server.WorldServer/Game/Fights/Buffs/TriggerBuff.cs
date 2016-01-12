@@ -7,7 +7,7 @@ using Stump.Server.WorldServer.Game.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
-    public delegate void TriggerBuffApplyHandler(TriggerBuff buff, BuffTriggerType trigger, object token);
+    public delegate void TriggerBuffApplyHandler(TriggerBuff buff, FightActor trigerrer, BuffTriggerType trigger, object token);
     public delegate void TriggerBuffRemoveHandler(TriggerBuff buff);
 
     public class TriggerBuff : Buff
@@ -127,17 +127,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         {
         }
 
-        public void Apply(BuffTriggerType trigger, object token)
+        public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)
         {
             if (ApplyTrigger != null)
-                ApplyTrigger(this, trigger, token);
+                ApplyTrigger(this, fighterTrigger, trigger, token);
         }
 
 
-        public void Apply(BuffTriggerType trigger)
+        public void Apply(FightActor fighterTrigger, BuffTriggerType trigger)
         {
             if (ApplyTrigger != null)
-                ApplyTrigger(this, trigger, Token);
+                ApplyTrigger(this, fighterTrigger, trigger, Token);
         }
         
 

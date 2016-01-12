@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             return true;
         }
 
-        private static void HealBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private static void HealBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var integerEffect = buff.GenerateEffect();
 

@@ -47,7 +47,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             Handlers[3].Apply(); //Push
         }
 
-        void BuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        void BuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             Handlers[1].Apply();
         }

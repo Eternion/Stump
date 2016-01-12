@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Sram
             }
         }
 
-        private void ChakraConcentrationBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void ChakraConcentrationBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var damage = token as Damage;
             if (damage == null || !(damage.MarkTrigger is Trap))

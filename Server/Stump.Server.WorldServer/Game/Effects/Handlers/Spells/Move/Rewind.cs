@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             return true;
         }
 
-        public void TriggerBuffApply(TriggerBuff buff, BuffTriggerType trigger, object token)
+        public void TriggerBuffApply(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var dstCell = buff.Target.TurnStartPosition.Cell;
             var fighter = Fight.GetOneFighter(dstCell);
