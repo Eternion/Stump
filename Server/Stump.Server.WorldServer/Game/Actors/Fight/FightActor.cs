@@ -1056,7 +1056,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             int bonusPercent = Stats[PlayerFields.DamageBonusPercent].TotalSafe;
             int mult = Stats[PlayerFields.DamageMultiplicator].TotalSafe;
-            int bonus = Stats[PlayerFields.DamageBonus].TotalSafe;
+            int bonus = Stats[PlayerFields.DamageBonus].Total;
             int criticalBonus = 0;
             int phyMgkBonus = 0;
             int stats = 0;

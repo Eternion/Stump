@@ -27,8 +27,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             base.Initialize();
 
             // 0 to 3 rounds
-            CastRound = new Random().Next(0, 4);
-            Handlers = Handlers.Where(entry => entry.Effect.Duration == CastRound || !(entry is DirectDamage)).ToArray();
+            CastRound = new Random().Next(1, 4);
+            Handlers = Handlers.Where(entry => entry.Effect.Delay == CastRound || !(entry is DirectDamage)).ToArray();
 
             var target = Fight.GetOneFighter(TargetedCell);
 
