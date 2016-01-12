@@ -126,9 +126,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             if (!IsGhost())
             {
                 var energyGain = (short)(DateTime.Now - Record.LastUsage.Value).TotalMinutes;
+  
+                energyGain = (short)((Energy + energyGain) > EnergyMax ? (EnergyMax - Energy) : energyGain);
+
                 if (energyGain <= 0)
                     return;
-                energyGain = (short)((Energy + energyGain) > EnergyMax ? (EnergyMax - Energy) : energyGain);
 
                 Energy += energyGain;
 

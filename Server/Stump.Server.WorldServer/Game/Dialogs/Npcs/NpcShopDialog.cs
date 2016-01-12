@@ -112,9 +112,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 return false;
             }
 
-            BasicHandler.SendTextInformationMessage(Character.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE,
-                                                    21, amount, itemId);
-
             var item = ItemManager.Instance.CreatePlayerItem(Character, itemId, amount, MaxStats || itemToSell.MaxStats);
 
             //Todo: Find better way to assign Mount Effects
@@ -127,11 +124,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
             if (Token != null)
             {
                 Character.Inventory.UnStackItem(Character.Inventory.TryGetItem(Token), finalPrice);
-                // decrease performance, not the right way to fix it
-                /*WorldServer.Instance.IOTaskPool.AddMessage(() =>
-                {
-                    Character.Inventory.Save();
-                });*/
             }
             else
             {
@@ -151,7 +143,6 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Npcs
                 if (token == null || token.Stack < item.Price * amount)
                     return false;
             }
-
             else
             {
                 if (Character.Inventory.Kamas < item.Price * amount)
