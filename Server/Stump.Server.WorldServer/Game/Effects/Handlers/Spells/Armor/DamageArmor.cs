@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
             return true;
         }
 
-        public static void ApplyArmorBuff(TriggerBuff buff, BuffTriggerType trigger, object token)
+        public static void ApplyArmorBuff(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)

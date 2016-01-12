@@ -65,7 +65,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             }
         }
 
-        private void StealHpBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void StealHpBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             StealHp(buff.Target);
         }

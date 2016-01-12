@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             return true;
         }
 
-        private void OnActorAttacked(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void OnActorAttacked(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
             var currentBonus = m_buffs.Where(entry => entry.Item2.Target == buff.Target && entry.Item1 == Fight.TimeLine.RoundNumber).Sum(entry => entry.Item2.Value);
             var limit = Dice.DiceFace;

@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             return true;
         }
 
-        private static void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private static void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var damages = new Fights.Damage(buff.Dice, EffectSchoolEnum.Unknown, buff.Caster, buff.Spell, buff.Target.Cell)
             {

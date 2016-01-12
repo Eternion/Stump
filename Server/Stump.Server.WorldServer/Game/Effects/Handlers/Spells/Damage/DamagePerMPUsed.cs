@@ -30,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             return true;
         }
 
-        private void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var usedMP = buff.Target.UsedMP;
             if (usedMP <= 0)

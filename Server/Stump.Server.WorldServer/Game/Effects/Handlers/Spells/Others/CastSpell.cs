@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         }
 
 
-        private static void DefaultBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private static void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }

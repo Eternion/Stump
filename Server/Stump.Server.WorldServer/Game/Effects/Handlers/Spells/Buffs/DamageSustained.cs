@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             return true;
         }
 
-        void OnBuffTriggered(TriggerBuff buff, BuffTriggerType trigger, object token)
+        void OnBuffTriggered(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)

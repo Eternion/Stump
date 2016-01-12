@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
             target.Cell = endCell;
             target.OnActorMoved(Caster, false);
-            target.TriggerBuffs(BuffTriggerType.OnPush);
+            Caster.TriggerBuffs(Caster, BuffTriggerType.OnPush);
 
             if (target.IsCarrying())
                 target.ThrowActor(Map.Cells[startCell.Id], true);

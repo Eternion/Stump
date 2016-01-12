@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Monsters
             Caster.AddBuff(buff);
         }
 
-        private void SpellBuffTrigger(TriggerBuff buff, BuffTriggerType trigger, object token)
+        private void SpellBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)

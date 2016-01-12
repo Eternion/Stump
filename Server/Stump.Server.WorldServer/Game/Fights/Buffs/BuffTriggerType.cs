@@ -75,7 +75,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         AfterHeal,
         OnBuffEnded,
         OnBuffEndedTurnEnd,
-        BeforeRollCritical,
         AfterRollCritical,
 
         Unknown,

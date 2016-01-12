@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             return true;
         }
 
-        public void TriggerBuffApply(TriggerBuff buff, BuffTriggerType trigger, object token)
+        public void TriggerBuffApply(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var target = buff.Target;
 
@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             damage.Amount = 0;
         }
 
-        public void PostTriggerBuffApply(TriggerBuff buff, BuffTriggerType trigger, object token)
+        public void PostTriggerBuffApply(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var target = buff.Target;
 

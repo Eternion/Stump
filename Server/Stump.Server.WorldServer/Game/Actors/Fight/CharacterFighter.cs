@@ -7,6 +7,7 @@ using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Database.Items.Templates;
+using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
@@ -291,6 +292,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return result;
         }
 
+        public override FightSpellCastCriticalEnum RollCriticalDice(SpellLevelTemplate spell)
+        {
+            return Character.CriticalMode ? FightSpellCastCriticalEnum.CRITICAL_HIT : base.RollCriticalDice(spell);
+        }
+
+        public override FightSpellCastCriticalEnum RollCriticalDice(WeaponTemplate spell)
+        {
+            return Character.CriticalMode ? FightSpellCastCriticalEnum.CRITICAL_HIT : base.RollCriticalDice(spell);
+        }
 
         public override Damage CalculateDamageBonuses(Damage damage)
         {
@@ -478,14 +488,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             damage.GenerateDamages();
             OnBeforeDamageInflicted(damage);
 
-            damage.Source.TriggerBuffs(BuffTriggerType.BeforeAttack, damage);
-            TriggerBuffs(BuffTriggerType.BeforeDamaged, damage);
-            TriggerBuffs(BuffTriggerType.OnDamaged, damage);
+            damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.BeforeAttack, damage);
+            TriggerBuffs(damage.Source, BuffTriggerType.BeforeDamaged, damage);
+            TriggerBuffs(damage.Source, BuffTriggerType.OnDamaged, damage);
 
             OnDamageReducted(damage.Source, damage.Amount);
 
-            damage.Source.TriggerBuffs(BuffTriggerType.AfterAttack, damage);
-            TriggerBuffs(BuffTriggerType.AfterDamaged, damage);
+            damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
+            TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
 
             OnDamageInflicted(damage);
 
