@@ -480,7 +480,6 @@
     <Compile Include="Game\Fights\Buffs\Customs\InvisibilityBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkinBuff.cs" />
     <Compile Include="Game\Fights\Buffs\Customs\SkipTurnBuff.cs" />
-    <Compile Include="Game\Fights\Buffs\DelayBuff.cs" />
     <Compile Include="Game\Fights\Buffs\EmptyBuff.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\BarbaricChallenge.cs" />
     <Compile Include="Game\Fights\Challenges\Custom\BlitzkriegChallenge.cs" />

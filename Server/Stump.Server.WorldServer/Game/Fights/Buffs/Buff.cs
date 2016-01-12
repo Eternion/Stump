@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -29,6 +27,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             CustomActionId = customActionId;
 
             Duration = (short)Effect.Duration;
+            Delay = (short)Effect.Delay;
+
             Efficiency = 1.0d;
         }
 
@@ -69,6 +69,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         }
 
         public short Duration
+        {
+            get;
+            set;
+        }
+
+        public short Delay
         {
             get;
             set;
@@ -126,6 +132,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         {
             if (Duration == -1) // Duration = -1 => unlimited buff
                 return false;
+
+            if (Delay > 0)
+            {
+                if (--Delay == 0)
+                    Apply();
+
+                return false;
+            }
 
             return --Duration == 0;
         }

@@ -38,6 +38,7 @@ using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -1438,10 +1439,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Buffs
 
-        private readonly Dictionary<Spell, short> m_buffedSpells = new Dictionary<Spell, short>(); 
-        private readonly UniqueIdProvider m_buffIdProvider = new UniqueIdProvider();
-        private readonly List<Buff> m_buffList = new List<Buff>();
-
+        readonly Dictionary<Spell, short> m_buffedSpells = new Dictionary<Spell, short>(); 
+        readonly UniqueIdProvider m_buffIdProvider = new UniqueIdProvider();
+        readonly List<Buff> m_buffList = new List<Buff>();
         public ReadOnlyCollection<Buff> Buffs => m_buffList.AsReadOnly();
 
         public int PopNextBuffId()
@@ -1471,27 +1471,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool BuffMaxStackReached(Buff buff)
         {
-            return buff.Spell.CurrentSpellLevel.MaxStack > 0 && 
-                buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => 
-                entry.Spell == buff.Spell &&
-                entry.Effect.EffectId == buff.Effect.EffectId &&
-                entry.GetType() == buff.GetType() &&
-                !(buff is DelayBuff));
+            return buff.Spell.CurrentSpellLevel.MaxStack > 0
+                && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell
+                && entry.Effect.EffectId == buff.Effect.EffectId
+                && entry.GetType() == buff.GetType()
+                && buff.Delay == 0);
         }
-
-        /*public bool AddBuff(Buff buff, bool freeIdIfFail = true, bool bypassMaxStack = false)
-        {
-            if (!AddBuff(buff, freeIdIfFail, bypassMaxStack))
-                return false;
-
-            if (!(buff is TriggerBuff) && !(buff is DelayBuff))
-                buff.Apply();
-
-            if (buff is TriggerBuff && (((TriggerBuff) buff).Trigger & BuffTriggerType.Instant) == BuffTriggerType.Instant)
-                buff.Apply();
-
-            return true;
-        }*/
 
         public bool AddBuff(Buff buff, bool bypassMaxStack = false)
         {
@@ -1503,7 +1488,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             m_buffList.Add(buff);
 
-            if (!(buff is DelayBuff))
+            if (buff.Delay == 0)
                 buff.Apply();
 
             OnBuffAdded(buff);
@@ -1513,7 +1498,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void RemoveBuff(Buff buff)
         {
-
             buff.Dispell();
             m_buffList.Remove(buff);
 
@@ -1579,7 +1563,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     RemoveBuff(buff);
             }
         }
-
         public void TriggerBuffsRemovedOnTurnEnd()
         {
             foreach (var buff in m_buffList.OfType<TriggerBuff>().Where(entry => entry.Duration <= 0 && 
