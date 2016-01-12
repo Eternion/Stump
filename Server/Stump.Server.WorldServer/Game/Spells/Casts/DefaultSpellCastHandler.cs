@@ -41,7 +41,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
             var groups = effects.GroupBy(x => x.Group);
 
-            foreach(var groupEffects in groups)
+            foreach (var groupEffects in groups)
             {
                 var rand = random.NextDouble();
                 double randSum = groupEffects.Sum(entry => entry.Random);
@@ -81,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             m_initialized = true;
 
             return true;
-       } 
+        }
 
         public override void Execute()
         {
@@ -90,35 +90,8 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
 
             foreach (var handler in Handlers)
             {
-                if (handler.Dice.Delay > 0)
-                {
-                    var affectedActors = handler.GetAffectedActors().ToArray();
-                    handler.SetAffectedActors(affectedActors);
-
-                    foreach (var target in affectedActors)
-                    {
-                        var id = target.PopNextBuffId();
-                        var buff = new DelayBuff(id, target, Caster, handler.Dice, Spell, false, false, BuffTrigger)
-                        {
-                            Duration = (short)handler.Dice.Delay,
-                            Token = handler
-                        };
-
-                        target.AddBuff(buff, bypassMaxStack: true);
-                    }
-                }
-                else
-                    handler.Apply();
+                handler.Apply();
             }
-        }
-
-        public void BuffTrigger(DelayBuff buff, object token)
-        {
-            if (Fight.State == FightState.Ended)
-                return;
-
-            if (token is SpellEffectHandler)
-                ((SpellEffectHandler) token).Apply();
         }
 
         public override IEnumerable<SpellEffectHandler> GetEffectHandlers()

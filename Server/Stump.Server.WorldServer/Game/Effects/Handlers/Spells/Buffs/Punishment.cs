@@ -52,7 +52,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
                 Spell, (short)bonus, caracteristic, false, true, Dice.DiceNum) 
-                {Duration = Dice.Value};
+                { Duration = Dice.Value };
 
             m_buffs.Add(new Tuple<int, StatBuff>(Fight.TimeLine.RoundNumber, statBuff));
 
