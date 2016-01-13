@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                foreach (var buff in actor.GetBuffs().ToArray().Where(buff => buff.Dispellable).Where(buff => buff.Duration > 0))
+                foreach (var buff in actor.GetBuffs().ToArray().Where(buff => buff.Dispellable).Where(buff => buff.Duration > 0 && buff.Delay == 0))
                 {
                     buff.Duration -= integerEffect.Value;
 
@@ -33,8 +33,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         actor.RemoveBuff(buff);
                 }
 
-                ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor,
-                    (short)-integerEffect.Value);
+                ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor, (short)-integerEffect.Value);
             }
 
             return true;

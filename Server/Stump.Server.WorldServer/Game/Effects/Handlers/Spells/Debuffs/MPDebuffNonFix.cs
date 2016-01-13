@@ -27,38 +27,30 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                short value;
+                short value = 0;
 
-                // Effect_LosingMP ignore resistance
-                //if (Effect.EffectId != EffectsEnum.Effect_LosingMP)
+                for (var i = 0; i < integerEffect.Value && value < actor.MP; i++)
                 {
-                    value = 0;
-
-                    for (var i = 0; i < integerEffect.Value && value < actor.MP; i++)
+                    if (actor.RollMPLose(Caster, value))
                     {
-                        if (actor.RollMPLose(Caster, value))
-                        {
-                            value++;
-                        }
+                        value++;
                     }
+                }
 
-                    var dodged = (short)( integerEffect.Value - value );
+                var dodged = (short)(integerEffect.Value - value);
 
-                    if (dodged > 0)
-                    {
-                        ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
-                            ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, actor, dodged);
-                    }
+                if (dodged > 0)
+                {
+                    ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
+                        ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, actor, dodged);
                 }
 
                 if (value <= 0)
                     return false;
 
-                if (Effect.Duration != 0)
+                if (Effect.Duration != 0 |Effect.Delay != 0)
                 {
                     AddStatBuff(actor, (short)(-value), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
-                    //ActionsHandler.SendGameActionFightPointsVariationMessage(Fight.Clients, ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, Caster, actor, (short)(-value));
-                    //actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, Caster, actor, (short)(-value));
                 }
                 else
                 {

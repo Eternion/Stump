@@ -38,34 +38,28 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         actor.RemoveBuff(buff);
                 }
 
-                short value;
+                short value = 0;
 
-                // Effect_RemoveAP ignore resistance
-                // if (Effect.EffectId != EffectsEnum.Effect_RemoveAP) // note : was i wrong ?
+                for (var i = 0; i < integerEffect.Value && value < actor.AP; i++)
                 {
-                    value = 0;
-
-                    for (var i = 0; i < integerEffect.Value && value < actor.AP; i++)
+                    if (actor.RollAPLose(Caster, value))
                     {
-                        if (actor.RollAPLose(Caster, value))
-                        {
-                            value++;
-                        }
+                        value++;
                     }
+                }
 
-                    var dodged = (short)(integerEffect.Value - value);
+                var dodged = (short)(integerEffect.Value - value);
 
-                    if (dodged > 0)
-                    {
-                        ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
-                            ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PA, Caster, target, dodged);
-                    }
+                if (dodged > 0)
+                {
+                    ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
+                        ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PA, Caster, target, dodged);
                 }
 
                 if (value <= 0)
                     continue;
 
-                if (Effect.Duration != 0)
+                if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
                     AddStatBuff(target, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
                 }
@@ -80,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
             return true;
         }
 
-        private void NotifySpellReflected(FightActor source)
+        void NotifySpellReflected(FightActor source)
         {
             ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }

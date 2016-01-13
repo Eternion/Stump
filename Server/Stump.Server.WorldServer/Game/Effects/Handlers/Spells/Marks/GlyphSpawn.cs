@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
             return true;
         }
 
-        private static Color GetGlyphColorBySpell(Spell spell)
+        static Color GetGlyphColorBySpell(Spell spell)
         {
             switch (spell.Id)
             {

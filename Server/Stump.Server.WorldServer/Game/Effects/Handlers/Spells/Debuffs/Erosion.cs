@@ -38,10 +38,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration != 0)
-                {
-                    AddStatBuff(actor, integerEffect.Value, PlayerFields.Erosion, true);
-                }
+                AddStatBuff(actor, integerEffect.Value, PlayerFields.Erosion, true);
             }
 
             return true;

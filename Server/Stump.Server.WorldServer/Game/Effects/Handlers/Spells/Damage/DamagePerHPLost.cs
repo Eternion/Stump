@@ -43,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             return true;
         }
 
-        private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
+        static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
         {
             switch (effect)
             {

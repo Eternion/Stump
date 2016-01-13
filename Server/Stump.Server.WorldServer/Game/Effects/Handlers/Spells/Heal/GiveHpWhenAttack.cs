@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             return true;
         }
 
-        private void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var integerEffect = GenerateEffect();
 
@@ -82,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             HealHpPercent(source, damage.Amount, integerEffect.Value);
         }
 
-        private static void HealHpPercent(FightActor actor, int amount, int percent)
+        static void HealHpPercent(FightActor actor, int amount, int percent)
         {
             var healAmount = (int)(amount * (percent / 100d));
 

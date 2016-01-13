@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration != 0)
+                if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.OnTurnBegin, OnBuffTriggered);
                 }
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             return true;
         }
 
-        private static void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        static void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var damages = new Fights.Damage(buff.Dice, EffectSchoolEnum.Unknown, buff.Caster, buff.Spell, buff.Target.Cell)
             {
