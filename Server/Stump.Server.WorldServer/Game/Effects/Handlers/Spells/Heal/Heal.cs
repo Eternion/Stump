@@ -28,7 +28,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    var triggerType = BuffTriggerType.OnTurnBegin;
+                    var triggerType = BuffTriggerType.Instant;
 
                     switch (Spell.Id)
                     {
