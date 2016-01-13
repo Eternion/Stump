@@ -20,13 +20,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
         public override bool Apply()
         {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return false;
+
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
-
                 var target = actor;
                 var buff = actor.GetBestReflectionBuff();
                 if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
@@ -38,40 +38,71 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         actor.RemoveBuff(buff);
                 }
 
-                short value = 0;
-
-                for (var i = 0; i < integerEffect.Value && value < actor.AP; i++)
-                {
-                    if (actor.RollAPLose(Caster, value))
-                    {
-                        value++;
-                    }
-                }
-
-                var dodged = (short)(integerEffect.Value - value);
-
-                if (dodged > 0)
-                {
-                    ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
-                        ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PA, Caster, target, dodged);
-                }
+                var value = RollAP(actor, integerEffect.Value);
 
                 if (value <= 0)
                     continue;
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddStatBuff(target, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
+                    AddTriggerBuff(actor, true, APBuffTrigger);
+
                 }
                 else
                 {
-                    target.LostAP(value, Caster);
-                }
+                    var dodged = (short)(integerEffect.Value - value);
 
-                target.TriggerBuffs(target, BuffTriggerType.OnAPLost);
+                    if (dodged > 0)
+                    {
+                        ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
+                            ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PA, Caster, target, dodged);
+                    }
+
+                    target.LostAP(value, Caster);
+                    target.TriggerBuffs(target, BuffTriggerType.OnAPLost);
+                }
             }
 
             return true;
+        }
+
+        short RollAP(FightActor actor, int maxValue)
+        {
+            short value = 0;
+
+            for (var i = 0; i < maxValue && value < actor.AP; i++)
+            {
+                if (actor.RollAPLose(Caster, value))
+                {
+                    value++;
+                }
+            }
+
+            return value;
+        }
+
+        void APBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return;
+
+            var value = RollAP(buff.Target, integerEffect.Value);
+
+            if (value <= 0)
+                return;
+
+            var dodged = (short)(integerEffect.Value - value);
+
+            if (dodged > 0)
+            {
+                ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
+                    ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, buff.Target, dodged);
+            }
+
+            AddStatBuff(buff.Target, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
+            buff.Target.TriggerBuffs(buff.Target, BuffTriggerType.OnMPLost);
         }
 
         void NotifySpellReflected(FightActor source)
