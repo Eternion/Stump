@@ -5,6 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
@@ -25,18 +26,38 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                foreach (var buff in actor.GetBuffs().ToArray().Where(buff => buff.Dispellable).Where(buff => buff.Duration > 0 && buff.Delay == 0))
+                if (Effect.Duration != 0 | Effect.Delay != 0)
                 {
-                    buff.Duration -= integerEffect.Value;
-
-                    if (buff.Duration <= 0)
-                        actor.RemoveBuff(buff);
+                    AddTriggerBuff(actor, true, TriggerBuff);
                 }
-
-                ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor, (short)-integerEffect.Value);
+                else
+                    ReduceBuffsDuration(actor, integerEffect.Value);
             }
 
             return true;
+        }
+
+        void ReduceBuffsDuration(FightActor actor, short duration)
+        {
+            foreach (var buff in actor.GetBuffs().Where(buff => buff.Dispellable).Where(buff => buff.Duration > 0 && buff.Delay == 0).ToArray())
+            {
+                buff.Duration -= duration;
+
+                if (buff.Duration <= 0)
+                    actor.RemoveBuff(buff);
+            }
+
+            ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor, (short)-duration);
+        }
+
+        void TriggerBuff(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return;
+
+            ReduceBuffsDuration(buff.Target, integerEffect.Value);
         }
     }
 }
