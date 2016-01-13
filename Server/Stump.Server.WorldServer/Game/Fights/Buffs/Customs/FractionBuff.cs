@@ -47,7 +47,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
             var values = Effect.GetValues();
-
             return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay), (sbyte)(Dispellable ? 0 : 1), (short)Spell.Id, Effect.Id, 0, (short)values[0], (short)values[1], (short)values[2], Delay);
         }
 
@@ -82,7 +81,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             return damage.Amount;
         }
 
-        private static int GetAverageArmor(FightActor[] actors, EffectSchoolEnum type)
+        static int GetAverageArmor(FightActor[] actors, EffectSchoolEnum type)
         {
             int specificArmor;
             switch (type)
@@ -109,7 +108,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             return specificArmor + (int)actors.Average(x => x.Stats[PlayerFields.GlobalDamageReduction].Total);
         }
         
-        private static int GetAveragePercentResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
+        static int GetAveragePercentResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
         {
             switch (type)
             {
@@ -143,7 +142,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             }
         }
 
-        private static int GetAverageFixResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
+        static int GetAverageFixResistance(FightActor[] actors, EffectSchoolEnum type, bool pvp)
         {
             switch (type)
             {
@@ -187,7 +186,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
     {
         public FractionDamage(int amount) : base(amount)
         {
-
         }
     }
 }
