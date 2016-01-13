@@ -1,7 +1,9 @@
+using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
@@ -137,8 +139,19 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             {
                 if (--Delay == 0)
                 {
-                    Apply();
-                    Caster.Fight.UpdateBuff(this);
+                    var fight = Caster.Fight;
+
+                    fight.StartSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
+
+                    var buffTrigger = this as TriggerBuff;
+                    if (buffTrigger != null && buffTrigger.ShouldTrigger(BuffTriggerType.Instant))
+                        buffTrigger.Apply(Target, BuffTriggerType.Instant);
+                    else
+                        Apply();
+
+                    fight.UpdateBuff(this);
+
+                    fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
                 }
 
                 return false;

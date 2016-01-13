@@ -122,7 +122,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             return Delay == 0 && Triggers.Any(x => x.Type == type && (x.Parameter == null || x.Parameter == token));
         }
 
-
         public override void Apply()
         {
         }
