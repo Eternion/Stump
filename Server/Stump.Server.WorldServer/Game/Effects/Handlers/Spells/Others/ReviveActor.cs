@@ -25,7 +25,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         public override bool CanApply()
         {
             return base.CanApply();
-            //return Caster.Team.GetLastDeadFighter() != null;
         }
 
         public override bool Apply()
@@ -45,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             return true;
         }
 
-        private void ReviveActor(FightActor actor, int heal)
+        void ReviveActor(FightActor actor, int heal)
         {
             var cell = TargetedCell;
             if (!Fight.IsCellFree(cell))
@@ -68,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             Caster.Dead -= OnCasterDead;
         }
 
-        private void HealHpPercent(FightActor actor, int percent)
+        void HealHpPercent(FightActor actor, int percent)
         {
             var healAmount = (int)(actor.MaxLifePoints * (percent / 100d));
 

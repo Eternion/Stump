@@ -57,15 +57,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return false;
                 }
 
-                // TODO clean this up
-                /*if (state.Id == (int)SpellStatesEnum.INVULNÉRABLE_56 || state.Id == (int)SpellStatesEnum.SAOUL)
-                {
-                    dispel = true;
-
-                    if (Spell.Id == (int)SpellIdEnum.INIMOUTH || Spell.Id == (int)SpellIdEnum.GLOURSOMPTUEUX || Spell.Id == (int)SpellIdEnum.MANSOMURE)
-                        dispel = false;
-                }*/
-
                 AddStateBuff(affectedActor, DISPELABLE_STATES.Contains((SpellStatesEnum)state.Id), BYPASSMAXSTACK_STATES.Contains((SpellStatesEnum)state.Id), state);
             }
 
