@@ -136,7 +136,10 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             if (Delay > 0)
             {
                 if (--Delay == 0)
+                {
                     Apply();
+                    Caster.Fight.UpdateBuff(this);
+                }
 
                 return false;
             }

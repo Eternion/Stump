@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             return true;
         }
 
-        private void ModifyDamages(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        void ModifyDamages(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)
