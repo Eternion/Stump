@@ -803,7 +803,6 @@
     <Compile Include="Game\Fights\Buffs\StateBuff.cs" />
     <Compile Include="Game\Fights\Buffs\StatBuff.cs" />
     <Compile Include="Game\Fights\Buffs\BuffTriggerType.cs" />
-    <Compile Include="Game\Fights\Buffs\WeaponBuff.cs" />
     <Compile Include="Game\Effects\EffectManager.cs" />
     <Compile Include="Game\Effects\EffectSchoolEnum.cs" />
     <Compile Include="Game\Effects\Handlers\DefaultEffectHandlerAttribute.cs" />
