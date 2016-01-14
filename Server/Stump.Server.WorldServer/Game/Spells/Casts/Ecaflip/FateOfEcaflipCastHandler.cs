@@ -40,16 +40,9 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             foreach (var handler in Handlers)
             {
                 handler.AddAffectedActor(affectedActors);
-                Handlers[1].AddTriggerBuff(affectedActors, true, BuffTriggerType.OnDamagedByPush, BuffTrigger);
             }
 
-            Handlers[0].Apply(); //Damages
-            Handlers[3].Apply(); //Push
-        }
-
-        void BuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
-        {
-            Handlers[1].Apply();
+            base.Execute();
         }
     }
 }

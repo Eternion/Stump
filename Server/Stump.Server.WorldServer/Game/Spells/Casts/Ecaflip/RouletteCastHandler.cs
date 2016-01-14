@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Ecaflip
             var effects = Critical ? SpellLevel.CriticalEffects : SpellLevel.Effects;
             Handlers = effects.Select(effect => EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, TargetedCell, Critical)).ToArray();
 
-            var random = new Random().Next(0, Handlers.Length);
+            var random = new Random().Next(0, Handlers.Length - 1);
             Handler = Handlers[random];
 
             m_initialized = true;

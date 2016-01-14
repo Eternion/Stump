@@ -6,8 +6,6 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Database.Spells;
-using Stump.Server.WorldServer.Handlers.Actions;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
@@ -36,34 +34,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                 if (Effect.EffectId == EffectsEnum.Effect_DisableState)
                 {
-                    var stateBuff = affectedActor.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == (int)state.Id).FirstOrDefault();
+                    var stateBuff = affectedActor.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == state.Id).FirstOrDefault();
                     if (stateBuff == null)
                         return false;
 
-                    var id = Caster.PopNextBuffId();
-                    var buff = new DelayBuff(id, affectedActor, Caster, Dice, Spell, false, false, StateTrigger)
-                    {
-                        Duration = (short) Dice.Duration,
-                        Token = stateBuff
-                    };
-
-                    Caster.AddBuff(buff);
+                    stateBuff.Delay = (short)Dice.Duration;
+                    affectedActor.AddBuff(stateBuff);
                 }
-
 
                 RemoveStateBuff(affectedActor, (SpellStatesEnum)state.Id);
             }
 
             return true;
-        }
-
-        public void StateTrigger(DelayBuff buff, object token)
-        {
-            var state = (StateBuff) token;
-            if (state == null)
-                return;
-
-            buff.Target.AddBuff(state);
         }
     }
 }

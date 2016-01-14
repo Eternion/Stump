@@ -21,8 +21,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
         public override bool Apply()
         {
-            // no need to check for CanSummon()
-
             var summon = new SummonedClone(Fight.GetNextContextualId(), Caster, TargetedCell);
             
             Caster.AddSummon(summon);

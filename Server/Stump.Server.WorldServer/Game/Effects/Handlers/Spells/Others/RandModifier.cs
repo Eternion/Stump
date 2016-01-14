@@ -33,14 +33,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             return true;
         }
 
-        private void RollTrigger(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
+        void RollTrigger(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
             var @ref = token as Ref<FightSpellCastCriticalEnum>;
             if (@ref != null)
                 @ref.Target = FightSpellCastCriticalEnum.NORMAL;
         }
 
-        private void DamageModifier(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
+        void DamageModifier(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
             var damage = token as Fights.Damage;
             if (damage == null)

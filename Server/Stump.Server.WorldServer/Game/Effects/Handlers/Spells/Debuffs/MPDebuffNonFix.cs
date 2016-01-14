@@ -20,55 +20,77 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
         public override bool Apply()
         {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return false;
+
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
+                var value = RollMP(actor, integerEffect.Value);
 
-                if (integerEffect == null)
+                if (value <= 0)
                     return false;
 
-                short value;
-
-                // Effect_LosingMP ignore resistance
-                //if (Effect.EffectId != EffectsEnum.Effect_LosingMP)
+                if (Effect.Duration != 0 |Effect.Delay != 0)
                 {
-                    value = 0;
-
-                    for (var i = 0; i < integerEffect.Value && value < actor.MP; i++)
-                    {
-                        if (actor.RollMPLose(Caster, value))
-                        {
-                            value++;
-                        }
-                    }
-
-                    var dodged = (short)( integerEffect.Value - value );
+                    AddStatBuff(actor, (short)(-value), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
+                }
+                else
+                {
+                    var dodged = (short)(integerEffect.Value - value);
 
                     if (dodged > 0)
                     {
                         ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
                             ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, actor, dodged);
                     }
-                }
 
-                if (value <= 0)
-                    return false;
-
-                if (Effect.Duration != 0)
-                {
-                    AddStatBuff(actor, (short)(-value), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
-                    //ActionsHandler.SendGameActionFightPointsVariationMessage(Fight.Clients, ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_USE, Caster, actor, (short)(-value));
-                    //actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_LOST, Caster, actor, (short)(-value));
-                }
-                else
-                {
                     actor.LostMP(value, Caster);
+                    actor.TriggerBuffs(actor, BuffTriggerType.OnMPLost);
                 }
-
-                actor.TriggerBuffs(actor, BuffTriggerType.OnMPLost);
             }
 
             return true;
+        }
+
+        short RollMP(FightActor actor, int maxValue)
+        {
+            short value = 0;
+
+            for (var i = 0; i < maxValue && value < actor.MP; i++)
+            {
+                if (actor.RollMPLose(Caster, value))
+                {
+                    value++;
+                }
+            }
+
+            return value;
+        }
+
+        void MPBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return;
+
+            var value = RollMP(buff.Target, integerEffect.Value);
+
+            if (value <= 0)
+                return;
+
+            var dodged = (short)(integerEffect.Value - value);
+
+            if (dodged > 0)
+            {
+                ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
+                    ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, buff.Target, dodged);
+            }
+
+            AddStatBuff(buff.Target, (short)(-value), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
+            buff.Target.TriggerBuffs(buff.Target, BuffTriggerType.OnMPLost);
         }
     }
 }

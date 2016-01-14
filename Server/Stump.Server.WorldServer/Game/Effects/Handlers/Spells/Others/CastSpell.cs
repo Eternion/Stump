@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             foreach (var affectedActor in GetAffectedActors())
             {
-                if (Dice.Duration != 0)
+                if (Dice.Duration != 0 || Dice.Delay != 0)
                 {
                     var buffId = affectedActor.PopNextBuffId();
 
@@ -30,7 +30,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
                     var buff = new TriggerBuff(buffId, affectedActor, Caster, effect, spell, Spell, false, false, DefaultBuffTrigger)
                     {
-                        Duration = (short)Dice.Duration
+                        Duration = (short)Dice.Duration,
+                        Delay = (short)Dice.Delay
                     };
 
                     affectedActor.AddBuff(buff);
@@ -42,8 +43,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             return true;
         }
 
-
-        private static void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        static void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }
