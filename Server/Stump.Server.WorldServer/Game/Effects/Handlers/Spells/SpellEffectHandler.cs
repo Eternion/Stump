@@ -210,7 +210,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         }
 
         public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
-                                   short? customActionId = null)
+            short? customActionId = null)
         {
             if (IsTriggerBuff())
                 return AddTriggerBuff(target, dispelable, (buff, triggerrer, type, token) => AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId, triggerrer));
@@ -218,7 +218,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId);
         }
 
-        private Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
+        Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
                                     short? customActionId = null, FightActor caster = null)
         {
             var id = target.PopNextBuffId();

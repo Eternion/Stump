@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration != 0)
+                if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
                     AddTriggerBuff(actor, true, BuffTriggerType.OnTurnBegin, OnBuffTriggered);
                 }
@@ -50,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             return true;
         }
 
-        private void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        void OnBuffTriggered(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {                
             var integerEffect = GenerateEffect();
 
@@ -60,7 +60,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
             HealHpPercent(buff.Target, integerEffect.Value);
         }
 
-        private void HealHpPercent(FightActor actor, int percent)
+        void HealHpPercent(FightActor actor, int percent)
         {
             var healAmount = (int) (actor.MaxLifePoints*(percent/100d));
 

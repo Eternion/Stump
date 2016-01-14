@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                if (Effect.Duration != 0)
+                if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
                     AddStatBuff(actor, (short)(-(integerEffect.Value)), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
                 }

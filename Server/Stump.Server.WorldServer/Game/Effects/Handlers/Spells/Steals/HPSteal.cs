@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }
 
-        private void StealHp(FightActor target)
+        void StealHp(FightActor target)
         {
             var damage = new Fights.Damage(Dice, GetEffectSchool(Effect.EffectId), Caster, Spell, TargetedCell, EffectZone) { IsCritical = Critical };
 
@@ -65,12 +65,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
             }
         }
 
-        private void StealHpBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        void StealHpBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             StealHp(buff.Target);
         }
 
-        private static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
+        static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)
         {
             switch (effect)
             {

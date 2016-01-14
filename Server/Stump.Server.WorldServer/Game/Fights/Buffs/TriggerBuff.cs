@@ -114,14 +114,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public void SetTrigger(BuffTriggerType trigger)
         {
-            Triggers = new List<BuffTrigger>() { new BuffTrigger(trigger) };
+            Triggers = new List<BuffTrigger> { new BuffTrigger(trigger) };
         }
 
         public bool ShouldTrigger(BuffTriggerType type, object token = null)
         {
-            return Triggers.Any(x => x.Type == type && (x.Parameter == null || x.Parameter == token));
+            return Delay == 0 && Triggers.Any(x => x.Type == type && (x.Parameter == null || x.Parameter == token));
         }
-
 
         public override void Apply()
         {
@@ -150,8 +149,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
             var values = Effect.GetValues();
-
-            return new FightTriggeredEffect(Id, Target.Id, Duration, (sbyte)( Dispellable ? 0 : 1 ), (short)ParentSpell.Id, 0, 0, (short)values[0], (short)values[1], (short)values[2], 0);
+            return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay), (sbyte)( Dispellable ? 0 : 1 ), (short)ParentSpell.Id, Effect.Id, 0, (short)values[0], (short)values[1], (short)values[2], Delay);
         }
 
 

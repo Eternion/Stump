@@ -36,10 +36,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         actor.RemoveBuff(buff);
                 }
 
-                if (Effect.Duration != 0)
+                if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
                     AddStatBuff(target, (short)(-(integerEffect.Value)), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
-                    actor.OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_LOST, Caster, actor, (short)(-integerEffect.Value));
                 }
                 else
                 {
@@ -52,7 +51,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
             return true;
         }
-        private void NotifySpellReflected(FightActor source)
+        void NotifySpellReflected(FightActor source)
         {
             ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }

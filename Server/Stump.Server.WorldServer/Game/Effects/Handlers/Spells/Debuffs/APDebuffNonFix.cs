@@ -20,13 +20,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
         public override bool Apply()
         {
+            var integerEffect = GenerateEffect();
+
+            if (integerEffect == null)
+                return false;
+
             foreach (var actor in GetAffectedActors())
             {
-                var integerEffect = GenerateEffect();
-
-                if (integerEffect == null)
-                    return false;
-
                 var target = actor;
                 var buff = actor.GetBestReflectionBuff();
                 if (buff != null && buff.ReflectedLevel >= Spell.CurrentLevel && Spell.Template.Id != 0)
@@ -38,21 +38,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         actor.RemoveBuff(buff);
                 }
 
-                short value;
+                var value = RollAP(actor, integerEffect.Value);
 
-                // Effect_RemoveAP ignore resistance
-                // if (Effect.EffectId != EffectsEnum.Effect_RemoveAP) // note : was i wrong ?
+                if (value <= 0)
+                    continue;
+
+                if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    value = 0;
-
-                    for (var i = 0; i < integerEffect.Value && value < actor.AP; i++)
-                    {
-                        if (actor.RollAPLose(Caster, value))
-                        {
-                            value++;
-                        }
-                    }
-
+                    AddStatBuff(target, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
+                }
+                else
+                {
                     var dodged = (short)(integerEffect.Value - value);
 
                     if (dodged > 0)
@@ -60,27 +56,31 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
                             ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PA, Caster, target, dodged);
                     }
-                }
 
-                if (value <= 0)
-                    continue;
-
-                if (Effect.Duration != 0)
-                {
-                    AddStatBuff(target, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
-                }
-                else
-                {
                     target.LostAP(value, Caster);
+                    target.TriggerBuffs(target, BuffTriggerType.OnAPLost);
                 }
-
-                target.TriggerBuffs(target, BuffTriggerType.OnAPLost);
             }
 
             return true;
         }
 
-        private void NotifySpellReflected(FightActor source)
+        short RollAP(FightActor actor, int maxValue)
+        {
+            short value = 0;
+
+            for (var i = 0; i < maxValue && value < actor.AP; i++)
+            {
+                if (actor.RollAPLose(Caster, value))
+                {
+                    value++;
+                }
+            }
+
+            return value;
+        }
+
+        void NotifySpellReflected(FightActor source)
         {
             ActionsHandler.SendGameActionFightReflectSpellMessage(Fight.Clients, Caster, source);
         }

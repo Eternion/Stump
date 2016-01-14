@@ -38,7 +38,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
-            return new FightTemporaryBoostStateEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 1 : 0), (short) Spell.Id, Effect.Id, 0, 1, (short) State.Id);
+            if (Delay == 0)
+                return new FightTemporaryBoostStateEffect(Id, Target.Id, Duration, (sbyte)(Dispellable ? 1 : 0), (short)Spell.Id, Effect.Id, 0, 1, (short)State.Id);
+
+            var values = Effect.GetValues();
+
+            return new FightTriggeredEffect(Id, Target.Id, (short)(Duration + Delay), (sbyte)(Dispellable ? 1 : 0), (short)Spell.Id, Effect.Id, 0, (short)values[0], (short)values[1], (short)values[2], Delay);
         }
     }
 }
