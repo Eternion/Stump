@@ -45,8 +45,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddTriggerBuff(actor, true, APBuffTrigger);
-
+                    AddStatBuff(target, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
                 }
                 else
                 {
@@ -79,30 +78,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
             }
 
             return value;
-        }
-
-        void APBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
-        {
-            var integerEffect = GenerateEffect();
-
-            if (integerEffect == null)
-                return;
-
-            var value = RollAP(buff.Target, integerEffect.Value);
-
-            if (value <= 0)
-                return;
-
-            var dodged = (short)(integerEffect.Value - value);
-
-            if (dodged > 0)
-            {
-                ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
-                    ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, buff.Target, dodged);
-            }
-
-            AddStatBuff(buff.Target, (short)(-value), PlayerFields.AP, true, (short)EffectsEnum.Effect_SubAP);
-            buff.Target.TriggerBuffs(buff.Target, BuffTriggerType.OnMPLost);
         }
 
         void NotifySpellReflected(FightActor source)
