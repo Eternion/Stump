@@ -87,6 +87,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             }
 
             m_cells = validCells.ToArray();
+
+            if (m_zone.ShapeType != SpellShapeEnum.C && m_zone.ShapeType != SpellShapeEnum.X)
+                m_customForm = true;
         }
     }
 }
