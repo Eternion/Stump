@@ -27,17 +27,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
             foreach (var actor in GetAffectedActors())
             {
-                var value = RollMP(actor, integerEffect.Value);
-
-                if (value <= 0)
-                    return false;
-
-                if (Effect.Duration != 0 |Effect.Delay != 0)
+                if (Effect.Duration != 0 | Effect.Delay != 0)
                 {
-                    AddStatBuff(actor, (short)(-value), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
+                    AddTriggerBuff(actor, true, MPBuffTrigger);
                 }
                 else
                 {
+                    var value = RollMP(actor, integerEffect.Value);
+
                     var dodged = (short)(integerEffect.Value - value);
 
                     if (dodged > 0)
@@ -45,6 +42,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                         ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
                             ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, actor, dodged);
                     }
+
+                    if (value <= 0)
+                        return false;
 
                     actor.LostMP(value, Caster);
                     actor.TriggerBuffs(actor, BuffTriggerType.OnMPLost);
@@ -78,18 +78,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 
             var value = RollMP(buff.Target, integerEffect.Value);
 
-            if (value <= 0)
-                return;
-
             var dodged = (short)(integerEffect.Value - value);
 
             if (dodged > 0)
             {
                 ActionsHandler.SendGameActionFightDodgePointLossMessage(Fight.Clients,
-                    ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, Caster, buff.Target, dodged);
+                    ActionsEnum.ACTION_FIGHT_SPELL_DODGED_PM, buff.Caster, buff.Target, dodged);
             }
 
-            AddStatBuff(buff.Target, (short)(-value), PlayerFields.MP, true, (short)EffectsEnum.Effect_SubMP);
+            if (value <= 0)
+                return;
+
+            buff.Target.LostMP(value, buff.Caster);
+
             buff.Target.TriggerBuffs(buff.Target, BuffTriggerType.OnMPLost);
         }
     }

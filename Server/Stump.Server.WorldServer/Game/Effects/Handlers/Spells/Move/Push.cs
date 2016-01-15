@@ -70,15 +70,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                         {
                             var pushDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, fighter, (int)distance, targets) / 2;
 
-                            var pushDamage = new Fights.Damage(pushDamages)
+                            if (pushDamages > 0)
                             {
-                                Source = actor,
-                                School = EffectSchoolEnum.Pushback,
-                                IgnoreDamageBoost = true,
-                                IgnoreDamageReduction = false
-                            };
+                                var pushDamage = new Fights.Damage(pushDamages)
+                                {
+                                    Source = actor,
+                                    School = EffectSchoolEnum.Pushback,
+                                    IgnoreDamageBoost = true,
+                                    IgnoreDamageReduction = false
+                                };
 
-                            fighter.InflictDamage(pushDamage);
+                                fighter.InflictDamage(pushDamage);
+                            }
 
                             targets++;
                         }
@@ -104,16 +107,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (!DamagesDisabled)
                 {
                     var pushbackDamages = Formulas.FightFormulas.CalculatePushBackDamages(Caster, actor, (range - (int)(startCell.EuclideanDistanceTo(stopCell))), 0);
-                    var damage = new Fights.Damage(pushbackDamages)
-                    {
-                        Source = actor,
-                        School = EffectSchoolEnum.Pushback,
-                        IgnoreDamageBoost = true,
-                        IgnoreDamageReduction = false
-                    };
 
-                    takeDamage = true;
-                    actor.InflictDamage(damage);
+                    if (pushbackDamages > 0)
+                    {
+                        var damage = new Fights.Damage(pushbackDamages)
+                        {
+                            Source = actor,
+                            School = EffectSchoolEnum.Pushback,
+                            IgnoreDamageBoost = true,
+                            IgnoreDamageReduction = false
+                        };
+
+                        takeDamage = true;
+                        actor.InflictDamage(damage);
+                    }
                 }
 
                 if (actor.IsCarrying())
