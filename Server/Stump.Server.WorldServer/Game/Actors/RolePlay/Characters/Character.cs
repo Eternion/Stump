@@ -2030,6 +2030,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             }
 
             var kamasMerchant = 0;
+            var merchantSoldItems = new List<ObjectItemGenericQuantityPrice>();
 
             foreach (var item in MerchantBag.ToArray())
             {
@@ -2040,7 +2041,9 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 kamasMerchant += price;
 
                 //Vous avez gagné %1 kamas suite à la vente en mode marchand de %4 '$item%3' lorsque vous étiez hors jeu.
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, price, 0, item.Template.Id, item.StackSold);
+                //SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 226, price, 0, item.Template.Id, item.StackSold);
+
+                merchantSoldItems.Add(new ObjectItemGenericQuantityPrice((short)item.Template.Id, (int)item.StackSold, price));
 
                 item.StackSold = 0;
 
@@ -2051,6 +2054,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             Inventory.AddKamas(kamasMerchant);
 
             var soldItems = BidHouseManager.Instance.GetSoldBidHouseItems(Account.Id);
+            var bidhouseSoldItems = new List<ObjectItemGenericQuantityPrice>();
             var kamasBidHouse = 0;
 
             foreach (var item in soldItems)
@@ -2059,10 +2063,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 BidHouseManager.Instance.RemoveBidHouseItem(item, true);
 
                 //Banque : + %1 Kamas (vente de %4 $item%3 hors jeu).
-                SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, item.Price, 0, item.Template.Id, item.Stack);
+                //SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 73, item.Price, 0, item.Template.Id, item.Stack);
+
+                bidhouseSoldItems.Add(new ObjectItemGenericQuantityPrice((short)item.Template.Id, (int)item.Stack, (int)item.Price));
+
             }
 
             Bank.AddKamas(kamasBidHouse);
+
+            Client.Send(new ExchangeOfflineSoldItemsMessage(bidhouseSoldItems, merchantSoldItems));
         }
 
         public void SendServerMessage(string message)
