@@ -398,8 +398,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             SendExchangeBidHouseBuyResultMessage(client, item.Guid, result);
 
-            //Lot acheté.
-            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 68);
+            //%3 x {item,%1,%2} (%4 kamas)
+            client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 252, item.Template.Id, item.Guid, item.Stack, item.Price);
         }
 
         [WorldHandler(ExchangeCraftCountRequestMessage.Id)]

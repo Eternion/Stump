@@ -69,7 +69,6 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             {
                 //Vous ne disposez pas d'assez de kamas pour acquiter la taxe de mise en vente...
                 Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 57);
-
                 return false;
             }
 
@@ -95,6 +94,19 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
             if (item.Template.Level > ((BidHouseExchange)Dialog).MaxItemLevel)
                 return false;
 
+            var diff = (int)(item.Price - price);
+            var taxPercent = diff < 0 ? BidHouseManager.TaxPercent : BidHouseManager.TaxPercent / 2;
+
+            var tax = (int)Math.Round((Math.Abs(diff) * taxPercent) / 100);
+
+            if (Character.Kamas < tax)
+            {
+                //Vous ne disposez pas d'assez de kamas pour acquiter la taxe de mise en vente...
+                Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 57);
+                return false;
+            }
+
+            Character.Inventory.SubKamas(tax);
             item.Price = price;
 
             InventoryHandler.SendExchangeBidHouseItemRemoveOkMessage(Character.Client, item.Guid);
