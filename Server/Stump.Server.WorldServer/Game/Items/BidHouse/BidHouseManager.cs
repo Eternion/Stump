@@ -32,6 +32,9 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
         [Variable]
         public static float TaxPercent = 2;
 
+        [Variable]
+        public static float TaxModificationPercent = 1;
+
         public static IEnumerable<int> Quantities = new[] { 1, 10, 100 };
 
         #endregion
