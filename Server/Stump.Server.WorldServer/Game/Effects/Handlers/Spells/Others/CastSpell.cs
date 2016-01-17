@@ -36,8 +36,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
                     affectedActor.AddBuff(buff);
                 }
-
-                Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true);
+                else
+                    Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true);
             }
 
             return true;

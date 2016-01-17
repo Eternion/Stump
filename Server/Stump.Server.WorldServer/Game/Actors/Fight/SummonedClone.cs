@@ -42,14 +42,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             var casterInfos = Caster.GetGameFightFighterInformations();
 
             return new GameFightFighterNamedInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId, 0, IsAlive(), GetGameFightMinimalStats(),
-                LastPositions.Select(x => x.First.Id).ToArray(), Name, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE));
+                MovementHistory.GetEntries(2).Select(x => x.Cell.Id).ToArray(), Name, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE));
         }
 
         public override GameFightFighterInformations GetGameFightFighterInformations()
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
             return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId,
-                0, IsAlive(), GetGameFightMinimalStats(), LastPositions.Select(x => x.First.Id).ToArray());
+                0, IsAlive(), GetGameFightMinimalStats(), MovementHistory.GetEntries(2).Select(x => x.Cell.Id).ToArray());
         }
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberInformations(Id);

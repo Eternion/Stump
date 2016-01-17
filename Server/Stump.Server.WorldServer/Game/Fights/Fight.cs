@@ -738,7 +738,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             foreach (var fighter in Fighters)
             {
                 fighter.FightStartPosition = fighter.Position.Clone();
-                fighter.LastPositions.Push(new Pair<Cell, int>(fighter.FightStartPosition.Cell, TimeLine.RoundNumber));
+                fighter.MovementHistory.RegisterEntry(fighter.FightStartPosition.Cell);
             }
 
             var handler = FightStarted;
@@ -1868,10 +1868,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 }
             }
 
-            //Save Last Positions
-            foreach (var cell in path.GetPath().Where(x => x.Id != fighter.Cell.Id))
-                fighter.LastPositions.Push(new Pair<Cell, int>(cell, TimeLine.RoundNumber));
-
             var movementsKeys = path.GetServerPathKeys();
 
             ForEach(entry =>
@@ -1939,9 +1935,6 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (fighter == null)
                 return;
 
-            //Save Last Positions
-            if (fighter.LastPositions.Count > 0 && fighter.LastPositions.Last().First != objectPosition.Cell)
-                fighter.LastPositions.Push(new Pair<Cell, int>(objectPosition.Cell, TimeLine.RoundNumber));
 
             TriggerMarks(fighter.Cell, fighter, TriggerType.MOVE);
         }
@@ -2065,7 +2058,8 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             m_buffs.Remove(buff);
 
-            //ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
+            // regular debuffing is done automatically
+            // ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
         }
 
         #endregion
