@@ -90,41 +90,21 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
         #region Getters
 
-        public BidHouseCategory GetBidHouseCategory(BidHouseItem item)
-        {
-            return m_bidHouseCategories.FirstOrDefault(x => x.IsValidForThisCategory(item));
-        }
+        public BidHouseCategory GetBidHouseCategory(BidHouseItem item) => m_bidHouseCategories.FirstOrDefault(x => x.IsValidForThisCategory(item));
 
-        public BidHouseCategory GetBidHouseCategory(int categoryId)
-        {
-            return m_bidHouseCategories.FirstOrDefault(x => x.Id == categoryId);
-        }
+        public BidHouseCategory GetBidHouseCategory(int categoryId) => m_bidHouseCategories.FirstOrDefault(x => x.Id == categoryId);
 
-        public List<BidHouseCategory> GetBidHouseCategories(int itemId, int maxLevel)
-        {
-            return m_bidHouseCategories.Where(x => x.TemplateId == itemId && x.ItemLevel <= maxLevel).ToList();
-        }
+        public List<BidHouseCategory> GetBidHouseCategories(int itemId, int maxLevel) => m_bidHouseCategories.Where(x => x.TemplateId == itemId && x.ItemLevel <= maxLevel).ToList();
 
-        public List<BidHouseItem> GetBidHouseItems(ItemTypeEnum type, int maxItemLevel)
-        {
-            return m_bidHouseItems.Where(x => x.Template.TypeId == (int)type && x.Template.Level <= maxItemLevel && !x.Sold)
+        public List<BidHouseItem> GetBidHouseItems(ItemTypeEnum type, int maxItemLevel) => m_bidHouseItems.Where(x => x.Template.TypeId == (int)type && x.Template.Level <= maxItemLevel && !x.Sold)
                 .GroupBy(x => x.Template.Id).Select(x => x.First()).ToList();
-        }
 
-        public List<BidHouseItem> GetSoldBidHouseItems(int ownerId)
-        {
-            return m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId && x.Sold).ToList();
-        }
+        public List<BidHouseItem> GetSoldBidHouseItems(int ownerId) => m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId && x.Sold).ToList();
 
-        public List<BidHouseItem> GetBidHouseItems(int ownerId, IEnumerable<int> types)
-        {
-            return m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId && types.Contains((int)x.Template.TypeId) && !x.Sold).ToList();
-        }
+        public List<BidHouseItem> GetBidHouseItems(int ownerId, IEnumerable<int> types) => m_bidHouseItems.Where(x => x.Record.OwnerId == ownerId
+        && types.Contains((int)x.Template.TypeId) && !x.Sold).ToList();
 
-        public BidHouseItem GetBidHouseItem(int guid)
-        {
-            return m_bidHouseItems.FirstOrDefault(x => x.Guid == guid);
-        }
+        public BidHouseItem GetBidHouseItem(int guid) => m_bidHouseItems.FirstOrDefault(x => x.Guid == guid);
 
         public int GetAveragePriceForItem(int itemId)
         {
@@ -210,14 +190,8 @@ namespace Stump.Server.WorldServer.Game.Items.BidHouse
 
     public class BidHouseItemComparer : IEqualityComparer<BidHouseItem>
     {
-        public bool Equals(BidHouseItem x, BidHouseItem y)
-        {
-            return x.Effects.CompareEnumerable(y.Effects);
-        }
+        public bool Equals(BidHouseItem x, BidHouseItem y) => x.Effects.CompareEnumerable(y.Effects);
 
-        public int GetHashCode(BidHouseItem obj)
-        {
-            return 0;
-        }
+        public int GetHashCode(BidHouseItem obj) => 0;
     }
 }
