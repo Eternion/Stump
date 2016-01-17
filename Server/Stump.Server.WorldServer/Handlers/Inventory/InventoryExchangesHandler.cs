@@ -592,6 +592,11 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             client.Send(new ExchangeBidHouseGenericItemRemovedMessage((short)item.Template.Id));
         }
 
+        public static void SendExchangeOfflineSoldItemsMessage(IPacketReceiver client, ObjectItemGenericQuantityPrice[] merchantItems, ObjectItemGenericQuantityPrice[] bidHouseItems)
+        {
+            client.Send(new ExchangeOfflineSoldItemsMessage(bidHouseItems, merchantItems));
+        }
+
         public static void SendExchangeStartOkCraftWithInformationMessage(IPacketReceiver client, Skill skill)
         {
             client.Send(new ExchangeStartOkCraftWithInformationMessage(skill.SkillTemplate.Id));

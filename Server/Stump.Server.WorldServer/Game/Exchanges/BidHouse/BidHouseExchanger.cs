@@ -95,9 +95,9 @@ namespace Stump.Server.WorldServer.Game.Exchanges.BidHouse
                 return false;
 
             var diff = (int)(item.Price - price);
-            var taxPercent = diff < 0 ? BidHouseManager.TaxPercent : BidHouseManager.TaxPercent / 2;
+            var tax = 0;
 
-            var tax = (int)Math.Round((Math.Abs(diff) * taxPercent) / 100);
+            tax = diff < 0 ? (int)Math.Round((Math.Abs(diff) * BidHouseManager.TaxPercent) / 100) : (int)Math.Round((Math.Abs(price) * (BidHouseManager.TaxPercent / 2)) / 100);
 
             if (Character.Kamas < tax)
             {

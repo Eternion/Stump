@@ -66,6 +66,7 @@ using Stump.Server.WorldServer.Handlers.Titles;
 using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 using Stump.Server.WorldServer.Handlers.Interactives;
 using Stump.Server.WorldServer.Handlers.Initialization;
+using Stump.Server.WorldServer.Handlers.Inventory;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -2071,7 +2072,8 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
             Bank.AddKamas(kamasBidHouse);
 
-            Client.Send(new ExchangeOfflineSoldItemsMessage(bidhouseSoldItems, merchantSoldItems));
+            if (merchantSoldItems.Any() || bidhouseSoldItems.Any()  )
+                InventoryHandler.SendExchangeOfflineSoldItemsMessage(Client, merchantSoldItems.ToArray(), bidhouseSoldItems.ToArray());
         }
 
         public void SendServerMessage(string message)
