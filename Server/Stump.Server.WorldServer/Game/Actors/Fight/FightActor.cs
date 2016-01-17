@@ -319,7 +319,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             VisibleState = VisibleStateEnum.VISIBLE;
             Loot = new FightLoot();
             SpellHistory = new SpellHistory(this);
-            LastPositions = new LimitedStack<Pair<Cell, int>>(10);
+            MovementHistory = new MovementHistory(this);
         }
 
         #endregion
@@ -354,6 +354,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             protected set;
         }
 
+        public MovementHistory MovementHistory
+        {
+            get;
+            protected set;
+        }
+
         public ObjectPosition TurnStartPosition
         {
             get;
@@ -376,12 +382,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public ObjectPosition FightStartPosition
-        {
-            get;
-            internal set;
-        }
-
-        public LimitedStack<Pair<Cell, int>> LastPositions
         {
             get;
             internal set;
@@ -2017,9 +2017,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             if (carryingActor == null)
                 return base.StartMove(movementPath);
-
-            //movementPath.CutPath(1, true);
-
+            
             carryingActor.ThrowActor(movementPath.StartCell, true);
 
             return base.StartMove(movementPath);
@@ -2371,7 +2369,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 0,
                 IsAlive(),
                 GetGameFightMinimalStats(client),
-                LastPositions.Select(x => x.First.Id).ToArray());
+                MovementHistory.GetEntries(2).Select(x => x.Cell.Id).ToArray());
         }
 
         public virtual GameFightFighterLightInformations GetGameFightFighterLightInformations(WorldClient client = null)
