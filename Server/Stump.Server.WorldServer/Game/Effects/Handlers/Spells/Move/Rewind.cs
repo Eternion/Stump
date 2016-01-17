@@ -18,13 +18,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
-            var trigger = BuffTriggerType.OnTurnEnd;
-            if (Spell.Id == (int)SpellIdEnum.BOBINE)
-                trigger = BuffTriggerType.Instant;
-
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, true, trigger, TriggerBuffApply);
+                AddTriggerBuff(actor, true, TriggerBuffApply);
             }
 
             return true;
