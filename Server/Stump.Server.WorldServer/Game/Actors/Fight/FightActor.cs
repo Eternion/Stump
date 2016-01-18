@@ -1472,7 +1472,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public bool BuffMaxStackReached(Buff buff)
         {
             return buff.Spell.CurrentSpellLevel.MaxStack > 0
-                && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell == buff.Spell
+                && buff.Spell.CurrentSpellLevel.MaxStack <= m_buffList.Count(entry => entry.Spell.Id == buff.Spell.Id
                 && entry.Effect.EffectId == buff.Effect.EffectId
                 && entry.GetType() == buff.GetType()
                 && buff.Delay == 0);
@@ -2045,7 +2045,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Telefrag
 
-        public bool Telefrag(FightActor caster, FightActor target, Spell spell)
+        public bool Telefrag(FightActor caster, FightActor target)
         {
             if ((!(target is SummonedMonster) || ((SummonedMonster)target).Monster.Template.Id != 556)
                 && (target.HasState((int)SpellStatesEnum.INDÉPLAÇABLE) || target.HasState((int)SpellStatesEnum.ENRACINÉ)))
@@ -2060,19 +2060,25 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if ((target is SummonedTurret) && !(this is SummonedTurret))
                 return false;
 
+            if (target == this)
+                return false;
+
+            if (caster != this)
+            {
+                NeedTelefragState = true;
+            }
+
+            target.NeedTelefragState = true;
+
             ExchangePositions(target);
 
             target.OnActorMoved(this, false);
             OnActorMoved(this, false);
 
-            caster.NeedTelefragState = true;
-            target.NeedTelefragState = true;
-            NeedTelefragState = true;
-
             return true;
         }
 
-        private bool ApplyEffect(Spell spell, EffectDice effect, FightActor caster, FightActor target)
+        bool ApplyEffect(Spell spell, EffectDice effect, FightActor caster, FightActor target)
         {
             var handler = EffectManager.Instance.GetSpellEffectHandler(effect, caster, spell, target.Position.Cell, false);
             handler.AddAffectedActor(target);

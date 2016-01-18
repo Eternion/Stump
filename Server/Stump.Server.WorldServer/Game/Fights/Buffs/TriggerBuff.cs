@@ -124,6 +124,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Apply()
         {
+            if (ShouldTrigger(BuffTriggerType.Instant))
+                Apply(Caster, BuffTriggerType.Instant);
         }
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)

@@ -14,6 +14,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
         }
 
+        public override int Priority => int.MaxValue;
+
         public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())

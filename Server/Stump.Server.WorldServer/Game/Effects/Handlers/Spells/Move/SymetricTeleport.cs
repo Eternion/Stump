@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                     if (Effect.EffectId == EffectsEnum.Effect_SymetricCasterTeleport || Effect.EffectId == EffectsEnum.Effect_SymetricPointTeleport)
                         caster = target;
 
-                    caster.Telefrag(Caster, fighter, Spell);
+                    caster.Telefrag(Caster, fighter);
                 }
                 else
                 {
