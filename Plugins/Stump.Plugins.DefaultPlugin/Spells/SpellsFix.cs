@@ -18,31 +18,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
         {
             logger.Debug("Apply spells fix");
 
-            #region XELOR
-
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5486, 1, false);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5486, 1, false);
-
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5487, 1, false);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5487, 1, false);
-
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5488, 1, false);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5488, 1, false);
-
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5489, 1, false);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5489, 1, false);
-
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5490, 1, false);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5490, 1, false);
-
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5491, 1, false);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5491, 1, false);
-
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5492, 1, false);
-            RemoveEffectOnAllLevels((int)SpellIdEnum.TÉLÉFRAG_5492, 1, false);
-
-            #endregion XELOR
-
             #region ECAFLIP
 
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 5, (level, effect, critical) => effect.Delay = 0);
@@ -71,17 +46,6 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Random = 0);
 
             #endregion ECAFLIP
-
-            #region STEAMER
-
-            FixEffectOnAllLevels((int) SpellIdEnum.HARPONNEUSE, 1, (level, effect, critical) => effect.Priority = 1);
-
-            FixEffectOnAllLevels((int)SpellIdEnum.GARDIENNE, 1, (level, effect, critical) => effect.Priority = 1);
-
-            FixEffectOnAllLevels((int)SpellIdEnum.TACTIRELLE, 1, (level, effect, critical) => effect.Priority = 1);
-
-
-            #endregion STEAMER
         }
 
         #region Methods

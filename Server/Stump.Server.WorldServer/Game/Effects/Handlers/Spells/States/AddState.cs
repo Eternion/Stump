@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
             SpellStatesEnum.AFFAIBLI,
         };
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public AddState(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
             : base(effect, caster, spell, targetedCell, critical)
@@ -56,6 +56,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     logger.Error("Spell state {0} not found", Dice.Value);
                     return false;
                 }
+
+                if (state.Id == (int)SpellStatesEnum.TÉLÉFRAG_244 || state.Id == (int)SpellStatesEnum.TÉLÉFRAG_251)
+                    affectedActor.NeedTelefragState = false;
 
                 AddStateBuff(affectedActor, DISPELABLE_STATES.Contains((SpellStatesEnum)state.Id), BYPASSMAXSTACK_STATES.Contains((SpellStatesEnum)state.Id), state);
             }
