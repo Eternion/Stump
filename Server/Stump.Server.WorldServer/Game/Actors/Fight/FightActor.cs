@@ -1552,7 +1552,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void DecrementBuffsDuration(FightActor caster)
         {
-            var buffsToRemove = m_buffList.Where(buff => buff.Caster == caster).Where(buff => buff.DecrementDuration()).ToList();
+            var buffsToRemove = m_buffList.Where(buff => buff.Caster == caster).ToArray().Where(buff => buff.DecrementDuration()).ToList();
 
             foreach (var buff in buffsToRemove)
             {

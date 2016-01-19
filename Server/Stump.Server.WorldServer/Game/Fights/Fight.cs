@@ -2055,7 +2055,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             m_buffs.Remove(buff);
 
             // regular debuffing is done automatically
-            // ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
+            ActionsHandler.SendGameActionFightDispellEffectMessage(Clients, target, target, buff);
         }
 
         #endregion
