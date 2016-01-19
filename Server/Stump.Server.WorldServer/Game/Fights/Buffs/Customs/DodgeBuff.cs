@@ -1,4 +1,5 @@
-﻿using Stump.DofusProtocol.Types;
+﻿using Stump.DofusProtocol.Enums.Extensions;
+using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Instances;
@@ -67,7 +68,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
                 return;
 
             var casterDirection = cell.OrientationTo(source.Position.Point, false);
-            var direction = cell.GetOppositeDirection(casterDirection);
+            var direction = casterDirection.GetOpposedDirection();
             var nearestCell = cell.GetNearestCellInDirection(direction);
 
             if (nearestCell == null)

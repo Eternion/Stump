@@ -236,6 +236,9 @@ namespace Stump.Tools.SpellsExplorer
             var type = SpellManager.Instance.GetSpellType(spell.TypeId);
 
             Console.WriteLine("Spell '{0}'  : {1} ({2}) - Level {3}", spell.Id, spell.Name, TextManager.Instance.GetText(spell.NameId, SecondaryLanguage), level);
+            Console.WriteLine("Description: {0}", spell.Description);
+            Console.WriteLine("");
+
             Console.WriteLine("Type : {0} - {1}", type.ShortName, type.LongName);
             Console.WriteLine("Level.SpellBreed = {0}, Level.HideEffects = {1}", levelTemplate.SpellBreed, levelTemplate.HideEffects);
             Console.WriteLine("Range = {0}, MinRange = {1}, RangeCanBeBoosted={2}", levelTemplate.Range, levelTemplate.MinRange, levelTemplate.RangeCanBeBoosted);

@@ -248,10 +248,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         private Map m_leftNeighbour;
         private Map m_rightNeighbour;
         private Map m_topNeighbour;
-        private Cell m_bottomNeighbourCell;
-        private Cell m_leftNeighbourCell;
-        private Cell m_rightNeighbourCell;
-        private Cell m_topNeighbourCell;
         private Cell[] m_redPlacement;
         private Cell[] m_bluePlacement;
         private Cell[] m_freeCells;
@@ -359,25 +355,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public int TopNeighbourCellId
-        {
-            get { return Record.TopNeighbourCellId; }
-            set { Record.TopNeighbourCellId = value; }
-        }
-
-        public Cell TopNeighbourCell
-        {
-            get
-            {
-                return TopNeighbourCellId != -1 ? m_topNeighbourCell ?? (m_topNeighbourCell = TopNeighbour.GetCell(TopNeighbourCellId)) : null;
-            }
-            set
-            {
-                m_topNeighbourCell = value;
-                TopNeighbourCellId = value != null ? value.Id : -1;
-            }
-        }
-
         public int BottomNeighbourId
         {
             get { return Record.BottomNeighbourId; }
@@ -394,25 +371,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 m_bottomNeighbour = value;
                 BottomNeighbourId = value != null ? value.Id : -1;
-            }
-        }
-
-        public int BottomNeighbourCellId
-        {
-            get { return Record.BottomNeighbourCellId; }
-            set { Record.BottomNeighbourCellId = value; }
-        }
-
-        public Cell BottomNeighbourCell
-        {
-            get
-            {
-                return BottomNeighbourCellId != -1 ? m_bottomNeighbourCell ?? (m_bottomNeighbourCell = BottomNeighbour.GetCell(BottomNeighbourCellId)) : null;
-            }
-            set
-            {
-                m_bottomNeighbourCell = value;
-                BottomNeighbourCellId = value != null ? value.Id : -1;
             }
         }
 
@@ -437,25 +395,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             }
         }
 
-        public int LeftNeighbourCellId
-        {
-            get { return Record.LeftNeighbourCellId; }
-            set { Record.LeftNeighbourCellId = value; }
-        }
-
-        public Cell LeftNeighbourCell
-        {
-            get
-            {
-                return LeftNeighbourCellId != -1 ? m_leftNeighbourCell ?? (m_leftNeighbourCell = LeftNeighbour.GetCell(LeftNeighbourCellId)) : null;
-            }
-            set
-            {
-                m_leftNeighbourCell = value;
-                LeftNeighbourCellId = value != null ? value.Id : -1;
-            }
-        }
-
         public int RightNeighbourId
         {
             get { return Record.RightNeighbourId; }
@@ -472,25 +411,6 @@ namespace Stump.Server.WorldServer.Game.Maps
             {
                 m_rightNeighbour = value;
                 RightNeighbourId = value != null ? value.Id : -1;
-            }
-        }
-
-        public int RightNeighbourCellId
-        {
-            get { return Record.RightNeighbourCellId; }
-            set { Record.RightNeighbourCellId = value; }
-        }
-
-        public Cell RightNeighbourCell
-        {
-            get
-            {
-                return RightNeighbourCellId != -1 ? m_rightNeighbourCell ?? (m_rightNeighbourCell = RightNeighbour.GetCell(RightNeighbourCellId)) : null;
-            }
-            set
-            {
-                m_rightNeighbourCell = value;
-                RightNeighbourCellId = value != null ? value.Id : -1;
             }
         }
 
@@ -1768,13 +1688,13 @@ namespace Stump.Server.WorldServer.Game.Maps
             switch (mapneighbour)
             {
                 case MapNeighbour.Top:
-                    return TopNeighbourCell != null ? TopNeighbourCell.Id : (short)(currentCell + 532);
+                    return (short)(currentCell + 532);
                 case MapNeighbour.Bottom:
-                    return BottomNeighbourCell != null ? BottomNeighbourCell.Id : (short)(currentCell - 532);
+                    return (short)(currentCell - 532);
                 case MapNeighbour.Right:
-                    return RightNeighbourCell != null ? RightNeighbourCell.Id : (short)(currentCell - 13);
+                    return (short)(currentCell - 13);
                 case MapNeighbour.Left:
-                    return LeftNeighbourCell != null ? LeftNeighbourCell.Id : (short)(currentCell + 13);
+                    return (short)(currentCell + 13);
                 default:
                     return 0;
             }

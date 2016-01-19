@@ -59,19 +59,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 case MapNeighbour.Top:
                     from.TopNeighbour = map;
-                    from.TopNeighbourCell = cell;
                     break;
                 case MapNeighbour.Bottom:
                     from.BottomNeighbour = map;
-                    from.BottomNeighbourCell = cell;
                     break;
                 case MapNeighbour.Right:
                     from.RightNeighbour = map;
-                    from.RightNeighbourCell = cell;
                     break;
                 case MapNeighbour.Left:
                     from.LeftNeighbour = map;
-                    from.LeftNeighbourCell = cell;
                     break;
                 default:
                     trigger.ReplyError("{0} not a valid transition", transition);
@@ -121,19 +117,15 @@ namespace Stump.Server.WorldServer.Commands.Commands
             {
                 case MapNeighbour.Top:
                     from.TopNeighbour = null;
-                    from.TopNeighbourCell = null;
                     break;
                 case MapNeighbour.Bottom:
                     from.BottomNeighbour = null;
-                    from.BottomNeighbourCell = null;
                     break;
                 case MapNeighbour.Right:
                     from.RightNeighbour = null;
-                    from.RightNeighbourCell = null;
                     break;
                 case MapNeighbour.Left:
                     from.LeftNeighbour = null;
-                    from.LeftNeighbourCell = null;
                     break;
                 default:
                     trigger.ReplyError("{0} not a valid transition", transition);

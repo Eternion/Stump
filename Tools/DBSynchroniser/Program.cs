@@ -907,7 +907,7 @@ namespace DBSynchroniser
                 var monster = row.CreateObject() as Monster;
 
                 ParseMonsterSpells(monster.Id);
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
 
                 i++;
                 UpdateCounter(i, rows.Count);
@@ -1020,7 +1020,8 @@ namespace DBSynchroniser
         #endregion
 
         #region Helpers
-        private static IList GetTableRows(D2OTable table)
+
+        static IList GetTableRows(D2OTable table)
         {
             var method = typeof (Database).GetMethodExt("Fetch", 1, new[] {typeof (Sql)});
             var generic = method.MakeGenericMethod(table.Type);

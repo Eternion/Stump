@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Merchant
 
         public ExchangeTypeEnum ExchangeType
         {
-            get { return ExchangeTypeEnum.SHOP_STOCK; }
+            get { return ExchangeTypeEnum.DISCONNECTED_VENDOR; }
         }
 
         public DialogTypeEnum DialogType

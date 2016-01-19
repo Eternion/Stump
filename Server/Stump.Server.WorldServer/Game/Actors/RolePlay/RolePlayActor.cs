@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 {
@@ -71,6 +72,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay
 
             var destination = new ObjectPosition(neighbour,
                 cell, Position.Direction);
+
+            if (!destination.Cell.Walkable)
+            {
+                var cells = MapPoint.GetBorderCells(mapNeighbour).Select(x => neighbour.Cells[x.CellId]).Where(x => x.Walkable);
+                var walkableCell = cells.Select(x => new MapPoint(x)).OrderBy(x => x.EuclideanDistanceTo(destination.Point)).FirstOrDefault();
+
+                if (walkableCell != null)
+                    destination.Cell = neighbour.Cells[walkableCell.CellId];
+            }
 
             return Teleport(destination);
         }
