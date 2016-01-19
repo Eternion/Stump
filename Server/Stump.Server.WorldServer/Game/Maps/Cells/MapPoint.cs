@@ -16,22 +16,22 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
 
         public const uint MapSize = MapWidth * MapHeight * 2;
 
-        private static readonly Point VectorRight = new Point(1, 1);
-        private static readonly Point VectorDownRight = new Point(1, 0);
-        private static readonly Point VectorDown = new Point(1, -1);
-        private static readonly Point VectorDownLeft = new Point(0, -1);
-        private static readonly Point VectorLeft = new Point(-1, -1);
-        private static readonly Point VectorUpLeft = new Point(-1, 0);
-        private static readonly Point VectorUp = new Point(-1, 1);
-        private static readonly Point VectorUpRight = new Point(0, 1);
+        static readonly Point VectorRight = new Point(1, 1);
+        static readonly Point VectorDownRight = new Point(1, 0);
+        static readonly Point VectorDown = new Point(1, -1);
+        static readonly Point VectorDownLeft = new Point(0, -1);
+        static readonly Point VectorLeft = new Point(-1, -1);
+        static readonly Point VectorUpLeft = new Point(-1, 0);
+        static readonly Point VectorUp = new Point(-1, 1);
+        static readonly Point VectorUpRight = new Point(0, 1);
 
-        private static bool m_initialized;
-        private static readonly MapPoint[] OrthogonalGridReference = new MapPoint[MapSize];
+        static bool m_initialized;
+        static readonly MapPoint[] OrthogonalGridReference = new MapPoint[MapSize];
 
 
-        private short m_cellId;
-        private int m_x;
-        private int m_y;
+        short m_cellId;
+        int m_x;
+        int m_y;
 
         public MapPoint(short cellId)
         {
@@ -199,11 +199,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return (DirectionsEnum) (uint) orientation;
         }
 
-        public DirectionsEnum GetOppositeDirection(DirectionsEnum direction)
-        {
-            return (DirectionsEnum) (((int)direction + 4)%8);
-        }
-
         public IEnumerable<MapPoint> GetAllCellsInRectangle(MapPoint oppositeCell, bool skipStartAndEndCells = true, Func<MapPoint, bool> predicate = null)
         {
             int x1 = Math.Min(oppositeCell.X, X),
@@ -267,18 +262,20 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
             return result.ToArray();
         }
 
-        public IEnumerable<MapPoint> GetCellsInLine(MapPoint destination)
+        public IEnumerable<MapPoint> GetCellsInLine(MapPoint destination) => GetCellsInLine(this, destination);
+
+        public static IEnumerable<MapPoint> GetCellsInLine(MapPoint source, MapPoint destination)
         {
             // http://playtechs.blogspot.fr/2007/03/raytracing-on-grid.html
 
-            int dx = Math.Abs(destination.X - X);
-            int dy = Math.Abs(destination.Y - Y);
-            int x = X;
-            int y = Y;
-            int n = 1 + dx + dy;
-            int vectorX = ( destination.X > X ) ? 1 : -1;
-            int vectorY = ( destination.Y > Y ) ? 1 : -1;
-            int error = dx - dy;
+            var dx = Math.Abs(destination.X - source.X);
+            var dy = Math.Abs(destination.Y - source.Y);
+            var x = source.X;
+            var y = source.Y;
+            var n = 1 + dx + dy;
+            var vectorX = ( destination.X > source.X ) ? 1 : -1;
+            var vectorY = ( destination.Y > source.Y ) ? 1 : -1;
+            var error = dx - dy;
             dx *= 2;
             dy *= 2;
 
@@ -303,6 +300,23 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
                     error += dx;
                 }
             }
+        }
+
+        public static IEnumerable<MapPoint> GetBorderCells(MapNeighbour mapNeighbour)
+        {
+            switch (mapNeighbour)
+            {
+                case MapNeighbour.Top:
+                    return GetCellsInLine(new MapPoint(546), new MapPoint(559));
+                case MapNeighbour.Left:
+                    return GetCellsInLine(new MapPoint(27), new MapPoint(559));
+                case MapNeighbour.Bottom:
+                    return GetCellsInLine(new MapPoint(0), new MapPoint(13));
+                case MapNeighbour.Right:
+                    return GetCellsInLine(new MapPoint(0), new MapPoint(532));
+            }
+
+            return new MapPoint[0];
         }
 
         public MapPoint GetCellInDirection(DirectionsEnum direction, int step)
@@ -362,10 +376,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells
         {
             return GetCellInDirection(direction, 1);
         }
+
         public IEnumerable<MapPoint> GetAdjacentCells(bool diagonal = false)
         {
             return GetAdjacentCells(x => true, diagonal);
         }
+
         public IEnumerable<MapPoint> GetAdjacentCells(Func<short, bool> predicate, bool diagonal = false)
         {
             var southEast = new MapPoint(m_x + 1, m_y);

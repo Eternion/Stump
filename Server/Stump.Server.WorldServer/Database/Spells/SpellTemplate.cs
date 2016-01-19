@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Database.Spells
 
         public string Description
         {
-            get { return m_description ?? (m_description = TextManager.Instance.GetText(NameId)); }
+            get { return m_description ?? (m_description = TextManager.Instance.GetText(DescriptionId)); }
         }
 
         public uint TypeId

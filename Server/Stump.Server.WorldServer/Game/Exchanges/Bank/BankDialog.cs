@@ -21,7 +21,7 @@ namespace Stump.Server.WorldServer.Game.Exchanges.Bank
 
         public ExchangeTypeEnum ExchangeType
         {
-            get { return ExchangeTypeEnum.STORAGE; }
+            get { return ExchangeTypeEnum.BANK; }
         }
 
         public DialogTypeEnum DialogType
