@@ -149,9 +149,8 @@ namespace Stump.Server.WorldServer.Handlers.Approach
             /* Just to get console AutoCompletion */
             if (client.UserGroup.IsGameMaster)
                 SendConsoleCommandsListMessage(client, CommandManager.Instance.AvailableCommands.Where(x => client.UserGroup.IsCommandAvailable(x)));
-
-
         }
+
         public static void SendStartupActionsListMessage(IPacketReceiver client)
         {
             client.Send(new StartupActionsListMessage());
