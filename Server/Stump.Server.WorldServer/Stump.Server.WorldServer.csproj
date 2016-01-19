@@ -629,7 +629,6 @@
     <Compile Include="Game\Spells\Casts\Roublard\BombExplodSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\MagnetSpellCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Sram\ChakraConcentrationCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingChestCastHandler.cs" />

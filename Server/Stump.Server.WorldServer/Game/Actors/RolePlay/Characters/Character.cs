@@ -2272,22 +2272,17 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void DisplayNotification(string text, NotificationEnum notification = NotificationEnum.INFORMATION)
         {
-            Client.Send(new NotificationByServerMessage((short)notification, new[] { text }));
+            Client.Send(new NotificationByServerMessage((short)notification, new[] { text }, true));
         }
 
         public void DisplayNotification(NotificationEnum notification, params object[] parameters)
         {
-            Client.Send(new NotificationByServerMessage((short)notification, parameters.Select(entry => entry.ToString())));
+            Client.Send(new NotificationByServerMessage((short)notification, parameters.Select(entry => entry.ToString()), true));
         }
 
         public void DisplayNotification(Notification notification)
         {
             notification.Display();
-        }
-
-        public void ResetNotification()
-        {
-            Client.Send(new NotificationResetMessage());
         }
 
         public void LeaveDialog()

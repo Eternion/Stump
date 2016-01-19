@@ -1,6 +1,6 @@
 
 
-// Generated on 12/20/2015 16:36:41
+// Generated on 01/19/2016 22:28:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +18,28 @@ namespace Stump.DofusProtocol.Messages
             get { return Id; }
         }
         
+        public string forcedAccountLogin;
         
         public IdentificationAccountForceMessage()
         {
         }
         
-        public IdentificationAccountForceMessage(bool autoconnect, bool useCertificate, bool useLoginToken, Types.VersionExtended version, string lang, IEnumerable<sbyte> credentials, short serverId, long sessionOptionalSalt, IEnumerable<short> failedAttempts)
+        public IdentificationAccountForceMessage(bool autoconnect, bool useCertificate, bool useLoginToken, Types.VersionExtended version, string lang, IEnumerable<sbyte> credentials, short serverId, long sessionOptionalSalt, IEnumerable<short> failedAttempts, string forcedAccountLogin)
          : base(autoconnect, useCertificate, useLoginToken, version, lang, credentials, serverId, sessionOptionalSalt, failedAttempts)
         {
+            this.forcedAccountLogin = forcedAccountLogin;
         }
         
         public override void Serialize(IDataWriter writer)
         {
             base.Serialize(writer);
+            writer.WriteUTF(forcedAccountLogin);
         }
         
         public override void Deserialize(IDataReader reader)
         {
             base.Deserialize(reader);
+            forcedAccountLogin = reader.ReadUTF();
         }
         
     }
