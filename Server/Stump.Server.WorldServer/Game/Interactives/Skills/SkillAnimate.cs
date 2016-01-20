@@ -87,16 +87,19 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override int StartExecute(Character character)
         {
+            if (!Record.IsConditionFilled(character))
+                return -1;
+
             var map = World.Instance.GetMap(MapId);
 
             map.GetMapObstacles();
 
             var interactive = map.GetInteractiveObject(ElementId);
             if (interactive == null)
-                return 0;
+                return -1;
 
             if (interactive.State != InteractiveStateEnum.STATE_NORMAL)
-                return 0;
+                return -1;
 
             interactive.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
 
