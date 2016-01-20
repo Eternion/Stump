@@ -87,6 +87,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
         public override void Apply(Character character)
         {
+            if (!Record.IsConditionFilled(character))
+                return;
+
             var map = World.Instance.GetMap(MapId);
 
             map.GetMapObstacles();

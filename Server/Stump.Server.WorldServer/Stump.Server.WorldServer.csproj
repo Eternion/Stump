@@ -318,6 +318,7 @@
     <Compile Include="Game\Conditions\Criterions\BonesCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BonusSetCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\CellOccupedCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\HasOrnament.cs" />
     <Compile Include="Game\Conditions\Criterions\HasTitleCriterion.cs" />

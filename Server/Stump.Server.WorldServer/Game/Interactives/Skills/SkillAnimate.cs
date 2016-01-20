@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public SkillAnimate(int id, InteractiveCustomSkillRecord skillTemplate, InteractiveObject interactiveObject)
             : base(id, skillTemplate, interactiveObject)
         {
-            m_mapObstacles = ObstaclesCSV.FromCSV<short>(",").Select(x => new MapObstacle(x, (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED)).ToArray();
+            m_mapObstacles = ObstaclesCSV == null ? new MapObstacle[0] : ObstaclesCSV.FromCSV<short>(",").Select(x => new MapObstacle(x, (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED)).ToArray();
         }
 
         int? m_elementId;
@@ -84,8 +84,6 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         }
 
         public List<MapObstacle> Obstacles => m_mapObstacles.ToList();
-
-        public override bool IsEnabled(Character character) => base.IsEnabled(character);
 
         public override int StartExecute(Character character)
         {
