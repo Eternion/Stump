@@ -2,19 +2,19 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database.World.Triggers;
+using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Interactives;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
+namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
-    [Discriminator("Animate", typeof(CellTrigger), typeof(CellTriggerRecord))]
-    public class AnimateTrigger : CellTrigger
+    [Discriminator("Animate", typeof(Skill), typeof(int), typeof(InteractiveCustomSkillRecord), typeof(InteractiveObject))]
+    public class SkillAnimate : CustomSkill
     {
-        public AnimateTrigger(CellTriggerRecord record)
-            : base(record)
+        public SkillAnimate(int id, InteractiveCustomSkillRecord skillTemplate, InteractiveObject interactiveObject)
+            : base(id, skillTemplate, interactiveObject)
         {
             m_mapObstacles = ObstaclesCSV.FromCSV<short>(",").Select(x => new MapObstacle(x, (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED)).ToArray();
         }
@@ -85,7 +85,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
         public List<MapObstacle> Obstacles => m_mapObstacles.ToList();
 
-        public override void Apply(Character character)
+        public override bool IsEnabled(Character character) => base.IsEnabled(character);
+
+        public override int StartExecute(Character character)
         {
             var map = World.Instance.GetMap(MapId);
 
@@ -93,20 +95,20 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
             var interactive = map.GetInteractiveObject(ElementId);
             if (interactive == null)
-                return;
+                return 0;
 
             if (interactive.State != InteractiveStateEnum.STATE_NORMAL)
-                return;
+                return 0;
 
             interactive.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
 
             Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_OPENED);
             InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
 
-            map.Area.CallDelayed(20000, Reset);
+            return 20000;
         }
 
-        public void Reset()
+        public override void EndExecute(Character character)
         {
             var map = World.Instance.GetMap(MapId);
 

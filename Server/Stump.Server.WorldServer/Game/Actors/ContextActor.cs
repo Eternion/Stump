@@ -79,7 +79,7 @@ namespace Stump.Server.WorldServer.Game.Actors
 
         #region Chat
 
-        public void DisplaySmiley(sbyte smileyId)
+        public virtual void DisplaySmiley(short smileyId)
         {
             CharacterContainer.ForEach(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
         }

@@ -1594,6 +1594,23 @@ namespace Stump.Server.WorldServer.Game.Maps
             return GetCell(pos.X, pos.Y);
         }
 
+        public IEnumerable<MapObstacle> GetMapObstacles()
+        {
+            var mapObstacles = new List<MapObstacle>();
+
+            foreach (var trigger in GetTriggers().Where(x => x is AnimateTrigger))
+            {
+                mapObstacles.AddRange(((AnimateTrigger)trigger).Obstacles);
+            }
+
+            foreach (var skill in GetInteractiveObjects().Select(x => x.GetSkills()).Where(skill => skill is SkillAnimate))
+            {
+                mapObstacles.AddRange(((SkillAnimate)skill).Obstacles);
+            }
+
+            return mapObstacles;
+        }
+
         public InteractiveObject GetInteractiveObject(int id)
         {
             return !m_interactives.ContainsKey(id) ? null : m_interactives[id];
@@ -1752,7 +1769,7 @@ namespace Stump.Server.WorldServer.Game.Maps
                 m_actors.Where(entry => entry.CanBeSee(character)).Select(entry => entry.GetGameContextActorInformations(character) as GameRolePlayActorInformations),
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Select(entry => entry.Value.GetInteractiveElement(character)),
                 m_interactives.Where(entry => entry.Value.CanBeSee(character)).Where(x => x.Value.Spawn.Animated).Select(entry => entry.Value.GetStatedElement()),
-                new MapObstacle[0],
+                GetMapObstacles(),
                 m_fights.Where(entry => entry.BladesVisible).Select(entry => entry.GetFightCommonInformations()),
                 (short)Position.X,
                 (short)Position.Y);
