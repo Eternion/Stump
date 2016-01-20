@@ -67,6 +67,7 @@ using GuildMember = Stump.Server.WorldServer.Game.Guilds.GuildMember;
 using Stump.Server.WorldServer.Handlers.Interactives;
 using Stump.Server.WorldServer.Handlers.Initialization;
 using Stump.Server.WorldServer.Handlers.Inventory;
+using Stump.Server.WorldServer.Handlers.Chat;
 
 namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 {
@@ -1707,6 +1708,11 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 return TimeSpan.MaxValue;
 
             return MuteUntil.Value - DateTime.Now;
+        }
+
+        public override void DisplaySmiley(short smileyId)
+        {
+            CharacterContainer.ForEach(entry => ChatHandler.SendChatSmileyMessage(entry.Client, this, smileyId));
         }
 
         #endregion
