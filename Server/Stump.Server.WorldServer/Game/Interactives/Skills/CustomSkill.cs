@@ -1,4 +1,5 @@
 ﻿using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
@@ -9,6 +10,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
                    InteractiveManager.Instance.GetSkillTemplate(record.CustomTemplateId.Value) : InteractiveManager.Instance.GetDefaultSkillTemplate(), interactiveObject)
         {
             Record = record;
+        }
+
+        public override bool IsEnabled(Character character)
+        {
+            return base.IsEnabled(character) && Record.IsConditionFilled(character);
         }
 
         public InteractiveCustomSkillRecord Record

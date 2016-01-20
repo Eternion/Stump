@@ -116,6 +116,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new BonesCriterion();
                 case BreedCriterion.Identifier:
                     return new BreedCriterion();
+                case CellOccupedCriterion.Identifier:
+                    return new CellOccupedCriterion();
                 case EmoteCriterion.Identifier:
                     return new EmoteCriterion();
                 case FriendListCriterion.Identifier:
