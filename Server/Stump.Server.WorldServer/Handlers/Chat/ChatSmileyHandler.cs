@@ -1,8 +1,10 @@
+using Stump.DofusProtocol.Enums.Custom;
 using Stump.DofusProtocol.Messages;
 using Stump.Server.BaseServer.Network;
 using Stump.Server.WorldServer.Core.Network;
 using Stump.Server.WorldServer.Game.Actors;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Handlers.Chat
 {
@@ -30,9 +32,9 @@ namespace Stump.Server.WorldServer.Handlers.Chat
                             0));
         }
 
-        public static void SendChatSmileyExtraPackListMessage(IPacketReceiver client)
+        public static void SendChatSmileyExtraPackListMessage(IPacketReceiver client, SmileyPacksEnum[] smileyPacks)
         {
-            client.Send(new ChatSmileyExtraPackListMessage(new sbyte[] { 1, 2, 3, 4, 5 }));
+            client.Send(new ChatSmileyExtraPackListMessage(smileyPacks.Select(x => (sbyte)x)));
         }
     }
 }
