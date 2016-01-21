@@ -172,6 +172,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 case SkillCriterion.Identifier:
                 case SkillCriterion.Identifier2:
                     return new SkillCriterion();
+                case SmileyPackCriterion.Identifier:
+                    return new SmileyPackCriterion();
                 case SoulStoneCriterion.Identifier:
                     return new SoulStoneCriterion();
                 case SpecializationCriterion.Identifier:
