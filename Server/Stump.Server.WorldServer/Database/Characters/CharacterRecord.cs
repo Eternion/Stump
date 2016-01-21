@@ -8,6 +8,7 @@ using Stump.ORM.SubSonic.SQLGeneration.Schema;
 using Stump.Server.WorldServer.Database.Breeds;
 using Stump.Server.WorldServer.Game.Actors.Look;
 using Stump.Server.WorldServer.Game.Maps;
+using Stump.DofusProtocol.Enums.Custom;
 
 namespace Stump.Server.WorldServer.Database.Characters
 {
@@ -196,7 +197,6 @@ namespace Stump.Server.WorldServer.Database.Characters
             }
         }
 
-
         [Ignore]
         public List<EmotesEnum> Emotes
         {
@@ -222,6 +222,34 @@ namespace Stump.Server.WorldServer.Database.Characters
             {
                 m_emotesCSV = value;
                 m_emotes = !string.IsNullOrEmpty(m_emotesCSV) ? m_emotesCSV.FromCSV<short>(",").Select(x => (EmotesEnum)x).ToList() : new List<EmotesEnum>();
+            }
+        }
+
+        [Ignore]
+        public List<SmileyPacksEnum> SmileyPacks
+        {
+            get
+            {
+                return m_smileyPacks;
+            }
+            set
+            {
+                m_smileyPacks = value;
+                m_smileyPacksCSV = m_smileyPacks.Select(x => (short)x).ToCSV(",");
+            }
+        }
+
+        [NullString]
+        public string SmileyPacksCSV
+        {
+            get
+            {
+                return m_smileyPacksCSV;
+            }
+            set
+            {
+                m_smileyPacksCSV = value;
+                m_smileyPacks = !string.IsNullOrEmpty(m_smileyPacksCSV) ? m_smileyPacksCSV.FromCSV<short>(",").Select(x => (SmileyPacksEnum)x).ToList() : new List<SmileyPacksEnum>();
             }
         }
 
@@ -559,6 +587,7 @@ namespace Stump.Server.WorldServer.Database.Characters
 
             PlayerLifeStatus = PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING;
             Emotes = new List<EmotesEnum> { EmotesEnum.EMOTE_S_ASSEOIR };
+            SmileyPacks = new List<SmileyPacksEnum> { SmileyPacksEnum.BASIC_PACK };
         }
 
 
@@ -596,6 +625,8 @@ namespace Stump.Server.WorldServer.Database.Characters
         string m_ornamentsCSV;
         List<EmotesEnum> m_emotes = new List<EmotesEnum>();
         string m_emotesCSV;
+        List<SmileyPacksEnum> m_smileyPacks = new List<SmileyPacksEnum>();
+        string m_smileyPacksCSV;
 
         [Ignore]
         public List<Map> KnownZaaps
@@ -687,6 +718,7 @@ namespace Stump.Server.WorldServer.Database.Characters
             m_titlesCSV = m_titles.ToCSV(",");
             m_ornamentsCSV = m_ornaments.ToCSV(",");
             m_emotesCSV = m_emotes.Select(x => (short)x).ToCSV(",");
+            m_smileyPacksCSV = m_smileyPacks.Select(x => (short)x).ToCSV(",");
         }
     }
 }

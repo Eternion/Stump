@@ -361,6 +361,7 @@
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamageModificator.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\LearnSmileyPack.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnEmote.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreEnergy.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\SummonTaxcollector.cs" />

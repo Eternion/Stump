@@ -11,35 +11,39 @@
         /// </summary>
         Effect_3 = 3,
         /// <summary>
-        /// Teleports over a maximum range of #1 cells.
+        /// Téléporte sur la case ciblée
         /// </summary>
         Effect_Teleport = 4,
         /// <summary>
-        /// Pushes the target back #1 cell(s)
+        /// Repousse de #1 case(s)
         /// </summary>
         Effect_PushBack = 5,
         /// <summary>
-        /// Makes you move forward #1 square(s)
+        /// Attire de #1 case(s)
         /// </summary>
         Effect_PullForward = 6,
         /// <summary>
-        /// Get a divorce
+        /// Divorcer le couple
         /// </summary>
-        Effect_Divorce = 7,
+        Effect_7 = 7,
         /// <summary>
-        /// Switch the position of 2 players
+        /// Échange de positions
         /// </summary>
         Effect_SwitchPosition = 8,
         /// <summary>
-        /// Avoids #1% of hits by moving back of #2 square(s)
+        /// Esquive #1% des coups en reculant de #2 case(s)
         /// </summary>
         Effect_Dodge = 9,
         /// <summary>
-        /// Allows the use of emoticon #3
+        /// Attitude #3
         /// </summary>
         Effect_LearnEmote = 10,
         /// <summary>
-        /// Changes the playing time of a player
+        /// 
+        /// </summary>
+        Effect_12 = 12,
+        /// <summary>
+        /// Change le temps de jeu d'un joueur
         /// </summary>
         Effect_13 = 13,
         /// <summary>
@@ -59,423 +63,427 @@
         /// </summary>
         Effect_34 = 34,
         /// <summary>
-        /// Force le démarrage d'une quête
+        /// Reset d'une quête
         /// </summary>
         Effect_36 = 36,
         /// <summary>
-        /// Carry a player
+        /// Démarre une quête (force)
+        /// </summary>
+        Effect_37 = 37,
+        /// <summary>
+        /// Porte la cible
         /// </summary>
         Effect_Carry = 50,
         /// <summary>
-        /// Throw a player
+        /// Lance une entité
         /// </summary>
         Effect_Throw = 51,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 MP
+        /// Vole #1{~1~2 à }#2 PM
         /// </summary>
         Effect_StealMP_77 = 77,
         /// <summary>
-        /// Adds #1{~1~2 to }#2 MP
+        /// Ajoute +#1{~1~2 à }#2 PM
         /// </summary>
         Effect_AddMP = 78,
         /// <summary>
-        /// #3% damage received x#1, or else healed by x#2
+        /// #3% soigné de x#2, sinon dégâts subis x#1
         /// </summary>
         Effect_HealOrMultiply = 79,
         /// <summary>
-        /// HP restored #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 (PV rendus)
         /// </summary>
         Effect_HealHP_81 = 81,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 HP (fixed)
+        /// #1{~1~2 à }#2 PV (vol Neutre fixe)
         /// </summary>
         Effect_StealHPFix = 82,
         /// <summary>
-        /// Ste_Steals #1{~1~2 to }#2 AP
+        /// Vole #1{~1~2 à }#2 PA
         /// </summary>
         Effect_StealAP_84 = 84,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's life (water)
+        /// #1{~1~2 à }#2% des PV de l'attaquant (dommages Eau)
         /// </summary>
         Effect_DamagePercentWater = 85,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's life (earth)
+        /// #1{~1~2 à }#2% des PV de l'attaquant (dommages Terre)
         /// </summary>
         Effect_DamagePercentEarth = 86,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's life (air)
+        /// #1{~1~2 à }#2% des PV de l'attaquant (dommages Air)
         /// </summary>
         Effect_DamagePercentAir = 87,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's life (fire)
+        /// #1{~1~2 à }#2% des PV de l'attaquant (dommages Feu)
         /// </summary>
         Effect_DamagePercentFire = 88,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's life (neutral)
+        /// #1{~1~2 à }#2% des PV de l'attaquant (dommages Neutre)
         /// </summary>
         Effect_DamagePercentNeutral = 89,
         /// <summary>
-        /// Gives #1{~1~2 to }#2 % of his own life
+        /// Donne #1{~1~2 à }#2 % de sa vie
         /// </summary>
         Effect_GiveHPPercent = 90,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 HP (water)
+        /// #1{~1~2 à }#2 (vol Eau)
         /// </summary>
         Effect_StealHPWater = 91,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 HP (earth)
+        /// #1{~1~2 à }#2 (vol Terre)
         /// </summary>
         Effect_StealHPEarth = 92,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 HP (air)
+        /// #1{~1~2 à }#2 (vol Air)
         /// </summary>
         Effect_StealHPAir = 93,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 HP (fire)
+        /// #1{~1~2 à }#2 (vol Feu)
         /// </summary>
         Effect_StealHPFire = 94,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 HP (neutral)
+        /// #1{~1~2 à }#2 (vol Neutre)
         /// </summary>
         Effect_StealHPNeutral = 95,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2 (water)
+        /// #1{~1~2 à }#2 (dommages Eau)
         /// </summary>
         Effect_DamageWater = 96,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2 (earth)
+        /// #1{~1~2 à }#2 (dommages Terre)
         /// </summary>
         Effect_DamageEarth = 97,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2 (air)
+        /// #1{~1~2 à }#2 (dommages Air)
         /// </summary>
         Effect_DamageAir = 98,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2 (fire)   
+        /// #1{~1~2 à }#2 (dommages Feu)
         /// </summary>
         Effect_DamageFire = 99,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2 (neutral)
+        /// #1{~1~2 à }#2 (dommages Neutre)
         /// </summary>
         Effect_DamageNeutral = 100,
         /// <summary>
-        /// Lost AP for the target: #1{~1~2 to }#2
+        /// -#1{~1~2 à -}#2 PA
         /// </summary>
         Effect_RemoveAP = 101,
         /// <summary>
-        /// Damage reduced by #1{~1~2 to }#2
+        /// Dommages réduits de #1{~1~2 à }#2
         /// </summary>
         Effect_AddGlobalDamageReduction_105 = 105,
         /// <summary>
-        /// Reflects a spell, max. of level #2
+        /// Renvoie un sort de niveau #2 maximum
         /// </summary>
         Effect_ReflectSpell = 106,
         /// <summary>
-        /// Reflects #1{~1~2 to }#2 damage
+        /// Dommages retournés : #1{~1~2 à }#2
         /// </summary>
         Effect_AddDamageReflection = 107,
         /// <summary>
-        /// HP restored #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 (PV rendus)
         /// </summary>
         Effect_HealHP_108 = 108,
         /// <summary>
-        /// Damage to the caster: #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 (dommages au lanceur)
         /// </summary>
         Effect_109 = 109,
         /// <summary>
-        /// +#1{~1~2 to }#2 life
+        /// #1{~1~2 à }#2 Vie
         /// </summary>
         Effect_AddHealth = 110,
         /// <summary>
-        /// +#1{~1~2 to }#2 AP
+        /// #1{~1~2 à }#2 PA
         /// </summary>
         Effect_AddAP_111 = 111,
         /// <summary>
-        /// +#1{~1~2 to }#2 damage
+        /// #1{~1~2 à }#2 Dommages
         /// </summary>
         Effect_AddDamageBonus = 112,
         /// <summary>
-        /// Doubles damage or restores #1{~1~2 to }#2 HP
+        /// Double les dommages ou rend  #1{~1~2 à }#2 PDV
         /// </summary>
-        Effect_DoubleDamageOrRestoreHP = 113,
+        Effect_113 = 113,
         /// <summary>
-        /// Multiply damage by #1
+        /// Multiplie les dommages par #1
         /// </summary>
         Effect_AddDamageMultiplicator = 114,
         /// <summary>
-        /// +#1{~1~2 to }#2 critical hits
+        /// #1{~1~2 à }#2% Critique
         /// </summary>
         Effect_AddCriticalHit = 115,
         /// <summary>
-        /// -#1{~1~2 to }#2 range
+        /// -#1{~1~2 à -}#2 PO
         /// </summary>
         Effect_SubRange = 116,
         /// <summary>
-        /// +#1{~1~2 to }#2 range
+        /// #1{~1~2 à }#2 PO
         /// </summary>
         Effect_AddRange = 117,
         /// <summary>
-        /// +#1{~1~2 to }#2 strength
+        /// #1{~1~2 à }#2 Force
         /// </summary>
         Effect_AddStrength = 118,
         /// <summary>
-        /// +#1{~1~2 to }#2 agility
+        /// #1{~1~2 à }#2 Agilité
         /// </summary>
         Effect_AddAgility = 119,
         /// <summary>
-        /// Adds +#1{~1~2 to }#2 AP
+        /// Ajoute +#1{~1~2 à }#2 PA
         /// </summary>
         Effect_RegainAP = 120,
         /// <summary>
-        /// +#1{~1~2 to }#2 damage
+        /// #1{~1~2 à }#2 Dommages
         /// </summary>
         Effect_AddDamageBonus_121 = 121,
         /// <summary>
-        /// Adds #1{~1~2 to }#2 to critical failures
+        /// #1{~1~2 à }#2 Échecs Critiques
         /// </summary>
         Effect_AddCriticalMiss = 122,
         /// <summary>
-        /// +#1{~1~2 to }#2 chance
+        /// #1{~1~2 à }#2 Chance
         /// </summary>
         Effect_AddChance = 123,
         /// <summary>
-        /// +#1{~1~2 to }#2 wisdom
+        /// #1{~1~2 à }#2 Sagesse
         /// </summary>
         Effect_AddWisdom = 124,
         /// <summary>
-        /// +#1{~1~2 to }#2 vitality
+        /// #1{~1~2 à }#2 Vitalité
         /// </summary>
         Effect_AddVitality = 125,
         /// <summary>
-        /// +#1{~1~2 to }#2 intelligence
+        /// #1{~1~2 à }#2 Intelligence
         /// </summary>
         Effect_AddIntelligence = 126,
         /// <summary>
-        /// MP lost: #1{~1~2 to }#2
+        /// -#1{~1~2 à -}#2 PM
         /// </summary>
         Effect_LostMP = 127,
         /// <summary>
-        /// +#1{~1~2 to }#2 MP
+        /// #1{~1~2 à }#2 PM
         /// </summary>
         Effect_AddMP_128 = 128,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 Kamas
+        /// Vole #1{~1~2 à }#2 Kamas
         /// </summary>
         Effect_StealKamas = 130,
         /// <summary>
-        /// Using #1 AP makes you lose #2 HP
+        /// #1 PA utilisés font perdre #2 PV
         /// </summary>
         Effect_LoseHPByUsingAP = 131,
         /// <summary>
-        /// Dispels magic effects
+        /// Enlève les envoûtements
         /// </summary>
         Effect_DispelMagicEffects = 132,
         /// <summary>
-        /// Lost AP for caster: #1{~1~2 to }#2
+        /// PA perdus pour le lanceur : #1{~1~2 à }#2
         /// </summary>
         Effect_LosingAP = 133,
         /// <summary>
-        /// Lost MP for caster: #1{~1~2 to }#2
+        /// PM perdus pour le lanceur : #1{~1~2 à }#2
         /// </summary>
         Effect_LosingMP = 134,
         /// <summary>
-        /// Caster's range reduced by: #1{~1~2 to }#2
+        /// Portée du lanceur réduite de : #1{~1~2 à }#2
         /// </summary>
         Effect_SubRange_135 = 135,
         /// <summary>
-        /// Caster's range increased by: #1{~1~2 to }#2
+        /// Portée du lanceur augmentée de : #1{~1~2 à }#2
         /// </summary>
         Effect_AddRange_136 = 136,
         /// <summary>
-        /// Caster's physical damage increased by : #1{~1~2 to }#2
+        /// Dommages physiques du lanceur augmentés de : #1{~1~2 à }#2
         /// </summary>
         Effect_AddPhysicalDamage_137 = 137,
         /// <summary>
-        /// Increases damage by #1{~1~2 to }#2%
+        /// #1{~1~2 à }#2 Puissance
         /// </summary>
         Effect_IncreaseDamage_138 = 138,
         /// <summary>
-        /// Restores #1{~1~2 to }#2 energy points
+        /// Rend #1{~1~2 à }#2 points d'énergie
         /// </summary>
         Effect_RestoreEnergyPoints = 139,
         /// <summary>
-        /// Makes you skip a turn
+        /// Tour annulé
         /// </summary>
         Effect_SkipTurn = 140,
         /// <summary>
-        /// Kills the target
+        /// Tue la cible
         /// </summary>
         Effect_Kill = 141,
         /// <summary>
-        /// +#1{~1~2 to }#2 to physical damage
+        /// #1{~1~2 à }#2 Dommages Physiques
         /// </summary>
         Effect_AddPhysicalDamage_142 = 142,
         /// <summary>
-        /// HP restored: #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 (PV rendus)
         /// </summary>
         Effect_HealHP_143 = 143,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2 (unboosted)
+        /// #1{~1~2 à }#2 (dommages Neutre fixe)
         /// </summary>
-        Effect_DamageFix = 144,
+        Effect_144 = 144,
         /// <summary>
-        /// -#1{~1~2 to }#2 to damage
+        /// -#1{~1~2 à }#2 Dommages
         /// </summary>
         Effect_SubDamageBonus = 145,
         /// <summary>
-        /// Changes the words
+        /// Change les paroles
         /// </summary>
-        Effect_ChangesWords = 146,
+        Effect_146 = 146,
         /// <summary>
-        /// Revive an ally
+        /// Ressuscite un allié
         /// </summary>
-        Effect_ReviveAlly = 147,
+        Effect_147 = 147,
         /// <summary>
-        /// Someone's following you!
+        /// Quelqu'un vous suit !
         /// </summary>
-        Effect_Followed = 148,
+        Effect_148 = 148,
         /// <summary>
-        /// Changes appearance
+        /// Change l'apparence
         /// </summary>
         Effect_ChangeAppearance = 149,
         /// <summary>
-        /// Makes the character invisible
+        /// Rend le personnage invisible
         /// </summary>
         Effect_Invisibility = 150,
         /// <summary>
-        /// -#1{~1~2 to }#2 chance
+        /// -#1{~1~2 à -}#2 Chance
         /// </summary>
         Effect_SubChance = 152,
         /// <summary>
-        /// -#1{~1~2 to }#2 vitality
+        /// -#1{~1~2 à -}#2 Vitalité
         /// </summary>
         Effect_SubVitality = 153,
         /// <summary>
-        /// -#1{~1~2 to }#2 agility
+        /// -#1{~1~2 à -}#2 Agilité
         /// </summary>
         Effect_SubAgility = 154,
         /// <summary>
-        /// -#1{~1~2 to }#2 intelligence
+        /// -#1{~1~2 à -}#2 Intelligence
         /// </summary>
         Effect_SubIntelligence = 155,
         /// <summary>
-        /// -#1{~1~2 to }#2 wisdom
+        /// -#1{~1~2 à -}#2 Sagesse
         /// </summary>
         Effect_SubWisdom = 156,
         /// <summary>
-        /// -#1{~1~2 to }#2 strength
+        /// -#1{~1~2 à -}#2 Force
         /// </summary>
         Effect_SubStrength = 157,
         /// <summary>
-        /// Increases load weight by #1{~1~2 to }#2 pods
+        /// #1{~1~2 à }#2 Pods
         /// </summary>
         Effect_IncreaseWeight = 158,
         /// <summary>
-        /// Decreases load weight by #1{~1~2 to }#2 pods
+        /// -#1{~1~2 à }#2 Pods
         /// </summary>
         Effect_DecreaseWeight = 159,
         /// <summary>
-        /// Increases chance of avoiding AP loss by #1{~1~2 to }#2%
+        /// #1{~1~2 à }#2 Esquive PA
         /// </summary>
         Effect_AddDodgeAPProbability = 160,
         /// <summary>
-        /// Increases chance of avoiding MP loss by #1{~1~2 to }#2%
+        /// #1{~1~2 à }#2 Esquive PM
         /// </summary>
         Effect_AddDodgeMPProbability = 161,
         /// <summary>
-        /// -#1{~1~2 to}#2 chance of avoiding AP losses
+        /// -#1{~1~2 à }#2 Esquive PA
         /// </summary>
         Effect_SubDodgeAPProbability = 162,
         /// <summary>
-        /// -#1{~1~2 to}#2 chance of avoiding MP losses
+        /// -#1{~1~2 à }#2 Esquive PM
         /// </summary>
         Effect_SubDodgeMPProbability = 163,
         /// <summary>
-        /// Damage reduced by #1%
+        /// Dommages réduits de #1%
         /// </summary>
         Effect_AddGlobalDamageReduction = 164,
         /// <summary>
-        /// Increases (#1) damage by #2%
+        /// #2% Dommages #1
         /// </summary>
         Effect_AddDamageBonusPercent = 165,
         /// <summary>
-        /// AP given back: #1{~1~2 to }#2
+        /// PA retournés : #1{~1~2 à }#2
         /// </summary>
         Effect_166 = 166,
         /// <summary>
-        /// -#1{~1~2 to }#2 AP
+        /// -#1{~1~2 à -}#2 PA
         /// </summary>
         Effect_SubAP = 168,
         /// <summary>
-        /// -#1{~1~2 to }#2 MP
+        /// -#1{~1~2 à -}#2 PM
         /// </summary>
         Effect_SubMP = 169,
         /// <summary>
-        /// -#1{~1~2 to }#2 critical hits
+        /// -#1{~1~2 à }#2% Critique
         /// </summary>
         Effect_SubCriticalHit = 171,
         /// <summary>
-        /// Magic reduction decreased by #1{~1~2 to }#2
+        /// -#1{~1~2 à }#2 Réduction Magique
         /// </summary>
         Effect_SubMagicDamageReduction = 172,
         /// <summary>
-        /// Physical reduction decreased by #1{~1~2 to }#2
+        /// -#1{~1~2 à }#2 Réduction Physique
         /// </summary>
         Effect_SubPhysicalDamageReduction = 173,
         /// <summary>
-        /// +#1{~1~2 to }#2 initiative
+        /// #1{~1~2 à }#2 Initiative
         /// </summary>
         Effect_AddInitiative = 174,
         /// <summary>
-        /// -#1{~1~2 to }#2 initiative
+        /// -#1{~1~2 à }#2 Initiative
         /// </summary>
         Effect_SubInitiative = 175,
         /// <summary>
-        /// +#1{~1~2 to }#2 prospecting
+        /// #1{~1~2 à }#2 Prospection
         /// </summary>
         Effect_AddProspecting = 176,
         /// <summary>
-        /// -#1{~1~2 to }#2 prospecting
+        /// -#1{~1~2 à }#2 Prospection
         /// </summary>
         Effect_SubProspecting = 177,
         /// <summary>
-        /// +#1{~1~2 to }#2 heals
+        /// #1{~1~2 à }#2 Soins
         /// </summary>
         Effect_AddHealBonus = 178,
         /// <summary>
-        /// -#1{~1~2 to }#2 heals
+        /// -#1{~1~2 à }#2 Soins
         /// </summary>
         Effect_SubHealBonus = 179,
         /// <summary>
-        /// Creates a double of the caster
+        /// Crée un double du lanceur de sort
         /// </summary>
         Effect_Double = 180,
         /// <summary>
-        /// Summons: #1
+        /// Invoque : #1
         /// </summary>
         Effect_Summon = 181,
         /// <summary>
-        /// +#1{~1~2 to }#2 to summonable creatures
+        /// #1{~1~2 à }#2 Invocations
         /// </summary>
         Effect_AddSummonLimit = 182,
         /// <summary>
-        /// Magic reduction of #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 Réduction Magique
         /// </summary>
         Effect_AddMagicDamageReduction = 183,
         /// <summary>
-        /// Physical reduction of #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 Réduction Physique
         /// </summary>
         Effect_AddPhysicalDamageReduction = 184,
         /// <summary>
-        /// Summons a static creature
+        /// Invoque : #1 (statique)
         /// </summary>
         Effect_185 = 185,
         /// <summary>
-        /// Decreases damage by #1{~1~2 to }#2%
+        /// -#1{~1~2 à }#2 Puissance
         /// </summary>
         Effect_SubDamageBonusPercent = 186,
         /// <summary>
-        /// Switches alignment
+        /// Changer l'alignement
         /// </summary>
         Effect_188 = 188,
         /// <summary>
@@ -487,91 +495,91 @@
         /// </summary>
         Effect_193 = 193,
         /// <summary>
-        /// Gain #1{~1~2 to }#2 Kamas
+        /// Gagner #1{~1~2 à }#2 Kamas
         /// </summary>
         Effect_GiveKamas = 194,
         /// <summary>
-        /// Transform into #1
+        /// Transforme en #1
         /// </summary>
         Effect_197 = 197,
         /// <summary>
-        /// Put an item on the ground
+        /// Pose un objet au sol
         /// </summary>
         Effect_201 = 201,
         /// <summary>
-        /// Reveals all invisible items
+        /// Dévoile tous les objets invisibles
         /// </summary>
         Effect_RevealsInvisible = 202,
         /// <summary>
-        /// Revive the target
-        /// </summary>  
+        /// Ressuscite la cible
+        /// </summary>
         Effect_206 = 206,
         /// <summary>
-        /// #1{~1~2 to }#2 % earth resistance
+        /// #1{~1~2 à }#2% Résistance Terre
         /// </summary>
         Effect_AddEarthResistPercent = 210,
         /// <summary>
-        /// #1{~1~2 to }#2 % water resistance
+        /// #1{~1~2 à }#2% Résistance Eau
         /// </summary>
         Effect_AddWaterResistPercent = 211,
         /// <summary>
-        /// #1{~1~2 to }#2 % air resistance
+        /// #1{~1~2 à }#2% Résistance Air
         /// </summary>
         Effect_AddAirResistPercent = 212,
         /// <summary>
-        /// #1{~1~2 to }#2 % fire resistance
+        /// #1{~1~2 à }#2% Résistance Feu
         /// </summary>
         Effect_AddFireResistPercent = 213,
         /// <summary>
-        /// #1{~1~2 to }#2 % neutral resistance
+        /// #1{~1~2 à }#2% Résistance Neutre
         /// </summary>
         Effect_AddNeutralResistPercent = 214,
         /// <summary>
-        /// #1{~1~2 to }#2 % earth weakness
+        /// -#1{~1~2 à }#2% Résistance Terre
         /// </summary>
         Effect_SubEarthResistPercent = 215,
         /// <summary>
-        /// #1{~1~2 to }#2 % water weakness
+        /// -#1{~1~2 à }#2 % Résistance Eau
         /// </summary>
         Effect_SubWaterResistPercent = 216,
         /// <summary>
-        /// #1{~1~2 to }#2 % air weakness
+        /// -#1{~1~2 à }#2% Résistance Air
         /// </summary>
         Effect_SubAirResistPercent = 217,
         /// <summary>
-        /// #1{~1~2 to }#2 % fire weakness
+        /// -#1{~1~2 à }#2% Résistance Feu
         /// </summary>
         Effect_SubFireResistPercent = 218,
         /// <summary>
-        /// #1{~1~2 to }#2 % neutral weakness
+        /// -#1{~1~2 à }#2 % Résistance Neutre
         /// </summary>
         Effect_SubNeutralResistPercent = 219,
         /// <summary>
-        /// Reflects #1 damage
+        /// Renvoie #1{~1~2 à }#2 dommages
         /// </summary>
         Effect_AddDamageReflection_220 = 220,
         /// <summary>
-        /// What's in there?
+        /// Qu'y a-t-il là dedans ?
         /// </summary>
         Effect_221 = 221,
         /// <summary>
-        /// What's in there?
+        /// Qu'y a-t-il là dedans ?
         /// </summary>
         Effect_222 = 222,
         /// <summary>
-        /// Adds #1{~1~2 to }#2 to trap damage
+        /// #1{~1~2 à }#2 Dommages Pièges
         /// </summary>
         Effect_AddTrapBonus = 225,
         /// <summary>
-        /// +#1{~1~2 to }#2% damage to traps
+        /// #1{~1~2 à }#2 Puissance (pièges)
         /// </summary>
         Effect_AddTrapBonusPercent = 226,
         /// <summary>
-        /// Get a mount!
+        /// Récupère une monture !
         /// </summary>
         Effect_229 = 229,
         /// <summary>
-        /// +#1 of lost energy
+        /// #1 Énergie Perdue
         /// </summary>
         Effect_230 = 230,
         /// <summary>
@@ -579,207 +587,207 @@
         /// </summary>
         Effect_239 = 239,
         /// <summary>
-        /// +#1{~1~2 to }#2 earth resistance
+        /// #1{~1~2 à }#2 Résistance Terre
         /// </summary>
         Effect_AddEarthElementReduction = 240,
         /// <summary>
-        /// +#1{~1~2 to }#2 water resistance
+        /// #1{~1~2 à }#2 Résistance Eau
         /// </summary>
         Effect_AddWaterElementReduction = 241,
         /// <summary>
-        /// +#1{~1~2 to }#2 air resistance
+        /// #1{~1~2 à }#2 Résistance Air
         /// </summary>
         Effect_AddAirElementReduction = 242,
         /// <summary>
-        /// +#1{~1~2 to }#2 fire resistance
+        /// #1{~1~2 à }#2 Résistance Feu
         /// </summary>
         Effect_AddFireElementReduction = 243,
         /// <summary>
-        /// +#1{~1~2 to }#2 neutral resistance
+        /// #1{~1~2 à }#2 Résistance Neutre
         /// </summary>
         Effect_AddNeutralElementReduction = 244,
         /// <summary>
-        /// -#1{~1~2 to }#2 earth resistance
+        /// -#1{~1~2 à }#2 Résistance Terre
         /// </summary>
         Effect_SubEarthElementReduction = 245,
         /// <summary>
-        /// -#1{~1~2 to }#2 water resistance
+        /// -#1{~1~2 à }#2 Résistance Eau
         /// </summary>
         Effect_SubWaterElementReduction = 246,
         /// <summary>
-        /// -#1{~1~2 to }#2 air resistance
+        /// -#1{~1~2 à }#2 Résistance Air
         /// </summary>
         Effect_SubAirElementReduction = 247,
         /// <summary>
-        /// -#1{~1~2 to }#2 fire resistance
+        /// -#1{~1~2 à }#2 Résistance Feu
         /// </summary>
         Effect_SubFireElementReduction = 248,
         /// <summary>
-        /// -#1{~1~2 to }#2 neutral resistance
+        /// -#1{~1~2 à }#2 Résistance Neutre
         /// </summary>
         Effect_SubNeutralElementReduction = 249,
         /// <summary>
-        /// #1{~1~2 to }#2% earth resistance against fighters
+        /// #1{~1~2 à }#2% Résistance Terre JCJ
         /// </summary>
         Effect_AddPvpEarthResistPercent = 250,
         /// <summary>
-        /// #1{~1~2 to }#2 % water resistance against fighters
+        /// #1{~1~2 à }#2% Résistance Eau JCJ
         /// </summary>
         Effect_AddPvpWaterResistPercent = 251,
         /// <summary>
-        /// #1{~1~2 to }#2 % air resistance against fighters
+        /// #1{~1~2 à }#2% Résistance Air JCJ
         /// </summary>
         Effect_AddPvpAirResistPercent = 252,
         /// <summary>
-        /// #1{~1~2 to }#2 % fire resistance against fighters
+        /// #1{~1~2 à }#2% Résistance Feu JCJ
         /// </summary>
         Effect_AddPvpFireResistPercent = 253,
         /// <summary>
-        /// #1{~1~2 to }#2 % neutral resistance against fighters
+        /// #1{~1~2 à }#2% Résistance Neutre JCJ
         /// </summary>
         Effect_AddPvpNeutralResistPercent = 254,
         /// <summary>
-        /// #1{~1~2 to }#2 % earth weakness against fighters
+        /// -#1{~1~2 à }#2% Résistance Terre JCJ
         /// </summary>
         Effect_SubPvpEarthResistPercent = 255,
         /// <summary>
-        /// #1{~1~2 to }#2 % water weakness against fighters
+        /// -#1{~1~2 à }#2% Résistance Eau JCJ
         /// </summary>
         Effect_SubPvpWaterResistPercent = 256,
         /// <summary>
-        /// #1{~1~2 to }#2 % air weakness against fighters
+        /// -#1{~1~2 à }#2% Résistance Air JCJ
         /// </summary>
         Effect_SubPvpAirResistPercent = 257,
         /// <summary>
-        /// #1{~1~2 to }#2 % fire weakness against fighters
+        /// -#1{~1~2 à }#2% Résistance Feu JCJ
         /// </summary>
         Effect_SubPvpFireResistPercent = 258,
         /// <summary>
-        /// #1{~1~2 to }#2 % neutral weakness against fighters
+        /// -#1{~1~2 à }#2% Résistance Neutre JCJ
         /// </summary>
         Effect_SubPvpNeutralResistPercent = 259,
         /// <summary>
-        /// +#1{~1~2 to }#2 earth resistance against fighters
+        /// #1{~1~2 à }#2 Résistance Terre JCJ
         /// </summary>
         Effect_AddPvpEarthElementReduction = 260,
         /// <summary>
-        /// +#1{~1~2 to }#2 water resistance against fighters
+        /// #1{~1~2 à }#2 Résistance Eau JCJ
         /// </summary>
         Effect_AddPvpWaterElementReduction = 261,
         /// <summary>
-        /// Adds #1{~1~2 to }#2 air resistance against fighters
+        /// #1{~1~2 à }#2 Résistance Air JCJ
         /// </summary>
         Effect_AddPvpAirElementReduction = 262,
         /// <summary>
-        /// +#1{~1~2 to }#2 fire resistance against fighters
+        /// #1{~1~2 à }#2 Résistance Feu JCJ
         /// </summary>
         Effect_AddPvpFireElementReduction = 263,
         /// <summary>
-        /// +#1{~1~2 to }#2 neutral resistance against fighters
+        /// #1{~1~2 à }#2 Résistance Neutre JCJ
         /// </summary>
         Effect_AddPvpNeutralElementReduction = 264,
         /// <summary>
-        /// Damage reduced by #1{~1~2 to }#2
+        /// Dommages réduits de #1{~1~2 à }#2
         /// </summary>
         Effect_AddArmorDamageReduction = 265,
         /// <summary>
-        /// #1{~1~2 to }#2 Chance theft
+        /// Vole #1{~1~2 à -}#2 Chance
         /// </summary>
         Effect_StealChance = 266,
         /// <summary>
-        /// #1{~1~2 to }#2 Vitality theft
+        /// Vole #1{~1~2 à -}#2 Vitalité
         /// </summary>
         Effect_StealVitality = 267,
         /// <summary>
-        /// #1{~1~2 to }#2 Agility theft
+        /// Vole #1{~1~2 à -}#2 Agilité
         /// </summary>
         Effect_StealAgility = 268,
         /// <summary>
-        /// #1{~1~2 to }#2 Intelligence theft
+        /// Vole #1{~1~2 à -}#2 Intelligence
         /// </summary>
         Effect_StealIntelligence = 269,
         /// <summary>
-        /// #1{~1~2 to }#2 Wisdom theft
+        /// Vole #1{~1~2 à -}#2 Sagesse
         /// </summary>
         Effect_StealWisdom = 270,
         /// <summary>
-        /// #1{~1~2 to }#2 Strength theft
+        /// Vole #1{~1~2 à -}#2 Force
         /// </summary>
         Effect_StealStrength = 271,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (water)
+        /// #1{~1~2 à }#2% des PV manquants de l'attaquant (dommages Eau)
         /// </summary>
         Effect_DamageWaterPerHPLost = 275,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (earth)
+        /// #1{~1~2 à }#2% des PV manquants de l'attaquant (dommages Terre)
         /// </summary>
         Effect_DamageEarthPerHPLost = 276,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (air)
+        /// #1{~1~2 à }#2% des PV manquants de l'attaquant (dommages Air)
         /// </summary>
         Effect_DamageAirPerHPLost = 277,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (fire)
+        /// #1{~1~2 à }#2% des PV manquants de l'attaquant (dommages Feu)
         /// </summary>
         Effect_DamageFirePerHPLost = 278,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's lost HP (neutral)
+        /// #1{~1~2 à }#2% des PV manquants de l'attaquant (dommages Neutre)
         /// </summary>
         Effect_DamageNeutralPerHPLost = 279,
         /// <summary>
-        /// Increases #1's range by #3
+        /// Augmente la PO du sort #1 de #3
         /// </summary>
         Effect_281 = 281,
         /// <summary>
-        /// Makes it possible to modify #1's range
+        /// Rend la portée du sort #1 modifiable
         /// </summary>
         Effect_282 = 282,
         /// <summary>
-        /// Adds #3 to #1's damage
+        /// +#3 Dommages sur le sort #1
         /// </summary>
         Effect_283 = 283,
         /// <summary>
-        /// Adds #3 to #1's heals
+        /// +#3 Soins sur le sort #1
         /// </summary>
         Effect_284 = 284,
         /// <summary>
-        /// Reduces #1's AP cost by #3
+        /// Réduit de #3 le coût en PA du sort #1
         /// </summary>
         Effect_285 = 285,
         /// <summary>
-        /// Reduces #1's cooldown period by #3
+        /// Réduit de #3 le délai de relance du sort #1
         /// </summary>
         Effect_286 = 286,
         /// <summary>
-        /// Adds #3 to #1's Critical Hits
+        /// +#3% Critique sur le sort #1
         /// </summary>
         Effect_287 = 287,
         /// <summary>
-        /// #1 no longer has to be cast in a straight line
+        /// Désactive le lancer en ligne du sort #1
         /// </summary>
         Effect_288 = 288,
         /// <summary>
-        /// #1 no longer needs line of sight
+        /// Désactive la ligne de vue du sort #1
         /// </summary>
         Effect_289 = 289,
         /// <summary>
-        /// Increases the maximum number of times #1 can be cast per turn by #3
+        /// Augmente de #3 le nombre de lancer maximal par tour du sort #1
         /// </summary>
         Effect_290 = 290,
         /// <summary>
-        /// Increases the maximum number of times #1 can be cast per target by #3
+        /// Augmente de #3 le nombre de lancer maximal par cible du sort #1
         /// </summary>
         Effect_291 = 291,
         /// <summary>
-        /// #1's cooldown period is set to #3
+        /// Fixe à #3 le délai de relance du sort #1
         /// </summary>
         Effect_292 = 292,
         /// <summary>
-        /// Increases #1's basic damage by #3
+        /// Augmente les dégâts de base du sort #1 de #3
         /// </summary>
         Effect_SpellBoost = 293,
         /// <summary>
-        /// Reduces #1's range by #3
+        /// Diminue la portée du sort #1 de #3
         /// </summary>
         Effect_294 = 294,
         /// <summary>
@@ -787,15 +795,15 @@
         /// </summary>
         Effect_310 = 310,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 range
+        /// Vole #1{~1~2 à }#2 PO
         /// </summary>
         Effect_StealRange = 320,
         /// <summary>
-        /// Change a colour
+        /// Change une couleur
         /// </summary>
         Effect_333 = 333,
         /// <summary>
-        /// Change appearance
+        /// Change l'apparence
         /// </summary>
         Effect_ChangeAppearance_335 = 335,
         /// <summary>
@@ -807,123 +815,123 @@
         /// </summary>
         Effect_351 = 351,
         /// <summary>
-        /// Sets a grade #2 trap
+        /// Pose un piège de rang #2
         /// </summary>
         Effect_Trap = 400,
         /// <summary>
-        /// Sets a grade #2 glyph
+        /// Pose un glyphe de rang #2
         /// </summary>
         Effect_Glyph = 401,
         /// <summary>
-        /// Sets a grade #2 glyph
+        /// Pose un glyphe de rang #2
         /// </summary>
         Effect_Glyph_402 = 402,
         /// <summary>
-        /// Kills and replaces with a summon
+        /// Tue la cible pour la remplacer par l'invocation : #1
         /// </summary>
         Effect_KillAndSummon = 405,
         /// <summary>
-        /// Removes the effects of %1
+        /// Enlève les effets du sort #2
         /// </summary>
         Effect_RemoveSpellEffects = 406,
         /// <summary>
-        /// HP restored: #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 (PV rendus)
         /// </summary>
         Effect_407 = 407,
         /// <summary>
-        /// +#1{~1~2 to }#2 AP attack
+        /// #1{~1~2 à }#2 Retrait PA
         /// </summary>
         Effect_AddAPAttack = 410,
         /// <summary>
-        /// -#1{~1~2 to }#2 AP attack
+        /// -#1{~1~2 à }#2 Retrait PA
         /// </summary>
         Effect_SubAPAttack = 411,
         /// <summary>
-        /// +#1{~1~2 to }#2 MP attack
+        /// #1{~1~2 à }#2 Retrait PM
         /// </summary>
         Effect_AddMPAttack = 412,
         /// <summary>
-        /// -#1{~1~2 to }#2 MP attack
+        /// -#1{~1~2 à }#2 Retrait PM
         /// </summary>
         Effect_SubMPAttack = 413,
         /// <summary>
-        /// +#1{~1~2 to }#2 pushback damage
+        /// #1{~1~2 à }#2 Dommages Poussée
         /// </summary>
         Effect_AddPushDamageBonus = 414,
         /// <summary>
-        /// -#1{~1~2 to }#2 pushback damage
+        /// -#1{~1~2 à }#2 Dommages Poussée
         /// </summary>
         Effect_SubPushDamageBonus = 415,
         /// <summary>
-        /// +#1{~1~2 to }#2 pushback resistance
+        /// #1{~1~2 à }#2 Résistance Poussée
         /// </summary>
         Effect_AddPushDamageReduction = 416,
         /// <summary>
-        /// -#1{~1~2 to }#2 pushback resistance
+        /// -#1{~1~2 à }#2 Résistance Poussée
         /// </summary>
         Effect_SubPushDamageReduction = 417,
         /// <summary>
-        /// +#1{~1~2 to }#2 critical damage
+        /// #1{~1~2 à }#2 Dommages Critiques
         /// </summary>
         Effect_AddCriticalDamageBonus = 418,
         /// <summary>
-        /// -#1{~1~2 to }#2 critical damage
+        /// -#1{~1~2 à }#2 Dommages Critiques
         /// </summary>
         Effect_SubCriticalDamageBonus = 419,
         /// <summary>
-        /// +#1{~1~2 to }#2 critical resistance
+        /// #1{~1~2 à }#2 Résistance Critiques
         /// </summary>
         Effect_AddCriticalDamageReduction = 420,
         /// <summary>
-        /// -#1{~1~2 to }#2 critical resistance
+        /// -#1{~1~2 à }#2 Résistance Critiques
         /// </summary>
         Effect_SubCriticalDamageReduction = 421,
         /// <summary>
-        /// +#1{~1~2 to }#2 Earth damage
+        /// #1{~1~2 à }#2 Dommages Terre
         /// </summary>
         Effect_AddEarthDamageBonus = 422,
         /// <summary>
-        /// -#1{~1~2 to }#2 Earth damage
+        /// -#1{~1~2 à }#2 Dommages Terre
         /// </summary>
         Effect_SubEarthDamageBonus = 423,
         /// <summary>
-        /// +#1{~1~2 to }#2 Fire damage
+        /// #1{~1~2 à }#2 Dommages Feu
         /// </summary>
         Effect_AddFireDamageBonus = 424,
         /// <summary>
-        /// -#1{~1~2 to }#2 Fire damage
+        /// -#1{~1~2 à }#2 Dommages Feu
         /// </summary>
         Effect_SubFireDamageBonus = 425,
         /// <summary>
-        /// +#1{~1~2 to }#2 Water damage
+        /// #1{~1~2 à }#2 Dommages Eau
         /// </summary>
         Effect_AddWaterDamageBonus = 426,
         /// <summary>
-        /// -#1{~1~2 to }#2 Water damage
+        /// -#1{~1~2 à }#2 Dommages Eau
         /// </summary>
         Effect_SubWaterDamageBonus = 427,
         /// <summary>
-        /// +#1{~1~2 to }#2 Air damage
+        /// #1{~1~2 à }#2 Dommages Air
         /// </summary>
         Effect_AddAirDamageBonus = 428,
         /// <summary>
-        /// -#1{~1~2 to }#2 Air damage
+        /// -#1{~1~2 à }#2 Dommages Air
         /// </summary>
         Effect_SubAirDamageBonus = 429,
         /// <summary>
-        /// +#1{~1~2 to }#2 Neutral damage
+        /// #1{~1~2 à }#2 Dommages Neutre
         /// </summary>
         Effect_AddNeutralDamageBonus = 430,
         /// <summary>
-        /// -#1{~1~2 to }#2 Neutral damage
+        /// -#1{~1~2 à }#2 Dommages Neutre
         /// </summary>
         Effect_SubNeutralDamageBonus = 431,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 AP
+        /// Vole #1{~1~2 à }#2 PA
         /// </summary>
         Effect_StealAP_440 = 440,
         /// <summary>
-        /// Steals #1{~1~2 to }#2 MP
+        /// Vole #1{~1~2 à }#2 PM
         /// </summary>
         Effect_StealMP_441 = 441,
         /// <summary>
@@ -931,7 +939,7 @@
         /// </summary>
         Effect_509 = 509,
         /// <summary>
-        /// Place a prism
+        /// Pose un prisme
         /// </summary>
         Effect_513 = 513,
         /// <summary>
@@ -943,7 +951,7 @@
         /// </summary>
         Effect_517 = 517,
         /// <summary>
-        /// Teleport to save point
+        /// Téléporte au point de sauvegarde
         /// </summary>
         Effect_TeleportToSavePoint = 600,
         /// <summary>
@@ -951,83 +959,83 @@
         /// </summary>
         Effect_601 = 601,
         /// <summary>
-        /// Save your position
+        /// Enregistre sa position
         /// </summary>
         Effect_602 = 602,
         /// <summary>
-        /// Learn the #3 profession
+        /// Apprend le métier #3
         /// </summary>
         Effect_603 = 603,
         /// <summary>
-        /// Learn the spell #3
+        /// Apprend le sort #3
         /// </summary>
         Effect_LearnSpell = 604,
         /// <summary>
-        /// +#1{~1~2 to }#2 XP points
+        /// +#1{~1~2 à }#2 XP
         /// </summary>
         Effect_605 = 605,
         /// <summary>
-        /// +#1{~1~2 to }#2 wisdom
+        /// +#1{~1~2 à }#2 Sagesse
         /// </summary>
         Effect_AddPermanentWisdom = 606,
         /// <summary>
-        /// +#1{~1~2 to }#2 strength
+        /// +#1{~1~2 à }#2 Force
         /// </summary>
         Effect_AddPermanentStrength = 607,
         /// <summary>
-        /// +#1{~1~2 to }#2 chance
+        /// +#1{~1~2 à }#2 Chance
         /// </summary>
         Effect_AddPermanentChance = 608,
         /// <summary>
-        /// +#1{~1~2 to }#2 agility
+        /// +#1{~1~2 à }#2 Agilité
         /// </summary>
         Effect_AddPermanentAgility = 609,
         /// <summary>
-        /// +#1{~1~2 to }#2 vitality
+        /// +#1{~1~2 à }#2 Vitalité
         /// </summary>
         Effect_AddPermanentVitality = 610,
         /// <summary>
-        /// +#1{~1~2 to }#2 intelligence
+        /// +#1{~1~2 à }#2 Intelligence
         /// </summary>
         Effect_AddPermanentIntelligence = 611,
         /// <summary>
-        /// +#1{~1~2 to }#2 characteristic points
+        /// +#1{~1~2 à }#2 points de caractéristique
         /// </summary>
         Effect_612 = 612,
         /// <summary>
-        /// +#1{~1~2 to }#2 spell points
+        /// +#1{~1~2 à }#2 point(s) de sort
         /// </summary>
         Effect_AddSpellPoints = 613,
         /// <summary>
-        /// +#1 XP for profession #2
+        /// + #1 XP #2
         /// </summary>
         Effect_614 = 614,
         /// <summary>
-        /// Makes you forget the profession #3
+        /// Fait oublier le métier de #3
         /// </summary>
         Effect_615 = 615,
         /// <summary>
-        /// Makes you forget one level of the spell #3
+        /// Fait oublier un niveau du sort #3
         /// </summary>
         Effect_616 = 616,
         /// <summary>
-        /// Consult #3
+        /// Consulter #3
         /// </summary>
         Effect_620 = 620,
         /// <summary>
-        /// Summon: #3 (level #1)
+        /// Invoque : #3 (grade #1)
         /// </summary>
         Effect_621 = 621,
         /// <summary>
-        /// Teleport to your house
+        /// Téléporte chez soi
         /// </summary>
         Effect_622 = 622,
         /// <summary>
-        /// Summons: #3
+        /// #3 (#2)
         /// </summary>
         Effect_623 = 623,
         /// <summary>
-        /// Makes you forget one level of the spell #3
+        /// Fait oublier un niveau du sort #3
         /// </summary>
         Effect_624 = 624,
         /// <summary>
@@ -1039,11 +1047,11 @@
         /// </summary>
         Effect_626 = 626,
         /// <summary>
-        /// Recreates original map
+        /// Reproduit la carte d'origine
         /// </summary>
         Effect_627 = 627,
         /// <summary>
-        /// Summons: #3
+        /// #3 (#2)
         /// </summary>
         Effect_628 = 628,
         /// <summary>
@@ -1059,39 +1067,39 @@
         /// </summary>
         Effect_632 = 632,
         /// <summary>
-        /// Adds #3 Honour points
+        /// Ajoute #3 points d'honneur
         /// </summary>
         Effect_640 = 640,
         /// <summary>
-        /// Adds #3 Disgrace points
+        /// Ajoute #3 points de déshonneur
         /// </summary>
         Effect_641 = 641,
         /// <summary>
-        /// Withdraws #3 Honour points
+        /// Retire #3 points d'honneur
         /// </summary>
         Effect_642 = 642,
         /// <summary>
-        /// Withdraws #3 Disgrace points
+        /// Retire #3 points de déshonneur
         /// </summary>
         Effect_643 = 643,
         /// <summary>
-        /// Resuscitates allies on your map
+        /// Ressuscite les alliés présents sur la carte
         /// </summary>
         Effect_645 = 645,
         /// <summary>
-        /// Restored HP: #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 (PV rendus)
         /// </summary>
         Effect_646 = 646,
         /// <summary>
-        /// Frees enemy souls
+        /// Libère les âmes des ennemis
         /// </summary>
         Effect_647 = 647,
         /// <summary>
-        /// Frees an enemy soul
+        /// Libère une âme ennemie
         /// </summary>
         Effect_648 = 648,
         /// <summary>
-        /// Pretend to be #3
+        /// Faire semblant d'être #3
         /// </summary>
         Effect_649 = 649,
         /// <summary>
@@ -1103,55 +1111,55 @@
         /// </summary>
         Effect_654 = 654,
         /// <summary>
-        /// No additional effects
+        /// Pas d'effet supplémentaire
         /// </summary>
         Effect_666 = 666,
         /// <summary>
-        /// Incarnation level #3
+        /// Incarnation Niveau #5
         /// </summary>
         Effect_669 = 669,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's HP (Neutral-type)
+        /// #1{~1~2 à }#2% de la vie de l'attaquant (dommages Neutre)
         /// </summary>
         Effect_670 = 670,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's HP (Neutral-type)
+        /// #1{~1~2 à }#2% de la vie de l'attaquant (dommages Neutre fixes)
         /// </summary>
         Effect_DamagePercentNeutral_671 = 671,
         /// <summary>
-        /// Damage: #1{~1~2 to }#2% of the attacker's life (neutral)
+        /// #1{~1~2 à }#2% de la vie de l'attaquant (dommages Neutre)
         /// </summary>
         Effect_Punishment_Damage = 672,
         /// <summary>
-        /// Link a job: #1
+        /// Lier son métier : #1
         /// </summary>
         Effect_699 = 699,
         /// <summary>
-        /// Change the attack element
+        /// Change l'élément de frappe
         /// </summary>
         Effect_700 = 700,
         /// <summary>
-        /// Power: #1{~1~2 to }#2
+        /// Puissance : #1{~1~2 à }#2
         /// </summary>
         Effect_701 = 701,
         /// <summary>
-        /// +#1{~1~2 to }#2 durability points
+        /// +#1{~1~2 à }#2 Point(s) de durabilité
         /// </summary>
         Effect_702 = 702,
         /// <summary>
-        /// #1% chance of capturing a power #3 soul
+        /// #1% capture d'âme de puissance #3
         /// </summary>
         Effect_705 = 705,
         /// <summary>
-        /// #1% chance of capturing a mount
+        /// #1% de proba de capturer une monture
         /// </summary>
         Effect_706 = 706,
         /// <summary>
-        /// Use custom set nÂ°#3
+        /// Utilise l'équipement rapide n°#3
         /// </summary>
         Effect_707 = 707,
         /// <summary>
-        /// Additional cost
+        /// Coût supplémentaire
         /// </summary>
         Effect_710 = 710,
         /// <summary>
@@ -1167,31 +1175,31 @@
         /// </summary>
         Effect_717 = 717,
         /// <summary>
-        /// Number of victims: #2
+        /// Nombre de victimes : #2
         /// </summary>
         Effect_720 = 720,
         /// <summary>
-        /// Unlock the title #3
+        /// Titre : #3
         /// </summary>
         Effect_AddTitle = 724,
         /// <summary>
-        /// Unlock the ornament #3
-        /// </summary>
-        Effect_AddOrnament = 726,
-        /// <summary>
-        /// Rename guild: #4
+        /// Renommer la guilde : #4
         /// </summary>
         Effect_725 = 725,
         /// <summary>
-        /// Teleport to the nearest allied prism
+        /// Ornement : #3
+        /// </summary>
+        Effect_AddOrnament = 726,
+        /// <summary>
+        /// Téléporte au prisme allié le plus proche
         /// </summary>
         Effect_730 = 730,
         /// <summary>
-        /// Attack players of the opposite alignment automatically
+        /// Agresse les personnages d'alliances ennemies automatiquement
         /// </summary>
         Effect_731 = 731,
         /// <summary>
-        /// Resistance to automatic attacks from enemy players: #1{~1~2 to }#2
+        /// Résistance à l'agression automatique par les joueurs ennemis : #1{~1~2 à }#2
         /// </summary>
         Effect_732 = 732,
         /// <summary>
@@ -1207,63 +1215,63 @@
         /// </summary>
         Effect_742 = 742,
         /// <summary>
-        /// Increases chance of capture by: #1{~1~2 to }#2%
+        /// Bonus aux chances de capture : #1{~1~2 à }#2%
         /// </summary>
         Effect_750 = 750,
         /// <summary>
-        /// Bonus to Dragoturkey XP: #1{~1~2 to }#2%
+        /// #1{~1~2 à }#2% Bonus XP monture
         /// </summary>
         Effect_751 = 751,
         /// <summary>
-        /// Dodge bonus: #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 Fuite
         /// </summary>
         Effect_AddDodge = 752,
         /// <summary>
-        /// Lock bonus: #1{~1~2 to }#2
+        /// #1{~1~2 à }#2 Tacle
         /// </summary>
         Effect_AddLock = 753,
         /// <summary>
-        /// Dodge penalty: #1{~1~2 to }#2
+        /// -#1{~1~2 à }#2 Fuite
         /// </summary>
         Effect_SubDodge = 754,
         /// <summary>
-        /// Lock penalty: #1{~1~2 to }#2
+        /// -#1{~1~2 à }#2 Tacle
         /// </summary>
         Effect_SubLock = 755,
         /// <summary>
-        /// Disappear by moving
+        /// Disparaît en se déplaçant
         /// </summary>
         Effect_760 = 760,
         /// <summary>
-        /// Intercept damages
+        /// Interception des dommages
         /// </summary>
         Effect_DamageIntercept = 765,
         /// <summary>
-        /// Clockwise confusion: #1{~1~2 to }#2 degrees
+        /// Confusion horaire : #1{~1~2 à }#2 degrés
         /// </summary>
         Effect_770 = 770,
         /// <summary>
-        /// Clockwise confusion: #1{~1~2 to }#2 Pi/2
+        /// Confusion horaire : #1{~1~2 à }#2 Pi/2
         /// </summary>
         Effect_771 = 771,
         /// <summary>
-        /// Clockwise confusion: #1{~1~2 to }#2 Pi/4
+        /// Confusion horaire : #1{~1~2 à }#2 Pi/4
         /// </summary>
         Effect_772 = 772,
         /// <summary>
-        /// Anticlockwise confusion: #1{~1~2 to }#2 degrees
+        /// Confusion contre horaire : #1{~1~2 à }#2 degrés
         /// </summary>
         Effect_773 = 773,
         /// <summary>
-        /// Anticlockwise confusion: #1{~1~2 to }#2 Pi/2
+        /// Confusion contre horaire : #1{~1~2 à }#2 Pi/2
         /// </summary>
         Effect_774 = 774,
         /// <summary>
-        /// Anticlockwise confusion: #1{~1~2 to }#2 Pi/4
+        /// Confusion contre horaire : #1{~1~2 à }#2 Pi/4
         /// </summary>
         Effect_775 = 775,
         /// <summary>
-        /// Increases permanent damage taken by #1{~1~2 to }#2%
+        /// #1{~1~2 à }#2% Érosion
         /// </summary>
         Effect_AddErosion = 776,
         /// <summary>
@@ -1271,23 +1279,23 @@
         /// </summary>
         Effect_778 = 778,
         /// <summary>
-        /// Summons the last ally who died with #1{~1~2 to }#2 % of their HP
+        /// Invoque le dernier allié mort avec #1{~1~2 à }#2 % de ses PDV
         /// </summary>
         Effect_ReviveAndGiveHPToLastDiedAlly = 780,
         /// <summary>
-        /// Minimizes random effects
+        /// Minimise les effets aléatoires
         /// </summary>
         Effect_RandDownModifier = 781,
         /// <summary>
-        /// Maximizes random effects
+        /// Maximise les effets aléatoires
         /// </summary>
         Effect_RandUpModifier = 782,
         /// <summary>
-        /// Repels to the targeted cell
+        /// Pousse jusqu'à la case visée
         /// </summary>
         Effect_RepelsTo = 783,
         /// <summary>
-        /// Return to original position
+        /// Retour à la position de départ
         /// </summary>
         Effect_ReturnToOriginalPos = 784,
         /// <summary>
@@ -1295,7 +1303,7 @@
         /// </summary>
         Effect_785 = 785,
         /// <summary>
-        /// Heals upon attack
+        /// Soigne l'attaquant de #1{~1~2 à }#2% des dommages subis.
         /// </summary>
         Effect_GiveHpPercentWhenAttack = 786,
         /// <summary>
@@ -1303,7 +1311,7 @@
         /// </summary>
         Effect_787 = 787,
         /// <summary>
-        /// Punishment of #2 for #3 turn(s)
+        /// Châtiment de #2 sur #3 tour(s)
         /// </summary>
         Effect_Punishment = 788,
         /// <summary>
@@ -1315,7 +1323,7 @@
         /// </summary>
         Effect_790 = 790,
         /// <summary>
-        /// Prepare #1{~1~2 to }#2 mercenary scrolls
+        /// Prépare #1{~1~2 à }#2 parchemins pour mercenaire [wait]
         /// </summary>
         Effect_791 = 791,
         /// <summary>
@@ -1327,7 +1335,7 @@
         /// </summary>
         Effect_TriggerBuff_793 = 793,
         /// <summary>
-        /// Hunting Weapon
+        /// Arme de chasse
         /// </summary>
         Effect_795 = 795,
         /// <summary>
@@ -1335,35 +1343,35 @@
         /// </summary>
         Effect_796 = 796,
         /// <summary>
-        /// Health points: #3
+        /// Points de vie : #3
         /// </summary>
         Effect_800 = 800,
         /// <summary>
-        /// Received on: #1
+        /// Reçu le : #1
         /// </summary>
         Effect_805 = 805,
         /// <summary>
-        /// State: #1
+        /// Corpulence : #1
         /// </summary>
         Effect_806 = 806,
         /// <summary>
-        /// Last meal: #1
+        /// Dernier repas : #1
         /// </summary>
         Effect_807 = 807,
         /// <summary>
-        /// Last meal: #1
+        /// A mangé le : #1
         /// </summary>
         Effect_LastMeal = 808,
         /// <summary>
-        /// Size: #3 squares
+        /// Taille : #3 poces
         /// </summary>
         Effect_810 = 810,
         /// <summary>
-        /// Remaining turn(s): #3
+        /// Combat(s) restant(s) : #3
         /// </summary>
         Effect_RemainingFights = 811,
         /// <summary>
-        /// Durability: #2 / #3
+        /// Utilisations : #2 / #3
         /// </summary>
         Effect_812 = 812,
         /// <summary>
@@ -1383,11 +1391,11 @@
         /// </summary>
         Effect_816 = 816,
         /// <summary>
-        /// Teleport
+        /// Téléporte
         /// </summary>
         Effect_825 = 825,
         /// <summary>
-        /// Start a fight against #2
+        /// Téléporte
         /// </summary>
         Effect_826 = 826,
         /// <summary>
@@ -1399,7 +1407,7 @@
         /// </summary>
         Effect_905 = 905,
         /// <summary>
-        /// Increases serenity, decreases aggressiveness
+        /// 
         /// </summary>
         Effect_911 = 911,
         /// <summary>
@@ -1415,87 +1423,87 @@
         /// </summary>
         Effect_930 = 930,
         /// <summary>
-        /// Improves aggressiveness, decreases serenity
+        /// Augmente l'agressivité, diminue la sérénité
         /// </summary>
         Effect_931 = 931,
         /// <summary>
-        /// Increases stamina
+        /// Augmente l'endurance
         /// </summary>
         Effect_932 = 932,
         /// <summary>
-        /// Decreases stamina
+        /// Diminue l'endurance
         /// </summary>
         Effect_933 = 933,
         /// <summary>
-        /// Increases love
+        /// Augmente l'amour
         /// </summary>
         Effect_934 = 934,
         /// <summary>
-        /// Decreases love
+        /// Diminue l'amour
         /// </summary>
         Effect_935 = 935,
         /// <summary>
-        /// Speeds maturity
+        /// Accélère la maturité
         /// </summary>
         Effect_936 = 936,
         /// <summary>
-        /// Slows down maturity
+        /// Ralentit la maturité
         /// </summary>
         Effect_937 = 937,
         /// <summary>
-        /// Increases the capacity of a pet #3 .
+        /// Augmente les capacités d'un familier #3
         /// </summary>
         Effect_939 = 939,
         /// <summary>
-        /// Improved abilities
+        /// Capacités accrues
         /// </summary>
         Effect_940 = 940,
         /// <summary>
-        /// Temporarily remove a Breeding item
+        /// Retirer temporairement un objet d'élevage
         /// </summary>
         Effect_946 = 946,
         /// <summary>
-        /// Remove an item from a Paddock
+        /// Récupérer un objet d'enclos
         /// </summary>
         Effect_947 = 947,
         /// <summary>
-        /// Paddock Item
+        /// Objet pour enclos
         /// </summary>
         Effect_948 = 948,
         /// <summary>
-        /// Get on/off a mount
+        /// Monter/Descendre d'une monture
         /// </summary>
         Effect_949 = 949,
         /// <summary>
-        /// #3 state
+        /// État #3
         /// </summary>
         Effect_AddState = 950,
         /// <summary>
-        /// Removes #3 state
+        /// Enlève l'état #3
         /// </summary>
         Effect_DispelState = 951,
         /// <summary>
-        /// #3 state deactivated
+        /// Désactive l'état '#3'
         /// </summary>
         Effect_DisableState = 952,
         /// <summary>
-        /// Alignment: #3
+        /// Alignement : #3
         /// </summary>
         Effect_960 = 960,
         /// <summary>
-        /// Rank: #3
+        /// Grade : #3
         /// </summary>
         Effect_961 = 961,
         /// <summary>
-        /// Level: #3
+        /// Niveau : #3
         /// </summary>
         Effect_962 = 962,
         /// <summary>
-        /// Created #3 day(s) ago
+        /// Créé depuis : #3 jour(s)
         /// </summary>
         Effect_963 = 963,
         /// <summary>
-        /// Name: #4
+        /// Nom : #4
         /// </summary>
         Effect_964 = 964,
         /// <summary>
@@ -1519,15 +1527,15 @@
         /// </summary>
         Effect_LivingObjectLevel = 974,
         /// <summary>
-        /// Non-exchangeable
+        /// Lié au personnage
         /// </summary>
         Effect_NonExchangeable_981 = 981,
         /// <summary>
-        /// Non-exchangeable
+        /// Lié au compte
         /// </summary>
         Effect_NonExchangeable_982 = 982,
         /// <summary>
-        /// Can be exchanged from: #1
+        /// Échangeable : #1
         /// </summary>
         Effect_Exchangeable = 983,
         /// <summary>
@@ -1535,23 +1543,23 @@
         /// </summary>
         Effect_984 = 984,
         /// <summary>
-        /// Modified by: #4
+        /// Modifié par : #4
         /// </summary>
         Effect_985 = 985,
         /// <summary>
-        /// Prepares #1{~1~2 to }#2 scrolls
+        /// Prépare #1{~1~2 à }#2 parchemins
         /// </summary>
         Effect_986 = 986,
         /// <summary>
-        /// Belongs to: #4
+        /// Appartient à : #4
         /// </summary>
         Effect_BelongsTo = 987,
         /// <summary>
-        /// Made by: #4
+        /// Fabriqué par : #4
         /// </summary>
         Effect_988 = 988,
         /// <summary>
-        /// Seeks: #4
+        /// Recherche : #4
         /// </summary>
         Effect_989 = 989,
         /// <summary>
@@ -1559,23 +1567,23 @@
         /// </summary>
         Effect_990 = 990,
         /// <summary>
-        /// !! Invalid Certificate !!
+        /// !! Certificat invalide !!
         /// </summary>
         Effect_InvalidCertificate = 994,
         /// <summary>
-        /// View mount characteristics
+        /// 
         /// </summary>
         Effect_ViewMountCharacteristics = 995,
         /// <summary>
-        /// Belongs to: #4
+        /// Appartient à : #4
         /// </summary>
         Effect_996 = 996,
         /// <summary>
-        /// Name: #4
+        /// Nom : #4
         /// </summary>
         Effect_Name = 997,
         /// <summary>
-        /// Validity: #1d #2h #3m
+        /// Validité : #1j #2h #3m
         /// </summary>
         Effect_Validity = 998,
         /// <summary>
@@ -1587,7 +1595,7 @@
         /// </summary>
         Effect_1002 = 1002,
         /// <summary>
-        /// Reduces the maximum bonus by #1{~1~2 to }#2
+        /// Diminue de #1{~1~2 à }#2 le bonus maximum
         /// </summary>
         Effect_1003 = 1003,
         /// <summary>
@@ -1595,51 +1603,51 @@
         /// </summary>
         Effect_1004 = 1004,
         /// <summary>
-        /// Reduces the maximum bonus by #1{~1~2 to }#2
+        /// Diminue de #1{~1~2 à }#2 le bonus maximum
         /// </summary>
         Effect_1005 = 1005,
         /// <summary>
-        /// Reduces the minimum bonus by #1{~1~2 to }#2
+        /// Diminue de #1{~1~2 à }#2 le bonus minimum
         /// </summary>
         Effect_1006 = 1006,
         /// <summary>
-        /// Effectiveness: #1{~1~2 to }#2
+        /// Efficacité : #1{~1~2 à }#2
         /// </summary>
         Effect_1007 = 1007,
         /// <summary>
-        /// Summons #1
+        /// Invoque : #1
         /// </summary>
         Effect_SummonsBomb = 1008,
         /// <summary>
-        /// Activate a bomb
+        /// Active une bombe
         /// </summary>
         Effect_TriggerBomb = 1009,
         /// <summary>
-        /// Places a grade #2 Glyph
+        /// Pose un glyphe de rang #2
         /// </summary>
         Effect_1010 = 1010,
         /// <summary>
-        /// Summons #1
+        /// Invoque : #1
         /// </summary>
         Effect_SummonSlave = 1011,
         /// <summary>
-        /// #1{~1~2 to }#2 (Neutral damage)
+        /// #1{~1~2 à }#2 (dommages Neutre)
         /// </summary>
         Effect_DamageNeutralRemainingMP = 1012,
         /// <summary>
-        /// #1{~1~2 to }#2 (Air damage)
+        /// #1{~1~2 à }#2 (dommages Air)
         /// </summary>
         Effect_DamageAirRemainingMP = 1013,
         /// <summary>
-        /// #1{~1~2 to }#2 (Water damage)
+        /// #1{~1~2 à }#2 (dommages Eau)
         /// </summary>
         Effect_DamageWaterRemainingMP = 1014,
         /// <summary>
-        /// #1{~1~2 to }#2 (Fire damage)
+        /// #1{~1~2 à }#2 (dommages Feu)
         /// </summary>
         Effect_DamageFireRemainingMP = 1015,
         /// <summary>
-        /// #1{~1~2 to }#2 (Earth damage)
+        /// #1{~1~2 à }#2 (dommages Terre)
         /// </summary>
         Effect_DamageEarthRemainingMP = 1016,
         /// <summary>
@@ -1655,35 +1663,35 @@
         /// </summary>
         Effect_1019 = 1019,
         /// <summary>
-        /// Pushes back #1 cell(s)
+        /// Repousse de #1 case(s)
         /// </summary>
         Effect_1021 = 1021,
         /// <summary>
-        /// Attracts #1 cell(s)
+        /// Attire de #1 case(s)
         /// </summary>
         Effect_1022 = 1022,
         /// <summary>
-        /// Switches positions
+        /// Échange de positions
         /// </summary>
         Effect_SwitchPosition_1023 = 1023,
         /// <summary>
-        /// Creates illusions
+        /// Crée des illusions
         /// </summary>
         Effect_1024 = 1024,
         /// <summary>
-        /// Trigger traps
+        /// Déclenche les pièges
         /// </summary>
         Effect_1025 = 1025,
         /// <summary>
-        /// Trigger glyphs
+        /// Déclenche les glyphes
         /// </summary>
         Effect_TriggerGlyphs = 1026,
         /// <summary>
-        /// #1{~1~2 to }#2% Combo Damage
+        /// #1{~1~2 à }#2% Dommages Combo
         /// </summary>
         Effect_AddComboBonus = 1027,
         /// <summary>
-        /// Trigger powders
+        /// Déclenche les poudres
         /// </summary>
         Effect_1028 = 1028,
         /// <summary>
@@ -1691,11 +1699,11 @@
         /// </summary>
         Effect_1029 = 1029,
         /// <summary>
-        /// Place grade #2 powder
+        /// Pose de la poudre de rang #2
         /// </summary>
         Effect_1030 = 1030,
         /// <summary>
-        /// Ends turn
+        /// Termine le tour
         /// </summary>
         Effect_SkipTurn_1031 = 1031,
         /// <summary>
@@ -1703,75 +1711,75 @@
         /// </summary>
         Effect_1032 = 1032,
         /// <summary>
-        /// -#1{~1~2 to -}#2% Vitality
+        /// -#1{~1~2 à -}#2% Vitalité
         /// </summary>
         Effect_SubVitalityPercent = 1033,
         /// <summary>
-        /// Summons the last ally killed with #1{~1~2 to }#2% of their HP
+        /// Invoque le dernier allié mort avec #1{~1~2 à }#2 % de ses PDV
         /// </summary>
         Effect_1034 = 1034,
         /// <summary>
-        /// #1: +#3 turns until recast
+        /// #1 : +#3 tour(s) de relance
         /// </summary>
         Effect_1035 = 1035,
         /// <summary>
-        /// #1: -#3 turns until recast
+        /// #1 : -#3 tour(s) de relance
         /// </summary>
         Effect_1036 = 1036,
         /// <summary>
-        /// HP restored: #1 {~1~2 to}#2
+        /// [TEST] PDV rendus : #1{~1~2 à }#2
         /// </summary>
         Effect_1037 = 1037,
         /// <summary>
-        /// Aura: #1
+        /// Aura : #1
         /// </summary>
         Effect_1038 = 1038,
         /// <summary>
-        /// #1{~1~2 to }#2% of HP to shield
+        /// #1{~1~2 à }#2% des PV en bouclier
         /// </summary>
         Effect_AddShieldPercent = 1039,
         /// <summary>
-        /// #1{~1~2 to }#2 Shield
+        /// #1{~1~2 à }#2 Bouclier
         /// </summary>
         Effect_AddShield = 1040,
         /// <summary>
-        /// Retreats #1 cell(s)
+        /// Recule de #1 case(s)
         /// </summary>
         Effect_Retreat = 1041,
         /// <summary>
-        /// Advances #1 cell(s)
+        /// Avance de #1 case(s)
         /// </summary>
         Effect_Advance = 1042,
         /// <summary>
-        /// Attract to the selected cell
+        /// Attire jusqu'à la case visée
         /// </summary>
         Effect_Attract = 1043,
         /// <summary>
-        /// Immunity: #1
+        /// Immunité : #1
         /// </summary>
         Effect_1044 = 1044,
         /// <summary>
-        /// #1: #3 turns until recast
+        /// #1 : #3 tour(s) de relance
         /// </summary>
         Effect_CooldownSet = 1045,
         /// <summary>
-        /// Using #1 MP will cause a loss of #2 HP
+        /// #1 PM utilisés font perdre #2 PV
         /// </summary>
         Effect_1046 = 1046,
         /// <summary>
-        /// -#1{~1~2 to }#2 HP
+        /// -#1{~1~2 à }#2 PV
         /// </summary>
         Effect_1047 = 1047,
         /// <summary>
-        /// -#1{~1~2 to }#2% HP
+        /// -#1{~1~2 à }#2% PV
         /// </summary>
         Effect_SubVitalityPercent_1048 = 1048,
         /// <summary>
-        /// +#1{~1~2 to}level #2
+        /// +#1{~1~2 à }#2 niveau
         /// </summary>
         Effect_1049 = 1049,
         /// <summary>
-        /// + #1 level in the #2 profession
+        /// + #1 niveau dans le métier #2
         /// </summary>
         Effect_1050 = 1050,
         /// <summary>
@@ -1787,7 +1795,7 @@
         /// </summary>
         Effect_1053 = 1053,
         /// <summary>
-        /// #1{~1~2 to }#2 Power (spells)
+        /// #1{~1~2 à }#2 Puissance (sorts)
         /// </summary>
         Effect_IncreaseDamage_1054 = 1054,
         /// <summary>
@@ -1798,7 +1806,7 @@
         /// (not found)
         /// </summary>
         Effect_1057 = 1057,
-        /// <summary>765
+        /// <summary>
         /// (not found)
         /// </summary>
         Effect_1058 = 1058,
@@ -1807,11 +1815,11 @@
         /// </summary>
         Effect_1059 = 1059,
         /// <summary>
-        /// (not found)
+        /// Augmente la taille.
         /// </summary>
         Effect_1060 = 1060,
         /// <summary>
-        /// Damage sharing
+        /// Partage des dommages
         /// </summary>
         Effect_DamageSharing = 1061,
         /// <summary>
@@ -1819,47 +1827,47 @@
         /// </summary>
         Effect_1062 = 1062,
         /// <summary>
-        /// #1{~1~2 to }#2 (fixed Earth damage)
+        /// #1{~1~2 à }#2 (dommages Terre fixes)
         /// </summary>
         Effect_1063 = 1063,
         /// <summary>
-        /// #1{~1~2 to }#2 (fixed Air damage)
+        /// #1{~1~2 à }#2 (dommages Air fixes)
         /// </summary>
         Effect_1064 = 1064,
         /// <summary>
-        /// #1{~1~2 to }#2 (fixed Water damage)
+        /// #1{~1~2 à }#2 (dommages Eau fixes)
         /// </summary>
         Effect_1065 = 1065,
         /// <summary>
-        /// #1{~1~2 to }#2 (fixed Fire damage)
+        /// #1{~1~2 à }#2 (dommages Feu fixes)
         /// </summary>
         Effect_1066 = 1066,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's HP (Air damage)
+        /// #1{~1~2 à }#2% des PV de la cible (dommages Air)
         /// </summary>
         Effect_1067 = 1067,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's HP (Water damage)
+        /// #1{~1~2 à }#2% des PV de la cible (dommages Eau)
         /// </summary>
         Effect_1068 = 1068,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's HP (Fire damage)
+        /// #1{~1~2 à }#2% des PV de la cible (dommages Feu)
         /// </summary>
         Effect_1069 = 1069,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's HP (Earth damage)
+        /// #1{~1~2 à }#2% des PV de la cible (dommages Terre)
         /// </summary>
         Effect_1070 = 1070,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's HP (Neutral damage)
+        /// #1{~1~2 à }#2% des PV de la cible (dommages Neutre)
         /// </summary>
         Effect_1071 = 1071,
         /// <summary>
-        /// Provocation
+        /// (not found)
         /// </summary>
         Effect_1072 = 1072,
         /// <summary>
-        /// Change attack element
+        /// Change l'élément de frappe
         /// </summary>
         Effect_1073 = 1073,
         /// <summary>
@@ -1867,27 +1875,27 @@
         /// </summary>
         Effect_1074 = 1074,
         /// <summary>
-        /// -#1{~1~2 to }#2 duration of effects
+        /// -#1{~1~2 à }#2 Durée des effets
         /// </summary>
         Effect_ReduceEffectsDuration = 1075,
         /// <summary>
-        /// #1{~1~2 to }#2% Resistance
+        /// #1{~1~2 à }#2% Résistance
         /// </summary>
         Effect_AddResistances = 1076,
         /// <summary>
-        /// -#1{~1~2 to -}#2% Resistance
+        /// -#1{~1~2 à -}#2% Résistance
         /// </summary>
         Effect_SubResistances = 1077,
         /// <summary>
-        /// #1{~1~2 to }#2% Vitality
+        /// #1{~1~2 à }#2% Vitalité
         /// </summary>
         Effect_AddVitalityPercent = 1078,
         /// <summary>
-        /// -#1{~1~2 to -}#2 AP
+        /// -#1{~1~2 à -}#2 PA
         /// </summary>
         Effect_SubAP_1079 = 1079,
         /// <summary>
-        /// -#1{~1~2 to -}#2 MP
+        /// -#1{~1~2 à -}#2 PM
         /// </summary>
         Effect_SubMP_1080 = 1080,
         /// <summary>
@@ -1895,7 +1903,7 @@
         /// </summary>
         Effect_1081 = 1081,
         /// <summary>
-        /// Wrapped by: #4
+        /// Emballé par : #4
         /// </summary>
         Effect_1082 = 1082,
         /// <summary>
@@ -1907,43 +1915,43 @@
         /// </summary>
         Effect_1084 = 1084,
         /// <summary>
-        /// Quantity: #1
+        /// Quantité : #1
         /// </summary>
         Effect_1085 = 1085,
         /// <summary>
-        /// For: #4
+        /// Pour : #4
         /// </summary>
         Effect_1086 = 1086,
         /// <summary>
-        /// Write a character's name
+        /// Écrire un nom
         /// </summary>
         Effect_1087 = 1087,
         /// <summary>
-        /// Places a grade #2 Glyph
+        /// Pose un glyphe-aura de rang #2
         /// </summary>
         Effect_GlyphAura = 1091,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Neutral damage
+        /// #1{~1~2 à }#2% des PV érodés de la cible (dommages Neutre)
         /// </summary>
         Effect_DamageNeutralPerHPEroded = 1092,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Air damage
+        /// #1{~1~2 à }#2% des PV érodés de la cible (dommages Air)
         /// </summary>
         Effect_DamageAirPerHPEroded = 1093,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Fire damage
+        /// #1{~1~2 à }#2% des PV érodés de la cible (dommages Feu)
         /// </summary>
         Effect_DamageFirePerHPEroded = 1094,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Water damage
+        /// #1{~1~2 à }#2% des PV érodés de la cible (dommages Eau)
         /// </summary>
         Effect_DamageWaterPerHPEroded = 1095,
         /// <summary>
-        /// #1{~1~2 to }#2% of the target's eroded HP inflicted as Earth damage
+        /// #1{~1~2 à }#2% des PV érodés de la cible (dommages Terre)
         /// </summary>
         Effect_DamageEarthPerHPEroded = 1096,
         /// <summary>
-        /// Creates illusions
+        /// Crée des illusions
         /// </summary>
         Effect_Illusions = 1097,
         /// <summary>
@@ -1951,15 +1959,15 @@
         /// </summary>
         Effect_1098 = 1098,
         /// <summary>
-        /// Teleports the target to the cell where they started their turn
+        /// Téléporte à la position de début de tour
         /// </summary>
         Effect_Rewind = 1099,
         /// <summary>
-        /// 
+        /// Téléporte à la position précédente
         /// </summary>
         Effect_ReturnToLastPos = 1100,
         /// <summary>
-        /// (not found)
+        /// 
         /// </summary>
         Effect_1101 = 1101,
         /// <summary>
@@ -1967,131 +1975,131 @@
         /// </summary>
         Effect_1102 = 1102,
         /// <summary>
-        /// Pushes back #1 cell(s)
+        /// Pousse de #1 case(s)
         /// </summary>
         Effect_PushBack_1103 = 1103,
         /// <summary>
-        /// 
+        /// Téléportation symétrique par rapport à la cible
         /// </summary>
         Effect_SymetricTargetTeleport = 1104,
         /// <summary>
-        /// 
+        /// Téléportation symétrique par rapport au lanceur
         /// </summary>
         Effect_SymetricCasterTeleport = 1105,
         /// <summary>
-        /// 
+        /// Téléportation symétrique
         /// </summary>
         Effect_SymetricPointTeleport = 1106,
         /// <summary>
-        /// Rename the guild
+        /// Renommer la guilde
         /// </summary>
         Effect_1107 = 1107,
         /// <summary>
-        /// Change the guild's emblem
+        /// Changer le blason de la guilde
         /// </summary>
         Effect_1108 = 1108,
         /// <summary>
-        /// #1{~1~2 to }#2% (HP restored)
+        /// #1{~1~2 à }#2% (PV rendus)
         /// </summary>
         Effect_RestoreHPPercent = 1109,
         /// <summary>
-        /// #3 loot
+        /// #3 butins
         /// </summary>
         Effect_1111 = 1111,
         /// <summary>
-        /// (not found)
+        /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Neutre)
         /// </summary>
         Effect_1118 = 1118,
         /// <summary>
-        /// (not found)
+        /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Air)
         /// </summary>
         Effect_1119 = 1119,
         /// <summary>
-        /// (not found)
+        /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Feu)
         /// </summary>
         Effect_1120 = 1120,
         /// <summary>
-        /// (not found)
+        /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Eau)
         /// </summary>
         Effect_1121 = 1121,
         /// <summary>
-        /// (not found)
+        /// #1{~1~2 à }#2% des PV érodés du lanceur (dommages Terre)
         /// </summary>
         Effect_1122 = 1122,
         /// <summary>
-        /// [!]
+        /// Répartit #1{~1~2 à }#2% des dommages subis.
         /// </summary>
         Effect_Putsch = 1123,
         /// <summary>
-        /// (not found)
+        /// 
         /// </summary>
         Effect_1124 = 1124,
         /// <summary>
-        /// [!]
+        /// 
         /// </summary>
         Effect_1125 = 1125,
         /// <summary>
-        /// (not found)
+        /// 
         /// </summary>
         Effect_1126 = 1126,
         /// <summary>
-        /// (not found)
+        /// 
         /// </summary>
         Effect_1127 = 1127,
         /// <summary>
-        /// (not found)
+        /// 
         /// </summary>
         Effect_1128 = 1128,
         /// <summary>
-        /// Send to Krosmaster
+        /// Envoyer vers Krosmaster
         /// </summary>
         Effect_1129 = 1129,
         /// <summary>
-        /// #2 HP (Air) lost for every #1 AP used
+        /// #1 PA utilisés font perdre #2 PV (Air)
         /// </summary>
         Effect_DamageAirPerAP = 1131,
         /// <summary>
-        /// #2 HP (Water) lost for every #1 AP used
+        /// #1 PA utilisés font perdre #2 PV (Eau)
         /// </summary>
         Effect_DamageWaterPerAP = 1132,
         /// <summary>
-        /// #2 HP (Fire) lost for every #1 AP used
+        /// #1 PA utilisé fait perdre #2 PV (Feu)
         /// </summary>
         Effect_DamageFirePerAP = 1133,
         /// <summary>
-        /// #2 HP (Neutral) lost for every #1 AP used
+        /// #1 PA utilisés font perdre #2 PV (Neutre)
         /// </summary>
         Effect_DamageNeutralPerAP = 1134,
         /// <summary>
-        /// #2 HP (Earth) lost for every #1 AP used
+        /// #1 PA utilisés font perdre #2 PV (Terre)
         /// </summary>
         Effect_DamageEarthPerAP = 1135,
         /// <summary>
-        /// #2 HP (Air) lost for every #1 MP used
+        /// #1 PM utilisés font perdre #2 PV (Air)
         /// </summary>
         Effect_DamageAirPerMP = 1136,
         /// <summary>
-        /// #2 HP (Water) lost for every #1 MP used
+        /// #1 PM utilisés font perdre #2 PV (Eau)
         /// </summary>
         Effect_DamageWaterPerMP = 1137,
         /// <summary>
-        /// #2 HP (Fire) lost for every #1 MP used
+        /// #1 PM utilisés font perdre #2 PV (Feu)
         /// </summary>
         Effect_DamageFirePerMP = 1138,
         /// <summary>
-        /// #2 HP (Neutral) lost for every #1 MP used
+        /// #1 PM utilisés font perdre #2 PV (Neutre)
         /// </summary>
         Effect_DamageNeutralPerMP = 1139,
         /// <summary>
-        /// #2 HP (Earth) lost for every #1 MP used
+        /// #1 PM utilisés font perdre #2 PV (Terre)
         /// </summary>
         Effect_DamageEarthPerMP = 1140,
         /// <summary>
-        /// [!]
+        /// 
         /// </summary>
         Effect_1141 = 1141,
         /// <summary>
-        /// [!]
+        /// 
         /// </summary>
         Effect_1142 = 1142,
         /// <summary>
@@ -2163,6 +2171,10 @@
         /// </summary>
         Effect_IncreaseGlyphDamages = 1166,
         /// <summary>
+        /// #1{~1~2 à }#2 Puissance (runes)
+        /// </summary>
+        Effect_1167 = 1167,
+        /// <summary>
         /// 
         /// </summary>
         Effect_1168 = 1168,
@@ -2231,6 +2243,14 @@
         /// </summary>
         Effect_1184 = 1184,
         /// <summary>
+        /// Réinitialise les effets d'un objet de niveau inférieur ou égal à #1{~1~2 à }#2
+        /// </summary>
+        Effect_1185 = 1185,
+        /// <summary>
+        /// Niveau : #1
+        /// </summary>
+        Effect_1186 = 1186,
+        /// <summary>
         /// #1
         /// </summary>
         Effect_2017 = 2017,
@@ -2242,6 +2262,34 @@
         /// 
         /// </summary>
         Effect_2019 = 2019,
+        /// <summary>
+        /// Soigne #1{~1~2 à }#2% des dommages subis.
+        /// </summary>
+        Effect_2020 = 2020,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_2021 = 2021,
+        /// <summary>
+        /// Pose une rune de rang #2
+        /// </summary>
+        Effect_2022 = 2022,
+        /// <summary>
+        /// Déclenche les runes
+        /// </summary>
+        Effect_2023 = 2023,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_2024 = 2024,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_2025 = 2025,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_2026 = 2026,
         /// <summary>
         /// #1
         /// </summary>
@@ -2266,7 +2314,11 @@
         /// Tue la cible pour la remplacer par l'invocation : #1
         /// </summary>
         Effect_2796 = 2796,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_LearnSmileyPack = 2797,
 
-        End,
+        End
     }
 }
