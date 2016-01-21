@@ -346,6 +346,7 @@
     <Compile Include="Game\Conditions\Criterions\ServerCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SexCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SkillCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\SmileyPackCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SoulStoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SpecializationCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\StaticCriterion.cs" />
