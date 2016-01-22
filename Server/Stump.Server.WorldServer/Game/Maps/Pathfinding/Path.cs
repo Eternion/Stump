@@ -157,7 +157,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
                     if (l > MapPoint.MapHeight * 2 + MapPoint.MapWidth)
                         throw new Exception("Path too long. Maybe an orientation problem ?");
 
-                    completePath.Add(Map.Cells[nextPoint.CellId]);
+                    var cell = Map.Cells[nextPoint.CellId];
+
+                    if (!cell.Walkable) //Verify Hack
+                        return completePath.ToArray();
+
+                    completePath.Add(cell);
 
                     l++;
                 }
