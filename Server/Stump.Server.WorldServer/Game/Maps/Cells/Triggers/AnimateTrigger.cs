@@ -106,10 +106,13 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
             Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_OPENED);
             InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
 
-            map.Area.CallDelayed(20000, Reset);
+            foreach (var element in map.GetInteractiveObjects())
+                InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
+
+            map.Area.CallDelayed(20000, () => Reset(character));
         }
 
-        public void Reset()
+        public void Reset(Character character)
         {
             var map = World.Instance.GetMap(MapId);
 
@@ -121,6 +124,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
             Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED);
             InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
+
+            foreach (var element in map.GetInteractiveObjects())
+                InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
         }
     }
 }

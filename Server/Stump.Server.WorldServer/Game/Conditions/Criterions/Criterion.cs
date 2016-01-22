@@ -132,6 +132,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new HasOrnament();
                 case HasTitleCriterion.Identifier:
                     return new HasTitleCriterion();
+                case InteractiveStateCriterion.Identifier:
+                    return new InteractiveStateCriterion();
                 case JobCriterion.Identifier:
                     return new JobCriterion();
                 case KamaCriterion.Identifier:
