@@ -48,7 +48,10 @@ namespace Stump.Server.WorldServer.Handlers.Context
         public static void HandleGameMapMovementRequestMessage(WorldClient client, GameMapMovementRequestMessage message)
         {
             if (!client.Character.CanMove())
+            {
                 SendGameMapNoMovementMessage(client);
+                return;
+            }
 
             var movementPath = Path.BuildFromCompressedPath(client.Character.Map, message.keyMovements);
 
