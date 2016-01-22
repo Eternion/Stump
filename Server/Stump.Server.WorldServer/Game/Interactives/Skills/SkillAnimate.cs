@@ -106,6 +106,9 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_OPENED);
             InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
 
+            foreach (var element in map.GetInteractiveObjects())
+                InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
+
             return 20000;
         }
 
@@ -121,6 +124,9 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
             Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED);
             InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
+
+            foreach (var element in map.GetInteractiveObjects())
+                InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
         }
     }
 }
