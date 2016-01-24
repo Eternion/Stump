@@ -180,13 +180,15 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            if (host.Effects.Any(x => x.EffectId == EffectsEnum.Effect_LivingObjectId || x.EffectId == EffectsEnum.Effect_Appearance || x.EffectId == EffectsEnum.Effect_Apparence_Wrapper))
+            if (host.Effects.Any(x => x.EffectId == EffectsEnum.Effect_LivingObjectId || x.EffectId == EffectsEnum.Effect_Appearance || x.EffectId == EffectsEnum.Effect_Apparence_Wrapper)
+                || !host.Template.Type.Mimickable)
             {
                 SendMimicryObjectErrorMessage(client, MimicryErrorEnum.NO_VALID_HOST);
                 return;
             }
 
-            if (food.Effects.Any(x => x.EffectId == EffectsEnum.Effect_LivingObjectId || x.EffectId == EffectsEnum.Effect_Appearance || x.EffectId == EffectsEnum.Effect_Apparence_Wrapper))
+            if (food.Effects.Any(x => x.EffectId == EffectsEnum.Effect_LivingObjectId || x.EffectId == EffectsEnum.Effect_Appearance || x.EffectId == EffectsEnum.Effect_Apparence_Wrapper)
+                || !food.Template.Type.Mimickable)
             {
                 SendMimicryObjectErrorMessage(client, MimicryErrorEnum.NO_VALID_FOOD);
                 return;
