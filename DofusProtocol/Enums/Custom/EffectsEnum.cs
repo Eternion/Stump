@@ -2209,7 +2209,7 @@
         /// <summary>
         /// Apparence : #1
         /// </summary>
-        Effect_1176 = 1176,
+        Effect_Apparence_Wrapper = 1176,
         /// <summary>
         /// 
         /// </summary>
@@ -2221,7 +2221,7 @@
         /// <summary>
         /// Compatible avec : #1
         /// </summary>
-        Effect_1179 = 1179,
+        Effect_Compatible = 1179,
         /// <summary>
         /// Lire #3
         /// </summary>
