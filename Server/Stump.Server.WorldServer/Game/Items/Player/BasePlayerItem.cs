@@ -276,7 +276,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             {
                 var appearanceId = Template.AppearanceId;
 
-                var effect = Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Appearance);
+                var effect = Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Appearance || x.EffectId == EffectsEnum.Effect_Apparence_Wrapper);
                 if (effect != null)
                 {
                     var itemId = ((EffectInteger)effect).Value;
