@@ -194,7 +194,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            if (food.AppearanceId == host.AppearanceId)
+            if (food.Template.Id == host.Template.Id)
             {
                 SendMimicryObjectErrorMessage(client, MimicryErrorEnum.SAME_SKIN);
                 return;
