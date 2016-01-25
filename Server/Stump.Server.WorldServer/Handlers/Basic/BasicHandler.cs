@@ -95,7 +95,7 @@ namespace Stump.Server.WorldServer.Handlers.Basic
         public static void SendBasicTimeMessage(IPacketReceiver client)
         {
             var offset = (short) TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalMinutes;
-            client.Send(new BasicTimeMessage(DateTime.Now.GetUnixTimeStampDouble(), offset));
+            client.Send(new BasicTimeMessage(DateTime.Now.GetUnixTimeStampLong(), offset));
         }
 
         public static void SendBasicNoOperationMessage(IPacketReceiver client)
