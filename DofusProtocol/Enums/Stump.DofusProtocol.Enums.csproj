@@ -185,6 +185,7 @@
     <Compile Include="Custom\OrnamentEnum.cs" />
     <Compile Include="Custom\PartyFightReasonEnum.cs" />
     <Compile Include="Custom\SkillTemplateEnum.cs" />
+    <Compile Include="Custom\SmileyPacksEnum.cs" />
     <Compile Include="Custom\SpellShapeEnum.cs" />
     <Compile Include="Custom\StableExchangeActionsEnum.cs" />
     <Compile Include="Custom\StatsBoostTypeEnum.cs" />

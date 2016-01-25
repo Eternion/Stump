@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override int StartExecute(Character character)
         {
-            InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_COLLECTING);
+            InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ANIMATED);
             SetHarvestedState(true);
 
             return GetDuration(character);
@@ -57,7 +57,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public override void EndExecute(Character character)
         {
-            InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_CUT);
+            InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
             var count = RollHarvestedItemCount(character);
 
             character.Inventory.AddItem(m_harvestedItem, count);

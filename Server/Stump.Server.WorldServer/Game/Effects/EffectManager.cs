@@ -406,9 +406,8 @@ namespace Stump.Server.WorldServer.Game.Effects
 
         #region Unrandomable Effects
 
-        private readonly EffectsEnum[] m_unRandomablesEffects =
-            new[]
-                {
+        readonly EffectsEnum[] m_unRandomablesEffects =
+            {
                     EffectsEnum.Effect_DamageWater,
                     EffectsEnum.Effect_DamageEarth,
                     EffectsEnum.Effect_DamageAir,

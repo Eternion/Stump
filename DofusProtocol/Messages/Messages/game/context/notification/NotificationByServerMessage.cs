@@ -1,6 +1,6 @@
 
 
-// Generated on 12/20/2015 16:36:51
+// Generated on 01/19/2016 22:29:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +20,17 @@ namespace Stump.DofusProtocol.Messages
         
         public short id;
         public IEnumerable<string> parameters;
+        public bool forceOpen;
         
         public NotificationByServerMessage()
         {
         }
         
-        public NotificationByServerMessage(short id, IEnumerable<string> parameters)
+        public NotificationByServerMessage(short id, IEnumerable<string> parameters, bool forceOpen)
         {
             this.id = id;
             this.parameters = parameters;
+            this.forceOpen = forceOpen;
         }
         
         public override void Serialize(IDataWriter writer)
@@ -47,6 +49,7 @@ namespace Stump.DofusProtocol.Messages
             writer.WriteUShort((ushort)parameters_count);
             writer.Seek((int)parameters_after);
 
+            writer.WriteBoolean(forceOpen);
         }
         
         public override void Deserialize(IDataReader reader)
@@ -61,6 +64,7 @@ namespace Stump.DofusProtocol.Messages
                  parameters_[i] = reader.ReadUTF();
             }
             parameters = parameters_;
+            forceOpen = reader.ReadBoolean();
         }
         
     }

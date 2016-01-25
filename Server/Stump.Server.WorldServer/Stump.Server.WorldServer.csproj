@@ -318,9 +318,11 @@
     <Compile Include="Game\Conditions\Criterions\BonesCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BonusSetCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\BreedCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\CellOccupedCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\GuildRightsCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\HasOrnament.cs" />
     <Compile Include="Game\Conditions\Criterions\HasTitleCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\InteractiveStateCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\MapCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestDoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\QuestStartableCriterion.cs" />
@@ -345,6 +347,7 @@
     <Compile Include="Game\Conditions\Criterions\ServerCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SexCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SkillCriterion.cs" />
+    <Compile Include="Game\Conditions\Criterions\SmileyPackCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SoulStoneCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\SpecializationCriterion.cs" />
     <Compile Include="Game\Conditions\Criterions\StaticCriterion.cs" />
@@ -360,6 +363,7 @@
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamageModificator.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\LearnSmileyPack.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\LearnEmote.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\RestoreEnergy.cs" />
     <Compile Include="Game\Effects\Handlers\Usables\SummonTaxcollector.cs" />
@@ -553,6 +557,7 @@
     <Compile Include="Game\Guilds\GuildManager.cs" />
     <Compile Include="Game\Guilds\GuildMember.cs" />
     <Compile Include="Game\Interactives\Skills\CustomSkill.cs" />
+    <Compile Include="Game\Interactives\Skills\SkillAnimate.cs" />
     <Compile Include="Game\Interactives\Skills\SkillCraft.cs" />
     <Compile Include="Game\Interactives\Skills\SkillGuildCreate.cs" />
     <Compile Include="Game\Interactives\Skills\SkillHarvest.cs" />
@@ -571,7 +576,8 @@
     <Compile Include="Game\Items\Player\Custom\ItemHasEffectAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\ItemIdAttribute.cs" />
     <Compile Include="Game\Items\Player\Custom\LivingObjects\CommonLivingObject.cs" />
-    <Compile Include="Game\Items\Player\Custom\MimiSymbic\MimisymbicItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\MimisymbicItem.cs" />
+    <Compile Include="Game\Items\Player\Custom\WrapperObjectItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PetItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PotionsItem.cs" />
     <Compile Include="Game\Items\Player\Custom\PrestigeItem.cs" />
@@ -629,7 +635,6 @@
     <Compile Include="Game\Spells\Casts\Roublard\BombExplodSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\KickSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\Roublard\MagnetSpellCastHandler.cs" />
-    <Compile Include="Game\Spells\Casts\Sram\ChakraConcentrationCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandler.cs" />
     <Compile Include="Game\Spells\Casts\DefaultSpellCastHandlerAttribute.cs" />
     <Compile Include="Game\Spells\Casts\Enutrof\LivingChestCastHandler.cs" />

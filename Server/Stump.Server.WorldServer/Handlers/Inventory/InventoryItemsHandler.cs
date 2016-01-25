@@ -100,6 +100,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(ObjectFeedMessage.Id)]
         public static void HandleObjectFeedMessage(WorldClient client, ObjectFeedMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var item = client.Character.Inventory.TryGetItem(message.objectUID);
             var food = client.Character.Inventory.TryGetItem(message.foodUID);
 
@@ -122,6 +125,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(LivingObjectChangeSkinRequestMessage.Id)]
         public static void HandleLivingObjectChangeSkinRequestMessage(WorldClient client, LivingObjectChangeSkinRequestMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var item = client.Character.Inventory.TryGetItem(message.livingUID);
 
             if (!(item is CommonLivingObject))
@@ -133,6 +139,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(LivingObjectDissociateMessage.Id)]
         public static void HandleLivingObjectDissociateMessage(WorldClient client, LivingObjectDissociateMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var item = client.Character.Inventory.TryGetItem(message.livingUID);
 
             (item as BoundLivingObjectItem)?.Dissociate();
@@ -150,6 +159,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(MimicryObjectFeedAndAssociateRequestMessage.Id)]
         public static void HandleMimicryObjectFeedAndAssociateRequestMessage(WorldClient client, MimicryObjectFeedAndAssociateRequestMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var character = client.Character;
 
             var host = character.Inventory.TryGetItem(message.hostUID);
@@ -168,7 +180,21 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 return;
             }
 
-            if (food.AppearanceId == host.AppearanceId)
+            if (host.Effects.Any(x => x.EffectId == EffectsEnum.Effect_LivingObjectId || x.EffectId == EffectsEnum.Effect_Appearance || x.EffectId == EffectsEnum.Effect_Apparence_Wrapper)
+                || !host.Template.Type.Mimickable)
+            {
+                SendMimicryObjectErrorMessage(client, MimicryErrorEnum.NO_VALID_HOST);
+                return;
+            }
+
+            if (food.Effects.Any(x => x.EffectId == EffectsEnum.Effect_LivingObjectId || x.EffectId == EffectsEnum.Effect_Appearance || x.EffectId == EffectsEnum.Effect_Apparence_Wrapper)
+                || !food.Template.Type.Mimickable)
+            {
+                SendMimicryObjectErrorMessage(client, MimicryErrorEnum.NO_VALID_FOOD);
+                return;
+            }
+
+            if (food.Template.Id == host.Template.Id)
             {
                 SendMimicryObjectErrorMessage(client, MimicryErrorEnum.SAME_SKIN);
                 return;
@@ -209,6 +235,9 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
         [WorldHandler(MimicryObjectEraseRequestMessage.Id)]
         public static void HandleMimicryObjectEraseRequestMessage(WorldClient client, MimicryObjectEraseRequestMessage message)
         {
+            if (client.Character.IsInFight())
+                return;
+
             var host = client.Character.Inventory.TryGetItem(message.hostUID);
 
             if (host == null)
@@ -219,6 +248,38 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             client.Character.Inventory.RefreshItem(host);
             SendInventoryWeightMessage(client);
+        }
+
+        [WorldHandler(WrapperObjectDissociateRequestMessage.Id)]
+        public static void HandleWrapperObjectDissociateRequestMessage(WorldClient client, WrapperObjectDissociateRequestMessage message)
+        {
+            if (client.Character.IsInFight())
+                return;
+
+            var host = client.Character.Inventory.TryGetItem(message.hostUID);
+
+            if (host == null)
+                return;
+
+            var apparenceWrapper = host.Effects.FirstOrDefault(x => x.EffectId == EffectsEnum.Effect_Apparence_Wrapper) as EffectInteger;
+
+            if (apparenceWrapper == null)
+                return;
+
+            var wrapperItem = ItemManager.Instance.TryGetTemplate(apparenceWrapper.Value);
+
+            host.Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_Apparence_Wrapper);
+            host.Invalidate();
+
+            client.Character.Inventory.RefreshItem(host);
+            client.Character.Inventory.AddItem(wrapperItem);
+
+            SendInventoryWeightMessage(client);
+        }
+
+        public static void SendWrapperObjectAssociatedMessage(IPacketReceiver client, BasePlayerItem host)
+        {
+            client.Send(new WrapperObjectAssociatedMessage(host.Guid));
         }
 
         public static void SendMimicryObjectAssociatedMessage(IPacketReceiver client, BasePlayerItem host)

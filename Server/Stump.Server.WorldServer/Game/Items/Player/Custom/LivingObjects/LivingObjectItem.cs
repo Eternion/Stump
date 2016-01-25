@@ -33,10 +33,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
 
         public override bool Drop(BasePlayerItem dropOnItem)
         {
+            if (Owner.IsInFight())
+                return false;
+
             if (dropOnItem.Template.TypeId != LivingObjectRecord.ItemType)
                 return false;
 
-            if (dropOnItem.Effects.Any(x => x.EffectId == EffectsEnum.Effect_LivingObjectId))
+            if (dropOnItem.Effects.Any(x => x.EffectId == EffectsEnum.Effect_LivingObjectId || x.EffectId == EffectsEnum.Effect_Appearance || x.EffectId == EffectsEnum.Effect_Apparence_Wrapper))
                 return false;
 
             // check type
