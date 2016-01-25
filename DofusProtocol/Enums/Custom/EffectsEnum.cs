@@ -2029,7 +2029,7 @@
         /// <summary>
         /// Répartit #1{~1~2 à }#2% des dommages subis.
         /// </summary>
-        Effect_Putsch = 1123,
+        Effect_DispatchDamages = 1123,
         /// <summary>
         /// 
         /// </summary>

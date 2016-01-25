@@ -391,7 +391,7 @@
     <Compile Include="Game\Effects\Handlers\Usables\TeleportToSavePoint.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\ComboBonusBuff.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\HealOrMultiply.cs" />
-    <Compile Include="Game\Effects\Handlers\Spells\Buffs\Putsch.cs" />
+    <Compile Include="Game\Effects\Handlers\Spells\Buffs\DispatchDamages.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerHPEroded.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamagePerRemainingMP.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Debuffs\DispelEffect.cs" />
