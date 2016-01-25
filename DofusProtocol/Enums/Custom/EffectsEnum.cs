@@ -1645,7 +1645,7 @@
         /// <summary>
         /// #1
         /// </summary>
-        Effect_1017 = 1017,
+        Effect_CastSpell_1017 = 1017,
         /// <summary>
         /// #1
         /// </summary>
