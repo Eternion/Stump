@@ -45,7 +45,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 return;
 
             var target = buff.Target;
-            var damages = (int)(damage.Amount * (20 / 100d));
+            var damages = (int)(damage.Amount * (Dice.DiceNum / 100d));
             var cells = target.Position.Point.GetAdjacentCells(x => !Fight.IsCellFree(target.Map.Cells[x]));
 
             foreach (var actor in cells.Select(cell => target.Fight.GetOneFighter(target.Map.Cells[cell.CellId])).Where(actor => actor != null))
