@@ -147,8 +147,7 @@
     <Compile Include="Npcs\NpcRestatScript.cs" />
     <Compile Include="OrbsManager.cs" />
     <Compile Include="Prestige\PrestigeNpc.cs" />
-    <Compile Include="Votes\VoteNotificationHandler.cs" />
-    <Compile Include="Votes\VoteNotificationMessage.cs" />
+    <Compile Include="Votes\VoteChecker.cs" />
     <Compile Include="WelcomeMessage.cs" />
     <Compile Include="Npcs\NpcShops.cs" />
     <Compile Include="Plugin.cs" />

@@ -42,13 +42,15 @@ namespace Stump.Server.WorldServer.Handlers.Context
             SendGameMapChangeOrientationMessage(client.Character.CharacterContainer.Clients, client.Character);
         }
 
-        // todo : get and check whole path
         [WorldHandler(GameCautiousMapMovementRequestMessage.Id)]
         [WorldHandler(GameMapMovementRequestMessage.Id)]
         public static void HandleGameMapMovementRequestMessage(WorldClient client, GameMapMovementRequestMessage message)
         {
             if (!client.Character.CanMove())
+            {
                 SendGameMapNoMovementMessage(client);
+                return;
+            }
 
             var movementPath = Path.BuildFromCompressedPath(client.Character.Map, message.keyMovements);
 

@@ -1,4 +1,5 @@
 ﻿using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
@@ -11,10 +12,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             Record = record;
         }
 
+        public override bool IsEnabled(Character character) => base.IsEnabled(character);
+
         public InteractiveCustomSkillRecord Record
         {
             get;
-            private set;
         }
     }
 }

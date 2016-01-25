@@ -16,6 +16,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
         {
+            if (Owner.IsInFight())
+                return 0;
+
             Owner.Client.Send(new ClientUIOpenedByObjectMessage(3, Guid));
 
             return 0;

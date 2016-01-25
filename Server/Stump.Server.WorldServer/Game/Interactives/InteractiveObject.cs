@@ -87,13 +87,13 @@ namespace Stump.Server.WorldServer.Game.Interactives
 
         public IEnumerable<Skill> GetEnabledSkills(Character character) => m_skills.Values.Where(entry => entry.IsEnabled(character));
 
-        public IEnumerable<Skill> GetDisabledSkills(Character character) => m_skills.Values.Where(entry => !entry.IsEnabled(character));
+        public IEnumerable<Skill> GetDisabledSkills(Character character) => m_skills.Values.Where(entry => entry is SkillHarvest && !entry.IsEnabled(character));
 
         public IEnumerable<InteractiveElementSkill> GetEnabledElementSkills(Character character)
             => m_skills.Values.Where(entry => entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
 
         public IEnumerable<InteractiveElementSkill> GetDisabledElementSkills(Character character)
-            => m_skills.Values.Where(entry => !entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
+            => m_skills.Values.Where(entry => entry is SkillHarvest && !entry.IsEnabled(character) && entry.SkillTemplate.ClientDisplay).Select(entry => entry.GetInteractiveElementSkill());
 
         public InteractiveElement GetInteractiveElement(Character character)
             => new InteractiveElement(Id, Template?.Id ?? -1, GetEnabledElementSkills(character), GetDisabledElementSkills(character));

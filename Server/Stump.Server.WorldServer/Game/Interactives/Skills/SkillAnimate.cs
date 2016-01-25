@@ -2,21 +2,21 @@
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer.Database.World.Triggers;
+using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Handlers.Interactives;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
+namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
-    [Discriminator("Animate", typeof(CellTrigger), typeof(CellTriggerRecord))]
-    public class AnimateTrigger : CellTrigger
+    [Discriminator("Animate", typeof(Skill), typeof(int), typeof(InteractiveCustomSkillRecord), typeof(InteractiveObject))]
+    public class SkillAnimate : CustomSkill
     {
-        public AnimateTrigger(CellTriggerRecord record)
-            : base(record)
+        public SkillAnimate(int id, InteractiveCustomSkillRecord skillTemplate, InteractiveObject interactiveObject)
+            : base(id, skillTemplate, interactiveObject)
         {
-            m_mapObstacles = ObstaclesCSV.FromCSV<short>(",").Select(x => new MapObstacle(x, (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED)).ToArray();
+            m_mapObstacles = ObstaclesCSV == null ? new MapObstacle[0] : ObstaclesCSV.FromCSV<short>(",").Select(x => new MapObstacle(x, (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED)).ToArray();
         }
 
         int? m_elementId;
@@ -85,10 +85,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
         public List<MapObstacle> Obstacles => m_mapObstacles.ToList();
 
-        public override void Apply(Character character)
+        public override int StartExecute(Character character)
         {
             if (!Record.IsConditionFilled(character))
-                return;
+                return -1;
 
             var map = World.Instance.GetMap(MapId);
 
@@ -96,10 +96,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
             var interactive = map.GetInteractiveObject(ElementId);
             if (interactive == null)
-                return;
+                return -1;
 
             if (interactive.State != InteractiveStateEnum.STATE_NORMAL)
-                return;
+                return -1;
 
             interactive.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
 
@@ -109,10 +109,10 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
             foreach (var element in map.GetInteractiveObjects())
                 InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
 
-            map.Area.CallDelayed(20000, () => Reset(character));
+            return 20000;
         }
 
-        public void Reset(Character character)
+        public override void EndExecute(Character character)
         {
             var map = World.Instance.GetMap(MapId);
 

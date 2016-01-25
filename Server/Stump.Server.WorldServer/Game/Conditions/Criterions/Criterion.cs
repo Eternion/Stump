@@ -116,6 +116,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new BonesCriterion();
                 case BreedCriterion.Identifier:
                     return new BreedCriterion();
+                case CellOccupedCriterion.Identifier:
+                    return new CellOccupedCriterion();
                 case EmoteCriterion.Identifier:
                     return new EmoteCriterion();
                 case FriendListCriterion.Identifier:
@@ -130,6 +132,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                     return new HasOrnament();
                 case HasTitleCriterion.Identifier:
                     return new HasTitleCriterion();
+                case InteractiveStateCriterion.Identifier:
+                    return new InteractiveStateCriterion();
                 case JobCriterion.Identifier:
                     return new JobCriterion();
                 case KamaCriterion.Identifier:
@@ -170,6 +174,8 @@ namespace Stump.Server.WorldServer.Game.Conditions.Criterions
                 case SkillCriterion.Identifier:
                 case SkillCriterion.Identifier2:
                     return new SkillCriterion();
+                case SmileyPackCriterion.Identifier:
+                    return new SmileyPackCriterion();
                 case SoulStoneCriterion.Identifier:
                     return new SoulStoneCriterion();
                 case SpecializationCriterion.Identifier:
