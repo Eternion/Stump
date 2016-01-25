@@ -1139,6 +1139,7 @@
     <Compile Include="Messages\security\ClientKeyMessage.cs" />
     <Compile Include="Messages\security\RawDataMessage.cs" />
     <Compile Include="Messages\server\basic\SystemMessageDisplayMessage.cs" />
+    <Compile Include="Messages\subscription\SubscriptionUpdateMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadCurrentSpeedMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadErrorMessage.cs" />
     <Compile Include="Messages\updater\parts\DownloadGetCurrentSpeedRequestMessage.cs" />
@@ -1150,6 +1151,8 @@
     <Compile Include="Messages\updater\parts\PartsListMessage.cs" />
     <Compile Include="Messages\web\ankabox\MailStatusMessage.cs" />
     <Compile Include="Messages\web\ankabox\NewMailMessage.cs" />
+    <Compile Include="Messages\web\haapi\HaapiApiKeyMessage.cs" />
+    <Compile Include="Messages\web\haapi\HaapiApiKeyRequestMessage.cs" />
     <Compile Include="Messages\web\krosmaster\KrosmasterAuthTokenErrorMessage.cs" />
     <Compile Include="Messages\web\krosmaster\KrosmasterAuthTokenMessage.cs" />
     <Compile Include="Messages\web\krosmaster\KrosmasterAuthTokenRequestMessage.cs" />
@@ -1180,10 +1183,7 @@
       <Name>Stump.DofusProtocol.Enums</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Messages\subscription\" />
-    <Folder Include="Messages\web\haapi\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
