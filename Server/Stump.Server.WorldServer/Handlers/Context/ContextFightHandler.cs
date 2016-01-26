@@ -508,7 +508,7 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameActionFightNoSpellCastMessage(IPacketReceiver client, Spell spell)
         {
-            client.Send(new GameActionFightNoSpellCastMessage(spell.Id));
+            client.Send(new GameActionFightNoSpellCastMessage((int)spell.CurrentSpellLevel.Id));
         }
 
         public static void SendGameActionFightModifyEffectsDurationMessage(IPacketReceiver client, FightActor source, FightActor target, short delta)
