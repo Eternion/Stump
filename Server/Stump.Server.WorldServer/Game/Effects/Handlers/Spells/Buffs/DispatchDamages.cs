@@ -40,36 +40,27 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             var damages = (int)(damage.Amount * (Dice.DiceNum / 100.0));
 
-            var reflectDamage = new Fights.Damage(damages)
-            {
-                Source = buff.Target,
-                School = damage.School,
-                IsCritical = damage.IsCritical,
-                IgnoreDamageBoost = true,
-                IgnoreDamageReduction = false,
-                Spell = null
-            };
-
-            damage.Source.InflictDamage(reflectDamage);
+            var actors = new FightActor[] { damage.Source };
 
             if (Spell.Id == (int)SpellIdEnum.PUTSCH)
             {
                 var cells = buff.Target.Position.Point.GetAdjacentCells(x => !Fight.IsCellFree(buff.Target.Map.Cells[x]));
+                actors = cells.Select(cell => buff.Target.Fight.GetOneFighter(buff.Target.Map.Cells[cell.CellId])).Where(actor => actor != null).ToArray();
+            }
 
-                foreach (var actor in cells.Select(cell => buff.Target.Fight.GetOneFighter(buff.Target.Map.Cells[cell.CellId])).Where(actor => actor != null))
+            foreach (var actor in actors)
+            {
+                var reflectDamage = new Fights.Damage(damages)
                 {
-                    var baseDamage = new Fights.Damage(damages)
-                    {
-                        Source = buff.Target,
-                        School = damage.School,
-                        IsCritical = damage.IsCritical,
-                        IgnoreDamageBoost = true,
-                        IgnoreDamageReduction = false,
-                        Spell = null
-                    };
+                    Source = buff.Target,
+                    School = damage.School,
+                    IsCritical = damage.IsCritical,
+                    IgnoreDamageBoost = true,
+                    IgnoreDamageReduction = false,
+                    Spell = null
+                };
 
-                    actor.InflictDamage(baseDamage);
-                }
+                actor.InflictDamage(reflectDamage);
             }
 
             buff.Target.RemoveBuff(buff);
