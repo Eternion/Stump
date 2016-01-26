@@ -25,7 +25,7 @@ namespace DofusProtocolBuilder.XmlPatterns
                 Id = Parser.Fields.Find(entry => entry.Name == "protocolId").Value,
                 Heritage = Parser.Class.Heritage,
             };
-          
+
             xmlMessage.Fields = GetXmlFields().ToArray();
 
             var serializer = new XmlSerializer(typeof(XmlMessage));
