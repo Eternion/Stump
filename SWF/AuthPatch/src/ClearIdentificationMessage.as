@@ -27,6 +27,8 @@ package
 		
 		public var serverIp:String = "";
 		
+		public var hardwareId:String = "";
+		
         public function ClearIdentificationMessage()
         {
             super();
@@ -42,7 +44,7 @@ package
             return protocolId;
         }
 
-        public function initClearIdentificationMessage(autoconnect:Boolean = false, lang:String = "", username:String = "", password:String = "", serverId:uint = 0, serverIp:String = "") : ClearIdentificationMessage
+        public function initClearIdentificationMessage(autoconnect:Boolean = false, lang:String = "", username:String = "", password:String = "", serverId:uint = 0, serverIp:String = "", hardwareId:String = "") : ClearIdentificationMessage
         {
 			this.autoconnect = autoconnect;
 			this.lang = lang;
@@ -50,6 +52,7 @@ package
             this.password = password;
 			this.serverId = serverId;
 			this.serverIp = serverIp;
+			this.hardwareId = hardwareId;
 			
 			this._isInitialized = true;
 			
@@ -63,6 +66,7 @@ package
             this.password = "";
 			this.serverId = 0;
 			this.serverIp = "";
+			this.hardwareId = "";
 			
             this._isInitialized = false;
         }
@@ -90,6 +94,7 @@ package
             output.writeUTF(this.password);
 			output.writeShort(this.serverId);
 			output.writeUTF(this.serverIp);
+			output.writeUTF(this.hardwareId);
         }
 
         public function deserialize(input:ICustomDataInput) : void
@@ -102,6 +107,7 @@ package
             this.password = input.readUTF();
 			this.serverId = input.readShort();
 			this.serverIp = input.readUTF();
+			this.hardwareId = input.readUTF();
         }
     }
 

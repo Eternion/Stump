@@ -183,23 +183,21 @@ namespace Stump.Server.WorldServer.Commands.Commands
         }
     }
 
-    public class BanKeyCommand : CommandBase
+    public class BanHardwareIdCommand : CommandBase
     {
-        public BanKeyCommand()
+        public BanHardwareIdCommand()
         {
-            Aliases = new[] { "bankey" };
+            Aliases = new[] { "hwban" };
             RequiredRole = RoleEnum.Administrator;
-            Description = "Ban a clientkey";
+            Description = "Ban an HardwareId";
 
-            AddParameter<string>("key", "key", "The key to ban");
-            AddParameter<int>("time", "time", "Ban duration (in minutes)", isOptional: true);
-            AddParameter("reason", "r", "Reason of ban", "No reason");
-            AddParameter<bool>("life", "l", "Specify a life ban", isOptional: true);
+            AddParameter<string>("hardwareId", "hw", "The hardwareId to ban");
+            AddParameter<string>("reason", "r", "Reason of ban");
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var key = trigger.Get<string>("key");
+            var hardwareId = trigger.Get<string>("hardwareId");
             var reason = trigger.Get<string>("reason");
 
             if (!IPCAccessor.Instance.IsConnected)
@@ -208,46 +206,40 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            var message = new BanClientKeyMessage
+            var message = new BanHardwareIdMessage
             {
-                ClientKey = key,
-                BanReason = reason,
+                HardwareId = hardwareId,
+                BanReason = reason
             };
 
             var source = trigger.GetSource() as WorldClient;
             if (source != null)
                 message.BannerAccountId = source.Account.Id;
 
-            if (trigger.IsArgumentDefined("time"))
-                message.BanEndDate = DateTime.Now + TimeSpan.FromMinutes(trigger.Get<int>("time"));
-            else if (trigger.IsArgumentDefined("life"))
-                message.BanEndDate = null;
-            else
-            {
-                trigger.ReplyError("No ban duration given");
-                return;
-            }
-
             IPCAccessor.Instance.SendRequest(message,
-                ok => trigger.Reply("ClientKey {0} banned", key),
-                error => trigger.ReplyError("ClientKey {0} not banned : {1}", key, error.Message));
+                ok =>
+                {
+                    World.Instance.ForEachCharacter(x => x.Account.LastHardwareId == hardwareId, character => character.Client.Disconnect());
+                    trigger.Reply("HardwareId {0} banned", hardwareId);
+                },
+                error => trigger.ReplyError("HardwareId {0} not banned : {1}", hardwareId, error.Message));
         }
     }
 
-    public class UnBanKeyCommand : CommandBase
+    public class UnBanHardwareIdCommand : CommandBase
     {
-        public UnBanKeyCommand()
+        public UnBanHardwareIdCommand()
         {
-            Aliases = new[] { "unbankey" };
+            Aliases = new[] { "hwunban" };
             RequiredRole = RoleEnum.GameMaster;
-            Description = "Unban a clientKey";
+            Description = "Unban an HardwareId";
 
-            AddParameter<string>("key", "key", "The key to unban");
+            AddParameter<string>("hardwareId", "hw", "The hardwareId to unban");
         }
 
         public override void Execute(TriggerBase trigger)
         {
-            var key = trigger.Get<string>("key");
+            var hardwareId = trigger.Get<string>("hardwareId");
 
             if (!IPCAccessor.Instance.IsConnected)
             {
@@ -255,9 +247,9 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 return;
             }
 
-            IPCAccessor.Instance.SendRequest(new UnBanClientKeyMessage(key),
-                ok => trigger.Reply("Key {0} unbanned", key),
-                error => trigger.ReplyError("Key {0} not unbanned : {1}", key, error.Message));
+            IPCAccessor.Instance.SendRequest(new UnBanHardwareIdMessage(hardwareId),
+                ok => trigger.Reply("HardwareId {0} unbanned", hardwareId),
+                error => trigger.ReplyError("HardwareId {0} not unbanned : {1}", hardwareId, error.Message));
         }
     }
 

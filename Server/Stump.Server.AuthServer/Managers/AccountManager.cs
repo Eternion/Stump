@@ -7,10 +7,10 @@ using Stump.Core.Attributes;
 using Stump.Core.Timers;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.AuthServer.Database;
-using Stump.Server.AuthServer.Database.Accounts;
 using Stump.Server.AuthServer.Network;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.IPC.Messages;
+using Stump.Server.AuthServer.Database.Accounts;
 
 namespace Stump.Server.AuthServer.Managers
 {
@@ -48,12 +48,12 @@ namespace Stump.Server.AuthServer.Managers
         [Variable]
         public static int BansRefreshTime = 60;
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
-        private List<IpBan> m_ipBans = new List<IpBan>();
-        private List<ClientKeyBan> m_keyBans = new List<ClientKeyBan>(); 
-        private TimedTimerEntry m_timer;
-        private TimedTimerEntry m_bansTimer;
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        readonly Dictionary<string, Tuple<DateTime, Account>> m_accountsCache = new Dictionary<string, Tuple<DateTime, Account>>();
+        List<IpBan> m_ipBans = new List<IpBan>();
+        List<HardwareIdBan> m_hardwareIdBans = new List<HardwareIdBan>(); 
+        TimedTimerEntry m_timer;
+        TimedTimerEntry m_bansTimer;
 
         public AccountManager()
         {
@@ -66,7 +66,7 @@ namespace Stump.Server.AuthServer.Managers
             m_timer = AuthServer.Instance.IOTaskPool.CallPeriodically(CacheTimeout * 60 / 4, TimerTick);
             m_bansTimer = AuthServer.Instance.IOTaskPool.CallPeriodically(BansRefreshTime * 1000, RefreshBans);
             m_ipBans = Database.Fetch<IpBan>(IpBanRelator.FetchQuery);
-            m_keyBans = Database.Fetch<ClientKeyBan>(ClientKeyBanRelator.FetchQuery);
+            m_hardwareIdBans = Database.Fetch<HardwareIdBan>(HardwareIdBanRelator.FetchQuery);
         }
 
         public override void TearDown()
@@ -75,7 +75,7 @@ namespace Stump.Server.AuthServer.Managers
             AuthServer.Instance.IOTaskPool.RemoveTimer(m_bansTimer);
         }
 
-        private void TimerTick()
+        void TimerTick()
         {
             var toRemove = (from keyPair in m_accountsCache where keyPair.Value.Item1 <= DateTime.Now select keyPair).ToList();
 
@@ -85,15 +85,15 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        private void RefreshBans()
+        void RefreshBans()
         {
             lock (m_ipBans)
             {
                 m_ipBans.Clear();
-                m_keyBans.Clear();
+                m_hardwareIdBans.Clear();
 
                 m_ipBans.AddRange(Database.Query<IpBan>(IpBanRelator.FetchQuery));
-                m_keyBans.AddRange(Database.Query<ClientKeyBan>(ClientKeyBanRelator.FetchQuery));
+                m_hardwareIdBans.AddRange(Database.Query<HardwareIdBan>(HardwareIdBanRelator.FetchQuery));
             }
         }
 
@@ -105,11 +105,11 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        public void AddClientKeyBan(ClientKeyBan ban)
+        public void AddHardwareIdBan(HardwareIdBan ban)
         {
-            lock (m_keyBans)
+            lock (m_hardwareIdBans)
             {
-                m_keyBans.Add(ban);
+                m_hardwareIdBans.Add(ban);
             }
         }
 
@@ -145,21 +145,11 @@ namespace Stump.Server.AuthServer.Managers
             }
         }
 
-        public ClientKeyBan FindClientKeyBan(string key)
+        public HardwareIdBan FindHardwareIdBan(string hardwareId)
         {
-            lock (m_keyBans)
+            lock (m_hardwareIdBans)
             {
-                return m_keyBans.FirstOrDefault(x => x.ClientKey == key);
-            }
-        }
-
-        public ClientKeyBan FindMatchingClientKeyBan(string key)
-        {
-            lock (m_keyBans)
-            {
-                var bans = m_keyBans.Where(entry => entry.ClientKey == key);
-
-                return bans.OrderByDescending(entry => entry.GetRemainingTime()).FirstOrDefault();
+                return m_hardwareIdBans.FirstOrDefault(x => x.HardwareId == hardwareId);
             }
         }
 
@@ -175,9 +165,7 @@ namespace Stump.Server.AuthServer.Managers
         }
 
         public UserGroupRecord FindUserGroup(int id)
-        {
-            return Database.Query<UserGroupRecord>(string.Format(UserGroupRelator.FindUserById, id)).SingleOrDefault();
-        }
+            => Database.Query<UserGroupRecord>(string.Format(UserGroupRelator.FindUserById, id)).SingleOrDefault();
 
         public void CacheAccount(Account account)
         {
@@ -207,15 +195,9 @@ namespace Stump.Server.AuthServer.Managers
             return m_accountsCache.TryGetValue(ticket, out tuple) ? tuple.Item2 : null;
         }
 
-        public bool LoginExists(string login)
-        {
-            return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM accounts WHERE Login=@0)", login);
-        }
+        public bool LoginExists(string login) => Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM accounts WHERE Login=@0)", login);
 
-        public bool NicknameExists(string nickname)
-        {
-            return Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM accounts WHERE Nickname=@0)", nickname);
-        }
+        public bool NicknameExists(string nickname) => Database.ExecuteScalar<bool>("SELECT EXISTS(SELECT 1 FROM accounts WHERE Nickname=@0)", nickname);
 
         public bool CreateAccount(Account account)
         {
@@ -266,12 +248,7 @@ namespace Stump.Server.AuthServer.Managers
         }
 
         public bool AddAccountCharacter(Account account, WorldServer world, int characterId)
-        {
-            var character = CreateAccountCharacter(account, world, characterId);
-
-
-            return true;
-        }
+            => CreateAccountCharacter(account, world, characterId) != null;
 
         public WorldCharacterDeleted CreateDeletedCharacter(Account account, WorldServer world, int characterId)
         {

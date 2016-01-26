@@ -3,19 +3,19 @@
 namespace Stump.Server.BaseServer.IPC.Messages
 {
     [ProtoContract]
-    public class UnBanClientKeyMessage : IPCMessage
+    public class UnBanHardwareIdMessage : IPCMessage
     {
-        public UnBanClientKeyMessage()
+        public UnBanHardwareIdMessage()
         {
 
         }
-        public UnBanClientKeyMessage(string key)
+        public UnBanHardwareIdMessage(string hardwareId)
         {
-            ClientKey = key;
+            HardwareId = hardwareId;
         }
 
         [ProtoMember(2)]
-        public string ClientKey
+        public string HardwareId
         {
             get;
             set;

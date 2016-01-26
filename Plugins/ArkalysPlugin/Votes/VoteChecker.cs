@@ -43,7 +43,7 @@ namespace ArkalysPlugin.Votes
 
             client.Account.LastVote = message.Account.LastVote;
 
-            if (World.Instance.GetCharacters(x => x != character && x.Account.LastClientKey == message.Account.LastClientKey
+            if (World.Instance.GetCharacters(x => x != character && x.Account.LastHardwareId == message.Account.LastHardwareId
                 && x.Account.LastVote >= VoteDateTime).Any())
                 return;
 
