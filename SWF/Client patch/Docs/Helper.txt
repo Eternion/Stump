@@ -1,4 +1,4 @@
-(dofus.logic.connection.frames::LoginValidationAction)
+(dofus.logic.connection.frames.AuthentificationFrame::LoginValidationAction)
 BEFORE:
 	if(BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)
 AFTER:
@@ -7,7 +7,7 @@ AFTER:
 ================================
 ================================
 
-(com.ankamagames.dofus.logic.game.approach.frames::AllModulesLoadedMessage)
+(com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame::AllModulesLoadedMessage)
 AFTER:
 	this._gmaf = null;
     Kernel.getWorker().addFrame(new WorldFrame());
