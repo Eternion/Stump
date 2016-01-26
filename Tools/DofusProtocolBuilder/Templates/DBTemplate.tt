@@ -34,7 +34,7 @@ else if (Parser.Class.Name == "Weapon") // only exception
     WriteLine(string.Format("[TableName(\"Weapons\")]", Parser.Class.Name));
 #>
 <# WriteLine("[D2OClass(\"" + Parser.Class.Name + "\", \"" + Parser.Class.Namespace + "\")]"); #>
-public class <#=Parser.Class.Name #>Record<#=( HasHeritage(Parser.Class.Heritage) ? " : " + Parser.Class.Heritage + "Record, ID2ORecord, ISaveIntercepter" : " : ID2ORecord, ISaveIntercepter" ) #>
+public class <#=Parser.Class.Name #>Record<#=( HasHeritage(Parser.Class.Heritage) && Parser.Class.Heritage.Length > 0 ? " : " + Parser.Class.Heritage + "Record, ID2ORecord, ISaveIntercepter" : " : ID2ORecord, ISaveIntercepter" ) #>
 {
 <# PushIndent("    "); #>
 <# var idField = Parser.Fields.FirstOrDefault(x => x.Name == "id");
