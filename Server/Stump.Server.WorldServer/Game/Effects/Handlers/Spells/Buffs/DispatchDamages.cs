@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using Stump.DofusProtocol.Enums;
+﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
         {
             foreach (var actor in GetAffectedActors())
             {
-                AddTriggerBuff(actor, false, BuffTrigger);
+                AddTriggerBuff(actor, false, BuffTriggerType.AfterDamaged, BuffTrigger);
             }
 
             return true;
@@ -32,37 +32,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (damage == null)
                 return;
 
-            if (damage.Spell == null)
-                return;
-
-            if (damage.Spell.Id == 0)
+            if (damage.IsWeaponAttack)
                 return;
 
             if (damage.Source == null)
                 return;
 
-            var target = buff.Target;
             var damages = (int)(damage.Amount * (Dice.DiceNum / 100.0));
-            var cells = target.Position.Point.GetAdjacentCells(x => !Fight.IsCellFree(target.Map.Cells[x]));
 
-            foreach (var actor in cells.Select(cell => target.Fight.GetOneFighter(target.Map.Cells[cell.CellId])).Where(actor => actor != null))
+            var reflectDamage = new Fights.Damage(damages)
             {
-                var newDamages = new Fights.Damage(damages)
-                {
-                    Source = target,
-                    School = damage.School,
-                    IsCritical = damage.IsCritical,
-                    IgnoreDamageBoost = true,
-                    IgnoreDamageReduction = false,
-                    Spell = null
-                };
-
-                actor.InflictDamage(newDamages);
-            }
-
-            var newTargetDamages = new Fights.Damage(damages)
-            {
-                Source = damage.Source,
+                Source = buff.Target,
                 School = damage.School,
                 IsCritical = damage.IsCritical,
                 IgnoreDamageBoost = true,
@@ -70,7 +50,29 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
                 Spell = null
             };
 
-            target.InflictDamage(newTargetDamages);
+            damage.Source.InflictDamage(reflectDamage);
+
+            if (Spell.Id == (int)SpellIdEnum.PUTSCH)
+            {
+                var cells = buff.Target.Position.Point.GetAdjacentCells(x => !Fight.IsCellFree(buff.Target.Map.Cells[x]));
+
+                foreach (var actor in cells.Select(cell => buff.Target.Fight.GetOneFighter(buff.Target.Map.Cells[cell.CellId])).Where(actor => actor != null))
+                {
+                    var baseDamage = new Fights.Damage(damages)
+                    {
+                        Source = buff.Target,
+                        School = damage.School,
+                        IsCritical = damage.IsCritical,
+                        IgnoreDamageBoost = true,
+                        IgnoreDamageReduction = false,
+                        Spell = null
+                    };
+
+                    actor.InflictDamage(baseDamage);
+                }
+            }
+
+            buff.Target.RemoveBuff(buff);
         }
     }
 }
