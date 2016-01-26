@@ -17,7 +17,6 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Fights.History;
 using Stump.Server.WorldServer.Game.Fights.Results;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
@@ -30,13 +29,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public sealed class CharacterFighter : NamedFighter
     {
-        private int m_criticalWeaponBonus;
-        private int m_damageTakenBeforeFight;
-        private short m_earnedDishonor;
-        private int m_earnedExp;
-        private int m_guildEarnedExp;
-        private short m_earnedHonor;
-        private int m_weaponUses;
+        int m_criticalWeaponBonus;
+        int m_damageTakenBeforeFight;
+        int m_weaponUses;
 
         public CharacterFighter(Character character, FightTeam team)
             : base(team)

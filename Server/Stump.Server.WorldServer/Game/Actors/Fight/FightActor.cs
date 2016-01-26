@@ -1618,94 +1618,52 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Summons
 
-        private readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
-        private readonly List<SlaveFighter> m_slaves = new List<SlaveFighter>();
-        private readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
+        readonly List<SummonedFighter> m_summons = new List<SummonedFighter>();
+        readonly List<SlaveFighter> m_slaves = new List<SlaveFighter>();
+        readonly List<SummonedBomb> m_bombs = new List<SummonedBomb>();
 
         public int SummonedCount
-        {
-            get;
-            private set;
-        }
+            => m_summons.Count(x => x is SummonedMonster && (x as SummonedMonster).Monster.Template.UseSummonSlot) + m_slaves.Count(x => x.Monster.Template.UseSummonSlot);
 
-        public int BombsCount
-        {
-            get;
-            set;
-        }
+        public int BombsCount => m_bombs.Count(x => x.MonsterBombTemplate.Template.UseBombSlot);
 
-        public ReadOnlyCollection<SummonedFighter> Summons
-        {
-            get { return m_summons.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<SummonedFighter> Summons => m_summons.AsReadOnly();
 
-        public ReadOnlyCollection<SlaveFighter> Slaves
-        {
-            get { return m_slaves.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<SlaveFighter> Slaves => m_slaves.AsReadOnly();
 
-        public ReadOnlyCollection<SummonedBomb> Bombs
-        {
-            get { return m_bombs.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<SummonedBomb> Bombs => m_bombs.AsReadOnly();
 
+        public bool CanSummon() => SummonedCount < Stats[PlayerFields.SummonLimit].Total;
 
-        public bool CanSummon()
-        {
-            return SummonedCount < Stats[PlayerFields.SummonLimit].Total;
-        }
-
-        public bool CanSummonBomb()
-        {
-            return BombsCount < SummonedBomb.BombLimit;
-        }
+        public bool CanSummonBomb() => BombsCount < SummonedBomb.BombLimit;
 
         public void AddSummon(SummonedFighter summon)
         {
-            if (summon is SummonedMonster && ( summon as SummonedMonster ).Monster.Template.UseSummonSlot)
-                SummonedCount++;
-            // clone
-
             m_summons.Add(summon);
         }
 
         public void RemoveSummon(SummonedFighter summon)
         {
-            if (summon is SummonedMonster && ( summon as SummonedMonster ).Monster.Template.UseSummonSlot)
-                SummonedCount--;
-
             m_summons.Remove(summon);
         }
 
         public void AddSlave(SlaveFighter slave)
         {
-            if (slave.Monster.Template.UseSummonSlot)
-                SummonedCount++;
-
             m_slaves.Add(slave);
         }
 
         public void RemoveSlave(SlaveFighter slave)
         {
-            if (slave.Monster.Template.UseSummonSlot)
-                SummonedCount--;
-
             m_slaves.Remove(slave);
         }
 
         public void AddBomb(SummonedBomb bomb)
         {
-            if (bomb.MonsterBombTemplate.Template.UseBombSlot)
-                BombsCount++;
-
             m_bombs.Add(bomb);
         }
 
         public void RemoveBomb(SummonedBomb bomb)
         {
-            if (bomb.MonsterBombTemplate.Template.UseBombSlot)
-                BombsCount--;
-
             m_bombs.Remove(bomb);
         }
 
