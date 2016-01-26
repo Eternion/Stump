@@ -138,6 +138,14 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 return;
             }
 
+            var hardwareIdBan = AccountManager.Instance.FindHardwareIdBan(message.hardwareId);
+            if (hardwareIdBan != null)
+            {
+                SendIdentificationFailedBannedMessage(client);
+                client.DisconnectLater(1000);
+                return;
+            }
+
             AccountManager.Instance.DisconnectClientsUsingAccount(account, client, success => AuthServer.Instance.IOTaskPool.AddMessage(() =>
             {
                 // we must reload the record since it may have been modified
@@ -147,6 +155,7 @@ namespace Stump.Server.AuthServer.Handlers.Connection
                 /* Bind Account to Client */
                 client.Account = account;
                 client.UserGroup = AccountManager.Instance.FindUserGroup(account.UserGroupId);
+                client.Account.LastHardwareId = message.hardwareId;
 
                 if (client.UserGroup == null)
                 {

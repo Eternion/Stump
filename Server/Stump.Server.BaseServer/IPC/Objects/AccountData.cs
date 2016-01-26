@@ -152,7 +152,7 @@ namespace Stump.Server.BaseServer.IPC.Objects
         }
 
         [ProtoMember(25)]
-        public string LastClientKey
+        public string LastHardwareId
         {
             get;
             set;

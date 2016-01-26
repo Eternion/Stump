@@ -260,7 +260,7 @@ namespace Stump.Server.AuthServer.IPC
             account.SecretAnswer = message.Account.SecretAnswer;
             account.UserGroupId = message.Account.UserGroupId;
             account.Tokens = message.Account.Tokens;
-            account.LastClientKey = message.Account.LastClientKey;
+            account.LastHardwareId = message.Account.LastHardwareId;
 
             Database.Update(account);
             Client.ReplyRequest(new CommonOKMessage(), message);
@@ -415,7 +415,7 @@ namespace Stump.Server.AuthServer.IPC
             Client.ReplyRequest(new CommonOKMessage(), message);
         }
 
-        private void Handle(UnBanIPMessage message)
+        void Handle(UnBanIPMessage message)
         {
             var ipBan = AccountManager.FindIpBan(message.IPRange);
             if (ipBan == null)
@@ -429,63 +429,49 @@ namespace Stump.Server.AuthServer.IPC
             }
         }
 
-        private void Handle(BanClientKeyMessage message)
+        void Handle(BanHardwareIdMessage message)
         {
-            var key = AccountManager.FindClientKeyBan(message.ClientKey);
-            if (key != null)
+            var hardwareIdBan = AccountManager.FindHardwareIdBan(message.HardwareId);
+            if (hardwareIdBan != null)
             {
-                key.BanReason = message.BanReason;
-                key.BannedBy = message.BannerAccountId;
-                key.Duration = message.BanEndDate.HasValue ? (int?)(message.BanEndDate - DateTime.Now).Value.TotalMinutes : null;
-                key.Date = DateTime.Now;
+                hardwareIdBan.BanReason = message.BanReason;
+                hardwareIdBan.BannedBy = message.BannerAccountId;
+                hardwareIdBan.Date = DateTime.Now;
 
-                Database.Update(key);
+                Database.Update(hardwareIdBan);
             }
             else
             {
-                var record = new ClientKeyBan
+                var record = new HardwareIdBan
                 {
-                    ClientKey = message.ClientKey,
+                    HardwareId = message.HardwareId,
                     BanReason = message.BanReason,
                     BannedBy = message.BannerAccountId,
-                    Duration = message.BanEndDate.HasValue ? (int?)(message.BanEndDate - DateTime.Now).Value.TotalMinutes : null,
                     Date = DateTime.Now
                 };
 
                 Database.Insert(record);
-                AccountManager.Instance.AddClientKeyBan(record);
+                AccountManager.Instance.AddHardwareIdBan(record);
             }
 
             Client.ReplyRequest(new CommonOKMessage(), message);
         }
 
-        private void Handle(UnBanClientKeyMessage message)
+        void Handle(UnBanHardwareIdMessage message)
         {
-            var keyBan = AccountManager.FindClientKeyBan(message.ClientKey);
-            if (keyBan == null)
+            var hardwareIdBan = AccountManager.FindHardwareIdBan(message.HardwareId);
+            if (hardwareIdBan == null)
             {
-                Client.SendError(string.Format("ClientKey ban {0} not found", message.ClientKey), message);
+                Client.SendError(string.Format("HardwareId ban {0} not found", message.HardwareId), message);
             }
             else
             {
-                Database.Delete(keyBan);
+                Database.Delete(hardwareIdBan);
                 Client.ReplyRequest(new CommonOKMessage(), message);
             }
         }
 
-        private void Handle(BanClientKeyRequestMessage message)
-        {
-            var key = AccountManager.FindMatchingClientKeyBan(message.ClientKey);
-            if (key != null && key.GetRemainingTime() > TimeSpan.Zero)
-            {              
-                Client.ReplyRequest(new BanClientKeyAnswerMessage(true, key.GetEndDate()), message);
-                return;
-            }
-
-            Client.ReplyRequest(new BanClientKeyAnswerMessage(), message);
-        }
-
-        private void Handle(GroupsRequestMessage message)
+        void Handle(GroupsRequestMessage message)
         {
             Client.ReplyRequest(
                 new GroupsListMessage(

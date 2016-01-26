@@ -140,7 +140,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 trigger.ReplyBold("{0} ({1})", character.Name, character.Id);
                 trigger.ReplyBold("Account : {0}/{1} ({2}) - {3}", character.Account.Login, character.Account.Nickname,
                     character.Account.Id, character.UserGroup.Name);
-                trigger.ReplyBold("ClientKey : {0}", character.Account.LastClientKey);
+                trigger.ReplyBold("HardwareId : {0}", character.Account.LastHardwareId);
                 trigger.ReplyBold("Ip : {0}", character.UserGroup.Role == RoleEnum.Administrator ? "127.0.0.1" : character.Client.IP);
                 trigger.ReplyBold("Level : {0}", character.Level);
                 trigger.ReplyBold("Map : {0}, Cell : {1}, Direction : {2}", character.Map.Id, character.Cell.Id,
@@ -248,7 +248,7 @@ namespace Stump.Server.WorldServer.Commands.Commands
             trigger.ReplyBold("Connected characters:");
             foreach (var character in characters)
             {
-                trigger.Reply(string.Format("Player: {0} - Account: {1}({2})", character.Name, character.Account.Login, character.Account.LastClientKey));
+                trigger.Reply(string.Format("Player: {0} - Account: {1}({2})", character.Name, character.Account.Login, character.Account.LastHardwareId));
             }
         }
     }
