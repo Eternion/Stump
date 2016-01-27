@@ -1817,7 +1817,7 @@
         /// <summary>
         /// Augmente la taille.
         /// </summary>
-        Effect_1060 = 1060,
+        Effect_IncreaseSize = 1060,
         /// <summary>
         /// Partage des dommages
         /// </summary>
