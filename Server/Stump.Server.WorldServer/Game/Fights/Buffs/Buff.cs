@@ -132,9 +132,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         /// <returns></returns>
         public bool DecrementDuration()
         {
-            if (Duration == -1) // Duration = -1 => unlimited buff
-                return false;
-
             if (Delay > 0)
             {
                 if (--Delay == 0)
@@ -156,6 +153,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
                 return false;
             }
+
+            if (Duration == -1) // Duration = -1 => unlimited buff
+                return false;
 
             return --Duration == 0;
         }

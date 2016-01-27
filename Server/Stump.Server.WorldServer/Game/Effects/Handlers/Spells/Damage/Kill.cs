@@ -14,16 +14,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
         }
 
-        public override int Priority => int.MaxValue;
+        public override int Priority => Spell.Id == (int)SpellIdEnum.FIN_DES_TEMPS ? 0 : int.MaxValue;
 
         public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())
             {
-                //actor.InflictDirectDamage(actor.LifePoints, Caster);
                 actor.Stats.Health.DamageTaken = actor.LifePoints;
                 actor.CheckDead(Caster);
-
             }
 
             return true;
