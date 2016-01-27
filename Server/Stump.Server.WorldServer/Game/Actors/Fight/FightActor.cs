@@ -38,7 +38,6 @@ using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {

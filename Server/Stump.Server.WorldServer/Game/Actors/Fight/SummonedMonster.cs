@@ -8,10 +8,11 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Maps.Cells;
+using Stump.Server.WorldServer.Game.Actors.Interfaces;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
-    public sealed class SummonedMonster : SummonedFighter
+    public sealed class SummonedMonster : SummonedFighter, ICreature
     {
         private readonly StatsFields m_stats;
 
@@ -57,6 +58,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public override byte Level
         {
             get { return (byte)Monster.Level; }
+        }
+
+        public MonsterGrade MonsterGrade
+        {
+            get { return Monster; }
         }
 
         public override StatsFields Stats
