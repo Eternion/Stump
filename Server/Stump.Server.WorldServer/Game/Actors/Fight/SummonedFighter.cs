@@ -51,11 +51,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
             base.OnDead(killedBy, passTurn);
-
-            //Fight.TimeLine.RemoveFighter(this);
             Summoner.RemoveSummon(this);
-
-            //ContextHandler.SendGameFightTurnListMessage(Fight.Clients, Fight);
         }
     }
 }
