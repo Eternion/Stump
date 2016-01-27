@@ -29,6 +29,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
 
             handlers[1].Apply(); //SubAP Summoner
             handlers[2].Apply(); //BuffTrigger
+            handlers[3].Apply(); //SpellImmunity
 
             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
         }
