@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                 if (TargetType == SpellTargetType.ALLY_ALL_EXCEPT_SELF)
                     return true;
 
-                if ((TargetType.HasFlag(SpellTargetType.ALLY_PLAYER) || TargetType.HasFlag(SpellTargetType.ALLY_UNKN_1))
+                if ((TargetType.HasFlag(SpellTargetType.ALLY_PLAYER))
                     && (actor is CharacterFighter))
                     return true;
 
@@ -41,6 +41,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                     return true;
 
                 if (TargetType.HasFlag(SpellTargetType.ALLY_SUMMON) && (actor is SummonedFighter))
+                    return true;
+
+                if (TargetType.HasFlag(SpellTargetType.ALLY_SUMMONER) && (handler.Caster is SummonedFighter) && ((SummonedFighter)handler.Caster).Summoner == actor)
                     return true;
 
                 if ((TargetType.HasFlag(SpellTargetType.ALLY_MONSTER_SUMMON) || TargetType.HasFlag(SpellTargetType.ALLY_NON_MONSTER_SUMMON))
