@@ -137,6 +137,7 @@
     <Compile Include="AI\Fights\Brain\Custom\Boss\MansotRoyalBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Boss\PereFwetarBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\BarrelBrain.cs" />
+    <Compile Include="AI\Fights\Brain\Custom\Invocations\CadranBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Invocations\SynchroBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Monsters\MamansotBrain.cs" />
     <Compile Include="AI\Fights\Brain\Custom\Monsters\MansobeseBrain.cs" />

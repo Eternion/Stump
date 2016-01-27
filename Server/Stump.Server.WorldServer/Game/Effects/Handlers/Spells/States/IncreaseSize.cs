@@ -4,6 +4,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
@@ -21,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
             {
                 var look = actor.Look.Clone();
 
-                look.AddScale(Dice.DiceNum);
+                look.SetScales(look.Scales.Select(x => (short)(x + Dice.DiceNum)).ToArray());
 
                 var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
                 actor.AddBuff(buff);

@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
             if (fighter != Fighter)
                 return;
 
-            var spellHandler = SpellManager.Instance.GetSpellCastHandler(Fighter, new Spell((int)SpellIdEnum.SYNCHRONISATION, 1), Fighter.Cell, false);
+            var spellHandler = SpellManager.Instance.GetSpellCastHandler(Fighter, new Spell((int)SpellIdEnum.SYNCHRONISATION, Fighter.Level), Fighter.Cell, false);
             spellHandler.Initialize();
 
             var handlers = spellHandler.GetEffectHandlers().ToArray();
