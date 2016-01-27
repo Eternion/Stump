@@ -141,6 +141,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsValidTarget(FightActor actor)
         {
+            if (actor.GetBuffs(x => x is SpellImmunityBuff && ((SpellImmunityBuff)x).SpellImmune == Spell.Id).Any())
+                return false;
+
             var lookup = Targets.ToLookup(x => x.GetType());
 
             return lookup.All(x => x.First().IsDisjonction ?

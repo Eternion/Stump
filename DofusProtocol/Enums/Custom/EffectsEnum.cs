@@ -1757,7 +1757,7 @@
         /// <summary>
         /// Immunité : #1
         /// </summary>
-        Effect_1044 = 1044,
+        Effect_SpellImmunity = 1044,
         /// <summary>
         /// #1 : #3 tour(s) de relance
         /// </summary>
