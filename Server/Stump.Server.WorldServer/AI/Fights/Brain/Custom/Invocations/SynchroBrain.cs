@@ -1,5 +1,6 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
+using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Spells;
 using System.Linq;
 
@@ -8,16 +9,15 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
     [BrainIdentifier(3958)]
     public class SynchroBrain : Brain
     {
-        bool m_initialized;
-
         public SynchroBrain(AIFighter fighter)
             : base(fighter)
         {
+            fighter.Team.FighterAdded += OnFighterAdded;
         }
 
-        public override void Play()
+        void OnFighterAdded(FightTeam team, FightActor fighter)
         {
-            if (m_initialized)
+            if (fighter != Fighter)
                 return;
 
             var spellHandler = SpellManager.Instance.GetSpellCastHandler(Fighter, new Spell((int)SpellIdEnum.SYNCHRONISATION, 1), Fighter.Cell, false);
@@ -31,8 +31,6 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
             handlers[2].Apply(); //BuffTrigger
 
             Fighter.Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
-
-            m_initialized = true;
         }
     }
 }
