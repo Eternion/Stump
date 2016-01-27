@@ -41,8 +41,7 @@ namespace Stump.Server.WorldServer.AI.Fights.Brain.Custom.Invocations
                 !barrel.Summoner.Position.Point.IsOnSameLine(barrel.Position.Point))
                 return;
 
-            var beuverieHandler = SpellManager.Instance.GetSpellCastHandler(Fighter,
-                new Spell((int)SpellIdEnum.BEUVERIE, spellBeuverie.CurrentLevel), barrel.Summoner.Cell, false);
+            var beuverieHandler = SpellManager.Instance.GetSpellCastHandler(Fighter, spellBeuverie, barrel.Summoner.Cell, false);
 
             Fighter.Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
             beuverieHandler.Execute();

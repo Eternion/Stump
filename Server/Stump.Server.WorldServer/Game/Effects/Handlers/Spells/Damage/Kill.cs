@@ -20,7 +20,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                actor.InflictDirectDamage(actor.LifePoints, Caster);
+                //actor.InflictDirectDamage(actor.LifePoints, Caster);
+                actor.Stats.Health.DamageTaken = actor.LifePoints;
+                actor.CheckDead(Caster);
+
             }
 
             return true;

@@ -17,7 +17,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             {'i', SpellTargetType.ALLY_NON_MONSTER_SUMMON},
             {'d', SpellTargetType.ALLY_COMPANION},
             {'m', SpellTargetType.ALLY_MONSTER},
-            {'h', SpellTargetType.ALLY_UNKN_1},
+            {'h', SpellTargetType.ALLY_SUMMONER},
             {'l', SpellTargetType.ALLY_PLAYER},
             {'P', SpellTargetType.ALLY_BOMB},
 
