@@ -3,6 +3,7 @@ using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps;
@@ -33,6 +34,12 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         {
             get;
             private set;
+        }
+
+        public CastSpell CastedByEffect
+        {
+            get;
+            set;
         }
 
         public SpellLevelTemplate SpellLevel
@@ -104,6 +111,18 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
         public virtual IEnumerable<SpellEffectHandler> GetEffectHandlers()
         {
             return new SpellEffectHandler[0];
+        }
+
+        public bool IsCastedBySpell(int spellId)
+        {
+            if (Spell.Id == spellId)
+                return true;
+
+            CastSpell effect = CastedByEffect;
+            while (effect != null && effect.Spell.Id != spellId)
+                effect = effect.CastHandler.CastedByEffect;
+
+            return effect != null;
         }
     }
 }

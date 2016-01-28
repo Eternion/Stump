@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
 {
     [EffectHandler(EffectsEnum.Effect_StealHPWater)]
@@ -16,8 +16,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
     [EffectHandler(EffectsEnum.Effect_StealHPNeutral)]
     public class HPSteal : SpellEffectHandler
     {
-        public HPSteal(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public HPSteal(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

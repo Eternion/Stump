@@ -5,14 +5,14 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Stump.Server.WorldServer.Game.Spells;
 using System.Linq;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
     [EffectHandler(EffectsEnum.Effect_IncreaseSize)]
     public class IncreaseSize : SpellEffectHandler
     {
-        public IncreaseSize(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public IncreaseSize(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

@@ -3,14 +3,14 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_AddComboBonus)]
     public class ComboBonusBuff : SpellEffectHandler
     {
-        public ComboBonusBuff(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public ComboBonusBuff(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

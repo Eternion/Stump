@@ -14,6 +14,7 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -24,6 +25,7 @@ using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -156,7 +158,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_weaponUses = 0;
         }
 
-        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
+        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, CastSpell castSpellEffect = null)
         {
             if (!IsFighterTurn() && !force)
                 return false;
@@ -164,7 +166,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             // weapon attack
             if (spell.Id != 0 ||
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
-                return base.CastSpell(spell, cell, force, apFree);
+                return base.CastSpell(spell, cell, force, apFree, castSpellEffect);
 
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate =  weapon.Template as WeaponTemplate;
@@ -213,7 +215,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                     }
                 }
 
-                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, spell, cell,
+                var handler = EffectManager.Instance.GetSpellEffectHandler(effect, this, new DefaultSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT), cell,
                     critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
                 handler.EffectZone = new Zone(weaponTemplate.Type.ZoneShape, (byte) weaponTemplate.Type.ZoneSize, (byte) weaponTemplate.Type.ZoneMinSize,
                     handler.CastPoint.OrientationTo(handler.TargetedPoint), (int)weaponTemplate.Type.ZoneEfficiencyPercent, (int)weaponTemplate.Type.ZoneMaxEfficiency);

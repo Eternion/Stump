@@ -20,6 +20,7 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Usables;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects
@@ -31,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects
         private delegate ItemEffectHandler ItemEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
         private delegate ItemEffectHandler ItemSetEffectConstructor(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply);
         private delegate UsableEffectHandler UsableEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
-        private delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical);
+        private delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical);
 
         private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
         private readonly Dictionary<EffectsEnum, ItemEffectConstructor> m_itemsEffectHandler = new Dictionary<EffectsEnum, ItemEffectConstructor>();
@@ -81,7 +82,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                     }
                     else if (type.IsSubclassOf(typeof(SpellEffectHandler)))
                     {
-                        var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });
+                        var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(SpellCastHandler), typeof(Cell), typeof(bool) });
                         if (!m_spellsEffectHandler.ContainsKey(effect))
                             m_spellsEffectHandler.Add(effect, ctor.CreateDelegate<SpellEffectConstructor>());
                     }
@@ -230,7 +231,7 @@ namespace Stump.Server.WorldServer.Game.Effects
                 throw new Exception(string.Format("EffectHandler '{0}' has no EffectHandlerAttribute", type.Name));
             }
 
-            var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(Spell), typeof(Cell), typeof(bool) });
+            var ctor = type.GetConstructor(new[] { typeof(EffectDice), typeof(FightActor), typeof(SpellCastHandler), typeof(Cell), typeof(bool) });
 
             if (ctor == null)
                 throw new Exception("No valid constructors found !");
@@ -246,10 +247,10 @@ namespace Stump.Server.WorldServer.Game.Effects
             }
         }
 
-        public SpellEffectHandler GetSpellEffectHandler(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        public SpellEffectHandler GetSpellEffectHandler(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
         {
             SpellEffectConstructor handler;
-            return m_spellsEffectHandler.TryGetValue(effect.EffectId, out handler) ? handler(effect, caster, spell, targetedCell, critical) : new DefaultSpellEffect(effect, caster, spell, targetedCell, critical);
+            return m_spellsEffectHandler.TryGetValue(effect.EffectId, out handler) ? handler(effect, caster, castHandler, targetedCell, critical) : new DefaultSpellEffect(effect, caster, castHandler, targetedCell, critical);
         }
 
         public bool IsEffectHandledBy(EffectsEnum effect, Type handlerType)

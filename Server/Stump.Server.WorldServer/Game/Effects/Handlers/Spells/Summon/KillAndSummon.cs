@@ -6,14 +6,14 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
     [EffectHandler(EffectsEnum.Effect_KillAndSummon)]
     public class KillAndSummon : SpellEffectHandler
     {
-        public KillAndSummon(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public KillAndSummon(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

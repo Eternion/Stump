@@ -5,14 +5,14 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Handlers.Context;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
     [EffectHandler(EffectsEnum.Effect_ReviveAndGiveHPToLastDiedAlly)]
     public class ReviveAndGiveHP : SpellEffectHandler
     {
-        public ReviveAndGiveHP(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public ReviveAndGiveHP(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

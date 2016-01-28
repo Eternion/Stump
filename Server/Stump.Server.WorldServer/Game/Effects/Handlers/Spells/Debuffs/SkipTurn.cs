@@ -4,13 +4,13 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_SkipTurn)]
     public class SkipTurn : SpellEffectHandler
     {
-        public SkipTurn(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical) : base(effect, caster, spell, targetedCell, critical)
+        public SkipTurn(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical) : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 
@@ -29,8 +29,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
     [EffectHandler(EffectsEnum.Effect_SkipTurn_1031)]
     public class SkipTurnNow : SpellEffectHandler
     {
-        public SkipTurnNow(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public SkipTurnNow(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

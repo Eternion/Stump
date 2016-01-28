@@ -4,7 +4,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
     [EffectHandler(EffectsEnum.Effect_TriggerBuff)]
@@ -13,8 +13,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
     [EffectHandler(EffectsEnum.Effect_CastSpell_1017)]
     public class CastSpell : SpellEffectHandler
     {
-        public CastSpell(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public CastSpell(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 
@@ -38,7 +38,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     affectedActor.AddBuff(buff);
                 }
                 else
-                    Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true);
+                    Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true, this);
             }
 
             return true;

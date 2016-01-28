@@ -44,7 +44,7 @@ namespace Stump.Plugins.DefaultPlugin.Spells
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 15, (level, effect, critical) => effect.Random = 0);
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Delay = 0);
             FixEffectOnAllLevels((int)SpellIdEnum.REKOP, 16, (level, effect, critical) => effect.Random = 0);
-
+            
             #endregion ECAFLIP
         }
 
