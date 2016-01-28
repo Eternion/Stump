@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Xelor
         public override void Execute()
         {
             Handlers[5].SetAffectedActors(Handlers[5].GetAffectedActors(x => !x.NeedTelefragState));
-            Handlers[6].SetAffectedActors(Handlers[5].GetAffectedActors(x => !x.NeedTelefragState));
+            Handlers[6].SetAffectedActors(Handlers[6].GetAffectedActors(x => !x.NeedTelefragState));
 
             base.Execute();
         }
