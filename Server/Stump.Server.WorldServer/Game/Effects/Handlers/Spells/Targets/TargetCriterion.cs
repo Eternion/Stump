@@ -2,7 +2,7 @@
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using System;
 using System.Collections.Generic;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
     public abstract class TargetCriterion

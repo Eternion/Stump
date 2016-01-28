@@ -7,16 +7,15 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Handlers.Actions;
-using System;
-
+using System;using Stump.Server.WorldServer.Game.Spells.Casts;using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
 {
     [EffectHandler(EffectsEnum.Effect_AddArmorDamageReduction)]
     [EffectHandler(EffectsEnum.Effect_AddGlobalDamageReduction_105)]
     public class DamageArmor : SpellEffectHandler
     {
-        public DamageArmor(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public DamageArmor(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

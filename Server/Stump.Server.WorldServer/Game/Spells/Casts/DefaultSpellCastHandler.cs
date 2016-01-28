@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
                         stopRand = true;
                     }
 
-                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, Spell, TargetedCell, Critical);
+                    var handler = EffectManager.Instance.GetSpellEffectHandler(effect, Caster, this, TargetedCell, Critical);
 
                     if (MarkTrigger != null)
                         handler.MarkTrigger = MarkTrigger;

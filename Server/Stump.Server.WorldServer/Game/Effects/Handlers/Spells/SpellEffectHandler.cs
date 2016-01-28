@@ -15,7 +15,8 @@ using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
     public abstract class SpellEffectHandler : EffectHandler
@@ -26,12 +27,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         private Zone m_effectZone;
         private Cell m_customCastCell;
 
-        protected SpellEffectHandler(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
+        protected SpellEffectHandler(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect)
         {
             Dice = effect;
             Caster = caster;
-            Spell = spell;
+            CastHandler = castHandler;
             TargetedCell = targetedCell;
             TargetedPoint = new MapPoint(TargetedCell);
             Critical = critical;
@@ -57,10 +58,15 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             private set;
         }
 
-        public Spell Spell
+        public SpellCastHandler CastHandler
         {
             get;
             private set;
+        }
+
+        public Spell Spell
+        {
+            get { return CastHandler.Spell; }
         }
 
         public Cell TargetedCell
@@ -141,7 +147,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public bool IsValidTarget(FightActor actor)
         {
-            if (actor.GetBuffs(x => x is SpellImmunityBuff && ((SpellImmunityBuff)x).SpellImmune == Spell.Id).Any())
+            if (actor.GetBuffs(x => x is SpellImmunityBuff && CastHandler.IsCastedBySpell(((SpellImmunityBuff)x).SpellImmune)).Any())
                 return false;
 
             var lookup = Targets.ToLookup(x => x.GetType());
@@ -294,6 +300,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return true;
         }
 
+
         public virtual bool RequireSilentCast() => false;
+
     }
 }

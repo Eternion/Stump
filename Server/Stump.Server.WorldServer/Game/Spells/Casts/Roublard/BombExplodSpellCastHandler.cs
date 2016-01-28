@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
                             .Select(x => EffectManager.Instance.GetSpellEffectHandler(x, Caster, Spell, TargetedCell, Critical))
                             .ToArray();*/
 
-            Handlers = Spell.CurrentSpellLevel.Effects.Select(x => EffectManager.Instance.GetSpellEffectHandler(x, Summoner, Spell, TargetedCell, Critical)).ToArray();
+            Handlers = Spell.CurrentSpellLevel.Effects.Select(x => EffectManager.Instance.GetSpellEffectHandler(x, Summoner, this, TargetedCell, Critical)).ToArray();
 
             foreach (var handler in Handlers)
             {

@@ -4,14 +4,14 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
 {
     [EffectHandler(EffectsEnum.Effect_HealWhenAttack)]
     public class GiveHpWhenAttack : SpellEffectHandler
     {
-        public GiveHpWhenAttack(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public GiveHpWhenAttack(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 
@@ -44,8 +44,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Heal
     [EffectHandler(EffectsEnum.Effect_GiveHpPercentWhenAttack)]
     public class GiveHpPercentWhenAttack : SpellEffectHandler
     {
-        public GiveHpPercentWhenAttack(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public GiveHpPercentWhenAttack(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

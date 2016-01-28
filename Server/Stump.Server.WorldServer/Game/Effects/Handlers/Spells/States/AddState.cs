@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
     [EffectHandler(EffectsEnum.Effect_AddState)]
@@ -28,8 +28,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public AddState(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public AddState(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

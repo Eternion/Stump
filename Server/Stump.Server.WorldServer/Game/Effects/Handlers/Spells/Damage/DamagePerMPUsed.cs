@@ -5,7 +5,7 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Spells;
-
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
     [EffectHandler(EffectsEnum.Effect_DamageAirPerMP)] 
@@ -15,8 +15,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
     [EffectHandler(EffectsEnum.Effect_DamageNeutralPerMP)]
     public class DamagePerMPUsed : SpellEffectHandler
     {
-        public DamagePerMPUsed(EffectDice effect, FightActor caster, Spell spell, Cell targetedCell, bool critical)
-            : base(effect, caster, spell, targetedCell, critical)
+        public DamagePerMPUsed(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
+            : base(effect, caster, castHandler, targetedCell, critical)
         {
         }
 

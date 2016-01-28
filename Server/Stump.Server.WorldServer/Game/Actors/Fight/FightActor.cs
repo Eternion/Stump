@@ -17,6 +17,7 @@ using Stump.Server.WorldServer.Game.Actors.Interfaces;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Effects;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
@@ -38,6 +39,7 @@ using SpellState = Stump.Server.WorldServer.Database.Spells.SpellState;
 using VisibleStateEnum = Stump.DofusProtocol.Enums.GameActionFightInvisibilityStateEnum;
 using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
+using Stump.Server.WorldServer.Game.Spells.Casts;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -745,7 +747,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
         }
 
-        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false)
+        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, CastSpell castSpellEffect = null)
         {
             if (!force && (!IsFighterTurn() || IsDead()))
                 return false;
@@ -778,6 +780,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, spell, cell, critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+            handler.CastedByEffect = castSpellEffect;
 
             if (!handler.Initialize())
             {
@@ -2035,9 +2038,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return true;
         }
 
-        bool ApplyEffect(Spell spell, EffectDice effect, FightActor caster, FightActor target)
+        bool ApplyEffect(SpellCastHandler castHandler, EffectDice effect, FightActor caster, FightActor target)
         {
-            var handler = EffectManager.Instance.GetSpellEffectHandler(effect, caster, spell, target.Position.Cell, false);
+            var handler = EffectManager.Instance.GetSpellEffectHandler(effect, caster, castHandler, target.Position.Cell, false);
             handler.AddAffectedActor(target);
 
             if (!handler.CanApply())
