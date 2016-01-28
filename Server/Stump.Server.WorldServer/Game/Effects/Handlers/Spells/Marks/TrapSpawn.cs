@@ -48,7 +48,5 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
 
             return false;
         }
-
-        public override bool RequireSilentCast() => true;
     }
 }
