@@ -18,22 +18,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         public override bool Apply()
         {
-            var cells = AffectedCells;
-
             var containedTraps = Fight.GetTriggers().OfType<Trap>().Where(entry => entry.VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE && 
                 Caster.IsEnnemyWith(entry.Caster) &&
                 AffectedCells.Contains(entry.Shape.Cell));
 
             foreach (var trap in containedTraps)
             {
-                trap.VisibleState = GameActionFightInvisibilityStateEnum.DETECTED;
+                trap.VisibleState = GameActionFightInvisibilityStateEnum.VISIBLE;
                 ContextHandler.SendGameActionFightMarkCellsMessage(Fight.Clients, trap);
             }
 
-            foreach (var target in GetAffectedActors().Where(target => target.VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE &&
-                                                                       target.IsEnnemyWith(Caster)))
+            foreach (var target in GetAffectedActors().Where(target => target.VisibleState == GameActionFightInvisibilityStateEnum.INVISIBLE && target.IsEnnemyWith(Caster)))
             {
-                target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.DETECTED);
+                target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.VISIBLE);
             }
 
             return true;
