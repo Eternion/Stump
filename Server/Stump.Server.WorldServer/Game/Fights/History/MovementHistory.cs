@@ -69,7 +69,8 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public MovementHistoryEntry PopWhile(Predicate<MovementHistoryEntry> predicate)
         {
-            MovementHistoryEntry entry = PopPreviousPosition();
+            MovementHistoryEntry entry = GetPreviousPosition();
+
             while(entry != null && predicate(entry))
                 entry = PopPreviousPosition();
 
@@ -85,14 +86,18 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public MovementHistoryEntry PopPreviousPosition(int lifetime)
         {
-            var previous = PopPreviousPosition();
+            var previous = GetPreviousPosition(lifetime);
 
-            return CurrentRound - previous?.Round <= lifetime ? previous : null;
+            if (previous != null)
+                PopPreviousPosition();
+
+            return previous;
         }
 
         public MovementHistoryEntry PopWhile(Predicate<MovementHistoryEntry> predicate, int lifetime)
         {
-            MovementHistoryEntry entry = PopPreviousPosition();
+            MovementHistoryEntry entry = PopPreviousPosition(lifetime);
+            
             while (entry != null && predicate(entry) && CurrentRound - entry.Round <= lifetime)
                 entry = PopPreviousPosition();
 
