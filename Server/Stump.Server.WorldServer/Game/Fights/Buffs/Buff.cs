@@ -146,7 +146,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
                     else
                         Apply();
 
-                    fight.UpdateBuff(this);
+                    fight.UpdateBuff(this, false);
 
                     fight.EndSequence(SequenceTypeEnum.SEQUENCE_TRIGGERED);
                 }
