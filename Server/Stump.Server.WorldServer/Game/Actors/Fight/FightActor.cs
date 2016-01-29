@@ -876,6 +876,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             damage.GenerateDamages();
 
+            if (damage.Source != null && damage.Source.HasState((int)SpellStatesEnum.PACIFISTE))
+            {
+                damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
+                TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
+                return 0;
+            }
+
             if (HasState((int)SpellStatesEnum.INVULNÉRABLE_56))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
@@ -887,7 +894,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (damage.Source != null && !damage.IgnoreDamageBoost)
             {
                 damage.Source.CalculateDamageBonuses(damage);
-
             }
 
             // zone damage
