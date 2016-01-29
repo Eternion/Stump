@@ -269,7 +269,7 @@ namespace Stump.Server.WorldServer.Game.Fights
         event Action<FightActor, int, int> Tackled;
         void SwitchFighters(FightActor fighter1, FightActor fighter2);
         IEnumerable<Buff> GetBuffs();
-        void UpdateBuff(Buff buff);
+        void UpdateBuff(Buff buff, bool updateAction = true);
         bool StartSequence(SequenceTypeEnum sequenceType);
         bool EndSequence(SequenceTypeEnum sequenceType, bool force = false);
         void EndAllSequences();
@@ -2039,9 +2039,9 @@ namespace Stump.Server.WorldServer.Game.Fights
             return m_buffs;
         }
 
-        public void UpdateBuff(Buff buff)
+        public void UpdateBuff(Buff buff, bool updateAction = true)
         {
-            ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, buff, true);
+            ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, buff, updateAction);
         }
 
         protected virtual void OnBuffAdded(FightActor target, Buff buff)
