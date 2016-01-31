@@ -53,16 +53,20 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Marks
         {
             switch (spell.Id)
             {
+                case (int)SpellIdEnum.GLYPHE_ENFLAMMÉ:
+                    return Color.FromArgb(0, 202, 19, 48);
+                case (int)SpellIdEnum.GLYPHE_OPTIQUE:
+                    return Color.FromArgb(0, 4, 117, 142);
+                case (int)SpellIdEnum.GLYPHE_D_AVEUGLEMENT:
+                    return Color.FromArgb(0, 166, 91, 42);
+                case (int)SpellIdEnum.GLYPHE_GRAVITATIONNEL:
+                    return Color.FromArgb(0, 238, 223, 105);
+                case (int)SpellIdEnum.GLYPHE_DE_RÉPULSION:
+                    return Color.FromArgb(0, 49, 45, 134);
+                case (int)SpellIdEnum.GLYPHE_AGRESSIF_17:
+                    return Color.FromArgb(0, 53, 200, 120);
                 case (int)SpellIdEnum.DAIPIPAY:
                     return Color.White;
-                case (int)SpellIdEnum.GLYPHE_OPTIQUE:
-                    return Color.Cyan;
-                case (int)SpellIdEnum.GLYPHE_D_AVEUGLEMENT:
-                    return Color.Orange;
-                case (int)SpellIdEnum.GLYPHE_GRAVITATIONNEL:
-                    return Color.Green;
-                case (int)SpellIdEnum.GLYPHE_DE_RÉPULSION:
-                    return ColorTranslator.FromHtml("#505167");
                 default:
                     return Color.Red;
             }
