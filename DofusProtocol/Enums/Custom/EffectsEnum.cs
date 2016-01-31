@@ -1345,7 +1345,7 @@
         /// <summary>
         /// Points de vie : #3
         /// </summary>
-        Effect_800 = 800,
+        Effect_LifePoints = 800,
         /// <summary>
         /// Reçu le : #1
         /// </summary>
@@ -1353,15 +1353,15 @@
         /// <summary>
         /// Corpulence : #1
         /// </summary>
-        Effect_806 = 806,
+        Effect_Corpulence = 806,
         /// <summary>
         /// Dernier repas : #1
         /// </summary>
-        Effect_807 = 807,
+        Effect_LastMeal = 807,
         /// <summary>
         /// A mangé le : #1
         /// </summary>
-        Effect_LastMeal = 808,
+        Effect_LastMealDate = 808,
         /// <summary>
         /// Taille : #3 poces
         /// </summary>
