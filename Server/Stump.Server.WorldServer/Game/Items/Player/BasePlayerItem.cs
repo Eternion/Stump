@@ -81,20 +81,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             return Effects.Any(x => x.EffectId == EffectsEnum.Effect_NonExchangeable_981);
         }
 
-        public bool IsTokenItem()
-        {
-            return Inventory.ActiveTokens && Template.Id == Inventory.TokenTemplateId;
-        }
+        public bool IsTokenItem() => Inventory.ActiveTokens && Template.Id == Inventory.TokenTemplateId;
 
-        public virtual bool IsUsable()
-        {
-            return Template.Usable;
-        }
+        public virtual bool IsUsable() => Template.Usable;
 
-        public virtual bool IsEquiped()
-        {
-            return Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
-        }
+        public virtual bool IsEquiped() => Position != CharacterInventoryPositionEnum.INVENTORY_POSITION_NOT_EQUIPED;
+
+        public virtual bool CanEquip() => true;
 
         /// <summary>
         /// 

@@ -26,10 +26,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             Initialize();
         }
 
-        public override bool AllowDropping
-        {
-            get { return true; }
-        }
+        public override bool AllowDropping => true;
 
         public override bool Drop(BasePlayerItem dropOnItem)
         {
@@ -57,6 +54,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
             newInstance.OnObjectModified();
 
             return true;
+        }
+
+        public override bool CanEquip()
+        {
+            //Vous ne pouvez pas équiper un objet vivant directement, essayez plutôt de l'associer sur un objet équipé qu'il affectionne.
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 161);
+            return false;
         }
     }
 }

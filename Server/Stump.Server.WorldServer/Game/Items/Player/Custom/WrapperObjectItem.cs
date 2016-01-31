@@ -17,6 +17,13 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 
         public override bool AllowDropping => true;
 
+        public override bool CanEquip()
+        {
+            //Vous ne pouvez pas équiper un objet d'apparat directement, essayez plutôt de l'associer à un objet équipé compatible.
+            Owner.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_ERROR, 445);
+            return false;
+        }
+
         public override bool Drop(BasePlayerItem dropOnItem)
         {
             if (Owner.IsInFight())
