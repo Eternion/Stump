@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
         public AnimateTrigger(CellTriggerRecord record)
             : base(record)
         {
-            m_mapObstacles = ObstaclesCSV.FromCSV<short>(",").Select(x => new MapObstacle(x, (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED)).ToArray();
+            m_mapObstacles = ObstaclesCSV == null ? new MapObstacle[0] : ObstaclesCSV.FromCSV<short>(",").Select(x => new MapObstacle(x, (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED)).ToArray();
         }
 
         int? m_elementId;
