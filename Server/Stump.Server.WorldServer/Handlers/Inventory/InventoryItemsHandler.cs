@@ -228,6 +228,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
                 character.Inventory.UnStackItem(mimisymbic, 1);
 
                 character.Inventory.RefreshItem(host);
+
                 SendMimicryObjectAssociatedMessage(client, host);
             }
         }
@@ -247,6 +248,8 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             host.Invalidate();
 
             client.Character.Inventory.RefreshItem(host);
+            client.Character.RefreshActor();
+
             SendInventoryWeightMessage(client);
         }
 
@@ -273,6 +276,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             client.Character.Inventory.RefreshItem(host);
             client.Character.Inventory.AddItem(wrapperItem);
+            client.Character.RefreshActor();
 
             SendInventoryWeightMessage(client);
         }

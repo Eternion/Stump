@@ -617,6 +617,9 @@ namespace Stump.Server.WorldServer.Game.Items.Player
 
         public bool CanEquip(BasePlayerItem item, CharacterInventoryPositionEnum position, bool send = true)
         {
+            if (!item.CanEquip())
+                return false;
+
             if (Owner.IsInFight() && Owner.Fight.State != FightState.Placement)
                 return false;
 
@@ -637,6 +640,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             var weapon = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             if (item.Template.Type.ItemType == ItemTypeEnum.BOUCLIER && weapon != null && weapon.Template.TwoHanded)
             {
+                //Vous avez dû lâcher votre arme à deux mains pour équiper un bouclier.
                 if (send)
                     BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 78);
 
@@ -646,10 +650,10 @@ namespace Stump.Server.WorldServer.Game.Items.Player
             var shield = TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_SHIELD);
             if (!(item.Template is WeaponTemplate) || !item.Template.TwoHanded || shield == null)
                 return true;
- 
+
+            //Vous avez dû lâcher votre bouclier pour équiper une arme à deux mains.
             if (send)
-                BasicHandler.SendTextInformationMessage(Owner.Client,
-                    TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
+                BasicHandler.SendTextInformationMessage(Owner.Client, TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 79);
 
             return false;
         }
