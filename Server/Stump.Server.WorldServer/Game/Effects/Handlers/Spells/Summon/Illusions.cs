@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using NLog;
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
@@ -14,8 +13,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
     [EffectHandler(EffectsEnum.Effect_Illusions)]
     public class Illusions : SpellEffectHandler
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         public Illusions(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
@@ -63,5 +60,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 
             return true;
         }
+
+        public override bool RequireSilentCast() => true;
     }
 }
