@@ -429,7 +429,12 @@ namespace Stump.Server.WorldServer.Game.Effects
 
                     EffectsEnum.Effect_CastSpell_1175,
 
-                    EffectsEnum.Effect_Exchangeable
+                    EffectsEnum.Effect_Exchangeable,
+
+                    EffectsEnum.Effect_LastMeal,
+                    EffectsEnum.Effect_LastMealDate,
+
+                    EffectsEnum.Effect_Corpulence
                 };
 
         #endregion

@@ -202,11 +202,11 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom.LivingObjects
                 if (value == null)
                 {
                     m_lastMealEffect = null;
-                    Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_LastMeal);
+                    Effects.RemoveAll(x => x.EffectId == EffectsEnum.Effect_LastMealDate);
                 }
                 else if (m_lastMealEffect == null)
                 {
-                    m_lastMealEffect = new EffectDate(EffectsEnum.Effect_LastMeal, value.Value);
+                    m_lastMealEffect = new EffectDate(EffectsEnum.Effect_LastMealDate, value.Value);
                     Effects.Add(m_lastMealEffect);
                 }
 

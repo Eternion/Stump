@@ -364,6 +364,9 @@
     <Compile Include="Game\Conditions\ConditionParser.cs" />
     <Compile Include="Game\Conditions\PriorityOperator.cs" />
     <Compile Include="Game\Dialogs\Interactives\ZaapiDialog.cs" />
+    <Compile Include="Game\Effects\Handlers\Items\EmoteItemEffect.cs" />
+    <Compile Include="Game\Effects\Handlers\Items\OrnamentEffectHandler.cs" />
+    <Compile Include="Game\Effects\Handlers\Items\TitleEffectHandler.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Buffs\SpellImmunity.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Damage\DamageModificator.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\States\IncreaseSize.cs" />
@@ -415,8 +418,8 @@
     <Compile Include="Game\Dialogs\Npcs\NpcShopDialogLogger.cs" />
     <Compile Include="Game\Dialogs\RequestBox.cs" />
     <Compile Include="Game\Dialogs\Spells\SpellForgetPanel.cs" />
-    <Compile Include="Game\Effects\Handlers\Items\GiveOrnament.cs" />
-    <Compile Include="Game\Effects\Handlers\Items\GiveTitle.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\GiveOrnament.cs" />
+    <Compile Include="Game\Effects\Handlers\Usables\GiveTitle.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\GiveHpPercent.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Heal\StealHpFix.cs" />
     <Compile Include="Game\Effects\Handlers\Spells\Move\Rollback.cs" />
