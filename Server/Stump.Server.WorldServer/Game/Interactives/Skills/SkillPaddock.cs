@@ -27,6 +27,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
             var exchange = new PaddockExchange(character, paddock);
             exchange.Open();
+
             return base.StartExecute(character);
         }
     }

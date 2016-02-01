@@ -3798,7 +3798,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
                 options.Add(new HumanOptionEmote((byte)LastEmoteUsed.First, LastEmoteUsed.Second.GetUnixTimeStampDouble()));
 
             if (LastSkillUsed != null)
-                options.Add(new HumanOptionSkillUse(LastSkillUsed.InteractiveObject.Id, (short)LastSkillUsed.SkillTemplate.Id, LastSkillUsed.SkillEndTime.GetUnixTimeStampDouble()));
+                options.Add(new HumanOptionSkillUse(LastSkillUsed.InteractiveObject.Id, (short)LastSkillUsed.SkillTemplate.Id, LastSkillUsed.SkillEndTime.GetUnixTimeStampLong()));
 
             human.options = options;
             return human;
