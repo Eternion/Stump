@@ -21,25 +21,24 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Usables;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Items.Player;
 using Stump.Server.WorldServer.Game.Spells.Casts;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 
 namespace Stump.Server.WorldServer.Game.Effects
 {
     public class EffectManager : DataManager<EffectManager>
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private delegate ItemEffectHandler ItemEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
-        private delegate ItemEffectHandler ItemSetEffectConstructor(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply);
-        private delegate UsableEffectHandler UsableEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
-        private delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical);
+        delegate ItemEffectHandler ItemEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
+        delegate ItemEffectHandler ItemSetEffectConstructor(EffectBase effect, Character target, ItemSetTemplate itemSet, bool apply);
+        delegate UsableEffectHandler UsableEffectConstructor(EffectBase effect, Character target, BasePlayerItem item);
+        delegate SpellEffectHandler SpellEffectConstructor(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical);
 
-        private Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
-        private readonly Dictionary<EffectsEnum, ItemEffectConstructor> m_itemsEffectHandler = new Dictionary<EffectsEnum, ItemEffectConstructor>();
-        private readonly Dictionary<EffectsEnum, ItemSetEffectConstructor> m_itemsSetEffectHandler = new Dictionary<EffectsEnum, ItemSetEffectConstructor>();
-        private readonly Dictionary<EffectsEnum, UsableEffectConstructor> m_usablesEffectHandler = new Dictionary<EffectsEnum, UsableEffectConstructor>();
-        private readonly Dictionary<EffectsEnum, SpellEffectConstructor> m_spellsEffectHandler = new Dictionary<EffectsEnum, SpellEffectConstructor>();
-        private readonly Dictionary<EffectsEnum, List<Type>> m_effectsHandlers = new Dictionary<EffectsEnum, List<Type>>();
+        Dictionary<short, EffectTemplate> m_effects = new Dictionary<short, EffectTemplate>();
+        readonly Dictionary<EffectsEnum, ItemEffectConstructor> m_itemsEffectHandler = new Dictionary<EffectsEnum, ItemEffectConstructor>();
+        readonly Dictionary<EffectsEnum, ItemSetEffectConstructor> m_itemsSetEffectHandler = new Dictionary<EffectsEnum, ItemSetEffectConstructor>();
+        readonly Dictionary<EffectsEnum, UsableEffectConstructor> m_usablesEffectHandler = new Dictionary<EffectsEnum, UsableEffectConstructor>();
+        readonly Dictionary<EffectsEnum, SpellEffectConstructor> m_spellsEffectHandler = new Dictionary<EffectsEnum, SpellEffectConstructor>();
+        readonly Dictionary<EffectsEnum, List<Type>> m_effectsHandlers = new Dictionary<EffectsEnum, List<Type>>();
 
         [Initialization(InitializationPass.Third)]
         public override void Initialize()
@@ -49,7 +48,7 @@ namespace Stump.Server.WorldServer.Game.Effects
             InitializeHandlers();
         }
 
-        private void InitializeHandlers()
+        void InitializeHandlers()
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(entry => entry.IsSubclassOf(typeof(EffectHandler)) && !entry.IsAbstract))
             {
