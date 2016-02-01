@@ -69,6 +69,8 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
                 var xp = JobManager.Instance.GetHarvestJobXp((int)SkillTemplate.LevelMin);
                 character.Jobs[SkillTemplate.ParentJobId].Experience += xp;
             }
+
+            base.EndExecute(character);
         }
 
         public void SetHarvestedState(bool state)

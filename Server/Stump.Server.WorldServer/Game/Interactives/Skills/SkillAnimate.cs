@@ -129,6 +129,8 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
                 InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
 
             map.MoveCharactersToWalkableCell();
+
+            base.EndExecute(character);
         }
     }
 }
