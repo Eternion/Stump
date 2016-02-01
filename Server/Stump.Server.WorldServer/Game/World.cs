@@ -463,14 +463,14 @@ namespace Stump.Server.WorldServer.Game
         {
             var actualPoint = new MapPoint(currentMap.Position);
             return GetGraveyards().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position)))
-                .ThenBy(x => x.Map.Area == currentMap.Area).FirstOrDefault();
+                .ThenBy(x => x.Map.Area.Id == currentMap.Area.Id).FirstOrDefault();
         }
 
         public Map GetNearestPhoenix(Map currentMap)
         {
             var actualPoint = new MapPoint(currentMap.Position);
             var phoenix = GetPhoenixes().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position)))
-                .ThenBy(x => x.Map.Area == currentMap.Area).FirstOrDefault();
+                .ThenBy(x => x.Map.Area.Id == currentMap.Area.Id).FirstOrDefault();
 
             return phoenix == null ? null : phoenix.Map;
         }

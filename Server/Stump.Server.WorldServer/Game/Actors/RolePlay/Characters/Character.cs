@@ -2970,7 +2970,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public void PlayEmote(EmotesEnum emote)
         {
-            if ((LastEmoteUsed.Second - DateTime.Now).Milliseconds < 500)
+            if (LastEmoteUsed != null && (DateTime.Now - LastEmoteUsed.Second).TotalMilliseconds < 500)
                 return;
 
             if (emote == EmotesEnum.EMOTE_S_ASSEOIR)
