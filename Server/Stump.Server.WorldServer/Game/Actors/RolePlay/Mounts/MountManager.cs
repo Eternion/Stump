@@ -431,7 +431,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Mounts
             var nameEffect = new EffectString((short)EffectsEnum.Effect_Name, mount.Name, new EffectBase());
             var belongEffect = new EffectString((short)EffectsEnum.Effect_BelongsTo, character.Name, new EffectBase());
             var validityEffect = new EffectDuration((short)EffectsEnum.Effect_Validity, 39, 23, 59, new EffectBase());
-            var mountEffect = new EffectMount((short)EffectsEnum.Effect_ViewMountCharacteristics, mount.Id, date.GetUnixTimeStampDouble(), mount.TemplateId, new EffectBase());
+            var mountEffect = new EffectMount((short)EffectsEnum.Effect_ViewMountCharacteristics, mount.Id, date.GetUnixTimeStampLong(), mount.TemplateId, new EffectBase());
 
             item.Effects.Add(nameEffect);
             item.Effects.Add(belongEffect);
