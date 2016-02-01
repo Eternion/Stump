@@ -10,8 +10,6 @@ using Stump.Server.WorldServer.Game.Items.Player;
     [DefaultEffectHandler]
     public class DefaultItemEffect : ItemEffectHandler
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         #region Delegates
 
         public delegate void EffectComputeHandler(Character target, EffectInteger effect, bool isBoost);

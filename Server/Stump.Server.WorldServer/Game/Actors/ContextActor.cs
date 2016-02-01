@@ -7,6 +7,9 @@ using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Maps.Pathfinding;
 using Stump.Server.WorldServer.Handlers.Chat;
+using Stump.Core.Collections;
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Interactives.Skills;
 
 namespace Stump.Server.WorldServer.Game.Actors
 {
@@ -27,6 +30,18 @@ namespace Stump.Server.WorldServer.Game.Actors
         }
 
         public virtual bool IsInMovement
+        {
+            get;
+            set;
+        }
+
+        public virtual Pair<EmotesEnum, DateTime> LastEmoteUsed
+        {
+            get;
+            set;
+        }
+
+        public virtual Skill LastSkillUsed
         {
             get;
             set;

@@ -22,7 +22,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
             character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_MESSAGE, 33);
 
-            return 0;
+            return base.StartExecute(character);
         }
     }
 }

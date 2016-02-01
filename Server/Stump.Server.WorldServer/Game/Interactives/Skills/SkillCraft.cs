@@ -15,7 +15,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             var dialog = new CraftDialog(character, InteractiveObject, this);
             dialog.Open();
 
-            return 0;
+            return base.StartExecute(character);
         }
     }
 }

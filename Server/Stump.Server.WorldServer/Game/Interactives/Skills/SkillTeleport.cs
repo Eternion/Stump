@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public override int StartExecute(Character character)
         {
             character.Teleport(GetPosition());
-            return 0;
+            return base.StartExecute(character);
         }
 
         void RefreshPosition()

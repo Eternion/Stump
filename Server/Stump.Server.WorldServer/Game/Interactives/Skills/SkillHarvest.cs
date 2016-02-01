@@ -52,6 +52,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             InteractiveObject.SetInteractiveState(InteractiveStateEnum.STATE_ANIMATED);
             SetHarvestedState(true);
 
+            base.StartExecute(character);
             return GetDuration(character);
         }
 
