@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         {
             client.Send(new EmotePlayMessage(
                             (byte) emote,
-                            DateTime.Now.GetUnixTimeStampDouble(),
+                            DateTime.Now.GetUnixTimeStampLong(),
                             character.Id,
                             character.Account.Id
                             ));
@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
         {
             client.Send(new EmotePlayMessage(
                             (byte) emote,
-                            DateTime.Now.GetUnixTimeStampDouble(),
+                            DateTime.Now.GetUnixTimeStampLong(),
                             actor.Id,
                             0
                             ));
