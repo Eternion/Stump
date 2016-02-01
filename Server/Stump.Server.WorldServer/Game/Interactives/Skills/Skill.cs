@@ -1,8 +1,7 @@
-using System;
 using Stump.DofusProtocol.Types;
-using Stump.Server.WorldServer.Database;
 using Stump.Server.WorldServer.Database.Interactives;
 using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
+using System;
 
 namespace Stump.Server.WorldServer.Game.Interactives.Skills
 {
@@ -18,7 +17,6 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public int Id
         {
             get;
-            private set;
         }
 
         public InteractiveSkillTemplate SkillTemplate
@@ -30,28 +28,31 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public InteractiveObject InteractiveObject
         {
             get;
-            private set;
         }
 
-        public virtual int GetDuration(Character character)
+        public DateTime SkillEndTime
         {
-            return 0;
+            get;
+            set;
         }
 
-        public virtual bool IsEnabled(Character character)
+        public virtual int GetDuration(Character character) => 0;
+
+        public virtual bool IsEnabled(Character character) => !character.IsGhost();
+
+        public virtual int StartExecute(Character character)
         {
-            return !character.IsGhost();
-        }
+            SkillEndTime = DateTime.Now.AddMilliseconds(GetDuration(character));
 
-        public abstract int StartExecute(Character character);
+            character.LastSkillUsed = this;
+            return GetDuration(character);
+        }
 
         public virtual void EndExecute(Character character)
         {
+            character.LastSkillUsed = null;
         }
 
-        public InteractiveElementSkill GetInteractiveElementSkill()
-        {
-            return new InteractiveElementSkill(SkillTemplate.Id, Id);
-        }
+        public InteractiveElementSkill GetInteractiveElementSkill() => new InteractiveElementSkill(SkillTemplate.Id, Id);
     }
 }

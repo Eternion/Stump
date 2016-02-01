@@ -18,9 +18,9 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         public override int StartExecute(Character character)
         {
             var dialog = new ZaapiDialog(character, InteractiveObject);
-
             dialog.Open();
-            return 0;
+
+            return base.StartExecute(character);
         }
     }
 }

@@ -1443,6 +1443,7 @@ namespace Stump.Server.WorldServer.Game.Maps
             BasicHandler.SendBasicNoOperationMessage(Clients);
 
             actor.IsInMovement = true;
+            actor.LastEmoteUsed = null;
 
             var character = actor as Character;
             if (character == null)

@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             var panel = new GuildCreationPanel(character);
             panel.Open();
 
-            return 0;
+            return base.StartExecute(character);
         }
     }
 }

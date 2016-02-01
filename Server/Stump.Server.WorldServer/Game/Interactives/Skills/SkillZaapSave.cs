@@ -19,12 +19,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
         {
         }
 
-        public override bool IsEnabled(Character character) => base.IsEnabled(character);
-
         public override int StartExecute(Character character)
         {
             character.SetSpawnPoint(InteractiveObject.Map);
-            return 0;
+
+            return base.StartExecute(character);
         }
     }
 }

@@ -85,6 +85,8 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public List<MapObstacle> Obstacles => m_mapObstacles.ToList();
 
+        public override int GetDuration(Character character) => 20000;
+
         public override int StartExecute(Character character)
         {
             if (!Record.IsConditionFilled(character))
@@ -107,7 +109,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             foreach (var element in map.GetInteractiveObjects())
                 InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
 
-            return 20000;
+            return base.StartExecute(character);
         }
 
         public override void EndExecute(Character character)
