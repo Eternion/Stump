@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Items
             if (integerEffect == null)
                 return false;
 
-            if (Equiped)
+            if (Operation == HandlerOperation.APPLY)
                 Target.AddTitle(integerEffect.Value);
             else
                 Target.RemoveTitle(integerEffect.Value);
