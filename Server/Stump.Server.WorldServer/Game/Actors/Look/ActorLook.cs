@@ -14,12 +14,12 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 {
     public class ActorLook
     {
-        private const short PET_SIZE = 75;
+        const short PET_SIZE = 75;
 
-        private List<short> m_scales = new List<short>();
-        private List<short> m_skins = new List<short>();
-        private List<SubActorLook> m_subLooks = new List<SubActorLook>();
-        private Dictionary<int, Color> m_colors = new Dictionary<int, Color>();
+        List<short> m_scales = new List<short>();
+        List<short> m_skins = new List<short>();
+        List<SubActorLook> m_subLooks = new List<SubActorLook>();
+        Dictionary<int, Color> m_colors = new Dictionary<int, Color>();
 
         public ActorLook()
         {
@@ -45,20 +45,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             }
         }
 
-        public ReadOnlyCollection<short> Skins
-        {
-            get { return m_skins.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<short> Skins => m_skins.AsReadOnly();
 
-        public ReadOnlyCollection<short> Scales
-        {
-            get { return m_scales.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<short> Scales => m_scales.AsReadOnly();
 
-        public ReadOnlyCollection<SubActorLook> SubLooks
-        {
-            get { return m_subLooks.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<SubActorLook> SubLooks => m_subLooks.AsReadOnly();
 
         public ActorLook PetLook
         {
@@ -71,10 +62,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             }
         }
 
-        public ReadOnlyDictionary<int, Color> Colors
-        {
-            get { return new ReadOnlyDictionary<int, Color>(m_colors); }
-        }
+        public ReadOnlyDictionary<int, Color> Colors => new ReadOnlyDictionary<int, Color>(m_colors);
 
         public void SetSkins(params short[] skins)
         {
@@ -204,55 +192,42 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
 
         public void RemoveAuras()
         {
-            m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND
-                && (x.Look.BonesID == 169 || x.Look.BonesID == 170));
+            m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND);
 
             m_entityLook.Invalidate();
         }
 
-        private void OnSubEntityInvalidated(ObjectValidator<SubEntity> obj)
+        void OnSubEntityInvalidated(ObjectValidator<SubEntity> obj)
         {
             m_entityLook.Invalidate();
         }
 
         #region EntityLook
 
-        private readonly ObjectValidator<EntityLook> m_entityLook;
-        private short m_bonesID;
+        readonly ObjectValidator<EntityLook> m_entityLook;
+        short m_bonesID;
 
-        public ObjectValidator<EntityLook> EntityLookValidator
-        {
-            get { return m_entityLook; }
-        }
+        public ObjectValidator<EntityLook> EntityLookValidator => m_entityLook;
 
-        private EntityLook BuildEntityLook()
-        {
-            return new EntityLook(
+        EntityLook BuildEntityLook() => new EntityLook(
                 BonesID,
                 Skins,
                 Colors.Select(x => x.Key << 24 | x.Value.ToArgb() & 0xFFFFFF).ToArray(),
                 Scales,
                 SubLooks.Select(x => x.GetSubEntity()).ToArray());
-        }
 
-        public EntityLook GetEntityLook()
-        {
-            return m_entityLook;
-        }
+        public EntityLook GetEntityLook() => m_entityLook;
 
         #endregion
 
-        public ActorLook Clone()
+        public ActorLook Clone() => new ActorLook
         {
-            return new ActorLook
-                {
-                    BonesID = m_bonesID,
-                    m_colors = m_colors.ToDictionary(x => x.Key, x => x.Value),
-                    m_skins = m_skins.ToList(),
-                    m_scales = m_scales.ToList(),
-                    m_subLooks = m_subLooks.Select(x => new SubActorLook(x.BindingIndex, x.BindingCategory, x.Look.Clone())).ToList(),
-                };
-        }
+            BonesID = m_bonesID,
+            m_colors = m_colors.ToDictionary(x => x.Key, x => x.Value),
+            m_skins = m_skins.ToList(),
+            m_scales = m_scales.ToList(),
+            m_subLooks = m_subLooks.Select(x => new SubActorLook(x.BindingIndex, x.BindingCategory, x.Look.Clone())).ToList(),
+        };
 
         public override string ToString()
         {
@@ -323,7 +298,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
                     throw new Exception("Incorrect EntityLook format : " + str);
             }
 
-            short bonesId = short.Parse(str.Substring(cursorPos, separatorPos - cursorPos));
+            var bonesId = short.Parse(str.Substring(cursorPos, separatorPos - cursorPos));
             cursorPos = separatorPos + 1;
 
             var skins = new short[0];
@@ -386,7 +361,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             return new ActorLook(bonesId, skins, colors.ToDictionary(x => x.Item1, x => Color.FromArgb(x.Item2)), scales, subEntities.ToArray());
         }
 
-        private static Tuple<int, int> ParseIndexedColor(string str)
+        static Tuple<int, int> ParseIndexedColor(string str)
         {
             var signPos = str.IndexOf("=");
             var hexNumber = str[signPos + 1] == '#';
@@ -398,7 +373,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
             return Tuple.Create(index, color);
         }
 
-        private static T[] ParseCollection<T>(string str, Func<string, T> converter)
+        static T[] ParseCollection<T>(string str, Func<string, T> converter)
         {
             if (string.IsNullOrEmpty(str))
                 return new T[0];
