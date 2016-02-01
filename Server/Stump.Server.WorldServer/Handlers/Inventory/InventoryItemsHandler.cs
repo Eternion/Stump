@@ -248,7 +248,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
             host.Invalidate();
 
             client.Character.Inventory.RefreshItem(host);
-            client.Character.RefreshActor();
+            client.Character.UpdateLook();
 
             SendInventoryWeightMessage(client);
         }
@@ -276,7 +276,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             client.Character.Inventory.RefreshItem(host);
             client.Character.Inventory.AddItem(wrapperItem);
-            client.Character.RefreshActor();
+            client.Character.UpdateLook();
 
             SendInventoryWeightMessage(client);
         }

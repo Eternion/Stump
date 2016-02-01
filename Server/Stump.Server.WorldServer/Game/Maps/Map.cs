@@ -1611,6 +1611,34 @@ namespace Stump.Server.WorldServer.Game.Maps
             return mapObstacles;
         }
 
+        public void MoveCharactersToWalkableCell()
+        {
+            foreach (var character in GetAllCharacters())
+            {
+                if (IsCellWalkable(character.Cell))
+                    continue;
+
+                var cell = GetCell(character.Position.Point.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, 1).CellId);
+
+                if (!cell.Walkable)
+                {
+                    var adjacents = character.Position.Point.GetAdjacentCells(entry => GetCell(entry).Walkable).ToArray();
+
+                    if (adjacents.Length == 0)
+                        cell = GetFirstFreeCellNearMiddle();
+
+                    cell = GetCell(adjacents[0].CellId);
+                }
+
+                character.Teleport(this, cell);
+            }
+        }
+
+        public bool IsCellWalkable(Cell cell)
+        {
+            return cell.Walkable || GetMapObstacles().Any(x => x.obstacleCellId == cell.Id && x.state == (sbyte)MapObstacleStateEnum.OBSTACLE_OPENED);
+        }
+
         public InteractiveObject GetInteractiveObject(int id)
         {
             return !m_interactives.ContainsKey(id) ? null : m_interactives[id];

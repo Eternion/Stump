@@ -92,8 +92,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
             var map = World.Instance.GetMap(MapId);
 
-            map.GetMapObstacles();
-
             var interactive = map.GetInteractiveObject(ElementId);
             if (interactive == null)
                 return;
@@ -127,6 +125,8 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Triggers
 
             foreach (var element in map.GetInteractiveObjects())
                 InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
+
+            map.MoveCharactersToWalkableCell();
         }
     }
 }
