@@ -434,10 +434,7 @@ namespace Stump.Server.WorldServer.Game
             return subArea;
         }
 
-        public SubArea GetSubArea(string name)
-        {
-            return m_subAreas.Values.FirstOrDefault(entry => entry.Record.Name == name);
-        }
+        public SubArea GetSubArea(string name) => m_subAreas.Values.FirstOrDefault(entry => entry.Record.Name == name);
 
         public Area GetArea(int id)
         {
@@ -447,10 +444,7 @@ namespace Stump.Server.WorldServer.Game
             return area;
         }
 
-        public Area GetArea(string name)
-        {
-            return m_areas.Values.FirstOrDefault(entry => entry.Name == name);
-        }
+        public Area GetArea(string name) => m_areas.Values.FirstOrDefault(entry => entry.Name == name);
 
         public SuperArea GetSuperArea(int id)
         {
@@ -459,31 +453,24 @@ namespace Stump.Server.WorldServer.Game
 
             return superArea;
         }
-        public SuperArea GetSuperArea(string name)
-        {
-            return m_superAreas.Values.FirstOrDefault(entry => entry.Name == name);
-        }
+        public SuperArea GetSuperArea(string name) => m_superAreas.Values.FirstOrDefault(entry => entry.Name == name);
 
-        public IEnumerable<WorldMapGraveyardRecord> GetGraveyards()
-        {
-            return m_graveyards.Values.ToArray();
-        }
+        public IEnumerable<WorldMapGraveyardRecord> GetGraveyards() => m_graveyards.Values.ToArray();
 
-        public IEnumerable<WorldMapPhoenixRecord> GetPhoenixes()
-        {
-            return m_phoenixes.Values.ToArray();
-        }
+        public IEnumerable<WorldMapPhoenixRecord> GetPhoenixes() => m_phoenixes.Values.ToArray();
 
         public WorldMapGraveyardRecord GetNearestGraveyard(Map currentMap)
         {
             var actualPoint = new MapPoint(currentMap.Position);
-            return GetGraveyards().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position))).FirstOrDefault();
+            return GetGraveyards().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position)))
+                .ThenBy(x => x.Map.Area == currentMap.Area).FirstOrDefault();
         }
 
         public Map GetNearestPhoenix(Map currentMap)
         {
             var actualPoint = new MapPoint(currentMap.Position);
-            var phoenix = GetPhoenixes().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position))).FirstOrDefault();
+            var phoenix = GetPhoenixes().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position)))
+                .ThenBy(x => x.Map.Area == currentMap.Area).FirstOrDefault();
 
             return phoenix == null ? null : phoenix.Map;
         }

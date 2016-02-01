@@ -921,7 +921,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player
                 Owner.RefreshStats();
         }
 
-        private void ApplyItemSetEffects(ItemSetTemplate itemSet, int count, bool apply, bool send = true)
+        void ApplyItemSetEffects(ItemSetTemplate itemSet, int count, bool apply, bool send = true)
         {
             var effects = itemSet.GetEffects(count);
 
