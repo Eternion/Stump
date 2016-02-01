@@ -168,17 +168,24 @@ namespace Stump.Server.WorldServer.Game.Actors.Look
         {
             var petLook = PetLook;
 
-            AddSubLook(
-                new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET,
-                                 petLook = new ActorLook()));
+            if (skin == 3119 || skin == 3120)
+            {
+                AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET_FOLLOWER, petLook = new ActorLook()));
+            }
+            else
+            {
+                AddSubLook(new SubActorLook(0, SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, petLook = new ActorLook()));
+                petLook.SetScales(PET_SIZE);
+            }
 
-            petLook.SetScales(PET_SIZE);
             petLook.BonesID = skin;
         }
 
         public void RemovePets()
         {
-            m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET);
+            m_subLooks.RemoveAll(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET
+            || x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET_FOLLOWER);
+
             m_entityLook.Invalidate();
         }
 
