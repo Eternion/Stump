@@ -72,9 +72,7 @@ namespace Stump.Server.WorldServer.Game.Dialogs.Interactives
 
             if (map.Zaap != null)
             {
-                cell =
-                    map.GetCell(
-                        map.Zaap.Position.Point.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, 1).CellId);
+                cell = map.GetCell(map.Zaap.Position.Point.GetCellInDirection(DirectionsEnum.DIRECTION_SOUTH_WEST, 1).CellId);
 
                 if (!cell.Walkable)
                 {

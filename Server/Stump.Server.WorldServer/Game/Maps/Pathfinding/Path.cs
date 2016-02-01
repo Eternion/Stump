@@ -159,7 +159,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Pathfinding
 
                     var cell = Map.Cells[nextPoint.CellId];
 
-                    if (!cell.Walkable) //Verify Hack
+                    if (!Map.IsCellWalkable(cell)) //Verify Hack
                         return completePath.ToArray();
 
                     completePath.Add(cell);
