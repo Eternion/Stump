@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
 
-            var state = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.ENRACINÉ);
+            var state = SpellManager.Instance.GetSpellState((int)SpellStatesEnum.ENRACINE_6);
             AddState(state);
 
             m_stats.MP.Modified += OnMPModified;
@@ -93,11 +93,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             var state = ((StateBuff)buff).State;
 
-            if ((state.Id == (int)SpellStatesEnum.FEU || state.Id == (int)SpellStatesEnum.EAU
-                 || state.Id == (int)SpellStatesEnum.TERRE) && Monster.Template.Id != 3287)
+            if ((state.Id == (int)SpellStatesEnum.FEU_290 || state.Id == (int)SpellStatesEnum.EAU_291
+                 || state.Id == (int)SpellStatesEnum.TERRE_292) && Monster.Template.Id != 3287)
                 return false;
 
-            if (state.Id == (int)SpellStatesEnum.MAGNÉTOR && Monster.Template.Id != 3289)
+            if (state.Id == (int)SpellStatesEnum.MAGNETOR_126 && Monster.Template.Id != 3289)
                 return false;
 
             return true;

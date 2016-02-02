@@ -166,7 +166,7 @@ namespace Stump.Server.WorldServer.Handlers.Inventory
 
             var host = character.Inventory.TryGetItem(message.hostUID);
             var food = character.Inventory.TryGetItem(message.foodUID);
-            var mimisymbic = character.Inventory.TryGetItem(ItemIdEnum.MIMISYMBIC);
+            var mimisymbic = character.Inventory.TryGetItem(ItemIdEnum.MIMIBIOTE_14485);
 
             if (host == null || food == null)
             {

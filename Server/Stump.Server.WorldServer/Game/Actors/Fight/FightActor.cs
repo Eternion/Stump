@@ -876,14 +876,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             damage.GenerateDamages();
 
-            if (damage.Source != null && damage.Source.HasState((int)SpellStatesEnum.PACIFISTE))
+            if (damage.Source != null && damage.Source.HasState((int)SpellStatesEnum.PACIFISTE_218))
             {
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
                 TriggerBuffs(damage.Source, BuffTriggerType.AfterDamaged, damage);
                 return 0;
             }
 
-            if (HasState((int)SpellStatesEnum.INVULNÉRABLE_56))
+            if (HasState((int)SpellStatesEnum.INVULNERABLE_56))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
@@ -1001,7 +1001,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             TriggerBuffs(from, BuffTriggerType.OnHealed);
             from.TriggerBuffs(from, BuffTriggerType.OnHeal);
 
-            if (HasState((int)SpellStatesEnum.INSOIGNABLE))
+            if (HasState((int)SpellStatesEnum.INSOIGNABLE_76))
             {
                 OnLifePointsChanged(0, 0, 0, from, EffectSchoolEnum.Unknown);
                 return 0;
@@ -1356,7 +1356,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
 
-            if (HasState((int)SpellStatesEnum.INTACLABLE))
+            if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
             var tacklers = GetTacklers();
@@ -1394,7 +1394,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (VisibleState != GameActionFightInvisibilityStateEnum.VISIBLE)
                 return 0;
 
-            if (HasState((int)SpellStatesEnum.INTACLABLE))
+            if (HasState((int)SpellStatesEnum.INTACLABLE_96))
                 return 0;
 
             var tacklers = GetTacklers();
@@ -1899,13 +1899,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void CarryActor(FightActor target, EffectBase effect, Spell spell)
         {
-            var stateCarried = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.PORTÉ);
-            var stateCarrying = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.PORTEUR);
+            var stateCarried = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.PORTE_8);
+            var stateCarrying = SpellManager.Instance.GetSpellState((uint)SpellStatesEnum.PORTEUR_3);
 
             if (HasState(stateCarrying) || HasState(stateCarried) || target.HasState(stateCarrying) || target.HasState(stateCarried))
                 return;
 
-            if (target.HasState((int) SpellStatesEnum.ENRACINÉ))
+            if (target.HasState((int) SpellStatesEnum.ENRACINE_6))
                 return;
 
             var actorBuffId = PopNextBuffId();
@@ -1941,8 +1941,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actor != null && !drop)
                 return;
 
-            var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.PORTEUR).FirstOrDefault();
-            var targetState = m_carriedActor.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.PORTÉ).FirstOrDefault();
+            var actorState = GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.PORTEUR_3).FirstOrDefault();
+            var targetState = m_carriedActor.GetBuffs(x => x is StateBuff && (x as StateBuff).State.Id == (int)SpellStatesEnum.PORTE_8).FirstOrDefault();
 
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
@@ -2014,10 +2014,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public bool Telefrag(FightActor caster, FightActor target)
         {
             if ((!(target is SummonedMonster) || ((SummonedMonster)target).Monster.Template.Id != 556)
-                && (target.HasState((int)SpellStatesEnum.INDÉPLAÇABLE) || target.HasState((int)SpellStatesEnum.ENRACINÉ)))
+                && (target.HasState((int)SpellStatesEnum.INDEPLACABLE_97) || target.HasState((int)SpellStatesEnum.ENRACINE_6)))
                 return false;
 
-            if (HasState((int)SpellStatesEnum.DÉPLACÉ))
+            if (HasState((int)SpellStatesEnum.DEPLACE_120))
                 return false;
 
             if (target.IsCarrying())
@@ -2178,7 +2178,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool CanTackle(FightActor fighter)
         {
-            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.ENRACINÉ) && !fighter.HasState((int)SpellStatesEnum.ENRACINÉ) && fighter.Position.Cell != Position.Cell;
+            return IsEnnemyWith(fighter) && IsAlive() && IsVisibleFor(fighter) && !HasState((int)SpellStatesEnum.ENRACINE_6)
+                && !fighter.HasState((int)SpellStatesEnum.ENRACINE_6) && fighter.Position.Cell != Position.Cell;
         }
 
         public virtual bool CanPlay()

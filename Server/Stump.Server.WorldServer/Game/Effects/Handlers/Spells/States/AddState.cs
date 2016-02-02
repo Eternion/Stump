@@ -5,25 +5,24 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
     [EffectHandler(EffectsEnum.Effect_AddState)]
     public class AddState : SpellEffectHandler
     {
-        private static readonly SpellStatesEnum[] DISPELABLE_STATES = 
+        static readonly SpellStatesEnum[] DISPELABLE_STATES = 
         {
-            SpellStatesEnum.INVULNÉRABLE_56,
-            SpellStatesEnum.SAOUL
+            SpellStatesEnum.INVULNERABLE_56,
+            SpellStatesEnum.SAOUL_1
         };
 
-        private static readonly SpellStatesEnum[] BYPASSMAXSTACK_STATES =
+        static readonly SpellStatesEnum[] BYPASSMAXSTACK_STATES =
         {
-            SpellStatesEnum.DÉCHARGE,
-            SpellStatesEnum.SURCHARGE,
-            SpellStatesEnum.INÉBRANLABLE,
-            SpellStatesEnum.AFFAIBLI,
+            SpellStatesEnum.DECHARGE_122,
+            SpellStatesEnum.SURCHARGE_123,
+            SpellStatesEnum.INEBRANLABLE_157,
+            SpellStatesEnum.AFFAIBLI_42
         };
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -57,7 +56,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     return false;
                 }
 
-                if (state.Id == (int)SpellStatesEnum.TÉLÉFRAG_244 || state.Id == (int)SpellStatesEnum.TÉLÉFRAG_251)
+                if (state.Id == (int)SpellStatesEnum.TELEFRAG_244 || state.Id == (int)SpellStatesEnum.TELEFRAG_251)
                     affectedActor.NeedTelefragState = false;
 
                 AddStateBuff(affectedActor, DISPELABLE_STATES.Contains((SpellStatesEnum)state.Id), BYPASSMAXSTACK_STATES.Contains((SpellStatesEnum)state.Id), state);

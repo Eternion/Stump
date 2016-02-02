@@ -2,311 +2,1485 @@ namespace Stump.DofusProtocol.Enums
 {
     public enum SpellStatesEnum
     {
-        NEUTRE = 0,
-        SAOUL = 1,
-        CHERCHEUR_D_ÂMES = 2,
-        PORTEUR = 3,
-        PEUREUX = 4,
-        DÉSORIENTÉ = 5,
-        ENRACINÉ = 6,
-        PESANTEUR = 7,
-        PORTÉ = 8,
-        MOTIVATION_SYLVESTRE = 9,
-        APPRIVOISEMENT = 10,
-        CHEVAUCHANT = 11,
-        PAS_SAGE = 12,
-        VRAIMENT_PAS_SAGE = 13,
-        ENNEIGÉ = 14,
-        EVEILLÉ = 15,
-        FRAGILISÉ = 16,
-        SÉPARÉ = 17,
-        GELÉ = 18,
-        FISSURÉ = 19,
-        ENDORMI = 26,
-        LÉOPARDO = 27,
-        LIBRE = 28,
-        GLYPHE_IMPAIRE = 29,
-        GLYPHE_PAIRE = 30,
-        ENCRE_PRIMAIRE = 31,
-        ENCRE_SECONDAIRE = 32,
-        ENCRE_TERTIAIRE = 33,
-        ENCRE_QUATERNAIRE = 34,
-        ENVIE_DE_TUER = 35,
-        ENVIE_DE_PARALYSER = 36,
-        ENVIE_DE_MAUDIRE = 37,
-        ENVIE_D_EMPOISONNER = 38,
-        FLOU = 39,
-        CORROMPU = 40,
-        SILENCIEUX = 41,
-        AFFAIBLI = 42,
-        OVNI = 43,
-        CONFUS = 48,
-        GOULIFIÉ = 49,
-        ALTRUISTE = 50,
-        RETRAITÉ = 55,
-        INVULNÉRABLE_56 = 56,
-        COMPTE_À_REBOURS___2 = 57,
-        COMPTE_À_REBOURS___1 = 58,
-        DÉVOUÉ_60 = 60,
-        BAGARREUR = 61,
-        LOURD = 63,
-        GLYPHANGUEUR = 64,
-        OMÉGA = 65,
-        ALPHA = 66,
-        BÊTA = 67,
-        GAMMA = 68,
-        DELTA = 69,
-        ALPHA_DE_KORDIS = 70,
-        BÊTA_DE_KORDIS = 71,
-        GAMMA_DE_KORDIS = 72,
-        ENRAGÉ = 73,
-        ZOMBI = 74,
-        INSOIGNABLE = 76,
-        FAIBLESSE = 77,
-        GERME = 78,
-        SECONDE = 79,
-        TIERCE = 80,
-        QUARTE = 81,
-        QUINTE = 82,
-        SIXTE = 83,
-        SEPTIÈME = 84,
-        OCTAVE = 85,
-        FULGURATION = 86,
-        FLOUTAGE = 87,
-        RÉSUGLOURS = 88,
-        FLAMBOYANT = 89,
-        ECTOPLASMIQUE = 90,
+        /// <summary>
+        /// Neutre
+        /// </summary>
+        NEUTRE_0 = 0,
+        /// <summary>
+        /// Saoul
+        /// </summary>
+        SAOUL_1 = 1,
+        /// <summary>
+        /// Chercheur d'âmes
+        /// </summary>
+        CHERCHEUR_DAMES_2 = 2,
+        /// <summary>
+        /// Porteur
+        /// </summary>
+        PORTEUR_3 = 3,
+        /// <summary>
+        /// Peureux
+        /// </summary>
+        PEUREUX_4 = 4,
+        /// <summary>
+        /// Désorienté
+        /// </summary>
+        DESORIENTE_5 = 5,
+        /// <summary>
+        /// Enraciné
+        /// </summary>
+        ENRACINE_6 = 6,
+        /// <summary>
+        /// Pesanteur
+        /// </summary>
+        PESANTEUR_7 = 7,
+        /// <summary>
+        /// Porté
+        /// </summary>
+        PORTE_8 = 8,
+        /// <summary>
+        /// Motivation Sylvestre
+        /// </summary>
+        MOTIVATION_SYLVESTRE_9 = 9,
+        /// <summary>
+        /// Apprivoisement
+        /// </summary>
+        APPRIVOISEMENT_10 = 10,
+        /// <summary>
+        /// Chevauchant
+        /// </summary>
+        CHEVAUCHANT_11 = 11,
+        /// <summary>
+        /// Pas sage
+        /// </summary>
+        PAS_SAGE_12 = 12,
+        /// <summary>
+        /// Vraiment pas sage
+        /// </summary>
+        VRAIMENT_PAS_SAGE_13 = 13,
+        /// <summary>
+        /// Enneigé
+        /// </summary>
+        ENNEIGE_14 = 14,
+        /// <summary>
+        /// Eveillé
+        /// </summary>
+        EVEILLE_15 = 15,
+        /// <summary>
+        /// Fragilisé
+        /// </summary>
+        FRAGILISE_16 = 16,
+        /// <summary>
+        /// Séparé
+        /// </summary>
+        SEPARE_17 = 17,
+        /// <summary>
+        /// Gelé
+        /// </summary>
+        GELE_18 = 18,
+        /// <summary>
+        /// Fissuré
+        /// </summary>
+        FISSURE_19 = 19,
+        /// <summary>
+        /// Endormi
+        /// </summary>
+        ENDORMI_26 = 26,
+        /// <summary>
+        /// Léopardo
+        /// </summary>
+        LEOPARDO_27 = 27,
+        /// <summary>
+        /// Libre
+        /// </summary>
+        LIBRE_28 = 28,
+        /// <summary>
+        /// Glyphe impaire
+        /// </summary>
+        GLYPHE_IMPAIRE_29 = 29,
+        /// <summary>
+        /// Glyphe paire
+        /// </summary>
+        GLYPHE_PAIRE_30 = 30,
+        /// <summary>
+        /// Encre primaire
+        /// </summary>
+        ENCRE_PRIMAIRE_31 = 31,
+        /// <summary>
+        /// Encre secondaire
+        /// </summary>
+        ENCRE_SECONDAIRE_32 = 32,
+        /// <summary>
+        /// Encre tertiaire
+        /// </summary>
+        ENCRE_TERTIAIRE_33 = 33,
+        /// <summary>
+        /// Encre quaternaire
+        /// </summary>
+        ENCRE_QUATERNAIRE_34 = 34,
+        /// <summary>
+        /// Envie de tuer
+        /// </summary>
+        ENVIE_DE_TUER_35 = 35,
+        /// <summary>
+        /// Envie de paralyser
+        /// </summary>
+        ENVIE_DE_PARALYSER_36 = 36,
+        /// <summary>
+        /// Envie de maudire
+        /// </summary>
+        ENVIE_DE_MAUDIRE_37 = 37,
+        /// <summary>
+        /// Envie d'empoisonner
+        /// </summary>
+        ENVIE_DEMPOISONNER_38 = 38,
+        /// <summary>
+        /// Flou
+        /// </summary>
+        FLOU_39 = 39,
+        /// <summary>
+        /// Corrompu
+        /// </summary>
+        CORROMPU_40 = 40,
+        /// <summary>
+        /// Silencieux
+        /// </summary>
+        SILENCIEUX_41 = 41,
+        /// <summary>
+        /// Affaibli
+        /// </summary>
+        AFFAIBLI_42 = 42,
+        /// <summary>
+        /// OVNI
+        /// </summary>
+        OVNI_43 = 43,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_44 = 44,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_46 = 46,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_47 = 47,
+        /// <summary>
+        /// Confus
+        /// </summary>
+        CONFUS_48 = 48,
+        /// <summary>
+        /// Goulifié
+        /// </summary>
+        GOULIFIE_49 = 49,
+        /// <summary>
+        /// Altruiste
+        /// </summary>
+        ALTRUISTE_50 = 50,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_51 = 51,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_52 = 52,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_53 = 53,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_54 = 54,
+        /// <summary>
+        /// Retraité
+        /// </summary>
+        RETRAITE_55 = 55,
+        /// <summary>
+        /// Invulnérable
+        /// </summary>
+        INVULNERABLE_56 = 56,
+        /// <summary>
+        /// Compte à rebours - 2
+        /// </summary>
+        COMPTE_A_REBOURS_2_57 = 57,
+        /// <summary>
+        /// Compte à rebours - 1
+        /// </summary>
+        COMPTE_A_REBOURS_1_58 = 58,
+        /// <summary>
+        /// Dévoué
+        /// </summary>
+        DEVOUE_60 = 60,
+        /// <summary>
+        /// Bagarreur
+        /// </summary>
+        BAGARREUR_61 = 61,
+        /// <summary>
+        /// Lourd
+        /// </summary>
+        LOURD_63 = 63,
+        /// <summary>
+        /// Glyphangueur
+        /// </summary>
+        GLYPHANGUEUR_64 = 64,
+        /// <summary>
+        /// Oméga
+        /// </summary>
+        OMEGA_65 = 65,
+        /// <summary>
+        /// Alpha
+        /// </summary>
+        ALPHA_66 = 66,
+        /// <summary>
+        /// Bêta
+        /// </summary>
+        BETA_67 = 67,
+        /// <summary>
+        /// Gamma
+        /// </summary>
+        GAMMA_68 = 68,
+        /// <summary>
+        /// Delta
+        /// </summary>
+        DELTA_69 = 69,
+        /// <summary>
+        /// Alpha de Kordis
+        /// </summary>
+        ALPHA_DE_KORDIS_70 = 70,
+        /// <summary>
+        /// Bêta de Kordis
+        /// </summary>
+        BETA_DE_KORDIS_71 = 71,
+        /// <summary>
+        /// Gamma de Kordis
+        /// </summary>
+        GAMMA_DE_KORDIS_72 = 72,
+        /// <summary>
+        /// Enragé
+        /// </summary>
+        ENRAGE_73 = 73,
+        /// <summary>
+        /// Zombi
+        /// </summary>
+        ZOMBI_74 = 74,
+        /// <summary>
+        /// Insoignable
+        /// </summary>
+        INSOIGNABLE_76 = 76,
+        /// <summary>
+        /// Faiblesse
+        /// </summary>
+        FAIBLESSE_77 = 77,
+        /// <summary>
+        /// Germe
+        /// </summary>
+        GERME_78 = 78,
+        /// <summary>
+        /// Seconde
+        /// </summary>
+        SECONDE_79 = 79,
+        /// <summary>
+        /// Tierce
+        /// </summary>
+        TIERCE_80 = 80,
+        /// <summary>
+        /// Quarte
+        /// </summary>
+        QUARTE_81 = 81,
+        /// <summary>
+        /// Quinte
+        /// </summary>
+        QUINTE_82 = 82,
+        /// <summary>
+        /// Sixte
+        /// </summary>
+        SIXTE_83 = 83,
+        /// <summary>
+        /// Septième
+        /// </summary>
+        SEPTIEME_84 = 84,
+        /// <summary>
+        /// Octave
+        /// </summary>
+        OCTAVE_85 = 85,
+        /// <summary>
+        /// Fulguration
+        /// </summary>
+        FULGURATION_86 = 86,
+        /// <summary>
+        /// Floutage
+        /// </summary>
+        FLOUTAGE_87 = 87,
+        /// <summary>
+        /// Résuglours
+        /// </summary>
+        RESUGLOURS_88 = 88,
+        /// <summary>
+        /// Flamboyant
+        /// </summary>
+        FLAMBOYANT_89 = 89,
+        /// <summary>
+        /// Ectoplasmique
+        /// </summary>
+        ECTOPLASMIQUE_90 = 90,
+        /// <summary>
+        /// Ardent
+        /// </summary>
         ARDENT_91 = 91,
-        KABOOM = 92,
-        FONSO_CACNOOB = 93,
-        PACETTE_FOINOUBE = 94,
-        INTACLEUR = 95,
-        INTACLABLE = 96,
-        INDÉPLAÇABLE = 97,
-        CLASSE = 98,
-        PSYCHOPATHE = 99,
-        PLEUTRE = 100,
-        ARCHER = 101,
-        GORGOUILLIS = 102,
-        FORTIFIÉ = 103,
-        RUPTURE = 104,
-        TYRANNISÉ = 105,
-        MÉTÉOROÏDE = 106,
-        MASSE_CRITIQUE = 107,
-        APOCALYPSE = 108,
-        RUBILAX = 109,
-		L_ÉPÉE = 110,
-        PREMIÈRE_MARQUE_DE_DAÏGORO = 111,
-        DEUXIÈME_MARQUE_DE_DAÏGORO = 112,
-        TROISIÈME_MARQUE_DE_DAÏGORO = 113,
-        QUATRIÈME_MARQUE_DE_DAÏGORO = 114,
-        CINQUIÈME_MARQUE_DE_DAÏGORO = 115,
-        VERT_DE_TERRE = 116,
-        ROSE_AUX_FLAMMES = 117,
-        AZUR_BAIN = 118,
-        EX_JAUNE_AIR = 119,
-        DÉPLACÉ = 120,
-        CHARGE = 121,
-        DÉCHARGE = 122,
-        SURCHARGE = 123,
-        GRAND_FRÈRE = 124,
-        PETITE_SŒUR = 125,
-        MAGNÉTOR = 126,
-        TELLURIQUE = 127,
-        AQUATIQUE = 128,
+        /// <summary>
+        /// Kaboom
+        /// </summary>
+        KABOOM_92 = 92,
+        /// <summary>
+        /// Fonso Cacnoob
+        /// </summary>
+        FONSO_CACNOOB_93 = 93,
+        /// <summary>
+        /// Pacette Foinoube
+        /// </summary>
+        PACETTE_FOINOUBE_94 = 94,
+        /// <summary>
+        /// Intacleur
+        /// </summary>
+        INTACLEUR_95 = 95,
+        /// <summary>
+        /// Intaclable
+        /// </summary>
+        INTACLABLE_96 = 96,
+        /// <summary>
+        /// Indéplaçable
+        /// </summary>
+        INDEPLACABLE_97 = 97,
+        /// <summary>
+        /// Classe
+        /// </summary>
+        CLASSE_98 = 98,
+        /// <summary>
+        /// Psychopathe
+        /// </summary>
+        PSYCHOPATHE_99 = 99,
+        /// <summary>
+        /// Pleutre
+        /// </summary>
+        PLEUTRE_100 = 100,
+        /// <summary>
+        /// Archer
+        /// </summary>
+        ARCHER_101 = 101,
+        /// <summary>
+        /// Gorgouillis
+        /// </summary>
+        GORGOUILLIS_102 = 102,
+        /// <summary>
+        /// Fortifié
+        /// </summary>
+        FORTIFIE_103 = 103,
+        /// <summary>
+        /// Rupture
+        /// </summary>
+        RUPTURE_104 = 104,
+        /// <summary>
+        /// Tyrannisé
+        /// </summary>
+        TYRANNISE_105 = 105,
+        /// <summary>
+        /// Météoroïde
+        /// </summary>
+        METEOROIDE_106 = 106,
+        /// <summary>
+        /// Masse Critique
+        /// </summary>
+        MASSE_CRITIQUE_107 = 107,
+        /// <summary>
+        /// Apocalypse
+        /// </summary>
+        APOCALYPSE_108 = 108,
+        /// <summary>
+        /// Rubilax
+        /// </summary>
+        RUBILAX_109 = 109,
+        /// <summary>
+        /// « L'Épée »
+        /// </summary>
+        _LEPEE__110 = 110,
+        /// <summary>
+        /// Première Marque de Daïgoro
+        /// </summary>
+        PREMIERE_MARQUE_DE_DAIGORO_111 = 111,
+        /// <summary>
+        /// Deuxième Marque de Daïgoro
+        /// </summary>
+        DEUXIEME_MARQUE_DE_DAIGORO_112 = 112,
+        /// <summary>
+        /// Troisième Marque de Daïgoro
+        /// </summary>
+        TROISIEME_MARQUE_DE_DAIGORO_113 = 113,
+        /// <summary>
+        /// Quatrième Marque de Daïgoro
+        /// </summary>
+        QUATRIEME_MARQUE_DE_DAIGORO_114 = 114,
+        /// <summary>
+        /// Cinquième Marque de Daïgoro
+        /// </summary>
+        CINQUIEME_MARQUE_DE_DAIGORO_115 = 115,
+        /// <summary>
+        /// Vert de Terre
+        /// </summary>
+        VERT_DE_TERRE_116 = 116,
+        /// <summary>
+        /// Rose aux Flammes
+        /// </summary>
+        ROSE_AUX_FLAMMES_117 = 117,
+        /// <summary>
+        /// Azur Bain
+        /// </summary>
+        AZUR_BAIN_118 = 118,
+        /// <summary>
+        /// Ex Jaune Air
+        /// </summary>
+        EX_JAUNE_AIR_119 = 119,
+        /// <summary>
+        /// Déplacé
+        /// </summary>
+        DEPLACE_120 = 120,
+        /// <summary>
+        /// Charge
+        /// </summary>
+        CHARGE_121 = 121,
+        /// <summary>
+        /// Décharge
+        /// </summary>
+        DECHARGE_122 = 122,
+        /// <summary>
+        /// Surcharge
+        /// </summary>
+        SURCHARGE_123 = 123,
+        /// <summary>
+        /// Grand Frère
+        /// </summary>
+        GRAND_FRERE_124 = 124,
+        /// <summary>
+        /// Petite Sœur
+        /// </summary>
+        PETITE_SUR_125 = 125,
+        /// <summary>
+        /// Magnétor
+        /// </summary>
+        MAGNETOR_126 = 126,
+        /// <summary>
+        /// Tellurique
+        /// </summary>
+        TELLURIQUE_127 = 127,
+        /// <summary>
+        /// Aquatique
+        /// </summary>
+        AQUATIQUE_128 = 128,
+        /// <summary>
+        /// Ardent
+        /// </summary>
         ARDENT_129 = 129,
-        EMBUSCADE = 130,
-        SECOURISME = 131,
-        LONGUE_VUE = 132,
-        CUIRASSE = 133,
-        EVOLUTION_II = 134,
-        EVOLUTION_III = 135,
-        ENDEUILLÉ = 136,
-        KWAFLAMME = 137,
-        KWAGLACE = 138,
-        KWATERRE = 139,
-        KWAVENT = 140,
-        KWANEUTRE = 141,
-        PANDAWUSHAE = 142,
-        PANDAWUSHAK = 143,
-        PANDAWUSHFE = 144,
-        PANDAWUSHTE = 145,
-        PANDAWUSHNE = 146,
-        COURTE_VUE = 147,
-        CORSELET = 148,
-        DINGUE = 149,
-        EMBERLIFICOTÉ = 150,
-        PRÉCIPITÉ = 151,
-        PEAU_LISSE = 152,
-        SURGELÉ = 153,
-        RENAISSANCE = 154,
-        ZOMBIDULE = 155,
-        THERMOLACTÉ = 156,
-        INÉBRANLABLE = 157,
-        MARIONNETTE = 158,
-        ACTE_1 = 159,
-        ACTE_2 = 160,
-        ACTE_3 = 161,
-        ACTE_4 = 162,
-        ACTE_5 = 163,
-        ACTE_6 = 170,
-        FOUDROYÉ_171 = 171,
-        EMPATHIQUE = 172,
-        PARASITE_GRANULEUX = 173,
-        PARASITE_ÉCLOS = 174,
-        PARASITE_FLEURI = 175,
-        FRITURE = 176,
-        POULPÉ = 177,
-        ARAKNOPHOBE = 178,
-        ANDROPHOBE = 179,
-        ARANEAE = 180,
-        MISANDRIE = 181,
-        CHARGÉ = 182,
-        SCORIFIÉ = 183,
-        PROTÉGÉ = 184,
-        TROP_SAOUL = 185,
-        COURAGEUX = 186,
-        VEINARD = 187,
-        REDIRECTION = 188,
-        MAL_DES_TRANSPORTS = 189,
-        TUMVOIPU = 190,
-        MARQUE_DES_MANGELORS = 191,
-        COFFRAGE = 192,
-        GLYPHOR = 193,
-        SEUL = 194,
-        MÈCHE_COURTE = 195,
-        MÈCHE_LONGUE = 196,
-        MORT_EN_SURSIS = 197,
-        DÉSAMORCÉE = 198,
-        MARQUEUR_CHIMIQUE = 199,
-        SANG = 200,
-        SEL = 201,
-        OR = 202,
-        JOUVENCE = 203,
-        INDULGENT_I = 204,
-        INDULGENT_II = 205,
-        INDULGENT_III = 206,
-        INDULGENT_IV = 207,
-        INDULGENT_V = 208,
-        INDULGENT_VI = 209,
-        INDULGENT_VII = 210,
-        INDULGENT_VIII = 211,
-        INDULGENT_IX = 212,
-        INDULGENT_X = 213,
-        DISLOQUÉ = 214,
-        INFECTION = 215,
-        PASSEUR = 216,
-        TEMPORISATEUR = 217,
-        PACIFISTE = 218,
-        VOYAGEUR = 219,
-        INSTABLE = 220,
-        PREMIÈRE_HEURE = 221,
-        DEUXIÈME_HEURE = 222,
-        TROISIÈME_HEURE = 223,
-        QUATRIÈME_HEURE = 224,
-        CINQUIÈME_HEURE = 225,
-        SIXIÈME_HEURE = 226,
-        SEPTIÈME_HEURE = 227,
-        HUITIÈME_HEURE = 228,
-        NEUVIÈME_HEURE = 229,
-        DIXIÈME_HEURE = 230,
-        ONZIÈME_HEURE = 231,
-        DOUZIÈME_HEURE = 232,
-        MORT_LATENTE = 233,
-        MÊME_HEURE = 234,
-        TUEUR = 235,
-        MARGINAL = 236,
-        DÉRÈGLEMENT = 237,
-        HYPOGLYPHE = 238,
-        BIEN_ENTOURÉ = 239,
-        RÉSURRECTION = 240,
-        SÉRUM = 241,
-        PASSTONTOUR = 242,
-        COFFRE_INVOQUÉ = 243,
-        TÉLÉFRAG_244 = 244,
-        MOMIE = 245,
-        PARADOXE_TEMPOREL = 246,
-        REMBOBINAGE = 247,
-        PORTAIL = 248,
-        IMMUNITÉ_TEMPORELLE = 249,
-        INVISIBLE = 250,
-        TÉLÉFRAG_251 = 251,
-        EMPRISONNÉ = 252,
-        COCON = 253,
-        MATURITÉ = 254,
-        DÉVOUÉ_255 = 255,
-        ARBRE_FEUILLU = 256,
-        AMOUR_INFINI = 257,
-        MARQUE_NINJA = 258,
-        BLOQUEUSE = 259,
-        ÉCOLOGISTE_260 = 260,
-        ÉCOLOGISTE_261 = 261,
-        CIBLE_DU_SUPER_PLACEMENT = 262,
-        INFECTÉ = 263,
-        EMPOISONNÉ = 264,
-        PROIE = 265,
-        BRETTEUR_CÉLESTE = 266,
-        FOUDROYÉ_267 = 267,
-        DUEL = 268,
-        INVULNÉRABLE_269 = 269,
-        SUPER_SINGE = 270,
-        RAYONNEMENT_LUNAIRE = 271,
-        FEU_DE_BOLGROT = 272,
-        ETAT_GÉNÉRIQUE_4 = 276,
-        ETAT_GÉNÉRIQUE_3 = 277,
-        ETAT_GÉNÉRIQUE_2 = 278,
-        ETAT_GÉNÉRIQUE_1 = 279,
-        TRANSCENDANCE_SPIRITUELLE = 280,
-        AMÉLIORÉ = 281,
-        GOÉMUS = 282,
-        NORIE = 283,
-        KELPE = 284,
-        CYANOG = 285,
-        VERAK = 286,
-        EXPLOSIF = 287,
-        IMMUNITÉ = 288,
-        FEU = 290,
-        EAU = 291,
-        TERRE = 292,
-        AIR = 293,
-        SOIN_GLYPHE = 295,
-        RUNE = 296,
-        MUTA = 297,
-        DJIM = 298,
-        ULTRAM = 299,
-        MARKALAKULOTE = 300,
-        RECULPA = 301,
-        PIERRE = 302,
-        FEUILLE = 303,
-        CISEAUX = 304,
-        CHASSÉ = 305,
-        SYNCHRONISÉ = 306,
-        MAUDIT = 307,
-        COLLÉ = 308,
-        AFFAIBLISSEMENT_AQUATIQUE = 309,
-        AFFAIBLISSEMENT_INCANDESCENT = 310,
-        AFFAIBLISSEMENT_VENTEUX = 311,
-        AFFAIBLISSEMENT_TERRESTRE = 312,
-        VEWWOUILLÉ = 338,
-        ETAT_GÉNÉRIQUE_5 = 341,
-        ETAT_GÉNÉRIQUE_6 = 342,
-        ETAT_GÉNÉRIQUE_7 = 343,
-        ETAT_GÉNÉRIQUE_8 = 344,
-        ETAT_GÉNÉRIQUE_9 = 345,
-        TELEFRAG_RAYON_OBSCUR = 351,
-        TELEFRAG_TÉLÉPORTATION_352 = 352,
-        TELEFRAG_REMBOBINAGE = 353,
-        TELEFRAG_POUSSIÈRE = 354,
-        TELEFRAG_RAULEBAQUE = 355,
-        TELEFRAG_GELURE = 356,
-        TELEFRAG_FUITE = 357,
-        TELEFRAG_PARADOXE = 358,
-        TELEFRAG_FRAPPE = 359,
-        TELEFRAG_TÉLÉPORTATION_360 = 360,
-        CONTRIBUTION = 361,
-        PARPO_ALLIÉ = 362,
-        PARPO_ENNEMI = 363,
-        TRANSKO = 364,
-        INVULNÉRABLE = 365,
+        /// <summary>
+        /// Embuscade
+        /// </summary>
+        EMBUSCADE_130 = 130,
+        /// <summary>
+        /// Secourisme
+        /// </summary>
+        SECOURISME_131 = 131,
+        /// <summary>
+        /// Longue vue
+        /// </summary>
+        LONGUE_VUE_132 = 132,
+        /// <summary>
+        /// Cuirasse
+        /// </summary>
+        CUIRASSE_133 = 133,
+        /// <summary>
+        /// Evolution II
+        /// </summary>
+        EVOLUTION_II_134 = 134,
+        /// <summary>
+        /// Evolution III
+        /// </summary>
+        EVOLUTION_III_135 = 135,
+        /// <summary>
+        /// Endeuillé
+        /// </summary>
+        ENDEUILLE_136 = 136,
+        /// <summary>
+        /// Kwaflamme
+        /// </summary>
+        KWAFLAMME_137 = 137,
+        /// <summary>
+        /// Kwaglace
+        /// </summary>
+        KWAGLACE_138 = 138,
+        /// <summary>
+        /// Kwaterre
+        /// </summary>
+        KWATERRE_139 = 139,
+        /// <summary>
+        /// Kwavent
+        /// </summary>
+        KWAVENT_140 = 140,
+        /// <summary>
+        /// Kwaneutre
+        /// </summary>
+        KWANEUTRE_141 = 141,
+        /// <summary>
+        /// Pandawushae
+        /// </summary>
+        PANDAWUSHAE_142 = 142,
+        /// <summary>
+        /// Pandawushak
+        /// </summary>
+        PANDAWUSHAK_143 = 143,
+        /// <summary>
+        /// Pandawushfe
+        /// </summary>
+        PANDAWUSHFE_144 = 144,
+        /// <summary>
+        /// Pandawushte
+        /// </summary>
+        PANDAWUSHTE_145 = 145,
+        /// <summary>
+        /// Pandawushne
+        /// </summary>
+        PANDAWUSHNE_146 = 146,
+        /// <summary>
+        /// Courte vue
+        /// </summary>
+        COURTE_VUE_147 = 147,
+        /// <summary>
+        /// Corselet
+        /// </summary>
+        CORSELET_148 = 148,
+        /// <summary>
+        /// Dingue
+        /// </summary>
+        DINGUE_149 = 149,
+        /// <summary>
+        /// Emberlificoté
+        /// </summary>
+        EMBERLIFICOTE_150 = 150,
+        /// <summary>
+        /// Précipité
+        /// </summary>
+        PRECIPITE_151 = 151,
+        /// <summary>
+        /// Peau lisse
+        /// </summary>
+        PEAU_LISSE_152 = 152,
+        /// <summary>
+        /// Surgelé
+        /// </summary>
+        SURGELE_153 = 153,
+        /// <summary>
+        /// Renaissance
+        /// </summary>
+        RENAISSANCE_154 = 154,
+        /// <summary>
+        /// Zombidule
+        /// </summary>
+        ZOMBIDULE_155 = 155,
+        /// <summary>
+        /// Thermolacté
+        /// </summary>
+        THERMOLACTE_156 = 156,
+        /// <summary>
+        /// Inébranlable
+        /// </summary>
+        INEBRANLABLE_157 = 157,
+        /// <summary>
+        /// Marionnette
+        /// </summary>
+        MARIONNETTE_158 = 158,
+        /// <summary>
+        /// Acte 1
+        /// </summary>
+        ACTE_1_159 = 159,
+        /// <summary>
+        /// Acte 2
+        /// </summary>
+        ACTE_2_160 = 160,
+        /// <summary>
+        /// Acte 3
+        /// </summary>
+        ACTE_3_161 = 161,
+        /// <summary>
+        /// Acte 4
+        /// </summary>
+        ACTE_4_162 = 162,
+        /// <summary>
+        /// Acte 5
+        /// </summary>
+        ACTE_5_163 = 163,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_164 = 164,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_165 = 165,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_166 = 166,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_167 = 167,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_168 = 168,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_169 = 169,
+        /// <summary>
+        /// Acte 6
+        /// </summary>
+        ACTE_6_170 = 170,
+        /// <summary>
+        /// Foudroyé
+        /// </summary>
+        FOUDROYE_171 = 171,
+        /// <summary>
+        /// Empathique
+        /// </summary>
+        EMPATHIQUE_172 = 172,
+        /// <summary>
+        /// Parasite granuleux
+        /// </summary>
+        PARASITE_GRANULEUX_173 = 173,
+        /// <summary>
+        /// Parasite éclos
+        /// </summary>
+        PARASITE_ECLOS_174 = 174,
+        /// <summary>
+        /// Parasite fleuri
+        /// </summary>
+        PARASITE_FLEURI_175 = 175,
+        /// <summary>
+        /// Friture
+        /// </summary>
+        FRITURE_176 = 176,
+        /// <summary>
+        /// Poulpé
+        /// </summary>
+        POULPE_177 = 177,
+        /// <summary>
+        /// Araknophobe
+        /// </summary>
+        ARAKNOPHOBE_178 = 178,
+        /// <summary>
+        /// Androphobe
+        /// </summary>
+        ANDROPHOBE_179 = 179,
+        /// <summary>
+        /// Araneae
+        /// </summary>
+        ARANEAE_180 = 180,
+        /// <summary>
+        /// Misandrie
+        /// </summary>
+        MISANDRIE_181 = 181,
+        /// <summary>
+        /// Chargé
+        /// </summary>
+        CHARGE_182 = 182,
+        /// <summary>
+        /// Scorifié
+        /// </summary>
+        SCORIFIE_183 = 183,
+        /// <summary>
+        /// Protégé
+        /// </summary>
+        PROTEGE_184 = 184,
+        /// <summary>
+        /// Trop Saoul
+        /// </summary>
+        TROP_SAOUL_185 = 185,
+        /// <summary>
+        /// Courageux
+        /// </summary>
+        COURAGEUX_186 = 186,
+        /// <summary>
+        /// Veinard
+        /// </summary>
+        VEINARD_187 = 187,
+        /// <summary>
+        /// Redirection
+        /// </summary>
+        REDIRECTION_188 = 188,
+        /// <summary>
+        /// Mal des transports
+        /// </summary>
+        MAL_DES_TRANSPORTS_189 = 189,
+        /// <summary>
+        /// Tumvoipu
+        /// </summary>
+        TUMVOIPU_190 = 190,
+        /// <summary>
+        /// Marque des Mangelors
+        /// </summary>
+        MARQUE_DES_MANGELORS_191 = 191,
+        /// <summary>
+        /// Coffrage
+        /// </summary>
+        COFFRAGE_192 = 192,
+        /// <summary>
+        /// Glyphor
+        /// </summary>
+        GLYPHOR_193 = 193,
+        /// <summary>
+        /// Seul
+        /// </summary>
+        SEUL_194 = 194,
+        /// <summary>
+        /// Mèche courte
+        /// </summary>
+        MECHE_COURTE_195 = 195,
+        /// <summary>
+        /// Mèche longue
+        /// </summary>
+        MECHE_LONGUE_196 = 196,
+        /// <summary>
+        /// Mort en sursis
+        /// </summary>
+        MORT_EN_SURSIS_197 = 197,
+        /// <summary>
+        /// Désamorcée
+        /// </summary>
+        DESAMORCEE_198 = 198,
+        /// <summary>
+        /// Marqueur Chimique
+        /// </summary>
+        MARQUEUR_CHIMIQUE_199 = 199,
+        /// <summary>
+        /// Sang
+        /// </summary>
+        SANG_200 = 200,
+        /// <summary>
+        /// Sel
+        /// </summary>
+        SEL_201 = 201,
+        /// <summary>
+        /// Or
+        /// </summary>
+        OR_202 = 202,
+        /// <summary>
+        /// Jouvence
+        /// </summary>
+        JOUVENCE_203 = 203,
+        /// <summary>
+        /// Indulgent I
+        /// </summary>
+        INDULGENT_I_204 = 204,
+        /// <summary>
+        /// Indulgent II
+        /// </summary>
+        INDULGENT_II_205 = 205,
+        /// <summary>
+        /// Indulgent III
+        /// </summary>
+        INDULGENT_III_206 = 206,
+        /// <summary>
+        /// Indulgent IV
+        /// </summary>
+        INDULGENT_IV_207 = 207,
+        /// <summary>
+        /// Indulgent V
+        /// </summary>
+        INDULGENT_V_208 = 208,
+        /// <summary>
+        /// Indulgent VI
+        /// </summary>
+        INDULGENT_VI_209 = 209,
+        /// <summary>
+        /// Indulgent VII
+        /// </summary>
+        INDULGENT_VII_210 = 210,
+        /// <summary>
+        /// Indulgent VIII
+        /// </summary>
+        INDULGENT_VIII_211 = 211,
+        /// <summary>
+        /// Indulgent IX
+        /// </summary>
+        INDULGENT_IX_212 = 212,
+        /// <summary>
+        /// Indulgent X
+        /// </summary>
+        INDULGENT_X_213 = 213,
+        /// <summary>
+        /// Disloqué
+        /// </summary>
+        DISLOQUE_214 = 214,
+        /// <summary>
+        /// Infection
+        /// </summary>
+        INFECTION_215 = 215,
+        /// <summary>
+        /// Passeur
+        /// </summary>
+        PASSEUR_216 = 216,
+        /// <summary>
+        /// Temporisateur
+        /// </summary>
+        TEMPORISATEUR_217 = 217,
+        /// <summary>
+        /// Pacifiste
+        /// </summary>
+        PACIFISTE_218 = 218,
+        /// <summary>
+        /// Voyageur
+        /// </summary>
+        VOYAGEUR_219 = 219,
+        /// <summary>
+        /// Instable
+        /// </summary>
+        INSTABLE_220 = 220,
+        /// <summary>
+        /// Première heure
+        /// </summary>
+        PREMIERE_HEURE_221 = 221,
+        /// <summary>
+        /// Deuxième heure
+        /// </summary>
+        DEUXIEME_HEURE_222 = 222,
+        /// <summary>
+        /// Troisième heure
+        /// </summary>
+        TROISIEME_HEURE_223 = 223,
+        /// <summary>
+        /// Quatrième heure
+        /// </summary>
+        QUATRIEME_HEURE_224 = 224,
+        /// <summary>
+        /// Cinquième heure
+        /// </summary>
+        CINQUIEME_HEURE_225 = 225,
+        /// <summary>
+        /// Sixième heure
+        /// </summary>
+        SIXIEME_HEURE_226 = 226,
+        /// <summary>
+        /// Septième heure
+        /// </summary>
+        SEPTIEME_HEURE_227 = 227,
+        /// <summary>
+        /// Huitième heure
+        /// </summary>
+        HUITIEME_HEURE_228 = 228,
+        /// <summary>
+        /// Neuvième heure
+        /// </summary>
+        NEUVIEME_HEURE_229 = 229,
+        /// <summary>
+        /// Dixième heure
+        /// </summary>
+        DIXIEME_HEURE_230 = 230,
+        /// <summary>
+        /// Onzième heure
+        /// </summary>
+        ONZIEME_HEURE_231 = 231,
+        /// <summary>
+        /// Douzième heure
+        /// </summary>
+        DOUZIEME_HEURE_232 = 232,
+        /// <summary>
+        /// Mort latente
+        /// </summary>
+        MORT_LATENTE_233 = 233,
+        /// <summary>
+        /// Même heure
+        /// </summary>
+        MEME_HEURE_234 = 234,
+        /// <summary>
+        /// Tueur
+        /// </summary>
+        TUEUR_235 = 235,
+        /// <summary>
+        /// Marginal
+        /// </summary>
+        MARGINAL_236 = 236,
+        /// <summary>
+        /// Dérèglement
+        /// </summary>
+        DEREGLEMENT_237 = 237,
+        /// <summary>
+        /// Hypoglyphe
+        /// </summary>
+        HYPOGLYPHE_238 = 238,
+        /// <summary>
+        /// Bien entouré
+        /// </summary>
+        BIEN_ENTOURE_239 = 239,
+        /// <summary>
+        /// Résurrection
+        /// </summary>
+        RESURRECTION_240 = 240,
+        /// <summary>
+        /// Sérum
+        /// </summary>
+        SERUM_241 = 241,
+        /// <summary>
+        /// Passtontour
+        /// </summary>
+        PASSTONTOUR_242 = 242,
+        /// <summary>
+        /// Coffre invoqué
+        /// </summary>
+        COFFRE_INVOQUE_243 = 243,
+        /// <summary>
+        /// Téléfrag
+        /// </summary>
+        TELEFRAG_244 = 244,
+        /// <summary>
+        /// Momie
+        /// </summary>
+        MOMIE_245 = 245,
+        /// <summary>
+        /// Paradoxe temporel
+        /// </summary>
+        PARADOXE_TEMPOREL_246 = 246,
+        /// <summary>
+        /// Rembobinage
+        /// </summary>
+        REMBOBINAGE_247 = 247,
+        /// <summary>
+        /// Portail
+        /// </summary>
+        PORTAIL_248 = 248,
+        /// <summary>
+        /// Immunité temporelle
+        /// </summary>
+        IMMUNITE_TEMPORELLE_249 = 249,
+        /// <summary>
+        /// Invisible
+        /// </summary>
+        INVISIBLE_250 = 250,
+        /// <summary>
+        /// Téléfrag
+        /// </summary>
+        TELEFRAG_251 = 251,
+        /// <summary>
+        /// Emprisonné
+        /// </summary>
+        EMPRISONNE_252 = 252,
+        /// <summary>
+        /// Cocon
+        /// </summary>
+        COCON_253 = 253,
+        /// <summary>
+        /// Maturité
+        /// </summary>
+        MATURITE_254 = 254,
+        /// <summary>
+        /// Dévoué
+        /// </summary>
+        DEVOUE_255 = 255,
+        /// <summary>
+        /// Arbre Feuillu
+        /// </summary>
+        ARBRE_FEUILLU_256 = 256,
+        /// <summary>
+        /// Amour infini
+        /// </summary>
+        AMOUR_INFINI_257 = 257,
+        /// <summary>
+        /// Marque Ninja
+        /// </summary>
+        MARQUE_NINJA_258 = 258,
+        /// <summary>
+        /// Bloqueuse
+        /// </summary>
+        BLOQUEUSE_259 = 259,
+        /// <summary>
+        /// Écologiste
+        /// </summary>
+        ECOLOGISTE_260 = 260,
+        /// <summary>
+        /// Écologiste
+        /// </summary>
+        ECOLOGISTE_261 = 261,
+        /// <summary>
+        /// Cible du Super placement
+        /// </summary>
+        CIBLE_DU_SUPER_PLACEMENT_262 = 262,
+        /// <summary>
+        /// Infecté
+        /// </summary>
+        INFECTE_263 = 263,
+        /// <summary>
+        /// Empoisonné
+        /// </summary>
+        EMPOISONNE_264 = 264,
+        /// <summary>
+        /// Proie
+        /// </summary>
+        PROIE_265 = 265,
+        /// <summary>
+        /// Bretteur Céleste
+        /// </summary>
+        BRETTEUR_CELESTE_266 = 266,
+        /// <summary>
+        /// Foudroyé
+        /// </summary>
+        FOUDROYE_267 = 267,
+        /// <summary>
+        /// Duel
+        /// </summary>
+        DUEL_268 = 268,
+        /// <summary>
+        /// Invulnérable
+        /// </summary>
+        INVULNERABLE_269 = 269,
+        /// <summary>
+        /// Super Singe
+        /// </summary>
+        SUPER_SINGE_270 = 270,
+        /// <summary>
+        /// Rayonnement lunaire
+        /// </summary>
+        RAYONNEMENT_LUNAIRE_271 = 271,
+        /// <summary>
+        /// Feu de Bolgrot
+        /// </summary>
+        FEU_DE_BOLGROT_272 = 272,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_273 = 273,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_274 = 274,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_275 = 275,
+        /// <summary>
+        /// Etat générique 4
+        /// </summary>
+        ETAT_GENERIQUE_4_276 = 276,
+        /// <summary>
+        /// Etat générique 3
+        /// </summary>
+        ETAT_GENERIQUE_3_277 = 277,
+        /// <summary>
+        /// Etat générique 2
+        /// </summary>
+        ETAT_GENERIQUE_2_278 = 278,
+        /// <summary>
+        /// Etat générique 1
+        /// </summary>
+        ETAT_GENERIQUE_1_279 = 279,
+        /// <summary>
+        /// Transcendance Spirituelle
+        /// </summary>
+        TRANSCENDANCE_SPIRITUELLE_280 = 280,
+        /// <summary>
+        /// Amélioré
+        /// </summary>
+        AMELIORE_281 = 281,
+        /// <summary>
+        /// Goémus
+        /// </summary>
+        GOEMUS_282 = 282,
+        /// <summary>
+        /// Norie
+        /// </summary>
+        NORIE_283 = 283,
+        /// <summary>
+        /// Kelpe
+        /// </summary>
+        KELPE_284 = 284,
+        /// <summary>
+        /// Cyanog
+        /// </summary>
+        CYANOG_285 = 285,
+        /// <summary>
+        /// Verak
+        /// </summary>
+        VERAK_286 = 286,
+        /// <summary>
+        /// Explosif
+        /// </summary>
+        EXPLOSIF_287 = 287,
+        /// <summary>
+        /// Immunité
+        /// </summary>
+        IMMUNITE_288 = 288,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_289 = 289,
+        /// <summary>
+        /// Feu
+        /// </summary>
+        FEU_290 = 290,
+        /// <summary>
+        /// Eau
+        /// </summary>
+        EAU_291 = 291,
+        /// <summary>
+        /// Terre
+        /// </summary>
+        TERRE_292 = 292,
+        /// <summary>
+        /// Air
+        /// </summary>
+        AIR_293 = 293,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_294 = 294,
+        /// <summary>
+        /// Soin glyphe
+        /// </summary>
+        SOIN_GLYPHE_295 = 295,
+        /// <summary>
+        /// Rune
+        /// </summary>
+        RUNE_296 = 296,
+        /// <summary>
+        /// Muta
+        /// </summary>
+        MUTA_297 = 297,
+        /// <summary>
+        /// Djim
+        /// </summary>
+        DJIM_298 = 298,
+        /// <summary>
+        /// Ultram
+        /// </summary>
+        ULTRAM_299 = 299,
+        /// <summary>
+        /// Markalakulote
+        /// </summary>
+        MARKALAKULOTE_300 = 300,
+        /// <summary>
+        /// Reculpa
+        /// </summary>
+        RECULPA_301 = 301,
+        /// <summary>
+        /// Pierre
+        /// </summary>
+        PIERRE_302 = 302,
+        /// <summary>
+        /// Feuille
+        /// </summary>
+        FEUILLE_303 = 303,
+        /// <summary>
+        /// Ciseaux
+        /// </summary>
+        CISEAUX_304 = 304,
+        /// <summary>
+        /// Chassé
+        /// </summary>
+        CHASSE_305 = 305,
+        /// <summary>
+        /// Synchronisé
+        /// </summary>
+        SYNCHRONISE_306 = 306,
+        /// <summary>
+        /// Maudit
+        /// </summary>
+        MAUDIT_307 = 307,
+        /// <summary>
+        /// Collé
+        /// </summary>
+        COLLE_308 = 308,
+        /// <summary>
+        /// Affaiblissement Aquatique
+        /// </summary>
+        AFFAIBLISSEMENT_AQUATIQUE_309 = 309,
+        /// <summary>
+        /// Affaiblissement Incandescent
+        /// </summary>
+        AFFAIBLISSEMENT_INCANDESCENT_310 = 310,
+        /// <summary>
+        /// Affaiblissement Venteux
+        /// </summary>
+        AFFAIBLISSEMENT_VENTEUX_311 = 311,
+        /// <summary>
+        /// Affaiblissement Terrestre
+        /// </summary>
+        AFFAIBLISSEMENT_TERRESTRE_312 = 312,
+        /// <summary>
+        /// Dé 1
+        /// </summary>
+        DE_1_313 = 313,
+        /// <summary>
+        /// Dé 2
+        /// </summary>
+        DE_2_314 = 314,
+        /// <summary>
+        /// Dé 3
+        /// </summary>
+        DE_3_315 = 315,
+        /// <summary>
+        /// Dé 4
+        /// </summary>
+        DE_4_316 = 316,
+        /// <summary>
+        /// Dé 5
+        /// </summary>
+        DE_5_317 = 317,
+        /// <summary>
+        /// Dé 6
+        /// </summary>
+        DE_6_318 = 318,
+        /// <summary>
+        /// Rouge
+        /// </summary>
+        ROUGE_324 = 324,
+        /// <summary>
+        /// Noir
+        /// </summary>
+        NOIR_325 = 325,
+        /// <summary>
+        /// Dé 1 bis
+        /// </summary>
+        DE_1_BIS_326 = 326,
+        /// <summary>
+        /// Dé 2 bis
+        /// </summary>
+        DE_2_BIS_327 = 327,
+        /// <summary>
+        /// Dé 3 bis
+        /// </summary>
+        DE_3_BIS_328 = 328,
+        /// <summary>
+        /// Dé 4 bis
+        /// </summary>
+        DE_4_BIS_329 = 329,
+        /// <summary>
+        /// Dé 5 bis
+        /// </summary>
+        DE_5_BIS_330 = 330,
+        /// <summary>
+        /// Dé 6 bis
+        /// </summary>
+        DE_6_BIS_331 = 331,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_332 = 332,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_333 = 333,
+        /// <summary>
+        /// Mutation I
+        /// </summary>
+        MUTATION_I_334 = 334,
+        /// <summary>
+        /// Mutation II
+        /// </summary>
+        MUTATION_II_335 = 335,
+        /// <summary>
+        /// Mutation III
+        /// </summary>
+        MUTATION_III_336 = 336,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_337 = 337,
+        /// <summary>
+        /// Vewwouillé
+        /// </summary>
+        VEWWOUILLE_338 = 338,
+        /// <summary>
+        /// Pourrification
+        /// </summary>
+        POURRIFICATION_339 = 339,
+        /// <summary>
+        /// Poutrage
+        /// </summary>
+        POUTRAGE_340 = 340,
+        /// <summary>
+        /// Etat générique 5
+        /// </summary>
+        ETAT_GENERIQUE_5_341 = 341,
+        /// <summary>
+        /// Etat générique 6
+        /// </summary>
+        ETAT_GENERIQUE_6_342 = 342,
+        /// <summary>
+        /// Etat générique 7
+        /// </summary>
+        ETAT_GENERIQUE_7_343 = 343,
+        /// <summary>
+        /// Etat générique 8
+        /// </summary>
+        ETAT_GENERIQUE_8_344 = 344,
+        /// <summary>
+        /// Etat générique 9
+        /// </summary>
+        ETAT_GENERIQUE_9_345 = 345,
+        /// <summary>
+        /// Chaloeil - Blanc
+        /// </summary>
+        CHALOEIL_BLANC_346 = 346,
+        /// <summary>
+        /// Chaloeil - Noir
+        /// </summary>
+        CHALOEIL_NOIR_347 = 347,
+        /// <summary>
+        /// Matoumorphose
+        /// </summary>
+        MATOUMORPHOSE_348 = 348,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_349 = 349,
+        /// <summary>
+        /// (not found)
+        /// </summary>
+        STATE_350 = 350,
+        /// <summary>
+        /// Telefrag Rayon Obscur
+        /// </summary>
+        TELEFRAG_RAYON_OBSCUR_351 = 351,
+        /// <summary>
+        /// Telefrag Téléportation
+        /// </summary>
+        TELEFRAG_TELEPORTATION_352 = 352,
+        /// <summary>
+        /// Telefrag Rembobinage
+        /// </summary>
+        TELEFRAG_REMBOBINAGE_353 = 353,
+        /// <summary>
+        /// Telefrag Poussière
+        /// </summary>
+        TELEFRAG_POUSSIERE_354 = 354,
+        /// <summary>
+        /// Telefrag Raulebaque
+        /// </summary>
+        TELEFRAG_RAULEBAQUE_355 = 355,
+        /// <summary>
+        /// Telefrag Gelure
+        /// </summary>
+        TELEFRAG_GELURE_356 = 356,
+        /// <summary>
+        /// Telefrag Fuite
+        /// </summary>
+        TELEFRAG_FUITE_357 = 357,
+        /// <summary>
+        /// Telefrag Paradoxe
+        /// </summary>
+        TELEFRAG_PARADOXE_358 = 358,
+        /// <summary>
+        /// Telefrag Frappe
+        /// </summary>
+        TELEFRAG_FRAPPE_359 = 359,
+        /// <summary>
+        /// Telefrag Téléportation
+        /// </summary>
+        TELEFRAG_TELEPORTATION_360 = 360,
+        /// <summary>
+        /// Contribution
+        /// </summary>
+        CONTRIBUTION_361 = 361,
+        /// <summary>
+        /// Parpo allié
+        /// </summary>
+        PARPO_ALLIE_362 = 362,
+        /// <summary>
+        /// Parpo ennemi
+        /// </summary>
+        PARPO_ENNEMI_363 = 363,
+        /// <summary>
+        /// Transko
+        /// </summary>
+        TRANSKO_364 = 364,
+        /// <summary>
+        /// Invulnérable
+        /// </summary>
+        INVULNERABLE_365 = 365,
+        /// <summary>
+        /// Imunité - Chaloeil
+        /// </summary>
+        IMUNITE_CHALOEIL_366 = 366,
+        /// <summary>
+        /// Dé 1
+        /// </summary>
+        DE_1_367 = 367,
+        /// <summary>
+        /// Dé 2
+        /// </summary>
+        DE_2_368 = 368,
+        /// <summary>
+        /// Dé 3
+        /// </summary>
+        DE_3_369 = 369,
+        /// <summary>
+        /// Dé 4
+        /// </summary>
+        DE_4_370 = 370,
+        /// <summary>
+        /// Dé 5
+        /// </summary>
+        DE_5_371 = 371,
+        /// <summary>
+        /// Dé 6
+        /// </summary>
+        DE_6_372 = 372,
+        /// <summary>
+        /// Relance - Chaloeil
+        /// </summary>
+        RELANCE_CHALOEIL_373 = 373,
+        /// <summary>
+        /// Matoumorphose
+        /// </summary>
+        MATOUMORPHOSE_374 = 374,
+        /// <summary>
+        /// Invulnérabilité à Distance
+        /// </summary>
+        INVULNERABILITE_A_DISTANCE_375 = 375,
+        /// <summary>
+        /// Invulnérabilité en Mêlée
+        /// </summary>
+        INVULNERABILITE_EN_MELEE_376 = 376,
+        /// <summary>
+        /// Matoumorphose
+        /// </summary>
+        MATOUMORPHOSE_377 = 377,
+        /// <summary>
+        /// Parasité
+        /// </summary>
+        PARASITE_378 = 378,
+        /// <summary>
+        /// Indéplaçable
+        /// </summary>
+        INDEPLACABLE_379 = 379,
+        /// <summary>
+        /// C'est toi le Chacha !
+        /// </summary>
+        CEST_TOI_LE_CHACHA__380 = 380,
+        /// <summary>
+        /// Cible prioritaire
+        /// </summary>
+        CIBLE_PRIORITAIRE_381 = 381,
+        /// <summary>
+        /// Intercepteur
+        /// </summary>
+        INTERCEPTEUR_382 = 382,
+        /// <summary>
+        /// Protégé
+        /// </summary>
+        PROTEGE_383 = 383,
+        /// <summary>
+        /// Embargo
+        /// </summary>
+        EMBARGO_384 = 384,
     }
 }

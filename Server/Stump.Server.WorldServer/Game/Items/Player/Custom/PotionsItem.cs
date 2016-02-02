@@ -8,7 +8,7 @@ using Stump.Server.WorldServer.Handlers.Mounts;
 
 namespace Stump.Server.WorldServer.Game.Items.Player.Custom
 {
-    [ItemId(ItemIdEnum.BONTARIAN_INTERCITY_EXPRESS_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_CITE_BONTA_6965)]
     public class BontarianPotion : BasePlayerItem
     {
         [Variable]
@@ -33,7 +33,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.BRAKMARIAN_INTERCITY_EXPRESS_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_CITE_BRAKMAR_6964)]
     public class BrakmarianPotion : BasePlayerItem
     {
         [Variable]
@@ -58,7 +58,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.NAME_CHANGE_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_CHANGEMENT_DE_NOM_10860)]
     public class NameChangePotion : BasePlayerItem
     {
         public NameChangePotion(Character owner, PlayerItemRecord record)
@@ -84,7 +84,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.COLOUR_CHANGE_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_CHANGEMENT_DES_COULEURS_10861)]
     public class ColourChangePotion : BasePlayerItem
     {
         public ColourChangePotion(Character owner, PlayerItemRecord record)
@@ -110,7 +110,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.FACE_CHANGE_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_CHANGEMENT_DE_VISAGE_13518)]
     public class LookChangePotion : BasePlayerItem
     {
         public LookChangePotion(Character owner, PlayerItemRecord record)
@@ -136,7 +136,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.SEX_CHANGE_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_CHANGEMENT_DE_SEXE_10862)]
     public class SexChangePotion : BasePlayerItem
     {
         public SexChangePotion(Character owner, PlayerItemRecord record)
@@ -164,7 +164,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.CLASS_CHANGE_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_CHANGEMENT_DE_CLASSE_16147)]
     public class ClassChangePotion : BasePlayerItem
     {
         public ClassChangePotion(Character owner, PlayerItemRecord record)
@@ -194,7 +194,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.GUILD_RENAMING_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_RENOMMAGE_DE_GUILDE_13273)]
     public class GuildNameChangePotion : BasePlayerItem
     {
         public GuildNameChangePotion(Character owner, PlayerItemRecord record)
@@ -217,7 +217,7 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
         }
     }
 
-    [ItemId(ItemIdEnum.GUILD_EMBLEM_CHANGE_POTION)]
+    [ItemId(ItemIdEnum.POTION_DE_CHANGEMENT_DE_BLASON_DE_GUILDE_13270)]
     public class GuildEmblemChangePotion : BasePlayerItem
     {
         public GuildEmblemChangePotion(Character owner, PlayerItemRecord record)
@@ -237,31 +237,6 @@ namespace Stump.Server.WorldServer.Game.Items.Player.Custom
             panel.Open();
 
             return 0;
-        }
-    }
-
-    //Item doesn't exist anymore
-    [ItemId(20838)]
-    public class ChameleonBehaviorPotion : BasePlayerItem
-    {
-        public ChameleonBehaviorPotion(Character owner, PlayerItemRecord record)
-            : base(owner, record)
-        {
-        }
-
-        public override uint UseItem(int amount = 1, Cell targetCell = null, Character target = null)
-        {
-            if (!Owner.HasEquipedMount())
-                return 0;
-
-            if (Owner.Mount.Behaviors.Contains(MountBehaviorEnum.Caméléone))
-                return 0;
-
-            Owner.Mount.AddBehavior(MountBehaviorEnum.Caméléone);
-
-            MountHandler.SendMountSetMessage(Owner.Client, Owner.Mount.GetMountClientData());
-
-            return 1;
         }
     }
 }

@@ -41,26 +41,26 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 
             foreach (var handler in Handlers)
             {
-                var affectedActors = handler.GetAffectedActors(x => !x.IsFriendlyWith(Caster) || !x.HasState((int)SpellStatesEnum.KABOOM));
+                var affectedActors = handler.GetAffectedActors(x => !x.IsFriendlyWith(Caster) || !x.HasState((int)SpellStatesEnum.KABOOM_92));
 
                 if (handler is DirectDamage)
                     handler.Efficiency = 1 + DamageBonus/100d;
 
                 if (handler is APBuff || handler is MPBuff || handler is StatsBuff)
-                    affectedActors = handler.GetAffectedActors(x => x != Caster && x.IsFriendlyWith(Caster) && x.HasState((int)SpellStatesEnum.KABOOM));
+                    affectedActors = handler.GetAffectedActors(x => x != Caster && x.IsFriendlyWith(Caster) && x.HasState((int)SpellStatesEnum.KABOOM_92));
                     
                 if (handler is APDebuffNonFix || handler is MPDebuffNonFix)
                     affectedActors = affectedActors.Where(x => x != Caster);
 
                 if (handler is ReduceBuffDuration)
                 {
-                    if (handler.Dice.DiceNum == 1 && !Caster.HasState((int) SpellStatesEnum.CHARGE))
+                    if (handler.Dice.DiceNum == 1 && !Caster.HasState((int) SpellStatesEnum.CHARGE_121))
                         affectedActors = new FightActor[0];
 
-                    if (handler.Dice.DiceNum == 2 && !Caster.HasState((int)SpellStatesEnum.DÉCHARGE))
+                    if (handler.Dice.DiceNum == 2 && !Caster.HasState((int)SpellStatesEnum.DECHARGE_122))
                         affectedActors = new FightActor[0];
 
-                    if (handler.Dice.DiceNum == 3 && !Caster.HasState((int)SpellStatesEnum.SURCHARGE))
+                    if (handler.Dice.DiceNum == 3 && !Caster.HasState((int)SpellStatesEnum.SURCHARGE_123))
                         affectedActors = new FightActor[0];
                 }
 
