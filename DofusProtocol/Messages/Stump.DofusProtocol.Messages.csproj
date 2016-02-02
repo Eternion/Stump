@@ -556,7 +556,7 @@
     <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagFurnituresMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagFurnituresRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\HavenBagPackListMessage.cs" />
-    <Compile Include="Messages\game\context\roleplay\havenbag\KickHavenBagRequest.cs" />
+    <Compile Include="Messages\game\context\roleplay\havenbag\KickHavenBagRequestMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagClosedMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagMessage.cs" />
     <Compile Include="Messages\game\context\roleplay\havenbag\meeting\InviteInHavenBagOfferMessage.cs" />

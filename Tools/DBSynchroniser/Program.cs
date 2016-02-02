@@ -477,12 +477,17 @@ namespace DBSynchroniser
 
                 Console.WriteLine("Generating {0} ...", Path.GetFileName(writer.Filename));
 
-
                 var rows = GetTableRows(table);
                 writer.StartWriting(false);
                 foreach (ID2ORecord row in rows)
                 {
                     object obj = row.CreateObject();
+
+                    if (obj is Item)
+                    {
+                        ((Item)obj).AppearanceId = 0;
+                    }
+
                     writer.Write(obj, row.Id);
                 }
 

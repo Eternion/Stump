@@ -1,7 +1,7 @@
  
 
 
-// Generated on 12/20/2015 18:16:38
+// Generated on 02/02/2016 14:15:14
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,18 +26,15 @@ namespace DBSynchroniser.Records
         public int layerId;
         public Boolean blocksMovement;
         public Boolean isStackable;
+        public uint cellsWidth;
+        public uint cellsHeight;
+        public uint order;
 
         int ID2ORecord.Id
         {
-            get { return (int)Id; }
+            get { return (int)themeId; }
         }
 
-        [PrimaryKey("Id")]
-        public int Id
-        {
-            get;
-            set;
-        }
 
         [D2OIgnore]
         public int TypeId
@@ -47,6 +44,7 @@ namespace DBSynchroniser.Records
         }
 
         [D2OIgnore]
+        [PrimaryKey("ThemeId", false)]
         public int ThemeId
         {
             get { return themeId; }
@@ -95,6 +93,27 @@ namespace DBSynchroniser.Records
             set { isStackable = value; }
         }
 
+        [D2OIgnore]
+        public uint CellsWidth
+        {
+            get { return cellsWidth; }
+            set { cellsWidth = value; }
+        }
+
+        [D2OIgnore]
+        public uint CellsHeight
+        {
+            get { return cellsHeight; }
+            set { cellsHeight = value; }
+        }
+
+        [D2OIgnore]
+        public uint Order
+        {
+            get { return order; }
+            set { order = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (HavenbagFurniture)obj;
@@ -107,6 +126,9 @@ namespace DBSynchroniser.Records
             LayerId = castedObj.layerId;
             BlocksMovement = castedObj.blocksMovement;
             IsStackable = castedObj.isStackable;
+            CellsWidth = castedObj.cellsWidth;
+            CellsHeight = castedObj.cellsHeight;
+            Order = castedObj.order;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -120,6 +142,9 @@ namespace DBSynchroniser.Records
             obj.layerId = LayerId;
             obj.blocksMovement = BlocksMovement;
             obj.isStackable = IsStackable;
+            obj.cellsWidth = CellsWidth;
+            obj.cellsHeight = CellsHeight;
+            obj.order = Order;
             return obj;
         }
         

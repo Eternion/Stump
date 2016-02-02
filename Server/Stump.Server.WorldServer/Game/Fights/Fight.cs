@@ -1541,7 +1541,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (evnt != null)
                 evnt(this, FighterPlaying);
 
-            StartSequence(SequenceTypeEnum.SEQUENCE_OnTurnEnd);
+            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
             if (FighterPlaying.IsAlive())
             {
@@ -1556,7 +1556,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (TimeLine.RoundNumber > 1)
                 FighterPlaying.TurnTimeReport = time > 0 ? time : 0;
 
-            EndSequence(SequenceTypeEnum.SEQUENCE_OnTurnEnd);
+            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_END);
 
             // can die with triggers
             if (CheckFightEnd())

@@ -1,6 +1,6 @@
 
 
-// Generated on 12/20/2015 18:01:10
+// Generated on 02/02/2016 14:14:59
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -38,6 +38,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<uint> maleColors;
         public List<uint> femaleColors;
         public uint spawnMap;
+        public uint complexity;
+        public uint sortIndex;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -167,6 +169,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.spawnMap; }
             set { this.spawnMap = value; }
+        }
+        [D2OIgnore]
+        public uint Complexity
+        {
+            get { return this.complexity; }
+            set { this.complexity = value; }
+        }
+        [D2OIgnore]
+        public uint SortIndex
+        {
+            get { return this.sortIndex; }
+            set { this.sortIndex = value; }
         }
     }
 }

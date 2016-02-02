@@ -1,6 +1,6 @@
 
 
-// Generated on 12/20/2015 17:38:53
+// Generated on 02/02/2016 14:15:10
 using System;
 using System.Collections.Generic;
 
@@ -15,7 +15,7 @@ namespace Stump.DofusProtocol.Enums
         SEQUENCE_MOVE = 5,
         SEQUENCE_CHARACTER_DEATH = 6,
         SEQUENCE_TURN_START = 7,
-        SEQUENCE_OnTurnEnd = 8,
+        SEQUENCE_TURN_END = 8,
         SEQUENCE_FIGHT_START = 9,
     }
 }
