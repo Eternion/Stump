@@ -6,6 +6,7 @@ using Stump.Core.Pool;
 using Stump.Server.BaseServer.Database;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Database.Interactives;
+using Stump.Server.WorldServer.Game.Maps.Cells.Triggers;
 
 namespace Stump.Server.WorldServer.Game.Interactives
 {
@@ -14,13 +15,13 @@ namespace Stump.Server.WorldServer.Game.Interactives
         public const int DEFAULT_INTERACTIVE_TEMPLATE = 129;
         public const int DEFAULT_SKILL_TEMPLATE = 184;
 
-        private UniqueIdProvider m_idProviderSpawn = new UniqueIdProvider();
-        private UniqueIdProvider m_idProviderSkill = new UniqueIdProvider();
-        private Dictionary<int, InteractiveSpawn> m_interactivesSpawns;
-        private Dictionary<int, InteractiveTemplate> m_interactivesTemplates;
-        private Dictionary<int, InteractiveSkillTemplate> m_skillsTemplates;
-        private Dictionary<int, InteractiveCustomSkillRecord> m_interactivesCustomSkills;
-        private InteractiveSkillTemplate m_defaultSkillTemplate;
+        UniqueIdProvider m_idProviderSpawn = new UniqueIdProvider();
+        UniqueIdProvider m_idProviderSkill = new UniqueIdProvider();
+        Dictionary<int, InteractiveSpawn> m_interactivesSpawns;
+        Dictionary<int, InteractiveTemplate> m_interactivesTemplates;
+        Dictionary<int, InteractiveSkillTemplate> m_skillsTemplates;
+        Dictionary<int, InteractiveCustomSkillRecord> m_interactivesCustomSkills;
+        InteractiveSkillTemplate m_defaultSkillTemplate;
 
         public IReadOnlyDictionary<int, InteractiveTemplate> InteractivesTemplates => m_interactivesTemplates;
         public IReadOnlyDictionary<int, InteractiveSpawn> InteractivesSpawns => m_interactivesSpawns;
@@ -43,6 +44,35 @@ namespace Stump.Server.WorldServer.Game.Interactives
             m_idProviderSkill = m_interactivesCustomSkills.Any()
                 ? new UniqueIdProvider(m_interactivesCustomSkills.Select(x => x.Value.Id).Max())
                 : new UniqueIdProvider(0);
+
+            GenerateInteractivePlot();
+        }
+
+        void GenerateInteractivePlot()
+        {
+            foreach (var trigger in CellTriggerManager.Instance.GetCellTriggers())
+            {
+                if (trigger.Type != "Teleport")
+                    continue;
+
+                var interactive = m_interactivesSpawns.Values.FirstOrDefault(x => x.MapId == trigger.MapId && x.CellId == trigger.CellId
+                                                            && x.TemplateId == null && !x.CustomSkills.Any());
+
+                if (interactive == null)
+                    continue;
+
+                var skillId = m_idProviderSkill.Pop();
+                var skill = new InteractiveCustomSkillRecord
+                {
+                    Id = skillId,
+                    Type = "Teleport",
+                    Parameter0 = trigger.Parameter1, //MapId
+                    Parameter1 = trigger.Parameter0, //CellId
+                    Condition = trigger.Condition
+                };
+
+                interactive.CustomSkills.Add(skill);
+            }
         }
 
         public int PopSkillId()
