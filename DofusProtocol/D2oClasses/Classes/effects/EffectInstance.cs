@@ -1,6 +1,6 @@
 
 
-// Generated on 12/20/2015 18:01:11
+// Generated on 02/02/2016 14:15:00
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -26,12 +26,12 @@ namespace Stump.DofusProtocol.D2oClasses
         public Boolean visibleInTooltip = true;
         public Boolean visibleInBuffUi = true;
         public Boolean visibleInFightLog = true;
-        public Object zoneSize;
+        public uint zoneSize;
         public uint zoneShape;
-        public Object zoneMinSize;
-        public Object zoneEfficiencyPercent;
-        public Object zoneMaxEfficiency;
-        public Object zoneStopAtTarget;
+        public uint zoneMinSize;
+        public int zoneEfficiencyPercent;
+        public int zoneMaxEfficiency;
+        public uint zoneStopAtTarget;
         public int effectElement;
         public String rawZone;
         int IIndexedData.Id
@@ -123,7 +123,7 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.visibleInFightLog = value; }
         }
         [D2OIgnore]
-        public Object ZoneSize
+        public uint ZoneSize
         {
             get { return this.zoneSize; }
             set { this.zoneSize = value; }
@@ -135,25 +135,25 @@ namespace Stump.DofusProtocol.D2oClasses
             set { this.zoneShape = value; }
         }
         [D2OIgnore]
-        public Object ZoneMinSize
+        public uint ZoneMinSize
         {
             get { return this.zoneMinSize; }
             set { this.zoneMinSize = value; }
         }
         [D2OIgnore]
-        public Object ZoneEfficiencyPercent
+        public int ZoneEfficiencyPercent
         {
             get { return this.zoneEfficiencyPercent; }
             set { this.zoneEfficiencyPercent = value; }
         }
         [D2OIgnore]
-        public Object ZoneMaxEfficiency
+        public int ZoneMaxEfficiency
         {
             get { return this.zoneMaxEfficiency; }
             set { this.zoneMaxEfficiency = value; }
         }
         [D2OIgnore]
-        public Object ZoneStopAtTarget
+        public uint ZoneStopAtTarget
         {
             get { return this.zoneStopAtTarget; }
             set { this.zoneStopAtTarget = value; }

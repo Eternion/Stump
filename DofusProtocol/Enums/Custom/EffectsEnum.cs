@@ -2318,6 +2318,10 @@
         /// 
         /// </summary>
         Effect_LearnSmileyPack = 2797,
+        /// <summary>
+        /// 
+        /// </summary>
+        Effect_2798 = 2798,
 
         End
     }

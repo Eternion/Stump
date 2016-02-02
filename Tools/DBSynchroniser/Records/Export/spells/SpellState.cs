@@ -1,7 +1,7 @@
  
 
 
-// Generated on 12/20/2015 18:16:43
+// Generated on 02/02/2016 14:15:19
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +33,8 @@ namespace DBSynchroniser.Records
         public List<int> effectsIds;
         public String icon = "";
         public int iconVisibilityMask;
+        public Boolean invulnerableMelee;
+        public Boolean invulnerableRange;
 
         int ID2ORecord.Id
         {
@@ -160,6 +162,20 @@ namespace DBSynchroniser.Records
             set { iconVisibilityMask = value; }
         }
 
+        [D2OIgnore]
+        public Boolean InvulnerableMelee
+        {
+            get { return invulnerableMelee; }
+            set { invulnerableMelee = value; }
+        }
+
+        [D2OIgnore]
+        public Boolean InvulnerableRange
+        {
+            get { return invulnerableRange; }
+            set { invulnerableRange = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (SpellState)obj;
@@ -178,6 +194,8 @@ namespace DBSynchroniser.Records
             EffectsIds = castedObj.effectsIds;
             Icon = castedObj.icon;
             IconVisibilityMask = castedObj.iconVisibilityMask;
+            InvulnerableMelee = castedObj.invulnerableMelee;
+            InvulnerableRange = castedObj.invulnerableRange;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -197,6 +215,8 @@ namespace DBSynchroniser.Records
             obj.effectsIds = EffectsIds;
             obj.icon = Icon;
             obj.iconVisibilityMask = IconVisibilityMask;
+            obj.invulnerableMelee = InvulnerableMelee;
+            obj.invulnerableRange = InvulnerableRange;
             return obj;
         }
         

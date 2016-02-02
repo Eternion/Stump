@@ -1,6 +1,6 @@
 
 
-// Generated on 12/20/2015 18:01:11
+// Generated on 02/02/2016 14:15:01
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -21,6 +21,9 @@ namespace Stump.DofusProtocol.D2oClasses
         public int layerId;
         public Boolean blocksMovement;
         public Boolean isStackable;
+        public uint cellsWidth;
+        public uint cellsHeight;
+        public uint order;
         int IIndexedData.Id
         {
             get { return (int)themeId; }
@@ -72,6 +75,24 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.isStackable; }
             set { this.isStackable = value; }
+        }
+        [D2OIgnore]
+        public uint CellsWidth
+        {
+            get { return this.cellsWidth; }
+            set { this.cellsWidth = value; }
+        }
+        [D2OIgnore]
+        public uint CellsHeight
+        {
+            get { return this.cellsHeight; }
+            set { this.cellsHeight = value; }
+        }
+        [D2OIgnore]
+        public uint Order
+        {
+            get { return this.order; }
+            set { this.order = value; }
         }
     }
 }

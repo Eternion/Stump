@@ -1,6 +1,6 @@
 
 
-// Generated on 12/20/2015 16:36:53
+// Generated on 02/02/2016 14:14:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,9 @@ using Stump.DofusProtocol.Types;
 
 namespace Stump.DofusProtocol.Messages
 {
-    public class KickHavenBagRequest : Message
+    public class KickHavenBagRequestMessage : Message
     {
-        public const uint Id = 6650;
+        public const uint Id = 6652;
         public override uint MessageId
         {
             get { return Id; }
@@ -20,11 +20,11 @@ namespace Stump.DofusProtocol.Messages
         
         public long guestId;
         
-        public KickHavenBagRequest()
+        public KickHavenBagRequestMessage()
         {
         }
         
-        public KickHavenBagRequest(long guestId)
+        public KickHavenBagRequestMessage(long guestId)
         {
             this.guestId = guestId;
         }

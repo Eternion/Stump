@@ -48,6 +48,11 @@ namespace DofusProtocolBuilder.Profiles
                         {@"(protected|private) var _zoneSize = 4.29497e+009", "public var zoneSize"},
                         {@"(protected|private) var _zoneShape = 4.29497e+009", "public var zoneShape"},
                         {@"(protected|private) var _zoneMinSize = 4.29497e+009", "public var zoneMinSize"},
+                        {@"public var zoneSize:Object", "public var zoneSize:uint"},
+                        {@"public var zoneMinSize:Object", "public var zoneMinSize:uint"},
+                        {@"public var zoneEfficiencyPercent:Object", "public var zoneEfficiencyPercent:int"},
+                        {@"public var zoneMaxEfficiency:Object", "public var zoneMaxEfficiency:int"},
+                        {@"public var zoneStopAtTarget:Object", "public var zoneStopAtTarget:uint"},
                         {@"(protected|private) var _weight", "public var weight"},
                         {@"public function get oldValue\(\) : int", "public var oldValue:int;"},
                         {@"public function get newValue\(\) : int", "public var newValue:int;"},
@@ -55,7 +60,6 @@ namespace DofusProtocolBuilder.Profiles
                         {@"public function get type\(\) : int", "public var type:int;"},
                         // ankama's devs are idiots, they attempt to assign -1 to a uint field
                         {@"public var iconId:uint", "public var iconId:int"},
-
 
                         // shouldn't be public
                         {@"public var type:QuestObjectiveType", "private var type:QuestObjectiveType"},

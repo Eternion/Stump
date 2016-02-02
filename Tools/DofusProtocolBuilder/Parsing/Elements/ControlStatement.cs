@@ -37,11 +37,11 @@ namespace DofusProtocolBuilder.Parsing.Elements
                 if (match.Groups["type"].Value != "")
 					result.ControlType =
                         (ControlType)
-                        Enum.Parse(typeof (ControlType), match.Groups["type"].Value.Replace(" ", "").Replace("(", ""), true);
+                        Enum.Parse(typeof (ControlType), match.Groups["type"].Value.Replace(" ", "").TrimEnd('('), true);
 
                 if (match.Groups["condition"].Value != "")
                 {
-                    result.Condition = match.Groups["condition"].Value.Replace("(", "").Replace(")", "").Trim();
+                    result.Condition = match.Groups["condition"].Value.Trim().TrimEnd(')');
                 }
             }
 

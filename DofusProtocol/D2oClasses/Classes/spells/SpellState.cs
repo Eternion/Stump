@@ -1,6 +1,6 @@
 
 
-// Generated on 12/20/2015 18:01:22
+// Generated on 02/02/2016 14:15:07
 using System;
 using System.Collections.Generic;
 using Stump.DofusProtocol.D2oClasses;
@@ -28,6 +28,8 @@ namespace Stump.DofusProtocol.D2oClasses
         public List<int> effectsIds;
         public String icon = "";
         public int iconVisibilityMask;
+        public Boolean invulnerableMelee;
+        public Boolean invulnerableRange;
         int IIndexedData.Id
         {
             get { return (int)id; }
@@ -115,6 +117,18 @@ namespace Stump.DofusProtocol.D2oClasses
         {
             get { return this.iconVisibilityMask; }
             set { this.iconVisibilityMask = value; }
+        }
+        [D2OIgnore]
+        public Boolean InvulnerableMelee
+        {
+            get { return this.invulnerableMelee; }
+            set { this.invulnerableMelee = value; }
+        }
+        [D2OIgnore]
+        public Boolean InvulnerableRange
+        {
+            get { return this.invulnerableRange; }
+            set { this.invulnerableRange = value; }
         }
     }
 }

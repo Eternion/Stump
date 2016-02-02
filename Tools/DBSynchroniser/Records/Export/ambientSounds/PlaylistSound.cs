@@ -1,7 +1,7 @@
- 
 
 
-// Generated on 12/20/2015 18:16:37
+
+// Generated on 02/02/2016 14:15:12
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -53,12 +53,12 @@ namespace DBSynchroniser.Records
         public virtual void AssignFields(object obj)
         {
             var castedObj = (PlaylistSound)obj;
-            
+
             Id = int.Parse(castedObj.id);
             Volume = castedObj.volume;
             Channel = castedObj.channel;
         }
-        
+
         public virtual object CreateObject(object parent = null)
         {
             var obj = parent != null ? (PlaylistSound)parent : new PlaylistSound();
@@ -67,10 +67,10 @@ namespace DBSynchroniser.Records
             obj.channel = Channel;
             return obj;
         }
-        
+
         public virtual void BeforeSave(bool insert)
         {
-        
+
         }
     }
 }

@@ -1,7 +1,7 @@
  
 
 
-// Generated on 12/20/2015 18:16:37
+// Generated on 02/02/2016 14:15:12
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,6 +43,8 @@ namespace DBSynchroniser.Records
         public List<uint> maleColors;
         public List<uint> femaleColors;
         public uint spawnMap;
+        public uint complexity;
+        public uint sortIndex;
 
         int ID2ORecord.Id
         {
@@ -394,6 +396,20 @@ namespace DBSynchroniser.Records
             set { spawnMap = value; }
         }
 
+        [D2OIgnore]
+        public uint Complexity
+        {
+            get { return complexity; }
+            set { complexity = value; }
+        }
+
+        [D2OIgnore]
+        public uint SortIndex
+        {
+            get { return sortIndex; }
+            set { sortIndex = value; }
+        }
+
         public virtual void AssignFields(object obj)
         {
             var castedObj = (Breed)obj;
@@ -419,6 +435,8 @@ namespace DBSynchroniser.Records
             MaleColors = castedObj.maleColors;
             FemaleColors = castedObj.femaleColors;
             SpawnMap = castedObj.spawnMap;
+            Complexity = castedObj.complexity;
+            SortIndex = castedObj.sortIndex;
         }
         
         public virtual object CreateObject(object parent = null)
@@ -445,6 +463,8 @@ namespace DBSynchroniser.Records
             obj.maleColors = MaleColors;
             obj.femaleColors = FemaleColors;
             obj.spawnMap = SpawnMap;
+            obj.complexity = Complexity;
+            obj.sortIndex = SortIndex;
             return obj;
         }
         
