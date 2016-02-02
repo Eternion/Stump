@@ -20,6 +20,8 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Spells;
+using System.Text.RegularExpressions;
+using Stump.Core.Extensions;
 
 namespace Stump.Plugins.DefaultPlugin.Code
 {
@@ -56,7 +58,7 @@ namespace Stump.Plugins.DefaultPlugin.Code
                     writer.WriteLine("\t\t/// <summary>");
                     writer.WriteLine("\t\t/// " + state.Name);
                     writer.WriteLine("\t\t/// </summary>");
-                    writer.WriteLine("\t\t{0} = {1},", state.Name != "(not found)" ? EscapeString(state.Name) : "State_" + state.Id.ToString(), state.Id);
+                    writer.WriteLine("\t\t{0}_{1} = {1},", state.Name != "(not found)" ? RemoveSpecialCharacters(EscapeString(state.Name.RemoveAccents())).ToUpper() : "STATE", state.Id);
                 }
 
                 writer.WriteLine("\t}");
@@ -65,7 +67,9 @@ namespace Stump.Plugins.DefaultPlugin.Code
             }
         }
 
-        private static string EscapeString(string str)
+        public static string RemoveSpecialCharacters(string str) => Regex.Replace(Regex.Replace(str, "[^a-zA-Z0-9_]+", "", RegexOptions.Compiled), "[_]{2,}", "_");
+
+        static string EscapeString(string str)
         {
             var builder = new StringBuilder(str);
             builder.Replace(" ", "_");

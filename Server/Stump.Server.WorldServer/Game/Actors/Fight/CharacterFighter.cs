@@ -315,7 +315,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (!IsFighterTurn())
                 return false;
 
-            if (HasState((int)SpellStatesEnum.AFFAIBLI))
+            if (HasState((int)SpellStatesEnum.AFFAIBLI_42))
                 return false;
 
             var point = new MapPoint(cell);

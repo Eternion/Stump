@@ -80,7 +80,7 @@ namespace Stump.Plugins.DefaultPlugin.Code
 
         public static string RemoveSpecialCharacters(string str)
         {
-            return Regex.Replace(str.RemoveAccents(), "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
+            return Regex.Replace(str.RemoveAccents(), "[^a-zA-Z0-9_]+", "", RegexOptions.Compiled);
         }
 
     }

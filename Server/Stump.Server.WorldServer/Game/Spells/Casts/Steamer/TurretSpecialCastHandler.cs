@@ -34,13 +34,13 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Steamer
                 case (int)SpellIdEnum.BOUMBOUMF:
                 case (int)SpellIdEnum.BOUMBOUME:
                 case (int)SpellIdEnum.BOUMBOUMT:
-                    requiredState = (int)SpellStatesEnum.EMBUSCADE;
+                    requiredState = (int)SpellStatesEnum.EMBUSCADE_130;
                     break;
                 case (int)SpellIdEnum.TRANSKO:
-                    requiredState = (int)SpellStatesEnum.LONGUE_VUE;
+                    requiredState = (int)SpellStatesEnum.LONGUE_VUE_132;
                     break;
                 case (int)SpellIdEnum.SAUVETAGE:
-                    requiredState = (int)SpellStatesEnum.SECOURISME;
+                    requiredState = (int)SpellStatesEnum.SECOURISME_131;
                     break;
             }
 

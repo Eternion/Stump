@@ -4,6 +4,8 @@ using NLog;
 using Stump.Core.Attributes;
 using Stump.Server.BaseServer.Initialization;
 using Stump.Server.WorldServer.Game.Items;
+using Stump.Core.Extensions;
+using System.Text;
 
 namespace Stump.Plugins.DefaultPlugin.Code
 {
@@ -38,7 +40,7 @@ namespace Stump.Plugins.DefaultPlugin.Code
                 foreach (var item in ItemManager.Instance.GetTemplates())
                 {
                     writer.WriteLine("\t\t// Item [Level : {0}] ", item.Level);
-                    writer.WriteLine("\t\t{0} = {1},", RemoveSpecialCharacters(item.Name), item.Id);
+                    writer.WriteLine("\t\t{0}_{1} = {1},", RemoveSpecialCharacters(EscapeString(item.Name.RemoveAccents())).ToUpper(), item.Id);
                 }
 
                 writer.WriteLine("\t}");
@@ -47,9 +49,16 @@ namespace Stump.Plugins.DefaultPlugin.Code
             }
         }
 
-        public static string RemoveSpecialCharacters(string str)
+        private static string EscapeString(string str)
         {
-            return Regex.Replace(str, "[^a-zA-Z0-9_.]+", "", RegexOptions.Compiled);
+            var builder = new StringBuilder(str);
+            builder.Replace(" ", "_");
+            builder.Replace("\"", "");
+            builder.Replace("'", "");
+            builder.Replace("-", "");
+            return builder.ToString();
         }
+
+        public static string RemoveSpecialCharacters(string str) => Regex.Replace(Regex.Replace(str, "[^a-zA-Z0-9_]+", "", RegexOptions.Compiled), "[_]{2,}", "_");
     }
 }
