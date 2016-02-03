@@ -44,9 +44,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 
             };
 
-            var damagesAmount = Math.Round(((buff.Target.Stats.Health.PermanentDamages*Dice.DiceNum)/100d));
+            var damagesAmount = (int)Math.Floor((buff.Target.Stats.Health.PermanentDamages*Dice.DiceNum)/100d);
 
-            damages.Amount = (int)damagesAmount;
+            damages.Amount = damagesAmount;
 
             buff.Target.InflictDamage(damages);
         }

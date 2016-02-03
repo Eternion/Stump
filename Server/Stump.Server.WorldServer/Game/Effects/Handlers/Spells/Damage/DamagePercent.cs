@@ -35,7 +35,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                 {
                     var damage = new Fights.Damage(Dice, GetEffectSchool(Dice.EffectId), Caster, Spell, TargetedCell, EffectZone);
                     damage.GenerateDamages();
-                    damage.Amount = (int)((Caster.LifePoints * (Dice.DiceNum / 100.0)));
+                    damage.Amount = (int)Math.Floor((Caster.LifePoints * Dice.DiceNum) / 100d);
                     damage.IgnoreDamageBoost = true;
                     damage.MarkTrigger = MarkTrigger;
                     damage.IsCritical = Critical;
