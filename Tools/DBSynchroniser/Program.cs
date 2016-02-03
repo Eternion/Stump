@@ -32,8 +32,7 @@ using System.Text;
 using HtmlAgilityPack;
 using System.Net.Http;
 using System.Threading;
-using System.Threading.Tasks;
-using Stump.Core.Collections;
+using Stump.Core.IO;
 
 namespace DBSynchroniser
 {
@@ -974,7 +973,10 @@ namespace DBSynchroniser
                 }
 
                 if (spellsId.Count > 1)
-                    ParseErrors.Add(string.Format("Found multiple spells({0}) for name {1}({2}) for monsterId ({3}).", spellsId.Count, spellName, spellsId.First(), monsterId));
+                {
+                    ParseErrors.Add(string.Format("Found multiple spells for monsterId ({0}) - {1}({2}).", monsterId, spellName, spellsId.ToCSV(",")));
+                    continue;
+                }
 
                 spells.Add(spellsId.First());
             }
