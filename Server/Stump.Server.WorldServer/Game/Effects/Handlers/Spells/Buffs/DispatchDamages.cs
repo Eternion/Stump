@@ -6,6 +6,9 @@ using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using System.Linq;
 using Stump.Server.WorldServer.Game.Spells.Casts;
+using System;
+using System.Collections.Generic;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_DispatchDamages)]
@@ -38,14 +41,14 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             if (damage.Source == null)
                 return;
 
-            var damages = (int)(damage.Amount * (Dice.DiceNum / 100.0));
+            var damages = (int)Math.Floor((damage.Amount * Dice.DiceNum) / 100.0);
 
-            var actors = new FightActor[] { damage.Source };
+            var actors = new List<FightActor> { damage.Source };
 
             if (Spell.Id == (int)SpellIdEnum.PUTSCH)
             {
                 var cells = buff.Target.Position.Point.GetAdjacentCells(x => !Fight.IsCellFree(buff.Target.Map.Cells[x]));
-                actors = cells.Select(cell => buff.Target.Fight.GetOneFighter(buff.Target.Map.Cells[cell.CellId])).Where(actor => actor != null).ToArray();
+                actors.AddRange(cells.Select(cell => buff.Target.Fight.GetOneFighter(buff.Target.Map.Cells[cell.CellId])).Where(actor => actor != null));
             }
 
             foreach (var actor in actors)

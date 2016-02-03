@@ -19,12 +19,12 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
-            var affectedActors = GetAffectedActors();
+            var affectedActors = GetAffectedActors(x => x.Cell == TargetedCell);
 
             if (!affectedActors.Any())
                 return false;
 
-            AddAffectedActor(Caster);
+            SetAffectedActors(affectedActors);
 
             return base.Apply();
         }
