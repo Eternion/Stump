@@ -19,7 +19,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
 
         public override bool Apply()
         {
-            var affectedActors = GetAffectedActors(x => x.Cell == TargetedCell);
+            var affectedActors = GetAffectedActors(x => x.Cell == TargetedCell && x.Position.Point.IsOnSameLine(CastPoint));
 
             if (!affectedActors.Any())
                 return false;

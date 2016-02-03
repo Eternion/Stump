@@ -20,10 +20,10 @@ namespace Stump.Server.BaseServer.Network
         public static bool LogPackets = false;
 
         [Variable(DefinableRunning = true)]
-        public static readonly int HistoryEntriesLimit = 20;
+        public static int HistoryEntriesLimit = 20;
 
         [Variable(DefinableRunning = true)]
-        public static readonly double FloodFactor = 6.66;
+        public static double FloodFactor = 6.66;
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
