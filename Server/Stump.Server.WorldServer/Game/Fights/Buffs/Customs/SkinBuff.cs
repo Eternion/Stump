@@ -36,6 +36,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Apply()
         {
+            base.Apply();
             OriginalLook = Target.Look.Clone();
             Target.Look = Look.Clone();
 
@@ -44,6 +45,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Dispell()
         {
+            base.Dispell();
             Target.Look = OriginalLook.Clone();
 
             ActionsHandler.SendGameActionFightChangeLookMessage(Target.Fight.Clients, Caster, Target, Target.Look);

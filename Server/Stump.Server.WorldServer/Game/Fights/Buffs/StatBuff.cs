@@ -37,11 +37,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Apply()
         {
+            base.Apply();
             Target.Stats[Caracteristic].Context += Value;
         }
 
         public override void Dispell()
         {
+            base.Dispell();
+
             if (!Target.IsAlive())
                 return;
 

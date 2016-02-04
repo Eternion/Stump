@@ -2313,7 +2313,7 @@
         /// <summary>
         /// Tue la cible pour la remplacer par l'invocation : #1
         /// </summary>
-        Effect_2796 = 2796,
+        Effect_KillAndSummon_2796 = 2796,
         /// <summary>
         /// 
         /// </summary>

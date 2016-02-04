@@ -53,6 +53,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         bonesId = 453;
                         scale = 80;
                         break;
+                    case 1177: // Arbre - Feuillage
+                        bonesId = 3164;
+                        scale = 80;
+                        break;
                 }
 
                 if (driverLook != null)
