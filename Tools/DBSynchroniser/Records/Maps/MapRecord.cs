@@ -111,22 +111,8 @@ namespace DBSynchroniser.Records.Maps
             get;
             set;
         }
-        
-        [DefaultSetting(-1)]
-        public int TopNeighbourCellId
-        {
-            get;
-            set;
-        }
 
         public int BottomNeighbourId
-        {
-            get;
-            set;
-        }
-        
-        [DefaultSetting(-1)]
-        public int BottomNeighbourCellId
         {
             get;
             set;
@@ -138,21 +124,35 @@ namespace DBSynchroniser.Records.Maps
             set;
         }
 
-        [DefaultSetting(-1)]
-        public int LeftNeighbourCellId
-        {
-            get;
-            set;
-        }
-
         public int RightNeighbourId
         {
             get;
             set;
         }
-        
+
         [DefaultSetting(-1)]
-        public int RightNeighbourCellId
+        public short TopNeighbourCellId
+        {
+            get;
+            set;
+        }
+
+        [DefaultSetting(-1)]
+        public short BottomNeighbourCellId
+        {
+            get;
+            set;
+        }
+
+        [DefaultSetting(-1)]
+        public short RightNeighbourCellId
+        {
+            get;
+            set;
+        }
+
+        [DefaultSetting(-1)]
+        public short LeftNeighbourCellId
         {
             get;
             set;
@@ -330,6 +330,10 @@ namespace DBSynchroniser.Records.Maps
                 BottomNeighbourId = BottomNeighbourId,
                 LeftNeighbourId = LeftNeighbourId,
                 RightNeighbourId = RightNeighbourId,
+                TopNeighbourCellId = TopNeighbourCellId,
+                BottomNeighbourCellId = BottomNeighbourCellId,
+                LeftNeighbourCellId = LeftNeighbourCellId,
+                RightNeighbourCellId = RightNeighbourCellId,
                 ClientTopNeighbourId = ClientTopNeighbourId,
                 ClientBottomNeighbourId = ClientBottomNeighbourId,
                 ClientLeftNeighbourId = ClientLeftNeighbourId,

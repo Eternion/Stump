@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Stump.Core.IO;
 using Stump.ORM;
 using Stump.ORM.SubSonic.SQLGeneration.Schema;
