@@ -87,8 +87,8 @@ namespace Stump.Server.WorldServer.Commands.Commands
                 World.Instance.Pause();
                 try
                 {
-                    methodInteractives.Invoke(InteractiveManager.Instance, new object[0]);
                     methodTrigger.Invoke(CellTriggerManager.Instance, new object[0]);
+                    methodInteractives.Invoke(InteractiveManager.Instance, new object[0]);
                 }
                 finally
                 {

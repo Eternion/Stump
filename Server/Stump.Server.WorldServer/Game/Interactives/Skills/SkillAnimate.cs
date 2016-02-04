@@ -85,7 +85,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
         public List<MapObstacle> Obstacles => m_mapObstacles.ToList();
 
-        public override int GetDuration(Character character) => 20000;
+        public override int GetDuration(Character character, bool forNetwork = false) => forNetwork ? 0 : 20000;
 
         public override int StartExecute(Character character)
         {
@@ -103,8 +103,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
             interactive.SetInteractiveState(InteractiveStateEnum.STATE_ACTIVATED);
 
-            Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_OPENED);
-            InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
+            if (Obstacles.Any())
+            {
+                Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_OPENED);
+                InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
+            }
 
             foreach (var element in map.GetInteractiveObjects())
                 InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
@@ -122,8 +125,11 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
 
             interactive.SetInteractiveState(InteractiveStateEnum.STATE_NORMAL);
 
-            Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED);
-            InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
+            if (Obstacles.Any())
+            {
+                Obstacles.ForEach(x => x.state = (sbyte)MapObstacleStateEnum.OBSTACLE_CLOSED);
+                InteractiveHandler.SendMapObstacleUpdatedMessage(map.Clients, Obstacles);
+            }
 
             foreach (var element in map.GetInteractiveObjects())
                 InteractiveHandler.SendInteractiveElementUpdatedMessage(map.Clients, character, element);
