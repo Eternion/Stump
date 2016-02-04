@@ -7,7 +7,8 @@ using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
     [EffectHandler(EffectsEnum.Effect_Summon)]
@@ -30,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
                 return false;
             }
 
-            if (!Caster.CanSummon())
+            if (monster.Template.UseSummonSlot && !Caster.CanSummon())
                 return false;
 
             if (monster.Template.Id == 3287 || monster.Template.Id == 3288 || monster.Template.Id == 3289)

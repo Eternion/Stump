@@ -38,15 +38,18 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
                     affectedActor.AddBuff(buff);
                 }
                 else
-                    Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true, this);
+                    Caster.CastSpell(new Spell(Dice.DiceNum, (byte)Dice.DiceFace), affectedActor.Cell, true, true, true);
             }
 
             return true;
         }
 
-        static void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        private void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
-            buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+            if (Effect.EffectId == EffectsEnum.Effect_TriggerBuff || Effect.EffectId == EffectsEnum.Effect_TriggerBuff_793)
+                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+            else
+                buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             var handler = CellShown;
             if (handler != null)
-                CellShown(this, cell, team);
+                handler(this, cell, team);
         }
 
         public event Action<FightActor, int, int, int, FightActor, EffectSchoolEnum> LifePointsChanged;
@@ -248,11 +248,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected virtual void OnDead(FightActor killedBy, bool passTurn = true)
         {
+            TriggerBuffs(this, BuffTriggerType.OnDeath);
+
             if (passTurn)
                 PassTurn();
 
             KillAllSummons();
             RemoveAndDispellAllBuffs();
+
 
             var handler = Dead;
             if (handler != null)
@@ -747,7 +750,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int) (spell.Range + ( spell.RangeCanBeBoosted ? Stats[PlayerFields.Range].Total : 0 ));
         }
 
-        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, CastSpell castSpellEffect = null)
+        public virtual bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, bool silent = false, CastSpell castSpellEffect = null)
         {
             if (!force && (!IsFighterTurn() || IsDead()))
                 return false;
@@ -790,7 +793,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return false;
             }
 
-            OnSpellCasting(spell, handler.TargetedCell, critical, handler.SilentCast);
+            OnSpellCasting(spell, handler.TargetedCell, critical, silent || handler.SilentCast);
             if (!apFree)
                 UseAP((short)spellLevel.ApCost);
 
@@ -799,9 +802,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             handler.Execute();
 
             if (fighter == null)
-                OnSpellCasted(spell, handler.TargetedCell, critical, handler.SilentCast, !force);
+                OnSpellCasted(spell, handler.TargetedCell, critical, silent || handler.SilentCast, !force);
             else
-                OnSpellCasted(spell, fighter, critical, handler.SilentCast, !force);
+                OnSpellCasted(spell, fighter, critical, silent || handler.SilentCast, !force);
 
             return true;
         }
@@ -1506,7 +1509,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public void RemoveBuff(Buff buff)
         {
-            buff.Dispell();
+            if (buff.Applied)
+                buff.Dispell();
+
             m_buffList.Remove(buff);
 
             OnBuffRemoved(buff);

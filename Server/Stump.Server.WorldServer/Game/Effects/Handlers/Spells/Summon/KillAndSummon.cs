@@ -10,6 +10,7 @@ using Stump.Server.WorldServer.Handlers.Actions;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Summon
 {
     [EffectHandler(EffectsEnum.Effect_KillAndSummon)]
+    [EffectHandler(EffectsEnum.Effect_KillAndSummon_2796)]
     public class KillAndSummon : SpellEffectHandler
     {
         public KillAndSummon(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)

@@ -61,7 +61,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         Unknown_8, //R
         Unknown_9, //tF
         OnTackle, //tS
-        Unknown_11, //X
+        OnDeath, //X
 
         /* CUSTOM */
         BeforeDamaged,
