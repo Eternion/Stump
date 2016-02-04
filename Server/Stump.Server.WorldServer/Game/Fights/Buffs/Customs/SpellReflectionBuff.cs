@@ -19,15 +19,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         }
 
         public int ReflectedLevel => Dice.DiceFace;
-
-        public override void Apply()
-        {      
-        }
-
-        public override void Dispell()
-        {
-        }
-
+        
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
             var values = Effect.GetValues();

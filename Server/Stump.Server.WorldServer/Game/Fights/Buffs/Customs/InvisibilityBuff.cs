@@ -21,10 +21,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public override void Apply()
         {
             Target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.INVISIBLE);
+            base.Apply();
         }
 
         public override void Dispell()
         {
+            base.Dispell();
             Target.SetInvisibilityState(GameActionFightInvisibilityStateEnum.VISIBLE);
         }
 

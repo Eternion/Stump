@@ -23,6 +23,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Apply()
         {
+            base.Apply();
             Target.Stats[PlayerFields.AirResistPercent].Context += Value;
             Target.Stats[PlayerFields.FireResistPercent].Context += Value;
             Target.Stats[PlayerFields.EarthResistPercent].Context += Value;
@@ -32,6 +33,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
         public override void Dispell()
         {
+            base.Dispell();
             Target.Stats[PlayerFields.AirResistPercent].Context -= Value;
             Target.Stats[PlayerFields.FireResistPercent].Context -= Value;
             Target.Stats[PlayerFields.EarthResistPercent].Context -= Value;

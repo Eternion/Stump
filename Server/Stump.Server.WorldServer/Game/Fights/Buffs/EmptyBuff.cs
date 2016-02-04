@@ -23,14 +23,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         {
         }
 
-        public override void Apply()
-        {
-        }
-
-        public override void Dispell()
-        {
-        }
-
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {
             var values = Effect.GetValues();

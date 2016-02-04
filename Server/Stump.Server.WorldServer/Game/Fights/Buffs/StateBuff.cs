@@ -28,11 +28,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Apply()
         {
+            base.Apply();
             Target.AddState(State);
         }
 
         public override void Dispell()
         {
+            base.Dispell();
             Target.RemoveState(State);
         }
 

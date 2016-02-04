@@ -158,7 +158,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_weaponUses = 0;
         }
 
-        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, CastSpell castSpellEffect = null)
+        public override bool CastSpell(Spell spell, Cell cell, bool force = false, bool apFree = false, bool silent = false, CastSpell castSpellEffect = null)
         {
             if (!IsFighterTurn() && !force)
                 return false;
@@ -166,7 +166,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             // weapon attack
             if (spell.Id != 0 ||
                 Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON) == null)
-                return base.CastSpell(spell, cell, force, apFree, castSpellEffect);
+                return base.CastSpell(spell, cell, force, apFree, silent, castSpellEffect);
 
             var weapon = Character.Inventory.TryGetItem(CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON);
             var weaponTemplate =  weapon.Template as WeaponTemplate;
