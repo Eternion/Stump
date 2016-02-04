@@ -50,13 +50,17 @@ namespace DBSynchroniser.Maps.Placements
                 bool redsOk;
                 if (Relativ)
                 {
-                    bluesOk = Blues.All(entry => GetCell(map, entry.X + Center.X, entry.Y + Center.Y).Walkable);
-                    redsOk = Reds.All(entry => GetCell(map, entry.X + Center.X, entry.Y + Center.Y).Walkable);
+                    bluesOk = Blues.All(entry => GetCell(map, entry.X + Center.X, entry.Y + Center.Y).Walkable
+                                                    && !GetCell(map, entry.X + Center.X, entry.Y + Center.Y).NonWalkableDuringFight);
+                    redsOk = Reds.All(entry => GetCell(map, entry.X + Center.X, entry.Y + Center.Y).Walkable
+                                                    && !GetCell(map, entry.X + Center.X, entry.Y + Center.Y).NonWalkableDuringFight);
                 }
                 else
                 {
-                    bluesOk = Blues.All(entry => GetCell(map, entry.X, entry.Y).Walkable);
-                    redsOk = Reds.All(entry => GetCell(map, entry.X, entry.Y).Walkable);
+                    bluesOk = Blues.All(entry => GetCell(map, entry.X, entry.Y).Walkable
+                                                    && !GetCell(map, entry.X, entry.Y).NonWalkableDuringFight);
+                    redsOk = Reds.All(entry => GetCell(map, entry.X, entry.Y).Walkable
+                                                    && !GetCell(map, entry.X, entry.Y).NonWalkableDuringFight);
                 }
 
                 return bluesOk && redsOk;
@@ -81,13 +85,17 @@ namespace DBSynchroniser.Maps.Placements
                 bool redsOk;
                 if (Relativ)
                 {
-                    bluesOk = Blues.All(entry => GetCell(map, entry.X + center.X, entry.Y + center.Y).Walkable);
-                    redsOk = Reds.All(entry => GetCell(map, entry.X + center.X, entry.Y + center.Y).Walkable);
+                    bluesOk = Blues.All(entry => GetCell(map, entry.X + center.X, entry.Y + center.Y).Walkable
+                                                    && !GetCell(map, entry.X + center.X, entry.Y + center.Y).NonWalkableDuringFight);
+                    redsOk = Reds.All(entry => GetCell(map, entry.X + center.X, entry.Y + center.Y).Walkable
+                                                    && !GetCell(map, entry.X + center.X, entry.Y + center.Y).NonWalkableDuringFight);
                 }
                 else
                 {
-                    bluesOk = Blues.All(entry => GetCell(map, entry.X, entry.Y).Walkable);
-                    redsOk = Reds.All(entry => GetCell(map, entry.X, entry.Y).Walkable);
+                    bluesOk = Blues.All(entry => GetCell(map, entry.X, entry.Y).Walkable
+                                                    && !GetCell(map, entry.X, entry.Y).NonWalkableDuringFight);
+                    redsOk = Reds.All(entry => GetCell(map, entry.X, entry.Y).Walkable
+                                                    && !GetCell(map, entry.X, entry.Y).NonWalkableDuringFight);
                 }
 
                 return bluesOk && redsOk;

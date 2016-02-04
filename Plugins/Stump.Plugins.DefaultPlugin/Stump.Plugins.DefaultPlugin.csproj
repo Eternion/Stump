@@ -200,9 +200,7 @@
       <Name>Stump.Server.WorldServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Items\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="SWF\AntiBot.swf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

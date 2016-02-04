@@ -983,12 +983,14 @@ namespace DBSynchroniser
 
             foreach (var spell in spells)
             {
+                var count = worldDatabase.Database.Fetch<int>($"SELECT COUNT(Id) FROM spells_levels WHERE SpellId = {spell}").FirstOrDefault();
+
                 foreach (var grade in grades)
                 {
                     var record = new MonsterSpell
                     {
                         MonsterGradeId = grade.Id,
-                        Level = (short)grade.GradeId,
+                        Level = (short)(grade.GradeId > count ? count : (short)grade.GradeId),
                         SpellId = spell
                     };
 

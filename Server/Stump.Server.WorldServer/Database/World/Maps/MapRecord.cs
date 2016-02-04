@@ -109,6 +109,34 @@ namespace Stump.Server.WorldServer.Database.World.Maps
             set;
         }
 
+        [DefaultSetting(-1)]
+        public short TopNeighbourCellId
+        {
+            get;
+            set;
+        }
+
+        [DefaultSetting(-1)]
+        public short BottomNeighbourCellId
+        {
+            get;
+            set;
+        }
+
+        [DefaultSetting(-1)]
+        public short LeftNeighbourCellId
+        {
+            get;
+            set;
+        }
+
+        [DefaultSetting(-1)]
+        public short RightNeighbourCellId
+        {
+            get;
+            set;
+        }
+
         public int ClientTopNeighbourId
         {
             get;
