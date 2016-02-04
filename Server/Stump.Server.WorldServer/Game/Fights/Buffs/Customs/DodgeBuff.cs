@@ -41,10 +41,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 
             buff.SetTrigger(BuffTriggerType.OnDamaged);
             Target.AddBuff(buff);
+            base.Apply();
         }
 
         public override void Dispell()
         {
+            base.Dispell();
         }
 
         private void EvasionBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)

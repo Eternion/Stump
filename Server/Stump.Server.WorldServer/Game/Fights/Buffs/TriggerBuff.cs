@@ -55,7 +55,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             {"R", BuffTriggerType.Unknown_8},
             {"tF", BuffTriggerType.Unknown_9},
             {"tS", BuffTriggerType.OnTackle},
-            {"X", BuffTriggerType.Unknown_11},
+            {"X", BuffTriggerType.OnDeath},
         };
 
 
@@ -125,12 +125,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Apply()
         {
+            base.Apply();
             if (ShouldTrigger(BuffTriggerType.Instant))
                 Apply(Caster, BuffTriggerType.Instant);
         }
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger, object token)
         {
+            base.Apply();
             if (ApplyTrigger != null)
                 ApplyTrigger(this, fighterTrigger, trigger, token);
         }
@@ -138,6 +140,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public void Apply(FightActor fighterTrigger, BuffTriggerType trigger)
         {
+            base.Apply();
             if (ApplyTrigger != null)
                 ApplyTrigger(this, fighterTrigger, trigger, Token);
         }
@@ -145,6 +148,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Dispell()
         {
+            base.Dispell();
             if (RemoveTrigger != null)
                 RemoveTrigger(this);
         }

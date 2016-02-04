@@ -146,6 +146,7 @@
   <ItemGroup>
     <Compile Include="Code\InteractivesEnumGeneration.cs" />
     <Compile Include="Code\EffectsEnumGeneration.cs" />
+    <Compile Include="Code\MonsterIdEnumGeneration.cs" />
     <Compile Include="Code\ItemIdEnumGeneration.cs" />
     <Compile Include="Code\StateEnumGeneration.cs" />
     <Compile Include="Global\ZaapFinder.cs" />

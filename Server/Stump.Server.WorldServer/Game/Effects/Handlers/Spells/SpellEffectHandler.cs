@@ -16,7 +16,8 @@ using Stump.Server.WorldServer.Game.Maps.Cells.Shapes;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
 using Stump.Server.WorldServer.Game.Spells.Casts;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+
+using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
     public abstract class SpellEffectHandler : EffectHandler

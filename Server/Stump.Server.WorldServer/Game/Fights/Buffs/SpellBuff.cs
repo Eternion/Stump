@@ -33,11 +33,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
         public override void Apply()
         {
+            base.Apply();
             Target.BuffSpell(BoostedSpell, Boost);
         }
 
         public override void Dispell()
         {
+            base.Dispell();
             Target.UnBuffSpell(BoostedSpell, Boost);
         }
 

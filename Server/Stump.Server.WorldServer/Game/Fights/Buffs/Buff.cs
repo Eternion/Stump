@@ -52,12 +52,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             private set;
         }
 
-        public FightActor PlayerOnCreation
-        {
-            get;
-            set;
-        }
-
         public EffectBase Effect
         {
             get;
@@ -107,6 +101,12 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         {
             get;
             set;
+        }
+
+        public bool Applied
+        {
+            get;
+            private set;
         }
 
         public virtual BuffType Type
@@ -159,9 +159,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
 
             return --Duration == 0;
         }
-        
-        public abstract void Apply();
-        public abstract void Dispell();
+
+        public virtual void Apply() => Applied = true;
+        public virtual void Dispell() => Applied = false;
 
         public virtual short GetActionId()
         {
