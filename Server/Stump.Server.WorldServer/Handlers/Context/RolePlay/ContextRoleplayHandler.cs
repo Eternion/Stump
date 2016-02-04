@@ -12,7 +12,6 @@ using Stump.Server.WorldServer.Game.Actors.RolePlay.Characters;
 using Stump.Server.WorldServer.Game.Fights;
 using Stump.Server.WorldServer.Game.Maps;
 using Stump.Server.WorldServer.Game.Maps.Paddocks;
-using Stump.Server.WorldServer.Handlers.Basic;
 
 namespace Stump.Server.WorldServer.Handlers.Context.RolePlay
 {

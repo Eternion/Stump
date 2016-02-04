@@ -1734,13 +1734,13 @@ namespace Stump.Server.WorldServer.Game.Maps
             switch (mapneighbour)
             {
                 case MapNeighbour.Top:
-                    return (short)(currentCell + 532);
+                    return Record.TopNeighbourCellId == -1 ? (short)(currentCell + 532) : Record.TopNeighbourCellId;
                 case MapNeighbour.Bottom:
-                    return (short)(currentCell - 532);
+                    return Record.BottomNeighbourCellId == -1 ? (short)(currentCell - 532) : Record.BottomNeighbourCellId;
                 case MapNeighbour.Right:
-                    return (short)(currentCell - 13);
+                    return Record.RightNeighbourCellId == -1 ? (short)(currentCell - 13) : Record.RightNeighbourCellId;
                 case MapNeighbour.Left:
-                    return (short)(currentCell + 13);
+                    return Record.LeftNeighbourCellId == -1 ? (short)(currentCell + 13) : Record.LeftNeighbourCellId;
                 default:
                     return 0;
             }
@@ -1834,7 +1834,6 @@ namespace Stump.Server.WorldServer.Game.Maps
         public Map Map
         {
             get;
-            private set;
         }
 
         public bool IsCellWalkable(short cell)

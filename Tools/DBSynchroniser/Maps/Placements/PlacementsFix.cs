@@ -30,6 +30,8 @@ namespace DBSynchroniser.Maps.Placements
             Console.WriteLine("Override old placements ?(y/n)");
             bool @override = Console.ReadLine() == "y";
 
+            //Program.Database.Database.Execute("UPDATE `world_maps` SET BlueCellsBin = null, RedCellsBin = null");
+
             var dir = PatternsDir;
             var patterns = new List<PlacementPattern>();
             var patternsNames = new Dictionary<PlacementPattern, string>();
