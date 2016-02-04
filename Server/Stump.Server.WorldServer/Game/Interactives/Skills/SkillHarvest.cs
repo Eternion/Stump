@@ -42,7 +42,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             private set;
         }
 
-        public override int GetDuration(Character character) => HarvestTime;
+        public override int GetDuration(Character character, bool forNetwork = false) => HarvestTime;
 
         public override bool IsEnabled(Character character)
             => base.IsEnabled(character) && !Harvested && character.Jobs[SkillTemplate.ParentJobId].Level >= SkillTemplate.LevelMin;

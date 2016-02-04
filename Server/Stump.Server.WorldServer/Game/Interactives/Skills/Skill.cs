@@ -36,7 +36,7 @@ namespace Stump.Server.WorldServer.Game.Interactives.Skills
             set;
         }
 
-        public virtual int GetDuration(Character character) => 0;
+        public virtual int GetDuration(Character character, bool forNetwork = false) => 0;
 
         public virtual bool IsEnabled(Character character) => !character.IsGhost();
 
