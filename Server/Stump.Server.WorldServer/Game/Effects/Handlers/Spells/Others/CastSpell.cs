@@ -44,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             return true;
         }
 
-        private void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
             if (Effect.EffectId == EffectsEnum.Effect_TriggerBuff || Effect.EffectId == EffectsEnum.Effect_TriggerBuff_793)
                 buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);

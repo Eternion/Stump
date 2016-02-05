@@ -275,6 +275,12 @@ namespace DBSynchroniser.Records.Maps
             set;
         }
 
+        public bool SpawnDisabled
+        {
+            get;
+            set;
+        }
+
         #region ISaveIntercepter Members
 
         public void BeforeSave(bool insert)
@@ -345,6 +351,7 @@ namespace DBSynchroniser.Records.Maps
                 BlueFightCells = BlueFightCells,
                 RedFightCells = RedFightCells,
                 CompressedCells = CompressedCells,
+                SpawnDisabled = SpawnDisabled
             };
 
             return record;
