@@ -21,10 +21,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
         public override bool Apply()
         {
-            foreach (var actor in GetAffectedActors())
-            {
-                AddTriggerBuff(actor, false, BuffTriggerType.AfterDamaged, BuffTrigger);
-            }
+            AddTriggerBuff(Caster, false, BuffTriggerType.AfterDamaged, BuffTrigger);
 
             return true;
         }
@@ -43,15 +40,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
             var damages = (int)Math.Floor((damage.Amount * Dice.DiceNum) / 100.0);
 
-            var actors = new List<FightActor> { damage.Source };
-
-            if (Spell.Id == (int)SpellIdEnum.PUTSCH)
-            {
-                var cells = buff.Target.Position.Point.GetAdjacentCells(x => !Fight.IsCellFree(buff.Target.Map.Cells[x]));
-                actors.AddRange(cells.Select(cell => buff.Target.Fight.GetOneFighter(buff.Target.Map.Cells[cell.CellId])).Where(actor => actor != null));
-            }
-
-            foreach (var actor in actors)
+            foreach (var actor in GetAffectedActors())
             {
                 var reflectDamage = new Fights.Damage(damages)
                 {
