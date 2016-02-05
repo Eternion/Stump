@@ -46,10 +46,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 
         void DefaultBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
-            if (Effect.EffectId == EffectsEnum.Effect_TriggerBuff || Effect.EffectId == EffectsEnum.Effect_TriggerBuff_793)
-                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
-            else
+            if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
                 buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+            else
+                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }
     }
 }
