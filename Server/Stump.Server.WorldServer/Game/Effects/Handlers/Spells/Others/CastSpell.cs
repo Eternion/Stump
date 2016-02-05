@@ -3,8 +3,8 @@ using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Spells;using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
 {
     [EffectHandler(EffectsEnum.Effect_TriggerBuff)]
@@ -49,7 +49,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
                 buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
             else
-                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+                buff.Target.CastSpell(buff.Spell, buff.Spell.Id == (int)SpellIdEnum.FRIKT ? triggerrer.Cell : buff.Target.Cell, true, true);
         }
     }
 }

@@ -873,6 +873,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual int InflictDamage(Damage damage)
         {
+            var isCloseRangeAttack = damage.Source.Position.Point.ManhattanDistanceTo(Position.Point) <= 1;
+
             OnBeforeDamageInflicted(damage);
             damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.BeforeAttack, damage);
             TriggerBuffs(damage.Source, BuffTriggerType.BeforeDamaged, damage);
@@ -886,7 +888,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return 0;
             }
 
-            if (HasState((int)SpellStatesEnum.INVULNERABLE_56))
+            if (HasState((int)SpellStatesEnum.INVULNERABLE_56)
+                || (isCloseRangeAttack && HasState((int)SpellStatesEnum.INVULNERABILITE_EN_MELEE_376))
+                || (!isCloseRangeAttack && HasState((int)SpellStatesEnum.INVULNERABILITE_A_DISTANCE_375)))
             {
                 OnDamageReducted(damage.Source, damage.Amount);
                 damage.Source.TriggerBuffs(damage.Source, BuffTriggerType.AfterAttack, damage);
