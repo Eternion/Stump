@@ -48,8 +48,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
         {
             if (Effect.EffectId == EffectsEnum.Effect_CastSpell_1160)
                 buff.Caster.CastSpell(buff.Spell, buff.Target.Cell, true, true);
+            else if (buff.Spell.Id == (int)SpellIdEnum.FRIKT)
+                buff.Target.CastSpell(buff.Spell, triggerrer.Cell, true, true);
             else
-                buff.Target.CastSpell(buff.Spell, buff.Spell.Id == (int)SpellIdEnum.FRIKT ? triggerrer.Cell : buff.Target.Cell, true, true);
+                buff.Target.CastSpell(buff.Spell, buff.Target.Cell, true, true);
         }
     }
 }

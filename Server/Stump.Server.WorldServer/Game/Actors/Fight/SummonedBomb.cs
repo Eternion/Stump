@@ -244,6 +244,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return dist > WallMinSize && dist <= (WallMaxSize + 1) && // check the distance
                 MonsterBombTemplate == bomb.MonsterBombTemplate && // bombs are from the same type
+                !IsCarried() && !bomb.IsCarried() && // bombs are not carried
                 Position.Point.IsOnSameLine(bomb.Position.Point) && // bombs are in alignment
                 Summoner.Bombs.All(x => x == this || x == bomb || MonsterBombTemplate != bomb.MonsterBombTemplate || // there are no others bombs from the same type between them
                     !x.Position.Point.IsBetween(Position.Point, bomb.Position.Point));
@@ -278,7 +279,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
         }
 
-        private void Explode(int currentBonus)
+        void Explode(int currentBonus)
         {
             m_isExploding = true;
 
