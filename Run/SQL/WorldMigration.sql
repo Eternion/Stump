@@ -10,10 +10,10 @@ DELETE FROM interactives_spawns_skills WHERE InteractiveSpawnId NOT IN (SELECT I
 DELETE FROM interactives_skills WHERE Id NOT IN (SELECT SkillId FROM interactives_spawns_skills) AND Type = 'Teleport';
 
 -- UPDATE world_maps
-UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.TopNeighbourId = maps2.TopNeighbourId;
-UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BottomNeighbourId = maps2.BottomNeighbourId;
-UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.LeftNeighbourId = maps2.LeftNeighbourId;
-UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RightNeighbourId = maps2.RightNeighbourId;
+UPDATE stump_data.world_maps_old maps1 JOIN stump_data.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.TopNeighbourId = maps2.TopNeighbourId;
+UPDATE stump_data.world_maps_old maps1 JOIN stump_data.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BottomNeighbourId = maps2.BottomNeighbourId;
+UPDATE stump_data.world_maps_old maps1 JOIN stump_data.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.LeftNeighbourId = maps2.LeftNeighbourId;
+UPDATE stump_data.world_maps_old maps1 JOIN stump_data.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RightNeighbourId = maps2.RightNeighbourId;
 
 UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.TopNeighbourCellId = maps2.TopNeighbourCellId;
 UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BottomNeighbourCellId = maps2.BottomNeighbourCellId;
@@ -23,10 +23,10 @@ UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (ma
 UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.BlueCellsBin = maps2.BlueCellsBin;
 UPDATE stump_world.world_maps maps1 JOIN stump_world_old.world_maps maps2 ON (maps1.Id = maps2.Id) SET maps1.RedCellsBin = maps2.RedCellsBin;
 
-UPDATE stump_world.world_maps maps1 JOIN stump_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.TopNeighbourCellId = mapScroll.TopMapId WHERE mapScroll.TopMapId != 0;
-UPDATE stump_world.world_maps maps1 JOIN stump_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.BottomNeighbourCellId = mapScroll.BottomMapId WHERE mapScroll.BottomMapId != 0;
-UPDATE stump_world.world_maps maps1 JOIN stump_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.LeftNeighbourCellId = mapScroll.LeftMapId WHERE mapScroll.LeftMapId != 0;
-UPDATE stump_world.world_maps maps1 JOIN stump_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.RightNeighbourId = mapScroll.RightMapId WHERE mapScroll.RightMapId != 0;
+UPDATE stump_data.maps maps1 JOIN stump_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.TopNeighbourCellId = mapScroll.TopMapId WHERE mapScroll.TopMapId != 0;
+UPDATE stump_data.maps maps1 JOIN stump_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.BottomNeighbourCellId = mapScroll.BottomMapId WHERE mapScroll.BottomMapId != 0;
+UPDATE stump_data.maps maps1 JOIN stump_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.LeftNeighbourCellId = mapScroll.LeftMapId WHERE mapScroll.LeftMapId != 0;
+UPDATE stump_data.maps maps1 JOIN stump_data.MapScrollActions mapScroll ON (maps1.Id = mapScroll.Id) SET maps1.RightNeighbourId = mapScroll.RightMapId WHERE mapScroll.RightMapId != 0;
 
 -- UPDATE mounts_templates
 UPDATE stump_world.mounts_templates mounts1 JOIN stump_world_old.mounts_templates mounts2 ON (mounts1.Id = mounts2.Id) SET mounts1.ScrollId = mounts2.ScrollId;
