@@ -167,8 +167,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            return Targets.Any(x => x is TargetTypeCriterion && ((TargetTypeCriterion)x).TargetType == SpellTargetType.SELF_ONLY) && IsValidTarget(Caster) ? 
-                new[] { Caster } : Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
+            return Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
 
         public IEnumerable<FightActor> GetAffectedActors(Predicate<FightActor> predicate)
@@ -176,13 +175,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
 
-            if (Effect.Targets.Any(x => x is TargetTypeCriterion && ((TargetTypeCriterion) x).TargetType == SpellTargetType.SELF_ONLY) && predicate(Caster))
-                return new[] {Caster};
-
-            return Effect.Targets.Any(x => x is TargetTypeCriterion && ((TargetTypeCriterion) x).TargetType == SpellTargetType.SELF_ONLY) ? 
-                new FightActor[0] : GetAffectedActors().Where(entry => predicate(entry) && !entry.IsCarried()).ToArray();
+            return GetAffectedActors().Where(entry => predicate(entry)).ToArray();
         }
-
         
         public EffectInteger GenerateEffect()
         {

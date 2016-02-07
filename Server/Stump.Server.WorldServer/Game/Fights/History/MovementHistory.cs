@@ -16,7 +16,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         [Variable]
         public static readonly int HistoryEntriesLimit = 60;
 
-        private readonly LimitedStack<MovementHistoryEntry> m_underlyingStack = new LimitedStack<MovementHistoryEntry>(HistoryEntriesLimit);
+        readonly LimitedStack<MovementHistoryEntry> m_underlyingStack = new LimitedStack<MovementHistoryEntry>(HistoryEntriesLimit);
 
         public MovementHistory(FightActor owner)
         {
@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             Owner.StopMoving += OnStopMoving;
         }
 
-        private void OnStopMoving(ContextActor arg1, Path path, bool canceled)
+        void OnStopMoving(ContextActor actor, Path path, bool canceled)
         {
             if (canceled)
                 return;
@@ -34,7 +34,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
                 RegisterEntry(cell);
         }
 
-        private void OnPositionChanged(ContextActor arg1, ObjectPosition position)
+        void OnPositionChanged(ContextActor actor, ObjectPosition position)
         {
             // compare if the last cell is the same in case the actor moved by itself
             if (m_underlyingStack.Count > 0 && m_underlyingStack.Peek().Cell != position.Cell)
@@ -44,32 +44,22 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         public FightActor Owner
         {
             get;
-            private set;
         }
 
-        private int CurrentRound
-        {
-            get { return Owner.Fight.TimeLine.RoundNumber; }
-        }
+        int CurrentRound => Owner.Fight.TimeLine.RoundNumber;
 
         public void RegisterEntry(Cell cell)
         {
             m_underlyingStack.Push(new MovementHistoryEntry(cell, CurrentRound));
         }
 
-        public MovementHistoryEntry GetPreviousPosition()
-        {
-            return m_underlyingStack.Count > 0 ? m_underlyingStack.Peek() : null;
-        }
+        public MovementHistoryEntry GetPreviousPosition() => m_underlyingStack.Count > 0 ? m_underlyingStack.Peek() : null;
 
-        public MovementHistoryEntry PopPreviousPosition()
-        {
-            return m_underlyingStack.Count > 0 ? m_underlyingStack.Pop() : null;
-        }
+        public MovementHistoryEntry PopPreviousPosition() => m_underlyingStack.Count > 0 ? m_underlyingStack.Pop() : null;
 
         public MovementHistoryEntry PopWhile(Predicate<MovementHistoryEntry> predicate)
         {
-            MovementHistoryEntry entry = GetPreviousPosition();
+            var entry = GetPreviousPosition();
 
             while(entry != null && predicate(entry))
                 entry = PopPreviousPosition();
@@ -96,7 +86,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public MovementHistoryEntry PopWhile(Predicate<MovementHistoryEntry> predicate, int lifetime)
         {
-            MovementHistoryEntry entry = PopPreviousPosition(lifetime);
+            var entry = PopPreviousPosition(lifetime);
             
             while (entry != null && predicate(entry) && CurrentRound - entry.Round <= lifetime)
                 entry = PopPreviousPosition();
@@ -104,19 +94,10 @@ namespace Stump.Server.WorldServer.Game.Fights.History
             return entry;
         }
 
-        public IEnumerable<MovementHistoryEntry> GetEntries()
-        {
-            return m_underlyingStack;
-        }
+        public IEnumerable<MovementHistoryEntry> GetEntries() => m_underlyingStack;
 
-        public IEnumerable<MovementHistoryEntry> GetEntries(Predicate<MovementHistoryEntry> predicate)
-        {
-            return m_underlyingStack.Where(entry => predicate(entry));
-        }
+        public IEnumerable<MovementHistoryEntry> GetEntries(Predicate<MovementHistoryEntry> predicate) => m_underlyingStack.Where(entry => predicate(entry));
 
-        public IEnumerable<MovementHistoryEntry> GetEntries(int lifetime)
-        {
-            return GetEntries(x => CurrentRound - x.Round <= lifetime);
-        }
+        public IEnumerable<MovementHistoryEntry> GetEntries(int lifetime) => GetEntries(x => CurrentRound - x.Round <= lifetime);
     }
 }

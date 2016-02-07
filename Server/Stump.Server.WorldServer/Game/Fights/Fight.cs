@@ -1451,9 +1451,30 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         protected virtual void OnTurnStarted()
         {
+            StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
+
+            FighterPlaying.DecrementAllCastedBuffsDuration();
+            DecrementGlyphDuration(FighterPlaying);
+            FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
+            TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);
+
+            EndSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
+
+            // can die with triggers
+            if (CheckFightEnd())
+                return;
+
             if (TimeLine.NewRound)
             {
                 ContextHandler.SendGameFightNewRoundMessage(Clients, TimeLine.RoundNumber);
+            }
+
+            if (FighterPlaying.MustSkipTurn())
+            {
+                FighterPlaying.ResetUsedPoints();
+                PassTurn();
+                
+                return;
             }
 
             var slaveFighter = FighterPlaying as SlaveFighter;
@@ -1461,23 +1482,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 ContextHandler.SendGameFightTurnStartSlaveMessage(Clients, slaveFighter.Id, FighterPlaying.TurnTime/100, slaveFighter.Summoner.Id);
             else
                 ContextHandler.SendGameFightTurnStartMessage(Clients, FighterPlaying.Id, FighterPlaying.TurnTime/100);
-
-            if (FighterPlaying.MustSkipTurn())
-            {
-                FighterPlaying.ResetUsedPoints();
-                PassTurn();
-
-                return;
-            }
-
-            FighterPlaying.DecrementAllCastedBuffsDuration();
-            DecrementGlyphDuration(FighterPlaying);
-            FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
-            TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);
-
-            // can die with triggers
-            if (CheckFightEnd())
-                return;
 
             ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
             ForEach(entry => entry.RefreshStats());
