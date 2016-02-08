@@ -22,9 +22,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
             foreach (var actor in GetAffectedActors())
             {
-                if (Dice.Value == 0)
-                    continue;
-
                 var look = actor.Look.Clone();
                 var driverLook = look.SubLooks.FirstOrDefault(x => x.BindingCategory == SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER);
 
@@ -34,6 +31,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                 switch (Dice.Value)
                 {
+                    case 0:
+                        break;
                     case 667: //Pandawa - Picole
                         bonesId = 44;
                         break;
@@ -45,7 +44,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                         bonesId = 1576;
                         break;
                     case 102: //Zobal - Psychopathe
-                        skinId = 1449;
+                        skinId = 1443;
                         bonesId = 1575;
                         break;
                     case 1035: //Steamer - Scaphrandre
@@ -87,6 +86,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 
                 if (Dice.Value >= 0)
                 {
+                    //Dispell old skin buffs
+                    foreach (var skinBuff in actor.GetBuffs(x => x is SkinBuff))
+                        skinBuff.Dispell();
+
                     var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
                     actor.AddBuff(buff);
                 }
