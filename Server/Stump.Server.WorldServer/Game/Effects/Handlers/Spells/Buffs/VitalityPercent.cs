@@ -27,7 +27,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 
                 if (Effect.Duration != 0 || Effect.Delay != 0)
                 {
-                    AddStatBuff(actor, (short)bonus, PlayerFields.Health, true);
+                    AddStatBuff(actor, (short)bonus, PlayerFields.Health, true, (short)ActionsEnum.ACTION_CHARACTER_BOOST_VITALITY);
                 }
                 else
                     actor.Stats[PlayerFields.Health].Context += bonus;

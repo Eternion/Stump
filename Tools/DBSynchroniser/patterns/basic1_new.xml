@@ -3,20 +3,8 @@
   <Relativ>true</Relativ>
   <Blues>
     <Point>
-      <X>-4</X>
-      <Y>2</Y>
-    </Point>
-    <Point>
-      <X>-4</X>
-      <Y>1</Y>
-    </Point>
-    <Point>
       <X>-3</X>
       <Y>2</Y>
-    </Point>
-    <Point>
-      <X>-4</X>
-      <Y>0</Y>
     </Point>
     <Point>
       <X>-3</X>
@@ -27,20 +15,8 @@
       <Y>2</Y>
     </Point>
     <Point>
-      <X>-4</X>
-      <Y>-1</Y>
-    </Point>
-    <Point>
-      <X>-3</X>
-      <Y>0</Y>
-    </Point>
-    <Point>
       <X>-2</X>
       <Y>1</Y>
-    </Point>
-    <Point>
-      <X>-4</X>
-      <Y>-2</Y>
     </Point>
     <Point>
       <X>-3</X>
@@ -61,67 +37,59 @@
     <Point>
       <X>-2</X>
       <Y>-2</Y>
+    </Point>
+    <Point>
+      <X>1</X>
+      <Y>0</Y>
+    </Point>
+    <Point>
+      <X>3</X>
+      <Y>0</Y>
     </Point>
   </Blues>
   <Reds>
     <Point>
-      <X>3</X>
-      <Y>2</Y>
-    </Point>
-    <Point>
-      <X>3</X>
-      <Y>1</Y>
-    </Point>
-    <Point>
-      <X>4</X>
-      <Y>2</Y>
-    </Point>
-    <Point>
-      <X>3</X>
+      <X>-3</X>
       <Y>0</Y>
     </Point>
     <Point>
-      <X>4</X>
-      <Y>1</Y>
+      <X>-1</X>
+      <Y>0</Y>
     </Point>
     <Point>
-      <X>5</X>
+      <X>2</X>
       <Y>2</Y>
     </Point>
     <Point>
+      <X>2</X>
+      <Y>1</Y>
+    </Point>
+    <Point>
       <X>3</X>
+      <Y>2</Y>
+    </Point>
+    <Point>
+      <X>2</X>
+      <Y>0</Y>
+    </Point>
+    <Point>
+      <X>3</X>
+      <Y>1</Y>
+    </Point>
+    <Point>
+      <X>2</X>
       <Y>-1</Y>
     </Point>
     <Point>
-      <X>4</X>
-      <Y>0</Y>
-    </Point>
-    <Point>
-      <X>5</X>
-      <Y>1</Y>
-    </Point>
-    <Point>
-      <X>3</X>
+      <X>2</X>
       <Y>-2</Y>
     </Point>
     <Point>
-      <X>4</X>
+      <X>3</X>
       <Y>-1</Y>
     </Point>
     <Point>
-      <X>5</X>
-      <Y>0</Y>
-    </Point>
-    <Point>
-      <X>4</X>
-      <Y>-2</Y>
-    </Point>
-    <Point>
-      <X>5</X>
-      <Y>-1</Y>
-    </Point>
-    <Point>
-      <X>5</X>
+      <X>3</X>
       <Y>-2</Y>
     </Point>
   </Reds>
