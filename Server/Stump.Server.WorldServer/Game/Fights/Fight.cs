@@ -1529,6 +1529,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (CheckFightEnd())
                 return;
 
+            OnTurnStopped();
             ReadyChecker = ReadyChecker.RequestCheck(this, PassTurnAndCheck, LagAndPassTurn);
         }
 
@@ -1549,8 +1550,6 @@ namespace Stump.Server.WorldServer.Game.Fights
                 FighterPlaying.TriggerBuffsRemovedOnTurnEnd();
                 TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnEnd);
             }
-
-            FighterPlaying.ResetUsedPoints();
 
             var time = (int)Math.Floor(GetTurnTimeLeft().TotalSeconds / 2);
             if (TimeLine.RoundNumber > 1)
@@ -1593,7 +1592,7 @@ namespace Stump.Server.WorldServer.Game.Fights
 
             ReadyChecker = null;
 
-            OnTurnStopped();
+            FighterPlaying.ResetUsedPoints();
             PassTurn();
         }
 

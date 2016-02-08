@@ -81,7 +81,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 
         static void DamageBuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
         {
-            var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Caster, buff.Spell, buff.Target.Cell)
+            if (buff.Target == triggerrer)
+                return;
+
+            var damages = new Fights.Damage(buff.Dice, GetEffectSchool(buff.Dice.EffectId), buff.Target, buff.Spell, buff.Target.Cell)
             {
                 Buff = buff
             };
