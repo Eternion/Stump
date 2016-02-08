@@ -23,7 +23,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
     public abstract class SpellEffectHandler : EffectHandler
     {
         private FightActor[] m_customAffectedActors;
-        private Cell[] m_affectedCells;
+        private List<Cell> m_affectedCells;
         private MapPoint m_castPoint;
         private Zone m_effectZone;
         private Cell m_customCastCell;
@@ -130,9 +130,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             set;
         }
 
-        public Cell[] AffectedCells
+        public List<Cell> AffectedCells
         {
-            get { return m_affectedCells ?? (m_affectedCells = EffectZone.GetCells(TargetedCell, Map)); }
+            get { return m_affectedCells ?? (m_affectedCells = EffectZone.GetCells(TargetedCell, Map).ToList()); }
             private set { m_affectedCells = value; }
         }
 
@@ -159,13 +159,16 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         public void RefreshZone()
         {
-            AffectedCells = EffectZone.GetCells(TargetedCell, Map);
+            AffectedCells = EffectZone.GetCells(TargetedCell, Map).ToList();
         }
 
         public IEnumerable<FightActor> GetAffectedActors()
         {
             if (m_customAffectedActors != null)
                 return m_customAffectedActors;
+
+            if (Targets.Any(x => x is TargetTypeCriterion && ((TargetTypeCriterion)x).TargetType == SpellTargetType.SELF_ONLY) && !AffectedCells.Contains(Caster.Cell))
+                AffectedCells.Add(Caster.Cell);
 
             return Fight.GetAllFighters(AffectedCells).Where(entry => !entry.IsDead() && !entry.IsCarried() && IsValidTarget(entry)).ToArray();
         }
