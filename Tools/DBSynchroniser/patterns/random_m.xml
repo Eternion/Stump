@@ -3,74 +3,74 @@
   <Relativ>true</Relativ>
   <Blues>
     <Point>
-      <X>-2</X>
-      <Y>4</Y>
+      <X>-3</X>
+      <Y>5</Y>
     </Point>
     <Point>
-      <X>-2</X>
-      <Y>3</Y>
+      <X>-3</X>
+      <Y>2</Y>
+    </Point>
+    <Point>
+      <X>-3</X>
+      <Y>-1</Y>
     </Point>
     <Point>
       <X>-1</X>
-      <Y>3</Y>
+      <Y>0</Y>
     </Point>
     <Point>
-      <X>0</X>
+      <X>2</X>
       <Y>3</Y>
     </Point>
     <Point>
       <X>1</X>
-      <Y>3</Y>
-    </Point>
-    <Point>
-      <X>2</X>
-      <Y>4</Y>
-    </Point>
-    <Point>
-      <X>0</X>
       <Y>1</Y>
     </Point>
     <Point>
-      <X>2</X>
-      <Y>3</Y>
+      <X>5</X>
+      <Y>0</Y>
+    </Point>
+    <Point>
+      <X>3</X>
+      <Y>-4</Y>
     </Point>
   </Blues>
   <Reds>
     <Point>
-      <X>-2</X>
+      <X>-5</X>
+      <Y>2</Y>
+    </Point>
+    <Point>
+      <X>-5</X>
       <Y>-2</Y>
     </Point>
     <Point>
       <X>0</X>
-      <Y>0</Y>
-    </Point>
-    <Point>
-      <X>-2</X>
-      <Y>-3</Y>
-    </Point>
-    <Point>
-      <X>-1</X>
-      <Y>-2</Y>
+      <Y>3</Y>
     </Point>
     <Point>
       <X>0</X>
-      <Y>-2</Y>
-    </Point>
-    <Point>
-      <X>1</X>
-      <Y>-2</Y>
-    </Point>
-    <Point>
-      <X>2</X>
-      <Y>-2</Y>
-    </Point>
-    <Point>
-      <X>2</X>
       <Y>-3</Y>
+    </Point>
+    <Point>
+      <X>2</X>
+      <Y>-1</Y>
+    </Point>
+    <Point>
+      <X>4</X>
+      <Y>1</Y>
+    </Point>
+    <Point>
+      <X>4</X>
+      <Y>-2</Y>
+    </Point>
+    <Point>
+      <X>5</X>
+      <Y>-4</Y>
     </Point>
   </Reds>
   <Center>
-    <X>12</X>
-    <Y>0</Y>
+    <X>14</X>
+    <Y>-1</Y>
   </Center>
 </PlacementPattern>

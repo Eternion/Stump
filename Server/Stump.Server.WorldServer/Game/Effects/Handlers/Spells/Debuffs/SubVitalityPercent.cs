@@ -25,7 +25,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                var bonus = (int)(actor.Stats.Health.TotalSafe * (integerEffect.Value / 100d));
+                var bonus = (int)(actor.Stats.Health.TotalMaxWithoutPermanentDamages * (integerEffect.Value / 100d));
 
                 AddStatBuff(actor, (short)-bonus, PlayerFields.Health, true, Effect.Id);
 
