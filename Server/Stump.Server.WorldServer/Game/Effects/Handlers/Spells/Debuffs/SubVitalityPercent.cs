@@ -2,7 +2,6 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Actions;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
@@ -25,9 +24,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                 if (integerEffect == null)
                     return false;
 
-                var bonus = (int)(actor.Stats.Health.TotalMaxWithoutPermanentDamages * (integerEffect.Value / 100d));
+                var bonus = (int)(actor.Stats.Health.TotalSafe * (integerEffect.Value / 100d));
 
-                AddStatBuff(actor, (short)-bonus, PlayerFields.Health, true, Effect.Id);
+                AddStatBuff(actor, (short)-bonus, PlayerFields.Health, true, (short)EffectsEnum.Effect_SubVitalityPercent);
 
                 if (Effect.EffectId == EffectsEnum.Effect_SubVitalityPercent)
                     ActionsHandler.SendGameActionFightLifePointsLostMessage(Fight.Clients, ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST, actor, actor, (short)bonus, 0);
