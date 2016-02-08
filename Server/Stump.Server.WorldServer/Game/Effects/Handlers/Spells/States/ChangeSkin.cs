@@ -22,9 +22,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
         {
             foreach (var actor in GetAffectedActors())
             {
-                foreach (var buff in actor.GetBuffs(x => x is SkinBuff))
-                    buff.Dispell();
-
                 if (Dice.Value == 0)
                     continue;
 
