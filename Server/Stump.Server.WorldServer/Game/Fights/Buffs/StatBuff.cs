@@ -26,7 +26,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public short Value
         {
             get;
-            private set;
+            set;
         }
 
         public PlayerFields Caracteristic

@@ -1972,8 +1972,21 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (shieldDamages == 0)
                 ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, action, from ?? actor, actor, loss, (short)permanentDamages);
             else
+            {
                 ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, action, from ?? actor, actor, loss,
                     (short)permanentDamages, (short)shieldDamages);
+
+                var shieldBuff = (StatBuff)actor.GetBuffs(x => x is StatBuff && ((StatBuff)x).Caracteristic == PlayerFields.Shield).FirstOrDefault();
+                if (shieldBuff != null)
+                {
+                    shieldBuff.Value -= (short)shieldDamages;
+
+                    if (shieldBuff.Value <= 0)
+                        shieldBuff.Dispell();
+                    else
+                        ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, shieldBuff, true);
+                }
+            }
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)
