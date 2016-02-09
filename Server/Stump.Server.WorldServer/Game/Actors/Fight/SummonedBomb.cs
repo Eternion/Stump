@@ -255,6 +255,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnSpellCasted(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
 
+            if (handler.DamageBonus <= 0)
+                return;
+
             foreach (var client in Fight.Clients)
                 client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, handler.DamageBonus);
         }
