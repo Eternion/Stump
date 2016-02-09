@@ -581,9 +581,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool RegainAP(short amount)
         {
-            /*if (amount > Stats.AP.Used)
-                amount = Stats.AP.Used;*/
-
             Stats.AP.Used -= amount;
 
             OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_ACTION_POINTS_WIN, this, this, amount);
@@ -593,9 +590,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public virtual bool RegainMP(short amount)
         {
-            /*if (amount > Stats.MP.Used)
-                amount = Stats.MP.Used;*/
-
             Stats.MP.Used -= amount;
 
             OnFightPointsVariation(ActionsEnum.ACTION_CHARACTER_MOVEMENT_POINTS_WIN, this, this, amount);
@@ -2116,9 +2110,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public FightOutcomeEnum GetFighterOutcome()
         {
-            /*if (HasLeft())
-                return FightOutcomeEnum.RESULT_LOST;*/
-
             var teamDead = Team.AreAllDead();
             var opposedTeamDead = OpposedTeam.AreAllDead();
 
@@ -2249,7 +2240,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return new GameFightMinimalStatsPreparation(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
-                Stats.Health.Base,
+                Stats.Health.TotalMaxWithoutPermanentDamages,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
                 Stats.Shield.TotalSafe,
                 (short)Stats.AP.Total,
@@ -2291,7 +2282,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new GameFightMinimalStats(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
-                Stats.Health.Base,
+                Stats.Health.TotalMaxWithoutPermanentDamages,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
                 Stats.Shield.TotalSafe,
                 (short)Stats.AP.Total,
