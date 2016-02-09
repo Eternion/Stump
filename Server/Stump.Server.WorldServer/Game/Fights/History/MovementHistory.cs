@@ -37,7 +37,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         void OnPositionChanged(ContextActor actor, ObjectPosition position)
         {
             // compare if the last cell is the same in case the actor moved by itself
-            if (m_underlyingStack.Count > 0 && m_underlyingStack.Peek().Cell != position.Cell)
+            if (!actor.IsMoving())
                 RegisterEntry(position.Cell);
         }
 
@@ -71,7 +71,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         {
             var previous = GetPreviousPosition();
 
-            return CurrentRound - previous?.Round <= lifetime ? previous : null;
+            return CurrentRound - previous?.Round < lifetime ? previous : null;
         }
 
         public MovementHistoryEntry PopPreviousPosition(int lifetime)
@@ -88,7 +88,7 @@ namespace Stump.Server.WorldServer.Game.Fights.History
         {
             var entry = PopPreviousPosition(lifetime);
             
-            while (entry != null && predicate(entry) && CurrentRound - entry.Round <= lifetime)
+            while (entry != null && predicate(entry) && CurrentRound - entry.Round < lifetime)
                 entry = PopPreviousPosition();
 
             return entry;
@@ -98,6 +98,6 @@ namespace Stump.Server.WorldServer.Game.Fights.History
 
         public IEnumerable<MovementHistoryEntry> GetEntries(Predicate<MovementHistoryEntry> predicate) => m_underlyingStack.Where(entry => predicate(entry));
 
-        public IEnumerable<MovementHistoryEntry> GetEntries(int lifetime) => GetEntries(x => CurrentRound - x.Round <= lifetime);
+        public IEnumerable<MovementHistoryEntry> GetEntries(int lifetime) => GetEntries(x => CurrentRound - x.Round < lifetime);
     }
 }
