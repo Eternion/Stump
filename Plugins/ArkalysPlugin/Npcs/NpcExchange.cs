@@ -103,9 +103,9 @@ namespace ArkalysPlugin.Npcs
             set;
         }
 
-        private void AdjustLoots()
+        void AdjustLoots()
         {
-            foreach (var item in FirstTrader.Items.ToArray().Where(item => item.Template.Id != OrbsManager.OrbItemTemplate.Id))
+            foreach (var item in FirstTrader.Items.Where(item => item.Template.Id != OrbsManager.OrbItemTemplate.Id).ToArray())
             {
                 FirstTrader.MoveItemToInventory(item.Guid, item.Stack);
             }
