@@ -11,9 +11,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 {
     public class MarkShape
     {
-        private readonly Zone m_zone;
-        private bool m_customForm;
-        private Cell[] m_cells;
+        readonly Zone m_zone;
+        bool m_customForm;
+        Cell[] m_cells;
 
         public MarkShape(IFight fight, Cell cell, SpellShapeEnum spellShape, GameActionMarkCellsTypeEnum shape, byte size, Color color)
         {
@@ -35,37 +35,29 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public IFight Fight
         {
             get;
-            private set;
         }
 
         public Cell Cell
         {
             get;
-            private set;
         }
 
         public GameActionMarkCellsTypeEnum Shape
         {
             get;
-            private set;
         }
 
         public byte Size
         {
             get;
-            private set;
         }
 
         public Color Color
         {
             get;
-            private set;
         }
 
-        public Cell[] GetCells()
-        {
-            return m_cells;
-        }
+        public Cell[] GetCells() => m_cells;
 
         public GameActionMarkedCell[] GetGameActionMarkedCells()
         {
@@ -75,7 +67,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             return m_cells.Select(x => new GameActionMarkedCell(x.Id, 0, Color.ToArgb() & 0xFFFFFF, (sbyte)Shape)).ToArray();
         }
 
-        private void CheckCells(Cell[] cells)
+        void CheckCells(Cell[] cells)
         {
             var validCells = new List<Cell>();
             foreach (var cell in cells)

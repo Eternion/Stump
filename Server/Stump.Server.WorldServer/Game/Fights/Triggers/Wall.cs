@@ -20,23 +20,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public WallsBinding WallBinding
         {
             get;
-            private set;
         }
 
-        public override GameActionMarkTypeEnum Type
-        {
-            get { return GameActionMarkTypeEnum.WALL; }
-        }
+        public override GameActionMarkTypeEnum Type => GameActionMarkTypeEnum.WALL;
 
-        public override TriggerType TriggerType
-        {
-            get { return TriggerType.MOVE | TriggerType.OnTurnBegin | TriggerType.OnTurnEnd; }
-        }
+        public override TriggerType TriggerType => TriggerType.MOVE | TriggerType.OnTurnBegin | TriggerType.OnTurnEnd;
 
-        public SummonedBomb[] Bombs
-        {
-            get { return new[] { WallBinding.Bomb1, WallBinding.Bomb2 }; }
-        }
+        public SummonedBomb[] Bombs => new[] { WallBinding.Bomb1, WallBinding.Bomb2 };
 
         public override void Trigger(FightActor trigger)
         {
@@ -59,25 +49,14 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         }
 
         public override GameActionMark GetGameActionMark()
-        {
-            return new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, (short)CastedSpell.Id,
+            => new GameActionMark(Caster.Id, (sbyte)Caster.Team.Id, CastedSpell.Template.Id, (sbyte)CastedSpell.CurrentLevel, Id,
                 (sbyte)Type, CenterCell.Id, Shape.GetGameActionMarkedCells(), true);
-        }
 
-        public override GameActionMark GetHiddenGameActionMark()
-        {
-            return GetGameActionMark();
-        }
+        public override GameActionMark GetHiddenGameActionMark() => GetGameActionMark();
 
-        public override bool DoesSeeTrigger(FightActor fighter)
-        {
-            return true;
-        }
+        public override bool DoesSeeTrigger(FightActor fighter) => true;
 
-        public override bool DecrementDuration()
-        {
-            return false;
-        }
+        public override bool DecrementDuration() => false;
 
         public override bool CanTrigger(FightActor actor)
         {
@@ -96,11 +75,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
                 if (bomb.MonsterBombTemplate == triggerBomb.MonsterBombTemplate)
                     return false;
             }
-            else if (actor.HasState((int)SpellStatesEnum.KABOOM_92))
-            {
-                if (bomb.IsFriendlyWith(actor))
-                    return false;
-            }
+            else if (actor.HasState((int)SpellStatesEnum.KABOOM_92) && bomb.IsFriendlyWith(actor))
+                return false;
+
 
             return true;
         }

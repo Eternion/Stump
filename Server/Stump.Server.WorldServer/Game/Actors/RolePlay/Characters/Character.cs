@@ -206,7 +206,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         }
 
         public event Action<Character> Saved;
-        private bool m_isLocalSaving;
 
         public void OnSaved()
         {
@@ -219,7 +218,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event Action<Character, int> LifeRegened;
 
-        private void OnLifeRegened(int regenedLife)
+        void OnLifeRegened(int regenedLife)
         {
             var handler = LifeRegened;
             if (handler != null) handler(this, regenedLife);
@@ -227,15 +226,15 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event Action<Character> AccountUnblocked;
 
-        private void OnAccountUnblocked()
+        void OnAccountUnblocked()
         {
-            Action<Character> handler = AccountUnblocked;
+            var handler = AccountUnblocked;
             if (handler != null) handler(this);
         }
 
         public event Action<Character> LookRefreshed;
 
-        private void OnLookRefreshed()
+        void OnLookRefreshed()
         {
             var handler = LookRefreshed;
             if (handler != null) handler(this);
@@ -243,7 +242,7 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public event Action<Character> StatsResfreshed;
 
-        private void OnStatsResfreshed()
+        void OnStatsResfreshed()
         {
             var handler = StatsResfreshed;
             if (handler != null) handler(this);
@@ -2230,9 +2229,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
 
         public override bool StartMove(Path movementPath)
         {
-            if (!IsFighting())
-                StartRegen();
-
             if (IsFighting() || MustBeJailed() || !IsInJail())
                 return IsFighting() ? (Fighter.IsSlaveTurn() ? Fighter.GetSlave().StartMove(movementPath) : Fighter.StartMove(movementPath)) : base.StartMove(movementPath);
 
