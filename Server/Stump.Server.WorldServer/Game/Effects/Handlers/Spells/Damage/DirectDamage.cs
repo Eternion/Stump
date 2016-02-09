@@ -90,7 +90,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
             };
 
             buff.Target.InflictDamage(damages);
-
         }
 
         static EffectSchoolEnum GetEffectSchool(EffectsEnum effect)

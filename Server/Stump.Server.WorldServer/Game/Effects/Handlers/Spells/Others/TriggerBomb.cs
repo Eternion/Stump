@@ -19,16 +19,17 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
             foreach (var bomb in GetAffectedActors(x => x is SummonedBomb && ((SummonedBomb)x).Summoner == (Caster is SlaveFighter ? ((SlaveFighter)Caster).Summoner : Caster)).Where(bomb => bomb.IsAlive()))
             {
                 if (Dice.Duration != 0 || Dice.Delay != 0)
-                {
-                    bomb.AddBuff(new EmptyBuff(bomb.PopNextBuffId(), bomb, Caster, Dice, Spell, false));
-                }
+                    AddTriggerBuff(bomb, false, BuffTrigger);
                 else
-                {
                     ((SummonedBomb)bomb).Explode();
-                }
             }
 
             return true;
+        }
+
+        static void BuffTrigger(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
+        {
+            ((SummonedBomb)buff.Target).Explode();
         }
     }
 }

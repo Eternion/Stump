@@ -43,7 +43,6 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public short Id
         {
             get;
-            private set;
         }
 
         public int Priority
@@ -55,13 +54,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public FightActor Caster
         {
             get;
-            private set;
         }
 
         public Spell CastedSpell
         {
             get;
-            private set;
         }
 
         public EffectDice OriginEffect
@@ -73,18 +70,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public Cell CenterCell
         {
             get;
-            private set;
         }
 
-        public IFight Fight
-        {
-            get { return Caster.Fight; }
-        }
+        public IFight Fight => Caster.Fight;
 
         public MarkShape Shape
         {
             get;
-            private set;
         }
 
         public abstract GameActionMarkTypeEnum Type
@@ -99,15 +91,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
 
         public virtual bool StopMovement => true;
 
-        public bool ContainsCell(Cell cell)
-        {
-            return Shape.GetCells().Contains(cell);
-        }
+        public bool ContainsCell(Cell cell) => Shape.GetCells().Contains(cell);
 
-        public IEnumerable<Cell> GetCells()
-        {
-            return Shape.GetCells();
-        }
+        public IEnumerable<Cell> GetCells() => Shape.GetCells();
 
         public virtual void Remove()
         {
