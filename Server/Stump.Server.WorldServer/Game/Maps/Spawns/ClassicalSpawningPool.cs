@@ -12,8 +12,6 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
 {
     public class ClassicalSpawningPool : SpawningPoolBase
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         public const int NumberOfGroupSizes = 3;
 
         protected Dictionary<GroupSize, Tuple<int, int>> GroupSizes = new Dictionary<GroupSize, Tuple<int, int>>()
@@ -23,9 +21,9 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             {GroupSize.Big, Tuple.Create(6, 8)},
         };
 
-        private readonly object m_locker = new object();
-        private readonly MonsterGroup[] m_groupsBySize = new MonsterGroup[NumberOfGroupSizes];
-        private readonly Queue<GroupSize> m_groupsToSpawn = new Queue<GroupSize>();
+        readonly object m_locker = new object();
+        readonly MonsterGroup[] m_groupsBySize = new MonsterGroup[NumberOfGroupSizes];
+        readonly Queue<GroupSize> m_groupsToSpawn = new Queue<GroupSize>();
 
         public readonly Queue<MonsterGroup>[] m_groupsToRespawn = {
             new Queue<MonsterGroup>(),
@@ -45,7 +43,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             RandomQueue();
         }
 
-        private void RandomQueue()
+        void RandomQueue()
         {
             var array = Enum.GetValues(typeof (GroupSize));
 
@@ -59,31 +57,19 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
         /// <summary>
         /// 1-2 Group
         /// </summary>
-        public MonsterGroup SmallGroup
-        {
-            get { return m_groupsBySize[(int) GroupSize.Small]; }
-        }
+        public MonsterGroup SmallGroup => m_groupsBySize[(int)GroupSize.Small];
 
         /// <summary>
         /// 3 - 5 group
         /// </summary>
-        public MonsterGroup MediumGroup
-        {
-            get { return m_groupsBySize[(int) GroupSize.Medium]; }
-        }
+        public MonsterGroup MediumGroup => m_groupsBySize[(int)GroupSize.Medium];
 
         /// <summary>
         /// 6 - 8 group
         /// </summary>
-        public MonsterGroup BigGroup
-        {
-            get { return m_groupsBySize[(int) GroupSize.Big]; }
-        }
+        public MonsterGroup BigGroup => m_groupsBySize[(int)GroupSize.Big];
 
-        protected override bool IsLimitReached()
-        {
-            return m_groupsToSpawn.Count == 0;
-        }
+        protected override bool IsLimitReached() => m_groupsToSpawn.Count == 0;
 
         protected override MonsterGroup DequeueNextGroupToSpawn()
         {
@@ -144,12 +130,12 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             base.OnGroupUnSpawned(monster);
         }
 
-        private void RespawnGroup(MonsterGroup group)
+        void RespawnGroup(MonsterGroup group)
         {
             m_groupsToRespawn[(int) group.GroupSize].Enqueue(group);
         }
 
-        private void OnExitFight(MonsterGroup monster, IFight fight)
+        void OnExitFight(MonsterGroup monster, IFight fight)
         {
             FightMonsterTeam team;
             if (fight.DefendersTeam is FightMonsterTeam)
