@@ -90,6 +90,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
                     foreach (var skinBuff in actor.GetBuffs(x => x is SkinBuff))
                         skinBuff.Dispell();
 
+                    if (Dice.Value == 0)
+                        return true;
+
                     var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
                     actor.AddBuff(buff);
                 }

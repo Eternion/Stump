@@ -1969,20 +1969,27 @@ namespace Stump.Server.WorldServer.Game.Fights
                     break;
             }
 
-            if (shieldDamages == 0)
+            var shieldBuffs = actor.GetBuffs(x => x is StatBuff && ((StatBuff)x).Caracteristic == PlayerFields.Shield).Select(x => x as StatBuff).ToArray();
+
+            if (!shieldBuffs.Any() && shieldDamages == 0)
                 ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, action, from ?? actor, actor, loss, (short)permanentDamages);
             else
             {
                 ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, action, from ?? actor, actor, loss,
                     (short)permanentDamages, (short)shieldDamages);
 
-                var shieldBuff = (StatBuff)actor.GetBuffs(x => x is StatBuff && ((StatBuff)x).Caracteristic == PlayerFields.Shield).FirstOrDefault();
-                if (shieldBuff != null)
+                foreach (var shieldBuff in shieldBuffs)
                 {
-                    shieldBuff.Value -= (short)shieldDamages;
+                    if (shieldDamages <= 0)
+                        continue;
+
+                    var diff = Math.Max(0, shieldBuff.Value - shieldDamages);
+
+                    shieldDamages -= (shieldBuff.Value - diff);
+                    shieldBuff.Value = (short)diff;
 
                     if (shieldBuff.Value <= 0)
-                        shieldBuff.Dispell();
+                        actor.RemoveBuff(shieldBuff);
                     else
                         ContextHandler.SendGameActionFightDispellableEffectMessage(Clients, shieldBuff, true);
                 }
