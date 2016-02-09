@@ -240,7 +240,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (handler == null)
                 return;
 
-            handler.DamageBonus = currentBonus + Stats[PlayerFields.ComboBonus].TotalSafe;
+            handler.DamageBonus = currentBonus;
             handler.Summoner = Summoner;
             handler.Initialize();
 
@@ -352,7 +352,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            if (!m_isExploding && Buffs.OfType<EmptyBuff>().Any(x => x.Effect.EffectId == EffectsEnum.Effect_TriggerBomb)) // poudre
+            if (!m_isExploding && Buffs.OfType<TriggerBuff>().Any(x => x.Effect.EffectId == EffectsEnum.Effect_TriggerBomb)) // poudre
             {
                 Explode();
                 return;
