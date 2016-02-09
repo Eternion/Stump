@@ -2,12 +2,6 @@
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Stump.Server.WorldServer.Database.Spells;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {

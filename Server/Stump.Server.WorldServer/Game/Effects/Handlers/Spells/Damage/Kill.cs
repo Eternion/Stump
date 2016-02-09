@@ -20,7 +20,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
         {
             foreach (var actor in GetAffectedActors())
             {
-                actor.Stats.Health.DamageTaken = actor.LifePoints;
+                actor.Stats.Health.DamageTaken = int.MaxValue;
                 actor.CheckDead(Caster);
             }
 
