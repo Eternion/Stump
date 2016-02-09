@@ -2827,12 +2827,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
             StartRegen((byte)(10f / Rates.RegenRate));
         }
 
-        public void StartRegenSit()
-        {
-            var rate = Rates.RegenRate * 2;
-            StartRegen((byte)(10f / rate));
-        }
-
         public void StartRegen(byte timePerHp)
         {
             if (IsRegenActive())
@@ -2972,9 +2966,6 @@ namespace Stump.Server.WorldServer.Game.Actors.RolePlay.Characters
         {
             if (LastEmoteUsed != null && (DateTime.Now - LastEmoteUsed.Second).TotalMilliseconds < 500)
                 return;
-
-            if (emote == EmotesEnum.EMOTE_S_ASSEOIR)
-                StartRegenSit();
 
             LastEmoteUsed = new Pair<EmotesEnum, DateTime>(emote, DateTime.Now);
             RefreshActor();
