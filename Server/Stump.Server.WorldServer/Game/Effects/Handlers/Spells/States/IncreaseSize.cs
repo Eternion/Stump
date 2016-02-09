@@ -2,9 +2,8 @@
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
+using Stump.Server.WorldServer.Game.Fights.Buffs;
 using Stump.Server.WorldServer.Game.Fights.Buffs.Customs;
-using Stump.Server.WorldServer.Game.Spells;
-using System.Linq;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
 {
@@ -21,10 +20,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.States
             foreach (var actor in GetAffectedActors())
             {
                 var look = actor.Look.Clone();
+                look.Rescale((Dice.DiceNum / 100.0) + 1);
 
-                look.SetScales(look.Scales.Select(x => (short)(x + Dice.DiceNum)).ToArray());
-
-                var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, true);
+                var buff = new SkinBuff(actor.PopNextBuffId(), actor, Caster, Dice, look, Spell, false);
                 actor.AddBuff(buff);
             }
 

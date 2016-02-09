@@ -27,12 +27,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
     public class SummonedBomb : FightActor, INamedActor, ICreature
     {
         [Variable]
-        public static int BonusDamageStart = 40;
-        [Variable]
-        public static int BonusDamageIncrease = 20;
-        [Variable]
-        public static int BonusDamageIncreaseLimit = 3;
-        [Variable]
         public static int BombLimit = 3;
         [Variable]
         public static int WallMinSize = 1;
@@ -41,26 +35,26 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         [Variable]
         public static int ExplosionZone = 2;
 
-        private static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>
+        static readonly Dictionary<int, SpellIdEnum> wallsSpells = new Dictionary<int, SpellIdEnum>
         {
             {2, SpellIdEnum.MUR_DE_FEU},
             {3, SpellIdEnum.MUR_D_AIR},
             {4, SpellIdEnum.MUR_D_EAU}
         };
 
-        private static readonly Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
+        static readonly Dictionary<int, Color> wallsColors = new Dictionary<int, Color>()
         {
             {2, Color.Red},
             {3, Color.Green},
             {4, Color.Blue}
         };
 
-        private readonly List<WallsBinding> m_wallsBinding = new List<WallsBinding>();
-        private readonly Color m_color;
+        readonly List<WallsBinding> m_wallsBinding = new List<WallsBinding>();
+        readonly Color m_color;
 
-        private readonly StatsFields m_stats;
-        private readonly bool m_initialized;
-        private bool m_isExploding;
+        readonly StatsFields m_stats;
+        bool m_initialized;
+        bool m_isExploding;
 
         public SummonedBomb(int id, FightTeam team, SpellBombTemplate spellBombTemplate, MonsterGrade monsterBombTemplate, FightActor summoner, Cell cell)
             : base(team)
@@ -82,11 +76,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Fight.TurnStarted += OnTurnStarted;
             Team.FighterAdded += OnFighterAdded;
-
-            m_initialized = true;
         }
 
-        private void OnFighterAdded(FightTeam team, FightActor actor)
+        void OnFighterAdded(FightTeam team, FightActor actor)
         {
             if (actor != this)
                 return;
@@ -94,16 +86,21 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             CheckAndBuildWalls();
         }
 
-        private void OnTurnStarted(IFight fight, FightActor player)
+        void OnTurnStarted(IFight fight, FightActor player)
         {
-            if (player == Summoner)
-                IncreaseDamageBonus();
-
             if (IsFighterTurn())
+            {
+                if (!m_initialized)
+                {
+                    CastSpell(new Spell((int)SpellIdEnum.ALLUMAGE, 1), Cell, true, true, true);
+                    m_initialized = true;
+                }
+
                 PassTurn();
+            }
         }
 
-        private void AdjustStats()
+        void AdjustStats()
         {
             m_stats.Health.Base = (short)(10 + (Summoner.Stats.Health.TotalMax / 3.9d));
         }
@@ -114,21 +111,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             protected set;
         }
 
-        public override ObjectPosition MapPosition
-        {
-            get { return Position; }
-        }
+        public override ObjectPosition MapPosition => Position;
 
         public MonsterGrade MonsterBombTemplate
         {
             get;
-            private set;
         }
 
-        public MonsterGrade MonsterGrade
-        {
-            get { return MonsterBombTemplate; }
-        }
+        public MonsterGrade MonsterGrade => MonsterBombTemplate;
 
         public FightActor Summoner
         {
@@ -139,72 +129,38 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         public SpellBombTemplate SpellBombTemplate
         {
             get;
-            private set;
         }
 
         public Spell ExplodSpell
         {
             get;
-            private set;
         }
 
         public Spell WallSpell
         {
             get;
-            private set;
         }
 
-        public int DamageBonusPercent
-        {
-            get;
-            private set;
-        }
+        public int DamageBonusPercent => Stats[PlayerFields.ComboBonus].TotalSafe;
 
-        public int DamageBonusTurns
-        {
-            get;
-            private set;
-        }
+        public override bool IsVisibleInTimeline => true;
 
-        public override bool IsVisibleInTimeline
-        {
-            get { return false; }
-        }
+        public override byte Level => (byte)MonsterBombTemplate.Level;
 
-        public override byte Level
-        {
-            get { return (byte)MonsterBombTemplate.Level; }
-        }
+        public override StatsFields Stats => m_stats;
 
-        public override StatsFields Stats
-        {
-            get { return m_stats; }
-        }
-
-        public ReadOnlyCollection<WallsBinding> Walls
-        {
-            get { return m_wallsBinding.AsReadOnly(); }
-        }
+        public ReadOnlyCollection<WallsBinding> Walls => m_wallsBinding.AsReadOnly();
 
         public override Spell GetSpell(int id)
         {
             throw new NotImplementedException();
         }
 
-        public override bool HasSpell(int id)
-        {
-            return false;
-        }
+        public override bool HasSpell(int id) => false;
 
-        public override string GetMapRunningFighterName()
-        {
-            return MonsterBombTemplate.Id.ToString(CultureInfo.InvariantCulture);
-        }
+        public override string GetMapRunningFighterName() => MonsterBombTemplate.Id.ToString(CultureInfo.InvariantCulture);
 
-        public string Name
-        {
-            get { return MonsterBombTemplate.Template.Name; }
-        }
+        public string Name => MonsterBombTemplate.Template.Name;
 
         public override Damage CalculateDamageBonuses(Damage damage)
         {
@@ -236,7 +192,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             return damage;
         }
-
 
         public bool IsBoundWith(SummonedBomb bomb)
         {
@@ -314,22 +269,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             }
         }
 
-        public bool IncreaseDamageBonus()
-        {
-            if (DamageBonusTurns >= BonusDamageIncreaseLimit)
-                return false;
-
-            DamageBonusPercent += BonusDamageStart + (BonusDamageIncrease * DamageBonusTurns);
-            DamageBonusTurns++;
-
-            Look.Rescale(1.2);
-
-            foreach (var client in Fight.Clients)
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, DamageBonusPercent);
-
-            return true;
-        }
-
         public void IncreaseDamageBonus(int bonus)
         {
             Stats[PlayerFields.ComboBonus].Context += bonus;
@@ -402,25 +341,16 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_wallsBinding.Add(binding);
         }
 
-        private void OnWallsRemoved(WallsBinding obj)
+        void OnWallsRemoved(WallsBinding obj)
         {
             m_wallsBinding.Remove(obj);
         }
 
-        public override bool CanTackle(FightActor fighter)
-        {
-            return false;
-        }
+        public override bool CanTackle(FightActor fighter) => false;
 
-        public override int GetTackledAP()
-        {
-            return 0;
-        }
+        public override int GetTackledAP() => 0;
 
-        public override int GetTackledMP()
-        {
-            return 0;
-        }
+        public override int GetTackledMP() => 0;
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
@@ -445,19 +375,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
 
         public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
-        {
-            return new GameFightMonsterInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
-                (sbyte)Team.Id, 0, IsAlive(), GetGameFightMinimalStats(), new short[0], (short)MonsterBombTemplate.MonsterId, (sbyte)MonsterBombTemplate.GradeId);
-        }
+            => new GameFightMonsterInformations(Id, Look.GetEntityLook(), GetEntityDispositionInformations(),
+                (sbyte)Team.Id, 0, IsAlive(), GetGameFightMinimalStats(), new short[0], (short)MonsterBombTemplate.MonsterId,
+                (sbyte)MonsterBombTemplate.GradeId);
 
         public override FightTeamMemberInformations GetFightTeamMemberInformations()
-        {
-            return new FightTeamMemberMonsterInformations(Id, MonsterBombTemplate.Template.Id, (sbyte)MonsterBombTemplate.GradeId);
-        }
+            => new FightTeamMemberMonsterInformations(Id, MonsterBombTemplate.Template.Id, (sbyte)MonsterBombTemplate.GradeId);
 
         public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)
-        {
-            return new GameFightMinimalStats(
+            => new GameFightMinimalStats(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
                 Stats.Health.TotalMaxWithoutPermanentDamages,
@@ -497,6 +423,5 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 (short)Stats[PlayerFields.TackleEvade].Total,
                 (sbyte)(client == null ? VisibleState : GetVisibleStateFor(client.Character)) // invisibility state
                 );
-        }
     }
 }

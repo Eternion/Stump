@@ -8,7 +8,6 @@ using Stump.Core.Xml.Config;
 using Stump.DofusProtocol.Enums;
 using Stump.ORM;
 using Stump.Server.BaseServer.Database;
-using Stump.Server.WorldServer;
 using Stump.Server.WorldServer.Database.I18n;
 using Stump.Server.WorldServer.Database.Spells;
 using Stump.Server.WorldServer.Game.Effects;
@@ -18,10 +17,10 @@ using Stump.Core.Attributes;
 
 namespace Stump.Tools.SpellsExplorer
 {
-    internal static class Program
+    static class Program
     {
         public const string ConfigFile = "config.xml";
-        private static XmlConfig m_config;
+        static XmlConfig m_config;
 
         public static DatabaseAccessor m_databaseAccessor;
 
@@ -35,15 +34,10 @@ namespace Stump.Tools.SpellsExplorer
             ProviderName = "MySql.Data.MySqlClient",
         };
 
-        private const Languages SecondaryLanguage = Languages.French;
+        const Languages SecondaryLanguage = Languages.French;
 
         public static void Main()
         {
-            /*Console.BufferWidth = 90;
-            Console.BufferHeight = 1024;
-            Console.WindowWidth = 90;
-            Console.WindowHeight = 45;*/
-
             Console.WriteLine("Load {0}...", ConfigFile);
             m_config = new XmlConfig(ConfigFile);
             m_config.AddAssembly(Assembly.GetExecutingAssembly());
@@ -71,10 +65,6 @@ namespace Stump.Tools.SpellsExplorer
 
             Console.WriteLine("Loading spells...");
             SpellManager.Instance.Initialize();
-
-            //var triggers = SpellManager.Instance.GetSpellLevels().SelectMany(x => x.Effects.SelectMany(y => y.Triggers.Split('|')).Concat(x.CriticalEffects.SelectMany(y => y.Triggers.Split('|')))).Distinct();
-            //Console.WriteLine(string.Join("=\r\n", triggers.OrderBy(x => x)));
-
 
             while (true)
             {
@@ -132,7 +122,7 @@ namespace Stump.Tools.SpellsExplorer
                                             .Where(
                                                 x =>
                                                     SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => (int) y.Delay != 0)))
+                                                                .Effects.Any(y => y.Delay != 0)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
                                         
@@ -144,7 +134,7 @@ namespace Stump.Tools.SpellsExplorer
                                             .Where(
                                                 x =>
                                                     SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => (int) y.Priority != 0)))
+                                                                .Effects.Any(y => y.Priority != 0)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }                                        
                     if (pattern.StartsWith("group"))
@@ -155,7 +145,7 @@ namespace Stump.Tools.SpellsExplorer
                                             .Where(
                                                 x =>
                                                     SpellManager.Instance.GetSpellLevel((int) x.SpellLevelsIds[0])
-                                                                .Effects.Any(y => (int) y.Group != 0)))
+                                                                .Effects.Any(y => y.Group != 0)))
                             Console.WriteLine("Spell:{0} ({1})", spell.Name, spell.Id);
                     }
                     if (pattern.StartsWith("@"))
@@ -193,7 +183,7 @@ namespace Stump.Tools.SpellsExplorer
         {
             if (pattern.EndsWith("]") && pattern.LastIndexOf('[') != -1)
             {
-                int selectorIndex = pattern.LastIndexOf('[');
+                var selectorIndex = pattern.LastIndexOf('[');
 
                 pattern = pattern.Remove(selectorIndex);
             }
@@ -222,7 +212,7 @@ namespace Stump.Tools.SpellsExplorer
         {
             if (pattern.EndsWith("]") && pattern.LastIndexOf('[') != -1)
             {
-                int selectorIndex = pattern.LastIndexOf('[') + 1;
+                var selectorIndex = pattern.LastIndexOf('[') + 1;
 
                 return int.Parse(pattern.Substring(selectorIndex, pattern.LastIndexOf(']') - selectorIndex));
             }
