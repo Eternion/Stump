@@ -53,7 +53,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         readonly Color m_color;
 
         readonly StatsFields m_stats;
-        bool m_initialized;
+        readonly bool m_initialized;
         bool m_isExploding;
 
         public SummonedBomb(int id, FightTeam team, SpellBombTemplate spellBombTemplate, MonsterGrade monsterBombTemplate, FightActor summoner, Cell cell)
@@ -76,6 +76,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             Fight.TurnStarted += OnTurnStarted;
             Team.FighterAdded += OnFighterAdded;
+
+            m_initialized = true;
         }
 
         void OnFighterAdded(FightTeam team, FightActor actor)
@@ -83,21 +85,14 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             if (actor != this)
                 return;
 
+            CastSpell(new Spell((int)SpellIdEnum.ALLUMAGE, 1), Cell, true, true, true);
             CheckAndBuildWalls();
         }
 
         void OnTurnStarted(IFight fight, FightActor player)
         {
             if (IsFighterTurn())
-            {
-                if (!m_initialized)
-                {
-                    CastSpell(new Spell((int)SpellIdEnum.ALLUMAGE, 1), Cell, true, true, true);
-                    m_initialized = true;
-                }
-
                 PassTurn();
-            }
         }
 
         void AdjustStats()

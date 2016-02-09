@@ -44,12 +44,12 @@ namespace Stump.Server.WorldServer.Handlers.Actions
 
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedBomb summon)
         {
-            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_BOMB, summon.Summoner.Id, summon.GetGameFightFighterInformations()));
         }
 
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SlaveFighter slave)
         {
-            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_CREATURE, slave.Summoner.Id, slave.GetGameFightFighterInformations()));
+            client.Send(new GameActionFightSummonMessage((short)ActionsEnum.ACTION_SUMMON_SLAVE, slave.Summoner.Id, slave.GetGameFightFighterInformations()));
         }
 
         public static void SendGameActionFightInvisibilityMessage(IPacketReceiver client, FightActor source, FightActor target, GameActionFightInvisibilityStateEnum state)

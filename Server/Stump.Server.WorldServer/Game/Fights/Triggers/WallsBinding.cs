@@ -19,9 +19,9 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             if (handler != null) handler(this);
         }
 
-        private readonly Color m_color;
-        private readonly List<Wall> m_walls = new List<Wall>();
-        private readonly List<WallsBinding> m_intersections = new List<WallsBinding>(); 
+        readonly Color m_color;
+        readonly List<Wall> m_walls = new List<Wall>();
+        readonly List<WallsBinding> m_intersections = new List<WallsBinding>(); 
 
         public WallsBinding(SummonedBomb bomb1, SummonedBomb bomb2, Color color)
         {
@@ -33,13 +33,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
         public SummonedBomb Bomb1
         {
             get;
-            private set;
         }
 
         public SummonedBomb Bomb2
         {
             get;
-            private set;
         }
 
         public int Length
@@ -48,23 +46,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             private set;
         }
 
-        public ReadOnlyCollection<WallsBinding> Intersections 
-        {
-            get
-            {
-                return m_intersections.AsReadOnly();
-            }
-        }
+        public ReadOnlyCollection<WallsBinding> Intersections => m_intersections.AsReadOnly();
 
-        public bool IsValid()
-        {
-            return Bomb1.IsBoundWith(Bomb2);
-        }
+        public bool IsValid() => Bomb1.IsBoundWith(Bomb2);
 
-        public bool Contains(Cell cell)
-        {
-            return m_walls.Any(x => x.CenterCell == cell);
-        }
+        public bool Contains(Cell cell) => m_walls.Any(x => x.CenterCell == cell);
 
         public bool MustBeAdjusted()
         {
@@ -129,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Triggers
             Length = dist > 0 ? (int)dist - 1 : 0;
         }
 
-        private void OnIntersectionRemoved(WallsBinding obj)
+        void OnIntersectionRemoved(WallsBinding obj)
         {
             obj.Removed -= OnIntersectionRemoved;
             m_intersections.Remove(obj);

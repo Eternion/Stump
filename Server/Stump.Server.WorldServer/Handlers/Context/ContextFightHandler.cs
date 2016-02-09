@@ -523,7 +523,21 @@ namespace Stump.Server.WorldServer.Handlers.Context
 
         public static void SendGameActionFightMarkCellsMessage(IPacketReceiver client, MarkTrigger trigger, bool visible = true)
         {
-            var action = trigger.Type == GameActionMarkTypeEnum.GLYPH ? (trigger.TriggerType == TriggerType.OnTurnEnd ? ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL_ENDTURN : ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL) : ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
+            var action = ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL;
+
+            switch (trigger.Type)
+            {
+                case GameActionMarkTypeEnum.WALL:
+                case GameActionMarkTypeEnum.GLYPH:
+                    action = trigger.TriggerType == TriggerType.OnTurnEnd ?
+                        ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL_ENDTURN :
+                        ActionsEnum.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL;
+                    break;
+                case GameActionMarkTypeEnum.TRAP:
+                    action = ActionsEnum.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL;
+                    break;
+            }
+
             client.Send(new GameActionFightMarkCellsMessage((short)action, trigger.Caster.Id, visible ? trigger.GetGameActionMark() : trigger.GetHiddenGameActionMark()));
         }
 
@@ -547,7 +561,6 @@ namespace Stump.Server.WorldServer.Handlers.Context
         {
             //client.Send(new SlaveSwitchContextMessage(actor.Summoner.Id, actor.Id, actor.Spells.Select(x => x.GetSpellItem()), actor.GetSlaveCharacteristicsInformations()));
         }
-        
 
         public static void SendGameFightResumeMessage(IPacketReceiver client, CharacterFighter fighter)
         {
