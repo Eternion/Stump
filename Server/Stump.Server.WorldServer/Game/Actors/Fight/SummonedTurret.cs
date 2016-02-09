@@ -172,7 +172,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new GameFightMinimalStats(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
-                Stats.Health.Base,
+                Stats.Health.TotalMaxWithoutPermanentDamages,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
                 Stats.Shield.TotalSafe,
                 (short)Stats.AP.Total,

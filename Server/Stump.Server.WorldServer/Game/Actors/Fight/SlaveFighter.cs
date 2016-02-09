@@ -179,89 +179,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 return new CharacterCharacteristicsInformations();
 
             return new CharacterCharacteristicsInformations();
-            /*return new CharacterCharacteristicsInformations(
-                        characterFighter.Character.Experience, // EXPERIENCE
-                        characterFighter.Character.LowerBoundExperience, // EXPERIENCE level floor 
-                        characterFighter.Character.UpperBoundExperience, // EXPERIENCE nextlevel floor 
-
-                        characterFighter.Character.Kamas, // Amount of kamas.
-
-                        characterFighter.Character.StatsPoints, // Stats points
-                        characterFighter.Character.SpellsPoints, // Spell points
-
-                        // Alignment
-                        characterFighter.Character.GetActorAlignmentExtendInformations(),
-                        Stats.Health.Total, // Life points
-                        Stats.Health.TotalMax, // Max Life points
-
-                        characterFighter.Character.Energy, // Energy points
-                        characterFighter.Character.EnergyMax, // maxEnergyPoints
-
-                        (short)Stats[PlayerFields.AP]
-                                    .Total, // actionPointsCurrent
-                        (short)Stats[PlayerFields.MP]
-                                    .Total, // movementPointsCurrent
-
-                        Stats[PlayerFields.Initiative],
-                        Stats[PlayerFields.Prospecting],
-                        Stats[PlayerFields.AP],
-                        Stats[PlayerFields.MP],
-                        Stats[PlayerFields.Strength],
-                        Stats[PlayerFields.Vitality],
-                        Stats[PlayerFields.Wisdom],
-                        Stats[PlayerFields.Chance],
-                        Stats[PlayerFields.Agility],
-                        Stats[PlayerFields.Intelligence],
-                        Stats[PlayerFields.Range],
-                        Stats[PlayerFields.SummonLimit],
-                        Stats[PlayerFields.DamageReflection],
-                        Stats[PlayerFields.CriticalHit],
-                        (short)characterFighter.Character.Inventory.WeaponCriticalHit,
-                        Stats[PlayerFields.CriticalMiss],
-                        Stats[PlayerFields.HealBonus],
-                        Stats[PlayerFields.DamageBonus],
-                        Stats[PlayerFields.WeaponDamageBonus],
-                        Stats[PlayerFields.DamageBonusPercent],
-                        Stats[PlayerFields.TrapBonus],
-                        Stats[PlayerFields.TrapBonusPercent],
-                        Stats[PlayerFields.PermanentDamagePercent],
-                        Stats[PlayerFields.TackleBlock],
-                        Stats[PlayerFields.TackleEvade],
-                        Stats[PlayerFields.APAttack],
-                        Stats[PlayerFields.MPAttack],
-                        Stats[PlayerFields.PushDamageBonus],
-                        Stats[PlayerFields.CriticalDamageBonus],
-                        Stats[PlayerFields.NeutralDamageBonus],
-                        Stats[PlayerFields.EarthDamageBonus],
-                        Stats[PlayerFields.WaterDamageBonus],
-                        Stats[PlayerFields.AirDamageBonus],
-                        Stats[PlayerFields.FireDamageBonus],
-                        Stats[PlayerFields.DodgeAPProbability],
-                        Stats[PlayerFields.DodgeMPProbability],
-                        Stats[PlayerFields.NeutralResistPercent],
-                        Stats[PlayerFields.EarthResistPercent],
-                        Stats[PlayerFields.WaterResistPercent],
-                        Stats[PlayerFields.AirResistPercent],
-                        Stats[PlayerFields.FireResistPercent],
-                        Stats[PlayerFields.NeutralElementReduction],
-                        Stats[PlayerFields.EarthElementReduction],
-                        Stats[PlayerFields.WaterElementReduction],
-                        Stats[PlayerFields.AirElementReduction],
-                        Stats[PlayerFields.FireElementReduction],
-                        Stats[PlayerFields.PushDamageReduction],
-                        Stats[PlayerFields.CriticalDamageReduction],
-                        Stats[PlayerFields.PvpNeutralResistPercent],
-                        Stats[PlayerFields.PvpEarthResistPercent],
-                        Stats[PlayerFields.PvpWaterResistPercent],
-                        Stats[PlayerFields.PvpAirResistPercent],
-                        Stats[PlayerFields.PvpFireResistPercent],
-                        Stats[PlayerFields.PvpNeutralElementReduction],
-                        Stats[PlayerFields.PvpEarthElementReduction],
-                        Stats[PlayerFields.PvpWaterElementReduction],
-                        Stats[PlayerFields.PvpAirElementReduction],
-                        Stats[PlayerFields.PvpFireElementReduction],
-                        new List<CharacterSpellModification>()
-                );*/
         }
 
         public override GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)
@@ -269,7 +186,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return new GameFightMinimalStats(
                 Stats.Health.Total,
                 Stats.Health.TotalMax,
-                Stats.Health.Base,
+                Stats.Health.TotalMaxWithoutPermanentDamages,
                 Stats[PlayerFields.PermanentDamagePercent].Total,
                 Stats.Shield.TotalSafe,
                 (short)Stats.AP.Total,
