@@ -1945,41 +1945,35 @@ namespace Stump.Server.WorldServer.Game.Fights
             if (delta == 0 && shieldDamages == 0 && permanentDamages == 0)
                 return;
 
-            if (shieldDamages == 0)
+            var action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST;
+
+            switch (school)
             {
-                var action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST;
-
-                switch (school)
-                {
-                    case EffectSchoolEnum.Air:
-                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_AIR;
-                        break;
-                    case EffectSchoolEnum.Earth:
-                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_EARTH;
-                        break;
-                    case EffectSchoolEnum.Fire:
-                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_FIRE;
-                        break;
-                    case EffectSchoolEnum.Water:
-                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_WATER;
-                        break;
-                    case EffectSchoolEnum.Pushback:
-                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_PUSH;
-                        break;
-                    default:
-                        action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST;
-                        break;
-                }
-
-                ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, action, from ?? actor, actor, loss, (short)permanentDamages);
+                case EffectSchoolEnum.Air:
+                    action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_AIR;
+                    break;
+                case EffectSchoolEnum.Earth:
+                    action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_EARTH;
+                    break;
+                case EffectSchoolEnum.Fire:
+                    action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_FIRE;
+                    break;
+                case EffectSchoolEnum.Water:
+                    action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_WATER;
+                    break;
+                case EffectSchoolEnum.Pushback:
+                    action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST_FROM_PUSH;
+                    break;
+                default:
+                    action = ActionsEnum.ACTION_CHARACTER_LIFE_POINTS_LOST;
+                    break;
             }
-            else
-            {
-                ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, from ?? actor, actor, loss,
-                    (short)permanentDamages, (short)shieldDamages);
 
-                ForEach(entry => ContextHandler.SendGameFightSynchronizeMessage(entry.Client, this), true);
-            } 
+            if (shieldDamages == 0)
+                ActionsHandler.SendGameActionFightLifePointsLostMessage(Clients, action, from ?? actor, actor, loss, (short)permanentDamages);
+            else
+                ActionsHandler.SendGameActionFightLifeAndShieldPointsLostMessage(Clients, action, from ?? actor, actor, loss,
+                    (short)permanentDamages, (short)shieldDamages);
         }
 
         protected virtual void OnFightPointsVariation(FightActor actor, ActionsEnum action, FightActor source, FightActor target, short delta)

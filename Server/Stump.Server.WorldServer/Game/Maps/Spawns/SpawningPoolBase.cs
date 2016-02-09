@@ -41,10 +41,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             protected set;
         }
 
-        public int RemainingTime
-        {
-            get { return State != SpawningPoolState.Running ? 0 : (int)(SpawnTimer.NextTick - DateTime.Now).TotalMilliseconds; }
-        }
+        public int RemainingTime => State != SpawningPoolState.Running ? 0 : (int)(SpawnTimer.NextTick - DateTime.Now).TotalMilliseconds;
 
         protected List<MonsterGroup> Spawns
         {
@@ -52,10 +49,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             set;
         }
 
-        public int SpawnsCount
-        {
-            get { return Spawns.Count; }
-        }
+        public int SpawnsCount => Spawns.Count;
 
         protected TimedTimerEntry SpawnTimer
         {
@@ -69,10 +63,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             private set;
         }
 
-        public bool AutoSpawnEnabled
-        {
-            get { return State != SpawningPoolState.Stoped; }
-        }
+        public bool AutoSpawnEnabled => State != SpawningPoolState.Stoped;
 
         public void StartAutoSpawn()
         {
@@ -144,7 +135,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             }
         }
 
-        private void TimerCallBack()
+        void TimerCallBack()
         {
             if (IsLimitReached())
                 PauseAutoSpawn();
@@ -162,7 +153,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Spawns
             }
         }
 
-        private void ResetTimer()
+        void ResetTimer()
         {
             SpawnTimer = Map.Area.CallDelayed(GetNextSpawnInterval(), TimerCallBack);
         }
