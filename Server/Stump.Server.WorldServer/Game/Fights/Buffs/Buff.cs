@@ -3,7 +3,6 @@ using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
 using Stump.Server.WorldServer.Game.Spells;
-using System.Linq;
 
 namespace Stump.Server.WorldServer.Game.Fights.Buffs
 {
@@ -13,11 +12,11 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         public const int CHARACTERISTIC_STATE = 71;
 
         protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable)
-            : this(id, target,caster,effect,spell,critical, dispelable, null)
+            : this(id, target,caster,effect,spell,critical, dispelable, 0, null)
         {
         }
 
-        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short? customActionId)
+        protected Buff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int priority, short? customActionId)
         {
             Id = id;
             Target = target;
@@ -32,36 +31,32 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             Delay = (short)Effect.Delay;
 
             Efficiency = 1.0d;
+            Priority = priority;
         }
 
         public int Id
         {
             get;
-            private set;
         }
 
         public FightActor Target
         {
             get;
-            private set;
         }
 
         public FightActor Caster
         {
             get;
-            private set;
         }
 
         public EffectBase Effect
         {
             get;
-            private set;
         }
 
         public Spell Spell
         {
             get;
-            private set;
         }
 
         public short Duration
@@ -76,22 +71,25 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             set;
         }
 
+        public int Priority
+        {
+            get;
+            set;
+        }
+
         public bool Critical
         {
             get;
-            private set;
         }
 
         public bool Dispellable
         {
             get;
-            private set;
         }
 
         public short? CustomActionId
         {
             get;
-            private set;
         }
 
         /// <summary>
@@ -182,11 +180,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         }
 
         public FightDispellableEffectExtendedInformations GetFightDispellableEffectExtendedInformations()
-        {
-            return new FightDispellableEffectExtendedInformations(GetActionId(), Caster.Id, GetAbstractFightDispellableEffect());
-        }
+            => new FightDispellableEffectExtendedInformations(GetActionId(), Caster.Id, GetAbstractFightDispellableEffect());
 
         public abstract AbstractFightDispellableEffect GetAbstractFightDispellableEffect();
-
     }
 }

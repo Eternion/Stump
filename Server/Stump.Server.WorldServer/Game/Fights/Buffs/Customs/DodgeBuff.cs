@@ -10,13 +10,15 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class DodgeBuff : Buff
     {
-        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int dodgePercent, int backCellsCount) : base(id, target, caster, effect, spell, critical, dispelable)
+        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int dodgePercent, int backCellsCount)
+            : this(id, target, caster, effect, spell, critical, dispelable, 0, null, dodgePercent, backCellsCount)
         {
             DodgePercent = dodgePercent;
             BackCellsCount = backCellsCount;
         }
 
-        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId, int dodgePercent, int backCellsCount) : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        public DodgeBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int priority, short? customActionId, int dodgePercent, int backCellsCount)
+            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
             DodgePercent = dodgePercent;
             BackCellsCount = backCellsCount;

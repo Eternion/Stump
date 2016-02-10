@@ -13,8 +13,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         {
         }
 
-        public InvisibilityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId)
-            : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        public InvisibilityBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, int priority, bool dispelable, short customActionId)
+            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
         }
 

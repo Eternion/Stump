@@ -17,16 +17,15 @@ using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets;
 using Stump.Server.WorldServer.Game.Spells.Casts;
 
-using Stump.Server.WorldServer.Game.Spells.Casts;
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 {
     public abstract class SpellEffectHandler : EffectHandler
     {
-        private FightActor[] m_customAffectedActors;
-        private List<Cell> m_affectedCells;
-        private MapPoint m_castPoint;
-        private Zone m_effectZone;
-        private Cell m_customCastCell;
+        FightActor[] m_customAffectedActors;
+        List<Cell> m_affectedCells;
+        MapPoint m_castPoint;
+        Zone m_effectZone;
+        Cell m_customCastCell;
 
         protected SpellEffectHandler(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect)
@@ -44,31 +43,24 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public EffectDice Dice
         {
             get;
-            private set;
         }
 
         public SpellCategory Category
         {
             get;
-            private set;
         }
 
         public FightActor Caster
         {
             get;
-            private set;
         }
 
         public SpellCastHandler CastHandler
         {
             get;
-            private set;
         }
 
-        public Spell Spell
-        {
-            get { return CastHandler.Spell; }
-        }
+        public Spell Spell => CastHandler.Spell;
 
         public Cell TargetedCell
         {
@@ -85,7 +77,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public bool Critical
         {
             get;
-            private set;
         }
 
         public MarkTrigger MarkTrigger
@@ -136,15 +127,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             private set { m_affectedCells = value; }
         }
 
-        public IFight Fight
-        {
-            get { return Caster.Fight; }
-        }
+        public IFight Fight => Caster.Fight;
 
-        public Map Map
-        {
-            get { return Fight.Map; }
-        }
+        public Map Map => Fight.Map;
 
         public bool IsValidTarget(FightActor actor)
         {
@@ -206,15 +191,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             m_customAffectedActors = tmpActors.ToArray();
         }
 
-        public bool IsBuff()
-        {
-            return Effect.Duration != 0;
-        }
+        public bool IsBuff() => Effect.Duration != 0;
 
-        public bool IsTriggerBuff()
-        {
-            return Effect.Duration != 0 && Effect.Triggers != "I";
-        }
+        public bool IsTriggerBuff() => Effect.Duration != 0 && Effect.Triggers != "I";
 
         public Buff AddStatBuff(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
             short? customActionId = null)
@@ -229,8 +208,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
                                     short? customActionId = null, FightActor caster = null)
         {
             var id = target.PopNextBuffId();
-            var buff = new StatBuff(id, target, caster ?? Caster, Effect, Spell, value, caracteritic, Critical, dispelable,
-                                    customActionId);
+            var buff = new StatBuff(id, target, caster ?? Caster, Effect, Spell, value, caracteritic, Critical, dispelable, Priority, customActionId);
 
             target.AddBuff(buff);
 
@@ -240,7 +218,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public Buff AddTriggerBuff(FightActor target, bool dispelable, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger);
 
             target.AddBuff(buff);
 
@@ -250,7 +228,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, BuffTriggerType type, TriggerBuffApplyHandler applyTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger);
             buff.SetTrigger(type);
 
             target.AddBuff(buff);
@@ -261,8 +239,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
         public TriggerBuff AddTriggerBuff(FightActor target, bool dispelable, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger)
         {
             var id = target.PopNextBuffId();
-            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, applyTrigger,
-                                       removeTrigger);
+            var buff = new TriggerBuff(id, target, Caster, Dice, Spell, Spell, Critical, dispelable, Priority, applyTrigger, removeTrigger);
 
             target.AddBuff(buff);
 
@@ -278,7 +255,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
 
         }
 
-        private Buff AddStateBuffInternal(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state, FightActor caster = null)
+        Buff AddStateBuffInternal(FightActor target, bool dispelable, bool bypassMaxStack, SpellState state, FightActor caster = null)
         {
             var id = target.PopNextBuffId();
             var buff = new StateBuff(id, target, caster ?? Caster, Dice, Spell, dispelable, state);
@@ -288,7 +265,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return buff;
         }
 
-        public bool RemoveStateBuff(FightActor target, SpellStatesEnum stateId)
+        public static bool RemoveStateBuff(FightActor target, SpellStatesEnum stateId)
         {
             foreach (var state in target.GetBuffs(x => x is StateBuff && ((StateBuff)x).State.Id == (int)stateId).ToArray())
             {
@@ -298,8 +275,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             return true;
         }
 
-
         public virtual bool RequireSilentCast() => false;
-
     }
 }
