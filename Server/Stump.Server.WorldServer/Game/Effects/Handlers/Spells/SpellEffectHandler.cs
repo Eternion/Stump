@@ -199,16 +199,19 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells
             short? customActionId = null)
         {
             if (IsTriggerBuff())
-                return AddTriggerBuff(target, dispelable, (buff, triggerrer, type, token) => AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId, triggerrer));
+                return AddTriggerBuff(target, dispelable, (buff, triggerrer, type, token) => AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId, triggerrer, true));
             
             return AddStatBuffInternal(target, value, caracteritic, dispelable, customActionId);
         }
 
         Buff AddStatBuffInternal(FightActor target, short value, PlayerFields caracteritic, bool dispelable,
-                                    short? customActionId = null, FightActor caster = null)
+                                    short? customActionId = null, FightActor caster = null, bool noDelay = false)
         {
             var id = target.PopNextBuffId();
             var buff = new StatBuff(id, target, caster ?? Caster, Effect, Spell, value, caracteritic, Critical, dispelable, Priority, customActionId);
+
+            if (noDelay)
+                buff.Delay = 0;
 
             target.AddBuff(buff);
 
