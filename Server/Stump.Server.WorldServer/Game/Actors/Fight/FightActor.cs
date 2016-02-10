@@ -2130,14 +2130,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Network
 
-        public override EntityDispositionInformations GetEntityDispositionInformations()
-            => GetEntityDispositionInformations();
-
         public virtual EntityDispositionInformations GetEntityDispositionInformations(WorldClient client = null)
             => new FightEntityDispositionInformations(client != null ? ( IsVisibleFor(client.Character) ? Cell.Id : (short)-1 ) : Cell.Id, (sbyte)Direction, GetCarryingActor() != null ? GetCarryingActor().Id : 0);
-
-        public virtual GameFightMinimalStats GetGameFightMinimalStats()
-            => GetGameFightMinimalStats();
 
         public virtual GameFightMinimalStats GetGameFightMinimalStats(WorldClient client = null)
         {
@@ -2229,8 +2223,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         }
 
         public virtual FightTeamMemberInformations GetFightTeamMemberInformations() => new FightTeamMemberInformations(Id);
-
-        public virtual GameFightFighterInformations GetGameFightFighterInformations() => GetGameFightFighterInformations();
 
         public virtual GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
             => new GameFightFighterInformations(
