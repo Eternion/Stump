@@ -39,7 +39,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
         public override void Apply()
         {
             var id = Target.PopNextBuffId();
-            var buff = new TriggerBuff(id, Target, Caster, Effect as EffectDice, Spell, Spell, Critical, Dispellable, EvasionBuffTrigger);
+            var buff = new TriggerBuff(id, Target, Caster, Effect as EffectDice, Spell, Spell, Critical, Dispellable, Priority, EvasionBuffTrigger);
 
             buff.SetTrigger(BuffTriggerType.OnDamaged);
             Target.AddBuff(buff);
