@@ -59,13 +59,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
         };
 
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell,  Spell parentSpell, bool critical, bool dispelable, TriggerBuffApplyHandler applyTrigger, short? customActionId = (short?)null)
-            : this(id, target, caster, effect, spell, parentSpell, critical, dispelable, applyTrigger, null, customActionId)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell,  Spell parentSpell, bool critical, bool dispelable, int priority, TriggerBuffApplyHandler applyTrigger, short? customActionId = null)
+            : this(id, target, caster, effect, spell, parentSpell, critical, dispelable, priority, applyTrigger, null, customActionId)
         {
         }
 
-        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short? customActionId = null)
-            : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        public TriggerBuff(int id, FightActor target, FightActor caster, EffectDice effect, Spell spell, Spell parentSpell, bool critical, bool dispelable, int priority, TriggerBuffApplyHandler applyTrigger, TriggerBuffRemoveHandler removeTrigger, short? customActionId = null)
+            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
             Dice = effect;
             ParentSpell = parentSpell;

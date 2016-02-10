@@ -11,17 +11,17 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
     public class FractionBuff : Buff
     {
         public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, FightActor[] fighters)
-            : base(id, target, caster, effect, spell, critical, dispelable)
+            : this(id, target, caster, effect, spell, critical, dispelable, 0, null, fighters)
+        {
+        }
+
+        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int priority, short? customActionId, FightActor[] fighters)
+            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
             Fighters = fighters;
         }
 
-        public FractionBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId)
-            : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
-        {
-        }
-
-        private FightActor[] m_fighters;
+        FightActor[] m_fighters;
 
         public FightActor[] Fighters
         {
@@ -29,10 +29,7 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
             set { m_fighters = value; }
         }
 
-        public IFight Fight
-        {
-            get { return Caster.Fight; }
-        }
+        public IFight Fight => Caster.Fight;
 
         public override AbstractFightDispellableEffect GetAbstractFightDispellableEffect()
         {

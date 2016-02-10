@@ -14,8 +14,8 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs
             State = state;
         }
 
-        public StateBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool dispelable, short customActionId, SpellState state)
-            : base(id, target, caster, effect, spell, false, dispelable, customActionId)
+        public StateBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool dispelable, int priority, short customActionId, SpellState state)
+            : base(id, target, caster, effect, spell, false, dispelable, priority, customActionId)
         {
             State = state;
         }

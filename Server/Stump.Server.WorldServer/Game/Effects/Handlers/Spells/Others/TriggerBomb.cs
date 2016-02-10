@@ -10,6 +10,8 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Others
     [EffectHandler(EffectsEnum.Effect_TriggerBomb)]
     public class TriggerBomb : SpellEffectHandler
     {
+        public override int Priority => int.MaxValue;
+
         public TriggerBomb(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical) : base(effect, caster, castHandler, targetedCell, critical)
         {
         }

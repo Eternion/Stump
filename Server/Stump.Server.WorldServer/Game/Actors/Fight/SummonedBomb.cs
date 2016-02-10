@@ -54,7 +54,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         readonly StatsFields m_stats;
         readonly bool m_initialized;
-        bool m_isExploding;
 
         public SummonedBomb(int id, FightTeam team, SpellBombTemplate spellBombTemplate, MonsterGrade monsterBombTemplate, FightActor summoner, Cell cell)
             : base(team)
@@ -231,14 +230,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         void Explode(int currentBonus)
         {
-            m_isExploding = true;
-
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
             var handler = SpellManager.Instance.GetSpellCastHandler(this, ExplodSpell, Cell, false) as BombExplodSpellCastHandler;
 
             if (handler == null)
                 return;
+
+            //Avoid StackOverflow when using Poudre
+            RemoveAndDispellAllBuffs();
 
             handler.DamageBonus = currentBonus;
             handler.Summoner = Summoner;
@@ -352,12 +352,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         protected override void OnDead(FightActor killedBy, bool passTurn = true)
         {
-            if (!m_isExploding && Buffs.OfType<TriggerBuff>().Any(x => x.Effect.EffectId == EffectsEnum.Effect_TriggerBomb)) // poudre
-            {
-                Explode();
-                return;
-            }
-
             base.OnDead(killedBy, passTurn);
 
             Summoner.RemoveBomb(this);
