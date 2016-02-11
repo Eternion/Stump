@@ -1624,6 +1624,10 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return GetBuffs(x => x is SkipTurnBuff).Any();
         }
 
+        public bool IsImmuneToSpell(int id)
+        {
+            return GetBuffs(x => x is SpellImmunityBuff && id == ((SpellImmunityBuff) x).SpellImmune).Any();
+        }
 
         #endregion
 

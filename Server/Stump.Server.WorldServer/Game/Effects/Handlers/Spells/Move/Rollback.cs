@@ -32,7 +32,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 else
                 {
                     actor.Position.Cell = newCell;
-
+                    actor.MovementHistory.PopPreviousPosition(); // we don't want a new entry caused by the rollback
                     ActionsHandler.SendGameActionFightTeleportOnSameMapMessage(Fight.Clients, Caster, actor, newCell);
                 }
             }
