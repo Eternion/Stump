@@ -33,7 +33,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             var fighter = Fight.GetOneFighter(dstCell);
 
             if (fighter != null)
-                buff.Target.Telefrag(Caster, fighter);
+            {
+                if (!fighter.IsImmuneToSpell(Spell.Id))
+                    buff.Target.Telefrag(Caster, fighter);
+            }
             else
             {
                 buff.Target.Position.Cell = dstCell;
