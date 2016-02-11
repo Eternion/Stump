@@ -7,12 +7,13 @@ namespace Stump.Server.WorldServer.Game.Fights.Buffs.Customs
 {
     public class SkipTurnBuff : Buff
     {
-        public SkipTurnBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable) : base(id, target, caster, effect, spell, critical, dispelable)
+        public SkipTurnBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable)
+            : base(id, target, caster, effect, spell, critical, dispelable)
         {
         }
 
-        public SkipTurnBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, short customActionId)
-            : base(id, target, caster, effect, spell, critical, dispelable, customActionId)
+        public SkipTurnBuff(int id, FightActor target, FightActor caster, EffectBase effect, Spell spell, bool critical, bool dispelable, int priority, short customActionId)
+            : base(id, target, caster, effect, spell, critical, dispelable, priority, customActionId)
         {
         }
 
