@@ -5,9 +5,8 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
 {
     [EffectHandler(EffectsEnum.Effect_Punishment)]
@@ -30,7 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             return true;
         }
 
-        private void OnActorAttacked(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
+        void OnActorAttacked(TriggerBuff buff, FightActor triggerer, BuffTriggerType trigger, object token)
         {
             var currentBonus = m_buffs.Where(entry => entry.Item2.Target == buff.Target && entry.Item1 == Fight.TimeLine.RoundNumber).Sum(entry => entry.Item2.Value);
             var limit = Dice.DiceFace;
@@ -51,7 +50,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Buffs
             var caracteristic = GetPunishmentBoostType(Dice.DiceNum);
 
             var statBuff = new StatBuff(buff.Target.PopNextBuffId(), buff.Target, Caster, Dice,
-                Spell, (short)bonus, caracteristic, false, true, Dice.DiceNum) 
+                Spell, (short)bonus, caracteristic, false, true, Priority, Dice.DiceNum) 
                 { Duration = Dice.Value };
 
             m_buffs.Add(new Tuple<int, StatBuff>(Fight.TimeLine.RoundNumber, statBuff));

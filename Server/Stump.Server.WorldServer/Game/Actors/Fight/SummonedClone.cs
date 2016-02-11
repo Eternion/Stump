@@ -6,6 +6,7 @@ using Stump.Server.WorldServer.Game.Actors.Stats;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Spell = Stump.Server.WorldServer.Game.Spells.Spell;
 using System.Linq;
+using Stump.Server.WorldServer.Core.Network;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -45,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 MovementHistory.GetEntries(2).Select(x => x.Cell.Id).ToArray(), Name, new PlayerStatus((sbyte)PlayerStatusEnum.PLAYER_STATUS_AVAILABLE));
         }
 
-        public override GameFightFighterInformations GetGameFightFighterInformations()
+        public override GameFightFighterInformations GetGameFightFighterInformations(WorldClient client = null)
         {
             var casterInfos = Caster.GetGameFightFighterInformations();
             return new GameFightFighterInformations(Id, casterInfos.look, GetEntityDispositionInformations(), casterInfos.teamId,

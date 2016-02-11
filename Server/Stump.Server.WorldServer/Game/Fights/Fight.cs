@@ -2319,27 +2319,16 @@ namespace Stump.Server.WorldServer.Game.Fights
 
         #region Triggers
 
-        private readonly List<MarkTrigger> m_triggers = new List<MarkTrigger>();
+        readonly List<MarkTrigger> m_triggers = new List<MarkTrigger>();
 
-        public IEnumerable<MarkTrigger> GetTriggers()
-        {
-            return m_triggers;
-        }
+        public IEnumerable<MarkTrigger> GetTriggers() => m_triggers;
 
         public bool ShouldTriggerOnMove(Cell cell, FightActor actor)
-        {
-            return m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.StopMovement && entry.ContainsCell(cell) && entry.CanTrigger(actor));
-        }
+            => m_triggers.Any(entry => entry.TriggerType.HasFlag(TriggerType.MOVE) && entry.StopMovement && entry.ContainsCell(cell) && entry.CanTrigger(actor));
 
-        public MarkTrigger[] GetTriggersByCell(Cell cell)
-        {
-            return m_triggers.Where(entry => entry.ContainsCell(cell)).ToArray();
-        }
+        public MarkTrigger[] GetTriggersByCell(Cell cell) => m_triggers.Where(entry => entry.ContainsCell(cell)).ToArray();
 
-        public MarkTrigger[] GetTriggers(Cell cell)
-        {
-            return m_triggers.Where(entry => entry.CenterCell.Id == cell.Id).ToArray();
-        }
+        public MarkTrigger[] GetTriggers(Cell cell) => m_triggers.Where(entry => entry.CenterCell.Id == cell.Id).ToArray();
 
         public void AddTriger(MarkTrigger trigger)
         {
@@ -2397,10 +2386,7 @@ namespace Stump.Server.WorldServer.Game.Fights
             EndSequence(SequenceTypeEnum.SEQUENCE_GLYPH_TRAP);
         }
 
-        public int PopNextTriggerId()
-        {
-            return m_triggerIdProvider.Pop();
-        }
+        public int PopNextTriggerId() => m_triggerIdProvider.Pop();
 
         public void FreeTriggerId(int id)
         {
