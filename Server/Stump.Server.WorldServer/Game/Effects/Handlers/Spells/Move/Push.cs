@@ -25,12 +25,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
             set;
         }
 
-        public FightActor SubRangeForActor
-        {
-            get;
-            set;
-        }
-
         public override bool Apply()
         {
             var integerEffect = GenerateEffect();
@@ -52,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 var pushDirection = referenceCell.OrientationTo(actor.Position.Point);
                 var startCell = actor.Position.Point;
                 var lastCell = startCell;
-                var range = SubRangeForActor == actor ? (integerEffect.Value - 1) : integerEffect.Value;
+                var range = integerEffect.Value;
                 var takeDamage = false;
                 var stopCell = startCell.GetCellInDirection(pushDirection, range);
                 var fightersInline = Fight.GetAllFightersInLine(startCell, range, pushDirection);
@@ -97,9 +91,13 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                         if (nextCell == null || !Fight.IsCellFree(Map.Cells[nextCell.CellId]) || Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
                         {
                             if (Fight.ShouldTriggerOnMove(Fight.Map.Cells[nextCell.CellId], actor))
+                            {
                                 DamagesDisabled = true;
+                                stopCell = nextCell;
+                            }
+                            else
+                                stopCell = lastCell;
 
-                            stopCell = nextCell;
                             break;
                         }
 

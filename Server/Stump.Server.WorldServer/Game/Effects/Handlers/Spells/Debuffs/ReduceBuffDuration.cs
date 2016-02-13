@@ -3,10 +3,9 @@ using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
 using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Spells;
 using Stump.Server.WorldServer.Handlers.Context;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Fights.Buffs;using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
 {
     [EffectHandler(EffectsEnum.Effect_ReduceEffectsDuration)]
@@ -47,7 +46,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Debuffs
                     actor.RemoveBuff(buff);
             }
 
-            ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Caster, actor, (short)-duration);
+            ContextHandler.SendGameActionFightModifyEffectsDurationMessage(Fight.Clients, Effect.Id, Caster, actor, (short)-duration);
         }
 
         void TriggerBuff(TriggerBuff buff, FightActor triggerrer, BuffTriggerType trigger, object token)
