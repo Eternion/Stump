@@ -74,7 +74,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             }
 
 
-            Handlers = handlers.OrderByDescending(x => x.Priority).ToArray();
+            Handlers = handlers.OrderBy(x => x.Priority).ToArray();
             m_initialized = true;
 
             return true;

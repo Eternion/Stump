@@ -15,8 +15,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         {
         }
 
-        public override int Priority => -1;
-
         public override bool Apply()
         {
             var affectedActors = GetAffectedActors();

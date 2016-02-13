@@ -1,7 +1,6 @@
 ﻿using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Spells.Casts;
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
     public class TargetTypeCriterion : TargetCriterion
     {
@@ -22,7 +21,9 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                 // return false; note : wtf, why is there spells with TargetType = NONE ?
                 return true;
 
-            if (handler.Caster == actor && (TargetType.HasFlag(SpellTargetType.SELF) || TargetType.HasFlag(SpellTargetType.SELF_ONLY) || TargetType.HasFlag(SpellTargetType.ALLY_ALL)))
+            if (handler.Caster == actor && (TargetType.HasFlag(SpellTargetType.SELF)
+                || TargetType.HasFlag(SpellTargetType.SELF_ONLY)
+                || TargetType.HasFlag(SpellTargetType.ALLY_ALL)))
                 return true;
 
             if (TargetType.HasFlag(SpellTargetType.SELF_ONLY) && actor != handler.Caster)
@@ -30,7 +31,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
             if (handler.Caster.IsFriendlyWith(actor) && handler.Caster != actor)
             {
-                if (TargetType == SpellTargetType.ALLY_ALL_EXCEPT_SELF)
+                if (TargetType == SpellTargetType.ALLY_ALL_EXCEPT_SELF || TargetType == SpellTargetType.ALLY_ALL)
                     return true;
 
                 if ((TargetType.HasFlag(SpellTargetType.ALLY_PLAYER))
@@ -48,10 +49,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
                 if ((TargetType.HasFlag(SpellTargetType.ALLY_MONSTER_SUMMON) || TargetType.HasFlag(SpellTargetType.ALLY_NON_MONSTER_SUMMON))
                     && (actor is SummonedMonster))
-                    return true;
-
-                if (TargetType.HasFlag(SpellTargetType.ALLY_BOMB)
-                    && (actor is SummonedBomb))
                     return true;
             }
 
@@ -73,10 +70,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 
             if ((TargetType.HasFlag(SpellTargetType.ENEMY_MONSTER_SUMMON) || TargetType.HasFlag(SpellTargetType.ENEMY_NON_MONSTER_SUMMON))
                 && (actor is SummonedMonster))
-                return true;
-
-            if (TargetType.HasFlag(SpellTargetType.ENEMY_BOMB)
-                && (actor is SummonedBomb))
                 return true;
 
             return false;
