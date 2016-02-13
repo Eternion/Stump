@@ -68,10 +68,10 @@ using Stump.Server.WorldServer.Game.Actors.Fight;
                         return new CarriedCriterion();
                     case 'T':
                         return new TelefragCriterion();
-                    /*case 'P':
+                    case 'P':
                         return new SummonerCriterion(true);
                     case 'p':
-                        return new SummonerCriterion(false);*/
+                        return new SummonerCriterion(false);
                 }
 
                 return new UnknownCriterion(str);
