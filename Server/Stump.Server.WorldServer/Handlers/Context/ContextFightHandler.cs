@@ -511,9 +511,9 @@ namespace Stump.Server.WorldServer.Handlers.Context
             client.Send(new GameActionFightNoSpellCastMessage((int)spell.CurrentSpellLevel.Id));
         }
 
-        public static void SendGameActionFightModifyEffectsDurationMessage(IPacketReceiver client, FightActor source, FightActor target, short delta)
+        public static void SendGameActionFightModifyEffectsDurationMessage(IPacketReceiver client, short actionId, FightActor source, FightActor target, short delta)
         {
-            client.Send(new GameActionFightModifyEffectsDurationMessage((short)ActionsEnum.ACTION_CHARACTER_BOOST_DISPELLED, source.Id, target.Id, delta));
+            client.Send(new GameActionFightModifyEffectsDurationMessage(actionId, source.Id, target.Id, delta));
         }
 
         public static void SendGameActionFightDispellableEffectMessage(IPacketReceiver client, Buff buff, bool update = false)

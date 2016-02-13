@@ -246,8 +246,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
                 effect.Efficiency = 1 + currentBonus / 100d;
             }
 
-            handler.Initialize();
-
             OnSpellCasting(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
 
             handler.Execute();
