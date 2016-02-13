@@ -24,7 +24,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
                     handler.SubRangeForActor = fighter;
             }*/
 
-            Handlers = Handlers.OrderByDescending(entry => entry.Dice.DiceNum).ToArray();
+            Handlers = Handlers.OrderByDescending(entry => entry.EffectZone.MinRadius).ToArray();
 
             return true;
         }

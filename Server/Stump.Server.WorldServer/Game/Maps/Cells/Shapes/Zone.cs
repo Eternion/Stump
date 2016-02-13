@@ -115,7 +115,7 @@ namespace Stump.Server.WorldServer.Game.Maps.Cells.Shapes
             switch (ShapeType)
             {
                 case SpellShapeEnum.X:
-                    m_shape = new Cross(0, Radius);
+                    m_shape = new Cross(MinRadius, Radius);
                     break;
                 case SpellShapeEnum.L:
                     m_shape = new Line(Radius);
