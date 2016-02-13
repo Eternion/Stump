@@ -21,8 +21,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Steals
         {
         }
 
-        public override int Priority => int.MaxValue;
-
         public override bool Apply()
         {
             foreach (var actor in GetAffectedActors())

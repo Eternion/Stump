@@ -1,9 +1,8 @@
-﻿using Stump.DofusProtocol.Enums;
-using Stump.Server.WorldServer.Game.Actors.Fight;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Stump.Server.WorldServer.Game.Spells.Casts;
-namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
+using Stump.DofusProtocol.Enums;
+using Stump.Server.WorldServer.Game.Actors.Fight;
+namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
 {
     public abstract class TargetCriterion
     {
@@ -19,7 +18,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             {'m', SpellTargetType.ALLY_MONSTER},
             {'h', SpellTargetType.ALLY_SUMMONER},
             {'l', SpellTargetType.ALLY_PLAYER},
-            {'P', SpellTargetType.ALLY_BOMB},
 
             {'a', SpellTargetType.ALLY_ALL},
             {'g', SpellTargetType.ALLY_ALL_EXCEPT_SELF},
@@ -31,7 +29,6 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
             {'M', SpellTargetType.ENEMY_MONSTER},
             {'H', SpellTargetType.ENEMY_UNKN_1},
             {'L', SpellTargetType.ENEMY_PLAYER},
-            {'p', SpellTargetType.ENEMY_BOMB},
 
             {'A', SpellTargetType.ENEMY_ALL},
         };
@@ -71,6 +68,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Targets
                         return new CarriedCriterion();
                     case 'T':
                         return new TelefragCriterion();
+                    /*case 'P':
+                        return new SummonerCriterion(true);
+                    case 'p':
+                        return new SummonerCriterion(false);*/
                 }
 
                 return new UnknownCriterion(str);

@@ -16,11 +16,10 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
         public Push(EffectDice effect, FightActor caster, SpellCastHandler castHandler, Cell targetedCell, bool critical)
             : base(effect, caster, castHandler, targetedCell, critical)
         {
+            DamagesDisabled = effect.EffectId == EffectsEnum.Effect_PushBack_1103;
         }
 
-        public override int Priority => -1;
-
-        public bool DamagesDisabled
+        bool DamagesDisabled
         {
             get;
             set;

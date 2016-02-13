@@ -19,8 +19,7 @@ using Stump.Server.WorldServer.Game.Fights.Teams;
 using Stump.Server.WorldServer.Game.Fights.Triggers;
 using Stump.Server.WorldServer.Game.Maps.Cells;
 using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts.Roublard;
-using Stump.Server.WorldServer.Game.Fights.Buffs;
+using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage;
 
 namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
@@ -232,7 +231,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             Fight.StartSequence(SequenceTypeEnum.SEQUENCE_SPELL);
 
-            var handler = SpellManager.Instance.GetSpellCastHandler(this, ExplodSpell, Cell, false) as BombExplodSpellCastHandler;
+            var handler = SpellManager.Instance.GetSpellCastHandler(this, ExplodSpell, Cell, false);
 
             if (handler == null)
                 return;
@@ -240,8 +239,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             //Avoid StackOverflow when using Poudre
             RemoveAndDispellAllBuffs();
 
-            handler.DamageBonus = currentBonus;
-            handler.Summoner = Summoner;
+            handler.Initialize();
+
+            foreach (var effect in handler.GetEffectHandlers().OfType<DirectDamage>())
+            {
+                effect.Efficiency = 1 + currentBonus / 100d;
+            }
+
             handler.Initialize();
 
             OnSpellCasting(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
@@ -250,11 +254,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
             OnSpellCasted(ExplodSpell, Cell, FightSpellCastCriticalEnum.NORMAL, handler.SilentCast);
 
-            if (handler.DamageBonus <= 0)
+            Fight.EndSequence(SequenceTypeEnum.SEQUENCE_SPELL);
+
+            if (currentBonus <= 0)
                 return;
 
             foreach (var client in Fight.Clients)
-                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, handler.DamageBonus);
+                client.Character.SendInformationMessage(TextInformationTypeEnum.TEXT_INFORMATION_FIGHT, 1, currentBonus);
         }
 
         public static void ExplodeInReaction(ICollection<SummonedBomb> bombs)

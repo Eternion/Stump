@@ -6,7 +6,7 @@ using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
-    [SpellCastHandler(SpellIdEnum.AIMANTATION)]
+    //[SpellCastHandler(SpellIdEnum.AIMANTATION)]
     public class MagnetSpellCastHandler : DefaultSpellCastHandler
     {
         public MagnetSpellCastHandler(FightActor caster, Spell spell, Cell targetedCell, bool critical)
