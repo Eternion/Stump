@@ -200,6 +200,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public bool IsInExplosionZone(SummonedBomb bomb)
         {
+            if (IsCarried() || bomb.IsCarried())
+                return false;
+
             var dist = Position.Point.ManhattanDistanceTo(bomb.Position.Point);
 
             return dist <= ExplosionZone;

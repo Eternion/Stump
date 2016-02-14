@@ -59,9 +59,11 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Armor
                 target = ((SummonedBomb) target).Summoner;
             }
 
-            var reduction = Math.Min(damage.Amount, target.CalculateArmorValue(integerEffect.Value));
+            var reduction = target.CalculateArmorValue(integerEffect.Value);
+            var dmgReduction = Math.Min(damage.Amount, target.CalculateArmorValue(integerEffect.Value));
+
             ActionsHandler.SendGameActionFightReduceDamagesMessage(target.Fight.Clients, damage.Source, target, reduction);
-            damage.Amount -= reduction;
+            damage.Amount -= dmgReduction;
         }
     }
 }

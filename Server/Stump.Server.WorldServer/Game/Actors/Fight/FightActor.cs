@@ -1852,27 +1852,15 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         #region Carry/Throw
 
-        private FightActor m_carriedActor;
+        FightActor m_carriedActor;
 
-        public bool IsCarrying()
-        {
-            return m_carriedActor != null;
-        }
+        public bool IsCarrying() => m_carriedActor != null;
 
-        public bool IsCarried()
-        {
-            return GetCarryingActor() != null;
-        }
+        public bool IsCarried() => GetCarryingActor() != null;
 
-        public FightActor GetCarriedActor()
-        {
-            return m_carriedActor;
-        }
+        public FightActor GetCarriedActor() => m_carriedActor;
 
-        public FightActor GetCarryingActor()
-        {
-            return Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
-        }
+        public FightActor GetCarryingActor() => Fight.GetFirstFighter<FightActor>(x => x.GetCarriedActor() == this);
 
         public void CarryActor(FightActor target, EffectBase effect, Spell spell)
         {
@@ -1901,15 +1889,13 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             AddBuff(actorBuff);
             target.AddBuff(targetBuff);
 
-            ActionsHandler.SendGameActionFightCarryCharacterMessage(Fight.Clients, this, target);        
+            ActionsHandler.SendGameActionFightCarryCharacterMessage(Fight.Clients, this, target);
 
-            target.Position.Cell = Position.Cell;
             m_carriedActor = target;
+            target.Position.Cell = Position.Cell;
 
             m_carriedActor.Dead += OnCarryingActorDead;
-            //m_carriedActor.FighterLeft += OnCarryingActorLeft;
             Dead += OnCarryingActorDead;
-            //FighterLeft += OnCarryingActorLeft;
         }
 
         public void ThrowActor(Cell cell, bool drop = false)
@@ -1937,18 +1923,19 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
             m_carriedActor.RemoveSpellBuffs((int)SpellIdEnum.KARCHAM);
 
-            if (m_carriedActor.IsAlive())
+            var carriedActor = m_carriedActor;
+            m_carriedActor = null;
+
+            if (carriedActor.IsAlive())
             {
-                m_carriedActor.Position.Cell = cell;
-                Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, m_carriedActor));
+                carriedActor.Position.Cell = cell;
+                Fight.ForEach(entry => ContextHandler.SendGameFightRefreshFighterMessage(entry.Client, carriedActor));
             }
 
             Fight.EndSequence(SequenceTypeEnum.SEQUENCE_MOVE);
 
-            m_carriedActor.Dead -= OnCarryingActorDead;
+            carriedActor.Dead -= OnCarryingActorDead;
             Dead -= OnCarryingActorDead;
-
-            m_carriedActor = null;
         }
 
         public override bool StartMove(Path movementPath)
