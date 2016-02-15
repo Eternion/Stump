@@ -38,12 +38,6 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             protected set;
         }
 
-        public bool Frozen
-        {
-            get;
-            set;
-        }
-
         public Dictionary<int, Spell> Spells
         {
             get;
@@ -83,7 +77,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
         {
             try
             {
-                if (!Frozen)
+                if (!CanPlay())
                     Brain.Play();
             }
             catch (Exception ex)

@@ -1453,7 +1453,12 @@ namespace Stump.Server.WorldServer.Game.Fights
         {
             StartSequence(SequenceTypeEnum.SEQUENCE_TURN_START);
 
-            FighterPlaying.DecrementAllCastedBuffsDuration();
+            if (FighterPlaying.CanPlay())
+            {
+                FighterPlaying.DecrementAllCastedBuffsDuration();
+                FighterPlaying.DecrementStaticSummonsCastedBuffsDuration();
+            }
+
             DecrementGlyphDuration(FighterPlaying);
             FighterPlaying.TriggerBuffs(FighterPlaying, BuffTriggerType.OnTurnBegin);
             TriggerMarks(FighterPlaying.Cell, FighterPlaying, TriggerType.OnTurnBegin);

@@ -138,6 +138,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 
         public override bool IsVisibleInTimeline => true;
 
+        public override bool CanPlay() => false;
+
         public override byte Level => (byte)MonsterBombTemplate.Level;
 
         public override StatsFields Stats => m_stats;

@@ -114,7 +114,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 NewRound = false;
             }
 
-            while (!Fighters[index].CanPlay() && counter < Fighters.Count)
+            while (!Fighters[index].IsAlive() && counter < Fighters.Count)
             {
                 index = ( index + 1 ) < Fighters.Count ? index + 1 : 0;
 
@@ -127,7 +127,7 @@ namespace Stump.Server.WorldServer.Game.Fights
                 counter++;
             }
 
-            if (!Fighters[index].CanPlay()) // no fighter can play
+            if (!Fighters[index].IsAlive()) // no fighter can play
             {
                 Index = -1;
                 return false;

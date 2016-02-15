@@ -22,8 +22,8 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public sealed class MonsterFighter : AIFighter, ICreature
     {
-        private readonly Dictionary<DroppableItem, int> m_dropsCount = new Dictionary<DroppableItem, int>();
-        private readonly StatsFields m_stats;
+        readonly Dictionary<DroppableItem, int> m_dropsCount = new Dictionary<DroppableItem, int>();
+        readonly StatsFields m_stats;
 
         public MonsterFighter(FightTeam team, Monster monster)
             : base(team, monster.Grade.Spells.ToArray(), monster.Grade.MonsterId)
@@ -39,14 +39,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             Cell cell;
             Fight.FindRandomFreeCell(this, out cell, false);
             Position = new ObjectPosition(monster.Group.Map, cell, monster.Group.Direction);
-
-            Frozen = !monster.Template.CanPlay;
         }
 
         public Monster Monster
         {
             get;
-            private set;
         }
 
         public MonsterGrade MonsterGrade
@@ -95,15 +92,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (uint) random.Next(Monster.Template.MinDroppedKamas, Monster.Template.MaxDroppedKamas + 1);
         }
 
-        public override int GetGivenExperience()
-        {
-            return Monster.Grade.GradeXp;
-        }
-        
-        public override bool CanDrop()
-        {
-            return true;
-        }
+        public override int GetGivenExperience() => Monster.Grade.GradeXp;
+
+        public override bool CanDrop() => true;
+
+        public override bool CanPlay() => base.CanPlay() && Monster.Template.CanPlay;
 
         public override IEnumerable<DroppedItem> RollLoot(IFightResult looter)
         {

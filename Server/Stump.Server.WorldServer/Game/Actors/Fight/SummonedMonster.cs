@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using NLog.LayoutRenderers;
 using Stump.DofusProtocol.Enums;
 using Stump.DofusProtocol.Types;
 using Stump.Server.WorldServer.Core.Network;
@@ -14,7 +13,7 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
 {
     public sealed class SummonedMonster : SummonedFighter, ICreature
     {
-        private readonly StatsFields m_stats;
+        readonly StatsFields m_stats;
 
         public SummonedMonster(int id, FightTeam team, FightActor summoner, MonsterGrade template, Cell cell)
             : base(id, team, template.Spells.ToArray(), summoner, cell, template.MonsterId)
@@ -24,11 +23,9 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             m_stats = new StatsFields(this);
             m_stats.Initialize(template);
             AdjustStats();
-
-            Frozen = !template.Template.CanPlay;
         }
 
-        private void AdjustStats()
+        void AdjustStats()
         {
             // +1% bonus per level
             m_stats.Health.Base = (short)(m_stats.Health.Base * (1 + (Summoner.Level / 100d)));
@@ -44,10 +41,11 @@ namespace Stump.Server.WorldServer.Game.Actors.Fight
             return (int)(reduction * (100 + 5 * Summoner.Level) / 100d);
         }
 
+        public override bool CanPlay() => base.CanPlay() && Monster.Template.CanPlay;
+
         public MonsterGrade Monster
         {
             get;
-            private set;
         }
 
         public override ObjectPosition MapPosition

@@ -18,8 +18,7 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         {
             client.Send(new GameActionFightDeathMessage(
                             (short) ActionsEnum.ACTION_CHARACTER_DEATH,
-                            fighter.Id, fighter.Id
-                            ));
+                            fighter.Id, fighter.Id));
         }
 
         public static void SendGameActionFightVanishMessage(IPacketReceiver client, FightActor source, FightActor target)
@@ -30,11 +29,15 @@ namespace Stump.Server.WorldServer.Handlers.Actions
         public static void SendGameActionFightSummonMessage(IPacketReceiver client, SummonedFighter summon)
         {
             var fighterInfos = summon.GetGameFightFighterInformations();
+            var action = summon.CanPlay() ? ActionsEnum.ACTION_SUMMON_CREATURE : ActionsEnum.ACTION_SUMMON_STATIC_CREATURE;
 
             if (summon is SummonedClone)
+            {
                 fighterInfos = (summon as SummonedClone).GetGameFightFighterNamedInformations();
+                action = ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE;
+            }
 
-            client.Send(new GameActionFightSummonMessage(summon is SummonedClone ? (short)ActionsEnum.ACTION_CHARACTER_ADD_DOUBLE : (short)ActionsEnum.ACTION_SUMMON_CREATURE, summon.Summoner.Id, fighterInfos));
+            client.Send(new GameActionFightSummonMessage((short)action, summon.Summoner.Id, fighterInfos));
         }
 
         public static void SendGameActionFightReviveMessage(IPacketReceiver client, FightActor caster, FightActor actor)
