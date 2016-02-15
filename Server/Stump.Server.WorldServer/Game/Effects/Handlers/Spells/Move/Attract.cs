@@ -29,6 +29,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move
                 if (fighter == null)
                     continue;
 
+                Distance = TargetedPoint.ManhattanDistanceTo(fighter.Position.Point);
                 AddAffectedActor(fighter);
                 break;
             }

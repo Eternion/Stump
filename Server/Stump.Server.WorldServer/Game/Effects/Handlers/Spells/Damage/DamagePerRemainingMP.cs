@@ -2,9 +2,8 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Instances;
-using Stump.Server.WorldServer.Game.Spells;
-using Stump.Server.WorldServer.Game.Spells.Casts;
+using Stump.Server.WorldServer.Game.Effects.Instances;using Stump.Server.WorldServer.Game.Spells.Casts;
+
 namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
 {
     [EffectHandler(EffectsEnum.Effect_DamageNeutralRemainingMP)]
@@ -31,7 +30,7 @@ namespace Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Damage
                     IsCritical = Critical
                 };
 
-                var percent = (Caster.Stats.MP.Total * Caster.Stats.MP.TotalMax) / 100.0;
+                var percent = ((double)Caster.Stats.MP.Total / Caster.Stats.MP.TotalMax) * 100.0;
                 damages.BaseMaxDamages = (int)Math.Floor(damages.BaseMaxDamages * (percent / 100.0));
                 damages.BaseMinDamages = (int)Math.Floor(damages.BaseMinDamages * (percent / 100.0));
 

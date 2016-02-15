@@ -24,10 +24,7 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             protected set;
         }
 
-        public override bool SilentCast
-        {
-            get { return m_initialized && Handlers.Any(entry => entry.RequireSilentCast()); }
-        }
+        public override bool SilentCast => m_initialized && Handlers.Any(entry => entry.RequireSilentCast());
 
         public override bool Initialize()
         {
@@ -91,9 +88,6 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts
             }
         }
 
-        public override IEnumerable<SpellEffectHandler> GetEffectHandlers()
-        {
-            return Handlers;
-        }
+        public override IEnumerable<SpellEffectHandler> GetEffectHandlers() => Handlers;
     }
 }
