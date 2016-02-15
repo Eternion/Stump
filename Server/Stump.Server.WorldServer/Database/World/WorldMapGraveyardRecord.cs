@@ -33,6 +33,12 @@
                 set;
             }
 
+            public int PhoenixMapId
+            {
+                get;
+                set;
+            }
+
             [Ignore]
             public Map Map => Game.World.Instance.GetMap(MapId);
         }

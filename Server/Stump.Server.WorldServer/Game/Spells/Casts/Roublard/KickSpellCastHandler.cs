@@ -2,7 +2,6 @@
 using Stump.DofusProtocol.Enums;
 using Stump.Server.WorldServer.Database.World;
 using Stump.Server.WorldServer.Game.Actors.Fight;
-using Stump.Server.WorldServer.Game.Effects.Handlers.Spells.Move;
 
 namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
 {
@@ -16,13 +15,6 @@ namespace Stump.Server.WorldServer.Game.Spells.Casts.Roublard
         public override bool Initialize()
         {
             base.Initialize();
-
-            /*foreach (var handler in Handlers.OfType<Push>())
-            {
-                var fighter = Fight.GetFirstFighter<SummonedBomb>(TargetedCell);
-                if (fighter != null && fighter.IsFriendlyWith(Caster))
-                    handler.SubRangeForActor = fighter;
-            }*/
 
             Handlers = Handlers.OrderByDescending(entry => entry.EffectZone.MinRadius).ToArray();
 

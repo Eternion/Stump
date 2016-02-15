@@ -49,7 +49,6 @@ namespace Stump.Server.WorldServer.Game
         Dictionary<int, SubArea> m_subAreas = new Dictionary<int, SubArea>();
         Dictionary<int, SuperArea> m_superAreas = new Dictionary<int, SuperArea>();
         Dictionary<int, WorldMapGraveyardRecord> m_graveyards = new Dictionary<int, WorldMapGraveyardRecord>();
-        Dictionary<int, WorldMapPhoenixRecord> m_phoenixes = new Dictionary<int, WorldMapPhoenixRecord>();
 
         readonly object m_saveLock = new object();
         readonly ConcurrentBag<ISaveable> m_saveablesInstances = new ConcurrentBag<ISaveable>();
@@ -117,9 +116,6 @@ namespace Stump.Server.WorldServer.Game
 
             logger.Info("Load graveyards...");
             m_graveyards = Database.Query<WorldMapGraveyardRecord>(WorldMapGraveyardRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => entry);
-
-            logger.Info("Load phoenixes...");
-            m_phoenixes = Database.Query<WorldMapPhoenixRecord>(WorldMapPhoenixRelator.FetchQuery).ToDictionary(entry => entry.Id, entry => entry);
 
             SetLinks();
         }
@@ -457,22 +453,11 @@ namespace Stump.Server.WorldServer.Game
 
         public IEnumerable<WorldMapGraveyardRecord> GetGraveyards() => m_graveyards.Values.ToArray();
 
-        public IEnumerable<WorldMapPhoenixRecord> GetPhoenixes() => m_phoenixes.Values.ToArray();
-
         public WorldMapGraveyardRecord GetNearestGraveyard(Map currentMap)
         {
             var actualPoint = new MapPoint(currentMap.Position);
             return GetGraveyards().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position)))
                 .OrderByDescending(x => x.Map.Area.Id == currentMap.Area.Id).FirstOrDefault();
-        }
-
-        public Map GetNearestPhoenix(Map currentMap)
-        {
-            var actualPoint = new MapPoint(currentMap.Position);
-            var phoenix = GetPhoenixes().OrderBy(x => actualPoint.EuclideanDistanceTo(new MapPoint(x.Map.Position)))
-                .OrderByDescending(x => x.Map.Area.Id == currentMap.Area.Id).FirstOrDefault();
-
-            return phoenix == null ? null : phoenix.Map;
         }
 
         #endregion
